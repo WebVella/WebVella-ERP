@@ -5,7 +5,7 @@
 * @author Ilshat Manakhov
 */
 
-var translationsEN = {
+var translationsRU = {
 	ACTION: 'Действие',
 	ACTION_NAME_PLACEHOLDER: 'прим. print_record',
 	ADD: 'Добавить',

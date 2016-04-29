@@ -1,24 +1,24 @@
-﻿/* WebVella ERP English translation file */
+﻿/* WebVella ERP Bulgarian translation file */
 
 /**
-* @desc key value translation file for English language
+* @desc key value translation file for Bulgarian language
 * @author Bozhidar Zashev
 * @company WebVella
 * @website www.webvella.com
 */
 
 var translationsEN = {
-	ACTION: 'Action',
-	ACTION_NAME_PLACEHOLDER: 'e.g. print_record',
-	ADD: 'Add',
-	ADD_ACTION: 'Add action',
-	ADD_NEW: 'Add New',
-	ADD_NEW_TAB: 'Add New Tab',
-	ADD_OPTION: 'Add Option',
-	ADMINISTRATION_ABBR: 'Admin',
-	ADMINISTRATION: 'Administration',
-	ADMINISTRATION_CORE: 'Core Admin',
-	ALL: 'All',
+	ACTION: 'Действие',
+	ACTION_NAME_PLACEHOLDER: 'напр. print_record',
+	ADD: 'Добави',
+	ADD_ACTION: 'Добави действие',
+	ADD_NEW: 'Добави ново',
+	ADD_NEW_TAB: 'Добави нов таб',
+	ADD_OPTION: 'Добави опция',
+	ADMINISTRATION_ABBR: 'Админ',
+	ADMINISTRATION: 'Администрация',
+	ADMINISTRATION_CORE: 'Ядро Админ',
+	ALL: 'Всички',
 	AMBER: 'Amber',
 	ANY: 'Any',
 	AREA_ATTACH_ENTITY: 'Attach Entity',

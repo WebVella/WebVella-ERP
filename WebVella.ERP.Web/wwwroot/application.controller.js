@@ -90,11 +90,17 @@
 		//#region << Translation >>
 		$translateProvider.preferredLanguage(GlobalLanguage);
 		switch(GlobalLanguage){
+			case "bg":
+				$translateProvider.translations(GlobalLanguage, translationsBG);
+				break;
 			case "en":
 				$translateProvider.translations(GlobalLanguage, translationsEN);
 				break;
 			case "es":
 				$translateProvider.translations(GlobalLanguage, translationsES);
+				break;
+			case "ru":
+				$translateProvider.translations(GlobalLanguage, translationsRU);
 				break;
 		}
 		$translateProvider.useSanitizeValueStrategy(null);
