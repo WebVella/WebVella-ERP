@@ -653,8 +653,11 @@
 			if(ngCtrl.view.meta.regions[0].name != "header"){
 				ngCtrl.activeTabName = ngCtrl.view.meta.regions[0].name;
 			}
-			else {
+			else if(ngCtrl.view.meta.regions.length > 1) {
 				ngCtrl.activeTabName = ngCtrl.view.meta.regions[1].name;
+			}
+			else {
+				ngCtrl.activeTabName = null;
 			}
 
 		}

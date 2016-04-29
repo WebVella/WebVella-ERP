@@ -13,598 +13,23 @@
 			<div class="alert alert-warning" ng-if="::ngCtrl.createViewRegion == null">There is no default "create" view defined for this entity. Please contact your system integrator!</div>
 			<div class="alert alert-warning" ng-if="::!ngCtrl.userHasRecordPermissions('canCreate')">You are not allowed to create records in this entity</div>
 			<div class="alert alert-danger" ng-if="ngCtrl.validation.hasError" ng-bind-html="ngCtrl.validation.errorMessage"></div>
-			<form name="createRecord" ng-if="ngCtrl.createViewRegion != null && ngCtrl.userHasRecordPermissions('canCreate')">
-				<div class="panel panel-default  {{section.cssClass}}" ng-repeat="section in ngCtrl.createViewRegion.sections track by section.id" ng-if="ngCtrl.createViewRegion != null">
-					<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel">
-						<a href="javascript:void(0)" ng-click="ngCtrl.toggleSectionCollapse(section)">
-							<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
-							<span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
-							{{section.label}}
-						</a>
-					</div>
-					<div class="panel-body ng-hide" ng-hide="section.collapsed && section.showLabel">
-						<div class="form">
-							<div class="row" ng-repeat="row in section.rows track by row.id">
-								<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
-									<div class="form-group" ng-repeat="item in column.items"
-										 ng-class="{ 'has-error' : createRecord.{{item.meta.name}}.$invalid && !createRecord.{{item.meta.name}}.$pristine || ngCtrl.validation[item.dataName] }"
-										 ng-switch="::item.type">
-										<!--If item is field WITH NO relation-->
-										<div class="field" ng-switch-when="field">
-											<label class="control-label" ng-class="{'required':item.meta.required}">{{item.meta.label}}</label>
-											<div ng-switch="item.meta.fieldType">
-												<!-- 1. Autoincrement -->
-												<div ng-switch-when="1">
-													<div class="form-control-static">{{item.meta.displayFormat}}</div>
-												</div>
-
-												<!-- 2. Checkbox -->
-												<div class="checkbox" ng-switch-when="2">
-													<label><input type="checkbox" ng-model="ngCtrl.view.data[item.dataName]" value="true"> selected</label>
-												</div>
-
-												<!-- 3. Currency -->
-												<div ng-switch-when="3">
-													<div class="input-group">
-														<div class="input-group-addon">{{item.meta.currency.code}}</div>
-														<input type="number" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-															   ng-required="{{item.meta.required}}" pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
-															   ng-model-options="{allowInvalid:true}">
-													</div>
-													<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														{{item.meta.helpText}}
-													</div>
-													<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-															Required.
-														</small>
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']">
-															Decimal, no comma allowed.
-														</small>
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !ngCtrl[item.meta.name + 'Error']">
-															Should be > = {{item.meta.minValue}}.
-														</small>
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !ngCtrl[item.meta.name + 'Error']">
-															Should be < = {{item.meta.maxValue}}.
-														</small>
-														<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-															{{ngCtrl[item.meta.name+'ErrorMessage']}}
-														</small>
-													</div>
-												</div>
-
-												<!-- 4. Date -->
-												<div ng-switch-when="4">
-													<div class="input-group">
-														<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-															   ng-required="{{item.meta.required}}" datetime-picker="{{item.meta.format || 'dd MMM yyyy'}}" is-open="ngCtrl.calendars[item.meta.name]"
-															   enable-date="true" enable-time="false" ng-click="ngCtrl.openCalendar($event, item.meta.name)" ng-model-options="{allowInvalid:true}">
-														<span class="input-group-btn">
-															<button type="button" class="btn btn-default" ng-click="ngCtrl.openCalendar($event, item.meta.name)"><i class="fa fa-calendar"></i></button>
-														</span>
-													</div>
-													<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														{{item.meta.helpText}}
-													</div>
-													<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-															Required.
-														</small>
-														<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-															{{ngCtrl[item.meta.name+'ErrorMessage']}}
-														</small>
-													</div>
-												</div>
-
-												<!-- 5. DateTime -->
-												<div ng-switch-when="5">
-													<div class="input-group">
-														<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-															   ng-required="{{item.meta.required}}" datetime-picker="{{item.meta.format || 'dd MMM yyyy HH:mm'}}" is-open="ngCtrl.calendars[item.meta.name]"
-															   enable-date="true" enable-time="true" ng-click="ngCtrl.openCalendar($event, item.meta.name)" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
-														<span class="input-group-btn">
-															<button type="button" class="btn btn-default" ng-click="ngCtrl.openCalendar($event, item.meta.name)"><i class="fa fa-calendar"></i></button>
-														</span>
-													</div>
-													<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														{{item.meta.helpText}}
-													</div>
-													<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-															Required.
-														</small>
-														<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-															{{ngCtrl[item.meta.name+'ErrorMessage']}}
-														</small>
-													</div>
-												</div>
-
-												<!-- 6. Email -->
-												<div ng-switch-when="6">
-													<input class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" type="text"
-														   ng-required="{{item.meta.required}}" placeholder="{{item.meta.placeholderText}}" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
-														   ng-maxlength="{{item.meta.maxLength}}" ng-model-options="{allowInvalid:true}" />
-													<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														{{item.meta.helpText}}
-													</div>
-													<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-															Required.
-														</small>
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']">
-															Invalid email.
-														</small>
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']">
-															Too long: must be < = {{item.meta.maxLength}} chars.
-														</small>
-														<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-															{{ngCtrl[item.meta.name+'ErrorMessage']}}
-														</small>
-													</div>
-
-												</div>
-
-												<!-- 7. File -->
-												<div ng-switch-when="7">
-													<a ng-show='!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline'
-													   ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false'>Browse</a>
-													<div class="progress" ng-show="!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] > 0 && ngCtrl.progress[item.dataName] <= 100">
-														<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
-															 ng-style="{'width': ngCtrl.progress[item.dataName]+'%'}">
-															<span ng-show="ngCtrl.progress[item.dataName] < 100">{{ngCtrl.progress[item.dataName]}}%</span>
-															<span ng-show="ngCtrl.progress[item.dataName] == 100">almost done...</span>
-														</div>
-													</div>
-													<div class="input-group file-upload" ng-show='ngCtrl.view.data[item.dataName]'>
-														<a class="form-control link-icon" href="{{ngCtrl.view.data[item.dataName]}}" target="_blank">view file</a>
-														<a class="input-group-addon" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="Are you sure?" style="margin-left:1em;" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
-													</div>
-													<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">
-														{{item.meta.helpText}}
-													</div>
-													<div class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-														<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-															{{ngCtrl[item.meta.name+'ErrorMessage']}}
-														</small>
-													</div>
-												</div>
-
-												<!-- 8. Html -->
-												<div ng-switch-when="8">
-													<textarea class="form-control" ng-model="ngCtrl.view.data[item.dataName]" ckeditor="editorOptions" ng-change="ngCtrl.validate(item)"></textarea>
-													<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">
-														{{item.meta.helpText}}
-													</div>
-													<div class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-														<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-															{{ngCtrl[item.meta.name+'ErrorMessage']}}
-														</small>
-													</div>
-												</div>
-
-												<!-- 9. Image -->
-												<div ng-switch-when="9">
-													<a ng-show='!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline'
-													   ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
-													<div class="progress" ng-show="!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] > 0 && ngCtrl.progress[item.dataName] <= 100">
-														<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
-															 ng-style="{'width': ngCtrl.progress[item.dataName]+'%'}">
-															<span ng-show="ngCtrl.progress[item.dataName] < 100">{{ngCtrl.progress[item.dataName]}}%</span>
-															<span ng-show="ngCtrl.progress[item.dataName] == 100">almost done...</span>
-														</div>
-													</div>
-													<div class="image-upload" ng-show='ngCtrl.view.data[item.dataName]'>
-														<img class="img-thumbnail" ng-src="{{ngCtrl.view.data[item.dataName]}}" style="width:120px;" />
-														<a class="delete-link" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
-													</div>
-													<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">
-														{{item.meta.helpText}}
-													</div>
-													<div class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-														<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-															{{ngCtrl[item.meta.name+'ErrorMessage']}}
-														</small>
-													</div>
-												</div>
-
-												<!-- 10. Textarea -->
-												<div ng-switch-when="10">
-													<textarea style="height:100px;" class="form-control" ng-model="ngCtrl.view.data[item.dataName]"></textarea>
-													<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">
-														{{item.meta.helpText}}
-													</div>
-													<div class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-														<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-															{{ngCtrl[item.meta.name+'ErrorMessage']}}
-														</small>
-													</div>
-												</div>
-
-												<!-- 11. Multichoice -->
-												<div ng-switch-when="11">
-													<label ng-repeat="option in item.meta.options" class="checkbox-inline">
-														<input type="checkbox" checklist-model="ngCtrl.view.data[item.dataName]" checklist-value="option.key"> {{option.value}}
-													</label>
-													<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">
-														{{item.meta.helpText}}
-													</div>
-													<div class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-														<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-															{{ngCtrl[item.meta.name+'ErrorMessage']}}
-														</small>
-													</div>
-												</div>
-
-												<!-- 12. Number -->
-												<div ng-switch-when="12">
-													<input type="number" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-														   ng-required="{{item.meta.required}}" pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
-														   ng-model-options="{allowInvalid:true}">
-													<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														{{item.meta.helpText}}
-													</div>
-													<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-															Required.
-														</small>
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']">
-															Decimal, no comma allowed.
-														</small>
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !ngCtrl[item.meta.name + 'Error']">
-															Should be > = {{item.meta.minValue}}.
-														</small>
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !ngCtrl[item.meta.name + 'Error']">
-															Should be < = {{item.meta.maxValue}}.
-														</small>
-														<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-															{{ngCtrl[item.meta.name+'ErrorMessage']}}
-														</small>
-
-													</div>
-												</div>
-
-												<!-- 13. Password -->
-												<div ng-switch-when="13">
-													<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-														   ng-required="{{item.meta.required}}" ng-maxlength="{{item.meta.maxLength}}"
-														   ng-model-options="{allowInvalid:true}">
-													<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														{{item.meta.helpText}}
-													</div>
-													<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-															Required.
-														</small>
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']">
-															Too long: must be < = {{item.meta.maxLength}} chars.
-														</small>
-														<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-															{{ngCtrl[item.meta.name+'ErrorMessage']}}
-														</small>
-
-													</div>
-												</div>
-
-												<!-- 14. Percent -->
-												<div ng-switch-when="14">
-													<div class="input-group">
-														<input type="number" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-															   ng-required="{{item.meta.required}}" pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
-															   ng-model-options="{allowInvalid:true}">
-														<div class="input-group-addon">%</div>
-													</div>
-													<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														{{item.meta.helpText}}
-													</div>
-													<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-															Required.
-														</small>
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']">
-															Decimal, no comma allowed.
-														</small>
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !ngCtrl[item.meta.name + 'Error']">
-															Should be > = {{item.meta.minValue}}.
-														</small>
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !ngCtrl[item.meta.name + 'Error']">
-															Should be < = {{item.meta.maxValue}}.
-														</small>
-														<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-															{{ngCtrl[item.meta.name+'ErrorMessage']}}
-														</small>
-													</div>
-												</div>
-
-												<!-- 15. Phone -->
-												<div ng-switch-when="15">
-													<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-														   ng-required="{{item.meta.required}}" ng-maxlength="{{item.meta.maxLength}}"
-														   ng-model-options="{allowInvalid:true}">
-													<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														{{item.meta.helpText}}
-													</div>
-													<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-															Required.
-														</small>
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']">
-															Too long: must be < = {{item.meta.maxLength}} chars.
-														</small>
-														<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-															{{ngCtrl[item.meta.name+'ErrorMessage']}}
-														</small>
-
-													</div>
-												</div>
-
-												<!-- 16. Guid -->
-												<div ng-switch-when="16">
-													<div ng-if="!item.meta.generateNewId">
-														<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-															   ng-required="{{item.meta.required}}" ng-model-options="{allowInvalid:true}"
-															   pattern="^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$">
-														<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-															{{item.meta.helpText}}
-														</div>
-														<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-															<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-																Required.
-															</small>
-															<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']">
-																Invalid GUID.
-															</small>
-															<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-																{{ngCtrl[item.meta.name+'ErrorMessage']}}
-															</small>
-														</div>
-													</div>
-													<div ng-if="item.meta.generateNewId" class="input-group">
-														<input type="text" class="form-control" disabled value="autogenerated" />
-														<div class="input-group-addon"><i class="fa fa-lock"></i></div>
-													</div>
-												</div>
-												<!-- 17. Dropdown -->
-												<div ng-switch-when="17">
-													<select class="form-control" ng-options="option.key as option.value for option in item.meta.options" ng-model="ngCtrl.view.data[item.dataName]"
-															ng-init="ngCtrl.view.data[item.dataName] = item.meta.defaultValue"></select>
-													<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">
-														{{item.meta.helpText}}
-													</div>
-													<div class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-														<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-															{{ngCtrl[item.meta.name+'ErrorMessage']}}
-														</small>
-													</div>
-												</div>
-
-												<!-- 18. Text -->
-												<div ng-switch-when="18">
-													<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-														   ng-required="{{item.meta.required}}" ng-maxlength="{{item.meta.maxLength}}"
-														   ng-model-options="{allowInvalid:true}">
-													<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														{{item.meta.helpText}}
-													</div>
-													<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-															Required.
-														</small>
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']">
-															Too long: must be < = {{item.meta.maxLength}} chars.
-														</small>
-														<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-															{{ngCtrl[item.meta.name+'ErrorMessage']}}
-														</small>
-													</div>
-												</div>
-
-												<!-- 19. Url -->
-												<div ng-switch-when="19">
-													<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-														   ng-required="{{item.meta.required}}" ng-maxlength="{{item.meta.maxLength}}"
-														   ng-model-options="{allowInvalid:true}">
-													<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														{{item.meta.helpText}}
-													</div>
-													<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-															Required.
-														</small>
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']">
-															Too long: must be < = {{item.meta.maxLength}} chars.
-														</small>
-														<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
-															{{ngCtrl[item.meta.name+'ErrorMessage']}}
-														</small>
-													</div>
-												</div>
-
-											</div>
-										</div>
-										<!--If item is field WITH relation-->
-										<div class="field" ng-switch-when="fieldFromRelation">
-											<label class="control-label">{{::ngCtrl.getRelationLabel(item)}}</label>
-											<div ng-switch="::ngCtrl.getRelation(item.relationName).relationType">
-												<div ng-switch-when="1" ng-switch="::ngCtrl.getRelation(item.relationName).currentEntityRole">
-													<!-- Case 1 - Current Entity is Origin -->
-													<div ng-switch-when="1">
-														<div class="editable-wrapper input-group editable-readonly">
-															<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.view.data[item.dataName],item.meta)}}"></input>
-															<span class="input-group-addon" title="1:1 relations can be managed only from the target's side"><i class="fa fa-question fa-fw"></i></span>
-														</div>
-													</div>
-													<!-- Case 2 - Current Entity is Target -->
-													<div ng-switch-when="2">
-														<div class="editable-wrapper input-group editable-updatable">
-															<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(ngCtrl.view.data[item.dataName],item.meta)}}"></input>
-															<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.view.data[item.dataName].length > 0"
-																  confirmed-click="ngCtrl.emptyField(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
-															<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,1,'target')"><i class="fa fa-indent fa-fw"></i></span>
-														</div>
-													</div>
-
-													<!-- Case 3 - Current Entity is both Origin and Target -->
-													<div ng-switch-when="3">
-														<span class="go-red">1:1 - origin-target > Not implemented. We need a test case. Please submit an issue in github's project page</span>
-													</div>
-													<!-- Case 0 - Error -->
-													<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
-												</div>
-												<div ng-switch-when="2" ng-switch="ngCtrl.getRelation(item.relationName).currentEntityRole">
-													<!-- Case 1 - Current Entity is Origin -->
-													<div ng-switch-when="1" class="position-relative">
-														<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0">
-															<input type="text" class="form-control" disabled value=""></input>
-															<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
-														</div>
-														<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0">
-															<table class="table table-bordered editable origin lookup">
-																<tr ng-repeat="relationDataRecord in ngCtrl.dummyFields[item.dataName]">
-																	<td>{{relationDataRecord}}</td>
-																</tr>
-																<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
-																	<td style="padding: 16px"></td>
-																</tr>
-															</table>
-															<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
-														</div>
-													</div>
-													<!-- Case 2 - Current Entity is Target -->
-													<div ng-switch-when="2">
-														<div class="editable-wrapper input-group editable-updatable">
-															<input type="text" class="form-control" disabled value="{{ngCtrl.dummyFields[item.dataName]}}"></input>
-															<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.hasFieldFromRelationValue(item.dataName)"
-																  confirmed-click="ngCtrl.removeFieldFromRelationValue(item.dataName)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
-															<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target')"><i class="fa fa-indent fa-fw"></i></span>
-														</div>
-													</div>
-													<!-- Case 3 - Current Entity is both Origin and Target -->
-													<div ng-switch-when="3" class="position-relative">
-														<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0">
-															<input type="text" class="form-control" disabled value=""></input>
-															<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
-														</div>
-														<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0">
-															<table class="table table-bordered editable origin lookup">
-																<tr ng-repeat="relationDataRecord in ngCtrl.dummyFields[item.dataName]">
-																	<td>{{relationDataRecord}}</td>
-																</tr>
-																<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
-																	<td style="padding: 16px"></td>
-																</tr>
-															</table>
-															<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
-														</div>
-													</div>
-													<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
-												</div>
-												<div ng-switch-when="3" ng-switch="ngCtrl.getRelation(item.relationName).currentEntityRole">
-													<!-- Case 1 - Current Entity is Origin -->
-													<div ng-switch-when="1" class="position-relative">
-														<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0">
-															<input type="text" class="form-control" disabled value=""></input>
-															<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
-														</div>
-														<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0">
-															<table class="table table-bordered editable origin lookup">
-																<tr ng-repeat="relationDataRecord in ngCtrl.dummyFields[item.dataName]">
-																	<td>{{relationDataRecord}}</td>
-																</tr>
-																<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
-																	<td style="padding: 16px"></td>
-																</tr>
-															</table>
-															<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
-														</div>
-													</div>
-
-													<!-- Case 2 - Current Entity is Target -->
-													<div ng-switch-when="2" class="position-relative">
-														<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0">
-															<input type="text" class="form-control" disabled value=""></input>
-															<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'target')"><i class="fa fa-indent fa-fw"></i></span>
-														</div>
-														<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0">
-															<table class="table table-bordered editable origin lookup">
-																<tr ng-repeat="relationDataRecord in ngCtrl.dummyFields[item.dataName]">
-																	<td>{{relationDataRecord}}</td>
-																</tr>
-																<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
-																	<td style="padding: 16px"></td>
-																</tr>
-															</table>
-															<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'target')"><i class="fa fa-indent fa-fw"></i></span>
-														</div>
-													</div>
-
-													<!-- Case 3 - Current Entity is both Origin and Target -->
-													<div ng-switch-when="3" class="position-relative">
-														<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0">
-															<input type="text" class="form-control" disabled value=""></input>
-															<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
-														</div>
-														<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0">
-															<table class="table table-bordered editable origin lookup">
-																<tr ng-repeat="relationDataRecord in ngCtrl.dummyFields[item.dataName]">
-																	<td>{{relationDataRecord}}</td>
-																</tr>
-																<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
-																	<td style="padding: 16px"></td>
-																</tr>
-															</table>
-															<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
-														</div>
-													</div>
-
-													<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
-												</div>
-											</div>
-											<div ng-if="::item.meta.helpText" class="form-description">
-												{{item.meta.helpText}}
-											</div>
-										</div>
-										<!--If item is view WITH NO relation-->
-										<div class="field" ng-switch-when="view">
-											<label class="control-label">{{item.meta.label}}</label>
-											<div>
-												<span class="not-editable not-readable">can be set this after the record is created</span>
-											</div>
-										</div>
-										<!--If item is view WITH relation-->
-										<div class="field" ng-switch-when="viewFromRelation">
-											<label class="control-label">{{::ngCtrl.getRelationLabel(item)}}</label>
-											<div>
-												<span class="not-editable not-readable">can be set this after the record is created</span>
-											</div>
-										</div>
-										<!--If item is list WITH NO relation-->
-										<div class="field" ng-switch-when="list">
-											<label class="control-label">{{item.meta.label}}</label>
-											<div>
-												<span class="not-editable not-readable">can be set this after the record is created</span>
-											</div>
-										</div>
-										<!--If item is list WITH relation-->
-										<div class="field" ng-switch-when="listFromRelation">
-											<label class="control-label">{{::ngCtrl.getRelationLabel(item)}}</label>
-											<div>
-												<span class="not-editable not-readable">can be set this after the record is created</span>
-											</div>
-										</div>
-										<!--If item is tree WITH relation-->
-										<div class="field" ng-switch-when="treeFromRelation">
-											<label class="control-label">{{::item.fieldLabel}}</label>
-											<div>
-												<span class="not-editable not-readable">can be set this after the record is created</span>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+			<form name="{{region.name}}CreateForm" class="form"  ng-repeat="region in ngCtrl.view.meta.regions | filter: {render:true,name:'header'} track by region.name" ng-if="ngCtrl.userHasRecordPermissions('canCreate')">
+				<div ng-include="'regionTemplate.html'"></div>
 			</form>
+			<nav class="navbar navbar-default navbar-erp" ng-if="ngCtrl.renderTabBar">
+				<div class="container-fluid">
+					<ul class="nav navbar-nav">
+						<li role="presentation" ng-class="{'active': ngCtrl.activeTabName == region.name}" ng-repeat="region in ngCtrl.view.meta.regions | filter: {render:true,name:'!header'} track by region.name">
+							<a ui-sref='{{ngCtrl.currentState.name}}({areaName:"{{ngCtrl.stateParams.areaName}}" ,entityName:"{{ngCtrl.stateParams.entityName}}" ,viewName:"{{ngCtrl.stateParams.viewName}}" ,recordId:"{{ngCtrl.stateParams.recordId}}",regionName:"{{region.name}}"})'
+							   ng-click="ngCtrl.goToRegion(region.name)">{{region.label}}</a>
+						</li>
+					</ul>
+				</div>
+			</nav>
+			<form name="{{region.name}}CreateForm" class="form" ng-repeat="region in ngCtrl.view.meta.regions | filter: {render:true,name: ngCtrl.activeTabName} track by region.name">
+				<div ng-include="'regionTemplate.html'"></div>
+			</form>
+
 			<div class="page-buttons" ng-if="::ngCtrl.createViewRegion != null && ngCtrl.userHasRecordPermissions('canCreate')">
 				<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.createBottomActions track by actionItem.name"></span>
 			</div>
@@ -612,6 +37,600 @@
 		<div class="page-bottom-actions" dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageBottomActions track by actionItem.name"></div>
 	</div>
 </div>
+
+<script type="text/ng-template" id="regionTemplate.html">
+	<div class="panel panel-default  {{section.cssClass}}" ng-repeat="section in ngCtrl.createViewRegion.sections track by section.id" ng-if="ngCtrl.createViewRegion != null">
+		<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel">
+			<a href="javascript:void(0)" ng-click="ngCtrl.toggleSectionCollapse(section)">
+				<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
+				<span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
+				{{section.label}}
+			</a>
+		</div>
+		<div class="panel-body ng-hide" ng-hide="section.collapsed && section.showLabel">
+			<div class="form">
+				<div class="row" ng-repeat="row in section.rows track by row.id">
+					<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
+						<div class="form-group" ng-repeat="item in column.items"
+							 ng-class="{ 'has-error' : {{region.name}}CreateForm.{{item.meta.name}}.$invalid && !{{region.name}}CreateForm.{{item.meta.name}}.$pristine || ngCtrl.validation[item.dataName] }"
+							 ng-switch="::item.type">
+							<!--If item is field WITH NO relation-->
+							<div class="field" ng-switch-when="field">
+								<label class="control-label" ng-class="{'required':item.meta.required}">{{item.meta.label}}</label>
+								<div ng-switch="item.meta.fieldType">
+									<!-- 1. Autoincrement -->
+									<div ng-switch-when="1">
+										<div class="form-control-static">{{item.meta.displayFormat}}</div>
+									</div>
+
+									<!-- 2. Checkbox -->
+									<div class="checkbox" ng-switch-when="2">
+										<label><input type="checkbox" ng-model="ngCtrl.view.data[item.dataName]" value="true"> selected</label>
+									</div>
+
+									<!-- 3. Currency -->
+									<div ng-switch-when="3">
+										<div class="input-group">
+											<div class="input-group-addon">{{item.meta.currency.code}}</div>
+											<input type="number" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+												   ng-required="{{item.meta.required}}" pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
+												   ng-model-options="{allowInvalid:true}">
+										</div>
+										<div class="form-description" ng-hide="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											{{item.meta.helpText}}
+										</div>
+										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
+												Required.
+											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']">
+												Decimal, no comma allowed.
+											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.min && !ngCtrl[item.meta.name + 'Error']">
+												Should be > = {{item.meta.minValue}}.
+											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.max && !ngCtrl[item.meta.name + 'Error']">
+												Should be < = {{item.meta.maxValue}}.
+											</small>
+											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+												{{ngCtrl[item.meta.name+'ErrorMessage']}}
+											</small>
+										</div>
+									</div>
+
+									<!-- 4. Date -->
+									<div ng-switch-when="4">
+										<div class="input-group">
+											<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+												   ng-required="{{item.meta.required}}" datetime-picker="{{item.meta.format || 'dd MMM yyyy'}}" is-open="ngCtrl.calendars[item.meta.name]"
+												   enable-date="true" enable-time="false" ng-click="ngCtrl.openCalendar($event, item.meta.name)" ng-model-options="{allowInvalid:true}">
+											<span class="input-group-btn">
+												<button type="button" class="btn btn-default" ng-click="ngCtrl.openCalendar($event, item.meta.name)"><i class="fa fa-calendar"></i></button>
+											</span>
+										</div>
+										<div class="form-description" ng-hide="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											{{item.meta.helpText}}
+										</div>
+										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
+												Required.
+											</small>
+											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+												{{ngCtrl[item.meta.name+'ErrorMessage']}}
+											</small>
+										</div>
+									</div>
+
+									<!-- 5. DateTime -->
+									<div ng-switch-when="5">
+										<div class="input-group">
+											<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+												   ng-required="{{item.meta.required}}" datetime-picker="{{item.meta.format || 'dd MMM yyyy HH:mm'}}" is-open="ngCtrl.calendars[item.meta.name]"
+												   enable-date="true" enable-time="true" ng-click="ngCtrl.openCalendar($event, item.meta.name)" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
+											<span class="input-group-btn">
+												<button type="button" class="btn btn-default" ng-click="ngCtrl.openCalendar($event, item.meta.name)"><i class="fa fa-calendar"></i></button>
+											</span>
+										</div>
+										<div class="form-description" ng-hide="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											{{item.meta.helpText}}
+										</div>
+										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
+												Required.
+											</small>
+											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+												{{ngCtrl[item.meta.name+'ErrorMessage']}}
+											</small>
+										</div>
+									</div>
+
+									<!-- 6. Email -->
+									<div ng-switch-when="6">
+										<input class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" type="text"
+											   ng-required="{{item.meta.required}}" placeholder="{{item.meta.placeholderText}}" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
+											   ng-maxlength="{{item.meta.maxLength}}" ng-model-options="{allowInvalid:true}" />
+										<div class="form-description" ng-hide="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											{{item.meta.helpText}}
+										</div>
+										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
+												Required.
+											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']">
+												Invalid email.
+											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']">
+												Too long: must be < = {{item.meta.maxLength}} chars.
+											</small>
+											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+												{{ngCtrl[item.meta.name+'ErrorMessage']}}
+											</small>
+										</div>
+
+									</div>
+
+									<!-- 7. File -->
+									<div ng-switch-when="7">
+										<a ng-show='!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline'
+										   ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false'>Browse</a>
+										<div class="progress" ng-show="!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] > 0 && ngCtrl.progress[item.dataName] <= 100">
+											<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
+												 ng-style="{'width': ngCtrl.progress[item.dataName]+'%'}">
+												<span ng-show="ngCtrl.progress[item.dataName] < 100">{{ngCtrl.progress[item.dataName]}}%</span>
+												<span ng-show="ngCtrl.progress[item.dataName] == 100">almost done...</span>
+											</div>
+										</div>
+										<div class="input-group file-upload" ng-show='ngCtrl.view.data[item.dataName]'>
+											<a class="form-control link-icon" href="{{ngCtrl.view.data[item.dataName]}}" target="_blank">view file</a>
+											<a class="input-group-addon" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="Are you sure?" style="margin-left:1em;" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+										</div>
+										<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">
+											{{item.meta.helpText}}
+										</div>
+										<div class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+												{{ngCtrl[item.meta.name+'ErrorMessage']}}
+											</small>
+										</div>
+									</div>
+
+									<!-- 8. Html -->
+									<div ng-switch-when="8">
+										<textarea class="form-control" ng-model="ngCtrl.view.data[item.dataName]" ckeditor="editorOptions" ng-change="ngCtrl.validate(item)"></textarea>
+										<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">
+											{{item.meta.helpText}}
+										</div>
+										<div class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+												{{ngCtrl[item.meta.name+'ErrorMessage']}}
+											</small>
+										</div>
+									</div>
+
+									<!-- 9. Image -->
+									<div ng-switch-when="9">
+										<a ng-show='!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline'
+										   ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
+										<div class="progress" ng-show="!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] > 0 && ngCtrl.progress[item.dataName] <= 100">
+											<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
+												 ng-style="{'width': ngCtrl.progress[item.dataName]+'%'}">
+												<span ng-show="ngCtrl.progress[item.dataName] < 100">{{ngCtrl.progress[item.dataName]}}%</span>
+												<span ng-show="ngCtrl.progress[item.dataName] == 100">almost done...</span>
+											</div>
+										</div>
+										<div class="image-upload" ng-show='ngCtrl.view.data[item.dataName]'>
+											<img class="img-thumbnail" ng-src="{{ngCtrl.view.data[item.dataName]}}" style="width:120px;" />
+											<a class="delete-link" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+										</div>
+										<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">
+											{{item.meta.helpText}}
+										</div>
+										<div class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+												{{ngCtrl[item.meta.name+'ErrorMessage']}}
+											</small>
+										</div>
+									</div>
+
+									<!-- 10. Textarea -->
+									<div ng-switch-when="10">
+										<textarea style="height:100px;" class="form-control" ng-model="ngCtrl.view.data[item.dataName]"></textarea>
+										<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">
+											{{item.meta.helpText}}
+										</div>
+										<div class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+												{{ngCtrl[item.meta.name+'ErrorMessage']}}
+											</small>
+										</div>
+									</div>
+
+									<!-- 11. Multichoice -->
+									<div ng-switch-when="11">
+										<label ng-repeat="option in item.meta.options" class="checkbox-inline">
+											<input type="checkbox" checklist-model="ngCtrl.view.data[item.dataName]" checklist-value="option.key"> {{option.value}}
+										</label>
+										<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">
+											{{item.meta.helpText}}
+										</div>
+										<div class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+												{{ngCtrl[item.meta.name+'ErrorMessage']}}
+											</small>
+										</div>
+									</div>
+
+									<!-- 12. Number -->
+									<div ng-switch-when="12">
+										<input type="number" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+											   ng-required="{{item.meta.required}}" pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
+											   ng-model-options="{allowInvalid:true}">
+										<div class="form-description" ng-hide="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											{{item.meta.helpText}}
+										</div>
+										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
+												Required.
+											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']">
+												Decimal, no comma allowed.
+											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.min && !ngCtrl[item.meta.name + 'Error']">
+												Should be > = {{item.meta.minValue}}.
+											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.max && !ngCtrl[item.meta.name + 'Error']">
+												Should be < = {{item.meta.maxValue}}.
+											</small>
+											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+												{{ngCtrl[item.meta.name+'ErrorMessage']}}
+											</small>
+
+										</div>
+									</div>
+
+									<!-- 13. Password -->
+									<div ng-switch-when="13">
+										<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+											   ng-required="{{item.meta.required}}" ng-maxlength="{{item.meta.maxLength}}"
+											   ng-model-options="{allowInvalid:true}">
+										<div class="form-description" ng-hide="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											{{item.meta.helpText}}
+										</div>
+										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
+												Required.
+											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']">
+												Too long: must be < = {{item.meta.maxLength}} chars.
+											</small>
+											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+												{{ngCtrl[item.meta.name+'ErrorMessage']}}
+											</small>
+
+										</div>
+									</div>
+
+									<!-- 14. Percent -->
+									<div ng-switch-when="14">
+										<div class="input-group">
+											<input type="number" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+												   ng-required="{{item.meta.required}}" pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
+												   ng-model-options="{allowInvalid:true}">
+											<div class="input-group-addon">%</div>
+										</div>
+										<div class="form-description" ng-hide="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											{{item.meta.helpText}}
+										</div>
+										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
+												Required.
+											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']">
+												Decimal, no comma allowed.
+											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.min && !ngCtrl[item.meta.name + 'Error']">
+												Should be > = {{item.meta.minValue}}.
+											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.max && !ngCtrl[item.meta.name + 'Error']">
+												Should be < = {{item.meta.maxValue}}.
+											</small>
+											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+												{{ngCtrl[item.meta.name+'ErrorMessage']}}
+											</small>
+										</div>
+									</div>
+
+									<!-- 15. Phone -->
+									<div ng-switch-when="15">
+										<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+											   ng-required="{{item.meta.required}}" ng-maxlength="{{item.meta.maxLength}}"
+											   ng-model-options="{allowInvalid:true}">
+										<div class="form-description" ng-hide="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											{{item.meta.helpText}}
+										</div>
+										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
+												Required.
+											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']">
+												Too long: must be < = {{item.meta.maxLength}} chars.
+											</small>
+											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+												{{ngCtrl[item.meta.name+'ErrorMessage']}}
+											</small>
+
+										</div>
+									</div>
+
+									<!-- 16. Guid -->
+									<div ng-switch-when="16">
+										<div ng-if="!item.meta.generateNewId">
+											<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+												   ng-required="{{item.meta.required}}" ng-model-options="{allowInvalid:true}"
+												   pattern="^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$">
+											<div class="form-description" ng-hide="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+												{{item.meta.helpText}}
+											</div>
+											<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+												<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
+													Required.
+												</small>
+												<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']">
+													Invalid GUID.
+												</small>
+												<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+													{{ngCtrl[item.meta.name+'ErrorMessage']}}
+												</small>
+											</div>
+										</div>
+										<div ng-if="item.meta.generateNewId" class="input-group">
+											<input type="text" class="form-control" disabled value="autogenerated" />
+											<div class="input-group-addon"><i class="fa fa-lock"></i></div>
+										</div>
+									</div>
+									<!-- 17. Dropdown -->
+									<div ng-switch-when="17">
+										<select class="form-control" ng-options="option.key as option.value for option in item.meta.options" ng-model="ngCtrl.view.data[item.dataName]"
+												ng-init="ngCtrl.view.data[item.dataName] = item.meta.defaultValue"></select>
+										<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">
+											{{item.meta.helpText}}
+										</div>
+										<div class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+												{{ngCtrl[item.meta.name+'ErrorMessage']}}
+											</small>
+										</div>
+									</div>
+
+									<!-- 18. Text -->
+									<div ng-switch-when="18">
+										<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+											   ng-required="{{item.meta.required}}" ng-maxlength="{{item.meta.maxLength}}"
+											   ng-model-options="{allowInvalid:true}">
+										<div class="form-description" ng-hide="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											{{item.meta.helpText}}
+										</div>
+										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
+												Required.
+											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']">
+												Too long: must be < = {{item.meta.maxLength}} chars.
+											</small>
+											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+												{{ngCtrl[item.meta.name+'ErrorMessage']}}
+											</small>
+										</div>
+									</div>
+
+									<!-- 19. Url -->
+									<div ng-switch-when="19">
+										<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+											   ng-required="{{item.meta.required}}" ng-maxlength="{{item.meta.maxLength}}"
+											   ng-model-options="{allowInvalid:true}">
+										<div class="form-description" ng-hide="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											{{item.meta.helpText}}
+										</div>
+										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
+												Required.
+											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']">
+												Too long: must be < = {{item.meta.maxLength}} chars.
+											</small>
+											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
+												{{ngCtrl[item.meta.name+'ErrorMessage']}}
+											</small>
+										</div>
+									</div>
+
+								</div>
+							</div>
+							<!--If item is field WITH relation-->
+							<div class="field" ng-switch-when="fieldFromRelation">
+								<label class="control-label">{{::ngCtrl.getRelationLabel(item)}}</label>
+								<div ng-switch="::ngCtrl.getRelation(item.relationName).relationType">
+									<div ng-switch-when="1" ng-switch="::ngCtrl.getRelation(item.relationName).currentEntityRole">
+										<!-- Case 1 - Current Entity is Origin -->
+										<div ng-switch-when="1">
+											<div class="editable-wrapper input-group editable-readonly">
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.view.data[item.dataName],item.meta)}}"></input>
+												<span class="input-group-addon" title="1:1 relations can be managed only from the target's side"><i class="fa fa-question fa-fw"></i></span>
+											</div>
+										</div>
+										<!-- Case 2 - Current Entity is Target -->
+										<div ng-switch-when="2">
+											<div class="editable-wrapper input-group editable-updatable">
+												<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(ngCtrl.view.data[item.dataName],item.meta)}}"></input>
+												<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.view.data[item.dataName].length > 0"
+													  confirmed-click="ngCtrl.emptyField(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
+												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,1,'target')"><i class="fa fa-indent fa-fw"></i></span>
+											</div>
+										</div>
+
+										<!-- Case 3 - Current Entity is both Origin and Target -->
+										<div ng-switch-when="3">
+											<span class="go-red">1:1 - origin-target > Not implemented. We need a test case. Please submit an issue in github's project page</span>
+										</div>
+										<!-- Case 0 - Error -->
+										<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
+									</div>
+									<div ng-switch-when="2" ng-switch="ngCtrl.getRelation(item.relationName).currentEntityRole">
+										<!-- Case 1 - Current Entity is Origin -->
+										<div ng-switch-when="1" class="position-relative">
+											<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0">
+												<input type="text" class="form-control" disabled value=""></input>
+												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+											</div>
+											<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0">
+												<table class="table table-bordered editable origin lookup">
+													<tr ng-repeat="relationDataRecord in ngCtrl.dummyFields[item.dataName]">
+														<td>{{relationDataRecord}}</td>
+													</tr>
+													<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
+														<td style="padding: 16px"></td>
+													</tr>
+												</table>
+												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+											</div>
+										</div>
+										<!-- Case 2 - Current Entity is Target -->
+										<div ng-switch-when="2">
+											<div class="editable-wrapper input-group editable-updatable">
+												<input type="text" class="form-control" disabled value="{{ngCtrl.dummyFields[item.dataName]}}"></input>
+												<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.hasFieldFromRelationValue(item.dataName)"
+													  confirmed-click="ngCtrl.removeFieldFromRelationValue(item.dataName)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
+												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target')"><i class="fa fa-indent fa-fw"></i></span>
+											</div>
+										</div>
+										<!-- Case 3 - Current Entity is both Origin and Target -->
+										<div ng-switch-when="3" class="position-relative">
+											<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0">
+												<input type="text" class="form-control" disabled value=""></input>
+												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+											</div>
+											<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0">
+												<table class="table table-bordered editable origin lookup">
+													<tr ng-repeat="relationDataRecord in ngCtrl.dummyFields[item.dataName]">
+														<td>{{relationDataRecord}}</td>
+													</tr>
+													<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
+														<td style="padding: 16px"></td>
+													</tr>
+												</table>
+												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+											</div>
+										</div>
+										<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
+									</div>
+									<div ng-switch-when="3" ng-switch="ngCtrl.getRelation(item.relationName).currentEntityRole">
+										<!-- Case 1 - Current Entity is Origin -->
+										<div ng-switch-when="1" class="position-relative">
+											<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0">
+												<input type="text" class="form-control" disabled value=""></input>
+												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+											</div>
+											<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0">
+												<table class="table table-bordered editable origin lookup">
+													<tr ng-repeat="relationDataRecord in ngCtrl.dummyFields[item.dataName]">
+														<td>{{relationDataRecord}}</td>
+													</tr>
+													<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
+														<td style="padding: 16px"></td>
+													</tr>
+												</table>
+												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+											</div>
+										</div>
+
+										<!-- Case 2 - Current Entity is Target -->
+										<div ng-switch-when="2" class="position-relative">
+											<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0">
+												<input type="text" class="form-control" disabled value=""></input>
+												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'target')"><i class="fa fa-indent fa-fw"></i></span>
+											</div>
+											<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0">
+												<table class="table table-bordered editable origin lookup">
+													<tr ng-repeat="relationDataRecord in ngCtrl.dummyFields[item.dataName]">
+														<td>{{relationDataRecord}}</td>
+													</tr>
+													<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
+														<td style="padding: 16px"></td>
+													</tr>
+												</table>
+												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'target')"><i class="fa fa-indent fa-fw"></i></span>
+											</div>
+										</div>
+
+										<!-- Case 3 - Current Entity is both Origin and Target -->
+										<div ng-switch-when="3" class="position-relative">
+											<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0">
+												<input type="text" class="form-control" disabled value=""></input>
+												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+											</div>
+											<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0">
+												<table class="table table-bordered editable origin lookup">
+													<tr ng-repeat="relationDataRecord in ngCtrl.dummyFields[item.dataName]">
+														<td>{{relationDataRecord}}</td>
+													</tr>
+													<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
+														<td style="padding: 16px"></td>
+													</tr>
+												</table>
+												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+											</div>
+										</div>
+
+										<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
+									</div>
+								</div>
+								<div ng-if="::item.meta.helpText" class="form-description">
+									{{item.meta.helpText}}
+								</div>
+							</div>
+							<!--If item is view WITH NO relation-->
+							<div class="field" ng-switch-when="view">
+								<label class="control-label">{{item.meta.label}}</label>
+								<div>
+									<span class="not-editable not-readable">can be set this after the record is created</span>
+								</div>
+							</div>
+							<!--If item is view WITH relation-->
+							<div class="field" ng-switch-when="viewFromRelation">
+								<label class="control-label">{{::ngCtrl.getRelationLabel(item)}}</label>
+								<div>
+									<span class="not-editable not-readable">can be set this after the record is created</span>
+								</div>
+							</div>
+							<!--If item is list WITH NO relation-->
+							<div class="field" ng-switch-when="list">
+								<label class="control-label">{{item.meta.label}}</label>
+								<div>
+									<span class="not-editable not-readable">can be set this after the record is created</span>
+								</div>
+							</div>
+							<!--If item is list WITH relation-->
+							<div class="field" ng-switch-when="listFromRelation">
+								<label class="control-label">{{::ngCtrl.getRelationLabel(item)}}</label>
+								<div>
+									<span class="not-editable not-readable">can be set this after the record is created</span>
+								</div>
+							</div>
+							<!--If item is tree WITH relation-->
+							<div class="field" ng-switch-when="treeFromRelation">
+								<label class="control-label">{{::item.fieldLabel}}</label>
+								<div>
+									<span class="not-editable not-readable">can be set this after the record is created</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</script>
+
 <script type="text/ng-template" id="manageRelationFieldModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
