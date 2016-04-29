@@ -61,6 +61,9 @@ namespace WebVella.ERP.Plugins
 		[JsonProperty(PropertyName = "settings_url")]
 		public string SettingsUrl { get; private set; }
 
+		[JsonProperty(PropertyName = "plugin_page_url")]
+		public string PluginPageUrl { get; private set; }
+
 		[JsonProperty(PropertyName = "icon_url")]
 		public string IconUrl { get; private set; }
 
