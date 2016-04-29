@@ -7,7 +7,7 @@
 * @website www.webvella.com
 */
 
-var translationsEN = {
+var translationsBG = {
 	ACTION: 'Действие',
 	ACTION_NAME_PLACEHOLDER: 'напр. print_record',
 	ADD: 'Добави',
