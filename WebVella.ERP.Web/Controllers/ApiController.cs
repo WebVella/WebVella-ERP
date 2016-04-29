@@ -780,6 +780,8 @@ namespace WebVella.ERP.Web.Controllers
 						list.VisibleColumnsCount = inputList.VisibleColumnsCount;
 					if (prop.Name.ToLower() == "dynamichtmltemplate")
 						list.DynamicHtmlTemplate = inputList.DynamicHtmlTemplate;
+					if (prop.Name.ToLower() == "datasourceurl")
+						list.DataSourceUrl = inputList.DataSourceUrl;
 					if (prop.Name.ToLower() == "columnwidthscsv")
 						list.ColumnWidthsCSV = inputList.ColumnWidthsCSV;
 					if (prop.Name.ToLower() == "actionitems")
@@ -1261,6 +1263,8 @@ namespace WebVella.ERP.Web.Controllers
 						view.IconName = inputView.IconName;
 					if (prop.Name.ToLower() == "dynamichtmltemplate")
 						view.DynamicHtmlTemplate = inputView.DynamicHtmlTemplate;
+					if (prop.Name.ToLower() == "datasourceurl")
+						view.DataSourceUrl = inputView.DataSourceUrl;
 					if (prop.Name.ToLower() == "actionitems")
 						view.ActionItems = inputView.ActionItems;
 					if (prop.Name.ToLower() == "servicecode")

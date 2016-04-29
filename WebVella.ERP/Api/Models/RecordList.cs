@@ -79,6 +79,9 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
 		public string DynamicHtmlTemplate { get; set; }
 
+		[JsonProperty(PropertyName = "dataSourceUrl")]
+		public string DataSourceUrl { get; set; }
+
 		[JsonProperty(PropertyName = "actionItems")]
 		public List<ActionItem> ActionItems { get; set; }
 
@@ -336,6 +339,9 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
 		public string DynamicHtmlTemplate { get; set; }
+		
+		[JsonProperty(PropertyName = "dataSourceUrl")]
+		public string DataSourceUrl { get; set; }
 
 		[JsonProperty(PropertyName = "actionItems")]
 		public List<ActionItem> ActionItems { get; set; }
