@@ -1046,7 +1046,7 @@
 				"name": "wv_record_delete",
 				"menu": "page-title-dropdown",
 				"weight": 1,
-				"template": "<a href=\"javascript:void(0)\" confirmed-click=\"ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"Are you sure?\" \n\t\t ng-if=\"ngCtrl.userHasRecordPermissions('canDelete')\"> \n\t <i class=\"fa fa-trash go-red\"></i> Delete Record \n </a>"
+				"template": "<a href=\"javascript:void(0)\" confirmed-click=\"ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}\" \n\t\t ng-if=\"ngCtrl.userHasRecordPermissions('canDelete')\"> \n\t <i class=\"fa fa-trash go-red\"></i> Delete Record \n </a>"
 			};
 			var createListAction = {
 				"name": "wv_create_and_list",
@@ -1815,7 +1815,7 @@
 
  		///////////////////////
 		function getRecordByViewMeta(recordId, viewMeta, entityName, successCallback, errorCallback) {
-			if (viewMeta.dataSourceUrl == null) {
+			if (viewMeta.dataSourceUrl == null || viewMeta.dataSourceUrl == '') {
 				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewMeta.name + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 			}
 			else {
@@ -1848,7 +1848,7 @@
 		}
 		///////////////////////
 		function getRecordsByListMeta(listMeta, entityName, page, extraParams, successCallback, errorCallback) {
-			if (listMeta.dataSourceUrl == null) {
+			if (listMeta.dataSourceUrl == null || listMeta.dataSourceUrl == '') {
 				var extraParamQueryString = "";
 				if (extraParams != null) {
 					if (!isEmpty(extraParams)) {
@@ -1943,7 +1943,9 @@
 		///////////////////////
 		function registerHookListener(eventHookName, currentScope, executeOnHookFunction) {
 			if (executeOnHookFunction === undefined || typeof (executeOnHookFunction) != "function") {
-				alert("The executeOnHookFunction argument is not a function or missing ");
+				$translate(['EVENT_HOOKS_REGISTER_ERROR']).then(function (translations) {
+				alert(translations.EVENT_HOOKS_REGISTER_ERROR);
+				});
 				return;
 			}
 			//When registering listener with $on, it returns automatically a function that can remove this listener. We will use it later
@@ -1984,10 +1986,12 @@
 			//Rebind the form with the data returned from the server
 			formObject = response.object;
 			//Notify with a toast about the error and show the server response.message
-			ngToast.create({
-				className: 'error',
-				content: '<span class="go-red">Error:</span> ' + response.message,
-				timeout: 7000
+			$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'error',
+					content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+					timeout: 7000
+				});
 			});
 			//Scroll top
 			// set the location.hash to the id of

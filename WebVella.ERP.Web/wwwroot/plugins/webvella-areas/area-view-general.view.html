@@ -184,16 +184,16 @@
 										</div>
 										<!-- If type 7 - fileupload -->
 										<div ng-switch-when="7" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)" ng-init="ngCtrl.progress[item.dataName] ={}; ngCtrl.progress[item.dataName][viewData['id']] = 0; ngCtrl.files[item.dataName]={}; ngCtrl.cacheBreakers[item.dataName]={};">
-											<a ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName][viewData['id']] == 0" href="javascript:void(0)" class="btn btn-default btn-outline" ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false'>Browse</a>
+											<a ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName][viewData['id']] == 0" href="javascript:void(0)" class="btn btn-default btn-outline" ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false' translate="{{'BROWSE'}}"></a>
 											<div class="progress" ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName][viewData['id']] > 0 && ngCtrl.progress[item.dataName][viewData['id']] <= 100">
 												<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName][viewData['id']]}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': ngCtrl.progress[item.dataName][viewData['id']]+'%'}">
 													<span ng-if="ngCtrl.progress[item.dataName][viewData['id']] < 100">{{ngCtrl.progress[item.dataName][viewData['id']] || '0'}}%</span>
-													<span ng-if="ngCtrl.progress[item.dataName][viewData['id']] == 100">almost done...</span>
+													<span ng-if="ngCtrl.progress[item.dataName][viewData['id']] == 100"  translate="{{'FILE_UPLOAD_ALMOST_DONE'}}"></span>
 												</div>
 											</div>
 											<div class="editable-wrapper input-group file-upload" ng-if='viewData[item.dataName]'>
 												<span class="form-control" ng-bind-html="ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)"></span>
-												<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item,viewData['id'])" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+												<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item,viewData['id'])" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 												<a class="input-group-addon update" href='javascript:void(0)' ngf-select="ngCtrl.updateFileUpload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false'><i class="fa fa-fw fa-refresh"></i></a>
 											</div>
 										</div>
@@ -207,16 +207,16 @@
 										<div ng-switch-when="8" class="not-editable" readonly ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-bind-html="::ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)"></div>
 										<!-- If type 9 - image -->
 										<div ng-switch-when="9" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)" ng-init="ngCtrl.progress[item.dataName] ={}; ngCtrl.progress[item.dataName][viewData['id']] = 0;  ngCtrl.files[item.dataName]={}; ngCtrl.cacheBreakers[item.dataName]={};">
-											<a ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName][viewData['id']] == 0" href='javascript:void(0)' class='btn btn-default btn-outline' ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false' accept="image/*">Browse</a>
+											<a ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName][viewData['id']] == 0" href='javascript:void(0)' class='btn btn-default btn-outline' ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false' accept="image/*" translate="{{'BROWSE'}}"></a>
 											<div class="progress" ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName][viewData['id']] > 0 && ngCtrl.progress[item.dataName][viewData['id']] <= 100">
 												<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName][viewData['id']]}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': ngCtrl.progress[item.dataName][viewData['id']]+'%'}">
 													<span ng-if="ngCtrl.progress[item.dataName][viewData['id']] < 100">{{ngCtrl.progress[item.dataName][viewData['id']] || '0'}}%</span>
-													<span ng-if="ngCtrl.progress[item.dataName][viewData['id']] == 100">almost done...</span>
+													<span ng-if="ngCtrl.progress[item.dataName][viewData['id']] == 100" translate="{{'FILE_UPLOAD_ALMOST_DONE'}}"></span>
 												</div>
 											</div>
 											<div class="image-upload" ng-if='viewData[item.dataName]'>
 												<img class="img-thumbnail" ng-src="{{viewData[item.dataName] + ngCtrl.cacheBreakers[item.dataName][viewData['id']]}}" style="width:120px" />
-												<a class="delete-link" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item,viewData['id'])" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+												<a class="delete-link" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item,viewData['id'])" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 												<a class="update-link" href='javascript:void(0)' ngf-select="ngCtrl.updateFileUpload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false' accept="image/*"><i class="fa fa-fw fa-refresh"></i></a>
 											</div>
 										</div>
@@ -380,7 +380,7 @@
 													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,1,'target',viewData)">
 													<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"></input>
 													<span class="input-group-addon remove-addon ng-hide" ng-show="viewData[item.dataName].length > 0"
-														  confirmed-click="ngCtrl.removeRelation(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
+														  confirmed-click="ngCtrl.removeRelation(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
 													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,1,'target',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 												</div>
 												<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
@@ -434,7 +434,7 @@
 													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'target',viewData)">
 													<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"></input>
 													<span class="input-group-addon remove-addon ng-hide" ng-show="viewData[item.dataName].length > 0"
-														  confirmed-click="ngCtrl.removeRelation(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
+														  confirmed-click="ngCtrl.removeRelation(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
 													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 												</div>
 												<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
@@ -479,7 +479,7 @@
 														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'target',viewData)">
 														<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"></input>
 														<span class="input-group-addon remove-addon ng-hide" ng-show="viewData[item.dataName].length > 0"
-															  confirmed-click="ngCtrl.removeRelation(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
+															  confirmed-click="ngCtrl.removeRelation(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
 														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
 													<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">

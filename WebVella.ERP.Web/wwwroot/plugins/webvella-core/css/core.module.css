@@ -2739,6 +2739,7 @@ table .btn-xs.btn-link {
 		-webkit-border-radius: 4px 0 0 4px;
 		-moz-border-radius: 4px 0 0 4px;
 		border-radius: 4px 0 0 4px;
+		padding:10px;
 	}
 
 /* Ruins the sidemenu*/
@@ -2797,7 +2798,7 @@ table .btn-xs.btn-link {
 .tabbable.spilled ul {
 	width: 177px;
 	background: rgba(255,255,255,0.05);
-	padding: 5px 0 5px 1em;
+	padding: 5px 0 5px 10px;
 	border-left: 3px solid #90A4AE;
 	border-right: none;
 }
@@ -2812,7 +2813,7 @@ table .btn-xs.btn-link {
 	}
 
 		.tabbable.spilled ul a i {
-			margin-right: 10px;
+			margin-right: 5px;
 		}
 
 	.tabbable.spilled ul li:not(.active) a:hover {

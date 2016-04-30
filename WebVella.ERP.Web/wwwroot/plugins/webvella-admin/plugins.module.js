@@ -77,21 +77,21 @@
 
     //#region << Controller >> ///////////////////////////////
     controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle','$timeout', 
-							'resolvedPluginsList', '$uibModal', 'webvellaCoreService'];
+							'resolvedPluginsList', '$uibModal', 'webvellaCoreService','$translate'];
     
     function controller($scope, $log, $rootScope, $state, pageTitle,$timeout,
-						resolvedPluginsList, $uibModal, webvellaCoreService) {
+						resolvedPluginsList, $uibModal, webvellaCoreService,$translate) {
 
         
         var ngCtrl = this;
         ngCtrl.search = {};
 
-        //#region << Update page title >>
-        ngCtrl.pageTitle = "Plugins List | " + pageTitle;
-		$timeout(function(){
+		//#region << Update page title & hide the side menu >>
+		$translate(['PLUGINS_PAGE_TITLE', 'PLUGINS']).then(function (translations) {
+			ngCtrl.pageTitle = translations.PLUGINS_PAGE_TITLE + " | " + pageTitle;
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
-		},0);
-
+			$rootScope.adminSectionName = translations.PLUGINS;
+		});
     	//#endregion
 
         ngCtrl.plugins = fastCopy(resolvedPluginsList);

@@ -183,18 +183,10 @@
 													{{item.meta.helpText}}
 												</div>
 												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
-														Required.
-													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupCtrl[item.meta.name + 'Error']">
-														Decimal, no comma allowed.
-													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !popupCtrl[item.meta.name + 'Error']">
-														Should be > = {{item.meta.minValue}}.
-													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !popupCtrl[item.meta.name + 'Error']">
-														Should be < = {{item.meta.maxValue}}.
-													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupCtrl[item.meta.name + 'Error']"  translate="{{'VALIDATION_DECIMAL_NO_COMMA'}}"></small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_DECIMAL_NO_COMMA'}}" translate-value-digit="{{item.meta.minValue}}"></small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_LESS_EQUAL_THAN_VALUE'}}" translate-value-digit="{{item.meta.maxValue}}"></small>
 													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
 														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
@@ -215,9 +207,7 @@
 													{{item.meta.helpText}}
 												</div>
 												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
-														Required.
-													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
 														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
@@ -238,9 +228,7 @@
 													{{item.meta.helpText}}
 												</div>
 												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
-														Required.
-													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
 														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
@@ -256,15 +244,9 @@
 													{{item.meta.helpText}}
 												</div>
 												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
-														Required.
-													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupCtrl[item.meta.name + 'Error']">
-														Invalid email.
-													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupCtrl[item.meta.name + 'Error']">
-														Too long: must be < = {{item.meta.maxLength}} chars.
-													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_EMAIL'}}"></small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_STRING_TOO_LONG'}}" translate-value-digit="{{item.meta.maxLength}}"></small>
 													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
 														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
@@ -275,17 +257,17 @@
 											<!-- 7. File -->
 											<div ng-switch-when="7">
 												<a ng-show='!popupCtrl.recordData[item.dataName] && popupCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline'
-												   ngf-select="popupCtrl.upload(popupCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='popupCtrl.files[item.dataName]' ngf-multiple='false'>Browse</a>
+												   ngf-select="popupCtrl.upload(popupCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='popupCtrl.files[item.dataName]' ngf-multiple='false' translate="{{'BROWSE'}}"></a>
 												<div class="progress" ng-show="!popupCtrl.recordData[item.dataName] && popupCtrl.progress[item.dataName] > 0 && popupCtrl.progress[item.dataName] <= 100">
 													<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
 														 ng-style="{'width': popupCtrl.progress[item.dataName]+'%'}">
 														<span ng-show="popupCtrl.progress[item.dataName] < 100">{{popupCtrl.progress[item.dataName]}}%</span>
-														<span ng-show="popupCtrl.progress[item.dataName] == 100">almost done...</span>
+														<span ng-show="popupCtrl.progress[item.dataName] == 100" translate="{{'FILE_UPLOAD_ALMOST_DONE'}}"></span>
 													</div>
 												</div>
 												<div class="input-group file-upload" ng-show='popupCtrl.recordData[item.dataName]'>
 													<a class="form-control link-icon" href="{{popupCtrl.recordData[item.dataName]}}" target="_blank">view file</a>
-													<a class="input-group-addon" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFileUpload(item)" ng-confirm-click="Are you sure?" style="margin-left:1em;" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+													<a class="input-group-addon" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFileUpload(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" style="margin-left:1em;" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 												</div>
 												<div class="form-description" ng-hide="popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
@@ -313,17 +295,17 @@
 											<!-- 9. Image -->
 											<div ng-switch-when="9">
 												<a ng-show='!popupCtrl.recordData[item.dataName] && popupCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline'
-												   ngf-select="popupCtrl.upload(popupCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='popupCtrl.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
+												   ngf-select="popupCtrl.upload(popupCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='popupCtrl.files[item.dataName]' ngf-multiple='false' accept="image/*" translate="{{'BROWSE'}}"></a>
 												<div class="progress" ng-show="!popupCtrl.recordData[item.dataName] && popupCtrl.progress[item.dataName] > 0 && popupCtrl.progress[item.dataName] <= 100">
 													<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
 														 ng-style="{'width': popupCtrl.progress[item.dataName]+'%'}">
 														<span ng-show="popupCtrl.progress[item.dataName] < 100">{{popupCtrl.progress[item.dataName]}}%</span>
-														<span ng-show="popupCtrl.progress[item.dataName] == 100">almost done...</span>
+														<span ng-show="popupCtrl.progress[item.dataName] == 100"  translate="{{'FILE_UPLOAD_ALMOST_DONE'}}"></span>
 													</div>
 												</div>
 												<div class="image-upload" ng-show='popupCtrl.recordData[item.dataName]'>
 													<img class="img-thumbnail" ng-src="{{popupCtrl.recordData[item.dataName]}}" style="width:120px;" />
-													<a class="delete-link" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+													<a class="delete-link" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFileUpload(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 												</div>
 												<div class="form-description" ng-hide="popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
@@ -372,18 +354,10 @@
 													{{item.meta.helpText}}
 												</div>
 												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
-														Required.
-													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupCtrl[item.meta.name + 'Error']">
-														Decimal, no comma allowed.
-													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !popupCtrl[item.meta.name + 'Error']">
-														Should be > = {{item.meta.minValue}}.
-													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !popupCtrl[item.meta.name + 'Error']">
-														Should be < = {{item.meta.maxValue}}.
-													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_DECIMAL_NO_COMMA'}}"></small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_DECIMAL_NO_COMMA'}}" translate-value-digit="{{item.meta.minValue}}"></small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_LESS_EQUAL_THAN_VALUE'}}" translate-value-digit="{{item.meta.maxValue}}"></small>
 													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
 														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
@@ -400,12 +374,8 @@
 													{{item.meta.helpText}}
 												</div>
 												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
-														Required.
-													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupCtrl[item.meta.name + 'Error']">
-														Too long: must be < = {{item.meta.maxLength}} chars.
-													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_STRING_TOO_LONG'}}" translate-value-digit="{{item.meta.maxLength}}"></small>
 													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
 														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
@@ -425,18 +395,10 @@
 													{{item.meta.helpText}}
 												</div>
 												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
-														Required.
-													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupCtrl[item.meta.name + 'Error']">
-														Decimal, no comma allowed.
-													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !popupCtrl[item.meta.name + 'Error']">
-														Should be > = {{item.meta.minValue}}.
-													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !popupCtrl[item.meta.name + 'Error']">
-														Should be < = {{item.meta.maxValue}}.
-													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_DECIMAL_NO_COMMA'}}"></small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_DECIMAL_NO_COMMA'}}" translate-value-digit="{{item.meta.minValue}}"></small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_LESS_EQUAL_THAN_VALUE'}}" translate-value-digit="{{item.meta.maxValue}}"></small>
 													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
 														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
@@ -452,12 +414,8 @@
 													{{item.meta.helpText}}
 												</div>
 												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
-														Required.
-													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupCtrl[item.meta.name + 'Error']">
-														Too long: must be < = {{item.meta.maxLength}} chars.
-													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_STRING_TOO_LONG'}}" translate-value-digit="{{item.meta.maxLength}}"></small>
 													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
 														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
@@ -475,9 +433,7 @@
 														{{item.meta.helpText}}
 													</div>
 													<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
-															Required.
-														</small>
+														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupCtrl[item.meta.name + 'Error']">
 															Invalid GUID.
 														</small>
@@ -513,12 +469,8 @@
 													{{item.meta.helpText}}
 												</div>
 												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
-														Required.
-													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupCtrl[item.meta.name + 'Error']">
-														Too long: must be < = {{item.meta.maxLength}} chars.
-													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_STRING_TOO_LONG'}}" translate-value-digit="{{item.meta.maxLength}}"></small>
 													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
 														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
@@ -534,12 +486,8 @@
 													{{item.meta.helpText}}
 												</div>
 												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
-														Required.
-													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupCtrl[item.meta.name + 'Error']">
-														Too long: must be < = {{item.meta.maxLength}} chars.
-													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_STRING_TOO_LONG'}}" translate-value-digit="{{item.meta.maxLength}}"></small>
 													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
 														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>

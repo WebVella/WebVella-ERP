@@ -376,17 +376,17 @@
 				<label class="control-label">Uploaded CSV file</label>
 				<div>
 					<a ng-show='!popupCtrl.uploadedFilePath && popupCtrl.uploadProgress == 0' href='javascript:void(0)' class='btn btn-default btn-outline ng-hide' ngf-select="popupCtrl.upload(popupCtrl.uploadedFile)" ngf-max-size="20MB"
-					   ng-model='popupCtrl.uploadedFile' ngf-multiple='false'>Browse</a>
+					   ng-model='popupCtrl.uploadedFile' ngf-multiple='false' translate="{{'BROWSE'}}"></a>
 					<div class="progress ng-hide" ng-show="!popupCtrl.uploadedFilePath && popupCtrl.uploadProgress > 0 && popupCtrl.uploadProgress <= 100">
 						<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupCtrl.uploadProgress}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': popupCtrl.uploadProgress+'%'}">
 							<span ng-show="popupCtrl.uploadProgress < 100">{{popupCtrl.uploadProgress || '0'}}%</span>
-							<span ng-show="popupCtrl.uploadProgress == 100">almost done...</span>
+							<span ng-show="popupCtrl.uploadProgress == 100"  translate="{{'FILE_UPLOAD_ALMOST_DONE'}}"></span>
 						</div>
 					</div>
 					<div class="input-group file-upload ng-hide" ng-show='popupCtrl.uploadedFilePath'>
 						<span class="form-control"><a href="{{popupCtrl.uploadedFilePath}}"><i class="fa fa-file"></i> {{popupCtrl.uploadedFile.name}}</a></span>
 						<a class="input-group-addon update" href='javascript:void(0)' ngf-select="popupCtrl.upload(popupCtrl.uploadedFile)" ngf-max-size="20MB" ng-model='popupCtrl.uploadedFile' ngf-multiple='false'><i class="fa fa-fw fa-refresh"></i></a>
-						<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFileUpload()" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+						<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFileUpload()" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 					</div>
 				</div>
 			</div>

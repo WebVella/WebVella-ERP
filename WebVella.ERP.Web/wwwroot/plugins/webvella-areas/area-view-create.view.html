@@ -80,18 +80,10 @@
 											{{item.meta.helpText}}
 										</div>
 										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-												Required.
-											</small>
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']">
-												Decimal, no comma allowed.
-											</small>
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.min && !ngCtrl[item.meta.name + 'Error']">
-												Should be > = {{item.meta.minValue}}.
-											</small>
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.max && !ngCtrl[item.meta.name + 'Error']">
-												Should be < = {{item.meta.maxValue}}.
-											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_DECIMAL_NO_COMMA'}}"></small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.min && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_DECIMAL_NO_COMMA'}}" translate-value-digit="{{item.meta.minValue}}"></small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.max && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_LESS_EQUAL_THAN_VALUE'}}" translate-value-digit="{{item.meta.maxValue}}"></small>
 											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
 												{{ngCtrl[item.meta.name+'ErrorMessage']}}
 											</small>
@@ -112,9 +104,7 @@
 											{{item.meta.helpText}}
 										</div>
 										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-												Required.
-											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
 												{{ngCtrl[item.meta.name+'ErrorMessage']}}
 											</small>
@@ -135,9 +125,7 @@
 											{{item.meta.helpText}}
 										</div>
 										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-												Required.
-											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
 												{{ngCtrl[item.meta.name+'ErrorMessage']}}
 											</small>
@@ -153,15 +141,9 @@
 											{{item.meta.helpText}}
 										</div>
 										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-												Required.
-											</small>
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']">
-												Invalid email.
-											</small>
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']">
-												Too long: must be < = {{item.meta.maxLength}} chars.
-											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']"  translate="{{'VALIDATION_EMAIL'}}"></small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_STRING_TOO_LONG'}}" translate-value-digit="{{item.meta.maxLength}}"></small>
 											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
 												{{ngCtrl[item.meta.name+'ErrorMessage']}}
 											</small>
@@ -172,17 +154,17 @@
 									<!-- 7. File -->
 									<div ng-switch-when="7">
 										<a ng-show='!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline'
-										   ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false'>Browse</a>
+										   ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false' translate="{{'BROWSE'}}"></a>
 										<div class="progress" ng-show="!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] > 0 && ngCtrl.progress[item.dataName] <= 100">
 											<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
 												 ng-style="{'width': ngCtrl.progress[item.dataName]+'%'}">
 												<span ng-show="ngCtrl.progress[item.dataName] < 100">{{ngCtrl.progress[item.dataName]}}%</span>
-												<span ng-show="ngCtrl.progress[item.dataName] == 100">almost done...</span>
+												<span ng-show="ngCtrl.progress[item.dataName] == 100" translate="{{'FILE_UPLOAD_ALMOST_DONE'}}"></span>
 											</div>
 										</div>
 										<div class="input-group file-upload" ng-show='ngCtrl.view.data[item.dataName]'>
 											<a class="form-control link-icon" href="{{ngCtrl.view.data[item.dataName]}}" target="_blank">view file</a>
-											<a class="input-group-addon" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="Are you sure?" style="margin-left:1em;" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+											<a class="input-group-addon" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" style="margin-left:1em;" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 										</div>
 										<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">
 											{{item.meta.helpText}}
@@ -210,17 +192,17 @@
 									<!-- 9. Image -->
 									<div ng-switch-when="9">
 										<a ng-show='!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline'
-										   ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
+										   ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false' accept="image/*" translate="{{'BROWSE'}}"></a>
 										<div class="progress" ng-show="!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] > 0 && ngCtrl.progress[item.dataName] <= 100">
 											<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
 												 ng-style="{'width': ngCtrl.progress[item.dataName]+'%'}">
 												<span ng-show="ngCtrl.progress[item.dataName] < 100">{{ngCtrl.progress[item.dataName]}}%</span>
-												<span ng-show="ngCtrl.progress[item.dataName] == 100">almost done...</span>
+												<span ng-show="ngCtrl.progress[item.dataName] == 100" translate="{{'FILE_UPLOAD_ALMOST_DONE'}}"></span>
 											</div>
 										</div>
 										<div class="image-upload" ng-show='ngCtrl.view.data[item.dataName]'>
 											<img class="img-thumbnail" ng-src="{{ngCtrl.view.data[item.dataName]}}" style="width:120px;" />
-											<a class="delete-link" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+											<a class="delete-link" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 										</div>
 										<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">
 											{{item.meta.helpText}}
@@ -269,18 +251,10 @@
 											{{item.meta.helpText}}
 										</div>
 										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-												Required.
-											</small>
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']">
-												Decimal, no comma allowed.
-											</small>
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.min && !ngCtrl[item.meta.name + 'Error']">
-												Should be > = {{item.meta.minValue}}.
-											</small>
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.max && !ngCtrl[item.meta.name + 'Error']">
-												Should be < = {{item.meta.maxValue}}.
-											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_DECIMAL_NO_COMMA'}}"></small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.min && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_DECIMAL_NO_COMMA'}}" translate-value-digit="{{item.meta.minValue}}"></small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.max && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_LESS_EQUAL_THAN_VALUE'}}" translate-value-digit="{{item.meta.minValue}}"></small>
 											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
 												{{ngCtrl[item.meta.name+'ErrorMessage']}}
 											</small>
@@ -297,12 +271,8 @@
 											{{item.meta.helpText}}
 										</div>
 										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-												Required.
-											</small>
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']">
-												Too long: must be < = {{item.meta.maxLength}} chars.
-											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_STRING_TOO_LONG'}}" translate-value-digit="{{item.meta.maxLength}}"></small>
 											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
 												{{ngCtrl[item.meta.name+'ErrorMessage']}}
 											</small>
@@ -322,18 +292,10 @@
 											{{item.meta.helpText}}
 										</div>
 										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-												Required.
-											</small>
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']">
-												Decimal, no comma allowed.
-											</small>
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.min && !ngCtrl[item.meta.name + 'Error']">
-												Should be > = {{item.meta.minValue}}.
-											</small>
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.max && !ngCtrl[item.meta.name + 'Error']">
-												Should be < = {{item.meta.maxValue}}.
-											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_DECIMAL_NO_COMMA'}}"></small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.min && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_DECIMAL_NO_COMMA'}}" translate-value-digit="{{item.meta.minValue}}"></small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.max && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_LESS_EQUAL_THAN_VALUE'}}" translate-value-digit="{{item.meta.maxValue}}"></small>
 											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
 												{{ngCtrl[item.meta.name+'ErrorMessage']}}
 											</small>
@@ -349,12 +311,8 @@
 											{{item.meta.helpText}}
 										</div>
 										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-												Required.
-											</small>
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']">
-												Too long: must be < = {{item.meta.maxLength}} chars.
-											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_STRING_TOO_LONG'}}" translate-value-digit="{{item.meta.maxLength}}"></small>
 											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
 												{{ngCtrl[item.meta.name+'ErrorMessage']}}
 											</small>
@@ -372,9 +330,7 @@
 												{{item.meta.helpText}}
 											</div>
 											<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-												<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-													Required.
-												</small>
+												<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 												<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.pattern && !ngCtrl[item.meta.name + 'Error']">
 													Invalid GUID.
 												</small>
@@ -411,12 +367,8 @@
 											{{item.meta.helpText}}
 										</div>
 										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-												Required.
-											</small>
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']">
-												Too long: must be < = {{item.meta.maxLength}} chars.
-											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_STRING_TOO_LONG'}}" translate-value-digit="{{item.meta.maxLength}}"></small>
 											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
 												{{ngCtrl[item.meta.name+'ErrorMessage']}}
 											</small>
@@ -432,12 +384,8 @@
 											{{item.meta.helpText}}
 										</div>
 										<div class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$touched && {{region.name}}CreateForm.{{item.meta.name}}.$dirty && {{region.name}}CreateForm.{{item.meta.name}}.$invalid ||  ngCtrl[item.meta.name + 'Error']">
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']">
-												Required.
-											</small>
-											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']">
-												Too long: must be < = {{item.meta.maxLength}} chars.
-											</small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.required && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+											<small class="error" ng-show="{{region.name}}CreateForm.{{item.meta.name}}.$error.maxlength && !ngCtrl[item.meta.name + 'Error']" translate="{{'VALIDATION_STRING_TOO_LONG'}}" translate-value-digit="{{item.meta.maxLength}}"></small>
 											<small class="error" ng-show="ngCtrl[item.meta.name + 'Error']">
 												{{ngCtrl[item.meta.name+'ErrorMessage']}}
 											</small>
@@ -463,7 +411,7 @@
 											<div class="editable-wrapper input-group editable-updatable">
 												<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(ngCtrl.view.data[item.dataName],item.meta)}}"></input>
 												<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.view.data[item.dataName].length > 0"
-													  confirmed-click="ngCtrl.emptyField(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
+													  confirmed-click="ngCtrl.emptyField(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
 												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,1,'target')"><i class="fa fa-indent fa-fw"></i></span>
 											</div>
 										</div>
@@ -499,7 +447,7 @@
 											<div class="editable-wrapper input-group editable-updatable">
 												<input type="text" class="form-control" disabled value="{{ngCtrl.dummyFields[item.dataName]}}"></input>
 												<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.hasFieldFromRelationValue(item.dataName)"
-													  confirmed-click="ngCtrl.removeFieldFromRelationValue(item.dataName)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
+													  confirmed-click="ngCtrl.removeFieldFromRelationValue(item.dataName)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
 												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target')"><i class="fa fa-indent fa-fw"></i></span>
 											</div>
 										</div>
