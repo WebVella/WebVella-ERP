@@ -51,7 +51,7 @@ namespace WebVella.ERP.Plugins
 
 				plugin.Assemblies.AddRange(GetAssembliesInFolder(binDir));
 
-				//we are working with assembly names (not the assemply instances),
+				//we are working with assembly names (not the assembly instances),
 				//because in case of development mode, referenced assembly is loaded 
 				//we don't want to call 2 or more times start for assembly with same name
 				List<string> processedPlugins = new List<string>();

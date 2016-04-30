@@ -233,6 +233,29 @@ namespace WebVella.ERP
 
 							fieldResponse = entityManager.CreateField(userEntity.Id.Value, verifiedUserField, false);
 
+							#region << image >>
+							{
+								InputImageField imageField = new InputImageField();
+								imageField.Id = new Guid("bf199b74-4448-4f58-93f5-6b86d888843b");
+								imageField.Name = "image";
+								imageField.Label = "Image";
+								imageField.PlaceholderText = "";
+								imageField.Description = "";
+								imageField.HelpText = "";
+								imageField.Required = false;
+								imageField.Unique = false;
+								imageField.Searchable = false;
+								imageField.Auditable = false;
+								imageField.System = true;
+								imageField.DefaultValue = string.Empty;
+								imageField.EnableSecurity = false;
+								{
+									var createResponse = entityManager.CreateField(SystemIds.UserEntityId, imageField, false);
+									if (!createResponse.Success)
+										throw new Exception("System error 10060. Entity: user. Field: image" + " Message:" + createResponse.Message);
+								}
+							}
+							#endregion
 						}
 
 						#endregion
@@ -301,8 +324,6 @@ namespace WebVella.ERP
 						}
 
 						#endregion
-
-					
 
 						#region << create user - role relation >>
 						{
@@ -571,77 +592,150 @@ namespace WebVella.ERP
 									throw new Exception("System error 10340. Message:" + createResponse.Message);
 							}
 
+							#region << folder >>
+							{
+								InputTextField textboxField = new InputTextField();
+								textboxField.Id = Guid.NewGuid();
+								textboxField.Name = "folder";
+								textboxField.Label = "folder";
+								textboxField.PlaceholderText = "";
+								textboxField.Description = "";
+								textboxField.HelpText = "";
+								textboxField.Required = false;
+								textboxField.Unique = false;
+								textboxField.Searchable = false;
+								textboxField.Auditable = false;
+								textboxField.System = true;
+								textboxField.DefaultValue = string.Empty;
+								textboxField.MaxLength = null;
+								textboxField.EnableSecurity = true;
+								textboxField.Permissions = new FieldPermissions();
+								textboxField.Permissions.CanRead = new List<Guid>();
+								textboxField.Permissions.CanUpdate = new List<Guid>();
+								//READ
+								textboxField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+								//UPDATE
+								textboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+								{
+									var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, textboxField, false);
+									if (!createResponse.Success)
+										throw new Exception("System error 10060. Entity: area Field: folder" + " Message:" + response.Message);
+								}
+							}
+							#endregion
+
 						}
 						#endregion
 					}
 
 
-					if (currentVersion < 150924)
+					if (currentVersion < 20160430)
 					{
-						systemSettings.Version = 150924;
-						//User
-						#region << image >>
-						{
-							InputImageField imageField = new InputImageField();
-							imageField.Id = new Guid("bf199b74-4448-4f58-93f5-6b86d888843b");
-							imageField.Name = "image";
-							imageField.Label = "Image";
-							imageField.PlaceholderText = "";
-							imageField.Description = "";
-							imageField.HelpText = "";
-							imageField.Required = false;
-							imageField.Unique = false;
-							imageField.Searchable = false;
-							imageField.Auditable = false;
-							imageField.System = true;
-							imageField.DefaultValue = string.Empty;
-							imageField.EnableSecurity = false;
-							{
-								var createResponse = entityManager.CreateField(SystemIds.UserEntityId, imageField, false);
-								if (!createResponse.Success)
-									throw new Exception("System error 10060. Entity: user. Field: image" + " Message:" + createResponse.Message);
-							}
-						}
-						#endregion
-					}
+						systemSettings.Version = 20160430;
 
-					if (currentVersion < 160316)
-					{
-						systemSettings.Version = 160316;
-						//Area Folder name
-						var AREA_ENTITY_ID = SystemIds.AreaEntityId;
-						var AREA_ENTITY_NAME = "area";
-						#region << folder >>
+						#region << plugin_data >>
+						var PLUGIN_DATA_ID = new Guid("d928d031-c8b1-4359-be3e-39bceb58f268");
+						var PLUGIN_DATA_NAME = "plugin_data";
 						{
-							InputTextField textboxField = new InputTextField();
-							textboxField.Id = Guid.NewGuid();
-							textboxField.Name = "folder";
-							textboxField.Label = "folder";
-							textboxField.PlaceholderText = "";
-							textboxField.Description = "";
-							textboxField.HelpText = "";
-							textboxField.Required = false;
-							textboxField.Unique = false;
-							textboxField.Searchable = false;
-							textboxField.Auditable = false;
-							textboxField.System = true;
-							textboxField.DefaultValue = string.Empty;
-							textboxField.MaxLength = null;
-							textboxField.EnableSecurity = true;
-							textboxField.Permissions = new FieldPermissions();
-							textboxField.Permissions.CanRead = new List<Guid>();
-							textboxField.Permissions.CanUpdate = new List<Guid>();
-							//READ
-							textboxField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
-							//UPDATE
-							textboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+							#region << entity >>
 							{
-								var createResponse = entityManager.CreateField(AREA_ENTITY_ID, textboxField, false);
-								if (!createResponse.Success)
-									throw new Exception("System error 10060. Entity: " + AREA_ENTITY_NAME + " Field: folder" + " Message:" + response.Message);
+								InputEntity entity = new InputEntity();
+								entity.Id = PLUGIN_DATA_ID;
+								entity.Name = PLUGIN_DATA_NAME;
+								entity.Label = "Plugin Data";
+								entity.LabelPlural = "Plugin Data";
+								entity.System = true;
+								entity.IconName = "database";
+								entity.Weight = 99;
+								entity.RecordPermissions = new RecordPermissions();
+								entity.RecordPermissions.CanCreate = new List<Guid>();
+								entity.RecordPermissions.CanRead = new List<Guid>();
+								entity.RecordPermissions.CanUpdate = new List<Guid>();
+								entity.RecordPermissions.CanDelete = new List<Guid>();
+								//Create
+								entity.RecordPermissions.CanCreate.Add(SystemIds.AdministratorRoleId);
+								//READ
+								entity.RecordPermissions.CanRead.Add(SystemIds.AdministratorRoleId);
+								//UPDATE
+								entity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+								//DELETE
+								entity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
+		
+								{
+									var createResponse = entityManager.CreateEntity(entity);
+									if (!createResponse.Success)
+										throw new Exception("System error 10050. Entity: " + PLUGIN_DATA_NAME + " Field: entity creation" + " Message:" + response.Message);
+								}
 							}
+							#endregion
+
+							#region << name >>
+							{
+								InputTextField textboxField = new InputTextField();
+								textboxField.Id = new Guid("ab81aec7-da90-4ba8-8ac7-378faa01763f");
+								textboxField.Name = "name";
+								textboxField.Label = "Name";
+								textboxField.PlaceholderText = "";
+								textboxField.Description = "";
+								textboxField.HelpText = "";
+								textboxField.Required = true;
+								textboxField.Unique = true;
+								textboxField.Searchable = false;
+								textboxField.Auditable = false;
+								textboxField.System = true;
+								textboxField.DefaultValue = string.Empty;
+								textboxField.MaxLength = null;
+								textboxField.EnableSecurity = true;
+								textboxField.Permissions = new FieldPermissions();
+								textboxField.Permissions.CanRead = new List<Guid>();
+								textboxField.Permissions.CanUpdate = new List<Guid>();
+								//READ
+								textboxField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+								//UPDATE
+								textboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+								{
+									var createResponse = entityManager.CreateField(PLUGIN_DATA_ID, textboxField, false);
+									if (!createResponse.Success)
+										throw new Exception("System error 10060. Entity: " + PLUGIN_DATA_NAME + " Field: field_name" + " Message:" + response.Message);
+								}
+							}
+							#endregion
+
+							#region << data >>
+							{
+								InputTextField textboxField = new InputTextField();
+								textboxField.Id = new Guid("52a799ad-80a3-404b-99b5-1f58ce437982");
+								textboxField.Name = "data";
+								textboxField.Label = "Data";
+								textboxField.PlaceholderText = "";
+								textboxField.Description = "";
+								textboxField.HelpText = "";
+								textboxField.Required = false;
+								textboxField.Unique = false;
+								textboxField.Searchable = false;
+								textboxField.Auditable = false;
+								textboxField.System = true;
+								textboxField.DefaultValue = string.Empty;
+								textboxField.MaxLength = null;
+								textboxField.EnableSecurity = true;
+								textboxField.Permissions = new FieldPermissions();
+								textboxField.Permissions.CanRead = new List<Guid>();
+								textboxField.Permissions.CanUpdate = new List<Guid>();
+								//READ
+								textboxField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+								//UPDATE
+								textboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+								{
+									var createResponse = entityManager.CreateField(PLUGIN_DATA_ID, textboxField, false);
+									if (!createResponse.Success)
+										throw new Exception("System error 10060. Entity: " + PLUGIN_DATA_NAME + " Field: field_name" + " Message:" + response.Message);
+								}
+							}
+							#endregion
+
 						}
 						#endregion
+
 					}
 
 					new DbSystemSettingsRepository().Save( new DbSystemSettings { Id = systemSettings.Id, Version = systemSettings.Version } );
