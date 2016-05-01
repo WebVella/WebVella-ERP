@@ -1079,7 +1079,7 @@
 				"label": "",
 				"default": false,
 				"system": false,
-				"weight": 1,
+				"weight": 10,
 				"cssClass": "",
 				"dynamicHtmlTemplate": null,
 				"dataSourceUrl": null,
