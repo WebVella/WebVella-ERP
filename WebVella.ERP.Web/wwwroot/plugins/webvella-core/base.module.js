@@ -43,15 +43,15 @@
     //#region << Run >>
     run.$inject = ['$log', '$rootScope', '$window'];
     function run($log, $rootScope, $window) {
-        $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
-			alert("error while loading the new page: " + error)
-		});
-        $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams, error) {
-        	$window.scrollTo(0, 0);
-        });
-        $rootScope.$on('$stateNotFound', function () {
-            alert("requested page not found")
-        });
+        //$rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
+		//	alert("error while loading the new page: " + error)
+		//});
+        //$rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams, error) {
+        //	$window.scrollTo(0, 0);
+        //});
+        //$rootScope.$on('$stateNotFound', function () {
+        //    alert("requested page not found")
+        //});
     };
     //#endregion
 

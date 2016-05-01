@@ -2812,10 +2812,6 @@ table .btn-xs.btn-link {
 		border-right:none;
 	}
 
-		.tabbable.spilled ul a i {
-			margin-right: 5px;
-		}
-
 	.tabbable.spilled ul li:not(.active) a:hover {
 		background: #ffffff;
 		background: rgba(255,255,255,0.05);

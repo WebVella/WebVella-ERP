@@ -152,6 +152,38 @@ CHECKBOX
 ///////////////////////////////////////////////////////////////////////////////
 DATE
 ///////////////////////////////////////////////////////////////////////////////
+#region << field_name >>
+{
+	InputDateField dateField = new InputDateField();
+	dateField.Id = new Guid("guid");
+	dateField.Name = "field_name";
+	dateField.Label = "Field name";
+	dateField.PlaceholderText = "";
+	dateField.Description = "";
+	dateField.HelpText = "";
+	dateField.Required = true;
+	dateField.Unique = false;
+	dateField.Searchable = false;
+	dateField.Auditable = false;
+	dateField.System = true;
+	dateField.DefaultValue = null;
+	dateField.Format = "dd MMM yyyy";
+	dateField.UseCurrentTimeAsDefaultValue = true;
+	dateField.EnableSecurity = true;
+	dateField.Permissions = new FieldPermissions();
+	dateField.Permissions.CanRead = new List<Guid>();
+	dateField.Permissions.CanUpdate = new List<Guid>();
+	//READ
+	dateField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+	//UPDATE
+	dateField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+	{
+		var response = entMan.CreateField(ENTITY_ID, datetimeField, false);
+		if (!response.Success)
+			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Field: field_name" + " Message:" + response.Message);
+	}
+}
+#endregion
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -200,6 +232,37 @@ EMAIL
 FILE
 ///////////////////////////////////////////////////////////////////////////////
 
+#region << field_name >>
+{
+	InputFileField fileField = new InputFileField();
+	fileField.Id = new Guid("guid");
+	fileField.Name = "field_name";
+	fileField.Label = "field_name";
+	fileField.PlaceholderText = "";
+	fileField.Description = "";
+	fileField.HelpText = "";
+	fileField.Required = false;
+	fileField.Unique = false;
+	fileField.Searchable = false;
+	fileField.Auditable = false;
+	fileField.System = true;
+	fileField.DefaultValue = string.Empty;
+	fileField.EnableSecurity = true;
+	fileField.Permissions = new FieldPermissions();
+	fileField.Permissions.CanRead = new List<Guid>();
+	fileField.Permissions.CanUpdate = new List<Guid>();
+	//READ
+	fileField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+	//UPDATE
+	fileField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+
+	{
+		var response = entMan.CreateField(ENTITY_ID, fileField, false);
+		if (!response.Success)
+			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Field: field_name" + " Message:" + response.Message);
+	}
+}
+#endregion
 
 ///////////////////////////////////////////////////////////////////////////////
 HTML

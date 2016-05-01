@@ -14,7 +14,7 @@
 
 	//#region << Configuration >> ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
-	
+
 	function config($stateProvider) {
 		$stateProvider.state('webvella-core-login', {
 			url: '/login?returnUrl',
@@ -35,36 +35,48 @@
 	//#endregion
 
 	//#region << Controller /////////////////////////////// >>
-	controller.$inject = ['webvellaCoreService', '$timeout', 'pageTitle'];
-	function controller(webvellaCoreService, $timeout, pageTitle) {
+	controller.$inject = ['webvellaCoreService', '$timeout', 'pageTitle', '$stateParams','$location'];
+	function controller(webvellaCoreService, $timeout, pageTitle, $stateParams,$location) {
 		var loginData = this;
 		loginData.loginIsActive = false;
 		var currentUser = webvellaCoreService.getCurrentUser();
-		if (currentUser) {
-			$timeout(function(){
-				webvellaCoreService.GoToState("webvella-desktop-browse",{});
-			},10);
+		console.log(currentUser);
+		if (currentUser != null) {
+			$timeout(function () {
+				webvellaCoreService.GoToState("webvella-desktop-browse", {});
+			}, 10);
 		}
 		else {
 			$timeout(function () {
 				loginData.loginIsActive = true;
 			}, 10);
+		}
 
-			loginData.rememberMe = false;
-			loginData.pageTitle = "Login | " + pageTitle;
-			webvellaCoreService.setPageTitle(loginData.pageTitle);
+		//$timeout(function () {
+		//	loginData.loginIsActive = true;
+		//}, 2000);
 
-			loginData.ValidationErrors = false;
+		loginData.rememberMe = false;
+		loginData.pageTitle = "Login | " + pageTitle;
+		webvellaCoreService.setPageTitle(loginData.pageTitle);
 
-			webvellaCoreService.setPageTitle(loginData.pageTitle);
+		loginData.ValidationErrors = false;
 
-			loginData.doLogin = function () {
-				webvellaCoreService.login(loginData, function (response) {
-									  		webvellaCoreService.GoToState("webvella-desktop-browse",{});
-										  },function (response) {
-										  	alert(response.message);
-										  });
-			}
+		webvellaCoreService.setPageTitle(loginData.pageTitle);
+
+		loginData.doLogin = function () {
+			webvellaCoreService.login(loginData, function (response) {
+				if ($stateParams.returnUrl != null) {
+					var returnUrl = decodeURI($stateParams.returnUrl);
+					$location.search("returnUrl", null);
+					$location.path(returnUrl);
+				}
+				else {
+					webvellaCoreService.GoToState("webvella-desktop-browse", {});
+				}
+			}, function (response) {
+				alert(response.message);
+			});
 		}
 	}
 	//#endregion
