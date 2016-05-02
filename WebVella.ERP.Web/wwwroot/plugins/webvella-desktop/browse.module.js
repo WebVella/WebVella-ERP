@@ -126,7 +126,7 @@
 
 
 			var menuItem = webvellaDesktopBrowsenavFactory.generateMenuItemFromArea(sitemapAreas[i]);
-			if (menuItem != null) {
+			if (menuItem != null && menuItem.roles != null) {
 				var userCanUseArrea = false;
 				for (var k = 0; k < resolvedCurrentUser.roles.length; k++) {
 					for (var p = 0; p < menuItem.roles.length; p++) {

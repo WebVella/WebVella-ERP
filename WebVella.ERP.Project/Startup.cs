@@ -9,6 +9,7 @@ using WebVella.ERP.Api.Models;
 using WebVella.ERP.Database;
 using WebVella.ERP.Plugins;
 using WebVella.ERP.Project.Models;
+using WebVella.ERP.Utilities;
 
 namespace WebVella.ERP.Project
 {
@@ -40,6 +41,11 @@ namespace WebVella.ERP.Project
 		private static string ATTACHMENT_ENTITY_NAME = "wv_project_attachment";
 		private static Guid COMMENT_ENTITY_ID = new Guid("7a57d17e-98f0-4356-baf0-9a8798da0b99");
 		private static string COMMENT_ENTITY_NAME = "wv_project_comment";
+		private static Guid PROJECT_ADMIN_AREA_ID = new Guid("5b131255-46fc-459d-bbb5-923a4bdfc006");
+		private static Guid PROJECT_RELATION_USER_1_N_PROJECT_OWNER_ID = new Guid("0cad07c3-73bd-4c1f-a5d6-552256f679a4");
+		private static Guid PROJECT_RELATION_CUSTOMER_1_N_PROJECT_ID = new Guid("d7f1ec35-9f59-4d75-b8a2-554c7eaeab11");
+		private static Guid PROJECT_RELATION_ROLE_N_N_PROJECT_TEAM_ID = new Guid("4860a4b6-d07e-416f-b548-60491607e93f");
+		private static Guid PROJECT_RELATION_ROLE_N_N_PROJECT_CUSTOMER_ID = new Guid("e6d75feb-3c8f-410b-9ff4-54ef8489dc2f");
 		//webvella-crm plugin constants
 		private static Guid CUSTOMER_ENTITY_ID = new Guid("90bcdb47-2cde-4137-a412-0198348fecc0");
 		private static string CUSTOMER_ENTITY_NAME = "wv_customer";
@@ -131,16 +137,16 @@ namespace WebVella.ERP.Project
 							//The areas are the main object for navigation for the user. You can attach entities and URLs later to them
 							{
 								var area = new EntityRecord();
-								area["id"] = new Guid("5b131255-46fc-459d-bbb5-923a4bdfc006");
+								area["id"] = PROJECT_ADMIN_AREA_ID;
 								area["name"] = "project_admin";
 								area["label"] = "Project Admin";
 								area["icon_name"] = "wrench";
 								area["color"] = "pink";
 								area["folder"] = "Admin";
-								area["weight"] = 1;
+								area["weight"] = 5;
 								var areaRoles = new List<Guid>();
 								areaRoles.Add(SystemIds.AdministratorRoleId);
-								area["roles"] = areaRoles.ToArray();
+								area["roles"] = JsonConvert.SerializeObject(areaRoles);
 								var createAreaResult = recMan.CreateRecord("area", area);
 								if (!createAreaResult.Success)
 								{
@@ -498,7 +504,7 @@ namespace WebVella.ERP.Project
 									var originEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
 									var targetEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
 									EntityRelation oneToNRelation = new EntityRelation();
-									oneToNRelation.Id = new Guid("0cad07c3-73bd-4c1f-a5d6-552256f679a4");
+									oneToNRelation.Id = PROJECT_RELATION_USER_1_N_PROJECT_OWNER_ID;
 									oneToNRelation.Name = "user_1_n_project_owner";
 									oneToNRelation.Label = "user_1_n_project_owner";
 									oneToNRelation.System = true;
@@ -520,7 +526,7 @@ namespace WebVella.ERP.Project
 									var originEntity = entMan.ReadEntity(CUSTOMER_ENTITY_ID).Object;
 									var targetEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
 									EntityRelation oneToNRelation = new EntityRelation();
-									oneToNRelation.Id = new Guid("d7f1ec35-9f59-4d75-b8a2-554c7eaeab11");
+									oneToNRelation.Id = PROJECT_RELATION_CUSTOMER_1_N_PROJECT_ID;
 									oneToNRelation.Name = "customer_1_n_project";
 									oneToNRelation.Label = "customer_1_n_project";
 									oneToNRelation.System = true;
@@ -543,7 +549,7 @@ namespace WebVella.ERP.Project
 									var originEntity = entMan.ReadEntity(SystemIds.RoleEntityId).Object;
 									var targetEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
 									EntityRelation NToNRelation = new EntityRelation();
-									NToNRelation.Id = new Guid("4860a4b6-d07e-416f-b548-60491607e93f");
+									NToNRelation.Id = PROJECT_RELATION_ROLE_N_N_PROJECT_TEAM_ID;
 									NToNRelation.Name = "role_n_n_project_team";
 									NToNRelation.Label = "role_n_n_project_team";
 									NToNRelation.System = true;
@@ -582,7 +588,6 @@ namespace WebVella.ERP.Project
 									}
 								}
 								#endregion
-
 
 								#region << View name: admin_details >>
 								{
@@ -685,6 +690,28 @@ namespace WebVella.ERP.Project
 
 									#region << action items >>
 									createViewInput.ActionItems = new List<ActionItem>();
+									var actionItem = new ActionItem();
+									{
+										actionItem = new ActionItem();
+										actionItem.Name = "wv_record_delete";
+										actionItem.Menu = "page-title-dropdown";
+										actionItem.Weight = 1;
+										actionItem.Template = "" +
+								@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.actionService.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
+										ng-if=""ngCtrl.userHasRecordPermissions('canDelete')"">
+									<i class=""fa fa-trash go-red""></i> Delete Record
+								</a>";
+										createViewInput.ActionItems.Add(actionItem);
+									}	
+									{
+										actionItem = new ActionItem();
+										actionItem.Name = "wv_back_button";
+										actionItem.Menu = "sidebar-top";
+										actionItem.Weight = 1;
+										actionItem.Template = "" +
+								@"<a class=""back clearfix"" href=""javascript:void(0)"" ng-click=""sidebarData.goBack()""><i class=""fa fa-fw fa-arrow-left""></i> <span class=""text"">Back</span></a>";
+										createViewInput.ActionItems.Add(actionItem);
+									}	
 									#endregion
 									{
 										var response = entMan.CreateRecordView(PROJECT_ENTITY_ID, createViewInput);
@@ -703,6 +730,7 @@ namespace WebVella.ERP.Project
 									var viewRow = new InputRecordViewRow();
 									var viewColumn = new InputRecordViewColumn();
 									var viewItem = new InputRecordViewFieldItem();
+									var viewItemFromRelation = new InputRecordViewRelationFieldItem();
 
 									#region << details >>
 									createViewInput.Id = new Guid("a6e121f5-0990-4576-9e39-59777e0ecb01");
@@ -741,7 +769,7 @@ namespace WebVella.ERP.Project
 									viewSection.Weight = 1;
 									viewSection.Rows = new List<InputRecordViewRow>();
 
-									#region << Row >>
+									#region << Row 1 Column>>
 									viewRow = new InputRecordViewRow();
 									viewRow.Id = Guid.NewGuid();
 									viewRow.Weight = 1;
@@ -752,7 +780,6 @@ namespace WebVella.ERP.Project
 									viewColumn.GridColCount = 12;
 									viewColumn.Items = new List<InputRecordViewItemBase>();
 
-
 									#region << name >>
 									{
 										viewItem = new InputRecordViewFieldItem();
@@ -760,6 +787,158 @@ namespace WebVella.ERP.Project
 										viewItem.EntityName = PROJECT_ENTITY_NAME;
 										viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "name").Id;
 										viewItem.FieldName = "name";
+										viewItem.Type = "field";
+										viewColumn.Items.Add(viewItem);
+									}
+									#endregion
+
+									#region << description >>
+									{
+										viewItem = new InputRecordViewFieldItem();
+										viewItem.EntityId = PROJECT_ENTITY_ID;
+										viewItem.EntityName = PROJECT_ENTITY_NAME;
+										viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "description").Id;
+										viewItem.FieldName = "description";
+										viewItem.Type = "field";
+										viewColumn.Items.Add(viewItem);
+									}
+									#endregion
+
+									//Save column
+									viewRow.Columns.Add(viewColumn);
+									#endregion
+
+									//Save row
+									viewSection.Rows.Add(viewRow);
+									#endregion
+
+									#region << Row 2 Columns>>
+									viewRow = new InputRecordViewRow();
+									viewRow.Id = Guid.NewGuid();
+									viewRow.Weight = 1;
+									viewRow.Columns = new List<InputRecordViewColumn>();
+
+									#region << Column Left >>
+									viewColumn = new InputRecordViewColumn();
+									viewColumn.GridColCount = 6;
+									viewColumn.Items = new List<InputRecordViewItemBase>();
+
+									#region << $user_1_n_project_owner > username >>
+									{
+									var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+									viewItemFromRelation = new InputRecordViewRelationFieldItem();
+									viewItemFromRelation.EntityId = targetEntity.Id;
+									viewItemFromRelation.EntityName = targetEntity.Name;
+									viewItemFromRelation.Type = "field";
+									viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
+									viewItemFromRelation.FieldName = "username";
+									viewItemFromRelation.FieldLabel = "Owner / Project manager";
+									viewItemFromRelation.FieldPlaceholder = "";
+									viewItemFromRelation.FieldRequired = true;
+									viewItemFromRelation.FieldLookupList = "lookup";
+									viewItemFromRelation.RelationId = PROJECT_RELATION_USER_1_N_PROJECT_OWNER_ID;
+									viewItemFromRelation.RelationName = "user_1_n_project_owner";
+									viewColumn.Items.Add(viewItemFromRelation);	
+									}
+									#endregion
+
+									#region << $role_n_n_project_team > name >>
+									{
+									var targetEntity = entMan.ReadEntity(SystemIds.RoleEntityId).Object;
+									viewItemFromRelation = new InputRecordViewRelationFieldItem();
+									viewItemFromRelation.EntityId = targetEntity.Id;
+									viewItemFromRelation.EntityName = targetEntity.Name;
+									viewItemFromRelation.Type = "field";
+									viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+									viewItemFromRelation.FieldName = "name";
+									viewItemFromRelation.FieldLabel = "Project team roles";
+									viewItemFromRelation.FieldPlaceholder = "";
+									viewItemFromRelation.FieldRequired = true;
+									viewItemFromRelation.FieldLookupList = "lookup";
+									viewItemFromRelation.RelationId = PROJECT_RELATION_ROLE_N_N_PROJECT_TEAM_ID;
+									viewItemFromRelation.RelationName = "role_n_n_project_team";
+									viewColumn.Items.Add(viewItemFromRelation);	
+									}
+									#endregion
+
+									#region << start_date >>
+									{
+										viewItem = new InputRecordViewFieldItem();
+										viewItem.EntityId = PROJECT_ENTITY_ID;
+										viewItem.EntityName = PROJECT_ENTITY_NAME;
+										viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "start_date").Id;
+										viewItem.FieldName = "start_date";
+										viewItem.Type = "field";
+										viewColumn.Items.Add(viewItem);
+									}
+									#endregion
+
+									#region << billable_hour_price >>
+									{
+										viewItem = new InputRecordViewFieldItem();
+										viewItem.EntityId = PROJECT_ENTITY_ID;
+										viewItem.EntityName = PROJECT_ENTITY_NAME;
+										viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "billable_hour_price").Id;
+										viewItem.FieldName = "billable_hour_price";
+										viewItem.Type = "field";
+										viewColumn.Items.Add(viewItem);
+									}
+									#endregion
+
+									//Save column
+									viewRow.Columns.Add(viewColumn);
+									#endregion
+
+									#region << Column right >>
+									viewColumn = new InputRecordViewColumn();
+									viewColumn.GridColCount = 6;
+									viewColumn.Items = new List<InputRecordViewItemBase>();
+
+									#region << $customer_1_n_project > name >>
+									{
+									var targetEntity = entMan.ReadEntity(CUSTOMER_ENTITY_ID).Object;
+									viewItemFromRelation = new InputRecordViewRelationFieldItem();
+									viewItemFromRelation.EntityId = targetEntity.Id;
+									viewItemFromRelation.EntityName = targetEntity.Name;
+									viewItemFromRelation.Type = "field";
+									viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+									viewItemFromRelation.FieldName = "name";
+									viewItemFromRelation.FieldLabel = "Customer";
+									viewItemFromRelation.FieldPlaceholder = "";
+									viewItemFromRelation.FieldRequired = true;
+									viewItemFromRelation.FieldLookupList = "lookup";
+									viewItemFromRelation.RelationId = PROJECT_RELATION_CUSTOMER_1_N_PROJECT_ID;
+									viewItemFromRelation.RelationName = "customer_1_n_project";
+									viewColumn.Items.Add(viewItemFromRelation);	
+									}
+									#endregion
+
+									#region << $role_n_n_project_customer > name >>
+									{
+									var targetEntity = entMan.ReadEntity(SystemIds.RoleEntityId).Object;
+									viewItemFromRelation = new InputRecordViewRelationFieldItem();
+									viewItemFromRelation.EntityId = targetEntity.Id;
+									viewItemFromRelation.EntityName = targetEntity.Name;
+									viewItemFromRelation.Type = "field";
+									viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+									viewItemFromRelation.FieldName = "name";
+									viewItemFromRelation.FieldLabel = "Project customer roles";
+									viewItemFromRelation.FieldPlaceholder = "";
+									viewItemFromRelation.FieldRequired = true;
+									viewItemFromRelation.FieldLookupList = "lookup";
+									viewItemFromRelation.RelationId = PROJECT_RELATION_ROLE_N_N_PROJECT_CUSTOMER_ID;
+									viewItemFromRelation.RelationName = "role_n_n_project_customer";
+									viewColumn.Items.Add(viewItemFromRelation);	
+									}
+									#endregion
+
+									#region << end_date >>
+									{
+										viewItem = new InputRecordViewFieldItem();
+										viewItem.EntityId = PROJECT_ENTITY_ID;
+										viewItem.EntityName = PROJECT_ENTITY_NAME;
+										viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "end_date").Id;
+										viewItem.FieldName = "end_date";
 										viewItem.Type = "field";
 										viewColumn.Items.Add(viewItem);
 									}
@@ -795,6 +974,44 @@ namespace WebVella.ERP.Project
 
 									#region << action items >>
 									createViewInput.ActionItems = new List<ActionItem>();
+									var actionItem = new ActionItem();
+
+									{
+										actionItem = new ActionItem();
+										actionItem.Name = "wv_create_and_list";
+										actionItem.Menu = "create-bottom";
+										actionItem.Weight = 1;
+										actionItem.Template = "" +
+								@"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""list"")' ng-if=""ngCtrl.createViewRegion != null"">Create & List</a>";
+										createViewInput.ActionItems.Add(actionItem);
+									}		
+									{
+										actionItem = new ActionItem();
+										actionItem.Name = "wv_create_and_details";
+										actionItem.Menu = "create-bottom";
+										actionItem.Weight = 2;
+										actionItem.Template = "" +
+								@"<a class=""btn btn-default btn-outline"" ng-click='ngCtrl.create(""details"")' ng-if=""ngCtrl.createViewRegion != null"">Create & Details</a>";
+										createViewInput.ActionItems.Add(actionItem);
+									}	
+									{
+										actionItem = new ActionItem();
+										actionItem.Name = "wv_create_cancel";
+										actionItem.Menu = "create-bottom";
+										actionItem.Weight = 3;
+										actionItem.Template = "" +
+								@"<a class=""btn btn-default btn-outline"" ng-click=""ngCtrl.cancel()"">Cancel</a>";
+										createViewInput.ActionItems.Add(actionItem);
+									}		
+									{
+										actionItem = new ActionItem();
+										actionItem.Name = "wv_back_button";
+										actionItem.Menu = "sidebar-top";
+										actionItem.Weight = 1;
+										actionItem.Template = "" +
+								@"<a class=""back clearfix"" href=""javascript:void(0)"" ng-click=""sidebarData.goBack()""><i class=""fa fa-fw fa-arrow-left""></i> <span class=""text"">Back</span></a>";
+										createViewInput.ActionItems.Add(actionItem);
+									}	
 									#endregion
 									{
 										var response = entMan.CreateRecordView(PROJECT_ENTITY_ID, createViewInput);
@@ -809,6 +1026,7 @@ namespace WebVella.ERP.Project
 									var createListEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
 									var createListInput = new InputRecordList();
 									var listItem = new InputRecordListFieldItem();
+									var listItemFromRelation = new InputRecordListRelationFieldItem();
 									var listSort = new InputRecordListSort();
 									var listQuery = new InputRecordListQuery();
 
@@ -842,6 +1060,18 @@ namespace WebVella.ERP.Project
 								@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}"">
 					<i class=""fa fa-fw fa-eye""></i>
 					</a>";
+										createListInput.ActionItems.Add(actionItem);
+									}
+									{
+										actionItem = new ActionItem();
+										actionItem.Name = "wv_create_record";
+										actionItem.Menu = "page-title";
+										actionItem.Weight = 1;
+										actionItem.Template = "" +
+								@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}"">
+									<i class=""fa fa-fw fa-plus""></i> Add New
+								</a>";
 										createListInput.ActionItems.Add(actionItem);
 									}
 									#endregion
@@ -882,8 +1112,15 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 
-								#region << attach 'project' to the 'Project Admin' area >>
-
+								#region << area add subscription: Project Admin -> Project >>
+								{
+									var updatedAreaId = PROJECT_ADMIN_AREA_ID;
+									var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, PROJECT_ENTITY_NAME, "admin_details","admin_create", "admin");
+									if (!updateAreaResult.Success)
+									{
+										throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
+									}
+								}
 								#endregion
 							}
 							#endregion

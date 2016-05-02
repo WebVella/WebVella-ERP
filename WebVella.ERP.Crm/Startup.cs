@@ -10,6 +10,7 @@ using WebVella.ERP.Api.Models;
 using WebVella.ERP.Crm.Models;
 using WebVella.ERP.Database;
 using WebVella.ERP.Plugins;
+using WebVella.ERP.Utilities;
 
 namespace WebVella.Crm.Project
 {
@@ -21,6 +22,7 @@ namespace WebVella.Crm.Project
 		private static string WEBVELLA_CRM_PLUGIN_NAME = "webvella-crm";
 		private static Guid CUSTOMER_ENTITY_ID = new Guid("90bcdb47-2cde-4137-a412-0198348fecc0");
 		private static string CUSTOMER_ENTITY_NAME = "wv_customer";
+		private static Guid CRM_ADMIN_AREA_ID = new Guid("0e3a02c4-64df-4b61-bae5-8b3cc847f129");
 
 		public void Start()
 		{
@@ -55,17 +57,17 @@ namespace WebVella.Crm.Project
 
 						//This plugin needs the webvella-crm plugin to be installed, so we will check this here
 						var installedPlugins = new PluginService().Plugins;
-						var crmPluginFound = false;
+						var corePluginFound = false;
 						foreach (var plugin in installedPlugins)
 						{
 							if (plugin.Name == "webvella-core")
 							{
-								crmPluginFound = true;
+								corePluginFound = true;
 								break;
 							}
 						}
 
-						if (!crmPluginFound)
+						if (!corePluginFound)
 							throw new Exception("'webvella-core' plugin is required for the 'webvella-crm' to operate");
 
 						#endregion
@@ -105,6 +107,28 @@ namespace WebVella.Crm.Project
 						{
 							currentPluginSettings.Version = 20160430;
 
+							#region << Create CRM admin area >>
+							//The areas are the main object for navigation for the user. You can attach entities and URLs later to them
+							{
+								var area = new EntityRecord();
+								area["id"] = CRM_ADMIN_AREA_ID;
+								area["name"] = "crm_admin";
+								area["label"] = "CRM Admin";
+								area["icon_name"] = "users";
+								area["color"] = "pink";
+								area["folder"] = "Admin";
+								area["weight"] = 1;
+								var areaRoles = new List<Guid>();
+								areaRoles.Add(SystemIds.AdministratorRoleId);
+								area["roles"] = JsonConvert.SerializeObject(areaRoles);
+								var createAreaResult = recMan.CreateRecord("area", area);
+								if (!createAreaResult.Success)
+								{
+									throw new Exception("System error 10060. Area create with name : project_admin. Message:" + createAreaResult.Message);
+								}
+							}
+							#endregion
+
 							#region << wv_customer >>
 							{
 								#region << entity >>
@@ -131,8 +155,6 @@ namespace WebVella.Crm.Project
 									//UPDATE
 									entity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 									entity.RecordPermissions.CanUpdate.Add(SystemIds.RegularRoleId);
-									//DELETE
-									entity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
 
 									{
 										var response = entMan.CreateEntity(entity);
@@ -176,6 +198,391 @@ namespace WebVella.Crm.Project
 
 							}
 							#endregion
+
+							#region << View name: admin_details >>
+							{
+								var createViewEntity = entMan.ReadEntity(CUSTOMER_ENTITY_ID).Object;
+								var createViewInput = new InputRecordView();
+								var viewRegion = new InputRecordViewRegion();
+								var viewSection = new InputRecordViewSection();
+								var viewRow = new InputRecordViewRow();
+								var viewColumn = new InputRecordViewColumn();
+								var viewItem = new InputRecordViewFieldItem();
+
+								#region << details >>
+								createViewInput.Id = new Guid("3a0e1319-5357-49ec-9e85-8d9be2363fcf");
+								createViewInput.Type = "hidden";
+								createViewInput.Name = "admin_details";
+								createViewInput.Label = "Details";
+								createViewInput.Default = false;
+								createViewInput.System = false;
+								createViewInput.Weight = 15;
+								createViewInput.CssClass = null;
+								createViewInput.IconName = "building-o";
+								createViewInput.DynamicHtmlTemplate = null;
+								createViewInput.DataSourceUrl = null;
+								createViewInput.ServiceCode = null;
+								createViewInput.Regions = new List<InputRecordViewRegion>();
+								#endregion
+
+								#region << Header Region >>
+								viewRegion = new InputRecordViewRegion();
+								viewRegion.Name = "header";
+								viewRegion.Label = "Header";
+								viewRegion.Render = true;
+								viewRegion.Weight = 1;
+								viewRegion.CssClass = "";
+								viewRegion.Sections = new List<InputRecordViewSection>();
+
+								#region << Section >>
+								viewSection = new InputRecordViewSection();
+								viewSection.Id = Guid.NewGuid();
+								viewSection.Name = "details";
+								viewSection.Label = "Details";
+								viewSection.ShowLabel = false;
+								viewSection.CssClass = "";
+								viewSection.Collapsed = false;
+								viewSection.TabOrder = "left-right";
+								viewSection.Weight = 1;
+								viewSection.Rows = new List<InputRecordViewRow>();
+
+								#region << Row >>
+								viewRow = new InputRecordViewRow();
+								viewRow.Id = Guid.NewGuid();
+								viewRow.Weight = 1;
+								viewRow.Columns = new List<InputRecordViewColumn>();
+
+								#region << Column 1 >>
+								viewColumn = new InputRecordViewColumn();
+								viewColumn.GridColCount = 12;
+								viewColumn.Items = new List<InputRecordViewItemBase>();
+
+
+								#region << name >>
+								{
+									viewItem = new InputRecordViewFieldItem();
+									viewItem.EntityId = CUSTOMER_ENTITY_ID;
+									viewItem.EntityName = CUSTOMER_ENTITY_NAME;
+									viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "name").Id;
+									viewItem.FieldName = "name";
+									viewItem.Type = "field";
+									viewColumn.Items.Add(viewItem);
+								}
+								#endregion
+
+
+								//Save column
+								viewRow.Columns.Add(viewColumn);
+								#endregion
+
+								//Save row
+								viewSection.Rows.Add(viewRow);
+								#endregion
+
+								//Save section
+								viewRegion.Sections.Add(viewSection);
+								#endregion
+
+								//Save region
+								createViewInput.Regions.Add(viewRegion);
+								#endregion
+
+								#region << relation options >>
+								createViewInput.RelationOptions = new List<EntityRelationOptionsItem>();
+								#endregion
+
+								#region << Sidebar >>
+								createViewInput.Sidebar = new InputRecordViewSidebar();
+								createViewInput.Sidebar.CssClass = "";
+								createViewInput.Sidebar.Render = true;
+								createViewInput.Sidebar.Render = true;
+								createViewInput.Sidebar.Items = new List<InputRecordViewSidebarItemBase>();
+								#endregion
+
+								#region << action items >>
+								createViewInput.ActionItems = new List<ActionItem>();
+								var actionItem = new ActionItem();
+								{
+									actionItem = new ActionItem();
+									actionItem.Name = "wv_record_delete";
+									actionItem.Menu = "page-title-dropdown";
+									actionItem.Weight = 1;
+									actionItem.Template = "" +
+							@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.actionService.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
+										ng-if=""ngCtrl.userHasRecordPermissions('canDelete')"">
+									<i class=""fa fa-trash go-red""></i> Delete Record
+								</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								{
+									actionItem = new ActionItem();
+									actionItem.Name = "wv_back_button";
+									actionItem.Menu = "sidebar-top";
+									actionItem.Weight = 1;
+									actionItem.Template = "" +
+							@"<a class=""back clearfix"" href=""javascript:void(0)"" ng-click=""sidebarData.goBack()""><i class=""fa fa-fw fa-arrow-left""></i> <span class=""text"">Back</span></a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								{
+									var response = entMan.CreateRecordView(CUSTOMER_ENTITY_ID, createViewInput);
+									if (!response.Success)
+										throw new Exception("System error 10060. Entity: " + CUSTOMER_ENTITY_NAME + " Updated view: admin_details" + " Message:" + response.Message);
+								}
+							}
+							#endregion
+
+							#region << View name: admin_create >>
+							{
+								var createViewEntity = entMan.ReadEntity(CUSTOMER_ENTITY_ID).Object;
+								var createViewInput = new InputRecordView();
+								var viewRegion = new InputRecordViewRegion();
+								var viewSection = new InputRecordViewSection();
+								var viewRow = new InputRecordViewRow();
+								var viewColumn = new InputRecordViewColumn();
+								var viewItem = new InputRecordViewFieldItem();
+
+								#region << details >>
+								createViewInput.Id = new Guid("93043954-ae70-41a3-b4b7-665531a23a76");
+								createViewInput.Type = "create";
+								createViewInput.Name = "admin_create";
+								createViewInput.Label = "Create customer";
+								createViewInput.Default = false;
+								createViewInput.System = false;
+								createViewInput.Weight = 25;
+								createViewInput.CssClass = null;
+								createViewInput.IconName = "building-o";
+								createViewInput.DynamicHtmlTemplate = null;
+								createViewInput.DataSourceUrl = null;
+								createViewInput.ServiceCode = null;
+								createViewInput.Regions = new List<InputRecordViewRegion>();
+								#endregion
+
+								#region << Header Region >>
+								viewRegion = new InputRecordViewRegion();
+								viewRegion.Name = "header";
+								viewRegion.Label = "Header";
+								viewRegion.Render = true;
+								viewRegion.Weight = 1;
+								viewRegion.CssClass = "";
+								viewRegion.Sections = new List<InputRecordViewSection>();
+
+								#region << Section >>
+								viewSection = new InputRecordViewSection();
+								viewSection.Id = Guid.NewGuid();
+								viewSection.Name = "details";
+								viewSection.Label = "Details";
+								viewSection.ShowLabel = false;
+								viewSection.CssClass = "";
+								viewSection.Collapsed = false;
+								viewSection.TabOrder = "left-right";
+								viewSection.Weight = 1;
+								viewSection.Rows = new List<InputRecordViewRow>();
+
+								#region << Row >>
+								viewRow = new InputRecordViewRow();
+								viewRow.Id = Guid.NewGuid();
+								viewRow.Weight = 1;
+								viewRow.Columns = new List<InputRecordViewColumn>();
+
+								#region << Column 1 >>
+								viewColumn = new InputRecordViewColumn();
+								viewColumn.GridColCount = 12;
+								viewColumn.Items = new List<InputRecordViewItemBase>();
+
+
+								#region << name >>
+								{
+									viewItem = new InputRecordViewFieldItem();
+									viewItem.EntityId = CUSTOMER_ENTITY_ID;
+									viewItem.EntityName = CUSTOMER_ENTITY_NAME;
+									viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "name").Id;
+									viewItem.FieldName = "name";
+									viewItem.Type = "field";
+									viewColumn.Items.Add(viewItem);
+								}
+								#endregion
+
+
+								//Save column
+								viewRow.Columns.Add(viewColumn);
+								#endregion
+
+								//Save row
+								viewSection.Rows.Add(viewRow);
+								#endregion
+
+								//Save section
+								viewRegion.Sections.Add(viewSection);
+								#endregion
+
+								//Save region
+								createViewInput.Regions.Add(viewRegion);
+								#endregion
+
+								#region << relation options >>
+								createViewInput.RelationOptions = new List<EntityRelationOptionsItem>();
+								#endregion
+
+								#region << Sidebar >>
+								createViewInput.Sidebar = new InputRecordViewSidebar();
+								createViewInput.Sidebar.CssClass = "";
+								createViewInput.Sidebar.Render = true;
+								createViewInput.Sidebar.Render = true;
+								createViewInput.Sidebar.Items = new List<InputRecordViewSidebarItemBase>();
+								#endregion
+
+								#region << action items >>
+								createViewInput.ActionItems = new List<ActionItem>();
+								var actionItem = new ActionItem();
+
+								{
+									actionItem = new ActionItem();
+									actionItem.Name = "wv_create_and_list";
+									actionItem.Menu = "create-bottom";
+									actionItem.Weight = 1;
+									actionItem.Template = "" +
+							@"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""list"")' ng-if=""ngCtrl.createViewRegion != null"">Create & List</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								{
+									actionItem = new ActionItem();
+									actionItem.Name = "wv_create_and_details";
+									actionItem.Menu = "create-bottom";
+									actionItem.Weight = 2;
+									actionItem.Template = "" +
+							@"<a class=""btn btn-default btn-outline"" ng-click='ngCtrl.create(""details"")' ng-if=""ngCtrl.createViewRegion != null"">Create & Details</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								{
+									actionItem = new ActionItem();
+									actionItem.Name = "wv_create_cancel";
+									actionItem.Menu = "create-bottom";
+									actionItem.Weight = 3;
+									actionItem.Template = "" +
+							@"<a class=""btn btn-default btn-outline"" ng-click=""ngCtrl.cancel()"">Cancel</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								{
+									actionItem = new ActionItem();
+									actionItem.Name = "wv_back_button";
+									actionItem.Menu = "sidebar-top";
+									actionItem.Weight = 1;
+									actionItem.Template = "" +
+							@"<a class=""back clearfix"" href=""javascript:void(0)"" ng-click=""sidebarData.goBack()""><i class=""fa fa-fw fa-arrow-left""></i> <span class=""text"">Back</span></a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+								{
+									var response = entMan.CreateRecordView(CUSTOMER_ENTITY_ID, createViewInput);
+									if (!response.Success)
+										throw new Exception("System error 10060. Entity: " + CUSTOMER_ENTITY_NAME + " Updated view: admin_create" + " Message:" + response.Message);
+								}
+							}
+							#endregion
+
+							#region << List name: admin >>
+							{
+								var createListEntity = entMan.ReadEntity(CUSTOMER_ENTITY_ID).Object;
+								var createListInput = new InputRecordList();
+								var listItem = new InputRecordListFieldItem();
+								var listSort = new InputRecordListSort();
+								var listQuery = new InputRecordListQuery();
+
+								#region << details >>
+								createListInput.Id = new Guid("ff15f200-8e68-4683-8576-4c8244405ca9");
+								createListInput.Type = "hidden";
+								createListInput.Name = "admin";
+								createListInput.Label = "Customers";
+								createListInput.Weight = 11;
+								createListInput.Default = false;
+								createListInput.System = true;
+								createListInput.CssClass = null;
+								createListInput.IconName = "building-o";
+								createListInput.VisibleColumnsCount = 7;
+								createListInput.ColumnWidthsCSV = null;
+								createListInput.PageSize = 10;
+								createListInput.DynamicHtmlTemplate = null;
+								createListInput.DataSourceUrl = null;
+								createListInput.ServiceCode = null;
+								#endregion
+
+								#region << action items >>
+								createListInput.ActionItems = new List<ActionItem>();
+								var actionItem = new ActionItem();
+								{
+									actionItem = new ActionItem();
+									actionItem.Name = "wv_record_details";
+									actionItem.Menu = "record-row";
+									actionItem.Weight = 1;
+									actionItem.Template = "" +
+							@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}"">
+							<i class=""fa fa-fw fa-eye""></i>
+							</a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								{
+									actionItem = new ActionItem();
+									actionItem.Name = "wv_create_record";
+									actionItem.Menu = "page-title";
+									actionItem.Weight = 1;
+									actionItem.Template = "" +
+@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
+    ng-href=""{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}"">
+	<i class=""fa fa-fw fa-plus""></i> Add New
+</a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << Columns >>
+								createListInput.Columns = new List<InputRecordListItemBase>();
+								#region << name >>
+								{
+									var fieldName = "name";
+									listItem = new InputRecordListFieldItem();
+									listItem.EntityId = CUSTOMER_ENTITY_ID;
+									listItem.EntityName = CUSTOMER_ENTITY_NAME;
+									listItem.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+									listItem.FieldName = fieldName;
+									listItem.Type = "field";
+									createListInput.Columns.Add(listItem);
+								}
+								#endregion
+
+								#endregion
+
+								#region << relation options >>
+								createListInput.RelationOptions = new List<EntityRelationOptionsItem>();
+								#endregion
+
+								#region << query >>
+								listQuery = new InputRecordListQuery();
+								#endregion
+
+								#region << Sort >>
+								listSort = new InputRecordListSort();
+								#endregion
+								{
+									var response = entMan.CreateRecordList(CUSTOMER_ENTITY_ID, createListInput);
+									if (!response.Success)
+										throw new Exception("System error 10060. Entity: " + CUSTOMER_ENTITY_NAME + " Updated List: admin" + " Message:" + response.Message);
+								}
+							}
+							#endregion
+
+							#region << area add subscription: CRM Admin -> Customer >>
+							{
+								var updatedAreaId = CRM_ADMIN_AREA_ID;
+								var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, CUSTOMER_ENTITY_NAME, "admin_details", "admin_create", "admin");
+								if (!updateAreaResult.Success)
+								{
+									throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
+								}
+							}
+							#endregion
+
 						}
 						#endregion
 

@@ -47,7 +47,7 @@ namespace WebVella.ERP
 						currentVersion = systemSettings.Version;
 					}
 
-					EntityManager entityManager = new EntityManager();
+					EntityManager entMan = new EntityManager();
 
 					//tmp code - during debug only
 					//em.DeleteEntity(SystemIds.UserEntityId);
@@ -84,7 +84,7 @@ namespace WebVella.ERP
 							userEntity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 							userEntity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
 
-							response = entityManager.CreateEntity(userEntity);
+							response = entMan.CreateEntity(userEntity);
 
 							InputTextField firstName = new InputTextField();
 
@@ -103,7 +103,7 @@ namespace WebVella.ERP
 
 							firstName.MaxLength = 200;
 
-							fieldResponse = entityManager.CreateField(userEntity.Id.Value, firstName, false);
+							fieldResponse = entMan.CreateField(userEntity.Id.Value, firstName, false);
 
 							InputTextField lastName = new InputTextField();
 
@@ -122,7 +122,7 @@ namespace WebVella.ERP
 
 							lastName.MaxLength = 200;
 
-							fieldResponse = entityManager.CreateField(userEntity.Id.Value, lastName, false);
+							fieldResponse = entMan.CreateField(userEntity.Id.Value, lastName, false);
 
 							InputTextField userName = new InputTextField();
 							userName.Id = new Guid("263c0b21-88c1-4c2b-80b4-db7402b0d2e2");
@@ -138,7 +138,7 @@ namespace WebVella.ERP
 							userName.System = true;
 							userName.DefaultValue = "";
 							userName.MaxLength = 200;
-							fieldResponse = entityManager.CreateField(userEntity.Id.Value, userName, false);
+							fieldResponse = entMan.CreateField(userEntity.Id.Value, userName, false);
 
 
 							InputEmailField email = new InputEmailField();
@@ -158,7 +158,7 @@ namespace WebVella.ERP
 
 							email.MaxLength = 255;
 
-							fieldResponse = entityManager.CreateField(userEntity.Id.Value, email, false);
+							fieldResponse = entMan.CreateField(userEntity.Id.Value, email, false);
 
 							InputPasswordField password = new InputPasswordField();
 
@@ -177,7 +177,7 @@ namespace WebVella.ERP
 							password.MaxLength = 24;
 							password.Encrypted = true;
 
-							fieldResponse = entityManager.CreateField(userEntity.Id.Value, password, false);
+							fieldResponse = entMan.CreateField(userEntity.Id.Value, password, false);
 
 							InputDateTimeField lastLoggedIn = new InputDateTimeField();
 
@@ -197,7 +197,7 @@ namespace WebVella.ERP
 							lastLoggedIn.Format = "dd MMM yyyy HH:mm:ss";
 							lastLoggedIn.UseCurrentTimeAsDefaultValue = true;
 
-							fieldResponse = entityManager.CreateField(userEntity.Id.Value, lastLoggedIn, false);
+							fieldResponse = entMan.CreateField(userEntity.Id.Value, lastLoggedIn, false);
 
 							InputCheckboxField enabledField = new InputCheckboxField();
 
@@ -214,7 +214,7 @@ namespace WebVella.ERP
 							enabledField.System = true;
 							enabledField.DefaultValue = false;
 
-							fieldResponse = entityManager.CreateField(userEntity.Id.Value, enabledField, false);
+							fieldResponse = entMan.CreateField(userEntity.Id.Value, enabledField, false);
 
 							InputCheckboxField verifiedUserField = new InputCheckboxField();
 
@@ -231,7 +231,7 @@ namespace WebVella.ERP
 							verifiedUserField.System = true;
 							verifiedUserField.DefaultValue = false;
 
-							fieldResponse = entityManager.CreateField(userEntity.Id.Value, verifiedUserField, false);
+							fieldResponse = entMan.CreateField(userEntity.Id.Value, verifiedUserField, false);
 
 							#region << image >>
 							{
@@ -250,7 +250,7 @@ namespace WebVella.ERP
 								imageField.DefaultValue = string.Empty;
 								imageField.EnableSecurity = false;
 								{
-									var createResponse = entityManager.CreateField(SystemIds.UserEntityId, imageField, false);
+									var createResponse = entMan.CreateField(SystemIds.UserEntityId, imageField, false);
 									if (!createResponse.Success)
 										throw new Exception("System error 10060. Entity: user. Field: image" + " Message:" + createResponse.Message);
 								}
@@ -258,6 +258,63 @@ namespace WebVella.ERP
 							#endregion
 						}
 
+						#endregion
+
+						#region << user lookup list >>
+						{
+							var updateListEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+							var updateList = updateListEntity.RecordLists.Single(x => x.Name == "lookup");
+							var updateListInput = new InputRecordList();
+							var listItem = new InputRecordListFieldItem();
+							var listSort = new InputRecordListSort();
+							var listQuery = new InputRecordListQuery();
+					
+							//Convert recordList to recordListInput
+							updateListInput = updateList.DynamicMapTo<InputRecordList>();
+	
+							//General list details
+							//updateListInput.IconName = "";	
+	
+							//Fields
+							#region << username >>
+							listItem = new InputRecordListFieldItem();
+							listItem.EntityId = SystemIds.UserEntityId;
+							listItem.EntityName = "user";
+							listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "username").Id;
+							listItem.FieldName = "username";
+							listItem.Type = "field";
+							updateListInput.Columns.Add(listItem);
+							#endregion
+	
+							#region << email >>
+							listItem = new InputRecordListFieldItem();
+							listItem.EntityId = SystemIds.UserEntityId;
+							listItem.EntityName = "user";
+							listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "email").Id;
+							listItem.FieldName = "email";
+							listItem.Type = "field";
+							updateListInput.Columns.Add(listItem);
+							#endregion
+
+							//Query
+							#region << query descr >>
+							listQuery = new InputRecordListQuery();
+							#endregion
+
+
+							//Sort
+							#region << Sort >>
+							listSort = new InputRecordListSort();
+							listSort.FieldName = "username";
+							listSort.SortType = "ascending";
+							updateListInput.Sorts.Add(listSort);
+							#endregion
+							{
+								var responseObject = entMan.UpdateRecordList(SystemIds.UserEntityId, updateListInput);
+								if (!responseObject.Success)
+									throw new Exception("System error 10060. Entity: " + "user" + " Updated List: list_name" + " Message:" + response.Message);
+							}
+						}
 						#endregion
 
 						#region << create role entity >>
@@ -282,7 +339,7 @@ namespace WebVella.ERP
 							roleEntity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 							roleEntity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
 
-							response = entityManager.CreateEntity(roleEntity);
+							response = entMan.CreateEntity(roleEntity);
 
 							InputTextField nameRoleField = new InputTextField();
 
@@ -301,7 +358,7 @@ namespace WebVella.ERP
 
 							nameRoleField.MaxLength = 200;
 
-							fieldResponse = entityManager.CreateField(roleEntity.Id.Value, nameRoleField, false);
+							fieldResponse = entMan.CreateField(roleEntity.Id.Value, nameRoleField, false);
 
 							InputTextField descriptionRoleField = new InputTextField();
 
@@ -320,9 +377,56 @@ namespace WebVella.ERP
 
 							descriptionRoleField.MaxLength = 200;
 
-							fieldResponse = entityManager.CreateField(roleEntity.Id.Value, descriptionRoleField, false);
+							fieldResponse = entMan.CreateField(roleEntity.Id.Value, descriptionRoleField, false);
 						}
 
+						#endregion
+
+						#region << role lookup list >>
+						{
+							var updateListEntity = entMan.ReadEntity(SystemIds.RoleEntityId).Object;
+							var updateList = updateListEntity.RecordLists.Single(x => x.Name == "lookup");
+							var updateListInput = new InputRecordList();
+							var listItem = new InputRecordListFieldItem();
+							var listSort = new InputRecordListSort();
+							var listQuery = new InputRecordListQuery();
+					
+							//Convert recordList to recordListInput
+							updateListInput = updateList.DynamicMapTo<InputRecordList>();
+	
+							//General list details
+							//updateListInput.IconName = "";	
+	
+							//Fields
+							#region << username >>
+							listItem = new InputRecordListFieldItem();
+							listItem.EntityId = SystemIds.RoleEntityId;
+							listItem.EntityName = "role";
+							listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "name").Id;
+							listItem.FieldName = "name";
+							listItem.Type = "field";
+							updateListInput.Columns.Add(listItem);
+							#endregion
+	
+							//Query
+							#region << query descr >>
+							listQuery = new InputRecordListQuery();
+							#endregion
+
+
+							//Sort
+							#region << Sort >>
+							listSort = new InputRecordListSort();
+							listSort.FieldName = "name";
+							listSort.SortType = "ascending";
+							updateListInput.Sorts.Add(listSort);
+							#endregion
+							{
+								var responseObject = entMan.UpdateRecordList(SystemIds.RoleEntityId, updateListInput);
+								if (!responseObject.Success)
+									throw new Exception("System error 10060. Entity: " + "role" + " Updated List: list_name" + " Message:" + response.Message);
+							}
+						}
 						#endregion
 
 						#region << create user - role relation >>
@@ -445,7 +549,7 @@ namespace WebVella.ERP
 							areaEntity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 							areaEntity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
 							{
-								var createResponse = entityManager.CreateEntity(areaEntity);
+								var createResponse = entMan.CreateEntity(areaEntity);
 								if (!createResponse.Success)
 									throw new Exception("System error 10330. Message:" + createResponse.Message);
 							}
@@ -465,7 +569,7 @@ namespace WebVella.ERP
 							color.DefaultValue = "teal";
 							color.MaxLength = null;
 							{
-								var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, color, false);
+								var createResponse = entMan.CreateField(SystemIds.AreaEntityId, color, false);
 								if (!createResponse.Success)
 									throw new Exception("System error 10340. Message:" + createResponse.Message);
 							}
@@ -486,7 +590,7 @@ namespace WebVella.ERP
 							label.DefaultValue = "Default";
 							label.MaxLength = null;
 							{
-								var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, label, false);
+								var createResponse = entMan.CreateField(SystemIds.AreaEntityId, label, false);
 								if (!createResponse.Success)
 									throw new Exception("System error 10340. Message:" + createResponse.Message);
 							}
@@ -506,7 +610,7 @@ namespace WebVella.ERP
 							iconName.DefaultValue = "database";
 							iconName.MaxLength = null;
 							{
-								var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, iconName, false);
+								var createResponse = entMan.CreateField(SystemIds.AreaEntityId, iconName, false);
 								if (!createResponse.Success)
 									throw new Exception("System error 10340. Message:" + createResponse.Message);
 							}
@@ -527,7 +631,7 @@ namespace WebVella.ERP
 							weight.MinValue = 0;
 							weight.DecimalPlaces = 2;
 							{
-								var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, weight, false);
+								var createResponse = entMan.CreateField(SystemIds.AreaEntityId, weight, false);
 								if (!createResponse.Success)
 									throw new Exception("System error 10340. Message:" + createResponse.Message);
 							}
@@ -547,7 +651,7 @@ namespace WebVella.ERP
 							attachments.DefaultValue = null;
 							attachments.MaxLength = null;
 							{
-								var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, attachments, false);
+								var createResponse = entMan.CreateField(SystemIds.AreaEntityId, attachments, false);
 								if (!createResponse.Success)
 									throw new Exception("System error 10340. Message:" + createResponse.Message);
 							}
@@ -567,7 +671,7 @@ namespace WebVella.ERP
 							name.DefaultValue = "default";
 							name.MaxLength = null;
 							{
-								var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, name, false);
+								var createResponse = entMan.CreateField(SystemIds.AreaEntityId, name, false);
 								if (!createResponse.Success)
 									throw new Exception("System error 10340. Message:" + createResponse.Message);
 							}
@@ -587,7 +691,7 @@ namespace WebVella.ERP
 							roles.DefaultValue = null;
 							roles.MaxLength = null;
 							{
-								var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, roles, false);
+								var createResponse = entMan.CreateField(SystemIds.AreaEntityId, roles, false);
 								if (!createResponse.Success)
 									throw new Exception("System error 10340. Message:" + createResponse.Message);
 							}
@@ -617,7 +721,7 @@ namespace WebVella.ERP
 								//UPDATE
 								textboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 								{
-									var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, textboxField, false);
+									var createResponse = entMan.CreateField(SystemIds.AreaEntityId, textboxField, false);
 									if (!createResponse.Success)
 										throw new Exception("System error 10060. Entity: area Field: folder" + " Message:" + response.Message);
 								}
@@ -662,7 +766,7 @@ namespace WebVella.ERP
 								entity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
 		
 								{
-									var createResponse = entityManager.CreateEntity(entity);
+									var createResponse = entMan.CreateEntity(entity);
 									if (!createResponse.Success)
 										throw new Exception("System error 10050. Entity: " + PLUGIN_DATA_NAME + " Field: entity creation" + " Message:" + response.Message);
 								}
@@ -694,7 +798,7 @@ namespace WebVella.ERP
 								//UPDATE
 								textboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 								{
-									var createResponse = entityManager.CreateField(PLUGIN_DATA_ID, textboxField, false);
+									var createResponse = entMan.CreateField(PLUGIN_DATA_ID, textboxField, false);
 									if (!createResponse.Success)
 										throw new Exception("System error 10060. Entity: " + PLUGIN_DATA_NAME + " Field: field_name" + " Message:" + response.Message);
 								}
@@ -726,7 +830,7 @@ namespace WebVella.ERP
 								//UPDATE
 								textboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 								{
-									var createResponse = entityManager.CreateField(PLUGIN_DATA_ID, textboxField, false);
+									var createResponse = entMan.CreateField(PLUGIN_DATA_ID, textboxField, false);
 									if (!createResponse.Success)
 										throw new Exception("System error 10060. Entity: " + PLUGIN_DATA_NAME + " Field: field_name" + " Message:" + response.Message);
 								}

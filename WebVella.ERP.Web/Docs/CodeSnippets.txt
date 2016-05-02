@@ -664,6 +664,7 @@ TREE SELECT
 ///////////////////////////////////////////////////////////////////////////////
  CREATE VIEW
 ///////////////////////////////////////////////////////////////////////////////
+#region << View name: view_name >>
 {
 	var createViewEntity = entMan.ReadEntity(ENTITY_ID).Object;
 	var createViewInput = new InputRecordView();
@@ -672,6 +673,7 @@ TREE SELECT
 	var viewRow = new InputRecordViewRow();
 	var viewColumn = new InputRecordViewColumn();
 	var viewItem = new InputRecordViewFieldItem();
+	var viewItemFromRelation = new InputRecordViewRelationFieldItem();
 
 	#region << details >>
 	createViewInput.Id = new Guid("guid");
@@ -734,6 +736,24 @@ TREE SELECT
 	}
 	#endregion
 
+	#region << name from Relation >>
+	{
+	var targetEntity = entMan.ReadEntity(ENTITY_ID).Object;
+	viewItemFromRelation = new InputRecordViewRelationFieldItem();
+	viewItemFromRelation.EntityId = targetEntity.Id;
+	viewItemFromRelation.EntityName = targetEntity.Name;
+	viewItemFromRelation.Type = "field";
+	viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "field_name").Id;
+	viewItemFromRelation.FieldName = "field_name";
+	viewItemFromRelation.FieldLabel = "field_name";
+	viewItemFromRelation.FieldPlaceholder = "";
+	viewItemFromRelation.FieldRequired = true;
+	viewItemFromRelation.FieldLookupList = "lookup";	
+	viewItemFromRelation.RelationId = new Guid("guid");
+	viewItemFromRelation.RelationName = "relation_name";
+	viewColumn.Items.Add(viewItemFromRelation);	
+	}
+	#endregion	
 
 	//Save column
 	viewRow.Columns.Add(viewColumn);
@@ -765,6 +785,55 @@ TREE SELECT
 	
 	#region << action items >>
 	createViewInput.ActionItems = new List<ActionItem>();
+	var actionItem = new ActionItem();
+	{
+		actionItem = new ActionItem();
+		actionItem.Name = "wv_record_delete";
+		actionItem.Menu = "page-title-dropdown";
+		actionItem.Weight = 1;
+		actionItem.Template = "" +
+@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.actionService.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
+		ng-if=""ngCtrl.userHasRecordPermissions('canDelete')"">
+	<i class=""fa fa-trash go-red""></i> Delete Record
+</a>";
+		createViewInput.ActionItems.Add(actionItem);
+	}	
+	{
+		actionItem = new ActionItem();
+		actionItem.Name = "wv_create_and_list";
+		actionItem.Menu = "create-bottom";
+		actionItem.Weight = 1;
+		actionItem.Template = "" +
+@"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""list"")' ng-if=""ngCtrl.createViewRegion != null"">Create & List</a>";
+		createViewInput.ActionItems.Add(actionItem);
+	}		
+	{
+		actionItem = new ActionItem();
+		actionItem.Name = "wv_create_and_details";
+		actionItem.Menu = "create-bottom";
+		actionItem.Weight = 2;
+		actionItem.Template = "" +
+@"<a class=""btn btn-default btn-outline"" ng-click='ngCtrl.create(""details"")' ng-if=""ngCtrl.createViewRegion != null"">Create & Details</a>";
+		createViewInput.ActionItems.Add(actionItem);
+	}	
+	{
+		actionItem = new ActionItem();
+		actionItem.Name = "wv_create_cancel";
+		actionItem.Menu = "create-bottom";
+		actionItem.Weight = 3;
+		actionItem.Template = "" +
+@"<a class=""btn btn-default btn-outline"" ng-click=""ngCtrl.cancel()"">Cancel</a>";
+		createViewInput.ActionItems.Add(actionItem);
+	}		
+	{
+		actionItem = new ActionItem();
+		actionItem.Name = "wv_back_button";
+		actionItem.Menu = "sidebar-top";
+		actionItem.Weight = 1;
+		actionItem.Template = "" +
+@"<a class=""back clearfix"" href=""javascript:void(0)"" ng-click=""sidebarData.goBack()""><i class=""fa fa-fw fa-arrow-left""></i> <span class=""text"">Back</span></a>";
+		createViewInput.ActionItems.Add(actionItem);
+	}		
 	#endregion
 	{
 		var response = entMan.CreateRecordView(ENTITY_ID, createViewInput);
@@ -772,6 +841,7 @@ TREE SELECT
 			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Updated view: create" + " Message:" + response.Message);
 	}
 }
+#endregion
 
 ///////////////////////////////////////////////////////////////////////////////
  UPDATE VIEW
@@ -786,6 +856,7 @@ TREE SELECT
 	var viewRow = new InputRecordViewRow();
 	var viewColumn = new InputRecordViewColumn();
 	var viewItem = new InputRecordViewFieldItem();
+	var viewItemFromRelation = new InputRecordViewRelationFieldItem();	
 	//General view fields
 	
 	//Convert recordList to recordListInput
@@ -819,6 +890,7 @@ TREE SELECT
 
 
 	#region << name >>
+	{
 	viewItem = new InputRecordViewFieldItem();
 	viewItem.EntityId = ENTITY_ID;
 	viewItem.EntityName = ENTITY_NAME;
@@ -826,8 +898,28 @@ TREE SELECT
 	viewItem.FieldName = "name";
 	viewItem.Type = "field";
 	viewColumn.Items.Add(viewItem);
+	}
 	#endregion
 
+	#region << name from Relation >>
+	{
+	var targetEntity = entMan.ReadEntity(ENTITY_ID).Object;
+	viewItemFromRelation = new InputRecordViewRelationFieldItem();
+	viewItemFromRelation.EntityId = targetEntity.Id;
+	viewItemFromRelation.EntityName = targetEntity.Name;
+	viewItemFromRelation.Type = "field";
+	viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+	viewItemFromRelation.FieldName = "field_name";
+	viewItemFromRelation.FieldLabel = "field_name";
+	viewItemFromRelation.FieldPlaceholder = "";
+	viewItemFromRelation.FieldRequired = true;
+	viewItemFromRelation.FieldLookupList = "lookup";		
+	viewItemFromRelation.RelationId = new Guid("guid");
+	viewItemFromRelation.RelationName = "relation_name";
+	viewColumn.Items.Add(viewItemFromRelation);	
+	}
+	#endregion
+	
 
 	//Save column
 	viewRow.Columns.Add(viewColumn);
@@ -865,6 +957,7 @@ TREE SELECT
 	var createListEntity = entMan.ReadEntity(ENTITY_ID).Object;
 	var createListInput = new InputRecordList();
 	var listItem = new InputRecordListFieldItem();
+	var listItemFromRelation = new InputRecordListRelationFieldItem();
 	var listSort = new InputRecordListSort();
 	var listQuery = new InputRecordListQuery();
 
@@ -892,18 +985,52 @@ TREE SELECT
 	{
 		actionItem = new ActionItem();
 		actionItem.Name = "wv_record_details";
-		actionItem.Menu = "record-row";
+		actionItem.Menu = "page-row";
 		actionItem.Weight = 1;
 		actionItem.Template = "" +
 @"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}"">
-<i class=""fa fa-fw fa-eye""></i>
+    <i class=""fa fa-fw fa-eye""></i>
+</a>";
+		createListInput.ActionItems.Add(actionItem);
+	}	
+	{
+		actionItem = new ActionItem();
+		actionItem.Name = "wv_create_record";
+		actionItem.Menu = "page-title";
+		actionItem.Weight = 1;
+		actionItem.Template = "" +
+@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
+    ng-href=""{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}"">
+	<i class=""fa fa-fw fa-plus""></i> Add New
+</a>";
+		createListInput.ActionItems.Add(actionItem);
+	}	
+	{
+		actionItem = new ActionItem();
+		actionItem.Name = "wv_import_records";
+		actionItem.Menu = "page-title-dropdown";
+		actionItem.Weight = 10;
+		actionItem.Template = "" +
+@"<a ng-click=""ngCtrl.openImportModal()"" class=""ng-hide"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate,canUpdate')"">
+	<i class=""fa fa-fw fa-upload""></i> Import CSV
 </a>";
 		createListInput.ActionItems.Add(actionItem);
 	}
+	{
+		actionItem = new ActionItem();
+		actionItem.Name = "wv_export_records";
+		actionItem.Menu = "page-title-dropdown";
+		actionItem.Weight = 11;
+		actionItem.Template = "" +
+@"<a ng-click=""ngCtrl.openExportModal()"" class=""ng-hide"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate,canUpdate')"">
+	<i class=""fa fa-fw fa-download""></i> Export CSV
+</a>";
+		createListInput.ActionItems.Add(actionItem);
+	}	
 	#endregion
 	
 	#region << Columns >>
-	
+	createListInput.Columns = new List<InputRecordListItemBase>();
 	#region << field_name >>
 	{
 		var fieldName = "field_name";
@@ -916,7 +1043,8 @@ TREE SELECT
 		createListInput.Columns.Add(listItem);
 	}
 	#endregion
-	
+
+
 	#endregion
 	
 	#region << relation options >>
@@ -945,57 +1073,6 @@ TREE SELECT
 	}
 }
 #endregion
-{
-	var updateListEntity = entMan.ReadEntity(ENTITY_ID).Object;
-	var updateList = updateListEntity.RecordLists.Single(x => x.Name == "list_name");
-	var updateListInput = new InputRecordList();
-	var listItem = new InputRecordListFieldItem();
-	var listSort = new InputRecordListSort();
-	var listQuery = new InputRecordListQuery();
-					
-	//Convert recordList to recordListInput
-	updateListInput = updateList.DynamicMapTo<InputRecordList>();
-	
-	//General list details
-	//updateListInput.IconName = "";	
-	
-	//Fields
-	#region << field_name >>
-	listItem = new InputRecordListFieldItem();
-	listItem.EntityId = ENTITY_ID;
-	listItem.EntityName = ENTITY_NAME;
-	listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "field_name").Id;
-	listItem.FieldName = "field_name";
-	listItem.Type = "field";
-	updateListInput.Columns.Add(listItem);
-	#endregion
-	
-	//Query
-	#region << query descr >>
-		//listQuery = new InputRecordListQuery();
-		//listQuery.FieldName = "id";
-		//listQuery.FieldValue = "00000000-0000-0000-0000-000000000000";
-		//listQuery.QueryType = "AND"; //"OR",EQ,NOT,LT,LTE,GT,GTE,CONTAINS,NOTCONTAINS,STARTSWITH,NOTSTARTSWITH
-		//listQuery.SubQueries = new List<InputRecordListQuery>();
-		//updateListInput.Query = listQuery;
-	#endregion	
-	
-	
-	//Sort
-	#region << Sort >>
-		//listSort = new InputRecordListSort();
-		//listSort.FieldName = "created_on";
-		//listSort.SortType = "descending";
-		//updateListInput.Sorts.Add(listSort);
-	#endregion
-	{
-		var response = entMan.UpdateRecordList(ENTITY_ID, updateListInput);
-		if (!response.Success)
-			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Updated List: list_name" + " Message:" + response.Message);
-	}
-}
-#endregion
-
 
 ///////////////////////////////////////////////////////////////////////////////
  UPDATE LIST
@@ -1110,7 +1187,7 @@ TREE SELECT
 	area["weight"] = 10;
 	var areaRoles = new List<Guid>();
 	areaRoles.Add(SystemIds.AdministratorRoleId);
-	area["roles"] = areaRoles.ToArray();
+	area["roles"] = JsonConvert.SerializeObject(areaRoles);
 	var createAreaResult = recMan.CreateRecord("area", area);
 	if (!createAreaResult.Success)
 	{
@@ -1120,13 +1197,13 @@ TREE SELECT
 #endregion
 
 ////////////////////////////////////////////////////////////////////////////////
-//	AREA ATTACHMENTS ADD
+//	AREA ATTACHMENTS ENTITY ADD
 ////////////////////////////////////////////////////////////////////////////////
 
-#region << area add subsription: AreaName -> EntityName >>
+#region << area add subscription: AreaName -> EntityName >>
 {
 	var updatedAreaId = new Guid("area_guid");
-	var updateAreaResult = UpsetAreaSubscription(entMan, recMan, updatedAreaId, "entity_name", "view_name", "list_name");
+	var updateAreaResult = Helpers.UpsetAreaSubscription(entMan, recMan, updatedAreaId, "entity_name", "view_name", "list_name");
 	if (!updateAreaResult.Success)
 	{
 		throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);

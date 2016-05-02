@@ -521,6 +521,36 @@
 						ngCtrl.validation.hasError = true;
 						ngCtrl.validation.errorMessage = "A required data is missing!";
 					}
+					else{
+						ngCtrl.validation[availableViewFields[k].dataName] = false;
+					}
+				}
+				if (availableViewFields[k].type === "fieldFromRelation" && availableViewFields[k].fieldRequired) {
+					//The field requested to be visualized is "$field$role_n_n_project_team$name", but we store in the data and submit the "$role_n_n_project_team.id" 
+					//as the record Id is always unique which we cannot be sure for the selected visualization field
+					//Here the trick is to check and validate the visualized field based on the submitted data. This can be done based on how the data names are generated
+					//which is always " '$' + elementType + '$' + relation_name + '$' + elementName".
+					//The format to create relation automatically on record creation is " '$' + relation_name + '.id'"
+					//So we can check based on the relation name
+					var relationNameFoundInData = false;
+					var dataNameArray = availableViewFields[k].dataName.split('$');
+					for (var propertyName in ngCtrl.view.data) {
+						if(propertyName.indexOf(dataNameArray[2]) != -1 ){
+							if (ngCtrl.view.data[propertyName] != null && ngCtrl.view.data[propertyName] != "") {
+								relationNameFoundInData = true;
+							}
+							break;
+						}
+					}
+
+					if (!relationNameFoundInData) {
+						ngCtrl.validation[availableViewFields[k].dataName] = true;
+						ngCtrl.validation.hasError = true;
+						ngCtrl.validation.errorMessage = "A required data is missing!";
+					}
+					else {
+						ngCtrl.validation[availableViewFields[k].dataName] = false;
+					}
 				}
 			}
 			if (!ngCtrl.validation.hasError) {

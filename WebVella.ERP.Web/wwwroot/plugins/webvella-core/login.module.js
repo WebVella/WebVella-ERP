@@ -40,7 +40,6 @@
 		var loginData = this;
 		loginData.loginIsActive = false;
 		var currentUser = webvellaCoreService.getCurrentUser();
-		console.log(currentUser);
 		if (currentUser != null) {
 			$timeout(function () {
 				webvellaCoreService.GoToState("webvella-desktop-browse", {});
