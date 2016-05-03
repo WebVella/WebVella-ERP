@@ -18,7 +18,11 @@ namespace WebVella.ERP.Plugins
 
 		public Assembly Load(AssemblyName assemblyName)
 		{
-			return context.LoadFile(Path.Combine(path.FullName, assemblyName.Name + ".dll"));
+			var assemblyPath = Path.Combine(path.FullName, assemblyName.Name + ".dll");
+			if (!File.Exists(assemblyPath))
+				return null;
+
+			return context.LoadFile(assemblyPath);
 		}
 
 		public IntPtr LoadUnmanagedLibrary(string name)

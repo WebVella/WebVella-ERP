@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
+using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP.Plugins
 {
@@ -15,14 +17,11 @@ namespace WebVella.ERP.Plugins
 		static List<Plugin> plugins = new List<Plugin>();
 		public List<Plugin> Plugins { get { return plugins; } }
 
-
-
-		public void Initialize(IHostingEnvironment hostingEnvironment, IAssemblyProvider asmProviderService)
+		public void Initialize(IHostingEnvironment hostingEnvironment)
 		{
 			var content = hostingEnvironment.WebRootFileProvider.GetDirectoryContents("/plugins");
 			if (!content.Exists)
 				return;
-
 
 			foreach (var pluginDir in content.Where(x => x.IsDirectory))
 			{
@@ -50,30 +49,29 @@ namespace WebVella.ERP.Plugins
 					continue;
 
 				plugin.Assemblies.AddRange(GetAssembliesInFolder(binDir));
+			}
 
-				//we are working with assembly names (not the assembly instances),
-				//because in case of development mode, referenced assembly is loaded 
-				//we don't want to call 2 or more times start for assembly with same name
-				List<string> processedPlugins = new List<string>();
-				foreach (var assembly in asmProviderService.CandidateAssemblies)
+			plugins = plugins.OrderBy(x => x.LoadPriority).ToList();
+
+			//search and execute Start method for each plugin
+			//if there are multiple types, marked by PluginStartupAttribute, with Start method, they all will be executed
+			foreach (var plugin in plugins)
+			{
+				foreach (var assembly in plugin.Assemblies)
 				{
-					if (processedPlugins.Contains(assembly.FullName))
-						continue;
-
 					if (plugin.Assemblies.Any(x => x.FullName == assembly.FullName))
 					{
-						processedPlugins.Add(assembly.FullName);
 						foreach (Type type in assembly.GetTypes())
 						{
 							if (type.GetCustomAttributes(typeof(PluginStartupAttribute), true).Length > 0)
 							{
-								try {
-									var obj = Activator.CreateInstance(assembly.FullName, type.Namespace + "." + type.Name).Unwrap();
+								try
+								{
 									var method = type.GetMethod("Start");
 									if (method != null)
-										method.Invoke(obj, null);
+										method.Invoke(new DynamicObjectCreater(type).CreateInstance(), null);
 								}
-								catch( Exception ex )
+								catch (Exception ex)
 								{
 									throw new Exception("An exception is thrown while execute start for plugin : '" +
 									 assembly.FullName + ";" + type.Namespace + "." + type.Name + "'", ex);
@@ -83,18 +81,33 @@ namespace WebVella.ERP.Plugins
 					}
 				}
 			}
-			plugins = plugins.OrderBy(x => x.LoadPriority).ToList();
 		}
 
 		private IEnumerable<Assembly> GetAssembliesInFolder(DirectoryInfo binPath)
 		{
 			List<Assembly> assemblies = new List<Assembly>();
-			var loadContext = PlatformServices.Default.AssemblyLoadContextAccessor.Default;
-			PlatformServices.Default.AssemblyLoaderContainer.AddLoader(new PluginDirectoryLoader(binPath, loadContext));
+			var loadContext = PlatformServices.Default.AssemblyLoadContextAccessor.Default; 
 
 			foreach (var fileSystemInfo in binPath.GetFileSystemInfos("*.dll"))
 			{
-				var assembly = loadContext.Load(AssemblyName.GetAssemblyName(fileSystemInfo.FullName));
+				var assemblyName = AssemblyName.GetAssemblyName(fileSystemInfo.FullName);
+
+				//first try to load assembly from refered libraries instead of plugin 'binaries' folder
+				Assembly assembly = null;
+                foreach ( var lib in PlatformServices.Default.LibraryManager.GetLibraries())
+				{
+					var referencedAssemblyName = lib.Assemblies.SingleOrDefault(x => x.FullName == assemblyName.Name);
+					if (referencedAssemblyName != null)
+					{
+						assembly = loadContext.Load(referencedAssemblyName);
+						break;
+					}
+				}
+
+				//if not found in referenced libraries, load from plugin binaries location
+				if( assembly == null )
+					assembly = loadContext.Load(assemblyName);
+
 				assemblies.Add(assembly);
 			}
 

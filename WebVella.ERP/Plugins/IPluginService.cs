@@ -10,6 +10,6 @@ namespace WebVella.ERP.Plugins
 	{
 		List<Plugin> Plugins { get; }
 
-		void Initialize(IHostingEnvironment hostingEnvironment, IAssemblyProvider asmProviderService);
+		void Initialize(IHostingEnvironment hostingEnvironment);
     }
 }

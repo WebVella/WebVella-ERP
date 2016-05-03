@@ -64,9 +64,8 @@ namespace WebVella.ERP.Web
 				app.UseDatabaseContextMiddleware();
 
 				IPluginService pluginService = app.ApplicationServices.GetService<IPluginService>();
-				IAssemblyProvider asmProviderService = app.ApplicationServices.GetService<IAssemblyProvider>();
 				IHostingEnvironment hostingEnvironment = app.ApplicationServices.GetRequiredService<IHostingEnvironment>();
-				pluginService.Initialize(hostingEnvironment,asmProviderService);
+				pluginService.Initialize(hostingEnvironment);
 
 			}
 			finally
