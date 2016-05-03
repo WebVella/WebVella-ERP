@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
+using WebVella.ERP.Api.Models.AutoMapper;
 using WebVella.ERP.Database;
 using WebVella.ERP.Plugins;
 using WebVella.ERP.Project.Models;
@@ -44,6 +45,7 @@ namespace WebVella.ERP.Project
 		private static Guid COMMENT_ENTITY_ID = new Guid("7a57d17e-98f0-4356-baf0-9a8798da0b99");
 		private static string COMMENT_ENTITY_NAME = "wv_project_comment";
 		private static Guid PROJECT_ADMIN_AREA_ID = new Guid("5b131255-46fc-459d-bbb5-923a4bdfc006");
+		private static Guid PROJECT_WORKPLACE_AREA_ID = new Guid("205877a1-242c-41bf-a080-49ea01d4f519");
 		private static Guid PROJECT_RELATION_USER_1_N_PROJECT_OWNER_ID = new Guid("0cad07c3-73bd-4c1f-a5d6-552256f679a4");
 		private static Guid PROJECT_RELATION_CUSTOMER_1_N_PROJECT_ID = new Guid("d7f1ec35-9f59-4d75-b8a2-554c7eaeab11");
 		private static Guid PROJECT_RELATION_ROLE_N_N_PROJECT_TEAM_ID = new Guid("4860a4b6-d07e-416f-b548-60491607e93f");
@@ -148,9 +150,32 @@ namespace WebVella.ERP.Project
 								area["icon_name"] = "wrench";
 								area["color"] = "pink";
 								area["folder"] = "Admin";
+								area["weight"] = 101;
+								var areaRoles = new List<Guid>();
+								areaRoles.Add(SystemIds.AdministratorRoleId);
+								area["roles"] = JsonConvert.SerializeObject(areaRoles);
+								var createAreaResult = recMan.CreateRecord("area", area);
+								if (!createAreaResult.Success)
+								{
+									throw new Exception("System error 10060. Area create with name : project_admin. Message:" + createAreaResult.Message);
+								}
+							}
+							#endregion
+
+							#region << Create Project Workplace area >>
+							//The areas are the main object for navigation for the user. You can attach entities and URLs later to them
+							{
+								var area = new EntityRecord();
+								area["id"] = PROJECT_WORKPLACE_AREA_ID;
+								area["name"] = "projects";
+								area["label"] = "Projects";
+								area["icon_name"] = "product-hunt";
+								area["color"] = "deep-purple";
+								area["folder"] = "Workplace";
 								area["weight"] = 5;
 								var areaRoles = new List<Guid>();
 								areaRoles.Add(SystemIds.AdministratorRoleId);
+								areaRoles.Add(SystemIds.RegularRoleId);
 								area["roles"] = JsonConvert.SerializeObject(areaRoles);
 								var createAreaResult = recMan.CreateRecord("area", area);
 								if (!createAreaResult.Success)
@@ -1278,6 +1303,58 @@ namespace WebVella.ERP.Project
 									}
 								}
 								#endregion
+
+								#region << area add subscription: Project Workplace -> Project >>
+								{
+									var updatedAreaId = PROJECT_WORKPLACE_AREA_ID;
+									var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, PROJECT_ENTITY_NAME, "general","create", "general");
+									if (!updateAreaResult.Success)
+									{
+										throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
+									}
+								}
+								#endregion
+
+
+								#region << update project general list to my projects >>
+								{
+									var updateListEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+									var updateList = updateListEntity.RecordLists.Single(x => x.Name == "general");
+									var updateListInput = new InputRecordList();
+									var listItem = new InputRecordListFieldItem();
+									var listSort = new InputRecordListSort();
+									var listQuery = new InputRecordListQuery();
+					
+									//Convert recordList to recordListInput
+									updateListInput = updateList.DynamicMapTo<InputRecordList>();
+	
+									//General list details
+									updateListInput.Label = "My Projects";	
+									updateListInput.IconName = "product-hunt";	
+									updateListInput.DataSourceUrl = "/plugins/webvella-projects/api/project/list/my-projects";
+									updateListInput.DynamicHtmlTemplate = "/plugins/webvella-projects/templates/my-projects.html";
+	
+									//Fields
+									#region << field_name >>
+									listItem = new InputRecordListFieldItem();
+									listItem.EntityId = PROJECT_ENTITY_ID;
+									listItem.EntityName = PROJECT_ENTITY_NAME;
+									listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "name").Id;
+									listItem.FieldName = "name";
+									listItem.Type = "field";
+									updateListInput.Columns.Add(listItem);
+									#endregion
+	
+									{
+										var response = entMan.UpdateRecordList(PROJECT_ENTITY_ID, updateListInput);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + PROJECT_ENTITY_NAME + " Updated List: general" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
+
+
 							}
 							#endregion
 
@@ -3169,20 +3246,6 @@ namespace WebVella.ERP.Project
 
 							if (createSampleRecords)
 							{
-								#region << Create Project Manager Role >>
-								{
-									var sampleRecord = new EntityRecord();
-									sampleRecord["id"] = new Guid("f55ac9f2-7bee-48fd-862c-2d801123022a");
-									sampleRecord["name"] = "project_manager";
-									sampleRecord["description"] = "Project manager role for the Project application";
-									var createSampleRecordResult = recMan.CreateRecord(SystemIds.RoleEntityId, sampleRecord);
-									if (!createSampleRecordResult.Success)
-									{
-										throw new Exception("System error 10060. Create sample role record. Message:" + createSampleRecordResult.Message);
-									}
-								}
-								#endregion
-
 								#region << Create Project Team Role >>
 								{
 									var sampleRecord = new EntityRecord();
@@ -3239,7 +3302,7 @@ namespace WebVella.ERP.Project
 
 								#region << Create relation between project manager user and role >>
 								{
-									var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(new Guid("0c4b119e-1d7b-4b40-8d2c-9e447cc656ab"), new Guid("f55ac9f2-7bee-48fd-862c-2d801123022a"), new Guid("b646c5d4-acc8-4404-af77-6786b81bee05"));
+									var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(new Guid("0c4b119e-1d7b-4b40-8d2c-9e447cc656ab"), new Guid("083a5c46-7dbe-4ff9-b19f-44603671ccb2"), new Guid("b646c5d4-acc8-4404-af77-6786b81bee05"));
 									if (!createRelationNtoNResponse.Success)
 									{
 										throw new Exception("Could not create item image relation" + createRelationNtoNResponse.Message);

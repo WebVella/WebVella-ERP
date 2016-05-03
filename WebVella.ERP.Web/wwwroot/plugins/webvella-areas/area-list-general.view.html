@@ -307,7 +307,7 @@
 				</tbody>
 			</table>
 			<div ng-if="ngCtrl.list.meta.dynamicHtmlTemplate">
-				<dynamic-list template-url="ngCtrl.list.meta.dynamicHtmlTemplate" template-data="ngCtrl.list.data" template-meta="ngCtrl.list.meta"></dynamic-list>
+				<div ng-include="ngCtrl.list.meta.dynamicHtmlTemplate"></div>
 			</div>
 			<!--</div>-->
 

@@ -14,8 +14,8 @@
 
 
 	//#region << Configuration  >> ///////////////////////////////////
-	config.$inject = ['$httpProvider', 'wvAppConstants', '$translateProvider'];
-	function config($httpProvider, wvAppConstants, $translateProvider) {
+	config.$inject = ['$httpProvider', 'wvAppConstants', '$translateProvider','$sceDelegateProvider'];
+	function config($httpProvider, wvAppConstants, $translateProvider,$sceDelegateProvider) {
 
 		//#region << Request interceptors >>
 		$httpProvider.interceptors.push(function ($q, $location, ngToast, $cookies, $rootScope, $timeout) {
@@ -108,6 +108,12 @@
 				break;
 		}
 		$translateProvider.useSanitizeValueStrategy(null);
+		//#endregion
+
+		//#region << Dynamic template providers
+			//$sceDelegateProvider.resourceUrlWhitelist([
+			//	'http://www.refsnesdata.no/**'
+			//]);
 		//#endregion
 	}
 	//#endregion

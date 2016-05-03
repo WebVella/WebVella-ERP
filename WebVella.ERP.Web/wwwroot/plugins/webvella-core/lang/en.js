@@ -331,6 +331,7 @@ var translationsEN = {
 	RECORD_LIST_TAB_COLUMNS_INFO_FILTER_SUFIX:' button in the beginning of each query rule row.',
 	RECORD_LIST_TAB_COLUMNS_INFO_SORT_PREFIX:'<strong>Enable column sort</strong> - as addition to the general rule above, there should be one sort rule with activated data link "url_sort", according to the schema available by clicking on the ',
 	RECORD_LIST_TAB_COLUMNS_INFO_SORT_SUFIX:' button in the beginning of each sort rule row.',
+	RECORD_LIST_TAB_COLUMNS_WARNING:'The following columns may not apply as custom HTML template and/or custom Data source are used in this list',
 	RECORD_LIST_TAB_DATA:'Sample Data',
 	RECORD_LIST_TAB_DATA_DEFAULT_SERVICE:'Default service',
 	RECORD_LIST_TAB_DATA_CUSTOM_DATASOURCE:'Custom data source',

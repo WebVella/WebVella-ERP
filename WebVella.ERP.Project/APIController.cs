@@ -30,7 +30,7 @@ namespace WebVella.ERP.Project
 			return Json(new { Message = "This is a sample JSON response from webvella erp sample plugin controller." });
 		}
 
-		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-plugin/api/project/list/my-projects")]
+		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/project/list/my-projects")]
 		public IActionResult MyProjects(string listName = null, string entityName = null, int page = 0)
 		{
 			#region << Init >>
@@ -63,8 +63,9 @@ namespace WebVella.ERP.Project
 					listFields.Add(column.DataName);
 				}
 			}
-			listFields.Add("$user_1_n_project.id");
-			listFields.Add("$role_n_n_project_staff.id");
+			listFields.Add("$user_1_n_project_owner.id");
+			listFields.Add("$user_1_n_project_owner.image");
+			listFields.Add("$role_n_n_project_team.id");
 			listFields.Add("$role_n_n_project_customer.id");
 			var requestedFields = string.Join(",", listFields);
 			#endregion
@@ -95,8 +96,8 @@ namespace WebVella.ERP.Project
 				#region << Check user roles >>
 				foreach (var userRole in user.Roles)
 				{
-					userIsPM = ((List<EntityRecord>)record["$user_1_n_project"]).Any(z => (Guid)z["id"] == user.Id);
-					userIsStaff = ((List<EntityRecord>)record["$role_n_n_project_staff"]).Any(z => (Guid)z["id"] == userRole.Id);
+					userIsPM = ((List<EntityRecord>)record["$user_1_n_project_owner"]).Any(z => (Guid)z["id"] == user.Id);
+					userIsStaff = ((List<EntityRecord>)record["$role_n_n_project_team"]).Any(z => (Guid)z["id"] == userRole.Id);
 					userIsCustomer = ((List<EntityRecord>)record["$role_n_n_project_customer"]).Any(z => (Guid)z["id"] == userRole.Id);
 				}
 				#endregion

@@ -125,7 +125,7 @@ namespace WebVella.Crm.Project
 								area["icon_name"] = "users";
 								area["color"] = "pink";
 								area["folder"] = "Admin";
-								area["weight"] = 1;
+								area["weight"] = 100;
 								var areaRoles = new List<Guid>();
 								areaRoles.Add(SystemIds.AdministratorRoleId);
 								area["roles"] = JsonConvert.SerializeObject(areaRoles);
