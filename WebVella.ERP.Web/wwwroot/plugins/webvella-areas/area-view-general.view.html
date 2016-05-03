@@ -203,7 +203,7 @@
 												 ng-focus="ngCtrl.htmlFieldIsEnabled($event,item,viewData['id'])" ng-keydown="ngCtrl.htmlFieldCheckEscapeKey($event,item)" ng-mousedown="ngCtrl.preventMouseSave($event)"></div>
 
 										</div>
-										<div ng-switch-when="8" class="not-editable" readonly ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-bind-html="::ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)"></div>
+										<div ng-switch-when="8" class="not-editable fake-input-wrapper" readonly ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-bind-html="::ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)"></div>
 										<!-- If type 9 - image -->
 										<div ng-switch-when="9" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)" ng-init="ngCtrl.progress[item.dataName] ={}; ngCtrl.progress[item.dataName][viewData['id']] = 0;  ngCtrl.files[item.dataName]={}; ngCtrl.cacheBreakers[item.dataName]={};">
 											<a ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName][viewData['id']] == 0" href='javascript:void(0)' class='btn btn-default btn-outline' ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false' accept="image/*" translate="{{'BROWSE'}}"></a>
@@ -593,7 +593,10 @@
 									</div>
 								</div>
 								<div ng-if="::!ngCtrl.currentUserHasReadPermission(item)">
-									<span class="not-editable not-readable">hidden</span>
+									<div class="editable-wrapper input-group editable-hidden">
+										<input type="text" class="form-control" disabled="" value="value hidden">
+										<span class="input-group-addon"><i class="fa fa-eye-slash fa-fw"></i></span>
+									</div>
 								</div>
 
 							</div>

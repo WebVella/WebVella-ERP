@@ -24,15 +24,10 @@ namespace WebVella.ERP.Project
 			entityRelationManager = new EntityRelationManager();
 		}
 
-		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-plugin/api/")]
-		public IActionResult Index()
-		{
-			return Json(new { Message = "This is a sample JSON response from webvella erp sample plugin controller." });
-		}
-
 		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/project/list/my-projects")]
 		public IActionResult MyProjects(string listName = null, string entityName = null, int page = 0)
 		{
+
 			#region << Init >>
 			var responseData = new List<EntityRecord>();
 			//Get current user
@@ -54,20 +49,10 @@ namespace WebVella.ERP.Project
 			#endregion
 
 			#region << Init fields >>
-			var listFields = new List<string>();
-			listFields.Add("id");
-			foreach (var column in list.Columns)
-			{
-				if (!column.DataName.Contains("$") && column.DataName != "id")
-				{
-					listFields.Add(column.DataName);
-				}
-			}
-			listFields.Add("$user_1_n_project_owner.id");
-			listFields.Add("$user_1_n_project_owner.image");
-			listFields.Add("$role_n_n_project_team.id");
-			listFields.Add("$role_n_n_project_customer.id");
-			var requestedFields = string.Join(",", listFields);
+			var requestedFields = "id,name,start_date,end_date," +
+			"$user_1_n_project_owner.id,$user_1_n_project_owner.image,$user_1_n_project_owner.username," +
+			"$project_1_n_milestone.id,$project_1_n_milestone.name," +
+			"$role_n_n_project_team.id,$role_n_n_project_customer.id";
 			#endregion
 
 			#region << Query builder >>
@@ -105,13 +90,11 @@ namespace WebVella.ERP.Project
 				{
 					var recordObj = new EntityRecord();
 					recordObj["id"] = record["id"];
-					foreach (var column in list.Columns)
-					{
-						if (!column.DataName.Contains("$") && column.DataName != "id")
-						{
-							recordObj[column.DataName] = record[column.DataName];
-						}
-					}
+					recordObj["name"] = record["name"];
+					recordObj["start_date"] = record["start_date"];
+					recordObj["end_date"] = record["end_date"];
+					recordObj["owner_image"] = ((List<EntityRecord>)record["$user_1_n_project_owner"])[0]["image"];
+					recordObj["owner_username"] = ((List<EntityRecord>)record["$user_1_n_project_owner"])[0]["username"];
 					resultRecordsList.Add(recordObj);
 				}
 			}
@@ -123,5 +106,6 @@ namespace WebVella.ERP.Project
 			
 			return Json(resultRecordsList);
 		}
+
 	}
 }

@@ -89,32 +89,33 @@
 
 	// Resolve ///////////////////////////////////
 	checkAccessPermission.$inject = ['$q', '$log', 'resolvedCurrentUser', 'ngToast', '$translate'];
-	
+
 	function checkAccessPermission($q, $log, resolvedCurrentUser, ngToast, $translate) {
 		var defer = $q.defer();
-		$translate(['NO_ACCESS_TO_AREA']).then(function (translations) {
-			var accessPermission = false;
-			for (var i = 0; i < resolvedCurrentUser.roles.length; i++) {
-				if (resolvedCurrentUser.roles[i] == "bdc56420-caf0-4030-8a0e-d264938e0cda") {
-					accessPermission = true;
-				}
-			}
 
-			if (accessPermission) {
-				defer.resolve();
+		var accessPermission = false;
+		for (var i = 0; i < resolvedCurrentUser.roles.length; i++) {
+			if (resolvedCurrentUser.roles[i] == "bdc56420-caf0-4030-8a0e-d264938e0cda") {
+				accessPermission = true;
 			}
-			else {
+		}
 
+		if (accessPermission) {
+			defer.resolve();
+		}
+		else {
+			$translate(['NO_ACCESS_TO_AREA']).then(function (translations) {
 				ngToast.create({
 					className: 'error',
 					content: translations.NO_ACCESS_TO_AREA,
-				timeout: 7000
+					timeout: 7000
+
+				});
 			});
 			defer.reject("No access");
 		}
 		return defer.promise;
-	});
-}
+	}
 
 	resolveCurrentUser.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams', '$timeout'];
 

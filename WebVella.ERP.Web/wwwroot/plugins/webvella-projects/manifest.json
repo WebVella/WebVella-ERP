@@ -20,6 +20,7 @@
 	},
 	"module": {
 		"css": [
+			"/plugins/webvella-projects/css/styles.css"
 		],
 		"js": [
 		],

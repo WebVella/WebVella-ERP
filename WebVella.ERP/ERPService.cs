@@ -355,8 +355,16 @@ namespace WebVella.ERP
 							nameRoleField.Auditable = false;
 							nameRoleField.System = true;
 							nameRoleField.DefaultValue = "";
-
 							nameRoleField.MaxLength = 200;
+							nameRoleField.EnableSecurity = true;
+							nameRoleField.Permissions = new FieldPermissions();
+							nameRoleField.Permissions.CanRead = new List<Guid>();
+							nameRoleField.Permissions.CanUpdate = new List<Guid>();
+							//READ
+							nameRoleField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+							nameRoleField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+							//UPDATE
+							nameRoleField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 
 							fieldResponse = entMan.CreateField(roleEntity.Id.Value, nameRoleField, false);
 

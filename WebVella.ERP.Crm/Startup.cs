@@ -194,6 +194,7 @@ namespace WebVella.Crm.Project
 									textboxField.Permissions.CanUpdate = new List<Guid>();
 									//READ
 									textboxField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+									textboxField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
 									//UPDATE
 									textboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 									{

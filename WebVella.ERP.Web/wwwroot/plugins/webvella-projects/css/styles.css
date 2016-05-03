@@ -1,0 +1,87 @@
+﻿/*#region << Project list >>*/
+
+.project-list .th-action {
+	width:1%;
+}
+
+.project-list .th-owner {
+	width: 60px;
+	text-align: center;
+}
+
+.project-list .td-owner {
+	position: relative;
+}
+
+.project-list .avatar-wrapper {
+	width: 24px;
+	height: 24px;
+	border-radius: 24px;
+	box-shadow: 0 0 1px #999;
+	overflow: hidden;
+	display: inline-block;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	margin: auto;
+}
+
+.project-list .avatar {
+	width: 24px;
+}
+
+.project-list .th-tasks,
+.project-list .th-milestones,
+.project-list .th-bugs {
+	width:150px;
+	padding-top: 11px;
+}
+
+.project-list .th-start-date,
+.project-list .th-end-date{
+	width:100px;
+	text-align:right;
+}
+
+.project-list .td-tasks {
+	margin-bottom: 0;
+	height: 15px;
+}
+
+.project-list .progress {
+	margin-bottom: 0;
+	height: 15px;
+	border-radius:0;
+	box-shadow:none;
+	margin:0 30px;
+}
+
+.project-list .progress-bar {
+	box-shadow:none;
+}
+
+.project-list .counter {
+    font-size: 12px;
+    color: #999;
+	display:inline-block;
+	width:25px;
+}
+
+	.project-list .counter.pull-left {
+		text-align:center;
+	}
+
+	.project-list .counter.pull-right {
+		text-align:center;
+	}
+
+.project-list .td-start-date,
+.project-list .td-end-date{
+	color:#999;
+	font-size:12px;
+	text-align:right;
+}
+
+/*#endregion*/

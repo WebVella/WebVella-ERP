@@ -862,9 +862,20 @@ TREE SELECT
 	//Convert recordList to recordListInput
 	updateViewInput = updateView.DynamicMapTo<InputRecordView>();
 
-	//General view fields
-	//updateViewInput.IconName = "";
+	#region << Details >>
+	//updateViewInput.Label = "Details";
+	#endregion
 
+	#region << Get the header Region >>
+	// var headerRegion = new InputRecordViewRegion();
+	// foreach(var region in updateViewInput.Regions) {
+		// if(region.Name == "header") {
+			// headerRegion = region;
+		// }
+	// }
+	// headerRegion.Sections = new List<InputRecordViewSection>();
+	#endregion	
+	
 	#region << Section >>
 	viewSection = new InputRecordViewSection();
 	viewSection.Id = Guid.NewGuid();
@@ -930,15 +941,10 @@ TREE SELECT
 	#endregion
 
 	//Save section
-	foreach (var region in updateViewInput.Regions)
-	{
-		if (region.Name == "default")
-		{
-			region.Sections.Add(viewSection);
-		}
-	}
+	headerRegion.Sections.Add(viewSection);
 
 	#endregion
+
 
 	{
 		var response = entMan.UpdateRecordView(ENTITY_ID, updateViewInput);
