@@ -28,20 +28,21 @@ namespace WebVella.ERP.Web.Controllers
 			var appDependencyInjections = new List<string>();
 
 			#region << Get and init plugin data >>
-			var pluginManifests = pluginService.Plugins;
-			pluginManifests.Sort((plugin1,plugin2) => plugin1.LoadPriority.CompareTo(plugin2.LoadPriority));
-			foreach(var manifest in pluginManifests) {
+			foreach(var manifest in pluginService.Plugins) {
+
+				var cacheBreaker = manifest.Version.ToString();
+
 				foreach(var cssFile in manifest.Libraries.Css) {
-					libraryCssFileList.Add(cssFile);
+					libraryCssFileList.Add(AppendCacheBreaker(cssFile, cacheBreaker));
 				}
 				foreach(var cssFile in manifest.Module.Css) {
-					moduleCssFileList.Add(cssFile);
+					moduleCssFileList.Add(AppendCacheBreaker(cssFile, cacheBreaker));
 				}
 				foreach(var jsFile in manifest.Libraries.Js) {
-					libraryJsFileList.Add(jsFile);
+					libraryJsFileList.Add(AppendCacheBreaker(jsFile, cacheBreaker));
 				}
 				foreach(var jsFile in manifest.Module.Js) {
-					moduleJsFileList.Add(jsFile);
+					moduleJsFileList.Add(AppendCacheBreaker(jsFile, cacheBreaker));
 				}
 				foreach(var appInject in manifest.Module.WVAppInjects) {
 					appDependencyInjections.Add(appInject);
@@ -60,5 +61,17 @@ namespace WebVella.ERP.Web.Controllers
 
             return View();
         }
+
+		private string AppendCacheBreaker(string url, string cacheBreaker)
+		{
+			if( url.StartsWith("/") )
+			{
+				if( !url.Contains("?"))
+					return $"{url}?{cacheBreaker}";
+
+				return $"{url}&{cacheBreaker}";
+			}
+			return url;
+		}
     }
 }

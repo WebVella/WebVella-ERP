@@ -37,28 +37,40 @@
 					<li role="presentation">
 						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/actions" translate="{{'RECORD_VIEW_TAB_ACTIONS'}}"></a>
 					</li>
+					<li role="presentation">
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/data" translate="{{'RECORD_VIEW_TAB_DATA'}}"></a>
+					</li>
 				</ul>
 			</div>
 		</nav>
 
 		<nav class="navbar navbar-default navbar-erp">
 			<div class="container-fluid">
-				<div class="navbar-header">
-					<span class="navbar-brand">regions:</span>
-				</div>
-				<ul class="nav navbar-nav">
-					<li role="presentation" ui-sref-active="active" ng-repeat="region in ngCtrl.view.regions track by region.name">
+				<ul class="nav navbar-nav navbar-left">
+					<li role="presentation" ui-sref-active="active" ng-repeat="region in ngCtrl.view.regions | filter:{name:'header'} track by region.name">
 						<a class="display-inline-block" style="padding-right:5px" ui-sref='webvella-admin-entity-view-manage({entityName:"{{ngCtrl.stateParams.entityName}}" ,viewName:"{{ngCtrl.stateParams.viewName}}", regionName:"{{region.name}}"})'>
 							<i class="fa fa-fw fa-eye-slash go-red" ng-if="!region.render"></i> {{region.label}}
 						</a>
 						<a class="action display-inline-block" style="padding-left:0;margin-left:-5px;padding-right:10px;" ng-click="ngCtrl.manageRegion(region)"><i class="fa fa-fw fa-cog"></i></a>
 					</li>
 				</ul>
-				<ul class="nav navbar-nav  navbar-right">
-					<li role="presentation">
-						<a ng-click="ngCtrl.manageRegion(null)"><i class="fa fa-fw fa-plus-circle"></i> <span translate="{{'ADD_NEW'}}"></span></a>
+				<div class="navbar-header">
+					<span class="navbar-brand" style="border-left: 1px solid #ccc;margin-right:15px;margin-left:20px;padding-left:40px;">Tabs: </span>
+				</div>
+				<ul class="nav navbar-nav">
+					<li role="presentation" ui-sref-active="active" ng-repeat="region in ngCtrl.view.regions | filter:{name:'!header'} track by region.name">
+						<a class="display-inline-block" style="padding-right:5px" ui-sref='webvella-admin-entity-view-manage({entityName:"{{ngCtrl.stateParams.entityName}}" ,viewName:"{{ngCtrl.stateParams.viewName}}", regionName:"{{region.name}}"})'>
+							<i class="fa fa-fw fa-eye-slash go-red" ng-if="!region.render"></i> {{region.label}}
+						</a>
+						<a class="action display-inline-block" style="padding-left:0;margin-left:-5px;padding-right:10px;" ng-click="ngCtrl.manageRegion(region)"><i class="fa fa-fw fa-cog"></i></a>
 					</li>
 				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li role="presentation">
+						<a ng-click="ngCtrl.manageRegion(null)"><i class="fa fa-fw fa-plus-circle"></i> <span translate="{{'ADD_NEW_TAB'}}"></span></a>
+					</li>
+				</ul>
+
 			</div>
 		</nav>
 
@@ -233,7 +245,7 @@
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageRegion.name.$invalid && !manageRegion.name.$pristine}">
 						<label translate="{{'NAME'}}"></label>
-						<input ng-model="popupCtrl.region.name" name="name" type="text" class="form-control" ng-disabled="popupCtrl.region.name == 'default'"
+						<input ng-model="popupCtrl.region.name" name="name" type="text" class="form-control" ng-disabled="popupCtrl.region.name == 'header'"
 							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
 						<ng-messages for="manageRegion.name.$error" ng-if="manageRegion.name.$touched && manageRegion.name.$dirty && manageRegion.name.$invalid || popupCtrl.nameError">
 							<ng-message when="required" class="error" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></ng-message>
@@ -266,7 +278,7 @@
 						<label translate="{{'RENDER'}}"></label>
 						<div class="checkbox">
 							<label>
-								<input ng-model="popupCtrl.region.render" type="checkbox" value="true" ng-disabled="popupCtrl.region.name == 'default'">
+								<input ng-model="popupCtrl.region.render" type="checkbox" value="true">
 								<span translate="{{'RENDER_CHECKBOX_LABEL'}}"></span>
 							</label>
 						</div>
@@ -276,12 +288,17 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageRegion.weight.$invalid && !manageRegion.weight.$pristine}">
-						<label for="place" translate="{{'WEIGHT'}}">Weight</label>
-						<input ng-model="popupCtrl.region.weight" name="weight" type="text" class="form-control" id="row" required
-							   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}">
-						<div class="error ng-hide" ng-show="manageRegion.weight.$dirty && manageRegion.weight.$invalid">
-							<small class="error ng-hide" ng-show="manageRegion.weight.$error.required" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
-							<small class="error ng-hide" ng-show="manageRegion.weight.$error.pattern" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
+						<label for="place" translate="{{'WEIGHT'}}"></label>
+						<div ng-if="popupCtrl.region.name != 'header'">
+							<input ng-model="popupCtrl.region.weight" name="weight" type="text" class="form-control" id="row" required
+								   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}">
+							<div class="error ng-hide" ng-show="manageRegion.weight.$dirty && manageRegion.weight.$invalid">
+								<small class="error ng-hide" ng-show="manageRegion.weight.$error.required" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="manageRegion.weight.$error.pattern" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
+							</div>
+						</div>
+						<div ng-if="popupCtrl.region.name == 'header'">
+							<p class="form-control-static">if rendered, is always first on top of the form</p>
 						</div>
 					</div>
 				</div>
@@ -291,7 +308,7 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button ng-if="popupCtrl.isUpdate" class="btn btn-link pull-left go-red" ng-click="popupCtrl.delete()" translate="{{'DELETE'}}"></button>
+		<button ng-if="popupCtrl.isUpdate && popupCtrl.region.name != 'header'" class="btn btn-link pull-left go-red" ng-click="popupCtrl.delete()" translate="{{'DELETE'}}"></button>
 		<button class="btn btn-primary ng-hide" ng-show="popupCtrl.isUpdate" ng-click="popupCtrl.ok()" translate="{{'SAVE'}}"></button>
 		<button class="btn btn-primary ng-hide" ng-show="!popupCtrl.isUpdate" ng-click="popupCtrl.ok()" translate="{{'CREATE'}}"></button>
 		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>

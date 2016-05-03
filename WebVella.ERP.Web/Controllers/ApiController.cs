@@ -19,6 +19,7 @@ using CsvHelper;
 using Microsoft.AspNet.StaticFiles;
 using WebVella.ERP.Utilities;
 using System.Dynamic;
+using WebVella.ERP.Plugins;
 
 
 
@@ -44,6 +45,7 @@ namespace WebVella.ERP.Web.Controllers
 			entityManager = new EntityManager();
 			entityRelationManager = new EntityRelationManager();
 		}
+
 
 		[AllowAnonymous]
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/user/login")]
@@ -767,6 +769,8 @@ namespace WebVella.ERP.Web.Controllers
 						list.VisibleColumnsCount = inputList.VisibleColumnsCount;
 					if (prop.Name.ToLower() == "dynamichtmltemplate")
 						list.DynamicHtmlTemplate = inputList.DynamicHtmlTemplate;
+					if (prop.Name.ToLower() == "datasourceurl")
+						list.DataSourceUrl = inputList.DataSourceUrl;
 					if (prop.Name.ToLower() == "columnwidthscsv")
 						list.ColumnWidthsCSV = inputList.ColumnWidthsCSV;
 					if (prop.Name.ToLower() == "actionitems")
@@ -1248,6 +1252,8 @@ namespace WebVella.ERP.Web.Controllers
 						view.IconName = inputView.IconName;
 					if (prop.Name.ToLower() == "dynamichtmltemplate")
 						view.DynamicHtmlTemplate = inputView.DynamicHtmlTemplate;
+					if (prop.Name.ToLower() == "datasourceurl")
+						view.DataSourceUrl = inputView.DataSourceUrl;
 					if (prop.Name.ToLower() == "actionitems")
 						view.ActionItems = inputView.ActionItems;
 					if (prop.Name.ToLower() == "servicecode")
@@ -1782,6 +1788,10 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult UpdateEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
+			//clear authentication cache
+			if ( entityName == "user")
+				WebSecurityUtil.RemoveIdentityFromCache(recordId);
+
 			//TODO implement validation
 			QueryResponse result = recMan.UpdateRecord(entityName, postObj);
 			return DoResponse(result);
@@ -1792,6 +1802,10 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult PatchEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
+			//clear authentication cache
+			if (entityName == "user")
+				WebSecurityUtil.RemoveIdentityFromCache(recordId);
+
 			//TODO implement validation
 			postObj["id"] = recordId;
 			QueryResponse result = recMan.UpdateRecord(entityName, postObj);
@@ -1855,13 +1869,13 @@ namespace WebVella.ERP.Web.Controllers
 
 		// GET: api/v1/en_US/record/{entityName}/list
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list")]
-		public IActionResult GetRecordsByEntityName(string entityName, string ids = "", string fields = "")
+		public IActionResult GetRecordsByEntityName(string entityName, string ids = "", string fields = "", int? limit = null)
 		{
 			var response = new QueryResponse();
 			var recordIdList = new List<Guid>();
 			var fieldList = new List<string>();
 
-			if(!String.IsNullOrWhiteSpace(ids)) {
+			if(!String.IsNullOrWhiteSpace(ids) && ids != "null") {
 				var idStringList = ids.Split(',');
 				var outGuid = Guid.Empty;
 				foreach(var idString in idStringList) {
@@ -1877,7 +1891,7 @@ namespace WebVella.ERP.Web.Controllers
 				}
 			}
 
-			if(!String.IsNullOrWhiteSpace(fields)) {
+			if(!String.IsNullOrWhiteSpace(fields) && ids != "null") {
 				var fieldsArray = fields.Split(',');
 				var hasId = false;
 				foreach(var fieldName in fieldsArray) {
@@ -1902,12 +1916,19 @@ namespace WebVella.ERP.Web.Controllers
 				recordsFilterObj = EntityQuery.QueryOR(QueryList.ToArray());
 			}
 			
-			if(!fieldList.Contains("id")) {
-				fieldList.Add("id");
+			var columns = "*";
+			if(fieldList.Count > 0) {
+				if(!fieldList.Contains("id")) {
+					fieldList.Add("id");
+				}
+				columns = String.Join(",", fieldList.Select(x => x.ToString()).ToArray());
 			}
-			var columns = String.Join(",", fieldList.Select(x => x.ToString()).ToArray());
 
 			EntityQuery query = new EntityQuery(entityName, columns, recordsFilterObj, null, null, null);
+			if(limit != null && limit >0) {
+				query = new EntityQuery(entityName, columns, recordsFilterObj, null, null, limit);
+			}
+
 			var queryResponse = recMan.Find(query);
 			if (!queryResponse.Success)
 			{
@@ -3633,6 +3654,18 @@ namespace WebVella.ERP.Web.Controllers
 			}
 		}
 
+		#endregion
+
+		#region << Plugins >>
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/plugin/list")]
+		public IActionResult GetPlugins()
+		{
+			var responseObj = new ResponseModel();
+			responseObj.Object = new PluginService().Plugins;
+			responseObj.Success = true;
+			responseObj.Timestamp = DateTime.UtcNow;
+			return DoResponse(responseObj);
+		}
 		#endregion
 
 	}

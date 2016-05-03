@@ -1706,7 +1706,7 @@ namespace WebVella.ERP.Api
 			{
 				response.Object = entity;
 
-				response.Errors = ValidateEntity(entity, true);
+				response.Errors = ValidateEntity(entity, false);
 
 				if (response.Errors.Count > 0)
 				{
@@ -3724,7 +3724,7 @@ namespace WebVella.ERP.Api
 			try
 			{
 				response.Object = recordList;
-				response.Errors = ValidateRecordList(entity, inputRecordList, true);
+				response.Errors = ValidateRecordList(entity, inputRecordList, false);
 
 				recordList = inputRecordList.MapTo<RecordList>();
 
@@ -5941,6 +5941,8 @@ namespace WebVella.ERP.Api
 			create.Weight = 10;
 			create.VisibleColumnsCount = 5;
 			create.ServiceCode = null;
+			create.DynamicHtmlTemplate = null;
+			create.DataSourceUrl = null;
 			create.ActionItems = new List<ActionItem>();
 			create.ActionItems.Add(GenerateListActionItem("wv_create_record"));
 			create.ActionItems.Add(GenerateListActionItem("wv_import_records"));
@@ -5960,6 +5962,8 @@ namespace WebVella.ERP.Api
 			lookup.Weight = 10;
 			lookup.VisibleColumnsCount = 5;
 			lookup.ServiceCode = null;
+			lookup.DynamicHtmlTemplate = null;
+			lookup.DataSourceUrl = null;
 			lookup.ActionItems = new List<ActionItem>();
 			lookup.ActionItems.Add(GenerateListActionItem("wv_create_record"));
 			lookup.ActionItems.Add(GenerateListActionItem("wv_import_records"));
@@ -6023,10 +6027,10 @@ namespace WebVella.ERP.Api
 		{
 			List<RecordView> recordViewList = new List<RecordView>();
 
-			var contentRegion = new RecordViewRegion();
-			contentRegion.Name = "default";
-			contentRegion.Label = "Default";
-			contentRegion.Sections = new List<RecordViewSection>();
+			var headerRegion = new RecordViewRegion();
+			headerRegion.Name = "header";
+			headerRegion.Label = "Header";
+			headerRegion.Sections = new List<RecordViewSection>();
 
 			var create = new RecordView();
 			create.Id = Guid.NewGuid();
@@ -6038,8 +6042,10 @@ namespace WebVella.ERP.Api
 			create.Weight = 10;
 			create.IconName = "file-text-o";
 			create.Regions = new List<RecordViewRegion>();
-			create.Regions.Add(contentRegion);
+			create.Regions.Add(headerRegion);
 			create.ServiceCode = null;
+			create.DynamicHtmlTemplate = null;
+			create.DataSourceUrl = null;
 			create.ActionItems = new List<ActionItem>();
 			create.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
 			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
@@ -6057,8 +6063,10 @@ namespace WebVella.ERP.Api
 			quickCreate.IconName = "file-text-o";
 			quickCreate.Weight = 10;
 			quickCreate.Regions = new List<RecordViewRegion>();
-			quickCreate.Regions.Add(contentRegion);
+			quickCreate.Regions.Add(headerRegion);
 			quickCreate.ServiceCode = null;
+			quickCreate.DynamicHtmlTemplate = null;
+			quickCreate.DataSourceUrl = null;
 			quickCreate.ActionItems = new List<ActionItem>();
 			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
 			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
@@ -6076,8 +6084,10 @@ namespace WebVella.ERP.Api
 			quickView.IconName = "file-text-o";
 			quickView.Weight = 10;
 			quickView.Regions = new List<RecordViewRegion>();
-			quickView.Regions.Add(contentRegion);
+			quickView.Regions.Add(headerRegion);
 			quickView.ServiceCode = null;
+			quickView.DynamicHtmlTemplate = null;
+			quickView.DataSourceUrl = null;
 			quickView.ActionItems = new List<ActionItem>();
 			quickView.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
 			quickView.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
@@ -6093,8 +6103,10 @@ namespace WebVella.ERP.Api
 			general.Weight = 10;
 			general.IconName = "file-text-o";
 			general.Regions = new List<RecordViewRegion>();
-			general.Regions.Add(contentRegion);
+			general.Regions.Add(headerRegion);
 			general.ServiceCode = null;
+			general.DynamicHtmlTemplate = null;
+			general.DataSourceUrl = null;
 			general.ActionItems = new List<ActionItem>();
 			general.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
 			general.ActionItems.Add(GenerateViewActionItem("wv_back_button"));

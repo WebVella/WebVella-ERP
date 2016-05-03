@@ -39,7 +39,7 @@
 		function errorCallback(response) {
 			defer.reject(response.message);
 		}
-		webvellaCoreService.getRecordsByListName("null","area", "null",null, successCallback, errorCallback);
+		webvellaCoreService.getRecordsWithoutList(null,null,null,"area", successCallback, errorCallback);
 		return defer.promise;
 	}
 
@@ -126,7 +126,7 @@
 
 
 			var menuItem = webvellaDesktopBrowsenavFactory.generateMenuItemFromArea(sitemapAreas[i]);
-			if (menuItem != null) {
+			if (menuItem != null && menuItem.roles != null) {
 				var userCanUseArrea = false;
 				for (var k = 0; k < resolvedCurrentUser.roles.length; k++) {
 					for (var p = 0; p < menuItem.roles.length; p++) {

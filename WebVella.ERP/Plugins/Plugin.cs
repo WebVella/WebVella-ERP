@@ -58,6 +58,15 @@ namespace WebVella.ERP.Plugins
 		[JsonProperty(PropertyName = "license")]
 		public string License { get; private set; }
 
+		[JsonProperty(PropertyName = "settings_url")]
+		public string SettingsUrl { get; private set; }
+
+		[JsonProperty(PropertyName = "plugin_page_url")]
+		public string PluginPageUrl { get; private set; }
+
+		[JsonProperty(PropertyName = "icon_url")]
+		public string IconUrl { get; private set; }
+
 		[JsonProperty(PropertyName = "load_priority")]
 		public int LoadPriority { get; private set; }
 
@@ -69,5 +78,10 @@ namespace WebVella.ERP.Plugins
 
 		[JsonIgnore]
 		internal List<Assembly> Assemblies { get; set; }
+
+		public override string ToString()
+		{
+			return Name;
+		}
 	}
 }

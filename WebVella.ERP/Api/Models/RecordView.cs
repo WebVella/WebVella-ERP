@@ -58,6 +58,15 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "type")]
 		public string Type { get; set; }
 
+		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
+		public string DynamicHtmlTemplate { get; set; }
+
+		[JsonProperty(PropertyName = "dataSourceUrl")]
+		public string DataSourceUrl { get; set; }
+
+		[JsonProperty(PropertyName = "serviceCode")]
+		public string ServiceCode { get; set; }
+
 		[JsonProperty(PropertyName = "regions")]
 		public List<InputRecordViewRegion> Regions { get; set; }
 
@@ -67,14 +76,8 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "sidebar")]
 		public InputRecordViewSidebar Sidebar { get; set; }
 
-		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
-		public string DynamicHtmlTemplate { get; set; }
-
 		[JsonProperty(PropertyName = "actionItems")]
 		public List<ActionItem> ActionItems { get; set; }
-
-		[JsonProperty(PropertyName = "serviceCode")]
-		public string ServiceCode { get; set; }
 
 		public static InputRecordView Convert(JObject inputField)
 		{
@@ -497,6 +500,7 @@ namespace WebVella.ERP.Api.Models
 			Sidebar = new RecordViewSidebar();
             RelationOptions = new List<EntityRelationOptions>();
 			DynamicHtmlTemplate = "";
+			DataSourceUrl = "";
 			ActionItems = new List<ActionItem>();
 		}
 
@@ -527,6 +531,15 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "type")]
 		public string Type { get; set; }
 
+		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
+		public string DynamicHtmlTemplate { get; set; }
+
+		[JsonProperty(PropertyName = "dataSourceUrl")]
+		public string DataSourceUrl { get; set; }
+
+		[JsonProperty(PropertyName = "serviceCode")]
+		public string ServiceCode { get; set; }
+
 		[JsonProperty(PropertyName = "regions")]
 		public List<RecordViewRegion> Regions { get; set; }
 
@@ -536,14 +549,9 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "sidebar")]
 		public RecordViewSidebar Sidebar { get; set; }
 
-		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
-		public string DynamicHtmlTemplate { get; set; }
-
 		[JsonProperty(PropertyName = "actionItems")]
 		public List<ActionItem> ActionItems { get; set; }
 
-		[JsonProperty(PropertyName = "serviceCode")]
-		public string ServiceCode { get; set; }
 	}
 
 	////////////////////////

@@ -69,7 +69,7 @@
         	defer.reject(response.message);
         }
 
-        webvellaCoreService.getRecordsByListName("null","role", "null", null, successCallback, errorCallback);
+        webvellaCoreService.getRecordsWithoutList(null,null,null,"role", successCallback, errorCallback);
 
         return defer.promise;
     }
@@ -78,21 +78,21 @@
 
     //#region << Controller >> ///////////////////////////////
     controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle','$timeout', 
-							'resolvedRolesList', '$uibModal', 'webvellaCoreService'];
+							'resolvedRolesList', '$uibModal', 'webvellaCoreService','$translate'];
     
     function controller($scope, $log, $rootScope, $state, pageTitle,$timeout,
-						resolvedRolesList, $uibModal, webvellaCoreService) {
+						resolvedRolesList, $uibModal, webvellaCoreService,$translate) {
 
         
         var ngCtrl = this;
         ngCtrl.search = {};
 
-        //#region << Update page title >>
-        ngCtrl.pageTitle = "User List | " + pageTitle;
-		$timeout(function(){
+		//#region << Update page title & hide the side menu >>
+		$translate(['ROLES_PAGE_TITLE', 'ROLES']).then(function (translations) {
+			ngCtrl.pageTitle = translations.ROLES_PAGE_TITLE + " | " + pageTitle;
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
-		},0);
-
+			$rootScope.adminSectionName = translations.ROLES;
+		});
     	//#endregion
 
         ngCtrl.roles = fastCopy(resolvedRolesList.data);
@@ -132,9 +132,9 @@
 
 
     //// Modal Controllers
-    manageRoleController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl'];
+    manageRoleController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl','$translate'];
     
-    function manageRoleController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaCoreService, ngToast, $timeout, $state, $location, ngCtrl) {
+    function manageRoleController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaCoreService, ngToast, $timeout, $state, $location, ngCtrl,$translate) {
         
         var popupCtrl = this;
         popupCtrl.modalInstance = $uibModalInstance;
@@ -142,10 +142,14 @@
         popupCtrl.isUpdate = true;
         if (popupCtrl.role.id == null) {
         	popupCtrl.isUpdate = false;
-            popupCtrl.modalTitle = "Create new role";
+			$translate(['ROLE_CREATE_MODAL_TITLE']).then(function (translations) {
+				popupCtrl.modalTitle = translations.ROLE_CREATE_MODAL_TITLE;
+			});
         }
         else {
-            popupCtrl.modalTitle ='Edit role <span class="go-green">' + popupCtrl.role.name + '</span>';
+			$translate('ROLE_MANAGE_MODAL_TITLE', { name: popupCtrl.role.name }).then(function (modalTitle) {
+				popupCtrl.modalTitle =modalTitle;
+			} );
         }
 
         popupCtrl.deleteRoleModal = function () {
@@ -171,10 +175,12 @@
 
         /// Aux
         function successCallback(response) {
-            ngToast.create({
-                className: 'success',
-                content: '<span class="go-green">Success:</span> ' + 'The role was successfully saved'
-            });
+			$translate(['SUCCESS_MESSAGE_LABEL','ROLE_SAVE_SUCCESS_MESSAGE']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + " " + translations.ROLE_SAVE_SUCCESS_MESSAGE
+				});
+			});
             $uibModalInstance.close('success');
             webvellaCoreService.GoToState($state.current.name, {});
         }

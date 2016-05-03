@@ -154,7 +154,7 @@
 												</div>
 												<!-- If type 7 - fileupload -->
 												<div ng-switch-when="7" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
-													<a ng-if='!ngCtrl.selectedSidebarItem.data[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline' ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false'>Browse</a>
+													<a ng-if='!ngCtrl.selectedSidebarItem.data[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline' ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false' translate="{{'BROWSE'}}"></a>
 													<div class="progress" ng-if="!ngCtrl.selectedSidebarItem.data[item.dataName] && ngCtrl.progress[item.dataName] > 0 && ngCtrl.progress[item.dataName] <= 100">
 														<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': ngCtrl.progress[item.dataName]+'%'}">
 															<span ng-if="ngCtrl.progress[item.dataName] < 100">{{ngCtrl.progress[item.dataName] || '0'}}%</span>
@@ -177,7 +177,7 @@
 												<div ng-switch-when="8" class="not-editable" readonly ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-bind-html="::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarItem.data[item.dataName],item.meta)"></div>
 												<!-- If type 9 - image -->
 												<div ng-switch-when="9" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
-													<a ng-if='!ngCtrl.selectedSidebarItem.data[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline' ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
+													<a ng-if='!ngCtrl.selectedSidebarItem.data[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline' ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false' accept="image/*" translate="{{'BROWSE'}}"></a>
 													<div class="progress" ng-if="!ngCtrl.selectedSidebarItem.data[item.dataName] && ngCtrl.progress[item.dataName] > 0 && ngCtrl.progress[item.dataName] <= 100">
 														<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': ngCtrl.progress[item.dataName]+'%'}">
 															<span ng-if="ngCtrl.progress[item.dataName] < 100">{{ngCtrl.progress[item.dataName] || '0'}}%</span>
@@ -768,7 +768,7 @@
 				<div class="alert alert-warning">{{popupCtrl.warningMessage}}</div>
 			</div>
 			<div ng-if="!popupCtrl.hasWarning">
-				<form id="filters" class="form-inline">
+				<!--<form id="filters" class="form-inline">
 					<div class="form-group">
 						<div class="input-group">
 							<input ng-model="popupCtrl.searchQuery" type="text" class="form-control" placeholder="{{::popupCtrl.relationLookupList.meta.columns[0].meta.label}}" ng-keydown="popupCtrl.checkForSearchEnter($event)">
@@ -777,7 +777,7 @@
 							</span>
 						</div>
 					</div>
-				</form>
+				</form>-->
 
 				<table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="popupCtrl.relationLookupList.data.length == 0">
 					<thead>

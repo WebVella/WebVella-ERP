@@ -39,6 +39,9 @@
 					<li role="presentation">
 						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/actions" translate="{{'RECORD_LIST_TAB_QUERY_ACTIONS'}}"></a>
 					</li>
+					<li role="presentation">
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/data" translate="{{'RECORD_LIST_TAB_DATA'}}"></a>
+					</li>
 				</ul>
 			</div>
 		</nav>
@@ -143,8 +146,8 @@
 													<i class="fa fa-times fa-fw go-red"></i>
 												</span>
 												<input type="text" class="form-control" disabled editable-checkbox="ngCtrl.list.system"
-														e-title="{{'CHECKBOX_TRUE_LABEL' | translate}}" value="{{ngCtrl.renderFieldValue(ngCtrl.list.system,{fieldType:2})}}"
-														onbeforesave="ngCtrl.fieldUpdate('system',$data)" e-form="fieldForm_system">
+													   e-title="{{'CHECKBOX_TRUE_LABEL' | translate}}" value="{{ngCtrl.renderFieldValue(ngCtrl.list.system,{fieldType:2})}}"
+													   onbeforesave="ngCtrl.fieldUpdate('system',$data)" e-form="fieldForm_system">
 												<span class="input-group-addon" ng-click="fieldForm_system.$show()" ng-hide="fieldForm_system.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 										</div>
@@ -177,7 +180,7 @@
 											<div class="editable-wrapper input-group first-background-transparent editable-updatable" ng-dblclick="fieldForm_iconName.$show()">
 												<span class="input-group-addon"><i class="fa fa-{{ngCtrl.list.iconName}} fa-fw"></i></span>
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.iconName"
-													   value="{{ngCtrl.list.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName', $data)" e-form="fieldForm_iconName"  autocomplete="off"
+													   value="{{ngCtrl.list.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName', $data)" e-form="fieldForm_iconName" autocomplete="off"
 													   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in ngCtrl.icons | filter:$viewValue | limitTo:10">
 												<span class="input-group-addon" ng-click="fieldForm_iconName.$show()" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
@@ -206,24 +209,6 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2" translate="{{'PAGE_SIZE'}}"></label>
-										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_pageSize.$show()">
-												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.pageSize"
-													   value="{{ngCtrl.list.pageSize}}"
-													   onbeforesave="ngCtrl.fieldUpdate('pageSize',$data)" e-form="fieldForm_pageSize">
-												<span class="input-group-addon" ng-click="fieldForm_pageSize.$show()" ng-hide="fieldForm_pageSize.$visible"><i class="fa fa-pencil fa-fw"></i></span>
-											</div>
-											<div class="form-description" translate="{{'PAGE_SIZE_DESCRIPTION'}}"></div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-6">
-								<div class="form-group">
-									<div class="row editable-field field">
 										<label class="control-label col-lg-2" translate="{{'RECORD_LIST_COLUMNS_WIDTH_CSV'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_columnWidthsCSV.$show()">
@@ -237,6 +222,29 @@
 									</div>
 								</div>
 							</div>
+
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<div class="row editable-field field">
+										<label class="control-label col-lg-2" translate="{{'PAGE_SIZE'}}"></label>
+										<div class="col-lg-10">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_pageSize.$show()">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.pageSize"
+													   value="{{ngCtrl.list.pageSize}}"
+													   onbeforesave="ngCtrl.fieldUpdate('pageSize',$data)" e-form="fieldForm_pageSize">
+												<span class="input-group-addon" ng-click="fieldForm_pageSize.$show()" ng-hide="fieldForm_pageSize.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+											</div>
+											<div class="form-description" translate="{{'PAGE_SIZE_DESCRIPTION'}}"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+							</div>
+						</div>
+						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
@@ -256,6 +264,26 @@
 									</div>
 								</div>
 							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<div class="row editable-field field">
+										<label class="control-label col-lg-2" translate="{{'CUSTOM_DATA_SOURCE'}}"></label>
+										<div class="col-lg-10">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_dataSourceUrl.$show()">
+												<span class="input-group-addon" ng-if="!fieldForm_dataSourceUrl.$visible">
+													<a href="{{ngCtrl.list.dataSourceUrl}}" target="_blank"><i class="fa fa-globe fa-fw"></i></a>
+												</span>
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.dataSourceUrl"
+													   value="{{ngCtrl.renderFieldValue(ngCtrl.list.dataSourceUrl,{fieldType:18})}}"
+													   onbeforesave="ngCtrl.fieldUpdate('dataSourceUrl', $data)" e-form="fieldForm_dataSourceUrl">
+												<span class="input-group-addon" ng-click="fieldForm_dataSourceUrl.$show()" ng-hide="fieldForm_dataSourceUrl.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+											</div>
+											<div class="form-description" translate="{{'CUSTOM_DATA_SOURCE_DESCRIPTION'}}"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+
 						</div>
 					</div>
 

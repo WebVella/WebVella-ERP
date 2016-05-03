@@ -5,9 +5,12 @@
 	"version": 20160427,
 	"company": "WebVella",
 	"company_url": "http://webvella.com",
+	"plugin_page_url": "http://webvella.com",
 	"author": "Iglika Raykova,Bozhidar Zashev,George Raykov,Rumen Yankov,Todor Uzunov",
 	"repository": "",
 	"license": "Apache License 2.0",
+	"settings_url": "",
+	"icon_url": "",
 	"load_priority": 14,
 	"libraries": {
 		"css": [
@@ -24,14 +27,13 @@
 			"/plugins/webvella-areas/sidebar.controller.js",
 			"/plugins/webvella-areas/area-list-general.module.js",
 			"/plugins/webvella-areas/area-view-create.module.js",
-			"/plugins/webvella-areas/create-record-sidebar.controller.js",
+			"/plugins/webvella-areas/detached-item-sidebar.controller.js",
 			"/plugins/webvella-areas/area-view-general.module.js",
 			"/plugins/webvella-areas/view-record-sidebar.controller.js",
 			"/plugins/webvella-areas/providers/recursive-view.directive.js",
 			"/plugins/webvella-areas/providers/recursive-list.directive.js",
 			"/plugins/webvella-areas/providers/view-tree-select.directive.js",
 			"/plugins/webvella-areas/providers/scroll.directive.js",
-			"/plugins/webvella-areas/providers/dynamic-templates.directive.js",
 			"/plugins/webvella-areas/providers/dynamic-html.directive.js"
 		],
 		"wvApp_injects": [ "webvellaAreas" ]

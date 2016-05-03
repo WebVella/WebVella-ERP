@@ -1,4 +1,5 @@
-﻿/* core.service.js */
+﻿/// <reference path="../../webvella-admin/entity-relations.module.js" />
+/* core.service.js */
 
 /**
 * @desc Javascript API core service
@@ -145,7 +146,9 @@
 		//Read
 		serviceInstance.getRecord = getRecord;
 		serviceInstance.getRecordByViewName = getRecordByViewName;
-		serviceInstance.getRecordsWithLimitations = getRecordsWithLimitations;
+		serviceInstance.getRecordByViewMeta = getRecordByViewMeta;
+		serviceInstance.getRecordsWithoutList = getRecordsWithoutList;
+		serviceInstance.getRecordsByListMeta = getRecordsByListMeta;
 		serviceInstance.getRecordsByListName = getRecordsByListName;
 		serviceInstance.getRecordsByTreeName = getRecordsByTreeName;
 		serviceInstance.getRecordsByFieldAndRegex = getRecordsByFieldAndRegex;
@@ -202,6 +205,9 @@
 		serviceInstance.currencyMetas = currencyMetas;
 		//#endregion
 
+		//#region << Plugins >>
+		serviceInstance.getPluginsList = getPluginsList;
+		//#endregion
 
 		//#endregion
 
@@ -265,7 +271,20 @@
 			}
 
 		}
+		function handleSuccessResultWithCustomMeta(data,metaObject, status, successCallback, errorCallback) {
+			if (successCallback === undefined || typeof (successCallback) != "function") {
+				alert("The successCallback argument is not a function or missing");
+				return;
+			}
 
+			var response = {};
+			response.success = true;
+			response.message = "Data is received from custom defined data source url"
+			response.object = {};
+			response.object.data = data;
+ 			response.object.meta = metaObject;
+			successCallback(response);
+		}
 		//#endregion
 
 		//#region << Entity >>
@@ -1027,7 +1046,7 @@
 				"name": "wv_record_delete",
 				"menu": "page-title-dropdown",
 				"weight": 1,
-				"template": "<a href=\"javascript:void(0)\" confirmed-click=\"ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"Are you sure?\" \n\t\t ng-if=\"ngCtrl.userHasRecordPermissions('canDelete')\"> \n\t <i class=\"fa fa-trash go-red\"></i> Delete Record \n </a>"
+				"template": "<a href=\"javascript:void(0)\" confirmed-click=\"ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}\" \n\t\t ng-if=\"ngCtrl.userHasRecordPermissions('canDelete')\"> \n\t <i class=\"fa fa-trash go-red\"></i> Delete Record \n </a>"
 			};
 			var createListAction = {
 				"name": "wv_create_and_list",
@@ -1060,16 +1079,17 @@
 				"label": "",
 				"default": false,
 				"system": false,
-				"weight": 1,
+				"weight": 10,
 				"cssClass": "",
 				"dynamicHtmlTemplate": null,
+				"dataSourceUrl": null,
 				"relationOptions": [],
 				"type": "general",
 				"iconName": "file-text-o",
 				"regions": [
                     {
-                    	"name": "default",
-                    	"label": "Default",
+                    	"name": "header",
+                    	"label": "Header",
                     	"render": true,
                     	"cssClass": "",
                     	"weight": 1,
@@ -1085,7 +1105,7 @@
 				"actionItems": []
 			};
 
-			switch(type){
+			switch (type) {
 				case "general":
 					view.actionItems.push(backButtonAction);
 					view.actionItems.push(deleteAction);
@@ -1095,17 +1115,17 @@
 					view.actionItems.push(createListAction);
 					view.actionItems.push(createDetailsAction);
 					view.actionItems.push(createCancelAction);
-					break;	
+					break;
 				case "quick_view":
 					view.actionItems.push(backButtonAction);
 					view.actionItems.push(deleteAction);
-					break;					
+					break;
 				case "quick_create":
 					view.actionItems.push(backButtonAction);
 					view.actionItems.push(createListAction);
 					view.actionItems.push(createDetailsAction);
 					view.actionItems.push(createCancelAction);
-					break;		
+					break;
 				case "hidden":
 					view.actionItems.push(backButtonAction);
 					view.actionItems.push(createListAction);
@@ -1536,6 +1556,7 @@
 					"query": null,
 					"sorts": null,
 					"dynamicHtmlTemplate": null,
+					"dataSourceUrl": null,
 					"columnWidthsCSV": null,
 					"relationOptions": [],
 					"serviceCode": null,
@@ -1791,14 +1812,27 @@
 		function getRecordByViewName(recordId, viewName, entityName, successCallback, errorCallback) {
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewName + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
+
+ 		///////////////////////
+		function getRecordByViewMeta(recordId, viewMeta, entityName, successCallback, errorCallback) {
+			if (viewMeta.dataSourceUrl == null || viewMeta.dataSourceUrl == '') {
+				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewMeta.name + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
+			else {
+				var extraParamQueryString = "";
+				extraParamQueryString = "?";
+				extraParamQueryString += "entityName=" + entityName + "&";
+				extraParamQueryString += "listName=" + viewMeta.name + "&";
+				extraParamQueryString += "recordId=" + recordId;
+				$http({ method: 'GET', url: viewMeta.dataSourceUrl + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResultWithCustomMeta(response.data,viewMeta, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
+		}
 		/////////////////////
-		function getRecordsWithLimitations(recordIds, fieldNames, entityName, successCallback, errorCallback) {
-			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list?ids=' + recordIds + "&fields=" + fieldNames }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		function getRecordsWithoutList(recordIds, fieldNames, limit, entityName, successCallback, errorCallback) {
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list?ids=' + recordIds + "&fields=" + fieldNames + "&limit=" + limit }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
 		function getRecordsByListName(listName, entityName, page, extraParams, successCallback, errorCallback) {
-			//submit listName = "null" to get unconfigured records list
-			//submit page = "null" to get all records
 			var extraParamQueryString = "";
 			if (extraParams != null) {
 				if (!isEmpty(extraParams)) {
@@ -1811,6 +1845,40 @@
 				}
 			}
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + page + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+		///////////////////////
+		function getRecordsByListMeta(listMeta, entityName, page, extraParams, successCallback, errorCallback) {
+			if (listMeta.dataSourceUrl == null || listMeta.dataSourceUrl == '') {
+				var extraParamQueryString = "";
+				if (extraParams != null) {
+					if (!isEmpty(extraParams)) {
+						extraParamQueryString = "?";
+						for (var param in extraParams) {
+							extraParamQueryString += param + "=" + extraParams[param] + "&";
+						}
+						//remove the last &
+						extraParamQueryString = extraParamQueryString.substring(0, extraParamQueryString.length - 1);
+					}
+				}
+				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listMeta.name + '/' + page + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
+			else {
+				var extraParamQueryString = "";
+				extraParamQueryString = "?";
+				extraParamQueryString += "entityName=" + entityName + "&";
+				extraParamQueryString += "listName=" + listMeta.name + "&";
+				extraParamQueryString += "page=" + page + "&";
+				if (extraParams != null) {
+					if (!isEmpty(extraParams)) {
+						for (var param in extraParams) {
+							extraParamQueryString += param + "=" + extraParams[param] + "&";
+						}
+					}
+				}
+				//remove the last &
+				extraParamQueryString = extraParamQueryString.substring(0, extraParamQueryString.length - 1);
+				$http({ method: 'GET', url: listMeta.dataSourceUrl + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResultWithCustomMeta(response.data,listMeta, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
 		}
 		///////////////////////
 		function getRecordsByTreeName(treeName, entityName, successCallback, errorCallback) {
@@ -1875,7 +1943,9 @@
 		///////////////////////
 		function registerHookListener(eventHookName, currentScope, executeOnHookFunction) {
 			if (executeOnHookFunction === undefined || typeof (executeOnHookFunction) != "function") {
-				alert("The executeOnHookFunction argument is not a function or missing ");
+				$translate(['EVENT_HOOKS_REGISTER_ERROR']).then(function (translations) {
+				alert(translations.EVENT_HOOKS_REGISTER_ERROR);
+				});
 				return;
 			}
 			//When registering listener with $on, it returns automatically a function that can remove this listener. We will use it later
@@ -1916,10 +1986,12 @@
 			//Rebind the form with the data returned from the server
 			formObject = response.object;
 			//Notify with a toast about the error and show the server response.message
-			ngToast.create({
-				className: 'error',
-				content: '<span class="go-red">Error:</span> ' + response.message,
-				timeout: 7000
+			$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'error',
+					content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+					timeout: 7000
+				});
 			});
 			//Scroll top
 			// set the location.hash to the id of
@@ -1976,7 +2048,7 @@
 			function rasGetEntityMetaListSuccessCallback(data, status) {
 				entities = data.object.entities;
 				//Get all areas
-				getRecordsByListName("null", "area", "null", null, rasGetAreasListSuccessCallback, rasErrorCallback);
+				getRecordsWithoutList(null, null,null, "area", rasGetAreasListSuccessCallback, rasErrorCallback);
 			}
 
 			function rasGetAreasListSuccessCallback(data, status) {
@@ -2349,13 +2421,14 @@
 		function listAction_getRecordCreateUrl(ngCtrl) {
 			//#region << Init >>
 			var siteAreas = fastCopy(ngCtrl.areas);
+			var entityList = fastCopy(ngCtrl.entityList);
 			var currentEntity = fastCopy(ngCtrl.entity);
 			var currentAreaName = fastCopy(ngCtrl.stateParams.areaName);
 			var currentEntityName = fastCopy(ngCtrl.stateParams.entityName);
 			var currentListName = fastCopy(ngCtrl.stateParams.listName);
 			var currentRelationName = null; // when the list is listFromRelation
 			var targetEntityName = null;
-			var currentPage = fastCopy(ngCtrl.stateParams.page);
+			var targetEntity = null;
 			var currentArea = null;
 			var targetCreateName = null;
 			var targetCreateExists = false;
@@ -2387,7 +2460,20 @@
 						console.log("the relation name in the listFromRelation is not found or the current entity is not participating in this relation");
 						currentRelationName = null;
 					}
+					else {
+						//Get the target entity details
+						for (var i = 0; i < entityList.length; i++) {
+							if (entityList[i].name == targetEntityName) {
+								targetEntity = entityList[i];
+							}
+						}
+					}
 				}
+			}
+
+			if (currentRelationName != null && targetEntity == null) {
+				console.log("cannot find the target entity");
+				return null;
 			}
 
 			//#endregion
@@ -2406,9 +2492,18 @@
 			else {
 				currentArea.attachments = angular.fromJson(currentArea.attachments);
 				for (var i = 0; i < currentArea.attachments.length; i++) {
-					if (currentArea.attachments[i].name == currentEntityName) {
-						targetCreateName = currentArea.attachments[i].create.name;
-						break;
+					//If it is not listFromRelation 
+					if (currentRelationName == null) {
+						if (currentArea.attachments[i].name == currentEntityName) {
+							targetCreateName = currentArea.attachments[i].create.name;
+							break;
+						}
+					}
+					else {
+						if (currentArea.attachments[i].name == targetEntityName) {
+							targetCreateName = currentArea.attachments[i].create.name;
+							break;
+						}
 					}
 				}
 				if (targetCreateName == null) {
@@ -2419,10 +2514,22 @@
 			//#endregion
 
 			//#region << Check if it target view exists >>
-			for (var i = 0; i < currentEntity.recordViews.length; i++) {
-				if (currentEntity.recordViews[i].name === targetCreateName) {
-					targetCreateExists = true;
-					break;
+			if (targetCreateName != null) {
+				if (currentRelationName == null) {
+					for (var i = 0; i < currentEntity.recordViews.length; i++) {
+						if (currentEntity.recordViews[i].name === targetCreateName) {
+							targetCreateExists = true;
+							break;
+						}
+					}
+				}
+				else {
+					for (var i = 0; i < targetEntity.recordViews.length; i++) {
+						if (targetEntity.recordViews[i].name === targetCreateName) {
+							targetCreateExists = true;
+							break;
+						}
+					}
 				}
 			}
 			//#endregion
@@ -2435,7 +2542,7 @@
 				}
 					//Case 2: - this is a list with relation
 				else {
-					return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+					return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
 				}
 
 			}
@@ -2443,11 +2550,22 @@
 			else {
 				targetCreateName = null;
 				//If not sort and get the first default and general
-				currentEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
-				for (var i = 0; i < currentEntity.recordViews.length; i++) {
-					if (currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "create") {
-						targetCreateName = currentEntity.recordViews[i].name;
-						break;
+				if (currentRelationName == null) {
+					currentEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+					for (var i = 0; i < currentEntity.recordViews.length; i++) {
+						if (currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "create") {
+							targetCreateName = currentEntity.recordViews[i].name;
+							break;
+						}
+					}
+				}
+				else {
+					targetEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+					for (var i = 0; i < targetEntity.recordViews.length; i++) {
+						if (targetEntity.recordViews[i].default && targetEntity.recordViews[i].type == "create") {
+							targetCreateName = targetEntity.recordViews[i].name;
+							break;
+						}
 					}
 				}
 				if (targetCreateName != null) {
@@ -2458,16 +2576,26 @@
 					}
 						//Case 2: - this is a list with relation
 					else {
-						return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+						return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
 					}
 
 				}
 				else {
 					//If there is default general take the first general
-					for (var i = 0; i < currentEntity.recordViews.length; i++) {
-						if (currentEntity.recordViews[i].type == "create") {
-							targetCreateName = currentEntity.recordViews[i].name;
-							break;
+					if (currentRelationName == null) {
+						for (var i = 0; i < currentEntity.recordViews.length; i++) {
+							if (currentEntity.recordViews[i].type == "create") {
+								targetCreateName = currentEntity.recordViews[i].name;
+								break;
+							}
+						}
+					}
+					else {
+						for (var i = 0; i < targetEntity.recordViews.length; i++) {
+							if (targetEntity.recordViews[i].type == "create") {
+								targetCreateName = targetEntity.recordViews[i].name;
+								break;
+							}
 						}
 					}
 					if (targetCreateName != null) {
@@ -2477,7 +2605,7 @@
 						}
 							//Case 2: - this is a list with relation
 						else {
-							return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+							return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
 						}
 					}
 					else {
@@ -2495,12 +2623,61 @@
 			//#region << Init >>
 			var currentRecord = fastCopy(record);
 			var siteAreas = fastCopy(ngCtrl.areas);
+			var entityList = fastCopy(ngCtrl.entityList);
 			var currentEntity = fastCopy(ngCtrl.entity);
 			var currentAreaName = fastCopy(ngCtrl.stateParams.areaName);
 			var currentEntityName = fastCopy(ngCtrl.stateParams.entityName);
+			var currentListName = fastCopy(ngCtrl.stateParams.listName);
+			var currentRelationName = null; // when the list is listFromRelation
+			var targetEntityName = null;
+			var targetEntity = null
 			var currentArea = null;
 			var targetViewName = null;
 			var targetViewExists = false;
+			//#endregion
+
+			//#region << Check if viewFromRelation, get the relationName if so >>
+			//Example listFromRelation name: "$list$project_1_n_ticket$general"
+			if (currentListName.indexOf('$') > -1 && currentListName.startsWith("$list")) {
+				var dataNameArray = fastCopy(currentListName).split('$');
+				if (dataNameArray.length == 4) {
+					//this is a proper listFromRelation format
+					currentRelationName = dataNameArray[2];
+					currentListName = dataNameArray[3];
+					var relationExists = false;
+					for (var j = 0; j < ngCtrl.entityRelations.length; j++) {
+						if (ngCtrl.entityRelations[j].name == currentRelationName) {
+							relationExists = true;
+							var currentRelation = ngCtrl.entityRelations[j];
+							if (currentRelation.originEntityName == currentEntityName) {
+								targetEntityName = currentRelation.targetEntityName;
+							}
+							else if (currentRelation.targetEntityName == currentEntityName) {
+								targetEntityName = currentRelation.originEntityName;
+							}
+						}
+					}
+					//if the relation name is not found in the existing one, null it.
+					if (!relationExists || targetEntityName == null) {
+						console.log("the relation name in the listFromRelation is not found or the current entity is not participating in this relation");
+						currentRelationName = null;
+					}
+					else {
+						//Get the target entity details
+						for (var i = 0; i < entityList.length; i++) {
+							if (entityList[i].name == targetEntityName) {
+								targetEntity = entityList[i];
+							}
+						}
+					}
+				}
+			}
+
+			if (currentRelationName != null && targetEntity == null) {
+				console.log("cannot find the target entity");
+				return null;
+			}
+
 			//#endregion
 
 			//#region << Get the selected view in the area >>
@@ -2511,61 +2688,122 @@
 				}
 			}
 			if (currentArea == null) {
-				console.log("Error: No area with such name found");
-				return null;
+				//The list is presented in an URL attachment - the target create name is the first default create for the entity
+				//To select that we just leave the process below to do that
 			}
 			currentArea.attachments = angular.fromJson(currentArea.attachments);
 			for (var i = 0; i < currentArea.attachments.length; i++) {
-				if (currentArea.attachments[i].name == currentEntityName) {
-					targetViewName = currentArea.attachments[i].view.name;
-					break;
+				//If it is not listFromRelation 
+				if (currentRelationName == null) {
+					if (currentArea.attachments[i].name == currentEntityName) {
+						targetViewName = currentArea.attachments[i].view.name;
+						break;
+					}
+				}
+				else {
+					if (currentArea.attachments[i].name == targetEntityName) {
+						targetViewName = currentArea.attachments[i].view.name;
+						break;
+					}
 				}
 			}
 			if (targetViewName == null) {
-				console.log("Error: The current entity is either not attached to the area or the view name is missing");
-				return null;
+				//The list is presented in an URL attachment - the target create name is the first default create for the entity
+				//To select that we just leave the process below to do that
 			}
 			//#endregion
 
 			//#region << Check if it target view exists >>
-			for (var i = 0; i < currentEntity.recordViews.length; i++) {
-				if (currentEntity.recordViews[i].name === targetViewName) {
-					targetViewExists = true;
-					break;
+			if (targetViewName != null) {
+				if (currentRelationName == null) {
+					for (var i = 0; i < currentEntity.recordViews.length; i++) {
+						if (currentEntity.recordViews[i].name === targetViewName) {
+							targetViewExists = true;
+							break;
+						}
+					}
+				}
+				else {
+					for (var i = 0; i < targetEntity.recordViews.length; i++) {
+						if (targetEntity.recordViews[i].name === targetViewName) {
+							targetViewExists = true;
+							break;
+						}
+					}
 				}
 			}
-
 			//#endregion
 
 			//#region << Calculate what the view name should be and return >>
 			if (targetViewExists) {
-				return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id;
+				//Case 1: - list is not from relation
+				if (currentRelationName == null) {
+					return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id;
+				}
+					//Case 2: - this is a list with relation
+				else {
+					return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id + "?returnUrl=" + encodeURI($location.path());
+				}
 			}
 				//The target name does not exist. Fallback to default
 			else {
 				targetViewName = null;
 				//If not sort and get the first default and general
-				currentEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
-				for (var i = 0; i < currentEntity.recordViews.length; i++) {
-					if (currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "general") {
-						targetViewName = currentEntity.recordViews[i].name;
-						break;
-					}
-				}
-				if (targetViewName != null) {
-					//there is a default and general view fallback option available
-					return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id;
-				}
-				else {
-					//If there is default general take the first general
+				if (currentRelationName == null) {
+					currentEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
 					for (var i = 0; i < currentEntity.recordViews.length; i++) {
-						if (currentEntity.recordViews[i].type == "general") {
+						if (currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "general") {
 							targetViewName = currentEntity.recordViews[i].name;
 							break;
 						}
 					}
-					if (targetViewName != null) {
+				}
+				else {
+					targetEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+					for (var i = 0; i < targetEntity.recordViews.length; i++) {
+						if (targetEntity.recordViews[i].default && targetEntity.recordViews[i].type == "general") {
+							targetViewName = targetEntity.recordViews[i].name;
+							break;
+						}
+					}
+				}
+				if (targetViewName != null) {
+					//there is a default and general view fallback option available
+					//Case 1: - list is not from relation
+					if (currentRelationName == null) {
 						return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id;
+					}
+					else {
+						return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id + "?returnUrl=" + encodeURI($location.path());
+					}
+				}
+				else {
+					//If there is default general take the first general
+					if (currentRelationName == null) {
+						for (var i = 0; i < currentEntity.recordViews.length; i++) {
+							if (currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "hidden") {
+								targetViewName = currentEntity.recordViews[i].name;
+								break;
+							}
+						}
+					}
+					else {
+						for (var i = 0; i < targetEntity.recordViews.length; i++) {
+							if (targetEntity.recordViews[i].default && targetEntity.recordViews[i].type == "hidden") {
+								targetViewName = targetEntity.recordViews[i].name;
+								break;
+							}
+						}
+					}
+					if (targetViewName != null) {
+						//Case 1: - list is not from relation
+						if (currentRelationName == null) {
+							return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id;
+						}
+							//Case 2: - this is a list with relation
+						else {
+							return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id + "?returnUrl=" + encodeURI($location.path());
+						}
 					}
 					else {
 						console.log("Error: Cannot find suitable details view for this entity records");
@@ -3982,6 +4220,14 @@
 			];
 			return meta;
 		}
+		//#endregion
+
+		//#region << Plugins >>
+		///////////////////////
+		function getPluginsList(successCallback, errorCallback) {
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'plugin/list/' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
 		//#endregion
 
 		//#endregion

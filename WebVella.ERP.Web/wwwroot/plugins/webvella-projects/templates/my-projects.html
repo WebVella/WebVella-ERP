@@ -1,0 +1,14 @@
+﻿<table class="table table-bordered table-vertical-align-middle">
+<thead>
+	<tr>
+		<th>id</th>
+	</tr>
+</thead>
+<tbody>
+	<tr ng-repeat="project in ngCtrl.list.data">
+		<td>{{project.id}}</td>
+	</tr>
+</tbody>
+</table>
+
+<pre>{{ngCtrl.list.data | json}}</pre>

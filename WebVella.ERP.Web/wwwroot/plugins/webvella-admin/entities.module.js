@@ -88,7 +88,7 @@
     		defer.reject(response.message);
     	}
 
-    	webvellaCoreService.getRecordsByListName("null","role", "null", null, successCallback, errorCallback);
+    	webvellaCoreService.getRecordsWithoutList(null,null,null,"role", successCallback, errorCallback);
 
     	return defer.promise;
     }

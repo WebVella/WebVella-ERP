@@ -39,9 +39,13 @@
 					<li role="presentation">
 						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/actions" translate="{{'RECORD_LIST_TAB_QUERY_ACTIONS'}}"></a>
 					</li>
+					<li role="presentation">
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/data" translate="{{'RECORD_LIST_TAB_DATA'}}"></a>
+					</li>
 				</ul>
 			</div>
 		</nav>
+		<div class="alert alert-warning" ng-if="ngCtrl.list.dataSourceUrl != null || ngCtrl.list.dynamicHtmlTemplate != null" translate="{{'RECORD_LIST_TAB_COLUMNS_WARNING'}}"></div>
 		<div class="view-manage-section">
 			<div class="row">
 				<div class="col-xs-6">

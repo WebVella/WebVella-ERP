@@ -62,7 +62,7 @@
         function successCallback(response) {
             if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
             }
             else {
@@ -73,7 +73,7 @@
         function errorCallback(response) {
             if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-	                alert("error in response!")
+	                alert(translations.ERROR_IN_RESPONSE);
 				});
             }
             else {
@@ -102,7 +102,7 @@
     		defer.reject(response.message);
     	}
 
-    	webvellaCoreService.getRecordsByListName("null","role", "null",null, successCallback, errorCallback);
+    	webvellaCoreService.getRecordsWithoutList(null,null,null,"role", successCallback, errorCallback);
 
     	return defer.promise;
     }
@@ -125,7 +125,7 @@
         	defer.reject(response.message);
         }
 
-        webvellaCoreService.getRecordsByListName("null","area", "null", null, successCallback, errorCallback);
+        webvellaCoreService.getRecordsWithoutList(null,null,null,"area", successCallback, errorCallback);
 
         return defer.promise;
     }
