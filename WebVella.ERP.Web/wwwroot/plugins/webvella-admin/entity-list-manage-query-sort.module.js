@@ -120,7 +120,7 @@
 			}
 		}
 
-		webvellaCoreService.getEntityList($stateParams.listName, $stateParams.entityName, successCallback, errorCallback);
+		webvellaCoreService.getEntityRecordList($stateParams.listName, $stateParams.entityName, successCallback, errorCallback);
 
 		return defer.promise;
 	}
@@ -350,14 +350,14 @@
 			$timeout(function () {
 				var postObj = {};
 				postObj.query = fastCopy(ngCtrl.list.query);
-				webvellaCoreService.patchEntityList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
+				webvellaCoreService.patchEntityRecordList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
 			}, 1);
 		}
 
 		ngCtrl.updateSorts = function () {
 			var postObj = {};
 			postObj.sorts = ngCtrl.list.sorts;
-			webvellaCoreService.patchEntityList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
+			webvellaCoreService.patchEntityRecordList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
 		}
 
 		//#endregion

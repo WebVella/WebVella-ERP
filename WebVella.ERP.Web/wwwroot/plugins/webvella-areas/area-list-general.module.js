@@ -173,16 +173,7 @@
 		}
 		var searchParams = $location.search();
 
-		var list = null;
-		for (var i = 0; i < resolvedEntityList.length; i++) {
-			 if(resolvedEntityList[i].name == $stateParams.entityName){
-			 	for (var j = 0; j < resolvedEntityList[i].recordLists.length; j++) {
-					if(resolvedEntityList[i].recordLists[j].name == $stateParams.listName){
-						list = resolvedEntityList[i].recordLists[j];
-					}
-			 	}
-			 }
-		}
+		var list = webvellaCoreService.getEntityRecordListFromEntitiesMetaList($stateParams.listName,$stateParams.entityName,resolvedEntityList);
 
 		webvellaCoreService.getRecordsByListMeta(list, $stateParams.entityName, $stateParams.page, searchParams, successCallback, errorCallback);
 		return defer.promise;
@@ -221,17 +212,7 @@
 			defer.reject("you do not have permissions to view records from this entity");
 		}
 
-		var parentView = null;
-		for (var i = 0; i < resolvedEntityList.length; i++) {
-			 if(resolvedEntityList[i].name == $stateParams.entityName){
-			 	for (var j = 0; j < resolvedEntityList[i].recordViews.length; j++) {
-					if(resolvedEntityList[i].recordViews[j].name == $stateParams.parentViewName){
-						parentView = resolvedEntityList[i].recordViews[j];
-					}
-			 	}
-			 }
-		}
-
+		var parentView = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName,$stateParams.entityName,resolvedEntityList);
 		webvellaCoreService.getRecordByViewMeta($stateParams.recordId, parentView, $stateParams.entityName, successCallback, errorCallback);
 
 		return defer.promise;
@@ -292,8 +273,8 @@
 
 		//#region << Initialize main objects >>
 		ngCtrl.list = {};
-		ngCtrl.list.data = fastCopy(resolvedListRecords.data);
-		ngCtrl.list.meta = fastCopy(resolvedListRecords.meta);
+		ngCtrl.list.data = fastCopy(resolvedListRecords);
+		ngCtrl.list.meta = webvellaCoreService.getEntityRecordListFromEntitiesMetaList($stateParams.listName,$stateParams.entityName,resolvedEntityList);
 		ngCtrl.entityList = fastCopy(resolvedEntityList);
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
 		ngCtrl.entityRelations = fastCopy(resolvedEntityRelationsList);

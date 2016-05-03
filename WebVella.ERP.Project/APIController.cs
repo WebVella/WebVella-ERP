@@ -27,6 +27,7 @@ namespace WebVella.ERP.Project
 		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/project/list/my-projects")]
 		public IActionResult MyProjects(string listName = null, string entityName = null, int page = 0)
 		{
+			var response = new ResponseModel();
 
 			#region << Init >>
 			var responseData = new List<EntityRecord>();
@@ -70,7 +71,11 @@ namespace WebVella.ERP.Project
 			var resultRecordsList = new List<EntityRecord>();
 			if (!result.Success)
 			{
-				return Json(responseData); //return empty object
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = result.Message;
+				response.Object = null;				
+				return Json(response);
 			}
 			foreach (var record in result.Object.Data)
 			{
@@ -99,12 +104,18 @@ namespace WebVella.ERP.Project
 				}
 			}
 			#endregion
+
 			var skipRecords = list.PageSize*(page-1);
 			if(page != 0) {
 				resultRecordsList = resultRecordsList.Skip(skipRecords).Take(page).ToList();			
 			}
-			
-			return Json(resultRecordsList);
+
+			response.Success = true;
+			response.Timestamp = DateTime.UtcNow;
+			response.Message = "My projects successfully read";
+			response.Object = resultRecordsList;
+
+			return Json(response);
 		}
 
 	}

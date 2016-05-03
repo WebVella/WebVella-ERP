@@ -145,16 +145,7 @@
 			defer.reject("you do not have permissions to view records from this entity");
 		}
 
-		var parentView = null;
-		for (var i = 0; i < resolvedEntityList.length; i++) {
-			 if(resolvedEntityList[i].name == $stateParams.entityName){
-			 	for (var j = 0; j < resolvedEntityList[i].recordViews.length; j++) {
-					if(resolvedEntityList[i].recordViews[j].name == $stateParams.parentViewName){
-						parentView = resolvedEntityList[i].recordViews[j];
-					}
-			 	}
-			 }
-		}
+		var parentView = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName,$stateParams.entityName,resolvedEntityList);
 
 		webvellaCoreService.getRecordByViewMeta($stateParams.recordId, parentView, $stateParams.entityName, successCallback, errorCallback);
 
@@ -196,16 +187,7 @@
 		}
 		var parentView = fastCopy(resolvedCurrentParentView);
 		if (parentView == null) {
-			var view = null;
-			for (var i = 0; i < resolvedEntityList.length; i++) {
-				 if(resolvedEntityList[i].name == $stateParams.entityName){
-			 		for (var j = 0; j < resolvedEntityList[i].recordViews.length; j++) {
-						if(resolvedEntityList[i].recordViews[j].name == $stateParams.viewName){
-							view = resolvedEntityList[i].recordViews[j];
-						}
-			 		}
-				 }
-			}	
+			var view = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName,$stateParams.entityName,resolvedEntityList);
 			webvellaCoreService.getRecordByViewMeta($stateParams.recordId, view, $stateParams.entityName, successCallback, errorCallback);
 		}
 		else {
@@ -324,8 +306,8 @@
 
 		//#region << Initialize main objects >>
 		ngCtrl.view = {};
-		ngCtrl.view.meta = fastCopy(resolvedCurrentView.meta);
-		ngCtrl.view.data = fastCopy(resolvedCurrentView.data);
+		ngCtrl.view.meta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName,$stateParams.entityName,resolvedEntityList);
+		ngCtrl.view.data = fastCopy(resolvedCurrentView);
 		if (resolvedCurrentParentView == null) {
 			ngCtrl.parentView = null;
 		}

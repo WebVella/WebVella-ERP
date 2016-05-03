@@ -117,7 +117,7 @@
 			}
 		}
 
-		webvellaCoreService.getEntityList($stateParams.listName, $stateParams.entityName, successCallback, errorCallback);
+		webvellaCoreService.getEntityRecordList($stateParams.listName, $stateParams.entityName, successCallback, errorCallback);
 
 		return defer.promise;
 	}
@@ -291,7 +291,7 @@
 			}
 			var postObj = {};
 			postObj[fieldName] = data;
-			webvellaCoreService.patchEntityList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchFieldSuccessCallback, patchErrorCallback)
+			webvellaCoreService.patchEntityRecordList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchFieldSuccessCallback, patchErrorCallback)
 		}
 
 
@@ -468,7 +468,7 @@
 
 		popupCtrl.ok = function () {
 
-			webvellaCoreService.deleteEntityList(popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
+			webvellaCoreService.deleteEntityRecordList(popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
 
 		};
 

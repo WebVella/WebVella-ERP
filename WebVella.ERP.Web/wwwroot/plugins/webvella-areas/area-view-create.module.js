@@ -117,9 +117,9 @@
 		}
 	}
 
-	resolveCurrentView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta'];
+	resolveCurrentView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta','resolvedEntityList'];
 
-	function resolveCurrentView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta) {
+	function resolveCurrentView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta,resolvedEntityList) {
 
 		// Initialize
 		var defer = $q.defer();
@@ -132,13 +132,7 @@
 
 		var view = {};
 		view.data = null;
-		view.meta = null;
-
-		for (var i = 0; i < resolvedCurrentEntityMeta.recordViews.length; i++) {
-			if (resolvedCurrentEntityMeta.recordViews[i].name == $stateParams.viewName) {
-				view.meta = resolvedCurrentEntityMeta.recordViews[i];
-			}
-		}
+		view.meta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName,$stateParams.entityName,resolvedEntityList);;
 
 		defer.resolve(view);
 

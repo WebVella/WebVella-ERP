@@ -14,17 +14,17 @@
 
     // Controller ///////////////////////////////
     controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedCurrentParentView','resolvedCurrentView', 'resolvedCurrentEntityMeta', 
-						'resolvedAreas', 'resolvedCurrentUser', '$sessionStorage','$timeout'];
+						'resolvedAreas', 'resolvedCurrentUser', '$sessionStorage','$timeout','webvellaCoreService','resolvedEntityList'];
 
     
     function controller($log, $rootScope, $state, $stateParams,resolvedCurrentParentView, resolvedCurrentView, resolvedCurrentEntityMeta, 
-						resolvedAreas, resolvedCurrentUser, $sessionStorage,$timeout) {
+						resolvedAreas, resolvedCurrentUser, $sessionStorage,$timeout,webvellaCoreService,resolvedEntityList) {
         var sidebarData = this;
 		if(resolvedCurrentView == null){
 			sidebarData.view = null; //list in view page		
 		}
 		else {
-			sidebarData.view = fastCopy(resolvedCurrentView.meta);
+			sidebarData.view = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName,$stateParams.entityName,resolvedEntityList);
 		}
 		if(resolvedCurrentParentView == null){
 		   sidebarData.parentView = null;
