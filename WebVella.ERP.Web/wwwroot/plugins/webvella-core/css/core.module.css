@@ -2739,7 +2739,7 @@ table .btn-xs.btn-link {
 		-webkit-border-radius: 4px 0 0 4px;
 		-moz-border-radius: 4px 0 0 4px;
 		border-radius: 4px 0 0 4px;
-		padding:10px;
+		padding:10px 5px;
 	}
 
 /* Ruins the sidemenu*/
@@ -2811,6 +2811,10 @@ table .btn-xs.btn-link {
 		color: #ccc;
 		border-right:none;
 	}
+
+		.tabbable.spilled ul a .fa {
+			margin-right:3px;
+		}
 
 	.tabbable.spilled ul li:not(.active) a:hover {
 		background: #ffffff;

@@ -37,7 +37,8 @@
 					return "Webvella ERP";
 				},
 				resolvedCurrentUser: resolveCurrentUser,
-				checkedAccessPermission: checkAccessPermission
+				checkedAccessPermission: checkAccessPermission,
+				resolvedEntityList: resolveEntityList
 			},
 			'data': {
 				//Custom data is inherited by the parent state 'webvella-core', but it can be overwritten if necessary. Available for all child states in this plugin
@@ -135,6 +136,18 @@
 		return defer.promise;
 	}
 
+	resolveEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
+	function resolveEntityList($q, $log, webvellaCoreService, $state, $stateParams) {
+		var defer = $q.defer();
+		function successCallback(response) {
+			defer.resolve(response.object.entities);
+		}
+		function errorCallback(response) {
+			defer.reject(response.message);
+		}
+		webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
+		return defer.promise;
+	}
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$log', '$scope', '$state', '$rootScope', '$stateParams', 'webvellaCoreService', 'webvellaAdminSidebarFactory', '$timeout', '$translate'];

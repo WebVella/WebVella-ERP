@@ -61,6 +61,11 @@
 .project-list .progress-bar {
 	box-shadow:none;
 }
+.project-list .progress .percents {
+	text-align: center !important;
+	color: #999;
+	font-size: 12px;
+}
 
 .project-list .counter {
     font-size: 12px;

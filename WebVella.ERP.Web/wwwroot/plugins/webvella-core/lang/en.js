@@ -207,6 +207,7 @@ var translationsEN = {
 	GENERAL_SETTINGS: 'General settings',
 	GET_COMPLETE_RESPONSE:'Get Complete Response',
 	GET_DATA_SAMPLE:'Get Data Sample',
+	GET_META_SAMPLE:'Get Meta Sample',
 	GRANTED: 'Granted',
 	GREEN: 'Green',
 	GOTO_DESKTOP_LINK_TITLE: 'Go to the desktop',

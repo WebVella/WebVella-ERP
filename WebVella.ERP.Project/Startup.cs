@@ -1718,6 +1718,44 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 
+								#region << status >>
+								{
+									InputSelectField dropdownField = new InputSelectField();
+									dropdownField.Id = new Guid("63eed358-9b33-4d2c-b2cd-b533413df227");
+									dropdownField.Name = "status";
+									dropdownField.Label = "Status";
+									dropdownField.PlaceholderText = "";
+									dropdownField.Description = "";
+									dropdownField.HelpText = "";
+									dropdownField.Required = true;
+									dropdownField.Unique = false;
+									dropdownField.Searchable = false;
+									dropdownField.Auditable = false;
+									dropdownField.System = true;
+									dropdownField.DefaultValue = "opened";
+									dropdownField.Options = new List<SelectFieldOption>
+								{
+									new SelectFieldOption(){ Key = "opened", Value = "opened" },
+									new SelectFieldOption(){ Key = "completed", Value = "completed" }
+								};
+									dropdownField.EnableSecurity = true;
+									dropdownField.Permissions = new FieldPermissions();
+									dropdownField.Permissions.CanRead = new List<Guid>();
+									dropdownField.Permissions.CanUpdate = new List<Guid>();
+									//READ
+									dropdownField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+									dropdownField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+									//UPDATE
+									dropdownField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+									dropdownField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+									{
+										var response = entMan.CreateField(MILESTONE_ENTITY_ID, dropdownField, false);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + MILESTONE_ENTITY_NAME + " Field: status" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
 								#region << project_id >>
 								{
 									InputGuidField guidField = new InputGuidField();
@@ -2013,6 +2051,40 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 
+								#region << project_id >>
+								{
+									InputGuidField guidField = new InputGuidField();
+									guidField.Id = new Guid("68e796c8-cc99-43b1-a285-2c6bc29f52f2");
+									guidField.Name = "project_id";
+									guidField.Label = "Project";
+									guidField.PlaceholderText = "";
+									guidField.Description = "";
+									guidField.HelpText = "";
+									guidField.Required = true;
+									guidField.Unique = false;
+									guidField.Searchable = false;
+									guidField.Auditable = false;
+									guidField.System = true;
+									guidField.DefaultValue = Guid.Empty;
+									guidField.GenerateNewId = false;
+									guidField.EnableSecurity = true;
+									guidField.Permissions = new FieldPermissions();
+									guidField.Permissions.CanRead = new List<Guid>();
+									guidField.Permissions.CanUpdate = new List<Guid>();
+									//READ
+									guidField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+									guidField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+									//UPDATE
+									guidField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+									guidField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+									{
+										var response = entMan.CreateField(TASK_ENTITY_ID, guidField, false);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Field: project_id" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
 								#region << start_date >>
 								{
 									InputDateField dateField = new InputDateField();
@@ -2277,6 +2349,27 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 
+								#region << project_1_n_task Relation >>
+								{
+									var originEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+									var targetEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+									EntityRelation oneToNRelation = new EntityRelation();
+									oneToNRelation.Id = new Guid("1f860b8c-7fa1-40fa-874f-19c2b5309817");
+									oneToNRelation.Name = "project_1_n_task";
+									oneToNRelation.Label = "project_1_n_task";
+									oneToNRelation.System = true;
+									oneToNRelation.RelationType = EntityRelationType.OneToMany;
+									oneToNRelation.OriginEntityId = originEntity.Id;
+									oneToNRelation.OriginFieldId = originEntity.Fields.Single(x => x.Name == "id").Id;
+									oneToNRelation.TargetEntityId = targetEntity.Id;
+									oneToNRelation.TargetFieldId = targetEntity.Fields.Single(x => x.Name == "project_id").Id;
+									{
+										var result = relMan.Create(oneToNRelation);
+										if (!result.Success)
+											throw new Exception("CREATE project_1_n_task RELATION:" + result.Message);
+									}
+								}
+								#endregion
 							}
 							#endregion
 
@@ -2487,6 +2580,40 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 
+								#region << project_id >>
+								{
+									InputGuidField guidField = new InputGuidField();
+									guidField.Id = new Guid("dd345ce0-476f-4e74-a0b7-5f5c8ee480d6");
+									guidField.Name = "project_id";
+									guidField.Label = "Project";
+									guidField.PlaceholderText = "";
+									guidField.Description = "";
+									guidField.HelpText = "";
+									guidField.Required = true;
+									guidField.Unique = false;
+									guidField.Searchable = false;
+									guidField.Auditable = false;
+									guidField.System = true;
+									guidField.DefaultValue = Guid.Empty;
+									guidField.GenerateNewId = false;
+									guidField.EnableSecurity = true;
+									guidField.Permissions = new FieldPermissions();
+									guidField.Permissions.CanRead = new List<Guid>();
+									guidField.Permissions.CanUpdate = new List<Guid>();
+									//READ
+									guidField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+									guidField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+									//UPDATE
+									guidField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+									guidField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+									{
+										var response = entMan.CreateField(BUG_ENTITY_ID, guidField, false);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Field: project_id" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
 								#region << milestone_id >>
 								{
 									InputGuidField guidField = new InputGuidField();
@@ -2560,6 +2687,78 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 
+								#region << billable_hours >>
+								{
+									InputNumberField numberField = new InputNumberField();
+									numberField.Id = new Guid("20fa3394-39f8-4ad0-8743-3f75afed8f8f");
+									numberField.Name = "billable_hours";
+									numberField.Label = "Billable hours";
+									numberField.PlaceholderText = "";
+									numberField.Description = "";
+									numberField.HelpText = "";
+									numberField.Required = false;
+									numberField.Unique = false;
+									numberField.Searchable = false;
+									numberField.Auditable = false;
+									numberField.System = true;
+									numberField.DefaultValue = 0;
+									numberField.MinValue = null;
+									numberField.MaxValue = null;
+									numberField.DecimalPlaces = 0;
+									numberField.EnableSecurity = true;
+									numberField.Permissions = new FieldPermissions();
+									numberField.Permissions.CanRead = new List<Guid>();
+									numberField.Permissions.CanUpdate = new List<Guid>();
+									//READ
+									numberField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+									numberField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+									//UPDATE
+									numberField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+									numberField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+									{
+										var response = entMan.CreateField(BUG_ENTITY_ID, numberField, false);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Field: billable_hours" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
+								#region << nonbillable_hours >>
+								{
+									InputNumberField numberField = new InputNumberField();
+									numberField.Id = new Guid("08c8cea9-79e1-4908-8611-abfa4c087209");
+									numberField.Name = "nonbillable_hours";
+									numberField.Label = "Non-Billable hours";
+									numberField.PlaceholderText = "";
+									numberField.Description = "";
+									numberField.HelpText = "";
+									numberField.Required = false;
+									numberField.Unique = false;
+									numberField.Searchable = false;
+									numberField.Auditable = false;
+									numberField.System = true;
+									numberField.DefaultValue = 0;
+									numberField.MinValue = null;
+									numberField.MaxValue = null;
+									numberField.DecimalPlaces = 0;
+									numberField.EnableSecurity = true;
+									numberField.Permissions = new FieldPermissions();
+									numberField.Permissions.CanRead = new List<Guid>();
+									numberField.Permissions.CanUpdate = new List<Guid>();
+									//READ
+									numberField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+									numberField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+									//UPDATE
+									numberField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+									numberField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+									{
+										var response = entMan.CreateField(BUG_ENTITY_ID, numberField, false);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Field: nonbillable_hours" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
 								#region << user_1_n_bug_owner Relation >>
 								{
 									var originEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
@@ -2604,6 +2803,27 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 
+								#region << project_1_n_bug Relation >>
+								{
+									var originEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+									var targetEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
+									EntityRelation oneToNRelation = new EntityRelation();
+									oneToNRelation.Id = new Guid("d94f100c-024c-47e7-af32-d67a49be2b6c");
+									oneToNRelation.Name = "project_1_n_bug";
+									oneToNRelation.Label = "project_1_n_bug";
+									oneToNRelation.System = true;
+									oneToNRelation.RelationType = EntityRelationType.OneToMany;
+									oneToNRelation.OriginEntityId = originEntity.Id;
+									oneToNRelation.OriginFieldId = originEntity.Fields.Single(x => x.Name == "id").Id;
+									oneToNRelation.TargetEntityId = targetEntity.Id;
+									oneToNRelation.TargetFieldId = targetEntity.Fields.Single(x => x.Name == "project_id").Id;
+									{
+										var result = relMan.Create(oneToNRelation);
+										if (!result.Success)
+											throw new Exception("CREATE project_1_n_bug RELATION:" + result.Message);
+									}
+								}
+								#endregion
 							}
 							#endregion
 
@@ -3592,12 +3812,73 @@ namespace WebVella.ERP.Project
 									sampleRecord["$$role_n_n_project_team.id"] = projectTeamRoles;
 									sampleRecord["priority"] = "medium";
 									sampleRecord["status"] = "in review";
-									sampleRecord["start_date"] = DateTime.Now.AddDays(3);
-									sampleRecord["end_date"] = DateTime.Now.AddDays(90);
+									sampleRecord["start_date"] = DateTime.UtcNow.AddDays(3);
+									sampleRecord["end_date"] = DateTime.UtcNow.AddDays(90);
 									var createSampleRecordResult = recMan.CreateRecord(PROJECT_ENTITY_NAME, sampleRecord);
 									if (!createSampleRecordResult.Success)
 									{
-										throw new Exception("System error 10060. Create sample record. Message:" + createSampleRecordResult.Message);
+										throw new Exception("System error 10060. Create sample project. Message:" + createSampleRecordResult.Message);
+									}
+								}
+								#endregion
+
+								#region << Create Sample Milestone >>
+								{
+									var sampleRecord = new EntityRecord();
+									sampleRecord["id"] = new Guid("42b881fc-d93f-46cf-b39d-391cd42fd2f6");
+									sampleRecord["name"] = "Specification documents development";
+									sampleRecord["start_date"] = DateTime.UtcNow.AddDays(3);
+									sampleRecord["end_date"] = DateTime.UtcNow.AddDays(90);
+									sampleRecord["project_id"] = new Guid("a0141850-b13c-44b4-bb1b-4e0dde4850f4");
+									var createSampleRecordResult = recMan.CreateRecord(MILESTONE_ENTITY_ID, sampleRecord);
+									if (!createSampleRecordResult.Success)
+									{
+										throw new Exception("System error 10060. Create sample milestone. Message:" + createSampleRecordResult.Message);
+									}
+								}
+								#endregion
+
+								#region << Create Sample Task >>
+								{
+									var sampleRecord = new EntityRecord();
+									sampleRecord["id"] = new Guid("42b881fc-d93f-46cf-b39d-391cd42fd2f6");
+									sampleRecord["subject"] = "Corporate identity specification";
+									sampleRecord["owner_id"] = new Guid("b646c5d4-acc8-4404-af77-6786b81bee05");
+									sampleRecord["milestone_id"] = new Guid("42b881fc-d93f-46cf-b39d-391cd42fd2f6");
+									sampleRecord["description"] = "This is a sample task describing how to generate a corporate identity document";
+									sampleRecord["parent_id"] = null;
+									sampleRecord["start_date"] = DateTime.UtcNow.AddDays(3);
+									sampleRecord["end_date"] = DateTime.UtcNow.AddDays(90);
+									sampleRecord["priority"] = "medium";
+									sampleRecord["status"] = "not started";
+									sampleRecord["billable_hours"] = 0;
+									sampleRecord["nonbillable_hours"] = 0;
+									sampleRecord["project_id"] = new Guid("a0141850-b13c-44b4-bb1b-4e0dde4850f4");
+									var createSampleRecordResult = recMan.CreateRecord(TASK_ENTITY_ID, sampleRecord);
+									if (!createSampleRecordResult.Success)
+									{
+										throw new Exception("System error 10060. Create sample milestone. Message:" + createSampleRecordResult.Message);
+									}
+								}
+								#endregion
+
+								#region << Create Sample BUG >>
+								{
+									var sampleRecord = new EntityRecord();
+									sampleRecord["id"] = new Guid("42b881fc-d93f-46cf-b39d-391cd42fd2f6");
+									sampleRecord["subject"] = "Sample bug subject";
+									sampleRecord["owner_id"] = new Guid("b646c5d4-acc8-4404-af77-6786b81bee05");
+									sampleRecord["milestone_id"] = new Guid("42b881fc-d93f-46cf-b39d-391cd42fd2f6");
+									sampleRecord["description"] = "This is a sample bug about the project";
+									sampleRecord["priority"] = "medium";
+									sampleRecord["status"] = "opened";
+									sampleRecord["billable_hours"] = 0;
+									sampleRecord["nonbillable_hours"] = 0;
+									sampleRecord["project_id"] = new Guid("a0141850-b13c-44b4-bb1b-4e0dde4850f4");
+									var createSampleRecordResult = recMan.CreateRecord(BUG_ENTITY_ID, sampleRecord);
+									if (!createSampleRecordResult.Success)
+									{
+										throw new Exception("System error 10060. Create sample bug. Message:" + createSampleRecordResult.Message);
 									}
 								}
 								#endregion
