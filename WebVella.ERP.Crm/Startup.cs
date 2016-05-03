@@ -7,6 +7,7 @@ using System.Linq;
 using WebVella.ERP;
 using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
+using WebVella.ERP.Api.Models.AutoMapper;
 using WebVella.ERP.Crm.Models;
 using WebVella.ERP.Database;
 using WebVella.ERP.Plugins;
@@ -17,6 +18,13 @@ namespace WebVella.Crm.Project
 	[PluginStartup]
 	public class Startup
 	{
+		//System elements	
+		// Check the SystemIds for lot's of helpful constants you may need, e.g. SystemIds.UserEntityId
+
+		//Code snippets
+		//Check out the CodeSnippets.txt file in WebVella.ERP.Web > Docs folder for code pieces on how to create or update some elements		
+
+		private bool createSampleRecords = true;
 		//Constants
 		private static Guid WEBVELLA_CRM_PLUGIN_ID = new Guid("7b44d010-a856-449f-b415-507efe869ccd");
 		private static string WEBVELLA_CRM_PLUGIN_NAME = "webvella-crm";
@@ -583,6 +591,123 @@ namespace WebVella.Crm.Project
 							}
 							#endregion
 
+							#region << customer lookup list >>
+							{
+								var updateListEntity = entMan.ReadEntity(CUSTOMER_ENTITY_ID).Object;
+								var updateList = updateListEntity.RecordLists.Single(x => x.Name == "lookup");
+								var updateListInput = new InputRecordList();
+								var listItem = new InputRecordListFieldItem();
+								var listSort = new InputRecordListSort();
+								var listQuery = new InputRecordListQuery();
+
+								//Convert recordList to recordListInput
+								updateListInput = updateList.DynamicMapTo<InputRecordList>();
+
+								//General list details
+								//updateListInput.IconName = "";	
+
+								//Fields
+								#region << name >>
+								listItem = new InputRecordListFieldItem();
+								listItem.EntityId = CUSTOMER_ENTITY_ID;
+								listItem.EntityName = "customer";
+								listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "name").Id;
+								listItem.FieldName = "name";
+								listItem.Type = "field";
+								updateListInput.Columns.Add(listItem);
+								#endregion
+
+								//Query
+								#region << query descr >>
+								listQuery = new InputRecordListQuery();
+								#endregion
+
+
+								//Sort
+								#region << Sort >>
+								listSort = new InputRecordListSort();
+								listSort.FieldName = "name";
+								listSort.SortType = "ascending";
+								updateListInput.Sorts.Add(listSort);
+								#endregion
+								{
+									var responseObject = entMan.UpdateRecordList(CUSTOMER_ENTITY_ID, updateListInput);
+									if (!responseObject.Success)
+										throw new Exception("System error 10060. Entity: " + "user" + " Updated List: list_name" + " Message:" + responseObject.Message);
+								}
+							}
+							#endregion
+
+							if (createSampleRecords)
+							{
+								#region << Create Sample Customer >>
+								{
+									var sampleRecord = new EntityRecord();
+									sampleRecord["id"] = new Guid("fb06213f-7632-495b-bb8d-ed5ff07dc515");
+									sampleRecord["name"] = "Buckley Miller & Wright";
+									var createSampleRecordResult = recMan.CreateRecord(CUSTOMER_ENTITY_NAME, sampleRecord);
+									if (!createSampleRecordResult.Success)
+									{
+										throw new Exception("System error 10060. Create sample record. Message:" + createSampleRecordResult.Message);
+									}
+								}
+								#endregion
+
+								#region << Create Sample Customer User >>
+								{
+									var sampleRecord = new EntityRecord();
+									sampleRecord["id"] = new Guid("307fe376-a1c6-495e-a7c0-2a78797565f2");
+									sampleRecord["first_name"] = "Sample";
+									sampleRecord["last_name"] = "Customer";
+									sampleRecord["username"] = "crm_customer";
+									sampleRecord["email"] = "customer@sample.com";
+									sampleRecord["password"] = "sample123";
+									sampleRecord["enabled"] = true;
+									sampleRecord["verified"] = true;
+									sampleRecord["image"] = "/plugins/webvella-core/assets/avatar-deep-purple.png";
+									var createSampleRecordResult = recMan.CreateRecord(SystemIds.UserEntityId, sampleRecord);
+									if (!createSampleRecordResult.Success)
+									{
+										throw new Exception("System error 10060. Create sample customer record. Message:" + createSampleRecordResult.Message);
+									}
+								}
+								#endregion
+
+								#region << Create Sample User Role>>
+								{
+									var sampleRecord = new EntityRecord();
+									sampleRecord["id"] = new Guid("27745245-09bd-4adb-8831-3870bcae46fe");
+									sampleRecord["name"] = "crm_customer";
+									sampleRecord["description"] = "Sample Customer role for CRM application";
+									var createSampleRecordResult = recMan.CreateRecord(SystemIds.RoleEntityId, sampleRecord);
+									if (!createSampleRecordResult.Success)
+									{
+										throw new Exception("System error 10060. Create sample role record. Message:" + createSampleRecordResult.Message);
+									}
+								}
+								#endregion
+
+								#region << Create relation between sample customer and role >>
+								{
+									var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(new Guid("0c4b119e-1d7b-4b40-8d2c-9e447cc656ab"), new Guid("27745245-09bd-4adb-8831-3870bcae46fe"), new Guid("307fe376-a1c6-495e-a7c0-2a78797565f2"));
+									if (!createRelationNtoNResponse.Success)
+									{
+										throw new Exception("Could not create item image relation" + createRelationNtoNResponse.Message);
+									}
+								}
+								#endregion
+
+								#region << Create relation between sample customer and regular role >>
+								{
+									var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(new Guid("0c4b119e-1d7b-4b40-8d2c-9e447cc656ab"), new Guid("f16ec6db-626d-4c27-8de0-3e7ce542c55f"), new Guid("307fe376-a1c6-495e-a7c0-2a78797565f2"));
+									if (!createRelationNtoNResponse.Success)
+									{
+										throw new Exception("Could not create item image relation" + createRelationNtoNResponse.Message);
+									}
+								}
+								#endregion
+
+							}
 						}
 						#endregion
 

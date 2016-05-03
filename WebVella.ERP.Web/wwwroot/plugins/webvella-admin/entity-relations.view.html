@@ -86,7 +86,10 @@
                     </div>
                 </div>
                 <div class="col-sm-6">
-
+                    <div class="form-group" ng-if="popupCtrl.relation.id != null">
+                        <label for="type" translate="{{'RELATION_ID'}}"></label>
+                        <input class="form-control" type="text" ng-model="popupCtrl.relation.id" disabled/>
+                    </div>
                 </div>
             </div>
             <div class="row">

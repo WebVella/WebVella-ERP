@@ -304,6 +304,8 @@ namespace WebVella.ERP.Api
 									List<string> values = new List<string>();
 									if (pair.Value is JArray)
 										values = ((JArray)pair.Value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
+									else if (pair.Value is List<Guid>)
+										values = ((List<Guid>)pair.Value).Select(x => ((Guid)x).ToString()).ToList<string>();
 									else if (pair.Value is List<object>)
 										values = ((List<object>)pair.Value).Select(x => ((object)x).ToString()).ToList<string>();
 									else if (pair.Value != null)

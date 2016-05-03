@@ -312,7 +312,7 @@ namespace WebVella.ERP
 							{
 								var responseObject = entMan.UpdateRecordList(SystemIds.UserEntityId, updateListInput);
 								if (!responseObject.Success)
-									throw new Exception("System error 10060. Entity: " + "user" + " Updated List: list_name" + " Message:" + response.Message);
+									throw new Exception("System error 10060. Entity: " + "user" + " Updated List: list_name" + " Message:" + responseObject.Message);
 							}
 						}
 						#endregion
@@ -424,7 +424,7 @@ namespace WebVella.ERP
 							{
 								var responseObject = entMan.UpdateRecordList(SystemIds.RoleEntityId, updateListInput);
 								if (!responseObject.Success)
-									throw new Exception("System error 10060. Entity: " + "role" + " Updated List: list_name" + " Message:" + response.Message);
+									throw new Exception("System error 10060. Entity: " + "role" + " Updated List: list_name" + " Message:" + responseObject.Message);
 							}
 						}
 						#endregion

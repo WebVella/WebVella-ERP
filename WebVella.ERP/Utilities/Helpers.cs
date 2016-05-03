@@ -172,5 +172,32 @@ namespace WebVella.ERP.Utilities
 			result.Message = "Subscription successfully upserted";
 			return result;
 		}
+
+		public static CurrencyType GetCurrencyTypeObject(string currencyCode) {
+			var currencType = new CurrencyType();
+			switch(currencyCode) {
+				case "BGN":
+					currencType.Symbol = "BGN";
+					currencType.SymbolNative = "лв.";
+					currencType.Name = "Bulgarian Lev";
+					currencType.NamePlural = "Bulgarian leva";
+					currencType.Code = "BGN";
+					currencType.DecimalDigits = 2;
+					currencType.Rounding = 0;
+					currencType.SymbolPlacement = CurrencySymbolPlacement.After;
+				break;
+				case "USD":
+					currencType.Symbol = "$";
+					currencType.SymbolNative = "$";
+					currencType.Name = "US Dollar";
+					currencType.NamePlural = "US dollars";
+					currencType.Code = "USD";
+					currencType.DecimalDigits = 2;
+					currencType.Rounding = 0;
+					currencType.SymbolPlacement = CurrencySymbolPlacement.Before;
+				break;
+			}
+			return currencType;
+		}
     }
 }

@@ -22,6 +22,8 @@ namespace WebVella.ERP.Project
 		//Code snippets
 		//Check out the CodeSnippets.txt file in WebVella.ERP.Web > Docs folder for code pieces on how to create or update some elements
 
+
+		private bool createSampleRecords = true;
 		//Constants
 		private static Guid WEBVELLA_PROJECT_PLUGIN_ID = new Guid("2a7bc24a-da6a-48f0-a0c7-7156a8ac69bd");
 		private static string WEBVELLA_PROJECT_PLUGIN_NAME = "webvella-project";
@@ -49,6 +51,9 @@ namespace WebVella.ERP.Project
 		//webvella-crm plugin constants
 		private static Guid CUSTOMER_ENTITY_ID = new Guid("90bcdb47-2cde-4137-a412-0198348fecc0");
 		private static string CUSTOMER_ENTITY_NAME = "wv_customer";
+		private static Guid CUSTOMER_RECORD_ID = new Guid("fb06213f-7632-495b-bb8d-ed5ff07dc515");
+		private static Guid CUSTOMER_USER_ID = new Guid("307fe376-a1c6-495e-a7c0-2a78797565f2");
+		private static Guid CUSTOMER_ROLE_ID = new Guid("27745245-09bd-4adb-8831-3870bcae46fe");
 
 
 		public void Start()
@@ -129,7 +134,7 @@ namespace WebVella.ERP.Project
 						#endregion
 
 						#region << 3. Run methods based on the current installed version of the plugin >>
-						if (currentPluginSettings.Version < 20160430) /// TODO: SET THE VERSION CORRECTLY ONCE IT IS FINISHED IN ORDER TO TRIGGER
+						if (currentPluginSettings.Version < 20160430) 
 						{
 							currentPluginSettings.Version = 20160430;
 
@@ -434,32 +439,31 @@ namespace WebVella.ERP.Project
 
 								#region << billable_hour_price >>
 								{
-									InputNumberField numberField = new InputNumberField();
-									numberField.Id = new Guid("7179f4ab-0376-4ded-a334-a21ff451538e");
-									numberField.Name = "billable_hour_price";
-									numberField.Label = "Billable hour price";
-									numberField.PlaceholderText = "";
-									numberField.Description = "";
-									numberField.HelpText = "";
-									numberField.Required = true;
-									numberField.Unique = false;
-									numberField.Searchable = false;
-									numberField.Auditable = false;
-									numberField.System = true;
-									numberField.DefaultValue = 0;
-									numberField.MinValue = null;
-									numberField.MaxValue = null;
-									numberField.DecimalPlaces = 0;
-									numberField.EnableSecurity = true;
-									numberField.Permissions = new FieldPermissions();
-									numberField.Permissions.CanRead = new List<Guid>();
-									numberField.Permissions.CanUpdate = new List<Guid>();
+									InputCurrencyField currencyField = new InputCurrencyField();
+									currencyField.Id = new Guid("7179f4ab-0376-4ded-a334-a21ff451538e");
+									currencyField.Name = "billable_hour_price";
+									currencyField.Label = "billable_hour_price";
+									currencyField.PlaceholderText = "";
+									currencyField.Description = "";
+									currencyField.HelpText = "";
+									currencyField.Required = true;
+									currencyField.Unique = false;
+									currencyField.Searchable = false;
+									currencyField.Auditable = false;
+									currencyField.System = true;
+									currencyField.DefaultValue = 0;
+									currencyField.MinValue = 0;
+									currencyField.Currency = Helpers.GetCurrencyTypeObject("USD");
+									currencyField.EnableSecurity = true;
+									currencyField.Permissions.CanRead = new List<Guid>();
+									currencyField.Permissions.CanUpdate = new List<Guid>();	
 									//READ
-									numberField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+									currencyField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
 									//UPDATE
-									numberField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+									currencyField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);	
+	
 									{
-										var response = entMan.CreateField(PROJECT_ENTITY_ID, numberField, false);
+										var response = entMan.CreateField(PROJECT_ENTITY_ID, currencyField, false);
 										if (!response.Success)
 											throw new Exception("System error 10060. Entity: " + PROJECT_ENTITY_NAME + " Field: billable_hour_price" + " Message:" + response.Message);
 									}
@@ -598,6 +602,7 @@ namespace WebVella.ERP.Project
 									var viewRow = new InputRecordViewRow();
 									var viewColumn = new InputRecordViewColumn();
 									var viewItem = new InputRecordViewFieldItem();
+									var viewItemFromRelation = new InputRecordViewRelationFieldItem();
 
 									#region << details >>
 									createViewInput.Id = new Guid("120dee5b-f3ed-4256-9346-da01d787a49c");
@@ -636,7 +641,7 @@ namespace WebVella.ERP.Project
 									viewSection.Weight = 1;
 									viewSection.Rows = new List<InputRecordViewRow>();
 
-									#region << Row >>
+									#region << Row 1 Column>>
 									viewRow = new InputRecordViewRow();
 									viewRow.Id = Guid.NewGuid();
 									viewRow.Weight = 1;
@@ -647,7 +652,6 @@ namespace WebVella.ERP.Project
 									viewColumn.GridColCount = 12;
 									viewColumn.Items = new List<InputRecordViewItemBase>();
 
-
 									#region << name >>
 									{
 										viewItem = new InputRecordViewFieldItem();
@@ -655,6 +659,158 @@ namespace WebVella.ERP.Project
 										viewItem.EntityName = PROJECT_ENTITY_NAME;
 										viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "name").Id;
 										viewItem.FieldName = "name";
+										viewItem.Type = "field";
+										viewColumn.Items.Add(viewItem);
+									}
+									#endregion
+
+									#region << description >>
+									{
+										viewItem = new InputRecordViewFieldItem();
+										viewItem.EntityId = PROJECT_ENTITY_ID;
+										viewItem.EntityName = PROJECT_ENTITY_NAME;
+										viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "description").Id;
+										viewItem.FieldName = "description";
+										viewItem.Type = "field";
+										viewColumn.Items.Add(viewItem);
+									}
+									#endregion
+
+									//Save column
+									viewRow.Columns.Add(viewColumn);
+									#endregion
+
+									//Save row
+									viewSection.Rows.Add(viewRow);
+									#endregion
+
+									#region << Row 2 Columns>>
+									viewRow = new InputRecordViewRow();
+									viewRow.Id = Guid.NewGuid();
+									viewRow.Weight = 1;
+									viewRow.Columns = new List<InputRecordViewColumn>();
+
+									#region << Column Left >>
+									viewColumn = new InputRecordViewColumn();
+									viewColumn.GridColCount = 6;
+									viewColumn.Items = new List<InputRecordViewItemBase>();
+
+									#region << $user_1_n_project_owner > username >>
+									{
+									var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+									viewItemFromRelation = new InputRecordViewRelationFieldItem();
+									viewItemFromRelation.EntityId = targetEntity.Id;
+									viewItemFromRelation.EntityName = targetEntity.Name;
+									viewItemFromRelation.Type = "field";
+									viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
+									viewItemFromRelation.FieldName = "username";
+									viewItemFromRelation.FieldLabel = "Owner / Project manager";
+									viewItemFromRelation.FieldPlaceholder = "";
+									viewItemFromRelation.FieldRequired = true;
+									viewItemFromRelation.FieldLookupList = "lookup";
+									viewItemFromRelation.RelationId = PROJECT_RELATION_USER_1_N_PROJECT_OWNER_ID;
+									viewItemFromRelation.RelationName = "user_1_n_project_owner";
+									viewColumn.Items.Add(viewItemFromRelation);	
+									}
+									#endregion
+
+									#region << $role_n_n_project_team > name >>
+									{
+									var targetEntity = entMan.ReadEntity(SystemIds.RoleEntityId).Object;
+									viewItemFromRelation = new InputRecordViewRelationFieldItem();
+									viewItemFromRelation.EntityId = targetEntity.Id;
+									viewItemFromRelation.EntityName = targetEntity.Name;
+									viewItemFromRelation.Type = "field";
+									viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+									viewItemFromRelation.FieldName = "name";
+									viewItemFromRelation.FieldLabel = "Project team roles";
+									viewItemFromRelation.FieldPlaceholder = "";
+									viewItemFromRelation.FieldRequired = true;
+									viewItemFromRelation.FieldLookupList = "lookup";
+									viewItemFromRelation.RelationId = PROJECT_RELATION_ROLE_N_N_PROJECT_TEAM_ID;
+									viewItemFromRelation.RelationName = "role_n_n_project_team";
+									viewColumn.Items.Add(viewItemFromRelation);	
+									}
+									#endregion
+
+									#region << start_date >>
+									{
+										viewItem = new InputRecordViewFieldItem();
+										viewItem.EntityId = PROJECT_ENTITY_ID;
+										viewItem.EntityName = PROJECT_ENTITY_NAME;
+										viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "start_date").Id;
+										viewItem.FieldName = "start_date";
+										viewItem.Type = "field";
+										viewColumn.Items.Add(viewItem);
+									}
+									#endregion
+
+									#region << billable_hour_price >>
+									{
+										viewItem = new InputRecordViewFieldItem();
+										viewItem.EntityId = PROJECT_ENTITY_ID;
+										viewItem.EntityName = PROJECT_ENTITY_NAME;
+										viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "billable_hour_price").Id;
+										viewItem.FieldName = "billable_hour_price";
+										viewItem.Type = "field";
+										viewColumn.Items.Add(viewItem);
+									}
+									#endregion
+
+									//Save column
+									viewRow.Columns.Add(viewColumn);
+									#endregion
+
+									#region << Column right >>
+									viewColumn = new InputRecordViewColumn();
+									viewColumn.GridColCount = 6;
+									viewColumn.Items = new List<InputRecordViewItemBase>();
+
+									#region << $customer_1_n_project > name >>
+									{
+									var targetEntity = entMan.ReadEntity(CUSTOMER_ENTITY_ID).Object;
+									viewItemFromRelation = new InputRecordViewRelationFieldItem();
+									viewItemFromRelation.EntityId = targetEntity.Id;
+									viewItemFromRelation.EntityName = targetEntity.Name;
+									viewItemFromRelation.Type = "field";
+									viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+									viewItemFromRelation.FieldName = "name";
+									viewItemFromRelation.FieldLabel = "Customer";
+									viewItemFromRelation.FieldPlaceholder = "";
+									viewItemFromRelation.FieldRequired = true;
+									viewItemFromRelation.FieldLookupList = "lookup";
+									viewItemFromRelation.RelationId = PROJECT_RELATION_CUSTOMER_1_N_PROJECT_ID;
+									viewItemFromRelation.RelationName = "customer_1_n_project";
+									viewColumn.Items.Add(viewItemFromRelation);	
+									}
+									#endregion
+
+									#region << $role_n_n_project_customer > name >>
+									{
+									var targetEntity = entMan.ReadEntity(SystemIds.RoleEntityId).Object;
+									viewItemFromRelation = new InputRecordViewRelationFieldItem();
+									viewItemFromRelation.EntityId = targetEntity.Id;
+									viewItemFromRelation.EntityName = targetEntity.Name;
+									viewItemFromRelation.Type = "field";
+									viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+									viewItemFromRelation.FieldName = "name";
+									viewItemFromRelation.FieldLabel = "Project customer roles";
+									viewItemFromRelation.FieldPlaceholder = "";
+									viewItemFromRelation.FieldRequired = true;
+									viewItemFromRelation.FieldLookupList = "lookup";
+									viewItemFromRelation.RelationId = PROJECT_RELATION_ROLE_N_N_PROJECT_CUSTOMER_ID;
+									viewItemFromRelation.RelationName = "role_n_n_project_customer";
+									viewColumn.Items.Add(viewItemFromRelation);	
+									}
+									#endregion
+
+									#region << end_date >>
+									{
+										viewItem = new InputRecordViewFieldItem();
+										viewItem.EntityId = PROJECT_ENTITY_ID;
+										viewItem.EntityName = PROJECT_ENTITY_NAME;
+										viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "end_date").Id;
+										viewItem.FieldName = "end_date";
 										viewItem.Type = "field";
 										viewColumn.Items.Add(viewItem);
 									}
@@ -3010,6 +3166,144 @@ namespace WebVella.ERP.Project
 
 							}
 							#endregion
+
+							if (createSampleRecords)
+							{
+								#region << Create Project Manager Role >>
+								{
+									var sampleRecord = new EntityRecord();
+									sampleRecord["id"] = new Guid("f55ac9f2-7bee-48fd-862c-2d801123022a");
+									sampleRecord["name"] = "project_manager";
+									sampleRecord["description"] = "Project manager role for the Project application";
+									var createSampleRecordResult = recMan.CreateRecord(SystemIds.RoleEntityId, sampleRecord);
+									if (!createSampleRecordResult.Success)
+									{
+										throw new Exception("System error 10060. Create sample role record. Message:" + createSampleRecordResult.Message);
+									}
+								}
+								#endregion
+
+								#region << Create Project Team Role >>
+								{
+									var sampleRecord = new EntityRecord();
+									sampleRecord["id"] = new Guid("083a5c46-7dbe-4ff9-b19f-44603671ccb2");
+									sampleRecord["name"] = "project_team";
+									sampleRecord["description"] = "Project team role for the Project application";
+									var createSampleRecordResult = recMan.CreateRecord(SystemIds.RoleEntityId, sampleRecord);
+									if (!createSampleRecordResult.Success)
+									{
+										throw new Exception("System error 10060. Create sample role record. Message:" + createSampleRecordResult.Message);
+									}
+								}
+								#endregion								
+
+								#region << Create Sample Project Manager User >>
+								{
+									var sampleRecord = new EntityRecord();
+									sampleRecord["id"] = new Guid("b646c5d4-acc8-4404-af77-6786b81bee05");
+									sampleRecord["first_name"] = "Project";
+									sampleRecord["last_name"] = "Manager";
+									sampleRecord["username"] = "project_manager";
+									sampleRecord["email"] = "manager@project.com";
+									sampleRecord["password"] = "sample123";
+									sampleRecord["enabled"] = true;
+									sampleRecord["verified"] = true;
+									sampleRecord["image"] = "/plugins/webvella-core/assets/avatar-red.png";
+									var createSampleRecordResult = recMan.CreateRecord(SystemIds.UserEntityId, sampleRecord);
+									if (!createSampleRecordResult.Success)
+									{
+										throw new Exception("System error 10060. Create sample customer record. Message:" + createSampleRecordResult.Message);
+									}
+								}
+								#endregion			
+								
+								#region << Create Sample Project Team User >>
+								{
+									var sampleRecord = new EntityRecord();
+									sampleRecord["id"] = new Guid("6c820f13-f7d0-429e-a04a-c0ec3ba6ade0");
+									sampleRecord["first_name"] = "Project";
+									sampleRecord["last_name"] = "Team";
+									sampleRecord["username"] = "project_team";
+									sampleRecord["email"] = "team@project.com";
+									sampleRecord["password"] = "sample123";
+									sampleRecord["enabled"] = true;
+									sampleRecord["verified"] = true;
+									sampleRecord["image"] = "/plugins/webvella-core/assets/avatar-green.png";
+									var createSampleRecordResult = recMan.CreateRecord(SystemIds.UserEntityId, sampleRecord);
+									if (!createSampleRecordResult.Success)
+									{
+										throw new Exception("System error 10060. Create sample customer record. Message:" + createSampleRecordResult.Message);
+									}
+								}
+								#endregion														
+
+								#region << Create relation between project manager user and role >>
+								{
+									var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(new Guid("0c4b119e-1d7b-4b40-8d2c-9e447cc656ab"), new Guid("f55ac9f2-7bee-48fd-862c-2d801123022a"), new Guid("b646c5d4-acc8-4404-af77-6786b81bee05"));
+									if (!createRelationNtoNResponse.Success)
+									{
+										throw new Exception("Could not create item image relation" + createRelationNtoNResponse.Message);
+									}
+								}
+								#endregion
+
+								#region << Create relation between project manager user and regular role  >>
+								{
+									var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(new Guid("0c4b119e-1d7b-4b40-8d2c-9e447cc656ab"), new Guid("f16ec6db-626d-4c27-8de0-3e7ce542c55f"), new Guid("b646c5d4-acc8-4404-af77-6786b81bee05"));
+									if (!createRelationNtoNResponse.Success)
+									{
+										throw new Exception("Could not create item image relation" + createRelationNtoNResponse.Message);
+									}
+								}
+								#endregion								
+
+								#region << Create relation between project team user and role >>
+								{
+									var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(new Guid("0c4b119e-1d7b-4b40-8d2c-9e447cc656ab"), new Guid("083a5c46-7dbe-4ff9-b19f-44603671ccb2"), new Guid("6c820f13-f7d0-429e-a04a-c0ec3ba6ade0"));
+									if (!createRelationNtoNResponse.Success)
+									{
+										throw new Exception("Could not create item image relation" + createRelationNtoNResponse.Message);
+									}
+								}
+								#endregion
+
+								#region << Create relation between project manager user and regular role  >>
+								{
+									var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(new Guid("0c4b119e-1d7b-4b40-8d2c-9e447cc656ab"), new Guid("f16ec6db-626d-4c27-8de0-3e7ce542c55f"), new Guid("6c820f13-f7d0-429e-a04a-c0ec3ba6ade0"));
+									if (!createRelationNtoNResponse.Success)
+									{
+										throw new Exception("Could not create item image relation" + createRelationNtoNResponse.Message);
+									}
+								}
+								#endregion										
+
+								#region << Create Sample Project >>
+								{
+									var sampleRecord = new EntityRecord();
+									sampleRecord["id"] = new Guid("a0141850-b13c-44b4-bb1b-4e0dde4850f4");
+									sampleRecord["name"] = "Corporate website development";
+									sampleRecord["description"] = "All activities for developing a sample application";
+									sampleRecord["billable_hour_price"] = 100;
+									sampleRecord["owner_id"] = new Guid("b646c5d4-acc8-4404-af77-6786b81bee05");
+									sampleRecord["customer_id"] = CUSTOMER_RECORD_ID;
+									var customerRoles = new List<Guid>();
+									customerRoles.Add(CUSTOMER_ROLE_ID);
+									sampleRecord["$$role_n_n_project_customer.id"] = customerRoles;
+									var projectTeamRoles = new List<Guid>();
+									projectTeamRoles.Add(new Guid("083a5c46-7dbe-4ff9-b19f-44603671ccb2"));
+									sampleRecord["$$role_n_n_project_team.id"] = projectTeamRoles;
+									sampleRecord["priority"] = "medium";
+									sampleRecord["status"] = "in review";
+									sampleRecord["start_date"] = DateTime.Now.AddDays(3);
+									sampleRecord["end_date"] = DateTime.Now.AddDays(90);
+									var createSampleRecordResult = recMan.CreateRecord(PROJECT_ENTITY_NAME, sampleRecord);
+									if (!createSampleRecordResult.Success)
+									{
+										throw new Exception("System error 10060. Create sample record. Message:" + createSampleRecordResult.Message);
+									}
+								}
+								#endregion
+							}
 						}
 						#endregion
 
