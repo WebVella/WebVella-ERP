@@ -660,17 +660,17 @@ namespace WebVella.ERP.Api.Models
 	public class RecordListRecordResponse : BaseResponseModel
 	{
 		[JsonProperty(PropertyName = "object")]
-		public RecordListRecord Object { get; set; }
+		public object Object { get; set; }
 	}
 
-	public class RecordListRecord
-	{
-		[JsonProperty(PropertyName = "data")]
-		public object Data { get; set; }
+	//public class RecordListRecord
+	//{
+	//	[JsonProperty(PropertyName = "data")]
+	//	public object Data { get; set; }
 
-		[JsonProperty(PropertyName = "meta")]
-		public RecordList Meta { get; set; }
-	}
+	//	[JsonProperty(PropertyName = "meta")]
+	//	public RecordList Meta { get; set; }
+	//}
 
 	public class RecordListItemConverter : JsonCreationConverter<InputRecordListItemBase>
 	{

@@ -1131,17 +1131,17 @@ namespace WebVella.ERP.Api.Models
 	public class RecordViewRecordResponse : BaseResponseModel
 	{
 		[JsonProperty(PropertyName = "object")]
-		public RecordViewRecord Object { get; set; }
+		public object Object { get; set; }
 	}
 
-	public class RecordViewRecord
-	{
-		[JsonProperty(PropertyName = "data")]
-		public object Data { get; set; }
+	//public class RecordViewRecord
+	//{
+	//	[JsonProperty(PropertyName = "data")]
+	//	public object Data { get; set; }
 
-		[JsonProperty(PropertyName = "meta")]
-		public RecordView Meta { get; set; }
-	}
+	//	[JsonProperty(PropertyName = "meta")]
+	//	public RecordView Meta { get; set; }
+	//}
 
 	public class RecordViewItemConverter : JsonCreationConverter<InputRecordViewItemBase>
 	{

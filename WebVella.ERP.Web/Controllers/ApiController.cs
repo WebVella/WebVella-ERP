@@ -1825,7 +1825,7 @@ namespace WebVella.ERP.Web.Controllers
 			response.Message = "Success";
 			response.Timestamp = DateTime.UtcNow;
 			response.Success = true;
-			response.Object = new RecordListRecord();
+			response.Object = null;
 
 			Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
 
@@ -1848,7 +1848,7 @@ namespace WebVella.ERP.Web.Controllers
 			}
 			try
 			{
-				response.Object.Data = GetListRecords(entities, entity, listName, page, null, pageSize);
+				response.Object = GetListRecords(entities, entity, listName, page, null, pageSize);
 			}
 			catch (Exception ex)
 			{
@@ -1856,12 +1856,6 @@ namespace WebVella.ERP.Web.Controllers
 				response.Success = false;
 				response.Message = ex.Message;
 				return DoResponse(response);
-			}
-
-			RecordList list = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
-			if (list != null)
-			{
-				response.Object.Meta = list;
 			}
 
 			return DoResponse(response);
@@ -2388,7 +2382,7 @@ namespace WebVella.ERP.Web.Controllers
 			response.Message = "Success";
 			response.Timestamp = DateTime.UtcNow;
 			response.Success = true;
-			response.Object = new RecordViewRecord();
+			response.Object = null;
 
 			Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
 
@@ -2401,14 +2395,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(response);
 			}
 
-			response.Object.Data = GetViewRecords(entities, entity, viewName, "id", id);
-
-			RecordView view = entity.RecordViews.FirstOrDefault(v => v.Name == viewName);
-			if (view != null)
-			{
-				response.Object.Meta = view;
-			}
-
+			response.Object = GetViewRecords(entities, entity, viewName, "id", id);
 			return DoResponse(response);
 		}
 
