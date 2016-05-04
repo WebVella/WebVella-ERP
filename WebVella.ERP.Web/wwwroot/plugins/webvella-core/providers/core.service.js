@@ -102,8 +102,9 @@
 		//Delete
 		serviceInstance.deleteEntityRecordList = deleteEntityRecordList;
 		//Helpers
-		serviceInstance.getListMenuOptions = getListMenuOptions
-		serviceInstance.extractSupportedFilterFields = extractSupportedFilterFields
+		serviceInstance.getListMenuOptions = getListMenuOptions;
+		serviceInstance.extractSupportedFilterFields = extractSupportedFilterFields;
+		serviceInstance.getSafeListNameAndEntityName = getSafeListNameAndEntityName;
 		//#endregion
 
 		//#region << Tree >>
@@ -1690,6 +1691,7 @@
 			var supportedFields = extractFieldsFromQuery(recordList.meta.query, []);
 			return supportedFields;
 		}
+		/////////////////////
 		function extractFieldsFromQuery(query, result) {
 			if (query.fieldValue != null && query.fieldValue.trim().startsWith("{")) {
 				var queryObject = angular.fromJson(query.fieldValue);
@@ -1707,6 +1709,34 @@
 			}
 
 			return result;
+		}
+		/////////////////////
+		function getSafeListNameAndEntityName(paramsListName,paramsEntityName,relationsList){
+			var data = {};
+			//if the list is in a view, than the name should be processed as the entity name could differ from the current one as well as the list name is not in fact a dataName
+			//e.g. $list$project_1_n_milestone$general	when from another entity or $list$lookup when from the current
+			data.listName = paramsListName;
+			data.entityName = paramsEntityName;
+			var listDataName = 	paramsListName;
+			var listDataNameArray =  listDataName.split("$");
+			if(listDataNameArray.length == 3){
+				//this is a list from the current entity ($list$lookup), we just need to get the proper list name
+				data.listName = listDataNameArray[2];
+			}
+			else if (listDataNameArray.length == 4){
+				//this is a list from another entity ($list$project_1_n_milestone$general), we should get both list name and entity name from the relation
+				var relationName = listDataNameArray[2];
+				var relation =  getRelationFromRelationsList(relationName,relationsList);
+				if(relation.originEntityName == paramsEntityName){
+					 data.entityName =  relation.targetEntityName;
+				}
+				else if(relation.targetEntityName == paramsEntityName){
+					data.entityName =  relation.originEntityName;
+				}
+				data.listName = listDataNameArray[3];
+			}
+
+			return data;
 		}
 
 		//#endregion
@@ -1845,7 +1875,6 @@
 		function getRecordByViewName(recordId, viewName, entityName, successCallback, errorCallback) {
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewName + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
-
 		///////////////////////
 		function getRecordByViewMeta(recordId, viewMeta, entityName, successCallback, errorCallback) {
 			if (viewMeta.dataSourceUrl == null || viewMeta.dataSourceUrl == '') {
@@ -1880,14 +1909,16 @@
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + page + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
-		function getRecordsByListMeta(listMeta, entityName, page, extraParams, successCallback, errorCallback) {
+		function getRecordsByListMeta(listMeta, entityName, page, stateParams, extraParams, successCallback, errorCallback) {
 			if (listMeta.dataSourceUrl == null || listMeta.dataSourceUrl == '') {
 				var extraParamQueryString = "";
 				if (extraParams != null) {
 					if (!isEmpty(extraParams)) {
 						extraParamQueryString = "?";
 						for (var param in extraParams) {
-							extraParamQueryString += param + "=" + extraParams[param] + "&";
+							if(extraParamQueryString.indexOf(param) == -1){
+								extraParamQueryString += param + "=" + extraParams[param] + "&";
+							}
 						}
 						//remove the last &
 						extraParamQueryString = extraParamQueryString.substring(0, extraParamQueryString.length - 1);
@@ -1904,7 +1935,18 @@
 				if (extraParams != null) {
 					if (!isEmpty(extraParams)) {
 						for (var param in extraParams) {
-							extraParamQueryString += param + "=" + extraParams[param] + "&";
+							if(extraParamQueryString.indexOf(param) == -1){
+								extraParamQueryString += param + "=" + extraParams[param] + "&";
+							}
+						}
+					}
+				}
+				if (stateParams != null) {
+					if (!isEmpty(stateParams)) {
+						for (var param in stateParams) {
+							if(extraParamQueryString.indexOf(param) == -1){
+								extraParamQueryString += param + "=" + stateParams[param] + "&";
+							}
 						}
 					}
 				}

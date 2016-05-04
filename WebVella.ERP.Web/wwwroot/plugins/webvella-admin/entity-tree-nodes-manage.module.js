@@ -223,7 +223,7 @@
 				errorCallback(response.object);
 			}
 			else {
-				webvellaCoreService.getRecordsByListMeta(defaultLookupList, ngCtrl.entity.name, 1, null, successCallback, errorCallback);
+				webvellaCoreService.getRecordsByListMeta(defaultLookupList, ngCtrl.entity.name, 1,null, null, successCallback, errorCallback);
 			}
 
 
@@ -352,7 +352,7 @@
 			if (popupCtrl.searchQuery) {
 				popupCtrl.searchQuery = popupCtrl.searchQuery.trim();
 			}
-			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.ngCtrl.entity.name, 1, null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.ngCtrl.entity.name, 1, null, null, successCallback, errorCallback);
 		}
 		//#endregion
 
@@ -368,7 +368,7 @@
 
 			}
 
-			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.ngCtrl.entity.name, page, null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.ngCtrl.entity.name, page, null, null, successCallback, errorCallback);
 		}
 
 		//#endregion

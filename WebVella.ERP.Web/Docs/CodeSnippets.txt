@@ -1229,3 +1229,33 @@ TREE SELECT
 	}
 }
 #endregion
+
+////////////////////////////////////////////////////////////////////////////////
+//	CREATE RECORD
+////////////////////////////////////////////////////////////////////////////////
+#region << Create Record: name >>
+	var sampleRecord = new EntityRecord();
+	sampleRecord["id"] = new Guid("guid");
+	sampleRecord["field_name"] = "";
+	var createSampleRecordResult = recMan.CreateRecord(ENTITY_ID, sampleRecord);
+	if (!createSampleRecordResult.Success)
+	{
+		throw new Exception("System error 10060. Create sample milestone. Message:" + createSampleRecordResult.Message);
+	}
+#endregion				
+
+////////////////////////////////////////////////////////////////////////////////
+//	UPDATE RECORD
+////////////////////////////////////////////////////////////////////////////////
+#region << Create Record: name >>
+	{
+		var sampleRecord = new EntityRecord();
+		sampleRecord["id"] = new Guid("guid");
+		sampleRecord["field_name"] = "";
+		var createSampleRecordResult = recMan.CreateRecord(ENTITY_ID, sampleRecord);
+		if (!createSampleRecordResult.Success)
+		{
+			throw new Exception("System error 10060. Create sample milestone. Message:" + createSampleRecordResult.Message);
+		}
+	}
+#endregion						

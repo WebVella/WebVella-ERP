@@ -1256,12 +1256,12 @@
 							getListRecordsSuccessCallback(lockedChangeResponse);
 						}
 						else {
-							webvellaCoreService.getRecordsByListMeta(defaultLookupList, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
+							webvellaCoreService.getRecordsByListMeta(defaultLookupList, entityMeta.name, 1,  null,null, getListRecordsSuccessCallback, errorCallback);
 						}
 					}
 					else if (ngCtrl.modalDataKind == "target") {
 						//Current records is Target
-						webvellaCoreService.getRecordsByListMeta(defaultLookupList, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
+						webvellaCoreService.getRecordsByListMeta(defaultLookupList, entityMeta.name, 1, null, null, getListRecordsSuccessCallback, errorCallback);
 					}
 				}
 			}
@@ -1440,7 +1440,7 @@
 			if (popupCtrl.searchQuery) {
 				popupCtrl.searchQuery = popupCtrl.searchQuery.trim();
 			}
-			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.selectedItem.entityName, 1, null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.selectedItem.entityName, 1,  null,null, successCallback, errorCallback);
 		}
 		//#endregion
 
@@ -1456,7 +1456,7 @@
 
 			}
 
-			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.selectedItem.entityName, page, null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.selectedItem.entityName, page, null, null, successCallback, errorCallback);
 		}
 
 		//#endregion

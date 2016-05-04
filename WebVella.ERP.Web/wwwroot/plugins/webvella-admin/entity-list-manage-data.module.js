@@ -181,7 +181,7 @@
 				case "defaultData":
 					ngCtrl.defaultMeta = null;
 					sampleListMeta.dataSourceUrl = null;
-					webvellaCoreService.getRecordsByListMeta(sampleListMeta, ngCtrl.entity.name, 1, null, successCallback, errorCallback);
+					webvellaCoreService.getRecordsByListMeta(sampleListMeta, ngCtrl.entity.name, 1, null, null, successCallback, errorCallback);
 					break;
 				case "defaultMeta":
 					ngCtrl.defaultData = null;
@@ -191,7 +191,7 @@
 					successCallback(response);
 					break;
 				case "customFull":
-					webvellaCoreService.getRecordsByListMeta(sampleListMeta, ngCtrl.entity.name, 1, null, successCallback, errorCallback);
+					webvellaCoreService.getRecordsByListMeta(sampleListMeta, ngCtrl.entity.name, 1, null, null, successCallback, errorCallback);
 					break;
 			}
 			

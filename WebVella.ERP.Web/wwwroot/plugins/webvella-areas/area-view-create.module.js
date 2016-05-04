@@ -864,12 +864,12 @@
 							getListRecordsSuccessCallback(lockedChangeResponse);
 						}
 						else {
-							webvellaCoreService.getRecordsByListMeta(defaultLookupList, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
+							webvellaCoreService.getRecordsByListMeta(defaultLookupList, entityMeta.name, 1, null, null, getListRecordsSuccessCallback, errorCallback);
 						}
 					}
 					else if (ngCtrl.modalDataKind == "target") {
 						//Current records is Target
-						webvellaCoreService.getRecordsByListMeta(defaultLookupList, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
+						webvellaCoreService.getRecordsByListMeta(defaultLookupList, entityMeta.name, 1, null, null, getListRecordsSuccessCallback, errorCallback);
 					}
 				}
 			}
@@ -971,7 +971,7 @@
 			if (popupCtrl.searchQuery) {
 				popupCtrl.searchQuery = popupCtrl.searchQuery.trim();
 			}
-			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.selectedItem.entityName, 1, null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.selectedItem.entityName, 1,  null,null, successCallback, errorCallback);
 		}
 		//#endregion
 
@@ -987,7 +987,7 @@
 
 			}
 
-			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.selectedItem.entityName, page, null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.selectedItem.entityName, page, null, null, successCallback, errorCallback);
 		}
 
 		//#endregion
@@ -1025,7 +1025,7 @@
 				popupCtrl.currentlyAttachedIds.push(record.id);
 			}
 			else {
-				//if it is already in the highligted list there is probably some miscalculation from previous operation, but for now we will do nothing
+				//if it is already in the highlighted list there is probably some miscalculation from previous operation, but for now we will do nothing
 			}
 
 		}
@@ -1037,7 +1037,7 @@
 				popupCtrl.currentlyAttachedIds.splice(elementIndex, 1);
 			}
 			else {
-				//if it is already not in the highligted list there is probably some miscalculation from previous operation, but for now we will do nothing
+				//if it is already not in the highlighted list there is probably some miscalculation from previous operation, but for now we will do nothing
 			}
 		}
 		popupCtrl.saveRelationChanges = function () {
