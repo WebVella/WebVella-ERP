@@ -46,7 +46,7 @@
 			},
 			resolve: {
 				loadDependency: loadDependency,
-				resolvedCurrentParentView: function () { return null; },
+				resolvedParentViewData: function () { return null; },
 				resolvedCurrentView: resolveCurrentView
 			}
 		})
@@ -76,7 +76,7 @@
 			},
 			resolve: {
 				loadDependency: loadDependency,
-				resolvedCurrentParentView: function () { return null; },
+				resolvedParentViewData: function () { return null; },
 				resolvedCurrentView: resolveCurrentView
 			}
 		})
@@ -105,7 +105,7 @@
 			},
 			resolve: {
 				loadDependency: loadDependency,
-				resolvedCurrentParentView: resolveCurrentParentView,
+				resolvedParentViewData: resolveCurrentParentView,
 				resolvedCurrentView: resolveCurrentView
 			}
 		});
@@ -152,9 +152,9 @@
 		return defer.promise;
 	}
 
-	resolveCurrentView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta', 'resolvedCurrentParentView','resolvedEntityList'];
+	resolveCurrentView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta', 'resolvedParentViewData','resolvedEntityList'];
 
-	function resolveCurrentView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta, resolvedCurrentParentView,resolvedEntityList) {
+	function resolveCurrentView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta, resolvedParentViewData,resolvedEntityList) {
 
 		// Initialize
 		var defer = $q.defer();
@@ -185,7 +185,7 @@
 			alert("you do not have permissions to view records from this entity!");
 			defer.reject("you do not have permissions to view records from this entity");
 		}
-		var parentView = fastCopy(resolvedCurrentParentView);
+		var parentView = fastCopy(resolvedParentViewData);
 		if (parentView == null) {
 			var view = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName,$stateParams.entityName,resolvedEntityList);
 			webvellaCoreService.getRecordByViewMeta($stateParams.recordId, view, $stateParams.entityName, successCallback, errorCallback);
@@ -213,11 +213,11 @@
 		return defer.promise;
 	}
 
-	loadDependency.$inject = ['$ocLazyLoad', '$q', '$http', '$state', '$timeout', '$stateParams', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedCurrentParentView', 'resolvedEntityRelationsList'];
-	function loadDependency($ocLazyLoad, $q, $http, $state, $timeout, $stateParams, wvAppConstants, resolvedCurrentEntityMeta, resolvedCurrentParentView, resolvedEntityRelationsList) {
+	loadDependency.$inject = ['$ocLazyLoad', '$q', '$http', '$state', '$timeout', '$stateParams', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedParentViewData', 'resolvedEntityRelationsList'];
+	function loadDependency($ocLazyLoad, $q, $http, $state, $timeout, $stateParams, wvAppConstants, resolvedCurrentEntityMeta, resolvedParentViewData, resolvedEntityRelationsList) {
 		var lazyDeferred = $q.defer();
 		var listServiceJavascriptPath = "";
-		if (resolvedCurrentParentView == null) {
+		if (resolvedParentViewData == null) {
 			//Parent view is reviewed
 			listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' + $stateParams.entityName + '/view/' + $stateParams.viewName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
 		}
@@ -285,12 +285,12 @@
 
 	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', '$window', 'pageTitle', 'webvellaCoreService',
         'resolvedAreas', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedEntityList', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
-		'resolvedCurrentUserEntityPermissions', 'webvellaViewActionService', '$sessionStorage', 'resolvedCurrentParentView'];
+		'resolvedCurrentUserEntityPermissions', 'webvellaViewActionService', '$sessionStorage', 'resolvedParentViewData'];
 
 
 	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, $window, pageTitle, webvellaCoreService,
         resolvedAreas, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedEntityList, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
-		resolvedCurrentUserEntityPermissions, webvellaViewActionService, $sessionStorage, resolvedCurrentParentView) {
+		resolvedCurrentUserEntityPermissions, webvellaViewActionService, $sessionStorage, resolvedParentViewData) {
 
 		//#region << ngCtrl initialization >>
 		var ngCtrl = this;
@@ -308,13 +308,13 @@
 		ngCtrl.view = {};
 		ngCtrl.view.meta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName,$stateParams.entityName,resolvedEntityList);
 		ngCtrl.view.data = fastCopy(resolvedCurrentView);
-		if (resolvedCurrentParentView == null) {
+		if (resolvedParentViewData == null) {
 			ngCtrl.parentView = null;
 		}
 		else {
 			ngCtrl.parentView = {};
-			ngCtrl.parentView.meta = fastCopy(resolvedCurrentParentView.meta);
-			ngCtrl.parentView.data = fastCopy(resolvedCurrentParentView.data[0]);
+			ngCtrl.parentView.meta = fastCopy(resolvedParentViewData.meta);
+			ngCtrl.parentView.data = fastCopy(resolvedParentViewData.data[0]);
 		}
 		ngCtrl.entityList = fastCopy(resolvedEntityList);
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);

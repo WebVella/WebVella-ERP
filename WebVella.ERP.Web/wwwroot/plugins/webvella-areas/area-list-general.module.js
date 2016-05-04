@@ -40,8 +40,8 @@
 				loadDependency: loadDependency,
 				loadPreloadScript: loadPreloadScript,
 				resolvedCurrentView: function () { return null; },
-				resolvedCurrentParentView: function () { return null; },
-				resolvedListRecords: resolveListRecords
+				resolvedParentViewData: function () { return null; },
+				resolvedRecordListData: resolveRecordListData
 			},
 			data: {
 
@@ -75,8 +75,8 @@
 				loadDependency: loadDependency,
 				loadPreloadScript: loadPreloadScript,
 				resolvedCurrentView: function () { return null },	//for the sidebar to render
-				resolvedCurrentParentView: resolveCurrentParentView,
-				resolvedListRecords: resolveListRecordsFromView
+				resolvedParentViewData: resolveParentViewData,
+				resolvedRecordListData: resolveRecordListDataFromView
 			},
 			data: {
 
@@ -162,8 +162,8 @@
 		}
 	}
 
-	resolveListRecords.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams', '$timeout', 'ngToast', '$location','resolvedEntityList'];
-	function resolveListRecords($q, $log, webvellaCoreService, $state, $stateParams, $timeout, ngToast, $location,resolvedEntityList) {
+	resolveRecordListData.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams', '$timeout', 'ngToast', '$location','resolvedEntityList'];
+	function resolveRecordListData($q, $log, webvellaCoreService, $state, $stateParams, $timeout, ngToast, $location,resolvedEntityList) {
 		var defer = $q.defer();
 		function successCallback(response) {
 			defer.resolve(response.object);
@@ -179,8 +179,8 @@
 		return defer.promise;
 	}
 
-	resolveCurrentParentView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta','resolvedEntityList'];
-	function resolveCurrentParentView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta,resolvedEntityList) {
+	resolveParentViewData.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta','resolvedEntityList'];
+	function resolveParentViewData($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta,resolvedEntityList) {
 
 		// Initialize
 		var defer = $q.defer();
@@ -190,7 +190,7 @@
 			if (response.object === null) {
 				alert("error in response!");
 			}
-			else if (response.object.meta === null) {
+			else if (response.object === null) {
 				alert("The view with name: " + $stateParams.parentViewName + " does not exist");
 			} else {
 				defer.resolve(response.object);
@@ -218,28 +218,26 @@
 		return defer.promise;
 	}
 
-	resolveListRecordsFromView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentParentView'];
-	function resolveListRecordsFromView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentParentView) {
+	resolveRecordListDataFromView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedParentViewData','resolvedEntityList'];
+	function resolveRecordListDataFromView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedParentViewData,resolvedEntityList) {
 		//Temporary method will be replaced when the proper API is ready
 		// Initialize
 		var defer = $q.defer();
 
+		var parentViewMeta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName,$stateParams.entityName,resolvedEntityList);
 		// Find list dataName
-		var list = {};
-		list.meta = null;
-		list.data = null
-		resolvedCurrentParentView.meta.sidebar.items.forEach(function (item) {
+		var listData = null;
+		parentViewMeta.sidebar.items.forEach(function (item) {
 			if (item.dataName == $stateParams.listName) {
-				list.data = resolvedCurrentParentView.data[0][item.dataName];
-				list.meta = item.meta;
+				listData = resolvedParentViewData[0][item.dataName];
 			}
 		});
-		if (list.data == null) {
+		if (listData == null) {
 			//list not found
 			defer.reject("list not found");
 		}
 		else {
-			defer.resolve(list);
+			defer.resolve(listData);
 		}
 
 		return defer.promise;
@@ -248,11 +246,11 @@
 
 	//#region << Controller /////////////////////////////// >>
 	controller.$inject = ['$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaCoreService',
-        'resolvedAreas', 'resolvedListRecords', 'resolvedEntityList','resolvedCurrentEntityMeta', 'webvellaListActionService', '$timeout',
+        'resolvedAreas', 'resolvedRecordListData', 'resolvedEntityList','resolvedCurrentEntityMeta', 'webvellaListActionService', '$timeout',
 		'resolvedEntityRelationsList', 'resolvedCurrentUser', '$sessionStorage', '$location', '$window', '$sce'];
 
 	function controller($log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaCoreService,
-        resolvedAreas, resolvedListRecords, resolvedEntityList,resolvedCurrentEntityMeta, webvellaListActionService, $timeout,
+        resolvedAreas, resolvedRecordListData, resolvedEntityList,resolvedCurrentEntityMeta, webvellaListActionService, $timeout,
 		resolvedEntityRelationsList, resolvedCurrentUser, $sessionStorage, $location, $window, $sce) {
 
 		//#region << ngCtrl initialization >>
@@ -271,10 +269,36 @@
 		webvellaCoreService.setBodyColorClass(ngCtrl.currentArea.color);
 		//#endregion
 
+		//#region << Init the list name >>
+		//if the list is in a view, than the name should be processed as the entity name could differ from the current one as well as the list name is not in fact a dataName
+		//e.g. $list$project_1_n_milestone$general	when from another entity or $list$lookup when from the current
+		var listName = $stateParams.listName;
+		var listEntityName = $stateParams.entityName;
+		var listDataName = 	$stateParams.listName;
+		var listDataNameArray =  listDataName.split("$");
+		if(listDataNameArray.length == 3){
+			//this is a list from the current entity ($list$lookup), we just need to get the proper list name
+			listName = listDataNameArray[2];
+		}
+		else if (listDataNameArray.length == 4){
+			//this is a list from another entity ($list$project_1_n_milestone$general), we should get both list name and entity name from the relation
+			var relationName = listDataNameArray[2];
+			var relation =  webvellaCoreService.getRelationFromRelationsList(relationName,resolvedEntityRelationsList);
+			if(relation.originEntityName == $stateParams.entityName){
+				 listEntityName =  relation.targetEntityName;
+			}
+			else if(relation.targetEntityName == $stateParams.entityName){
+				listEntityName =  relation.originEntityName;
+			}
+			listName = listDataNameArray[3];
+		}
+
+		//#endregion
+
 		//#region << Initialize main objects >>
 		ngCtrl.list = {};
-		ngCtrl.list.data = fastCopy(resolvedListRecords);
-		ngCtrl.list.meta = webvellaCoreService.getEntityRecordListFromEntitiesMetaList($stateParams.listName,$stateParams.entityName,resolvedEntityList);
+		ngCtrl.list.data = fastCopy(resolvedRecordListData);
+		ngCtrl.list.meta = webvellaCoreService.getEntityRecordListFromEntitiesMetaList(listName,listEntityName,resolvedEntityList);
 		ngCtrl.entityList = fastCopy(resolvedEntityList);
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
 		ngCtrl.entityRelations = fastCopy(resolvedEntityRelationsList);
@@ -467,8 +491,8 @@
 		ngCtrl.selectPage = function (page) {
 			var params = {
 				areaName: $stateParams.areaName,
-				entityName: $stateParams.entityName,
-				listName: $stateParams.listName,
+				entityName: entityName,
+				listName: listName,
 				page: page
 			};
 			webvellaCoreService.GoToState($state, $state.current.name, params);

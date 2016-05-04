@@ -136,7 +136,8 @@
 		serviceInstance.updateRelation = updateRelation;
 		//Delete
 		serviceInstance.deleteRelation = deleteRelation;
-
+		//Helpers
+		serviceInstance.getRelationFromRelationsList = getRelationFromRelationsList;
 		//#endregion
 
 		//#region << Record >>
@@ -1805,6 +1806,17 @@
 		///////////////////////
 		function deleteRelation(relationId, successCallback, errorCallback) {
 			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/relation/' + relationId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+		///////////////////////
+		function getRelationFromRelationsList(relationName,relationList) {
+			var itemMeta = null;
+			for (var i = 0; i < relationList.length; i++) {
+    			 if(relationList[i].name == relationName){
+					itemMeta = 	relationList[i];
+					break;
+				 }
+			}
+			return itemMeta;
 		}
 
 		//#endregion
