@@ -1619,235 +1619,6 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 
-								#region << update general view >>
-								{
-									var updateViewEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
-									var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "general");
-									var updateViewInput = new InputRecordView();
-									var viewSection = new InputRecordViewSection();
-									var viewRow = new InputRecordViewRow();
-									var viewColumn = new InputRecordViewColumn();
-									var viewItem = new InputRecordViewFieldItem();
-									var viewItemFromRelation = new InputRecordViewRelationFieldItem();
-									//General view fields
-
-									//Convert recordList to recordListInput
-									updateViewInput = updateView.DynamicMapTo<InputRecordView>();
-
-									#region << Details >>
-									updateViewInput.Label = "Details";
-									#endregion
-
-
-									#region << Get the header Region >>
-									var headerRegion = new InputRecordViewRegion();
-									foreach (var region in updateViewInput.Regions)
-									{
-										if (region.Name == "header")
-										{
-											headerRegion = region;
-										}
-									}
-									headerRegion.Sections = new List<InputRecordViewSection>();
-									#endregion
-
-									#region << Section >>
-									viewSection = new InputRecordViewSection();
-									viewSection.Id = Guid.NewGuid();
-									viewSection.Name = "details";
-									viewSection.Label = "Details";
-									viewSection.ShowLabel = false;
-									viewSection.CssClass = "";
-									viewSection.Collapsed = false;
-									viewSection.TabOrder = "left-right";
-									viewSection.Weight = 1;
-									viewSection.Rows = new List<InputRecordViewRow>();
-
-									#region << Row 1 Column>>
-									viewRow = new InputRecordViewRow();
-									viewRow.Id = Guid.NewGuid();
-									viewRow.Weight = 1;
-									viewRow.Columns = new List<InputRecordViewColumn>();
-
-									#region << Column 1 >>
-									viewColumn = new InputRecordViewColumn();
-									viewColumn.GridColCount = 12;
-									viewColumn.Items = new List<InputRecordViewItemBase>();
-
-									#region << name >>
-									{
-										viewItem = new InputRecordViewFieldItem();
-										viewItem.EntityId = PROJECT_ENTITY_ID;
-										viewItem.EntityName = PROJECT_ENTITY_NAME;
-										viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "name").Id;
-										viewItem.FieldName = "name";
-										viewItem.Type = "field";
-										viewColumn.Items.Add(viewItem);
-									}
-									#endregion
-
-									#region << description >>
-									{
-										viewItem = new InputRecordViewFieldItem();
-										viewItem.EntityId = PROJECT_ENTITY_ID;
-										viewItem.EntityName = PROJECT_ENTITY_NAME;
-										viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "description").Id;
-										viewItem.FieldName = "description";
-										viewItem.Type = "field";
-										viewColumn.Items.Add(viewItem);
-									}
-									#endregion
-
-									//Save column
-									viewRow.Columns.Add(viewColumn);
-									#endregion
-
-									//Save row
-									viewSection.Rows.Add(viewRow);
-									#endregion
-
-									#region << Row 2 Columns>>
-									viewRow = new InputRecordViewRow();
-									viewRow.Id = Guid.NewGuid();
-									viewRow.Weight = 1;
-									viewRow.Columns = new List<InputRecordViewColumn>();
-
-									#region << Column Left >>
-									viewColumn = new InputRecordViewColumn();
-									viewColumn.GridColCount = 6;
-									viewColumn.Items = new List<InputRecordViewItemBase>();
-
-									#region << $user_1_n_project_owner > username >>
-									{
-										var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
-										viewItemFromRelation = new InputRecordViewRelationFieldItem();
-										viewItemFromRelation.EntityId = targetEntity.Id;
-										viewItemFromRelation.EntityName = targetEntity.Name;
-										viewItemFromRelation.Type = "field";
-										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
-										viewItemFromRelation.FieldName = "username";
-										viewItemFromRelation.FieldLabel = "Owner / Project manager";
-										viewItemFromRelation.FieldPlaceholder = "";
-										viewItemFromRelation.FieldRequired = true;
-										viewItemFromRelation.FieldLookupList = "lookup";
-										viewItemFromRelation.RelationId = PROJECT_RELATION_USER_1_N_PROJECT_OWNER_ID;
-										viewItemFromRelation.RelationName = "user_1_n_project_owner";
-										viewColumn.Items.Add(viewItemFromRelation);
-									}
-									#endregion
-
-									#region << $role_n_n_project_team > name >>
-									{
-										var targetEntity = entMan.ReadEntity(SystemIds.RoleEntityId).Object;
-										viewItemFromRelation = new InputRecordViewRelationFieldItem();
-										viewItemFromRelation.EntityId = targetEntity.Id;
-										viewItemFromRelation.EntityName = targetEntity.Name;
-										viewItemFromRelation.Type = "field";
-										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
-										viewItemFromRelation.FieldName = "name";
-										viewItemFromRelation.FieldLabel = "Project team roles";
-										viewItemFromRelation.FieldPlaceholder = "";
-										viewItemFromRelation.FieldRequired = true;
-										viewItemFromRelation.FieldLookupList = "lookup";
-										viewItemFromRelation.RelationId = PROJECT_RELATION_ROLE_N_N_PROJECT_TEAM_ID;
-										viewItemFromRelation.RelationName = "role_n_n_project_team";
-										viewColumn.Items.Add(viewItemFromRelation);
-									}
-									#endregion
-
-									#region << start_date >>
-									{
-										viewItem = new InputRecordViewFieldItem();
-										viewItem.EntityId = PROJECT_ENTITY_ID;
-										viewItem.EntityName = PROJECT_ENTITY_NAME;
-										viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "start_date").Id;
-										viewItem.FieldName = "start_date";
-										viewItem.Type = "field";
-										viewColumn.Items.Add(viewItem);
-									}
-									#endregion
-
-									//Save column
-									viewRow.Columns.Add(viewColumn);
-									#endregion
-
-									#region << Column right >>
-									viewColumn = new InputRecordViewColumn();
-									viewColumn.GridColCount = 6;
-									viewColumn.Items = new List<InputRecordViewItemBase>();
-
-									#region << $customer_1_n_project > name >>
-									{
-										var targetEntity = entMan.ReadEntity(CUSTOMER_ENTITY_ID).Object;
-										viewItemFromRelation = new InputRecordViewRelationFieldItem();
-										viewItemFromRelation.EntityId = targetEntity.Id;
-										viewItemFromRelation.EntityName = targetEntity.Name;
-										viewItemFromRelation.Type = "field";
-										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
-										viewItemFromRelation.FieldName = "name";
-										viewItemFromRelation.FieldLabel = "Customer";
-										viewItemFromRelation.FieldPlaceholder = "";
-										viewItemFromRelation.FieldRequired = true;
-										viewItemFromRelation.FieldLookupList = "lookup";
-										viewItemFromRelation.RelationId = PROJECT_RELATION_CUSTOMER_1_N_PROJECT_ID;
-										viewItemFromRelation.RelationName = "customer_1_n_project";
-										viewColumn.Items.Add(viewItemFromRelation);
-									}
-									#endregion
-
-									#region << $role_n_n_project_customer > name >>
-									{
-										var targetEntity = entMan.ReadEntity(SystemIds.RoleEntityId).Object;
-										viewItemFromRelation = new InputRecordViewRelationFieldItem();
-										viewItemFromRelation.EntityId = targetEntity.Id;
-										viewItemFromRelation.EntityName = targetEntity.Name;
-										viewItemFromRelation.Type = "field";
-										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
-										viewItemFromRelation.FieldName = "name";
-										viewItemFromRelation.FieldLabel = "Project customer roles";
-										viewItemFromRelation.FieldPlaceholder = "";
-										viewItemFromRelation.FieldRequired = true;
-										viewItemFromRelation.FieldLookupList = "lookup";
-										viewItemFromRelation.RelationId = PROJECT_RELATION_ROLE_N_N_PROJECT_CUSTOMER_ID;
-										viewItemFromRelation.RelationName = "role_n_n_project_customer";
-										viewColumn.Items.Add(viewItemFromRelation);
-									}
-									#endregion
-
-									#region << end_date >>
-									{
-										viewItem = new InputRecordViewFieldItem();
-										viewItem.EntityId = PROJECT_ENTITY_ID;
-										viewItem.EntityName = PROJECT_ENTITY_NAME;
-										viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "end_date").Id;
-										viewItem.FieldName = "end_date";
-										viewItem.Type = "field";
-										viewColumn.Items.Add(viewItem);
-									}
-									#endregion
-
-									//Save column
-									viewRow.Columns.Add(viewColumn);
-									#endregion
-
-									//Save row
-									viewSection.Rows.Add(viewRow);
-									#endregion
-
-									//Save section
-									headerRegion.Sections.Add(viewSection);
-
-									#endregion
-
-									{
-										var response = entMan.UpdateRecordView(PROJECT_ENTITY_ID, updateViewInput);
-										if (!response.Success)
-											throw new Exception("System error 10060. Entity: " + PROJECT_ENTITY_NAME + " Updated view: general" + " Message:" + response.Message);
-									}
-								}
-								#endregion
-
-
 								#region << area add subscription: Project Admin -> Project >>
 								{
 									var updatedAreaId = PROJECT_ADMIN_AREA_ID;
@@ -2080,6 +1851,222 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 
+								#region << x_tasks_not_started >>
+								{
+									InputNumberField numberField = new InputNumberField();
+									numberField.Id = new Guid("aacfb1b6-8318-4c88-ad9d-7fa0ad799537");
+									numberField.Name = "x_tasks_not_started";
+									numberField.Label = "x_tasks_not_started";
+									numberField.PlaceholderText = "";
+									numberField.Description = "";
+									numberField.HelpText = "";
+									numberField.Required = true;
+									numberField.Unique = false;
+									numberField.Searchable = false;
+									numberField.Auditable = false;
+									numberField.System = true;
+									numberField.DefaultValue = 0;
+									numberField.MinValue = null;
+									numberField.MaxValue = null;
+									numberField.DecimalPlaces = 0;
+									numberField.EnableSecurity = true;
+									numberField.Permissions = new FieldPermissions();
+									numberField.Permissions.CanRead = new List<Guid>();
+									numberField.Permissions.CanUpdate = new List<Guid>();
+									//READ
+									numberField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+									numberField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+									//UPDATE
+									numberField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+									numberField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+									{
+										var response = entMan.CreateField(MILESTONE_ENTITY_ID, numberField, false);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + MILESTONE_ENTITY_NAME + " Field: x_tasks_not_started" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
+								#region << x_tasks_in_progress >>
+								{
+									InputNumberField numberField = new InputNumberField();
+									numberField.Id = new Guid("07fb158a-2b3d-421f-a7f0-c296b5ce76c9");
+									numberField.Name = "x_tasks_in_progress";
+									numberField.Label = "x_tasks_in_progress";
+									numberField.PlaceholderText = "";
+									numberField.Description = "";
+									numberField.HelpText = "";
+									numberField.Required = true;
+									numberField.Unique = false;
+									numberField.Searchable = false;
+									numberField.Auditable = false;
+									numberField.System = true;
+									numberField.DefaultValue = 0;
+									numberField.MinValue = null;
+									numberField.MaxValue = null;
+									numberField.DecimalPlaces = 0;
+									numberField.EnableSecurity = true;
+									numberField.Permissions = new FieldPermissions();
+									numberField.Permissions.CanRead = new List<Guid>();
+									numberField.Permissions.CanUpdate = new List<Guid>();
+									//READ
+									numberField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+									numberField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+									//UPDATE
+									numberField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+									numberField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+									{
+										var response = entMan.CreateField(MILESTONE_ENTITY_ID, numberField, false);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + MILESTONE_ENTITY_NAME + " Field: x_tasks_in_progress" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
+								#region << x_tasks_completed >>
+								{
+									InputNumberField numberField = new InputNumberField();
+									numberField.Id = new Guid("407db47b-23be-4ce1-ad97-e0c63d8e5377");
+									numberField.Name = "x_tasks_completed";
+									numberField.Label = "x_tasks_completed";
+									numberField.PlaceholderText = "";
+									numberField.Description = "";
+									numberField.HelpText = "";
+									numberField.Required = true;
+									numberField.Unique = false;
+									numberField.Searchable = false;
+									numberField.Auditable = false;
+									numberField.System = true;
+									numberField.DefaultValue = 0;
+									numberField.MinValue = null;
+									numberField.MaxValue = null;
+									numberField.DecimalPlaces = 0;
+									numberField.EnableSecurity = true;
+									numberField.Permissions = new FieldPermissions();
+									numberField.Permissions.CanRead = new List<Guid>();
+									numberField.Permissions.CanUpdate = new List<Guid>();
+									//READ
+									numberField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+									numberField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+									//UPDATE
+									numberField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+									numberField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+									{
+										var response = entMan.CreateField(MILESTONE_ENTITY_ID, numberField, false);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + MILESTONE_ENTITY_NAME + " Field: x_tasks_completed" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
+								#region << x_bugs_opened >>
+								{
+									InputNumberField numberField = new InputNumberField();
+									numberField.Id = new Guid("014b2a7c-475d-4c0f-b992-0f6ddf3a5454");
+									numberField.Name = "x_bugs_opened";
+									numberField.Label = "x_bugs_opened";
+									numberField.PlaceholderText = "";
+									numberField.Description = "";
+									numberField.HelpText = "";
+									numberField.Required = true;
+									numberField.Unique = false;
+									numberField.Searchable = false;
+									numberField.Auditable = false;
+									numberField.System = true;
+									numberField.DefaultValue = 0;
+									numberField.MinValue = null;
+									numberField.MaxValue = null;
+									numberField.DecimalPlaces = 0;
+									numberField.EnableSecurity = true;
+									numberField.Permissions = new FieldPermissions();
+									numberField.Permissions.CanRead = new List<Guid>();
+									numberField.Permissions.CanUpdate = new List<Guid>();
+									//READ
+									numberField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+									numberField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+									//UPDATE
+									numberField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+									numberField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+									{
+										var response = entMan.CreateField(MILESTONE_ENTITY_ID, numberField, false);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + MILESTONE_ENTITY_NAME + " Field: x_bugs_opened" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
+								#region << x_bugs_reopened >>
+								{
+									InputNumberField numberField = new InputNumberField();
+									numberField.Id = new Guid("3432d7eb-690a-4076-be24-e583fa1e83c3");
+									numberField.Name = "x_bugs_reopened";
+									numberField.Label = "x_bugs_reopened";
+									numberField.PlaceholderText = "";
+									numberField.Description = "";
+									numberField.HelpText = "";
+									numberField.Required = true;
+									numberField.Unique = false;
+									numberField.Searchable = false;
+									numberField.Auditable = false;
+									numberField.System = true;
+									numberField.DefaultValue = 0;
+									numberField.MinValue = null;
+									numberField.MaxValue = null;
+									numberField.DecimalPlaces = 0;
+									numberField.EnableSecurity = true;
+									numberField.Permissions = new FieldPermissions();
+									numberField.Permissions.CanRead = new List<Guid>();
+									numberField.Permissions.CanUpdate = new List<Guid>();
+									//READ
+									numberField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+									numberField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+									//UPDATE
+									numberField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+									numberField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+									{
+										var response = entMan.CreateField(MILESTONE_ENTITY_ID, numberField, false);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + MILESTONE_ENTITY_NAME + " Field: x_bugs_reopened" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
+								#region << x_bugs_closed >>
+								{
+									InputNumberField numberField = new InputNumberField();
+									numberField.Id = new Guid("09bb35c9-ba7f-455f-8205-11a91fd7a90d");
+									numberField.Name = "x_bugs_closed";
+									numberField.Label = "x_bugs_closed";
+									numberField.PlaceholderText = "";
+									numberField.Description = "";
+									numberField.HelpText = "";
+									numberField.Required = true;
+									numberField.Unique = false;
+									numberField.Searchable = false;
+									numberField.Auditable = false;
+									numberField.System = true;
+									numberField.DefaultValue = 0;
+									numberField.MinValue = null;
+									numberField.MaxValue = null;
+									numberField.DecimalPlaces = 0;
+									numberField.EnableSecurity = true;
+									numberField.Permissions = new FieldPermissions();
+									numberField.Permissions.CanRead = new List<Guid>();
+									numberField.Permissions.CanUpdate = new List<Guid>();
+									//READ
+									numberField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+									numberField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+									//UPDATE
+									numberField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+									numberField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+									{
+										var response = entMan.CreateField(MILESTONE_ENTITY_ID, numberField, false);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + MILESTONE_ENTITY_NAME + " Field: x_bugs_closed" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
 								#region << project_1_n_milestone Relation >>
 								{
 									var originEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
@@ -2101,6 +2088,44 @@ namespace WebVella.ERP.Project
 									}
 								}
 								#endregion
+
+								#region << update general list >>
+								{
+									var updateListEntity = entMan.ReadEntity(MILESTONE_ENTITY_ID).Object;
+									var updateList = updateListEntity.RecordLists.Single(x => x.Name == "general");
+									var updateListInput = new InputRecordList();
+									var listItem = new InputRecordListFieldItem();
+									var listSort = new InputRecordListSort();
+									var listQuery = new InputRecordListQuery();
+
+									//Convert recordList to recordListInput
+									updateListInput = updateList.DynamicMapTo<InputRecordList>();
+
+									//General list details
+									updateListInput.Label = "Milestones";
+									updateListInput.IconName = "map-signs";
+									updateListInput.DynamicHtmlTemplate = "/plugins/webvella-projects/templates/project-milestones.html";
+									updateListInput.DataSourceUrl = "/plugins/webvella-projects/api/project/milestones-list";
+
+									//Fields
+									#region << name >>
+									listItem = new InputRecordListFieldItem();
+									listItem.EntityId = MILESTONE_ENTITY_ID;
+									listItem.EntityName = MILESTONE_ENTITY_NAME;
+									listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "name").Id;
+									listItem.FieldName = "name";
+									listItem.Type = "field";
+									updateListInput.Columns.Add(listItem);
+									#endregion
+
+									{
+										var response = entMan.UpdateRecordList(MILESTONE_ENTITY_ID, updateListInput);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + MILESTONE_ENTITY_NAME + " Updated List: general" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
 
 							}
 							#endregion
@@ -3979,6 +4004,259 @@ namespace WebVella.ERP.Project
 							}
 							#endregion
 
+							#region << update project general view >>
+							{
+								var updateViewEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+								var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "general");
+								var updateViewInput = new InputRecordView();
+								var viewSection = new InputRecordViewSection();
+								var viewRow = new InputRecordViewRow();
+								var viewColumn = new InputRecordViewColumn();
+								var viewItem = new InputRecordViewFieldItem();
+								var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+								//General view fields
+
+								//Convert recordList to recordListInput
+								updateViewInput = updateView.DynamicMapTo<InputRecordView>();
+
+								#region << Details >>
+								updateViewInput.Label = "Details";
+								#endregion
+
+								#region << Get the header Region >>
+								var headerRegion = new InputRecordViewRegion();
+								foreach (var region in updateViewInput.Regions)
+								{
+									if (region.Name == "header")
+									{
+										headerRegion = region;
+									}
+								}
+								headerRegion.Sections = new List<InputRecordViewSection>();
+								#endregion
+
+								#region << Section >>
+								viewSection = new InputRecordViewSection();
+								viewSection.Id = Guid.NewGuid();
+								viewSection.Name = "details";
+								viewSection.Label = "Details";
+								viewSection.ShowLabel = false;
+								viewSection.CssClass = "";
+								viewSection.Collapsed = false;
+								viewSection.TabOrder = "left-right";
+								viewSection.Weight = 1;
+								viewSection.Rows = new List<InputRecordViewRow>();
+
+								#region << Row 1 Column>>
+								viewRow = new InputRecordViewRow();
+								viewRow.Id = Guid.NewGuid();
+								viewRow.Weight = 1;
+								viewRow.Columns = new List<InputRecordViewColumn>();
+
+								#region << Column 1 >>
+								viewColumn = new InputRecordViewColumn();
+								viewColumn.GridColCount = 12;
+								viewColumn.Items = new List<InputRecordViewItemBase>();
+
+								#region << name >>
+								{
+									viewItem = new InputRecordViewFieldItem();
+									viewItem.EntityId = PROJECT_ENTITY_ID;
+									viewItem.EntityName = PROJECT_ENTITY_NAME;
+									viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "name").Id;
+									viewItem.FieldName = "name";
+									viewItem.Type = "field";
+									viewColumn.Items.Add(viewItem);
+								}
+								#endregion
+
+								#region << description >>
+								{
+									viewItem = new InputRecordViewFieldItem();
+									viewItem.EntityId = PROJECT_ENTITY_ID;
+									viewItem.EntityName = PROJECT_ENTITY_NAME;
+									viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "description").Id;
+									viewItem.FieldName = "description";
+									viewItem.Type = "field";
+									viewColumn.Items.Add(viewItem);
+								}
+								#endregion
+
+								//Save column
+								viewRow.Columns.Add(viewColumn);
+								#endregion
+
+								//Save row
+								viewSection.Rows.Add(viewRow);
+								#endregion
+
+								#region << Row 2 Columns>>
+								viewRow = new InputRecordViewRow();
+								viewRow.Id = Guid.NewGuid();
+								viewRow.Weight = 1;
+								viewRow.Columns = new List<InputRecordViewColumn>();
+
+								#region << Column Left >>
+								viewColumn = new InputRecordViewColumn();
+								viewColumn.GridColCount = 6;
+								viewColumn.Items = new List<InputRecordViewItemBase>();
+
+								#region << $user_1_n_project_owner > username >>
+								{
+									var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+									viewItemFromRelation = new InputRecordViewRelationFieldItem();
+									viewItemFromRelation.EntityId = targetEntity.Id;
+									viewItemFromRelation.EntityName = targetEntity.Name;
+									viewItemFromRelation.Type = "field";
+									viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
+									viewItemFromRelation.FieldName = "username";
+									viewItemFromRelation.FieldLabel = "Owner / Project manager";
+									viewItemFromRelation.FieldPlaceholder = "";
+									viewItemFromRelation.FieldRequired = true;
+									viewItemFromRelation.FieldLookupList = "lookup";
+									viewItemFromRelation.RelationId = PROJECT_RELATION_USER_1_N_PROJECT_OWNER_ID;
+									viewItemFromRelation.RelationName = "user_1_n_project_owner";
+									viewColumn.Items.Add(viewItemFromRelation);
+								}
+								#endregion
+
+								#region << $role_n_n_project_team > name >>
+								{
+									var targetEntity = entMan.ReadEntity(SystemIds.RoleEntityId).Object;
+									viewItemFromRelation = new InputRecordViewRelationFieldItem();
+									viewItemFromRelation.EntityId = targetEntity.Id;
+									viewItemFromRelation.EntityName = targetEntity.Name;
+									viewItemFromRelation.Type = "field";
+									viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+									viewItemFromRelation.FieldName = "name";
+									viewItemFromRelation.FieldLabel = "Project team roles";
+									viewItemFromRelation.FieldPlaceholder = "";
+									viewItemFromRelation.FieldRequired = true;
+									viewItemFromRelation.FieldLookupList = "lookup";
+									viewItemFromRelation.RelationId = PROJECT_RELATION_ROLE_N_N_PROJECT_TEAM_ID;
+									viewItemFromRelation.RelationName = "role_n_n_project_team";
+									viewColumn.Items.Add(viewItemFromRelation);
+								}
+								#endregion
+
+								#region << start_date >>
+								{
+									viewItem = new InputRecordViewFieldItem();
+									viewItem.EntityId = PROJECT_ENTITY_ID;
+									viewItem.EntityName = PROJECT_ENTITY_NAME;
+									viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "start_date").Id;
+									viewItem.FieldName = "start_date";
+									viewItem.Type = "field";
+									viewColumn.Items.Add(viewItem);
+								}
+								#endregion
+
+								//Save column
+								viewRow.Columns.Add(viewColumn);
+								#endregion
+
+								#region << Column right >>
+								viewColumn = new InputRecordViewColumn();
+								viewColumn.GridColCount = 6;
+								viewColumn.Items = new List<InputRecordViewItemBase>();
+
+								#region << $customer_1_n_project > name >>
+								{
+									var targetEntity = entMan.ReadEntity(CUSTOMER_ENTITY_ID).Object;
+									viewItemFromRelation = new InputRecordViewRelationFieldItem();
+									viewItemFromRelation.EntityId = targetEntity.Id;
+									viewItemFromRelation.EntityName = targetEntity.Name;
+									viewItemFromRelation.Type = "field";
+									viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+									viewItemFromRelation.FieldName = "name";
+									viewItemFromRelation.FieldLabel = "Customer";
+									viewItemFromRelation.FieldPlaceholder = "";
+									viewItemFromRelation.FieldRequired = true;
+									viewItemFromRelation.FieldLookupList = "lookup";
+									viewItemFromRelation.RelationId = PROJECT_RELATION_CUSTOMER_1_N_PROJECT_ID;
+									viewItemFromRelation.RelationName = "customer_1_n_project";
+									viewColumn.Items.Add(viewItemFromRelation);
+								}
+								#endregion
+
+								#region << $role_n_n_project_customer > name >>
+								{
+									var targetEntity = entMan.ReadEntity(SystemIds.RoleEntityId).Object;
+									viewItemFromRelation = new InputRecordViewRelationFieldItem();
+									viewItemFromRelation.EntityId = targetEntity.Id;
+									viewItemFromRelation.EntityName = targetEntity.Name;
+									viewItemFromRelation.Type = "field";
+									viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+									viewItemFromRelation.FieldName = "name";
+									viewItemFromRelation.FieldLabel = "Project customer roles";
+									viewItemFromRelation.FieldPlaceholder = "";
+									viewItemFromRelation.FieldRequired = true;
+									viewItemFromRelation.FieldLookupList = "lookup";
+									viewItemFromRelation.RelationId = PROJECT_RELATION_ROLE_N_N_PROJECT_CUSTOMER_ID;
+									viewItemFromRelation.RelationName = "role_n_n_project_customer";
+									viewColumn.Items.Add(viewItemFromRelation);
+								}
+								#endregion
+
+								#region << end_date >>
+								{
+									viewItem = new InputRecordViewFieldItem();
+									viewItem.EntityId = PROJECT_ENTITY_ID;
+									viewItem.EntityName = PROJECT_ENTITY_NAME;
+									viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "end_date").Id;
+									viewItem.FieldName = "end_date";
+									viewItem.Type = "field";
+									viewColumn.Items.Add(viewItem);
+								}
+								#endregion
+
+								//Save column
+								viewRow.Columns.Add(viewColumn);
+								#endregion
+
+								//Save row
+								viewSection.Rows.Add(viewRow);
+								#endregion
+
+								//Save section
+								headerRegion.Sections.Add(viewSection);
+
+								#endregion
+
+								#region << Sidebar >>
+								var sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
+
+								#region << Milestone list >>
+								{
+									var milestoneEntity = entMan.ReadEntity(MILESTONE_ENTITY_ID).Object;
+									var milestoneGeneralList = milestoneEntity.RecordLists.Single(x => x.Name == "general");
+									var projectMilestoneRelation = relMan.Read(new Guid("0c446f98-eec2-40c1-9d66-8a3c2a2498e9")).Object;
+									sidebarListFromRelationItem.EntityId = MILESTONE_ENTITY_ID;
+									sidebarListFromRelationItem.EntityName = MILESTONE_ENTITY_NAME;
+									sidebarListFromRelationItem.FieldHelpText = "";
+									sidebarListFromRelationItem.FieldLabel = "Milestones";
+									sidebarListFromRelationItem.FieldLookupList = "lookup";
+									sidebarListFromRelationItem.FieldManageView = "general";
+									sidebarListFromRelationItem.FieldPlaceholder = "";
+									sidebarListFromRelationItem.FieldRequired = false;
+									sidebarListFromRelationItem.ListId = milestoneGeneralList.Id;
+									sidebarListFromRelationItem.ListName = milestoneGeneralList.Name;
+									sidebarListFromRelationItem.RelationId = projectMilestoneRelation.Id;
+									sidebarListFromRelationItem.RelationName = projectMilestoneRelation.Name;
+									sidebarListFromRelationItem.Type = "listFromRelation";
+									updateViewInput.Sidebar.Items.Add(sidebarListFromRelationItem);
+								}
+								#endregion
+								
+								#endregion
+								{
+									var response = entMan.UpdateRecordView(PROJECT_ENTITY_ID, updateViewInput);
+									if (!response.Success)
+										throw new Exception("System error 10060. Entity: " + PROJECT_ENTITY_NAME + " Updated view: general" + " Message:" + response.Message);
+								}
+							}
+							#endregion
+
 							if (createSampleRecords)
 							{
 								#region << Create Project Team Role >>
@@ -4189,6 +4467,26 @@ namespace WebVella.ERP.Project
 									updateRecord["x_tasks_not_started"] = (decimal)updateRecord["x_tasks_not_started"] + 1;
 									updateRecord["x_bugs_opened"] = (decimal)updateRecord["x_bugs_opened"] + 1;
 									var createSampleRecordResult = recMan.UpdateRecord(PROJECT_ENTITY_ID, updateRecord);
+									if (!createSampleRecordResult.Success)
+									{
+										throw new Exception("System error 10060. Create sample milestone. Message:" + createSampleRecordResult.Message);
+									}
+								}
+								#endregion
+
+								#region << Update the milestone >>
+								{
+									var filterObj = EntityQuery.QueryEQ("id", new Guid("42b881fc-d93f-46cf-b39d-391cd42fd2f6"));
+									var resultQuery = new EntityQuery(MILESTONE_ENTITY_NAME, "*", filterObj, null, null, null, null);
+									var updateResult = recMan.Find(resultQuery);
+									if (!updateResult.Success)
+									{
+										throw new Exception("Failed to update the project");
+									}
+									var updateRecord = updateResult.Object.Data[0];
+									updateRecord["x_tasks_not_started"] = (decimal)updateRecord["x_tasks_not_started"] + 1;
+									updateRecord["x_bugs_opened"] = (decimal)updateRecord["x_bugs_opened"] + 1;
+									var createSampleRecordResult = recMan.UpdateRecord(MILESTONE_ENTITY_NAME, updateRecord);
 									if (!createSampleRecordResult.Success)
 									{
 										throw new Exception("System error 10060. Create sample milestone. Message:" + createSampleRecordResult.Message);

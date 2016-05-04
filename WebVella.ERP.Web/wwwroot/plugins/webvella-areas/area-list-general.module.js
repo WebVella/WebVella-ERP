@@ -218,8 +218,8 @@
 		return defer.promise;
 	}
 
-	resolveRecordListDataFromView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedParentViewData', 'resolvedEntityList', 'resolvedEntityRelationsList'];
-	function resolveRecordListDataFromView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedParentViewData, resolvedEntityList, resolvedEntityRelationsList) {
+	resolveRecordListDataFromView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedParentViewData', 'resolvedEntityList', 'resolvedEntityRelationsList','ngToast'];
+	function resolveRecordListDataFromView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedParentViewData, resolvedEntityList, resolvedEntityRelationsList,ngToast) {
 		//Temporary method will be replaced when the proper API is ready
 		// Initialize
 		var defer = $q.defer();
@@ -253,6 +253,11 @@
 			defer.resolve(response.object);
 		}
 		function errorCallback(response) {
+		ngToast.create({
+			className: 'error',
+			content: '<span class="go-red">Error:</span> ' + response.message,
+			timeout: 7000
+		});
 			defer.reject(response.message);
 		}
 
@@ -278,13 +283,6 @@
 		ngCtrl.canSortList = false;
 		//#endregion
 
-		//#region << Set Page meta >>
-		ngCtrl.pageTitle = "Area Entities | " + pageTitle;
-		webvellaCoreService.setPageTitle(ngCtrl.pageTitle);
-		ngCtrl.currentArea = webvellaCoreService.getCurrentAreaFromAreaList($stateParams.areaName, resolvedAreas.data);
-		webvellaCoreService.setBodyColorClass(ngCtrl.currentArea.color);
-		//#endregion
-
 		//#region << Init the list name >>
 		var safeListNameAndEntityName = webvellaCoreService.getSafeListNameAndEntityName($stateParams.listName, $stateParams.entityName, resolvedEntityRelationsList)
 		var listName = safeListNameAndEntityName.listName;
@@ -302,6 +300,13 @@
 		ngCtrl.currentUser = fastCopy(resolvedCurrentUser);
 		ngCtrl.$sessionStorage = $sessionStorage;
 		ngCtrl.stateParams = $stateParams;
+		//#endregion
+
+		//#region << Set Page meta >>
+		ngCtrl.pageTitle = ngCtrl.list.meta.label + " | " + pageTitle;
+		webvellaCoreService.setPageTitle(ngCtrl.pageTitle);
+		ngCtrl.currentArea = webvellaCoreService.getCurrentAreaFromAreaList($stateParams.areaName, resolvedAreas.data);
+		webvellaCoreService.setBodyColorClass(ngCtrl.currentArea.color);
 		//#endregion
 
 		//#region << Run  webvellaListActionService.onload >>

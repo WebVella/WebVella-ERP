@@ -945,6 +945,10 @@ TREE SELECT
 
 	#endregion
 
+	#region << Sidebar >>
+	var sidebarItem = new InputRecordViewSidebarItemBase();
+	#endregion`								
+	
 
 	{
 		var response = entMan.UpdateRecordView(ENTITY_ID, updateViewInput);

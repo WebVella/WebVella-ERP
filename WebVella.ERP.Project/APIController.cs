@@ -62,7 +62,7 @@ namespace WebVella.ERP.Project
 			#region << Query builder >>
 			//QueryObject filterObj = EntityQuery.QueryEQ("id", recordId);
 			QueryObject filterObj = null;
-			EntityQuery resultQuery = new EntityQuery(entityName, requestedFields, filterObj, null, null, null, null);
+			EntityQuery resultQuery = new EntityQuery("wv_project", requestedFields, filterObj, null, null, null, null);
 			#endregion
 
 			#region << Sort >>
@@ -146,9 +146,9 @@ namespace WebVella.ERP.Project
 					#endregion
 
 					#region << bugs Count "opened" & "reopened" vs "closed" >>
-					var bugsOpened =  (decimal)record["x_bugs_opened"];
-					var bugsReOpened =  (decimal)record["x_bugs_reopened"];
-					var bugsClosed =  (decimal)record["x_bugs_closed"];
+					var bugsOpened = (decimal)record["x_bugs_opened"];
+					var bugsReOpened = (decimal)record["x_bugs_reopened"];
+					var bugsClosed = (decimal)record["x_bugs_closed"];
 
 					recordObj["bugs_opened_count"] = bugsOpened;
 					recordObj["bugs_reopened_count"] = bugsReOpened;
@@ -187,7 +187,7 @@ namespace WebVella.ERP.Project
 		}
 
 
-		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/milestone/list")]
+		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/project/milestones-list")]
 		public IActionResult ProjectMilestones(string listName = null, string entityName = null, int page = 0)
 		{
 			var response = new ResponseModel();
@@ -215,13 +215,15 @@ namespace WebVella.ERP.Project
 			#endregion
 
 			#region << Get the project id >>
-			var queryString =HttpContext.Request.QueryString.ToString();
+			var queryString = HttpContext.Request.QueryString.ToString();
 			var queryKeyValue = QueryHelpers.ParseQuery(queryString);
 			var projectId = new Guid();
-			if(queryKeyValue.ContainsKey("recordId") && Guid.TryParse(queryKeyValue["recordId"],out projectId)){
-				
+			if (queryKeyValue.ContainsKey("recordId") && Guid.TryParse(queryKeyValue["recordId"], out projectId))
+			{
+
 			}
-			else {
+			else
+			{
 				response.Success = false;
 				response.Timestamp = DateTime.UtcNow;
 				response.Message = "Project Id either not found or not a GUID";
@@ -229,14 +231,85 @@ namespace WebVella.ERP.Project
 			}
 			#endregion
 
-			#region << Get project data >>
+			#region << Get milestone data >>
+			var requestedFields = "id,name,start_date,end_date,x_tasks_not_started,x_tasks_in_progress,x_tasks_completed,x_bugs_opened,x_bugs_reopened,x_bugs_closed";
 
+			QueryObject filterObj = EntityQuery.QueryEQ("project_id", projectId);
+
+			var sortList = new List<QuerySortObject>();
+			sortList.Add(new QuerySortObject("end_date", QuerySortType.Descending));
+			EntityQuery resultQuery = new EntityQuery("wv_milestone", requestedFields, filterObj, sortList.ToArray(), null, null, null);
+
+			QueryResponse result = recMan.Find(resultQuery);
+			if (!result.Success)
+			{
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = result.Message;
+				response.Object = null;
+				return Json(response);
+			}
 			#endregion
-			
+			var resultRecordsList = new List<EntityRecord>();
+			foreach (var record in result.Object.Data)
+			{
+				var recordObj = new EntityRecord();
+				recordObj["id"] = record["id"];
+				recordObj["name"] = record["name"];
+				recordObj["start_date"] = record["start_date"];
+				recordObj["end_date"] = record["end_date"];
+
+				#region << tasks Count "not started" vs "in progress" vs "completed" >>
+				var tasksNotStarted = (decimal)record["x_tasks_not_started"];
+				var tasksInProgress = (decimal)record["x_tasks_in_progress"];
+				var tasksCompleted = (decimal)record["x_tasks_completed"];
+
+				recordObj["tasks_not_started_count"] = tasksNotStarted;
+				recordObj["tasks_in_progress_count"] = tasksInProgress;
+				recordObj["tasks_completed_count"] = tasksCompleted;
+				if (tasksNotStarted + tasksInProgress + tasksCompleted > 0)
+				{
+					recordObj["tasks_not_started_percentage"] = Math.Round((decimal)(tasksNotStarted * 100) / (tasksNotStarted + tasksInProgress + tasksCompleted));
+					recordObj["tasks_in_progress_percentage"] = Math.Round((decimal)(tasksInProgress * 100) / (tasksNotStarted + tasksInProgress + tasksCompleted));
+					recordObj["tasks_completed_percentage"] = 100 - Math.Round((decimal)(tasksNotStarted * 100) / (tasksNotStarted + tasksInProgress + tasksCompleted)) - Math.Round((decimal)(tasksInProgress * 100) / (tasksNotStarted + tasksInProgress + tasksCompleted));
+				}
+				else
+				{
+					recordObj["tasks_not_started_percentage"] = 0;
+					recordObj["tasks_in_progress_percentage"] = 0;
+					recordObj["tasks_completed_percentage"] = 0;
+				}
+				#endregion
+
+				#region << bugs Count "opened" & "reopened" vs "closed" >>
+				var bugsOpened = (decimal)record["x_bugs_opened"];
+				var bugsReOpened = (decimal)record["x_bugs_reopened"];
+				var bugsClosed = (decimal)record["x_bugs_closed"];
+
+				recordObj["bugs_opened_count"] = bugsOpened;
+				recordObj["bugs_reopened_count"] = bugsReOpened;
+				recordObj["bugs_closed_count"] = bugsClosed;
+				if (bugsOpened + bugsReOpened + bugsClosed > 0)
+				{
+					recordObj["bugs_opened_percentage"] = Math.Round((decimal)(bugsOpened * 100) / (bugsOpened + bugsReOpened + bugsClosed));
+					recordObj["bugs_reopened_percentage"] = Math.Round((decimal)(bugsReOpened * 100) / (bugsOpened + bugsReOpened + bugsClosed));
+					recordObj["bugs_closed_percentage"] = 100 - Math.Round((decimal)(bugsOpened * 100) / (bugsOpened + bugsReOpened + bugsClosed)) - Math.Round((decimal)(bugsReOpened * 100) / (bugsOpened + bugsReOpened + bugsClosed));
+				}
+				else
+				{
+					recordObj["bugs_opened_percentage"] = 0;
+					recordObj["bugs_reopened_percentage"] = 0;
+					recordObj["bugs_closed_percentage"] = 0;
+				}
+
+				#endregion
+				resultRecordsList.Add(recordObj);
+			}
+
 			response.Success = true;
 			response.Timestamp = DateTime.UtcNow;
 			response.Message = "My projects successfully read";
-			response.Object = null;
+			response.Object = resultRecordsList;
 
 			return Json(response);
 		}
