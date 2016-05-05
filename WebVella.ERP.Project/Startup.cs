@@ -1491,6 +1491,91 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 
+								#region << View name: dashboard >>
+								{
+									var createViewEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+									var createViewInput = new InputRecordView();
+									var viewRegion = new InputRecordViewRegion();
+									var viewSection = new InputRecordViewSection();
+									var viewRow = new InputRecordViewRow();
+									var viewColumn = new InputRecordViewColumn();
+									var viewItem = new InputRecordViewFieldItem();
+									var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+
+									#region << details >>
+									createViewInput.Id = new Guid("68402d13-d9e7-4fb3-9394-40ba598f3f1a");
+									createViewInput.Type = "general";
+									createViewInput.Name = "dashboard";
+									createViewInput.Label = "Dashboard";
+									createViewInput.Default = false;
+									createViewInput.System = false;
+									createViewInput.Weight = 10;
+									createViewInput.CssClass = null;
+									createViewInput.IconName = "tachometer";
+									createViewInput.DynamicHtmlTemplate = null;
+									createViewInput.DataSourceUrl = null;
+									createViewInput.ServiceCode = null;
+									createViewInput.Regions = new List<InputRecordViewRegion>();
+									#endregion
+
+									#region << Header Region >>
+									viewRegion = new InputRecordViewRegion();
+									viewRegion.Name = "header";
+									viewRegion.Label = "Header";
+									viewRegion.Render = true;
+									viewRegion.Weight = 1;
+									viewRegion.CssClass = "";
+									viewRegion.Sections = new List<InputRecordViewSection>();
+
+									//Save region
+									createViewInput.Regions.Add(viewRegion);
+									#endregion
+
+									#region << relation options >>
+									createViewInput.RelationOptions = new List<EntityRelationOptionsItem>();
+									#endregion
+
+									#region << Sidebar >>
+									createViewInput.Sidebar = new InputRecordViewSidebar();
+									createViewInput.Sidebar.CssClass = "";
+									createViewInput.Sidebar.Render = true;
+									createViewInput.Sidebar.Render = true;
+									createViewInput.Sidebar.Items = new List<InputRecordViewSidebarItemBase>();
+									#endregion
+
+									#region << action items >>
+									createViewInput.ActionItems = new List<ActionItem>();
+									var actionItem = new ActionItem();
+									{
+										actionItem = new ActionItem();
+										actionItem.Name = "wv_record_delete";
+										actionItem.Menu = "page-title-dropdown";
+										actionItem.Weight = 1;
+										actionItem.Template = "" +
+								@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.actionService.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
+										ng-if=""ngCtrl.userHasRecordPermissions('canDelete')"">
+									<i class=""fa fa-trash go-red""></i> Delete Record
+								</a>";
+										createViewInput.ActionItems.Add(actionItem);
+									}
+									{
+										actionItem = new ActionItem();
+										actionItem.Name = "wv_back_button";
+										actionItem.Menu = "sidebar-top";
+										actionItem.Weight = 1;
+										actionItem.Template = "" +
+								@"<a class=""back clearfix"" href=""javascript:void(0)"" ng-click=""sidebarData.goBack()""><i class=""fa fa-fw fa-arrow-left""></i> <span class=""text"">Back</span></a>";
+										createViewInput.ActionItems.Add(actionItem);
+									}
+									#endregion
+									{
+										var response = entMan.CreateRecordView(PROJECT_ENTITY_ID, createViewInput);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + PROJECT_ENTITY_NAME + " Updated view: admin_details" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
 								#region << List name: admin >>
 								{
 									var createListEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
@@ -1623,17 +1708,6 @@ namespace WebVella.ERP.Project
 								{
 									var updatedAreaId = PROJECT_ADMIN_AREA_ID;
 									var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, PROJECT_ENTITY_NAME, "admin_details", "admin_create", "admin");
-									if (!updateAreaResult.Success)
-									{
-										throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
-									}
-								}
-								#endregion
-
-								#region << area add subscription: Project Workplace -> Project >>
-								{
-									var updatedAreaId = PROJECT_WORKPLACE_AREA_ID;
-									var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, PROJECT_ENTITY_NAME, "general", "create", "general");
 									if (!updateAreaResult.Success)
 									{
 										throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
@@ -2126,7 +2200,6 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 
-
 							}
 							#endregion
 
@@ -2481,7 +2554,7 @@ namespace WebVella.ERP.Project
 									dropdownField.HelpText = "";
 									dropdownField.Required = true;
 									dropdownField.Unique = false;
-									dropdownField.Searchable = false;
+									dropdownField.Searchable = true;
 									dropdownField.Auditable = false;
 									dropdownField.System = true;
 									dropdownField.DefaultValue = "medium";
@@ -2520,7 +2593,7 @@ namespace WebVella.ERP.Project
 									dropdownField.HelpText = "";
 									dropdownField.Required = true;
 									dropdownField.Unique = false;
-									dropdownField.Searchable = false;
+									dropdownField.Searchable = true;
 									dropdownField.Auditable = false;
 									dropdownField.System = true;
 									dropdownField.DefaultValue = "not started";
@@ -2685,6 +2758,165 @@ namespace WebVella.ERP.Project
 									}
 								}
 								#endregion
+
+								#region << update general list >>
+								{
+									var updateListEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+									var updateList = updateListEntity.RecordLists.Single(x => x.Name == "general");
+									var updateListInput = new InputRecordList();
+									var listField = new InputRecordListFieldItem();
+									var listFieldFromRelation = new InputRecordListRelationFieldItem();
+									var listSort = new InputRecordListSort();
+									var listQuery = new InputRecordListQuery();
+
+									//Convert recordList to recordListInput
+									updateListInput = updateList.DynamicMapTo<InputRecordList>();
+
+									//General list details
+									updateListInput.Label = "Project Tasks";
+									updateListInput.IconName = "tasks";
+									updateListInput.ColumnWidthsCSV = "auto,30px,120px,120px,120px,120px";
+									updateListInput.CssClass = "task-list";
+									updateListInput.VisibleColumnsCount = 6;
+
+									//Fields
+									#region << subject >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = updateListEntity.Id;
+										listField.EntityName = updateListEntity.Name;
+										listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "subject").Id;
+										listField.FieldName = "subject";
+										listField.Type = "field";
+										updateListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << owner - image >>
+									{
+										var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+										listFieldFromRelation = new InputRecordListRelationFieldItem();
+										listFieldFromRelation.EntityId = targetEntity.Id;
+										listFieldFromRelation.EntityName = targetEntity.Name;
+										listFieldFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "image").Id;
+										listFieldFromRelation.FieldName = "image";
+										listFieldFromRelation.FieldLabel = "Owner";
+										listFieldFromRelation.RelationId = new Guid("7ce76c81-e604-401e-907f-23de982b930e");
+										listFieldFromRelation.RelationName = "user_1_n_task_owner";
+										listFieldFromRelation.Type = "fieldFromRelation";
+										updateListInput.Columns.Add(listFieldFromRelation);
+									}
+									#endregion
+
+									#region << start_date >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = updateListEntity.Id;
+										listField.EntityName = updateListEntity.Name;
+										listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "start_date").Id;
+										listField.FieldName = "start_date";
+										listField.Type = "field";
+										updateListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << end_date >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = updateListEntity.Id;
+										listField.EntityName = updateListEntity.Name;
+										listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "end_date").Id;
+										listField.FieldName = "end_date";
+										listField.Type = "field";
+										updateListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << status >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = updateListEntity.Id;
+										listField.EntityName = updateListEntity.Name;
+										listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "status").Id;
+										listField.FieldName = "status";
+										listField.Type = "field";
+										updateListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << priority >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = updateListEntity.Id;
+										listField.EntityName = updateListEntity.Name;
+										listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "priority").Id;
+										listField.FieldName = "priority";
+										listField.Type = "field";
+										updateListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << query main>>
+									{
+									listQuery = new InputRecordListQuery();
+									listQuery.FieldName = null;
+									listQuery.FieldValue = null;
+									listQuery.QueryType = "AND";
+									listQuery.SubQueries = new List<InputRecordListQuery>();
+
+									#region << subject >>
+									{
+										var subQuery = new InputRecordListQuery();
+										subQuery.FieldName = "subject";
+										subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""subject"", ""default"": null, ""settings"":{}}";
+										subQuery.QueryType = "CONTAINS";
+										subQuery.SubQueries = new List<InputRecordListQuery>();
+										listQuery.SubQueries.Add(subQuery);
+									}
+									#endregion
+
+									#region << status >>
+									{
+										var subQuery = new InputRecordListQuery();
+										subQuery.FieldName = "status";
+										subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""status"", ""default"": null, ""settings"":{}}";
+										subQuery.QueryType = "EQ";
+										subQuery.SubQueries = new List<InputRecordListQuery>();
+										listQuery.SubQueries.Add(subQuery);
+									}
+									#endregion
+
+									#region << priority >>
+									{
+										var subQuery = new InputRecordListQuery();
+										subQuery.FieldName = "priority";
+										subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""priority"", ""default"": null, ""settings"":{}}";
+										subQuery.QueryType = "EQ";
+										subQuery.SubQueries = new List<InputRecordListQuery>();
+										listQuery.SubQueries.Add(subQuery);
+									}
+									#endregion
+
+									updateListInput.Query = listQuery;
+									}
+									#endregion
+
+									#region << Sort >>
+									{
+										listSort = new InputRecordListSort();
+										listSort.FieldName = @"{""name"":""url_sort"", ""option"": ""sortBy"", ""default"": ""end_date"", ""settings"":{""order"":""sortOrder""}}";
+										listSort.SortType = "descending";
+										updateListInput.Sorts.Add(listSort);
+									}
+									#endregion
+
+									{
+										var response = entMan.UpdateRecordList(TASK_ENTITY_ID, updateListInput);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Updated List: general" + " Message:" + response.Message);
+									}
+								}
+								#endregion
 							}
 							#endregion
 
@@ -2833,7 +3065,7 @@ namespace WebVella.ERP.Project
 									dropdownField.HelpText = "";
 									dropdownField.Required = true;
 									dropdownField.Unique = false;
-									dropdownField.Searchable = false;
+									dropdownField.Searchable = true;
 									dropdownField.Auditable = false;
 									dropdownField.System = true;
 									dropdownField.DefaultValue = "medium";
@@ -2974,7 +3206,7 @@ namespace WebVella.ERP.Project
 									dropdownField.HelpText = "";
 									dropdownField.Required = true;
 									dropdownField.Unique = false;
-									dropdownField.Searchable = false;
+									dropdownField.Searchable = true;
 									dropdownField.Auditable = false;
 									dropdownField.System = true;
 									dropdownField.DefaultValue = "opened";
@@ -3136,6 +3368,150 @@ namespace WebVella.ERP.Project
 										var result = relMan.Create(oneToNRelation);
 										if (!result.Success)
 											throw new Exception("CREATE project_1_n_bug RELATION:" + result.Message);
+									}
+								}
+								#endregion
+
+								#region << update general list >>
+								{
+									var updateListEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
+									var updateList = updateListEntity.RecordLists.Single(x => x.Name == "general");
+									var updateListInput = new InputRecordList();
+									var listField = new InputRecordListFieldItem();
+									var listFieldFromRelation = new InputRecordListRelationFieldItem();
+									var listSort = new InputRecordListSort();
+									var listQuery = new InputRecordListQuery();
+
+									//Convert recordList to recordListInput
+									updateListInput = updateList.DynamicMapTo<InputRecordList>();
+
+									//General list details
+									updateListInput.Label = "Project Bugs";
+									updateListInput.IconName = "bug";
+									updateListInput.ColumnWidthsCSV = "auto,30px,120px,120px,120px";
+									updateListInput.CssClass = "bug-list";
+
+									//Fields
+									#region << subject >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = updateListEntity.Id;
+										listField.EntityName = updateListEntity.Name;
+										listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "subject").Id;
+										listField.FieldName = "subject";
+										listField.Type = "field";
+										updateListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << owner - image >>
+									{
+										var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+										listFieldFromRelation = new InputRecordListRelationFieldItem();
+										listFieldFromRelation.EntityId = targetEntity.Id;
+										listFieldFromRelation.EntityName = targetEntity.Name;
+										listFieldFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "image").Id;
+										listFieldFromRelation.FieldName = "image";
+										listFieldFromRelation.FieldLabel = "Owner";
+										listFieldFromRelation.RelationId = new Guid("cddc10b6-30ff-4a86-96e4-645b3ea59fd9");
+										listFieldFromRelation.RelationName = "user_1_n_bug_owner";
+										listFieldFromRelation.Type = "fieldFromRelation";
+										updateListInput.Columns.Add(listFieldFromRelation);
+									}
+									#endregion
+
+									#region << created_on >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = updateListEntity.Id;
+										listField.EntityName = updateListEntity.Name;
+										listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "created_on").Id;
+										listField.FieldName = "created_on";
+										listField.Type = "field";
+										updateListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << status >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = updateListEntity.Id;
+										listField.EntityName = updateListEntity.Name;
+										listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "status").Id;
+										listField.FieldName = "status";
+										listField.Type = "field";
+										updateListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << priority >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = updateListEntity.Id;
+										listField.EntityName = updateListEntity.Name;
+										listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "priority").Id;
+										listField.FieldName = "priority";
+										listField.Type = "field";
+										updateListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << query main>>
+									{
+									listQuery = new InputRecordListQuery();
+									listQuery.FieldName = null;
+									listQuery.FieldValue = null;
+									listQuery.QueryType = "AND";
+									listQuery.SubQueries = new List<InputRecordListQuery>();
+
+									#region << subject >>
+									{
+										var subQuery = new InputRecordListQuery();
+										subQuery.FieldName = "subject";
+										subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""subject"", ""default"": null, ""settings"":{}}";
+										subQuery.QueryType = "CONTAINS";
+										subQuery.SubQueries = new List<InputRecordListQuery>();
+										listQuery.SubQueries.Add(subQuery);
+									}
+									#endregion
+									#region << subject >>
+									{
+										var subQuery = new InputRecordListQuery();
+										subQuery.FieldName = "status";
+										subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""status"", ""default"": null, ""settings"":{}}";
+										subQuery.QueryType = "EQ";
+										subQuery.SubQueries = new List<InputRecordListQuery>();
+										listQuery.SubQueries.Add(subQuery);
+									}
+									#endregion
+									#region << priority >>
+									{
+										var subQuery = new InputRecordListQuery();
+										subQuery.FieldName = "priority";
+										subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""priority"", ""default"": null, ""settings"":{}}";
+										subQuery.QueryType = "EQ";
+										subQuery.SubQueries = new List<InputRecordListQuery>();
+										listQuery.SubQueries.Add(subQuery);
+									}
+									#endregion
+
+									updateListInput.Query = listQuery;
+									}
+									#endregion
+
+									#region << Sort >>
+									{
+										listSort = new InputRecordListSort();
+										listSort.FieldName = @"{""name"":""url_sort"", ""option"": ""sortBy"", ""default"": ""created_on"", ""settings"":{""order"":""sortOrder""}}";
+										listSort.SortType = "descending";
+										updateListInput.Sorts.Add(listSort);
+									}
+									#endregion
+
+									{
+										var response = entMan.UpdateRecordList(BUG_ENTITY_ID, updateListInput);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Updated List: general" + " Message:" + response.Message);
 									}
 								}
 								#endregion
@@ -4020,6 +4396,7 @@ namespace WebVella.ERP.Project
 								updateViewInput = updateView.DynamicMapTo<InputRecordView>();
 
 								#region << Details >>
+								updateViewInput.Type = "hidden";
 								updateViewInput.Label = "Details";
 								#endregion
 
@@ -4226,11 +4603,75 @@ namespace WebVella.ERP.Project
 								#region << Sidebar >>
 								var sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
 
+								#endregion
+								{
+									var response = entMan.UpdateRecordView(PROJECT_ENTITY_ID, updateViewInput);
+									if (!response.Success)
+										throw new Exception("System error 10060. Entity: " + PROJECT_ENTITY_NAME + " Updated view: general" + " Message:" + response.Message);
+								}
+							}
+							#endregion
+
+							#region << update project dashboard view >>
+							{
+								var updateViewEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+								var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "dashboard");
+								var updateViewInput = new InputRecordView();
+								var viewSection = new InputRecordViewSection();
+								var viewRow = new InputRecordViewRow();
+								var viewColumn = new InputRecordViewColumn();
+								var viewItem = new InputRecordViewFieldItem();
+								var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+								//General view fields
+
+								//Convert recordList to recordListInput
+								updateViewInput = updateView.DynamicMapTo<InputRecordView>();
+
+								#region << Get the header Region >>
+								var headerRegion = new InputRecordViewRegion();
+								foreach (var region in updateViewInput.Regions)
+								{
+									if (region.Name == "header")
+									{
+										headerRegion = region;
+									}
+								}
+								headerRegion.Sections = new List<InputRecordViewSection>();
+								#endregion
+
+								#region << Sidebar >>
+								var sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
+								var sidebarViewItem = new InputRecordViewSidebarViewItem();
+
+								#region << Tasks >>
+								{
+									var targetEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+									var targetGeneralList = targetEntity.RecordLists.Single(x => x.Name == "general");
+									var targetRelation = relMan.Read(new Guid("1f860b8c-7fa1-40fa-874f-19c2b5309817")).Object;
+									sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
+									sidebarListFromRelationItem.EntityId = targetEntity.Id;
+									sidebarListFromRelationItem.EntityName = targetEntity.Name;
+									sidebarListFromRelationItem.FieldHelpText = "";
+									sidebarListFromRelationItem.FieldLabel = "Tasks";
+									sidebarListFromRelationItem.FieldLookupList = "lookup";
+									sidebarListFromRelationItem.FieldManageView = "general";
+									sidebarListFromRelationItem.FieldPlaceholder = "";
+									sidebarListFromRelationItem.FieldRequired = false;
+									sidebarListFromRelationItem.ListId = targetGeneralList.Id;
+									sidebarListFromRelationItem.ListName = targetGeneralList.Name;
+									sidebarListFromRelationItem.RelationId = targetRelation.Id;
+									sidebarListFromRelationItem.RelationName = targetRelation.Name;
+									sidebarListFromRelationItem.Type = "listFromRelation";
+									updateViewInput.Sidebar.Items.Add(sidebarListFromRelationItem);
+								}
+								#endregion
+
 								#region << Milestone list >>
 								{
 									var milestoneEntity = entMan.ReadEntity(MILESTONE_ENTITY_ID).Object;
 									var milestoneGeneralList = milestoneEntity.RecordLists.Single(x => x.Name == "general");
 									var projectMilestoneRelation = relMan.Read(new Guid("0c446f98-eec2-40c1-9d66-8a3c2a2498e9")).Object;
+									sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
 									sidebarListFromRelationItem.EntityId = MILESTONE_ENTITY_ID;
 									sidebarListFromRelationItem.EntityName = MILESTONE_ENTITY_NAME;
 									sidebarListFromRelationItem.FieldHelpText = "";
@@ -4248,14 +4689,73 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 								
+								#region << Bugs >>
+								{
+									var targetEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
+									var targetGeneralList = targetEntity.RecordLists.Single(x => x.Name == "general");
+									var targetRelation = relMan.Read(new Guid("d94f100c-024c-47e7-af32-d67a49be2b6c")).Object;
+									sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
+									sidebarListFromRelationItem.EntityId = targetEntity.Id;
+									sidebarListFromRelationItem.EntityName = targetEntity.Name;
+									sidebarListFromRelationItem.FieldHelpText = "";
+									sidebarListFromRelationItem.FieldLabel = "Bugs";
+									sidebarListFromRelationItem.FieldLookupList = "lookup";
+									sidebarListFromRelationItem.FieldManageView = "general";
+									sidebarListFromRelationItem.FieldPlaceholder = "";
+									sidebarListFromRelationItem.FieldRequired = false;
+									sidebarListFromRelationItem.ListId = targetGeneralList.Id;
+									sidebarListFromRelationItem.ListName = targetGeneralList.Name;
+									sidebarListFromRelationItem.RelationId = targetRelation.Id;
+									sidebarListFromRelationItem.RelationName = targetRelation.Name;
+									sidebarListFromRelationItem.Type = "listFromRelation";
+									updateViewInput.Sidebar.Items.Add(sidebarListFromRelationItem);
+								}
+								#endregion
+
+								#region << Project details >>
+								{
+									var targetView = updateViewEntity.RecordViews.Single(x => x.Name == "general");
+									sidebarViewItem = new InputRecordViewSidebarViewItem();
+									sidebarViewItem.EntityId = updateViewEntity.Id;
+									sidebarViewItem.EntityName = updateViewEntity.Name;
+									sidebarViewItem.Type = "view";
+									sidebarViewItem.ViewId = targetView.Id;
+									sidebarViewItem.ViewName = targetView.Name;
+									updateViewInput.Sidebar.Items.Add(sidebarViewItem);
+								}
+								#endregion
+
 								#endregion
 								{
 									var response = entMan.UpdateRecordView(PROJECT_ENTITY_ID, updateViewInput);
 									if (!response.Success)
-										throw new Exception("System error 10060. Entity: " + PROJECT_ENTITY_NAME + " Updated view: general" + " Message:" + response.Message);
+										throw new Exception("System error 10060. Entity: " + PROJECT_ENTITY_NAME + " Updated view: dashboard" + " Message:" + response.Message);
 								}
 							}
 							#endregion
+
+							#region << area add subscription: Project Workplace -> Project >>
+							{
+								var updatedAreaId = PROJECT_WORKPLACE_AREA_ID;
+								var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, PROJECT_ENTITY_NAME, "dashboard", "create", "general");
+								if (!updateAreaResult.Success)
+								{
+									throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
+								}
+							}
+							#endregion
+
+							#region << area add subscription: Project Workplace -> Project >>
+							{
+								var updatedAreaId = PROJECT_WORKPLACE_AREA_ID;
+								var updateAreaResult = Helpers.UpsertUrlAsAreaSubscription(entMan, recMan, updatedAreaId, "/#/areas/projects/wv_project/dashboard", "My Dashboard", 1, "tachometer");
+								if (!updateAreaResult.Success)
+								{
+									throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
+								}
+							}
+							#endregion
+
 
 							if (createSampleRecords)
 							{

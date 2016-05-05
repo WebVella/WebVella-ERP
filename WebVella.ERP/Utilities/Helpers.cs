@@ -173,6 +173,100 @@ namespace WebVella.ERP.Utilities
 			return result;
 		}
 
+		public static QueryResponse UpsertUrlAsAreaSubscription(EntityManager entMan, RecordManager recMan, Guid areaId, string url, string label, int weight, string iconName)
+		{
+			#region << Init >>
+			var result = new QueryResponse();
+			result.Success = false;
+			result.Message = "unknown error";
+			var areaList = new List<EntityRecord>();
+			var selectedArea = new EntityRecord();
+			var areaSubscriptionsText = "";
+			var selectedEntity = new Entity();
+			var selectedDetailsView = new RecordView();
+			var selectedCreateView = new RecordView();
+			var selectedList = new RecordList();
+			//Get areas
+			EntityQuery query = new EntityQuery("area");
+			QueryResponse response = recMan.Find(query);
+			if (!response.Success || !response.Object.Data.Any())
+			{
+				result.Success = false;
+				result.Message = response.Message;
+				return result;
+			}
+			areaList = response.Object.Data;
+
+			selectedArea = null;
+			foreach (var area in areaList)
+			{
+				if ((Guid)area["id"] == areaId)
+				{
+					selectedArea = area;
+				}
+			}
+
+			if (selectedArea == null)
+			{
+				result.Success = false;
+				result.Message = "There is no area with id " + areaId;
+				return result;
+			}
+
+			#endregion
+
+			areaSubscriptionsText = (string)selectedArea["attachments"];
+			var areaSubscriptionsJsonObject = new JArray();
+			if(!String.IsNullOrWhiteSpace(areaSubscriptionsText)) {
+				areaSubscriptionsJsonObject = JArray.Parse(areaSubscriptionsText);
+			}
+			var subscriptionToBeAdded = new JObject();
+			//Check if there is already a subscription for this entity
+			bool subscriptionFound = false;
+			foreach (var areaSubscription in areaSubscriptionsJsonObject)
+			{
+				//Yes - updated the view and list with the supplied
+				if ((string)areaSubscription["url"] == url)
+				{
+					subscriptionFound = true;
+					subscriptionToBeAdded["label"] = label;
+					subscriptionToBeAdded["iconName"] = iconName;
+					subscriptionToBeAdded["weight"] = weight;
+				}
+			}
+			//No - create new subscription and Add it to the list
+			if (!subscriptionFound)
+			{
+				subscriptionToBeAdded["name"] = null;
+				subscriptionToBeAdded["label"] = label;
+				subscriptionToBeAdded["labelPlural"] = null;
+				subscriptionToBeAdded["iconName"] = iconName;
+				subscriptionToBeAdded["weight"] = weight;
+				subscriptionToBeAdded["url"] = url;
+				//Add details view
+				subscriptionToBeAdded["view"] = null;
+				//Add create view
+				subscriptionToBeAdded["create"] = null;
+				//Add list
+				subscriptionToBeAdded["list"] = null;
+				areaSubscriptionsJsonObject.Add(subscriptionToBeAdded);
+			}
+			//Save area			
+			selectedArea["attachments"] = JsonConvert.SerializeObject(areaSubscriptionsJsonObject);
+			QueryResponse updateAreaResponse = recMan.UpdateRecord("area", selectedArea);
+			if (!updateAreaResponse.Success)
+			{
+				result.Success = false;
+				result.Message = "There is problem updating the area with id" + areaId;
+				return result;
+			}
+
+			result.Success = true;
+			result.Message = "Subscription successfully upserted";
+			return result;
+		}
+
+
 		public static CurrencyType GetCurrencyTypeObject(string currencyCode) {
 			var currencType = new CurrencyType();
 			switch(currencyCode) {
