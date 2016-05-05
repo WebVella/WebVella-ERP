@@ -196,7 +196,7 @@ namespace WebVella.ERP.Project
 									entity.LabelPlural = "Projects";
 									entity.System = true;
 									entity.IconName = "product-hunt";
-									entity.Weight = 2;
+									entity.Weight = 22;
 									entity.RecordPermissions = new RecordPermissions();
 									entity.RecordPermissions.CanCreate = new List<Guid>();
 									entity.RecordPermissions.CanRead = new List<Guid>();
@@ -1680,6 +1680,7 @@ namespace WebVella.ERP.Project
 									updateListInput = updateList.DynamicMapTo<InputRecordList>();
 
 									//General list details
+									updateListInput.Name = "my_projects";
 									updateListInput.Label = "My Projects";
 									updateListInput.IconName = "product-hunt";
 									updateListInput.DataSourceUrl = "/plugins/webvella-projects/api/project/list/my-projects";
@@ -2914,6 +2915,91 @@ namespace WebVella.ERP.Project
 										var response = entMan.UpdateRecordList(TASK_ENTITY_ID, updateListInput);
 										if (!response.Success)
 											throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Updated List: general" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
+								#region << View name: my_tasks >>
+								{
+									var createViewEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+									var createViewInput = new InputRecordView();
+									var viewRegion = new InputRecordViewRegion();
+									var viewSection = new InputRecordViewSection();
+									var viewRow = new InputRecordViewRow();
+									var viewColumn = new InputRecordViewColumn();
+									var viewItem = new InputRecordViewFieldItem();
+									var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+
+									#region << details >>
+									createViewInput.Id = new Guid("f6c083fe-5eab-4660-8363-d0dfc40950bd");
+									createViewInput.Type = "hidden";
+									createViewInput.Name = "my_tasks";
+									createViewInput.Label = "My tasks";
+									createViewInput.Default = false;
+									createViewInput.System = false;
+									createViewInput.Weight = 10;
+									createViewInput.CssClass = null;
+									createViewInput.IconName = "tasks";
+									createViewInput.DynamicHtmlTemplate = null;
+									createViewInput.DataSourceUrl = null;
+									createViewInput.ServiceCode = null;
+									createViewInput.Regions = new List<InputRecordViewRegion>();
+									#endregion
+
+									#region << Header Region >>
+									viewRegion = new InputRecordViewRegion();
+									viewRegion.Name = "header";
+									viewRegion.Label = "Header";
+									viewRegion.Render = true;
+									viewRegion.Weight = 1;
+									viewRegion.CssClass = "";
+									viewRegion.Sections = new List<InputRecordViewSection>();
+
+									//Save region
+									createViewInput.Regions.Add(viewRegion);
+									#endregion
+
+									#region << relation options >>
+									createViewInput.RelationOptions = new List<EntityRelationOptionsItem>();
+									#endregion
+
+									#region << Sidebar >>
+									createViewInput.Sidebar = new InputRecordViewSidebar();
+									createViewInput.Sidebar.CssClass = "";
+									createViewInput.Sidebar.Render = true;
+									createViewInput.Sidebar.Render = true;
+									createViewInput.Sidebar.Items = new List<InputRecordViewSidebarItemBase>();
+									#endregion
+
+									#region << action items >>
+									createViewInput.ActionItems = new List<ActionItem>();
+									var actionItem = new ActionItem();
+									{
+										actionItem = new ActionItem();
+										actionItem.Name = "wv_record_delete";
+										actionItem.Menu = "page-title-dropdown";
+										actionItem.Weight = 1;
+										actionItem.Template = "" +
+								@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.actionService.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
+										ng-if=""ngCtrl.userHasRecordPermissions('canDelete')"">
+									<i class=""fa fa-trash go-red""></i> Delete Record
+								</a>";
+										createViewInput.ActionItems.Add(actionItem);
+									}
+									{
+										actionItem = new ActionItem();
+										actionItem.Name = "wv_back_button";
+										actionItem.Menu = "sidebar-top";
+										actionItem.Weight = 1;
+										actionItem.Template = "" +
+								@"<a class=""back clearfix"" href=""javascript:void(0)"" ng-click=""sidebarData.goBack()""><i class=""fa fa-fw fa-arrow-left""></i> <span class=""text"">Back</span></a>";
+										createViewInput.ActionItems.Add(actionItem);
+									}
+									#endregion
+									{
+										var response = entMan.CreateRecordView(PROJECT_ENTITY_ID, createViewInput);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + PROJECT_ENTITY_NAME + " Updated view: admin_details" + " Message:" + response.Message);
 									}
 								}
 								#endregion
@@ -4737,7 +4823,7 @@ namespace WebVella.ERP.Project
 							#region << area add subscription: Project Workplace -> Project >>
 							{
 								var updatedAreaId = PROJECT_WORKPLACE_AREA_ID;
-								var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, PROJECT_ENTITY_NAME, "dashboard", "create", "general");
+								var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, PROJECT_ENTITY_NAME, "dashboard", "create", "my_projects");
 								if (!updateAreaResult.Success)
 								{
 									throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);

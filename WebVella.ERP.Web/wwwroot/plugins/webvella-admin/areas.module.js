@@ -208,6 +208,7 @@
 		popupCtrl.roles = fastCopy(ngCtrl.roles);
 		popupCtrl.entities = fastCopy(ngCtrl.entities);
 		popupCtrl.attachments = [];
+		popupCtrl.form = {};
 		if (popupCtrl.area.attachments != null && popupCtrl.area.attachments.length > 0) {
 			popupCtrl.attachments = angular.fromJson(popupCtrl.area.attachments);
 		}
