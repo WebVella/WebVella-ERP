@@ -13,14 +13,14 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedParentViewData','resolvedCurrentView', 'resolvedCurrentEntityMeta', 
+    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedParentViewData','resolvedCurrentViewData', 'resolvedCurrentEntityMeta', 
 						'resolvedAreas', 'resolvedCurrentUser', '$sessionStorage','$timeout','webvellaCoreService','resolvedEntityList'];
 
     
-    function controller($log, $rootScope, $state, $stateParams,resolvedParentViewData, resolvedCurrentView, resolvedCurrentEntityMeta, 
+    function controller($log, $rootScope, $state, $stateParams,resolvedParentViewData, resolvedCurrentViewData, resolvedCurrentEntityMeta, 
 						resolvedAreas, resolvedCurrentUser, $sessionStorage,$timeout,webvellaCoreService,resolvedEntityList) {
         var sidebarData = this;
-		if(resolvedCurrentView == null){
+		if(resolvedCurrentViewData == null){
 			sidebarData.view = null; //list in view page		
 		}
 		else {

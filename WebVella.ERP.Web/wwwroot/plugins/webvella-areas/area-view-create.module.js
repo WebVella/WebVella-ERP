@@ -41,8 +41,7 @@
 			},
 			resolve: {
 				loadDependency: loadDependency,
-				loadPreloadScript: loadPreloadScript,
-				resolvedCurrentView: resolveCurrentView
+				loadPreloadScript: loadPreloadScript
 			},
 			data: {
 
@@ -72,8 +71,7 @@
 			},
 			resolve: {
 				loadDependency: loadDependency,
-				loadPreloadScript: loadPreloadScript,
-				resolvedCurrentView: resolveCurrentView
+				loadPreloadScript: loadPreloadScript
 			},
 			data: {
 
@@ -117,37 +115,15 @@
 		}
 	}
 
-	resolveCurrentView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta','resolvedEntityList'];
-
-	function resolveCurrentView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta,resolvedEntityList) {
-
-		// Initialize
-		var defer = $q.defer();
-
-		var userHasUpdateEntityPermission = webvellaCoreService.userHasRecordPermissions(resolvedCurrentEntityMeta, "canCreate");
-		if (!userHasUpdateEntityPermission) {
-			alert("you do not have permissions to create records from this entity!");
-			defer.reject("you do not have permissions to create records from this entity");
-		}
-
-		var view = {};
-		view.data = null;
-		view.meta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName,$stateParams.entityName,resolvedEntityList);;
-
-		defer.resolve(view);
-
-		return defer.promise;
-	}
-
 	//#endregion
 
 	//#region << Controller  >> ///////////////////////////////
 	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaCoreService', 'webvellaViewActionService',
         'resolvedAreas', '$timeout', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', '$anchorScroll', '$location', '$sessionStorage',
-		'resolvedCurrentUser'];
+		'resolvedCurrentUser','resolvedEntityList'];
 	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, pageTitle, webvellaCoreService, webvellaViewActionService,
         resolvedAreas, $timeout, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, $anchorScroll, $location, $sessionStorage,
-		resolvedCurrentUser) {
+		resolvedCurrentUser,resolvedEntityList) {
 
 		//#region << ngCtrl initialization >>
 		var ngCtrl = this;
@@ -165,7 +141,7 @@
 		//#region << Initialize main objects >>
 		ngCtrl.view = {};
 		ngCtrl.view.data = {}; //Initially now, will be later filled in by the user
-		ngCtrl.view.meta = {}; //will be initialized in the following function
+		ngCtrl.view.meta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName, $stateParams.entityName, resolvedEntityList);
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
 		ngCtrl.entityRelations = fastCopy(resolvedEntityRelationsList);
 		ngCtrl.areas = fastCopy(resolvedAreas.data);
@@ -176,14 +152,9 @@
 
 		//#region << Set environment >> /////////////////////
 		ngCtrl.createViewRegion = null;
-		for (var i = 0; i < ngCtrl.entity.recordViews.length; i++) {
-			if (ngCtrl.entity.recordViews[i].name === $stateParams.viewName) {
-				ngCtrl.view.meta = ngCtrl.entity.recordViews[i];
-				for (var j = 0; j < ngCtrl.entity.recordViews[i].regions.length; j++) {
-					if (ngCtrl.entity.recordViews[i].regions[j].name === "header") {
-						ngCtrl.createViewRegion = ngCtrl.entity.recordViews[i].regions[j];
-					}
-				}
+		for (var j = 0; j < ngCtrl.view.meta.regions.length; j++) {
+			if (ngCtrl.view.meta.regions[j].name === "header") {
+				ngCtrl.createViewRegion = ngCtrl.view.meta.regions[j];
 			}
 		}
 		//#endregion

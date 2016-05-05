@@ -39,7 +39,7 @@
 			resolve: {
 				loadDependency: loadDependency,
 				loadPreloadScript: loadPreloadScript,
-				resolvedCurrentView: function () { return null; },
+				resolvedCurrentViewData: function () { return null; },
 				resolvedParentViewData: function () { return null; },
 				resolvedRecordListData: resolveRecordListData
 			},
@@ -74,7 +74,7 @@
 			resolve: {
 				loadDependency: loadDependency,
 				loadPreloadScript: loadPreloadScript,
-				resolvedCurrentView: function () { return null },	//for the sidebar to render
+				resolvedCurrentViewData: function () { return null },	//for the sidebar to render
 				resolvedParentViewData: resolveParentViewData,
 				resolvedRecordListData: resolveRecordListDataFromView
 			},
@@ -213,7 +213,7 @@
 		}
 
 		var parentView = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
-		webvellaCoreService.getRecordByViewMeta($stateParams.recordId, parentView, $stateParams.entityName, successCallback, errorCallback);
+		webvellaCoreService.getRecordByViewMeta($stateParams.recordId, parentView, $stateParams.entityName,null, successCallback, errorCallback);
 
 		return defer.promise;
 	}
@@ -223,7 +223,7 @@
 		//Temporary method will be replaced when the proper API is ready
 		// Initialize
 		var defer = $q.defer();
-		var safeListNameAndEntity = webvellaCoreService.getSafeListNameAndEntityName($stateParams.listName, $stateParams.entityName, resolvedEntityRelationsList)
+		var safeListNameAndEntity = webvellaCoreService.getSafeListNameAndEntityName($stateParams.listName, $stateParams.entityName, resolvedEntityRelationsList);
 		var getListMeta = webvellaCoreService.getEntityRecordListFromEntitiesMetaList(safeListNameAndEntity.listName, safeListNameAndEntity.entityName, resolvedEntityList);
 		if (getListMeta.dataSourceUrl != null && getListMeta.dataSourceUrl != "") {
 			//This list has a dynamicSourceUrl defined

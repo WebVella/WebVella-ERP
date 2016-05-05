@@ -190,7 +190,7 @@
 				case "defaultData":
 					ngCtrl.defaultMeta = null;
 					sampleViewMeta.dataSourceUrl = null;
-					webvellaCoreService.getRecordByViewMeta(ngCtrl.sampleRecordId,sampleViewMeta, ngCtrl.entity.name, successCallback, errorCallback);
+					webvellaCoreService.getRecordByViewMeta(ngCtrl.sampleRecordId,sampleViewMeta, ngCtrl.entity.name,null, successCallback, errorCallback);
 					break;
 				case "defaultMeta":
 					ngCtrl.defaultData = null;
@@ -200,7 +200,7 @@
 					successCallback(response);
 					break;
 				case "customFull":
-					webvellaCoreService.getRecordByViewMeta(ngCtrl.sampleRecordId,sampleViewMeta, ngCtrl.entity.name, successCallback, errorCallback);
+					webvellaCoreService.getRecordByViewMeta(ngCtrl.sampleRecordId,sampleViewMeta, ngCtrl.entity.name,null, successCallback, errorCallback);
 					break;
 			}
 			

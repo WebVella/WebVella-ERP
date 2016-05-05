@@ -82,6 +82,7 @@
 		serviceInstance.convertRowColumnCountVariationKeyToArray = convertRowColumnCountVariationKeyToArray;
 		serviceInstance.getViewMenuOptions = getViewMenuOptions
 		serviceInstance.getItemsFromRegion = getItemsFromRegion;
+		serviceInstance.getSafeViewNameAndEntityName = getSafeViewNameAndEntityName;
 
 		//#endregion
 
@@ -1541,6 +1542,36 @@
 
 			return usedItemsArray;
 		}
+		/////////////////////
+		function getSafeViewNameAndEntityName(paramsViewName,paramsEntityName,relationsList){
+			var data = {};
+			//if the list is in a view, than the name should be processed as the entity name could differ from the current one as well as the list name is not in fact a dataName
+			//e.g. $list$project_1_n_milestone$general	when from another entity or $list$lookup when from the current
+			data.viewName = paramsViewName;
+			data.entityName = paramsEntityName;
+			var viewDataName = 	paramsViewName;
+			var viewDataNameArray =  viewDataName.split("$");
+			if(viewDataNameArray.length == 3){
+				//this is a list from the current entity ($view$general), we just need to get the proper list name
+				data.viewName = viewDataNameArray[2];
+			}
+			else if (viewDataNameArray.length == 4){
+				//this is a list from another entity ($view$project_1_n_milestone$general), we should get both list name and entity name from the relation
+				var relationName = viewDataNameArray[2];
+				var relation =  getRelationFromRelationsList(relationName,relationsList);
+				if(relation.originEntityName == paramsEntityName){
+					 data.entityName =  relation.targetEntityName;
+				}
+				else if(relation.targetEntityName == paramsEntityName){
+					data.entityName =  relation.originEntityName;
+				}
+				data.viewName = viewDataNameArray[3];
+			}
+
+			return data;
+		}
+		
+		
 		//#endregion
 
 		//#region << List >>
@@ -1876,7 +1907,7 @@
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewName + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
-		function getRecordByViewMeta(recordId, viewMeta, entityName, successCallback, errorCallback) {
+		function getRecordByViewMeta(recordId, viewMeta, entityName,stateParams, successCallback, errorCallback) {
 			if (viewMeta.dataSourceUrl == null || viewMeta.dataSourceUrl == '') {
 				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewMeta.name + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 			}
@@ -1886,6 +1917,15 @@
 				extraParamQueryString += "entityName=" + entityName + "&";
 				extraParamQueryString += "listName=" + viewMeta.name + "&";
 				extraParamQueryString += "recordId=" + recordId;
+				if (stateParams != null) {
+					if (!isEmpty(stateParams)) {
+						for (var param in stateParams) {
+							if(extraParamQueryString.indexOf(param) == -1){
+								extraParamQueryString += param + "=" + stateParams[param] + "&";
+							}
+						}
+					}
+				}
 				$http({ method: 'GET', url: viewMeta.dataSourceUrl + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 			}
 		}

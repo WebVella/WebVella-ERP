@@ -23,7 +23,9 @@
 			"/plugins/webvella-projects/css/styles.css"
 		],
 		"js": [
+			"/plugins/webvella-projects/base.module.js",
+			"/plugins/webvella-projects/dashboard.module.js"
 		],
-		"wvApp_injects": [ ]
+		"wvApp_injects": [ "webvellaProjects" ]
 	}
 }
