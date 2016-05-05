@@ -407,7 +407,7 @@
 			ngCtrl.filterQuery = {};
 			ngCtrl.listIsFiltered = false;
 			ngCtrl.show_filter = false;
-			webvellaCoreService.getRecordsByListMeta(ngCtrl.list.meta, $stateParams.entityName, $stateParams.page, null, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
+			webvellaCoreService.getRecordsByListMeta(ngCtrl.list.meta, safeListNameAndEntityName.entityName, $stateParams.page, $stateParams, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
 		}
 
 		ngCtrl.applyQueryFilter = function () {
@@ -430,16 +430,9 @@
 				ngCtrl.listIsFiltered = true;
 			}
 			//Find the entity of the list. It could not be the current one as it could be listFromRelation case
-			var listEntityName = $stateParams.entityName;
-			for (var i = 0; i < ngCtrl.entityList.length; i++) {
-				for (var j = 0; j < ngCtrl.entityList[i].recordLists.length; j++) {
-					if (ngCtrl.entityList[i].recordLists[j].id == ngCtrl.list.meta.id) {
-						listEntityName = fastCopy(ngCtrl.entityList[i].name);
-					}
-				}
-			}
+			var listEntityName = safeListNameAndEntityName.entityName;
 
-			webvellaCoreService.getRecordsByListMeta(ngCtrl.list.meta, listEntityName, 1, null, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
+			webvellaCoreService.getRecordsByListMeta(ngCtrl.list.meta, listEntityName, 1, $stateParams, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
 		}
 
 		ngCtrl.ReloadRecordsSuccessCallback = function (response) {
@@ -557,7 +550,7 @@
 
 			var searchParams = $location.search();
 			var listEntityName = safeListNameAndEntityName.entityName;
-			webvellaCoreService.getRecordsByListMeta(ngCtrl.list.meta, listEntityName, 1, null, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
+			webvellaCoreService.getRecordsByListMeta(ngCtrl.list.meta, listEntityName, 1, $stateParams, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
 
 		}
 
