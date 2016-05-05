@@ -261,7 +261,7 @@
 											<div class="form-group">
 												<label class="control-label col-sm-2" translate="{{'DETAILS'}}"></label>
 												<div class="col-sm-10">
-													<select class="form-control" ng-model="attachment.view.name"  ng-options="view.name as view.name for view in popupCtrl.getViews(attachment.name)"></select>
+													<select class="form-control" ng-change="popupCtrl.updateattachmentView(attachment)" ng-model="attachment.view.name"  ng-options="view.name as view.name for view in popupCtrl.getViews(attachment.name)"></select>
 												</div>
 											</div>
 										</div>
@@ -269,7 +269,7 @@
 											<div class="form-group">
 												<label class="control-label col-sm-2" translate="{{'CREATE'}}"></label>
 												<div class="col-sm-10">
-													<select class="form-control" ng-model="attachment.create.name"  ng-options="create.name as create.name for create in popupCtrl.getCreates(attachment.name)"></select>
+													<select class="form-control" ng-change="popupCtrl.updateattachmentCreate(attachment)"  ng-model="attachment.create.name"  ng-options="create.name as create.name for create in popupCtrl.getCreates(attachment.name)"></select>
 												</div>
 											</div>
 										</div>
@@ -277,7 +277,7 @@
 											<div class="form-group" style="margin-bottom:0;">
 												<label class="control-label col-sm-2" translate="{{'LIST'}}"></label>
 												<div class="col-sm-10">
-													<select class="form-control" ng-model="attachment.list.name"  ng-options="list.name as list.name for list in popupCtrl.getLists(attachment.name)"></select>
+													<select class="form-control" ng-change="popupCtrl.updateattachmentList(attachment)"  ng-model="attachment.list.name"  ng-options="list.name as list.name for list in popupCtrl.getLists(attachment.name)"></select>
 												</div>
 											</div>
 										</div>
