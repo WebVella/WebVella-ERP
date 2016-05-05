@@ -4,7 +4,7 @@
 	angular
         .module('webvellaAreas')
         .config(config)
-        .controller('WebVellaProjectsDashboardController', controller);
+        .controller('WebVellaProjectsUserDashboardController', controller);
 
 	//#region << Configuration /////////////////////////////////// >>
 	config.$inject = ['$stateProvider'];
@@ -27,8 +27,8 @@
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
-					controller: 'WebVellaProjectsDashboardController',
-					templateUrl: '/plugins/webvella-projects/dashboard.view.html',
+					controller: 'WebVellaProjectsUserDashboardController',
+					templateUrl: '/plugins/webvella-projects/user-dashboard.view.html',
 					controllerAs: 'ngCtrl'
 				}
 			},
@@ -70,10 +70,10 @@
 
 	//#region << Controller /////////////////////////////// >>
 	controller.$inject = ['$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaCoreService',
-        'resolveDashboardData', '$timeout', 'resolvedCurrentUser', '$sessionStorage', '$location', '$window', '$sce'];
+        'resolvedDashboardData', '$timeout', 'resolvedCurrentUser', '$sessionStorage', '$location', '$window', '$sce','resolvedAreas'];
 
 	function controller($log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaCoreService,
-        resolveDashboardData, $timeout, resolvedCurrentUser, $sessionStorage, $location, $window, $sce) {
+        resolvedDashboardData, $timeout, resolvedCurrentUser, $sessionStorage, $location, $window, $sce,resolvedAreas) {
 
 		//#region << ngCtrl initialization >>
 		var ngCtrl = this;
@@ -82,6 +82,14 @@
 		ngCtrl.validation.errorMessage = "";
 		ngCtrl.canSortList = false;
 		//#endregion
+
+		//#region << Set Page meta >>
+		ngCtrl.pageTitle = "My Dashboard | " + pageTitle;
+		webvellaCoreService.setPageTitle(ngCtrl.pageTitle);
+		ngCtrl.currentArea = webvellaCoreService.getCurrentAreaFromAreaList($stateParams.areaName, resolvedAreas.data);
+		webvellaCoreService.setBodyColorClass(ngCtrl.currentArea.color);
+		//#endregion
+
 
 	}
 	//#endregion

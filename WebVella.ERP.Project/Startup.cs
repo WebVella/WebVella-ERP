@@ -2411,7 +2411,7 @@ namespace WebVella.ERP.Project
 									dateField.HelpText = "";
 									dateField.Required = false;
 									dateField.Unique = false;
-									dateField.Searchable = false;
+									dateField.Searchable = true;
 									dateField.Auditable = false;
 									dateField.System = true;
 									dateField.DefaultValue = null;
@@ -2446,7 +2446,7 @@ namespace WebVella.ERP.Project
 									dateField.HelpText = "";
 									dateField.Required = false;
 									dateField.Unique = false;
-									dateField.Searchable = false;
+									dateField.Searchable = true;
 									dateField.Auditable = false;
 									dateField.System = true;
 									dateField.DefaultValue = null;

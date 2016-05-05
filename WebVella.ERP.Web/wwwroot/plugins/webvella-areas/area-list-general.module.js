@@ -443,7 +443,7 @@
 		}
 
 		ngCtrl.ReloadRecordsSuccessCallback = function (response) {
-			ngCtrl.list.data = response.object.data;
+			ngCtrl.list.data = response.object;
 		}
 
 		ngCtrl.ReloadRecordsErrorCallback = function (response) {
@@ -556,14 +556,7 @@
 			}
 
 			var searchParams = $location.search();
-			var listEntityName = $stateParams.entityName;
-			for (var i = 0; i < ngCtrl.entityList.length; i++) {
-				for (var j = 0; j < ngCtrl.entityList[i].recordLists.length; j++) {
-					if (ngCtrl.entityList[i].recordLists[j].id == ngCtrl.list.meta.id) {
-						listEntityName = fastCopy(ngCtrl.entityList[i].name);
-					}
-				}
-			}
+			var listEntityName = safeListNameAndEntityName.entityName;
 			webvellaCoreService.getRecordsByListMeta(ngCtrl.list.meta, listEntityName, 1, null, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
 
 		}

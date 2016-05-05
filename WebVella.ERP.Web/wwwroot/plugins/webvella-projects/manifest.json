@@ -24,7 +24,7 @@
 		],
 		"js": [
 			"/plugins/webvella-projects/base.module.js",
-			"/plugins/webvella-projects/dashboard.module.js"
+			"/plugins/webvella-projects/user-dashboard.module.js"
 		],
 		"wvApp_injects": [ "webvellaProjects" ]
 	}
