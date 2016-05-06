@@ -138,6 +138,7 @@ namespace WebVella.ERP.Project
 						#region << 3. Run methods based on the current installed version of the plugin >>
 						if (currentPluginSettings.Version < 20160430)
 						{
+							try {
 							currentPluginSettings.Version = 20160430;
 
 							#region << Create Project admin area >>
@@ -1589,7 +1590,7 @@ namespace WebVella.ERP.Project
 									createListInput.Id = new Guid("3eff91d7-152a-496c-913c-152819a42930");
 									createListInput.Type = "hidden";
 									createListInput.Name = "admin";
-									createListInput.Label = "Projects";
+									createListInput.Label = "All Projects";
 									createListInput.Weight = 1;
 									createListInput.Default = false;
 									createListInput.System = true;
@@ -2919,87 +2920,422 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 
-								#region << View name: my_tasks >>
+								#region << List name: my_tasks >>
 								{
-									var createViewEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
-									var createViewInput = new InputRecordView();
-									var viewRegion = new InputRecordViewRegion();
-									var viewSection = new InputRecordViewSection();
-									var viewRow = new InputRecordViewRow();
-									var viewColumn = new InputRecordViewColumn();
-									var viewItem = new InputRecordViewFieldItem();
-									var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+									var createListEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+									var createListInput = new InputRecordList();
+									var listField = new InputRecordListFieldItem();
+									var listFieldFromRelation = new InputRecordListRelationFieldItem();
+									var listSort = new InputRecordListSort();
+									var listQuery = new InputRecordListQuery();
 
 									#region << details >>
-									createViewInput.Id = new Guid("f6c083fe-5eab-4660-8363-d0dfc40950bd");
-									createViewInput.Type = "hidden";
-									createViewInput.Name = "my_tasks";
-									createViewInput.Label = "My tasks";
-									createViewInput.Default = false;
-									createViewInput.System = false;
-									createViewInput.Weight = 10;
-									createViewInput.CssClass = null;
-									createViewInput.IconName = "tasks";
-									createViewInput.DynamicHtmlTemplate = null;
-									createViewInput.DataSourceUrl = null;
-									createViewInput.ServiceCode = null;
-									createViewInput.Regions = new List<InputRecordViewRegion>();
-									#endregion
-
-									#region << Header Region >>
-									viewRegion = new InputRecordViewRegion();
-									viewRegion.Name = "header";
-									viewRegion.Label = "Header";
-									viewRegion.Render = true;
-									viewRegion.Weight = 1;
-									viewRegion.CssClass = "";
-									viewRegion.Sections = new List<InputRecordViewSection>();
-
-									//Save region
-									createViewInput.Regions.Add(viewRegion);
-									#endregion
-
-									#region << relation options >>
-									createViewInput.RelationOptions = new List<EntityRelationOptionsItem>();
-									#endregion
-
-									#region << Sidebar >>
-									createViewInput.Sidebar = new InputRecordViewSidebar();
-									createViewInput.Sidebar.CssClass = "";
-									createViewInput.Sidebar.Render = true;
-									createViewInput.Sidebar.Render = true;
-									createViewInput.Sidebar.Items = new List<InputRecordViewSidebarItemBase>();
+									createListInput.Id = new Guid("42da1595-bf3f-49b1-a784-1218b07d668d");
+									createListInput.Type = "hidden";
+									createListInput.Name = "my_tasks";
+									createListInput.Label = "My Tasks";
+									createListInput.Weight = 2;
+									createListInput.Default = false;
+									createListInput.System = true;
+									createListInput.CssClass = "task-list";
+									createListInput.IconName = "tasks";
+									createListInput.VisibleColumnsCount = 7;
+									createListInput.ColumnWidthsCSV = "auto,30px,120px,120px,120px,120px";
+									createListInput.PageSize = 10;
+									createListInput.DynamicHtmlTemplate = null;
+									createListInput.DataSourceUrl = null;
+									createListInput.ServiceCode = null;
 									#endregion
 
 									#region << action items >>
-									createViewInput.ActionItems = new List<ActionItem>();
+									createListInput.ActionItems = new List<ActionItem>();
 									var actionItem = new ActionItem();
 									{
 										actionItem = new ActionItem();
-										actionItem.Name = "wv_record_delete";
-										actionItem.Menu = "page-title-dropdown";
+										actionItem.Name = "wv_record_details";
+										actionItem.Menu = "record-row";
 										actionItem.Weight = 1;
 										actionItem.Template = "" +
-								@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.actionService.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
-										ng-if=""ngCtrl.userHasRecordPermissions('canDelete')"">
-									<i class=""fa fa-trash go-red""></i> Delete Record
-								</a>";
-										createViewInput.ActionItems.Add(actionItem);
+								@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}"">
+					<i class=""fa fa-fw fa-eye""></i>
+					</a>";
+										createListInput.ActionItems.Add(actionItem);
 									}
 									{
 										actionItem = new ActionItem();
-										actionItem.Name = "wv_back_button";
-										actionItem.Menu = "sidebar-top";
+										actionItem.Name = "wv_create_record";
+										actionItem.Menu = "page-title";
 										actionItem.Weight = 1;
 										actionItem.Template = "" +
-								@"<a class=""back clearfix"" href=""javascript:void(0)"" ng-click=""sidebarData.goBack()""><i class=""fa fa-fw fa-arrow-left""></i> <span class=""text"">Back</span></a>";
-										createViewInput.ActionItems.Add(actionItem);
+								@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}"">
+									<i class=""fa fa-fw fa-plus""></i> Add New
+								</a>";
+										createListInput.ActionItems.Add(actionItem);
 									}
 									#endregion
+
+									#region << Columns >>
+									createListInput.Columns = new List<InputRecordListItemBase>();
+
+									#region << subject >>
 									{
-										var response = entMan.CreateRecordView(PROJECT_ENTITY_ID, createViewInput);
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "subject").Id;
+										listField.FieldName = "subject";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << owner - image >>
+									{
+										var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+										listFieldFromRelation = new InputRecordListRelationFieldItem();
+										listFieldFromRelation.EntityId = targetEntity.Id;
+										listFieldFromRelation.EntityName = targetEntity.Name;
+										listFieldFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "image").Id;
+										listFieldFromRelation.FieldName = "image";
+										listFieldFromRelation.FieldLabel = "Owner";
+										listFieldFromRelation.RelationId = new Guid("7ce76c81-e604-401e-907f-23de982b930e");
+										listFieldFromRelation.RelationName = "user_1_n_task_owner";
+										listFieldFromRelation.Type = "fieldFromRelation";
+										createListInput.Columns.Add(listFieldFromRelation);
+									}
+									#endregion
+
+									#region << start_date >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "start_date").Id;
+										listField.FieldName = "start_date";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << end_date >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "end_date").Id;
+										listField.FieldName = "end_date";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << status >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "status").Id;
+										listField.FieldName = "status";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << priority >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "priority").Id;
+										listField.FieldName = "priority";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#endregion
+
+									#region << relation options >>
+									createListInput.RelationOptions = new List<EntityRelationOptionsItem>();
+									#endregion
+
+									#region << query >>
+									createListInput.Query = new InputRecordListQuery();
+									listQuery = new InputRecordListQuery();
+									listQuery.FieldName = null;
+									listQuery.FieldValue = null;
+									listQuery.QueryType = "AND";
+									listQuery.SubQueries = new List<InputRecordListQuery>();
+
+									#region << owner_id >>
+									{
+										var subQuery = new InputRecordListQuery();
+										subQuery.FieldName = "owner_id";
+										subQuery.FieldValue = @"{""name"":""current_user"", ""option"": ""id"", ""default"": null, ""settings"":{}}";
+										subQuery.QueryType = "EQ";
+										subQuery.SubQueries = new List<InputRecordListQuery>();
+										listQuery.SubQueries.Add(subQuery);
+									}
+									#endregion
+									createListInput.Query = listQuery;
+									#endregion
+
+									#region << Sort >>
+									createListInput.Sorts = new List<InputRecordListSort>();
+									listSort = new InputRecordListSort();
+									listSort.FieldName = @"{""name"":""url_sort"", ""option"": ""sortBy"", ""default"": ""end_date"", ""settings"":{""order"":""sortOrder""}}";
+									listSort.SortType = "descending";
+									createListInput.Sorts.Add(listSort);
+									#endregion
+									{
+										var response = entMan.CreateRecordList(TASK_ENTITY_ID, createListInput);
 										if (!response.Success)
-											throw new Exception("System error 10060. Entity: " + PROJECT_ENTITY_NAME + " Updated view: admin_details" + " Message:" + response.Message);
+											throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Updated List: my_tickets" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
+								#region << area add subscription: Project Workplace -> My tasks >>
+								{
+									var updatedAreaId = PROJECT_WORKPLACE_AREA_ID;
+									var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, TASK_ENTITY_NAME, "general", "create", "my_tasks");
+									if (!updateAreaResult.Success)
+									{
+										throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
+									}
+								}
+								#endregion
+
+
+								#region << List name: admin >>
+								{
+									var createListEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+									var createListInput = new InputRecordList();
+									var listField = new InputRecordListFieldItem();
+									var listFieldFromRelation = new InputRecordListRelationFieldItem();
+									var listSort = new InputRecordListSort();
+									var listQuery = new InputRecordListQuery();
+
+									#region << details >>
+									createListInput.Id = new Guid("10dce98d-843f-48ca-94be-da33a910375e");
+									createListInput.Type = "hidden";
+									createListInput.Name = "admin";
+									createListInput.Label = "All tasks";
+									createListInput.Weight = 2;
+									createListInput.Default = false;
+									createListInput.System = true;
+									createListInput.CssClass = "task-list";
+									createListInput.IconName = "tasks";
+									createListInput.VisibleColumnsCount = 7;
+									createListInput.ColumnWidthsCSV = "80px,auto,30px,120px,120px,120px,120px";
+									createListInput.PageSize = 10;
+									createListInput.DynamicHtmlTemplate = null;
+									createListInput.DataSourceUrl = null;
+									createListInput.ServiceCode = null;
+									#endregion
+
+									#region << action items >>
+									createListInput.ActionItems = new List<ActionItem>();
+									var actionItem = new ActionItem();
+									{
+										actionItem = new ActionItem();
+										actionItem.Name = "wv_record_details";
+										actionItem.Menu = "record-row";
+										actionItem.Weight = 1;
+										actionItem.Template = "" +
+								@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}"">
+					<i class=""fa fa-fw fa-eye""></i>
+					</a>";
+										createListInput.ActionItems.Add(actionItem);
+									}
+									{
+										actionItem = new ActionItem();
+										actionItem.Name = "wv_create_record";
+										actionItem.Menu = "page-title";
+										actionItem.Weight = 1;
+										actionItem.Template = "" +
+								@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}"">
+									<i class=""fa fa-fw fa-plus""></i> Add New
+								</a>";
+										createListInput.ActionItems.Add(actionItem);
+									}
+									#endregion
+
+									#region << Columns >>
+									createListInput.Columns = new List<InputRecordListItemBase>();
+
+									#region << number >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "number").Id;
+										listField.FieldName = "number";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << subject >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "subject").Id;
+										listField.FieldName = "subject";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << owner - image >>
+									{
+										var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+										listFieldFromRelation = new InputRecordListRelationFieldItem();
+										listFieldFromRelation.EntityId = targetEntity.Id;
+										listFieldFromRelation.EntityName = targetEntity.Name;
+										listFieldFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "image").Id;
+										listFieldFromRelation.FieldName = "image";
+										listFieldFromRelation.FieldLabel = "Owner";
+										listFieldFromRelation.RelationId = new Guid("7ce76c81-e604-401e-907f-23de982b930e");
+										listFieldFromRelation.RelationName = "user_1_n_task_owner";
+										listFieldFromRelation.Type = "fieldFromRelation";
+										createListInput.Columns.Add(listFieldFromRelation);
+									}
+									#endregion
+
+									#region << start_date >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "start_date").Id;
+										listField.FieldName = "start_date";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << end_date >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "end_date").Id;
+										listField.FieldName = "end_date";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << status >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "status").Id;
+										listField.FieldName = "status";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << priority >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "priority").Id;
+										listField.FieldName = "priority";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#endregion
+
+									#region << relation options >>
+									createListInput.RelationOptions = new List<EntityRelationOptionsItem>();
+									#endregion
+
+									#region << query >>
+									createListInput.Query = new InputRecordListQuery();
+									listQuery = new InputRecordListQuery();
+									listQuery.FieldName = null;
+									listQuery.FieldValue = null;
+									listQuery.QueryType = "AND";
+									listQuery.SubQueries = new List<InputRecordListQuery>();
+
+									#region << number >>
+									{
+										var subQuery = new InputRecordListQuery();
+										subQuery.FieldName = "owner_id";
+										subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""number"", ""default"": null, ""settings"":{}}";
+										subQuery.QueryType = "EQ";
+										subQuery.SubQueries = new List<InputRecordListQuery>();
+										listQuery.SubQueries.Add(subQuery);
+									}
+									#endregion
+									#region << subject >>
+									{
+										var subQuery = new InputRecordListQuery();
+										subQuery.FieldName = "subject";
+										subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""subject"", ""default"": null, ""settings"":{}}";
+										subQuery.QueryType = "EQ";
+										subQuery.SubQueries = new List<InputRecordListQuery>();
+										listQuery.SubQueries.Add(subQuery);
+									}
+									#endregion
+
+									#region << status >>
+									{
+										var subQuery = new InputRecordListQuery();
+										subQuery.FieldName = "status";
+										subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""status"", ""default"": null, ""settings"":{}}";
+										subQuery.QueryType = "EQ";
+										subQuery.SubQueries = new List<InputRecordListQuery>();
+										listQuery.SubQueries.Add(subQuery);
+									}
+									#endregion
+
+									#region << priority >>
+									{
+										var subQuery = new InputRecordListQuery();
+										subQuery.FieldName = "priority";
+										subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""priority"", ""default"": null, ""settings"":{}}";
+										subQuery.QueryType = "EQ";
+										subQuery.SubQueries = new List<InputRecordListQuery>();
+										listQuery.SubQueries.Add(subQuery);
+									}
+									#endregion
+
+									createListInput.Query = listQuery;
+									#endregion
+
+									#region << Sort >>
+									createListInput.Sorts = new List<InputRecordListSort>();
+									listSort = new InputRecordListSort();
+									listSort.FieldName = @"{""name"":""url_sort"", ""option"": ""sortBy"", ""default"": ""end_date"", ""settings"":{""order"":""sortOrder""}}";
+									listSort.SortType = "descending";
+									createListInput.Sorts.Add(listSort);
+									#endregion
+									{
+										var response = entMan.CreateRecordList(TASK_ENTITY_ID, createListInput);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Updated List: admin" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
+								#region << area add subscription: Project Admin -> Bugs >>
+								{
+									var updatedAreaId = PROJECT_ADMIN_AREA_ID;
+									var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, TASK_ENTITY_NAME, "general", "create", "admin");
+									if (!updateAreaResult.Success)
+									{
+										throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
 									}
 								}
 								#endregion
@@ -3598,6 +3934,335 @@ namespace WebVella.ERP.Project
 										var response = entMan.UpdateRecordList(BUG_ENTITY_ID, updateListInput);
 										if (!response.Success)
 											throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Updated List: general" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
+								#region << List name: my_bugs >>
+								{
+									var createListEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
+									var createListInput = new InputRecordList();
+									var listField = new InputRecordListFieldItem();
+									var listFieldFromRelation = new InputRecordListRelationFieldItem();
+									var listSort = new InputRecordListSort();
+									var listQuery = new InputRecordListQuery();
+
+									#region << details >>
+									createListInput.Id = new Guid("2ac91f01-0ee5-420e-8981-4f57eaea255e");
+									createListInput.Type = "hidden";
+									createListInput.Name = "my_bugs";
+									createListInput.Label = "My Bugs";
+									createListInput.Weight = 3;
+									createListInput.Default = false;
+									createListInput.System = true;
+									createListInput.CssClass = "bug-list";
+									createListInput.IconName = "bug";
+									createListInput.VisibleColumnsCount = 7;
+									createListInput.ColumnWidthsCSV = "auto,30px,120px,120px,120px,120px";
+									createListInput.PageSize = 10;
+									createListInput.DynamicHtmlTemplate = null;
+									createListInput.DataSourceUrl = null;
+									createListInput.ServiceCode = null;
+									#endregion
+
+									#region << action items >>
+									createListInput.ActionItems = new List<ActionItem>();
+									var actionItem = new ActionItem();
+									{
+										actionItem = new ActionItem();
+										actionItem.Name = "wv_record_details";
+										actionItem.Menu = "record-row";
+										actionItem.Weight = 1;
+										actionItem.Template = "" +
+								@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}"">
+					<i class=""fa fa-fw fa-eye""></i>
+					</a>";
+										createListInput.ActionItems.Add(actionItem);
+									}
+									{
+										actionItem = new ActionItem();
+										actionItem.Name = "wv_create_record";
+										actionItem.Menu = "page-title";
+										actionItem.Weight = 1;
+										actionItem.Template = "" +
+								@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}"">
+									<i class=""fa fa-fw fa-plus""></i> Add New
+								</a>";
+										createListInput.ActionItems.Add(actionItem);
+									}
+									#endregion
+
+									#region << Columns >>
+									createListInput.Columns = new List<InputRecordListItemBase>();
+
+									#region << subject >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "subject").Id;
+										listField.FieldName = "subject";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << owner - image >>
+									{
+										var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+										listFieldFromRelation = new InputRecordListRelationFieldItem();
+										listFieldFromRelation.EntityId = targetEntity.Id;
+										listFieldFromRelation.EntityName = targetEntity.Name;
+										listFieldFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "image").Id;
+										listFieldFromRelation.FieldName = "image";
+										listFieldFromRelation.FieldLabel = "Owner";
+										listFieldFromRelation.RelationId = new Guid("cddc10b6-30ff-4a86-96e4-645b3ea59fd9");
+										listFieldFromRelation.RelationName = "user_1_n_bug_owner";
+										listFieldFromRelation.Type = "fieldFromRelation";
+										createListInput.Columns.Add(listFieldFromRelation);
+									}
+									#endregion
+
+									#region << created_on >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "created_on").Id;
+										listField.FieldName = "created_on";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << status >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "status").Id;
+										listField.FieldName = "status";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << priority >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "priority").Id;
+										listField.FieldName = "priority";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#endregion
+
+									#region << relation options >>
+									createListInput.RelationOptions = new List<EntityRelationOptionsItem>();
+									#endregion
+
+									#region << query >>
+									createListInput.Query = new InputRecordListQuery();
+									listQuery = new InputRecordListQuery();
+									listQuery.FieldName = null;
+									listQuery.FieldValue = null;
+									listQuery.QueryType = "AND";
+									listQuery.SubQueries = new List<InputRecordListQuery>();
+
+									#region << owner_id >>
+									{
+										var subQuery = new InputRecordListQuery();
+										subQuery.FieldName = "owner_id";
+										subQuery.FieldValue = @"{""name"":""current_user"", ""option"": ""id"", ""default"": null, ""settings"":{}}";
+										subQuery.QueryType = "EQ";
+										subQuery.SubQueries = new List<InputRecordListQuery>();
+										listQuery.SubQueries.Add(subQuery);
+									}
+									#endregion
+									createListInput.Query = listQuery;
+									#endregion
+
+									#region << Sort >>
+									createListInput.Sorts = new List<InputRecordListSort>();
+									listSort = new InputRecordListSort();
+									listSort.FieldName = @"{""name"":""url_sort"", ""option"": ""sortBy"", ""default"": ""created_on"", ""settings"":{""order"":""sortOrder""}}";
+									listSort.SortType = "descending";
+									createListInput.Sorts.Add(listSort);
+									#endregion
+									{
+										var response = entMan.CreateRecordList(BUG_ENTITY_ID, createListInput);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Updated List: my_tickets" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
+								#region << area add subscription: Project Workplace -> My bugs >>
+								{
+									var updatedAreaId = PROJECT_WORKPLACE_AREA_ID;
+									var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, BUG_ENTITY_NAME, "general", "create", "my_bugs");
+									if (!updateAreaResult.Success)
+									{
+										throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
+									}
+								}
+								#endregion
+
+								#region << List name: admin >>
+								{
+									var createListEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
+									var createListInput = new InputRecordList();
+									var listField = new InputRecordListFieldItem();
+									var listFieldFromRelation = new InputRecordListRelationFieldItem();
+									var listSort = new InputRecordListSort();
+									var listQuery = new InputRecordListQuery();
+
+									#region << details >>
+									createListInput.Id = new Guid("dd4eb5d6-0ada-4151-90af-675e2cc831e5");
+									createListInput.Type = "hidden";
+									createListInput.Name = "admin";
+									createListInput.Label = "All Bugs";
+									createListInput.Weight = 3;
+									createListInput.Default = false;
+									createListInput.System = true;
+									createListInput.CssClass = "bug-list";
+									createListInput.IconName = "bug";
+									createListInput.VisibleColumnsCount = 7;
+									createListInput.ColumnWidthsCSV = "auto,30px,120px,120px,120px,120px";
+									createListInput.PageSize = 10;
+									createListInput.DynamicHtmlTemplate = null;
+									createListInput.DataSourceUrl = null;
+									createListInput.ServiceCode = null;
+									#endregion
+
+									#region << action items >>
+									createListInput.ActionItems = new List<ActionItem>();
+									var actionItem = new ActionItem();
+									{
+										actionItem = new ActionItem();
+										actionItem.Name = "wv_record_details";
+										actionItem.Menu = "record-row";
+										actionItem.Weight = 1;
+										actionItem.Template = "" +
+								@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}"">
+					<i class=""fa fa-fw fa-eye""></i>
+					</a>";
+										createListInput.ActionItems.Add(actionItem);
+									}
+									{
+										actionItem = new ActionItem();
+										actionItem.Name = "wv_create_record";
+										actionItem.Menu = "page-title";
+										actionItem.Weight = 1;
+										actionItem.Template = "" +
+								@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}"">
+									<i class=""fa fa-fw fa-plus""></i> Add New
+								</a>";
+										createListInput.ActionItems.Add(actionItem);
+									}
+									#endregion
+
+									#region << Columns >>
+									createListInput.Columns = new List<InputRecordListItemBase>();
+
+									#region << subject >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "subject").Id;
+										listField.FieldName = "subject";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << owner - image >>
+									{
+										var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+										listFieldFromRelation = new InputRecordListRelationFieldItem();
+										listFieldFromRelation.EntityId = targetEntity.Id;
+										listFieldFromRelation.EntityName = targetEntity.Name;
+										listFieldFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "image").Id;
+										listFieldFromRelation.FieldName = "image";
+										listFieldFromRelation.FieldLabel = "Owner";
+										listFieldFromRelation.RelationId = new Guid("cddc10b6-30ff-4a86-96e4-645b3ea59fd9");
+										listFieldFromRelation.RelationName = "user_1_n_bug_owner";
+										listFieldFromRelation.Type = "fieldFromRelation";
+										createListInput.Columns.Add(listFieldFromRelation);
+									}
+									#endregion
+
+									#region << created_on >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "created_on").Id;
+										listField.FieldName = "created_on";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << status >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "status").Id;
+										listField.FieldName = "status";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#region << priority >>
+									{
+										listField = new InputRecordListFieldItem();
+										listField.EntityId = createListEntity.Id;
+										listField.EntityName = createListEntity.Name;
+										listField.FieldId = createListEntity.Fields.Single(x => x.Name == "priority").Id;
+										listField.FieldName = "priority";
+										listField.Type = "field";
+										createListInput.Columns.Add(listField);
+									}
+									#endregion
+
+									#endregion
+
+									#region << relation options >>
+									createListInput.RelationOptions = new List<EntityRelationOptionsItem>();
+									#endregion
+
+									#region << Sort >>
+									createListInput.Sorts = new List<InputRecordListSort>();
+									listSort = new InputRecordListSort();
+									listSort.FieldName = @"{""name"":""url_sort"", ""option"": ""sortBy"", ""default"": ""created_on"", ""settings"":{""order"":""sortOrder""}}";
+									listSort.SortType = "descending";
+									createListInput.Sorts.Add(listSort);
+									#endregion
+									{
+										var response = entMan.CreateRecordList(BUG_ENTITY_ID, createListInput);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Updated List: my_tickets" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
+								#region << area add subscription: Project Admin -> Bugs >>
+								{
+									var updatedAreaId = PROJECT_ADMIN_AREA_ID;
+									var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, BUG_ENTITY_NAME, "general", "create", "admin");
+									if (!updateAreaResult.Success)
+									{
+										throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
 									}
 								}
 								#endregion
@@ -4831,7 +5496,7 @@ namespace WebVella.ERP.Project
 							}
 							#endregion
 
-							#region << area add subscription: Project Workplace -> Project >>
+							#region << area add subscription: URL Dashboard -> Project >>
 							{
 								var updatedAreaId = PROJECT_WORKPLACE_AREA_ID;
 								var updateAreaResult = Helpers.UpsertUrlAsAreaSubscription(entMan, recMan, updatedAreaId, "/#/areas/projects/wv_project/dashboard", "My Dashboard", 1, "tachometer");
@@ -4841,7 +5506,10 @@ namespace WebVella.ERP.Project
 								}
 							}
 							#endregion
-
+							}
+							catch(Exception ex) {
+								var exception = ex;
+							}
 
 							if (createSampleRecords)
 							{

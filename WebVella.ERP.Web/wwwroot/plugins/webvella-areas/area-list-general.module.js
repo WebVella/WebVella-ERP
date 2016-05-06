@@ -607,9 +607,21 @@
 
 		//#region << Render >>
 		ngCtrl.renderFieldValue = webvellaCoreService.renderFieldValue;
-		ngCtrl.getAutoIncrementPrefix = function (column) {
+		ngCtrl.getAutoIncrementString = function (column) {
+			var returnObject = {};
+			returnObject.prefix = null;
+			returnObject.suffix = null;
 			var keyIndex = column.meta.displayFormat.indexOf('{0}');
-			return column.meta.displayFormat.slice(0, keyIndex);
+			if(keyIndex == 0){
+				return null;
+			}
+			else {
+				returnObject.prefix = column.meta.displayFormat.slice(0, keyIndex);
+				if(keyIndex + 3 < column.meta.displayFormat.length){
+					returnObject.suffix = column.meta.displayFormat.slice(keyIndex + 3, column.meta.displayFormat.length);
+				}
+				return returnObject;
+			}
 		}
 
 		//#endregion
