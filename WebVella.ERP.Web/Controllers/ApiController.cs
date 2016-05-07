@@ -815,7 +815,9 @@ namespace WebVella.ERP.Web.Controllers
 			var code = list.Object.ServiceCode;
 			if (string.IsNullOrWhiteSpace(code) || defaultScript)
 				return File("/plugins/webvella-core/providers/list_default_service_script.js", "text/javascript");
-
+			else if(code.StartsWith("/plugins/") || code.StartsWith("http://") || code.StartsWith("https://")) {
+				return File(code, "text/javascript");
+			}
 			byte[] bytes = System.Text.Encoding.UTF8.GetBytes(code);
 			return File(bytes, "text/javascript" );
 		}
@@ -1088,7 +1090,9 @@ namespace WebVella.ERP.Web.Controllers
 			var code = view.Object.ServiceCode;
 			if (string.IsNullOrWhiteSpace(code) || defaultScript)
 				return File("/plugins/webvella-core/providers/view_default_service_script.js", "text/javascript");
-
+			else if(code.StartsWith("/plugins/") || code.StartsWith("http://") || code.StartsWith("https://")) {
+				return File(code, "text/javascript");
+			}
 			byte[] bytes = System.Text.Encoding.UTF8.GetBytes(code);
 			return File(bytes, "text/javascript");
 		}

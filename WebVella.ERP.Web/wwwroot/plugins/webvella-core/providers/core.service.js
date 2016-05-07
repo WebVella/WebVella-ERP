@@ -1,5 +1,4 @@
-﻿/// <reference path="../../webvella-admin/entity-relations.module.js" />
-/* core.service.js */
+﻿/* core.service.js */
 
 /**
 * @desc Javascript API core service

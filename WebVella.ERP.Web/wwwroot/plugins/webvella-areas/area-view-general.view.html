@@ -21,7 +21,7 @@
 					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-default btn-outline"><i class="fa fa-fw fa-caret-down"></i></a>
 					<ul class="dropdown-menu" uib-dropdown-menu>
 						<li ng-repeat="view in ngCtrl.generalViews track by $index">
-							<a href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/{{ngCtrl.stateParams.recordId}}/{{::view.name}}/*/*">
+							<a href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/view-general/sb/{{::view.name}}/{{ngCtrl.stateParams.recordId}}">
 								<i class="fa fa-fw fa-{{view.iconName}}"></i> {{::view.label}}
 							</a>
 						</li>

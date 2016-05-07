@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.WebUtilities;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
+using WebVella.ERP.Database;
 using WebVella.ERP.Web.Security;
 
 namespace WebVella.ERP.Project
@@ -313,5 +315,135 @@ namespace WebVella.ERP.Project
 
 			return Json(response);
 		}
+
+		[AcceptVerbs(new[] { "POST" }, Route = "/plugins/webvella-projects/api/task")]
+		public IActionResult CreateTask([FromBody]JObject submitObj)
+		{
+			var response = new ResponseModel();
+			var task = new EntityRecord();
+			task["id"] = Guid.NewGuid();
+			#region << ConvertObject >>
+
+			try
+			{
+				foreach (var prop in submitObj.Properties())
+				{
+					switch (prop.Name.ToLower())
+					{
+						case "subject":
+							task["subject"] = (string)prop.Value;
+							break;
+						case "description":
+							task["description"] = (string)prop.Value;
+							break;
+						case "$project_1_n_task.id":
+							task["project_id"] = (Guid)prop.Value;
+							break;
+						case "start_date":
+							task["start_date"] = ((DateTime)prop.Value).ToUniversalTime();
+							break;
+						case "end_date":
+							task["end_date"] = ((DateTime)prop.Value).ToUniversalTime();
+							break;
+						case "priority":
+							task["priority"] = (string)prop.Value;
+							break;
+						case "status":
+							task["status"] = (string)prop.Value;
+							break;
+						case "owner_id":
+							//will be init in the below
+							break;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = "Validation error : " + ex.Message;
+				response.Object = null;
+			}
+			#endregion
+
+			#region << Get project owner and set as ticket owner >>
+			EntityRecord projectObject = null;
+			{
+				var filterObj = EntityQuery.QueryEQ("id", (Guid)task["project_id"]);
+				var query = new EntityQuery("wv_project", "*", filterObj, null, null, null);
+				var result = recMan.Find(query);
+				if (!result.Success)
+				{
+					response.Success = false;
+					response.Timestamp = DateTime.UtcNow;
+					response.Message = "Error getting the project: " + result.Message;
+					response.Object = null;
+				}
+				else if (result.Object == null || result.Object.Data == null || !result.Object.Data.Any())
+				{
+					response.Success = false;
+					response.Timestamp = DateTime.UtcNow;
+					response.Message = "Project not found";
+					response.Object = null;
+				}
+				projectObject = result.Object.Data[0];
+				task["owner_id"] = (Guid)result.Object.Data[0]["owner_id"];
+			}
+			#endregion
+
+			//Create transaction
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				try
+				{
+					connection.BeginTransaction();
+					//Update project tasks counters
+					{
+						var patchObject = new EntityRecord();
+						patchObject["id"] = (Guid)projectObject["id"];
+						switch ((string)task["status"])
+						{
+							case "not started":
+								patchObject["x_tasks_not_started"] = (decimal)projectObject["x_tasks_not_started"] + 1;
+								break;
+							case "in progress":
+								patchObject["x_tasks_in_progress"] = (decimal)projectObject["x_tasks_in_progress"] + 1;
+								break;
+							case "completed":
+								patchObject["x_tasks_completed"] = (decimal)projectObject["x_tasks_completed"] + 1;
+								break;
+						}
+						var updateResponse = recMan.UpdateRecord("wv_project",patchObject);
+						if(!updateResponse.Success) {
+							throw new Exception(updateResponse.Message);
+						}
+					}
+					//Create task
+					{
+						var createResponse = recMan.CreateRecord("wv_task",task);
+						if(!createResponse.Success) {
+							throw new Exception(createResponse.Message);
+						}
+					}
+					connection.CommitTransaction();
+				}
+				catch (Exception ex)
+				{
+					connection.RollbackTransaction();
+					response.Success = false;
+					response.Timestamp = DateTime.UtcNow;
+					response.Message = "Error saving the task: " + ex.Message;
+					response.Object = null;
+				}
+
+			}
+			response.Success = true;
+			response.Timestamp = DateTime.UtcNow;
+			response.Message = "My projects successfully read";
+			response.Object = null;
+
+			return Json(response);
+		}
+
 	}
 }

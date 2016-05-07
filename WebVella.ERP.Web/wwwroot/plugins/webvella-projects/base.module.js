@@ -10,6 +10,7 @@
 	angular
         .module('webvellaProjects', ['ui.router'])
         .config(config)
+		.run(run)
         .controller('WebVellaProjectsBaseController', controller);
 
 	//#region << Configuration >>
@@ -36,6 +37,12 @@
 			}
 		});
 	};
+	//#endregion
+
+	//#region << Run >>
+ 	run.$inject = ['$log', '$rootScope', 'webvellaCoreService', '$translate'];
+  
+	function run($log, $rootScope, webvellaCoreService, $translate) {}
 	//#endregion
 
 	//#region << Resolve Function >>

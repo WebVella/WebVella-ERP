@@ -1063,12 +1063,14 @@ TREE SELECT
 	#endregion	
 	
 	#region << query >>
-	listQuery = new InputRecordListQuery();
-	listQuery.FieldName = "field_name";
-	listQuery.FieldValue = "00000000-0000-0000-0000-000000000000";
-	listQuery.QueryType = "EQ"; //"OR",EQ,NOT,LT,LTE,GT,GTE,CONTAINS,NOTCONTAINS,STARTSWITH,NOTSTARTSWITH
-	listQuery.SubQueries = new List<InputRecordListQuery>();
-	createListInput.Query = listQuery;
+	createListInput.Query = new InputRecordListQuery();
+	//Main query rule
+	createListInput.Query.FieldName = null;
+	createListInput.Query.FieldValue = null;
+	createListInput.Query.QueryType = "AND";
+	createListInput.Query.SubQueries = new List<InputRecordListQuery>();
+	
+	//Add sections here
 	#endregion
 
 	#region << Sort >>
@@ -1133,12 +1135,6 @@ TREE SELECT
 	//Query
 	#region << query descr >>
 	{
-		//listQuery = new InputRecordListQuery();
-		//listQuery.FieldName = "id";
-		//listQuery.FieldValue = "00000000-0000-0000-0000-000000000000";
-		//listQuery.QueryType = "AND"; //"OR",EQ,NOT,LT,LTE,GT,GTE,CONTAINS,NOTCONTAINS,STARTSWITH,NOTSTARTSWITH
-		//listQuery.SubQueries = new List<InputRecordListQuery>();
-		//updateListInput.Query = listQuery;
 	}
 	#endregion	
 	
@@ -1146,10 +1142,7 @@ TREE SELECT
 	//Sort
 	#region << Sort >>
 	{
-		//listSort = new InputRecordListSort();
-		//listSort.FieldName = "created_on";
-		//listSort.SortType = "descending";
-		//updateListInput.Sorts.Add(listSort);
+
 	}
 	#endregion
 	{

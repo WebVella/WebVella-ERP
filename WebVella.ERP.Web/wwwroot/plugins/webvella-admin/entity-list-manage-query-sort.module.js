@@ -605,7 +605,12 @@
 				query.subQueries.push(subquery);
 			}
 			else {
-				ngCtrl.list.query = subquery;
+				ngCtrl.list.query = {};
+				ngCtrl.list.query.queryType = "AND";
+				ngCtrl.list.query.fieldName = null;
+				ngCtrl.list.query.fieldValue = null;
+				ngCtrl.list.query.subQueries = [];
+				ngCtrl.list.query.subQueries.push(subquery);
 			}
 			ngCtrl.updateQuery();
 		}

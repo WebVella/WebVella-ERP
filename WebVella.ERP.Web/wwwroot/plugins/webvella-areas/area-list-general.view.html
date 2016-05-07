@@ -25,7 +25,7 @@
 						<li class="ng-hide"><a href="javascript:void(0)"><span class="go-grey">This is your default list</span></a></li>
 						<li class="divider"></li>-->
 						<li ng-repeat="list in ngCtrl.generalLists track by $index">
-							<a href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/{{::list.name}}/1">
+							<a href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/list-general/{{::list.name}}/1">
 								<i class="fa fa-fw fa-{{list.iconName}}"></i> {{::list.label}}
 							</a>
 						</li>
