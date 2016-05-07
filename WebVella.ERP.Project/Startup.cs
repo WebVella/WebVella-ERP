@@ -3136,6 +3136,51 @@ namespace WebVella.ERP.Project
 										createListInput.Query.SubQueries.Add(listQuery);
 										#endregion
 
+										#region << Section 2 >>
+										listQuery = new InputRecordListQuery();
+										listQuery.FieldName = null;
+										listQuery.FieldValue = null;
+										listQuery.QueryType = "AND";
+										listQuery.SubQueries = new List<InputRecordListQuery>();
+
+										#region << subject >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "subject";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""subject"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										#region << status >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "status";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""status"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+
+										#region << priority >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "priority";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""priority"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										createListInput.Query.SubQueries.Add(listQuery);
+										#endregion
+
+
 										#endregion
 
 										#region << Sort >>
@@ -3322,6 +3367,50 @@ namespace WebVella.ERP.Project
 										createListInput.Query.SubQueries.Add(listQuery);
 										#endregion
 
+										#region << Section 2 >>
+										listQuery = new InputRecordListQuery();
+										listQuery.FieldName = null;
+										listQuery.FieldValue = null;
+										listQuery.QueryType = "AND";
+										listQuery.SubQueries = new List<InputRecordListQuery>();
+
+										#region << subject >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "subject";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""subject"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										#region << status >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "status";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""status"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+
+										#region << priority >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "priority";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""priority"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										createListInput.Query.SubQueries.Add(listQuery);
+										#endregion
+
 										#endregion
 
 										#region << Sort >>
@@ -3499,6 +3588,50 @@ namespace WebVella.ERP.Project
 											var subQuery = new InputRecordListQuery();
 											subQuery.FieldName = "owner_id";
 											subQuery.FieldValue = @"{""name"":""current_user"", ""option"": ""id"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										createListInput.Query.SubQueries.Add(listQuery);
+										#endregion
+
+										#region << Section 2 >>
+										listQuery = new InputRecordListQuery();
+										listQuery.FieldName = null;
+										listQuery.FieldValue = null;
+										listQuery.QueryType = "AND";
+										listQuery.SubQueries = new List<InputRecordListQuery>();
+
+										#region << subject >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "subject";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""subject"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										#region << status >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "status";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""status"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+
+										#region << priority >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "priority";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""priority"", ""default"": null, ""settings"":{}}";
 											subQuery.QueryType = "EQ";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
 											listQuery.SubQueries.Add(subQuery);

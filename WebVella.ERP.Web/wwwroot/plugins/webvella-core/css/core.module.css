@@ -138,7 +138,9 @@ span.divider {
 			color: #F44336;
 		}
 
-
+.panel-white.query .table.rule {
+	margin:5px 0;
+}
 
 	.panel .panel {
 		margin: 0 0 5px 0;
@@ -154,11 +156,6 @@ span.divider {
 		padding: 10px;
 		background: none;
 	}
-
-.panel .panel .panel-body {
-	padding: 5px;
-}
-
 
 .panel .panel .form-group {
 	/*margin-bottom: 0;*/

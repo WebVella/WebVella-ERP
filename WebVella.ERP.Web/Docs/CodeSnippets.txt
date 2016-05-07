@@ -1067,7 +1067,7 @@ TREE SELECT
 	//Main query rule
 	createListInput.Query.FieldName = null;
 	createListInput.Query.FieldValue = null;
-	createListInput.Query.QueryType = "AND";
+	createListInput.Query.QueryType = "AND"; //AND,OR,EQ,NOT,LT,LTE,GT,GTE,CONTAINS,STARTSWITH
 	createListInput.Query.SubQueries = new List<InputRecordListQuery>();
 	
 	//Add sections here

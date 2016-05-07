@@ -317,11 +317,15 @@ namespace WebVella.ERP.Project
 		}
 
 		[AcceptVerbs(new[] { "POST" }, Route = "/plugins/webvella-projects/api/task")]
-		public IActionResult CreateTask([FromBody]JObject submitObj)
+		public IActionResult CreateTask([FromBody]JObject submitObj, Guid? projectId = null)
 		{
 			var response = new ResponseModel();
 			var task = new EntityRecord();
 			task["id"] = Guid.NewGuid();
+			if (projectId != null)
+			{
+				task["project_id"] = projectId;
+			}
 			#region << ConvertObject >>
 
 			try
@@ -413,15 +417,17 @@ namespace WebVella.ERP.Project
 								patchObject["x_tasks_completed"] = (decimal)projectObject["x_tasks_completed"] + 1;
 								break;
 						}
-						var updateResponse = recMan.UpdateRecord("wv_project",patchObject);
-						if(!updateResponse.Success) {
+						var updateResponse = recMan.UpdateRecord("wv_project", patchObject);
+						if (!updateResponse.Success)
+						{
 							throw new Exception(updateResponse.Message);
 						}
 					}
 					//Create task
 					{
-						var createResponse = recMan.CreateRecord("wv_task",task);
-						if(!createResponse.Success) {
+						var createResponse = recMan.CreateRecord("wv_task", task);
+						if (!createResponse.Success)
+						{
 							throw new Exception(createResponse.Message);
 						}
 					}
