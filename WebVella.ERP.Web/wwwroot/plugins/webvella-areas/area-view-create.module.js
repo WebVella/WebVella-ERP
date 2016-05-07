@@ -768,6 +768,7 @@
 		var resolveLookupRecords = function (item, relationType, dataKind) {
 			// Initialize
 			var defer = $q.defer();
+			var defaultLookupList = null;
 			ngCtrl.modalSelectedItem = fastCopy(item);
 			ngCtrl.modalRelationType = fastCopy(relationType);
 			ngCtrl.modalDataKind = fastCopy(dataKind);
@@ -781,12 +782,16 @@
 				defer.reject();
 			}
 			function getListRecordsSuccessCallback(response) {
-				defer.resolve(response); //Submitting the whole response to manage the error states
+				var responseObj = {};
+				responseObj.success = true;
+				responseObj.object = {};
+				responseObj.object.meta = defaultLookupList;
+				responseObj.object.data = response.object;
+				defer.resolve(responseObj); //Submitting the whole response to manage the error states
 			}
 
 			function getEntityMetaSuccessCallback(response) {
 				var entityMeta = response.object;
-				var defaultLookupList = null;
 				var selectedLookupListName = ngCtrl.modalSelectedItem.fieldLookupList;
 				var selectedLookupList = null;
 				//Find the default lookup field if none return null.

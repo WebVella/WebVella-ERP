@@ -903,8 +903,8 @@ TREE SELECT
 	#region << name >>
 	{
 	viewItem = new InputRecordViewFieldItem();
-	viewItem.EntityId = ENTITY_ID;
-	viewItem.EntityName = ENTITY_NAME;
+	viewItem.EntityId = updateViewEntity.Id;
+	viewItem.EntityName = updateViewEntity.Name;
 	viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "name").Id;
 	viewItem.FieldName = "name";
 	viewItem.Type = "field";

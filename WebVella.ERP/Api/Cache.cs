@@ -54,8 +54,8 @@ namespace WebVella.ERP.Api
 		public static List<Entity> GetEntities()
 		{
 			var entities = GetObjectFromCache(KEY_ENTITIES) as List<Entity>;
-			//if (entities != null)
-			//	entities = DeepClone<List<Entity>>(entities);
+			if (entities != null)
+				entities = DeepClone<List<Entity>>(entities);
 
 			return entities;
 		}
