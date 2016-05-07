@@ -116,17 +116,15 @@
 			var itemsCount = 0;
 			var sectionsCount = 0;
 			for (var i = 0; i < view.regions.length; i++) {
-				if (view.regions[i].name == "default") {
-					sectionsCount = view.regions[i].sections.length;
-					var sections = view.regions[i].sections;
-					for (var j = 0; j < sections.length; j++) {
-						var rows = sections[j].rows;
-						for (var m = 0; m < rows.length; m++) {
-							var columns = rows[m].columns;
-							for (var k = 0; k < columns.length; k++) {
-								var items = columns[k].items;
-								itemsCount += items.length;
-							}
+				sectionsCount += view.regions[i].sections.length;
+				var sections = view.regions[i].sections;
+				for (var j = 0; j < sections.length; j++) {
+					var rows = sections[j].rows;
+					for (var m = 0; m < rows.length; m++) {
+						var columns = rows[m].columns;
+						for (var k = 0; k < columns.length; k++) {
+							var items = columns[k].items;
+							itemsCount += items.length;
 						}
 					}
 				}

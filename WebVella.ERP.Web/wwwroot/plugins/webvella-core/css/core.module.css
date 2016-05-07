@@ -144,7 +144,7 @@ span.divider {
 
 
 .panel .panel .form-group {
-	margin-bottom: 0;
+	/*margin-bottom: 0;*/
 }
 
 	.panel .panel .form-group ul {
@@ -2282,7 +2282,7 @@ form .error,
 		}
 
 .recursive-view-wrapper .form .control-label {
-	color: #999;
+	color: #333;
 }
 
 /*#endregion*/
@@ -2814,7 +2814,7 @@ table .btn-xs.btn-link {
 		border-right:none;
 	}
 
-		.tabbable.spilled ul a .fa {
+		.tabbable.spilled ul.nav-tabs a:not(.back) .fa {
 			margin-right:3px;
 		}
 

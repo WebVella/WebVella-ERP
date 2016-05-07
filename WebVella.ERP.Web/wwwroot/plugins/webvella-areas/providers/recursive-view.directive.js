@@ -112,7 +112,7 @@
 
 		$scope.selectedRegion = null;
 		for (var i = 0; i < $scope.viewMeta.meta.regions.length; i++) {
-			if ($scope.viewMeta.meta.regions[i].name === "default") {
+			if ($scope.viewMeta.meta.regions[i].name === "header") {
 				$scope.selectedRegion = $scope.viewMeta.meta.regions[i];
 			}
 		}
@@ -314,7 +314,7 @@
 		var resolveManagedRecordQuickCreateView = function (managedRecord) {
 			// Initialize
 			var defer = $q.defer();
-
+			var defaultQuickCreateView = null;
 			// Process
 			function errorCallback(response) {
 				ngToast.create({
@@ -325,7 +325,10 @@
 				defer.reject();
 			}
 			function getViewRecordSuccessCallback(response) {
-				defer.resolve(response.object); //Submitting the whole response to manage the error states
+				var responseObj = {};
+				responseObj.meta = defaultQuickCreateView;
+				responseObj.data = response.object;
+				defer.resolve(responseObj); //Submitting the whole response to manage the error states
 			}
 
 			function getViewMetaSuccessCallback(response) {
@@ -337,7 +340,6 @@
 
 			function getEntityMetaSuccessCallback(response) {
 				var entityMeta = response.object;
-				var defaultQuickCreateView = null;
 				var selectedQuickCreateViewName = $scope.viewMeta.fieldManageView;
 				var selectedQuickCreateView = null;
 				//Find the default lookup field if none return null.
@@ -513,7 +515,7 @@
 		popupCtrl.viewMeta = fastCopy(resolvedManagedRecordQuickCreateView.meta);
 		popupCtrl.contentRegion = {};
 		for (var j = 0; j < popupCtrl.viewMeta.regions.length; j++) {
-			if (popupCtrl.viewMeta.regions[j].name === "default") {
+			if (popupCtrl.viewMeta.regions[j].name === "header") {
 				popupCtrl.contentRegion = popupCtrl.viewMeta.regions[j];
 			}
 		}

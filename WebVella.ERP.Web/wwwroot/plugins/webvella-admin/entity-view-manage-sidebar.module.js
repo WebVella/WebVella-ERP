@@ -364,7 +364,7 @@
 						});
 					});
 					for (var i = 0; i < response.object.regions.length; i++) {
-						if (response.object.regions[i].name === "default") {
+						if (response.object.regions[i].name === "header") {
 							ngCtrl.viewContentRegion = response.object.regions[i];
 						}
 					}
