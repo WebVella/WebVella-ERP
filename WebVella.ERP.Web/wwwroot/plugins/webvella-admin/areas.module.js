@@ -597,9 +597,7 @@
 
 	//// Modal Controllers
 	DeleteAreaModalController.$inject = ['parentpopupCtrl', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
-
-
-	function DeleteAreaModalController(parentpopupCtrl, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state) {
+ 	function DeleteAreaModalController(parentpopupCtrl, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state) {
 
 		var popupCtrl = this;
 		popupCtrl.parentData = parentpopupCtrl;

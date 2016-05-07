@@ -658,6 +658,8 @@
 		//#endregion
 
 		//#region << Render >>
+		ngCtrl.headerRegion = [];
+		ngCtrl.activeRegion = [];
 		ngCtrl.activeTabName = ngCtrl.stateParams.regionName;
 		ngCtrl.view.meta.regions.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
 		if (ngCtrl.activeTabName == "header") {
@@ -671,12 +673,17 @@
 			else {
 				ngCtrl.activeTabName = null;
 			}
-
 		}
 		ngCtrl.renderTabBar = false;
 		ngCtrl.view.meta.regions.forEach(function (region) {
 			if (region.render && region.name != "header") {
 				ngCtrl.renderTabBar = true;
+			}
+			if(region.render && region.name == "header"){
+				ngCtrl.headerRegion.push(region);
+			}
+			else if(region.name == ngCtrl.activeTabName){
+				ngCtrl.activeRegion.push(region);
 			}
 		});
 

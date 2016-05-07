@@ -37,7 +37,7 @@
 	<div id="page-text" class="record-details" ng-if='!ngCtrl.view.meta.dynamicHtmlTemplate'>
 		<div class="view-record" ng-repeat="viewData in ngCtrl.view.data">
 
-			<div class="region" ng-repeat="region in ngCtrl.view.meta.regions | filter: {render:true,name:'header'} track by region.name">
+			<div class="region" ng-repeat="region in ngCtrl.headerRegion track by region.name">
 				<div ng-include="'regionTemplate.html'"></div>
 			</div>
 			<nav class="navbar navbar-default navbar-erp" ng-if="ngCtrl.renderTabBar">
@@ -50,7 +50,7 @@
 					</ul>
 				</div>
 			</nav>
-			<div class="region" ng-repeat="region in ngCtrl.view.meta.regions | filter: {render:true,name: ngCtrl.activeTabName} track by region.name">
+			<div class="region" ng-repeat="region in ngCtrl.activeRegion track by region.name">
 				<div ng-include="'regionTemplate.html'"></div>
 			</div>
 			<div class="page-bottom-actions" dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageBottomActions track by actionItem.name"></div>
