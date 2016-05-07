@@ -1152,7 +1152,7 @@ body.hidden-sidebar #page-topnav {
 
 #content {
 	margin-left: 180px;
-	background-color: #f3f5f6;
+	background-color: #fff;
 }
 
 .no-sidebar #content {
@@ -4114,10 +4114,6 @@ table.editable td {
 		text-transform: none;
 		margin-bottom: 0;
 	}
-
-		.record-details .panel-heading:hover {
-			cursor: pointer;
-		}
 
 		.record-details .panel-heading a {
 			color: #999;

@@ -2796,6 +2796,28 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
+									#region << milestone_1_n_task Relation >>
+									{
+										var originEntity = entMan.ReadEntity(MILESTONE_ENTITY_ID).Object;
+										var targetEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+										EntityRelation oneToNRelation = new EntityRelation();
+										oneToNRelation.Id = new Guid("3b600a1c-066e-42e2-a678-0de4f0f8a9e1");
+										oneToNRelation.Name = "milestone_1_n_task";
+										oneToNRelation.Label = "milestone_1_n_task";
+										oneToNRelation.System = true;
+										oneToNRelation.RelationType = EntityRelationType.OneToMany;
+										oneToNRelation.OriginEntityId = originEntity.Id;
+										oneToNRelation.OriginFieldId = originEntity.Fields.Single(x => x.Name == "id").Id;
+										oneToNRelation.TargetEntityId = targetEntity.Id;
+										oneToNRelation.TargetFieldId = targetEntity.Fields.Single(x => x.Name == "milestone_id").Id;
+										{
+											var result = relMan.Create(oneToNRelation);
+											if (!result.Success)
+												throw new Exception("CREATE milestone_1_n_task RELATION:" + result.Message);
+										}
+									}
+									#endregion
+
 									#region << update general list >>
 									{
 										var updateListEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
@@ -2976,7 +2998,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = "task-list";
 										createListInput.IconName = "tasks";
 										createListInput.VisibleColumnsCount = 7;
-										createListInput.ColumnWidthsCSV = "auto,30px,120px,120px,120px,120px";
+										createListInput.ColumnWidthsCSV = "80px,auto,30px,120px,120px,120px,120px";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = null;
@@ -3013,6 +3035,18 @@ namespace WebVella.ERP.Project
 
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
+
+										#region << number >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "number").Id;
+											listField.FieldName = "number";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
 
 										#region << subject >>
 										{
@@ -3142,6 +3176,17 @@ namespace WebVella.ERP.Project
 										listQuery.FieldValue = null;
 										listQuery.QueryType = "AND";
 										listQuery.SubQueries = new List<InputRecordListQuery>();
+
+										#region << number >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "number";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""number"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
 
 										#region << subject >>
 										{
@@ -3218,7 +3263,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = "task-list";
 										createListInput.IconName = "tasks";
 										createListInput.VisibleColumnsCount = 7;
-										createListInput.ColumnWidthsCSV = "auto,30px,120px,120px,120px,120px";
+										createListInput.ColumnWidthsCSV = "80px,auto,30px,120px,120px,120px,120px";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = null;
@@ -3255,6 +3300,18 @@ namespace WebVella.ERP.Project
 
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
+
+										#region << number >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "number").Id;
+											listField.FieldName = "number";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
 
 										#region << subject >>
 										{
@@ -3374,6 +3431,17 @@ namespace WebVella.ERP.Project
 										listQuery.QueryType = "AND";
 										listQuery.SubQueries = new List<InputRecordListQuery>();
 
+										#region << number >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "number";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""number"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
 										#region << subject >>
 										{
 											var subQuery = new InputRecordListQuery();
@@ -3448,7 +3516,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = "task-list";
 										createListInput.IconName = "tasks";
 										createListInput.VisibleColumnsCount = 7;
-										createListInput.ColumnWidthsCSV = "auto,30px,120px,120px,120px,120px";
+										createListInput.ColumnWidthsCSV = "80px,auto,30px,120px,120px,120px,120px";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = null;
@@ -3485,6 +3553,18 @@ namespace WebVella.ERP.Project
 
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
+
+										#region << number >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "number").Id;
+											listField.FieldName = "number";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
 
 										#region << subject >>
 										{
@@ -3604,6 +3684,17 @@ namespace WebVella.ERP.Project
 										listQuery.QueryType = "AND";
 										listQuery.SubQueries = new List<InputRecordListQuery>();
 
+										#region << number >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "number";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""number"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
 										#region << subject >>
 										{
 											var subQuery = new InputRecordListQuery();
@@ -3657,7 +3748,6 @@ namespace WebVella.ERP.Project
 										}
 									}
 									#endregion
-
 
 									#region << area add subscription: Project Workplace -> My tasks >>
 									{
