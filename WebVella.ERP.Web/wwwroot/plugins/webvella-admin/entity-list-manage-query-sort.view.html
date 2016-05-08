@@ -63,8 +63,8 @@
 					</div>
 				</div>
 			</div>
-			<div class="panel-body">
-				<table class="table table-noborder table-vertical-align-middle rule" style="border:1px solid #ddd;"  ng-repeat="sortRule in ngCtrl.list.sorts">
+			<div class="panel-body" style="background:#fff">
+				<table class="table table-noborder table-vertical-align-middle rule" style="border:1px solid #FFE082 !important;"  ng-repeat="sortRule in ngCtrl.list.sorts">
 					<tr>
 						<td style="width:60px"><span ng-if="$index == 0" translate="{{'First'}}"></span><span ng-if="$index != 0" translate="{{'Than'}}"></span></td>
 						<td style="width:30px;">
@@ -105,7 +105,7 @@
 </div>
 
 <script type="text/ng-template" id="queryRule.html">
-	<table class="table table-noborder table-vertical-align-middle rule" style="border:1px solid #ddd">
+	<table class="table table-noborder table-vertical-align-middle rule" style="border:1px solid #FFE082 !important">
 		<tr>
 			<td style="width:30px;">
 				<a class="btn btn-default btn-outline" ng-click="ngCtrl.manageQueryDataLink()"><i class="fa fa-fw fa-database"></i></a>
@@ -150,7 +150,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="panel-body">
+		<div class="panel-body" style="background:#fff">
 			<query-item ng-repeat="queryItem in currentQuery.subQueries track by $index"
 						current-query="queryItem" parent-query="currentQuery"
 						root-query="ngCtrl.list.query" page-scope="ngCtrl"

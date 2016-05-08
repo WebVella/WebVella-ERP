@@ -43,11 +43,15 @@
 				</ul>
 			</div>
 		</nav>
-		<div class="form-horizontal">
-			<div class="form-group">
-				<label class="control-label col-sm-1">Record Id</label>
-				<div class="col-sm-5">
-					<input class="form-control" ng-model="ngCtrl.sampleRecordId"/>
+		<div class="form">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label">Record Id</label>
+						<div>
+							<input class="form-control" ng-model="ngCtrl.sampleRecordId" />
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -79,7 +83,7 @@
 				<div ng-if="ngCtrl.view.dataSourceUrl == null" class="alert alert-info">No custom data source url is set for this list. The system will use the default data generated for the list.</div>
 			</div>
 		</div>
-	
+
 	</div>
 </div>
 
