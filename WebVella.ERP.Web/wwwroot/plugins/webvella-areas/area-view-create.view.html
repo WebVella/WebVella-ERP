@@ -93,7 +93,7 @@
 									<!-- 4. Date -->
 									<div ng-switch-when="4">
 										<div class="input-group">
-											<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+											<input type="text" class="form-control" value="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
 												   ng-required="{{item.meta.required}}" datetime-picker="{{item.meta.format || 'dd MMM yyyy'}}" is-open="ngCtrl.calendars[item.meta.name]"
 												   enable-date="true" enable-time="false" ng-click="ngCtrl.openCalendar($event, item.meta.name)" ng-model-options="{allowInvalid:true}">
 											<span class="input-group-btn">
