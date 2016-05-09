@@ -209,7 +209,8 @@ span.divider {
 }
 
 .navbar.navbar-default.navbar-erp {
-	background: #fff;
+	background: #f2f2f2;
+	border-color:#ccc;
 	margin-bottom: 1em;
 	min-height: 40px;
 }

@@ -124,6 +124,34 @@
 		//#endregion
 
 		//#region << Render >>
+
+		//#region << Column widths from CSV >>
+		$scope.columnWidths = [];
+		var columnWidthsArray = [];
+		if ($scope.listMeta.meta.columnWidthsCSV) {
+			columnWidthsArray = $scope.listMeta.meta.columnWidthsCSV.split(',');
+		}
+		var visibleColumns = $scope.listMeta.meta.visibleColumnsCount;
+		if (columnWidthsArray.length > 0) {
+			for (var i = 0; i < visibleColumns; i++) {
+				if (columnWidthsArray.length >= i + 1) {
+					$scope.columnWidths.push(columnWidthsArray[i]);
+				}
+				else {
+					$scope.columnWidths.push("auto");
+				}
+			}
+		}
+		else {
+			//set all to auto
+			for (var i = 0; i < visibleColumns; i++) {
+				$scope.columnWidths.push("auto");
+			}
+		}
+
+		//#endregion
+
+
 		$scope.renderFieldValue = webvellaCoreService.renderFieldValue;
 		
 		$scope.getRelationLabel = function (item) {

@@ -435,7 +435,7 @@
 												<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermissionRelation(item)"
 													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'target',viewData)">
 													<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"></input>
-													<span class="input-group-addon remove-addon ng-hide" ng-show="viewData[item.dataName].length > 0"
+													<span class="input-group-addon remove-addon ng-hide" ng-show="viewData[item.dataName].length > 0 && !item.fieldRequired"
 														  confirmed-click="ngCtrl.removeRelation(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
 													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 												</div>

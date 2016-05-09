@@ -16,7 +16,7 @@
 		<thead>
 			<tr>
 				<th></th>
-				<th class="wv-{{::column.meta.name}}" ng-repeat="column in listMeta.meta.columns | limitTo: listMeta.meta.visibleColumnsCount">{{::column.meta.label}}</th>
+				<th ng-style="{'width': columnWidths[$index]}" class="wv-{{::column.meta.name}}" ng-repeat="column in listMeta.meta.columns | limitTo: listMeta.meta.visibleColumnsCount">{{::column.meta.label}}</th>
 			</tr>
 		</thead>
 		<tbody>
