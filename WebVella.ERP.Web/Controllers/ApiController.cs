@@ -20,6 +20,7 @@ using Microsoft.AspNet.StaticFiles;
 using WebVella.ERP.Utilities;
 using System.Dynamic;
 using WebVella.ERP.Plugins;
+using WebVella.ERP.WebHooks;
 
 
 
@@ -37,13 +38,15 @@ namespace WebVella.ERP.Web.Controllers
 		EntityManager entityManager;
 		EntityRelationManager entityRelationManager;
 		SecurityManager secMan;
+		IWebHookService hooksService;
 
-		public ApiController()
+		public ApiController(IWebHookService hooksService)
 		{
 			recMan = new RecordManager();
 			secMan = new SecurityManager();
 			entityManager = new EntityManager();
 			entityRelationManager = new EntityRelationManager();
+			this.hooksService = hooksService;
 		}
 
 
@@ -1808,6 +1811,9 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult PatchEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
+
+			postObj = hooksService.ProcessFilters(SystemWebHookNames.PatchRecordInput, entityName, postObj);
+
 			//clear authentication cache
 			if (entityName == "user")
 				WebSecurityUtil.RemoveIdentityFromCache(recordId);

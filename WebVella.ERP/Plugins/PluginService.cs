@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Mvc.Infrastructure;
 using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json;
 using System;
@@ -7,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP.Plugins
@@ -39,7 +37,7 @@ namespace WebVella.ERP.Plugins
 				}
 				catch (Exception ex)
 				{
-					throw new Exception("An exception is thrown while parsing plugin manifest file: '" + manifestFilePath +"'", ex);
+					throw new Exception("An exception is thrown while parsing plugin manifest file: '" + manifestFilePath + "'", ex);
 				}
 				plugin.Assemblies = new List<Assembly>();
 
@@ -52,7 +50,11 @@ namespace WebVella.ERP.Plugins
 			}
 
 			plugins = plugins.OrderBy(x => x.LoadPriority).ToList();
+			ExecutePluginStart();
+		}
 
+		private void ExecutePluginStart()
+		{
 			//search and execute Start method for each plugin
 			//if there are multiple types, marked by PluginStartupAttribute, with Start method, they all will be executed
 			foreach (var plugin in plugins)
@@ -86,7 +88,7 @@ namespace WebVella.ERP.Plugins
 		private IEnumerable<Assembly> GetAssembliesInFolder(DirectoryInfo binPath)
 		{
 			List<Assembly> assemblies = new List<Assembly>();
-			var loadContext = PlatformServices.Default.AssemblyLoadContextAccessor.Default; 
+			var loadContext = PlatformServices.Default.AssemblyLoadContextAccessor.Default;
 
 			foreach (var fileSystemInfo in binPath.GetFileSystemInfos("*.dll"))
 			{
@@ -94,7 +96,7 @@ namespace WebVella.ERP.Plugins
 
 				//first try to load assembly from refered libraries instead of plugin 'binaries' folder
 				Assembly assembly = null;
-                foreach ( var lib in PlatformServices.Default.LibraryManager.GetLibraries())
+				foreach (var lib in PlatformServices.Default.LibraryManager.GetLibraries())
 				{
 					var referencedAssemblyName = lib.Assemblies.SingleOrDefault(x => x.FullName == assemblyName.Name);
 					if (referencedAssemblyName != null)
@@ -105,7 +107,7 @@ namespace WebVella.ERP.Plugins
 				}
 
 				//if not found in referenced libraries, load from plugin binaries location
-				if( assembly == null )
+				if (assembly == null)
 					assembly = loadContext.Load(assemblyName);
 
 				assemblies.Add(assembly);

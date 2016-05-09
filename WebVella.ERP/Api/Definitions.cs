@@ -19,7 +19,16 @@ namespace WebVella.ERP.Api
         public static Guid FirstUserId { get { return new Guid("EABD66FD-8DE1-4D79-9674-447EE89921C2"); } }
     }
 
-    public enum RecordsListTypes
+
+	public class SystemWebHookNames
+	{
+		public const string PatchRecordAction = "patch_record";
+		public const string PatchRecordInput = "patch_record_input";
+		public const string PatchRecordValidationErrors = "patch_record_validation_errors";
+		public const string PatchRecordPreSave = "patch_record_pre_save";
+	}
+
+	public enum RecordsListTypes
     {
         SearchPopup = 1,
         List,
