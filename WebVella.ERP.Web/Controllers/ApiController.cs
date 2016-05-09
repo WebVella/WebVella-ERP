@@ -1811,9 +1811,6 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult PatchEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
-
-			postObj = hooksService.ProcessFilters(SystemWebHookNames.PatchRecordInput, entityName, postObj);
-
 			//clear authentication cache
 			if (entityName == "user")
 				WebSecurityUtil.RemoveIdentityFromCache(recordId);
