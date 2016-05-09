@@ -838,6 +838,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(result);
 			}
 
+
 			var entity = entityManager.ReadEntity(entityName).Object;
 			if (entity == null)
 			{
@@ -846,6 +847,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(result);
 			}
 
+			entity = Helpers.DeepClone(entityManager.ReadEntity(entityName).Object);
 			List<object> itemList = new List<object>();
 
 			//itemList.Add(new { type = "html", tag = "HTML string", content = "" });
@@ -873,7 +875,7 @@ namespace WebVella.ERP.Web.Controllers
 					if (treeRelation == null) //skip if missing relation is used // simple protection
 						continue;
 
-					Entity relatedEntity = entityManager.ReadEntity(treeField.RelatedEntityId).Object;
+					Entity relatedEntity = Helpers.DeepClone(entityManager.ReadEntity(treeField.RelatedEntityId).Object);
 					if (relatedEntity == null) //skip if missing related entity // simple protection
 						continue;
 
@@ -942,7 +944,7 @@ namespace WebVella.ERP.Web.Controllers
 			foreach (var relation in entityRelations)
 			{
 				Guid relatedEntityId = relation.OriginEntityId == entity.Id ? relation.TargetEntityId : relation.OriginEntityId;
-				Entity relatedEntity = entityManager.ReadEntity(relatedEntityId).Object;
+				Entity relatedEntity = Helpers.DeepClone(entityManager.ReadEntity(relatedEntityId).Object);
 
 				itemList.Add(new EntityRelationOptionsItem
 				{
