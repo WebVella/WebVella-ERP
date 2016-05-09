@@ -366,16 +366,16 @@
 			for (var i = 0; i < ngCtrl.entityRelations.length; i++) {
 				if (ngCtrl.entityRelations[i].name == relationName) {
 					//set current entity role
-					if (ngCtrl.entity.id == ngCtrl.entityRelations[i].targetEntityId && ngCtrl.entity.id == ngCtrl.entityRelations[i].originEntityId) {
+					if (safeViewNameAndEntity.entityName == ngCtrl.entityRelations[i].targetEntityName && safeViewNameAndEntity.entityName == ngCtrl.entityRelations[i].originEntityName) {
 						ngCtrl.entityRelations[i].currentEntityRole = 3; //both origin and target
 					}
-					else if (ngCtrl.entity.id == ngCtrl.entityRelations[i].targetEntityId && ngCtrl.entity.id != ngCtrl.entityRelations[i].originEntityId) {
+					else if (safeViewNameAndEntity.entityName == ngCtrl.entityRelations[i].targetEntityName && safeViewNameAndEntity.entityName != ngCtrl.entityRelations[i].originEntityName) {
 						ngCtrl.entityRelations[i].currentEntityRole = 2; //target
 					}
-					else if (ngCtrl.entity.id != ngCtrl.entityRelations[i].targetEntityId && ngCtrl.entity.id == ngCtrl.entityRelations[i].originEntityId) {
+					else if (safeViewNameAndEntity.entityName != ngCtrl.entityRelations[i].targetEntityName && safeViewNameAndEntity.entityName == ngCtrl.entityRelations[i].originEntityName) {
 						ngCtrl.entityRelations[i].currentEntityRole = 1; //origin
 					}
-					else if (ngCtrl.entity.id != ngCtrl.entityRelations[i].targetEntityId && ngCtrl.entity.id != ngCtrl.entityRelations[i].originEntityId) {
+					else if (safeViewNameAndEntity.entityName != ngCtrl.entityRelations[i].targetEntityName && safeViewNameAndEntity.entityName != ngCtrl.entityRelations[i].originEntityName) {
 						ngCtrl.entityRelations[i].currentEntityRole = 0; //possible problem
 					}
 					return ngCtrl.entityRelations[i];
@@ -705,9 +705,9 @@
 			}
 		}
 		//Date & DateTime 
-		ngCtrl.getTimeString = function (item) {
-			if (item && item.dataName && ngCtrl.view.data[item.dataName]) {
-				var fieldValue = ngCtrl.view.data[item.dataName];
+		ngCtrl.getTimeString = function (item,data) {
+			if (item && item.dataName && data) {
+				var fieldValue = data;
 				if (!fieldValue) {
 					return "";
 				} else {
@@ -744,7 +744,6 @@
 			toolbarLocation: 'top',
 			toolbar: 'full',
 			toolbar_full: [
-				{ name: 'save', items: ['Save'] },
 				{ name: 'basicstyles', items: ['Bold', 'Italic', 'Strike', 'Underline'] },
 				{ name: 'paragraph', items: ['BulletedList', 'NumberedList', 'Blockquote'] },
 				{ name: 'editing', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
@@ -785,7 +784,7 @@
 			if ($event.keyCode == 27) { // escape key maps to keycode `27`
 				//As the id is dynamic in our case and there is a problem with ckeditor and dynamic id-s we should use ng-attr-id in the html and here to cycle through all instances and find the current bye its container.$.id
 				for (var property in CKEDITOR.instances) {
-					if (CKEDITOR.instances[property].container.$.id == item.meta.name) {
+					if (CKEDITOR.instances[property].container.$.id == 'field_' + item.meta.name) {
 
 						CKEDITOR.instances[property].editable().$.blur();
 						//Find the proper data for the recordId	in the view data array

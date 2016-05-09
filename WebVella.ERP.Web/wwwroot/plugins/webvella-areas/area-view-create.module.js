@@ -944,6 +944,33 @@
 			popupCtrl.warningMessage = resolvedLookupRecords.message;
 		}
 
+		//#region << Column widths from CSV >>
+		popupCtrl.columnWidths = [];
+		var columnWidthsArray = [];
+		if (popupCtrl.relationLookupList.meta.columnWidthsCSV) {
+			columnWidthsArray = popupCtrl.relationLookupList.meta.columnWidthsCSV.split(',');
+		}
+		var visibleColumns = popupCtrl.relationLookupList.meta.visibleColumnsCount;
+		if (columnWidthsArray.length > 0) {
+			for (var i = 0; i < visibleColumns; i++) {
+				if (columnWidthsArray.length >= i + 1) {
+					popupCtrl.columnWidths.push(columnWidthsArray[i]);
+				}
+				else {
+					popupCtrl.columnWidths.push("auto");
+				}
+			}
+		}
+		else {
+			//set all to auto
+			for (var i = 0; i < visibleColumns; i++) {
+				popupCtrl.columnWidths.push("auto");
+			}
+		}
+
+		//#endregion
+
+
 		//#region << Search >>
 		popupCtrl.checkForSearchEnter = function (e) {
 			var code = (e.keyCode ? e.keyCode : e.which);

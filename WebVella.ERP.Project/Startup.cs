@@ -4295,6 +4295,25 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
+										#region << project name >>
+										{
+										var targetEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+										viewItemFromRelation = new InputRecordViewRelationFieldItem();
+										viewItemFromRelation.EntityId = targetEntity.Id;
+										viewItemFromRelation.EntityName = targetEntity.Name;
+										viewItemFromRelation.Type = "fieldFromRelation";
+										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+										viewItemFromRelation.FieldName = "name";
+										viewItemFromRelation.FieldLabel = "Project";
+										viewItemFromRelation.FieldPlaceholder = "";
+										viewItemFromRelation.FieldRequired = true;
+										viewItemFromRelation.FieldLookupList = "lookup";		
+										viewItemFromRelation.RelationId = new Guid("1f860b8c-7fa1-40fa-874f-19c2b5309817");
+										viewItemFromRelation.RelationName = "project_1_n_task";
+										viewColumn.Items.Add(viewItemFromRelation);	
+										}
+										#endregion
+
 										//Save column
 										viewRow.Columns.Add(viewColumn);
 										#endregion
@@ -4304,6 +4323,17 @@ namespace WebVella.ERP.Project
 										viewColumn.GridColCount = 4;
 										viewColumn.Items = new List<InputRecordViewItemBase>();
 
+										#region << number >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "number").Id;
+											viewItem.FieldName = "number";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
 
 										#region << status >>
 										{
@@ -4329,25 +4359,6 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
-										#region << owner >>
-										{
-										var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
-										viewItemFromRelation = new InputRecordViewRelationFieldItem();
-										viewItemFromRelation.EntityId = targetEntity.Id;
-										viewItemFromRelation.EntityName = targetEntity.Name;
-										viewItemFromRelation.Type = "fieldFromRelation";
-										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
-										viewItemFromRelation.FieldName = "username";
-										viewItemFromRelation.FieldLabel = "Owner";
-										viewItemFromRelation.FieldPlaceholder = "";
-										viewItemFromRelation.FieldRequired = true;
-										viewItemFromRelation.FieldLookupList = "lookup";		
-										viewItemFromRelation.RelationId = new Guid("7ce76c81-e604-401e-907f-23de982b930e");
-										viewItemFromRelation.RelationName = "user_1_n_task_owner";
-										viewColumn.Items.Add(viewItemFromRelation);	
-										}
-										#endregion
-
 										#region << milestone >>
 										{
 										var targetEntity = entMan.ReadEntity(MILESTONE_ENTITY_ID).Object;
@@ -4367,21 +4378,21 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
-										#region << project name >>
+										#region << owner >>
 										{
-										var targetEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+										var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
 										viewItemFromRelation = new InputRecordViewRelationFieldItem();
 										viewItemFromRelation.EntityId = targetEntity.Id;
 										viewItemFromRelation.EntityName = targetEntity.Name;
 										viewItemFromRelation.Type = "fieldFromRelation";
-										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
-										viewItemFromRelation.FieldName = "name";
-										viewItemFromRelation.FieldLabel = "Project";
+										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
+										viewItemFromRelation.FieldName = "username";
+										viewItemFromRelation.FieldLabel = "Owner";
 										viewItemFromRelation.FieldPlaceholder = "";
 										viewItemFromRelation.FieldRequired = true;
 										viewItemFromRelation.FieldLookupList = "lookup";		
-										viewItemFromRelation.RelationId = new Guid("1f860b8c-7fa1-40fa-874f-19c2b5309817");
-										viewItemFromRelation.RelationName = "project_1_n_task";
+										viewItemFromRelation.RelationId = new Guid("7ce76c81-e604-401e-907f-23de982b930e");
+										viewItemFromRelation.RelationName = "user_1_n_task_owner";
 										viewColumn.Items.Add(viewItemFromRelation);	
 										}
 										#endregion
@@ -5924,61 +5935,6 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
-									#region << Add attachment general list to task general >>
-
-									{
-										var updateViewEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
-										var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "general");
-										var updateViewInput = new InputRecordView();
-										var viewSection = new InputRecordViewSection();
-										var viewRow = new InputRecordViewRow();
-										var viewColumn = new InputRecordViewColumn();
-										var viewItem = new InputRecordViewFieldItem();
-										var viewItemFromRelation = new InputRecordViewRelationFieldItem();
-										var viewItemListFromRelation = new InputRecordViewRelationListItem();
-										//General view fields
-
-										//Convert recordList to recordListInput
-										updateViewInput = updateView.DynamicMapTo<InputRecordView>();
-
-										#region << Get the header Region >>
-										var headerRegion = new InputRecordViewRegion();
-										foreach (var region in updateViewInput.Regions)
-										{
-											if (region.Name == "header")
-											{
-												headerRegion = region;
-											}
-										}
-										#endregion
-
-
-										#region << attachments general list >>
-										{
-											var relatedEntity = entMan.ReadEntity(ATTACHMENT_ENTITY_ID).Object;
-											var relation = relMan.Read("task_1_n_attachment").Object;
-											viewItemListFromRelation = new InputRecordViewRelationListItem();
-											viewItemListFromRelation.EntityId = relatedEntity.Id;
-											viewItemListFromRelation.EntityName = relatedEntity.Name;
-											viewItemListFromRelation.ListId = relatedEntity.RecordLists.Single(x => x.Name == "general").Id;
-											viewItemListFromRelation.ListName = "general";
-											viewItemListFromRelation.Type = "field";
-											viewItemListFromRelation.RelationId = relation.Id;
-											viewItemListFromRelation.RelationName = relation.Name;
-											viewItemListFromRelation.FieldLabel = "Attachments";
-											headerRegion.Sections[0].Rows[0].Columns[0].Items.Add(viewItemListFromRelation);
-										}
-										#endregion
-
-										{
-											var response = entMan.UpdateRecordView(TASK_ENTITY_ID, updateViewInput);
-											if (!response.Success)
-												throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Updated view: create" + " Message:" + response.Message);
-										}
-									}
-
-									#endregion
-
 								}
 								#endregion
 
@@ -6438,6 +6394,7 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
+
 								}
 								#endregion
 
@@ -6815,6 +6772,108 @@ namespace WebVella.ERP.Project
 										throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
 									}
 								}
+								#endregion
+
+								#region << Add attachment general list to task general >>
+
+								{
+									var updateViewEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+									var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "general");
+									var updateViewInput = new InputRecordView();
+									var viewSection = new InputRecordViewSection();
+									var viewRow = new InputRecordViewRow();
+									var viewColumn = new InputRecordViewColumn();
+									var viewItem = new InputRecordViewFieldItem();
+									var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+									var viewItemListFromRelation = new InputRecordViewRelationListItem();
+									//General view fields
+
+									//Convert recordList to recordListInput
+									updateViewInput = updateView.DynamicMapTo<InputRecordView>();
+
+									#region << Get the header Region >>
+									var headerRegion = new InputRecordViewRegion();
+									foreach (var region in updateViewInput.Regions)
+									{
+										if (region.Name == "header")
+										{
+											headerRegion = region;
+										}
+									}
+									#endregion
+
+									#region << attachments general list >>
+									{
+										var relatedEntity = entMan.ReadEntity(ATTACHMENT_ENTITY_ID).Object;
+										var relation = relMan.Read("task_1_n_attachment").Object;
+										viewItemListFromRelation = new InputRecordViewRelationListItem();
+										viewItemListFromRelation.EntityId = relatedEntity.Id;
+										viewItemListFromRelation.EntityName = relatedEntity.Name;
+										viewItemListFromRelation.ListId = relatedEntity.RecordLists.Single(x => x.Name == "general").Id;
+										viewItemListFromRelation.ListName = "general";
+										viewItemListFromRelation.Type = "field";
+										viewItemListFromRelation.RelationId = relation.Id;
+										viewItemListFromRelation.RelationName = relation.Name;
+										viewItemListFromRelation.FieldLabel = "Attachments";
+										headerRegion.Sections[0].Rows[0].Columns[0].Items.Add(viewItemListFromRelation);
+									}
+									#endregion
+
+									#region <<comments>>
+									{
+										var viewItemViewFromRelation = new InputRecordViewSidebarRelationViewItem();
+										var relatedEntity = entMan.ReadEntity(COMMENT_ENTITY_ID).Object; 
+										var relation = relMan.Read("task_1_n_comment").Object;
+										viewItemViewFromRelation.EntityId = relatedEntity.Id;									
+										viewItemViewFromRelation.EntityName = relatedEntity.Name;
+										viewItemViewFromRelation.FieldLabel = "Comments";
+										viewItemViewFromRelation.ViewId = relatedEntity.RecordLists.Single(x => x.Name == "general").Id;
+										viewItemViewFromRelation.ViewName = relatedEntity.RecordLists.Single(x => x.Name == "general").Name;
+										viewItemViewFromRelation.RelationId = relation.Id;
+										viewItemViewFromRelation.RelationName = relation.Name;
+										updateViewInput.Sidebar.Items.Add(viewItemViewFromRelation);
+									}
+									#endregion
+
+									#region <<time logs>>
+									{
+										var sidebarItemListFromRelation = new InputRecordViewSidebarRelationListItem();
+										var relatedEntity = entMan.ReadEntity(TIMELOG_ENTITY_ID).Object; 
+										var relation = relMan.Read("task_1_n_time_log").Object;
+										sidebarItemListFromRelation.EntityId = relatedEntity.Id;									
+										sidebarItemListFromRelation.EntityName = relatedEntity.Name;
+										sidebarItemListFromRelation.FieldLabel = "Time logs";
+										sidebarItemListFromRelation.ListId = relatedEntity.RecordLists.Single(x => x.Name == "general").Id;
+										sidebarItemListFromRelation.ListName = relatedEntity.RecordLists.Single(x => x.Name == "general").Name;
+										sidebarItemListFromRelation.RelationId = relation.Id;
+										sidebarItemListFromRelation.RelationName = relation.Name;
+										updateViewInput.Sidebar.Items.Add(sidebarItemListFromRelation);
+									}
+									#endregion
+
+									#region <<activities>>
+									{
+										var sidebarItemListFromRelation = new InputRecordViewSidebarRelationListItem();
+										var relatedEntity = entMan.ReadEntity(ACTIVITY_ENTITY_ID).Object; 
+										var relation = relMan.Read("task_1_n_activity").Object;
+										sidebarItemListFromRelation.EntityId = relatedEntity.Id;									
+										sidebarItemListFromRelation.EntityName = relatedEntity.Name;
+										sidebarItemListFromRelation.FieldLabel = "Activities";
+										sidebarItemListFromRelation.ListId = relatedEntity.RecordLists.Single(x => x.Name == "general").Id;
+										sidebarItemListFromRelation.ListName = relatedEntity.RecordLists.Single(x => x.Name == "general").Name;
+										sidebarItemListFromRelation.RelationId = relation.Id;
+										sidebarItemListFromRelation.RelationName = relation.Name;
+										updateViewInput.Sidebar.Items.Add(sidebarItemListFromRelation);
+									}
+									#endregion
+
+									{
+										var response = entMan.UpdateRecordView(TASK_ENTITY_ID, updateViewInput);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Updated view: create" + " Message:" + response.Message);
+									}
+								}
+
 								#endregion
 							}
 							catch (Exception ex)
