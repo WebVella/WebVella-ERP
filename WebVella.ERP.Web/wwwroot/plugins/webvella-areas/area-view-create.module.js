@@ -51,7 +51,7 @@
 			url: '/view-create/:viewName/relation/:relationName/:targetRecordId/:regionName?returnUrl',
 			params: {
 				regionName: { value: "header", squash: true }
-			},			
+			},
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -120,10 +120,10 @@
 	//#region << Controller  >> ///////////////////////////////
 	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaCoreService', 'webvellaViewActionService',
         'resolvedAreas', '$timeout', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', '$anchorScroll', '$location', '$sessionStorage',
-		'resolvedCurrentUser','resolvedEntityList'];
+		'resolvedCurrentUser', 'resolvedEntityList'];
 	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, pageTitle, webvellaCoreService, webvellaViewActionService,
         resolvedAreas, $timeout, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, $anchorScroll, $location, $sessionStorage,
-		resolvedCurrentUser,resolvedEntityList) {
+		resolvedCurrentUser, resolvedEntityList) {
 
 		//#region << ngCtrl initialization >>
 		var ngCtrl = this;
@@ -432,13 +432,13 @@
 
 		//#region << Render >>
 		ngCtrl.activeTabName = ngCtrl.stateParams.regionName;
-		ngCtrl.view.meta.regions.sort(sort_by({name:'weight', primer: parseInt, reverse: false}));
-		if(ngCtrl.activeTabName == "header"){
+		ngCtrl.view.meta.regions.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+		if (ngCtrl.activeTabName == "header") {
 			//Set the first tab as active
-			if(ngCtrl.view.meta.regions[0].name != "header"){
+			if (ngCtrl.view.meta.regions[0].name != "header") {
 				ngCtrl.activeTabName = ngCtrl.view.meta.regions[0].name;
 			}
-			else if(ngCtrl.view.meta.regions.length > 1) {
+			else if (ngCtrl.view.meta.regions.length > 1) {
 				ngCtrl.activeTabName = ngCtrl.view.meta.regions[1].name;
 			}
 			else {
@@ -447,10 +447,10 @@
 
 		}
 		ngCtrl.renderTabBar = false;
-		ngCtrl.view.meta.regions.forEach(function(region){
-			if(region.render && region.name != "header"){
-				ngCtrl.renderTabBar = true;		
-			}		
+		ngCtrl.view.meta.regions.forEach(function (region) {
+			if (region.render && region.name != "header") {
+				ngCtrl.renderTabBar = true;
+			}
 		});
 
 		ngCtrl.userHasRecordPermissions = function (permissionsCsv) {
@@ -486,7 +486,7 @@
 						ngCtrl.validation.hasError = true;
 						ngCtrl.validation.errorMessage = "A required data is missing!";
 					}
-					else{
+					else {
 						ngCtrl.validation[availableViewFields[k].dataName] = false;
 					}
 				}
@@ -500,7 +500,7 @@
 					var relationNameFoundInData = false;
 					var dataNameArray = availableViewFields[k].dataName.split('$');
 					for (var propertyName in ngCtrl.view.data) {
-						if(propertyName.indexOf(dataNameArray[2]) != -1 ){
+						if (propertyName.indexOf(dataNameArray[2]) != -1) {
 							if (ngCtrl.view.data[propertyName] != null && ngCtrl.view.data[propertyName] != "") {
 								relationNameFoundInData = true;
 							}
@@ -755,7 +755,7 @@
 					else {
 						var recordIdCSV = returnObject.selectedRecordIdArray.join(',');
 						var fieldCSV = fieldsArray.join(',');
-						webvellaCoreService.getRecordsWithoutList(recordIdCSV, fieldCSV,null, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
+						webvellaCoreService.getRecordsWithoutList(recordIdCSV, fieldCSV, null, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
 					}
 				});
 			}
@@ -919,8 +919,21 @@
 		var dummyFieldName = selectedItem.dataName.slice(index, selectedItem.dataName.length);
 		var idFieldPrefix = selectedItem.dataName.slice(0, index);
 		popupCtrl.currentlyAttachedIds = [];
-		popupCtrl.getRelationLabel = popupCtrl.parentData.getRelationLabel;
-
+		popupCtrl.getRelationLabel = function (item) {
+			if (item.fieldLabel) {
+				return item.fieldLabel
+			}
+			else {
+				var relationName = item.relationName;
+				var relation = findInArray(ngCtrl.entityRelations, "name", relationName);
+				if (relation) {
+					return relation.label;
+				}
+				else {
+					return "";
+				}
+			}
+		}
 
 		//Get the default lookup list for the entity
 		if (resolvedLookupRecords.success) {
@@ -947,7 +960,7 @@
 			if (popupCtrl.searchQuery) {
 				popupCtrl.searchQuery = popupCtrl.searchQuery.trim();
 			}
-			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.selectedItem.entityName, 1,  null,null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.selectedItem.entityName, 1, null, null, successCallback, errorCallback);
 		}
 		//#endregion
 

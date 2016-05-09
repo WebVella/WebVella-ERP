@@ -93,7 +93,7 @@
 									<!-- 4. Date -->
 									<div ng-switch-when="4">
 										<div class="input-group">
-											<input type="text" class="form-control" value="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+											<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
 												   ng-required="{{item.meta.required}}" datetime-picker="{{item.meta.format || 'dd MMM yyyy'}}" is-open="ngCtrl.calendars[item.meta.name]"
 												   enable-date="true" enable-time="false" ng-click="ngCtrl.openCalendar($event, item.meta.name)" ng-model-options="{allowInvalid:true}">
 											<span class="input-group-btn">
@@ -592,7 +592,7 @@
 <script type="text/ng-template" id="manageRelationFieldModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Select <span class="go-green">{{popupCtrl.getRelationLabel(popupCtrl.selectedItem.relationName)}}</span></h3>
+		<h3 class="modal-title">Select <span class="go-green">{{popupCtrl.getRelationLabel(popupCtrl.selectedItem)}}</span></h3>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger ng-hide" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>

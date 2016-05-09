@@ -3313,6 +3313,7 @@ table .btn-xs.btn-link {
 /*HTML*/
 .editable-wrapper .control-cke-editor {
 	min-height: 100px;
+	background:#f2f2f2;
 }
 
 
