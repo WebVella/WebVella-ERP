@@ -25,7 +25,7 @@
 						<li class="ng-hide"><a href="javascript:void(0)"><span class="go-grey">This is your default list</span></a></li>
 						<li class="divider"></li>-->
 						<li ng-repeat="list in ngCtrl.generalLists track by $index">
-							<a href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/{{::list.name}}/1">
+							<a href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/list-general/{{::list.name}}/1">
 								<i class="fa fa-fw fa-{{list.iconName}}"></i> {{::list.label}}
 							</a>
 						</li>
@@ -43,7 +43,7 @@
 				<thead>
 					<tr>
 						<th class="actions text-center position-relative" style="padding:0;vertical-align:middle;padding-top:5px;">
-							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#ccc;margin-top:0;" href="javascript:void(0)" ng-show="!ngCtrl.show_filter && !ngCtrl.listIsFiltered && ngCtrl.fieldsInQueryArray.length > 0" ng-click="ngCtrl.show_filter = !ngCtrl.show_filter">
+							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#555;margin-top:0;" href="javascript:void(0)" ng-show="!ngCtrl.show_filter && !ngCtrl.listIsFiltered && ngCtrl.fieldsInQueryArray.length > 0" ng-click="ngCtrl.show_filter = !ngCtrl.show_filter">
 								<i class="fa fa-fw fa-filter"></i>
 								<em></em>
 							</a>
@@ -91,8 +91,9 @@
 											<!--AutoNumber field-->
 											<div class="form-group form-group-sm">
 												<div class="input-group">
-													<span class="input-group-addon" ng-bind="ngCtrl.getAutoIncrementPrefix(column)"></span>
+													<span class="input-group-addon" ng-bind="ngCtrl.getAutoIncrementString(column).prefix" ng-if="ngCtrl.getAutoIncrementString(column).prefix != null"></span>
 													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<span class="input-group-addon" ng-bind="ngCtrl.getAutoIncrementString(column).suffix" ng-if="ngCtrl.getAutoIncrementString(column).suffix != null"></span>
 												</div>
 											</div>
 										</div>

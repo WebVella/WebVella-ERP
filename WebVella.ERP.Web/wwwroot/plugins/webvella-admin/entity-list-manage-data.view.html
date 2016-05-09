@@ -47,30 +47,27 @@
 		<div class="row">
 			<div class="col-sm-6">
 				<h4 style="margin-bottom:1em" translate="{{'RECORD_LIST_TAB_DATA_DEFAULT_SERVICE'}}"></h4>
-				<a class="btn btn-default btn-outline" ng-click="ngCtrl.getData('defaultSample')">
-					<i class="fa fa-fw" ng-class="{'fa-download': !ngCtrl.loading.defaultSample,'fa-spin fa-spinner':ngCtrl.loading.defaultSample}"></i>
+				<a class="btn btn-default btn-outline" ng-click="ngCtrl.getData('defaultData')">
+					<i class="fa fa-fw" ng-class="{'fa-download': !ngCtrl.loading.defaultData,'fa-spin fa-spinner':ngCtrl.loading.defaultData}"></i>
 					<span translate="{{'GET_DATA_SAMPLE'}}"></span>
 				</a>
-				<a class="btn btn-default btn-outline" ng-click="ngCtrl.getData('defaultFull')">
-					<i class="fa fa-fw" ng-class="{'fa-download': !ngCtrl.loading.defaultFull,'fa-spin fa-spinner':ngCtrl.loading.defaultFull}"></i>
-					<span translate="{{'GET_COMPLETE_RESPONSE'}}"></span>
+				<a class="btn btn-default btn-outline" ng-click="ngCtrl.getData('defaultMeta')">
+					<i class="fa fa-fw" ng-class="{'fa-download': !ngCtrl.loading.defaultMeta,'fa-spin fa-spinner':ngCtrl.loading.defaultMeta}"></i>
+					<span translate="{{'GET_META_SAMPLE'}}"></span>
 				</a>
 				<br /><br />
 				<pre class="ng-hide" ng-show="ngCtrl.defaultData != null">{{ngCtrl.defaultData | json}}</pre>
+				<pre class="ng-hide" ng-show="ngCtrl.defaultMeta != null">{{ngCtrl.defaultMeta | json}}</pre>
 			</div>
 			<div class="col-sm-6">
 				<h4 style="margin-bottom:1em;" translate="{{'RECORD_LIST_TAB_DATA_CUSTOM_DATASOURCE'}}"></h4>
 				<div ng-if="ngCtrl.list.dataSourceUrl != null">
-					<a class="btn btn-default btn-outline" ng-click="ngCtrl.getData('customSample')">
-						<i class="fa fa-fw" ng-class="{'fa-download': !ngCtrl.loading.customSample,'fa-spin fa-spinner':ngCtrl.loading.customSample}"></i>
-						<span translate="{{'GET_DATA_SAMPLE'}}"></span>
-					</a>
 					<a class="btn btn-default btn-outline" ng-click="ngCtrl.getData('customFull')">
 						<i class="fa fa-fw" ng-class="{'fa-download': !ngCtrl.loading.customFull,'fa-spin fa-spinner':ngCtrl.loading.customFull}"></i>
 						<span translate="{{'GET_COMPLETE_RESPONSE'}}"></span>
 					</a>
 					<br /><br />
-					<pre class="ng-hide" ng-show="ngCtrl.customData != null">{{ngCtrl.customData | json}}</pre>
+					<pre class="ng-hide" ng-show="ngCtrl.customFull != null">{{ngCtrl.customFull | json}}</pre>
 				</div>
 				<div ng-if="ngCtrl.list.dataSourceUrl == null" class="alert alert-info">No custom data source url is set for this list. The system will use the default data generated for the list.</div>
 			</div>

@@ -39,9 +39,9 @@
 			resolve: {
 				loadDependency: loadDependency,
 				loadPreloadScript: loadPreloadScript,
-				resolvedCurrentView: function () { return null; },
-				resolvedCurrentParentView: function () { return null; },
-				resolvedListRecords: resolveListRecords
+				resolvedCurrentViewData: function () { return null; },
+				resolvedParentViewData: function () { return null; },
+				resolvedRecordListData: resolveRecordListData
 			},
 			data: {
 
@@ -74,9 +74,9 @@
 			resolve: {
 				loadDependency: loadDependency,
 				loadPreloadScript: loadPreloadScript,
-				resolvedCurrentView: function () { return null },	//for the sidebar to render
-				resolvedCurrentParentView: resolveCurrentParentView,
-				resolvedListRecords: resolveListRecordsFromView
+				resolvedCurrentViewData: function () { return null },	//for the sidebar to render
+				resolvedParentViewData: resolveParentViewData,
+				resolvedRecordListData: resolveRecordListDataFromView
 			},
 			data: {
 
@@ -162,8 +162,8 @@
 		}
 	}
 
-	resolveListRecords.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams', '$timeout', 'ngToast', '$location','resolvedEntityList'];
-	function resolveListRecords($q, $log, webvellaCoreService, $state, $stateParams, $timeout, ngToast, $location,resolvedEntityList) {
+	resolveRecordListData.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams', '$timeout', 'ngToast', '$location', 'resolvedEntityList'];
+	function resolveRecordListData($q, $log, webvellaCoreService, $state, $stateParams, $timeout, ngToast, $location, resolvedEntityList) {
 		var defer = $q.defer();
 		function successCallback(response) {
 			defer.resolve(response.object);
@@ -173,23 +173,14 @@
 		}
 		var searchParams = $location.search();
 
-		var list = null;
-		for (var i = 0; i < resolvedEntityList.length; i++) {
-			 if(resolvedEntityList[i].name == $stateParams.entityName){
-			 	for (var j = 0; j < resolvedEntityList[i].recordLists.length; j++) {
-					if(resolvedEntityList[i].recordLists[j].name == $stateParams.listName){
-						list = resolvedEntityList[i].recordLists[j];
-					}
-			 	}
-			 }
-		}
+		var list = webvellaCoreService.getEntityRecordListFromEntitiesMetaList($stateParams.listName, $stateParams.entityName, resolvedEntityList);
 
-		webvellaCoreService.getRecordsByListMeta(list, $stateParams.entityName, $stateParams.page, searchParams, successCallback, errorCallback);
+		webvellaCoreService.getRecordsByListMeta(list, $stateParams.entityName, $stateParams.page, null, searchParams, successCallback, errorCallback);
 		return defer.promise;
 	}
 
-	resolveCurrentParentView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta','resolvedEntityList'];
-	function resolveCurrentParentView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta,resolvedEntityList) {
+	resolveParentViewData.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta', 'resolvedEntityList'];
+	function resolveParentViewData($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta, resolvedEntityList) {
 
 		// Initialize
 		var defer = $q.defer();
@@ -199,7 +190,7 @@
 			if (response.object === null) {
 				alert("error in response!");
 			}
-			else if (response.object.meta === null) {
+			else if (response.object === null) {
 				alert("The view with name: " + $stateParams.parentViewName + " does not exist");
 			} else {
 				defer.resolve(response.object);
@@ -221,44 +212,53 @@
 			defer.reject("you do not have permissions to view records from this entity");
 		}
 
-		var parentView = null;
-		for (var i = 0; i < resolvedEntityList.length; i++) {
-			 if(resolvedEntityList[i].name == $stateParams.entityName){
-			 	for (var j = 0; j < resolvedEntityList[i].recordViews.length; j++) {
-					if(resolvedEntityList[i].recordViews[j].name == $stateParams.parentViewName){
-						parentView = resolvedEntityList[i].recordViews[j];
-					}
-			 	}
-			 }
-		}
-
-		webvellaCoreService.getRecordByViewMeta($stateParams.recordId, parentView, $stateParams.entityName, successCallback, errorCallback);
+		var parentView = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
+		webvellaCoreService.getRecordByViewMeta($stateParams.recordId, parentView, $stateParams.entityName,null, successCallback, errorCallback);
 
 		return defer.promise;
 	}
 
-	resolveListRecordsFromView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentParentView'];
-	function resolveListRecordsFromView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentParentView) {
+	resolveRecordListDataFromView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedParentViewData', 'resolvedEntityList', 'resolvedEntityRelationsList','ngToast'];
+	function resolveRecordListDataFromView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedParentViewData, resolvedEntityList, resolvedEntityRelationsList,ngToast) {
 		//Temporary method will be replaced when the proper API is ready
 		// Initialize
 		var defer = $q.defer();
-
-		// Find list dataName
-		var list = {};
-		list.meta = null;
-		list.data = null
-		resolvedCurrentParentView.meta.sidebar.items.forEach(function (item) {
-			if (item.dataName == $stateParams.listName) {
-				list.data = resolvedCurrentParentView.data[0][item.dataName];
-				list.meta = item.meta;
-			}
-		});
-		if (list.data == null) {
-			//list not found
-			defer.reject("list not found");
+		var safeListNameAndEntity = webvellaCoreService.getSafeListNameAndEntityName($stateParams.listName, $stateParams.entityName, resolvedEntityRelationsList);
+		var getListMeta = webvellaCoreService.getEntityRecordListFromEntitiesMetaList(safeListNameAndEntity.listName, safeListNameAndEntity.entityName, resolvedEntityList);
+		if (getListMeta.dataSourceUrl != null && getListMeta.dataSourceUrl != "") {
+			//This list has a dynamicSourceUrl defined
+			webvellaCoreService.getRecordsByListMeta(getListMeta, safeListNameAndEntity.entityName, 1, $stateParams, null, successCallback, errorCallback);
 		}
 		else {
-			defer.resolve(list);
+			//No dynamicSourceUrl defined
+			var parentViewMeta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
+			// Find list dataName
+			var listData = null;
+			parentViewMeta.sidebar.items.forEach(function (item) {
+				if (item.dataName == $stateParams.listName) {
+					listData = resolvedParentViewData[0][item.dataName];
+				}
+			});
+
+			if (listData == null) {
+				//list not found
+				defer.reject("list not found");
+			}
+			else {
+				defer.resolve(listData);
+			}
+		}
+
+ 		function successCallback(response) {
+			defer.resolve(response.object);
+		}
+		function errorCallback(response) {
+		ngToast.create({
+			className: 'error',
+			content: '<span class="go-red">Error:</span> ' + response.message,
+			timeout: 7000
+		});
+			defer.reject(response.message);
 		}
 
 		return defer.promise;
@@ -267,11 +267,11 @@
 
 	//#region << Controller /////////////////////////////// >>
 	controller.$inject = ['$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaCoreService',
-        'resolvedAreas', 'resolvedListRecords', 'resolvedEntityList','resolvedCurrentEntityMeta', 'webvellaListActionService', '$timeout',
+        'resolvedAreas', 'resolvedRecordListData', 'resolvedEntityList', 'resolvedCurrentEntityMeta', 'webvellaListActionService', '$timeout',
 		'resolvedEntityRelationsList', 'resolvedCurrentUser', '$sessionStorage', '$location', '$window', '$sce'];
 
 	function controller($log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaCoreService,
-        resolvedAreas, resolvedListRecords, resolvedEntityList,resolvedCurrentEntityMeta, webvellaListActionService, $timeout,
+        resolvedAreas, resolvedRecordListData, resolvedEntityList, resolvedCurrentEntityMeta, webvellaListActionService, $timeout,
 		resolvedEntityRelationsList, resolvedCurrentUser, $sessionStorage, $location, $window, $sce) {
 
 		//#region << ngCtrl initialization >>
@@ -283,17 +283,16 @@
 		ngCtrl.canSortList = false;
 		//#endregion
 
-		//#region << Set Page meta >>
-		ngCtrl.pageTitle = "Area Entities | " + pageTitle;
-		webvellaCoreService.setPageTitle(ngCtrl.pageTitle);
-		ngCtrl.currentArea = webvellaCoreService.getCurrentAreaFromAreaList($stateParams.areaName, resolvedAreas.data);
-		webvellaCoreService.setBodyColorClass(ngCtrl.currentArea.color);
+		//#region << Init the list name >>
+		var safeListNameAndEntityName = webvellaCoreService.getSafeListNameAndEntityName($stateParams.listName, $stateParams.entityName, resolvedEntityRelationsList)
+		var listName = safeListNameAndEntityName.listName;
+		var listEntityName = safeListNameAndEntityName.entityName;
 		//#endregion
 
 		//#region << Initialize main objects >>
 		ngCtrl.list = {};
-		ngCtrl.list.data = fastCopy(resolvedListRecords.data);
-		ngCtrl.list.meta = fastCopy(resolvedListRecords.meta);
+		ngCtrl.list.data = fastCopy(resolvedRecordListData);
+		ngCtrl.list.meta = webvellaCoreService.getEntityRecordListFromEntitiesMetaList(listName, listEntityName, resolvedEntityList);
 		ngCtrl.entityList = fastCopy(resolvedEntityList);
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
 		ngCtrl.entityRelations = fastCopy(resolvedEntityRelationsList);
@@ -301,6 +300,13 @@
 		ngCtrl.currentUser = fastCopy(resolvedCurrentUser);
 		ngCtrl.$sessionStorage = $sessionStorage;
 		ngCtrl.stateParams = $stateParams;
+		//#endregion
+
+		//#region << Set Page meta >>
+		ngCtrl.pageTitle = ngCtrl.list.meta.label + " | " + pageTitle;
+		webvellaCoreService.setPageTitle(ngCtrl.pageTitle);
+		ngCtrl.currentArea = webvellaCoreService.getCurrentAreaFromAreaList($stateParams.areaName, resolvedAreas.data);
+		webvellaCoreService.setBodyColorClass(ngCtrl.currentArea.color);
 		//#endregion
 
 		//#region << Run  webvellaListActionService.onload >>
@@ -401,7 +407,7 @@
 			ngCtrl.filterQuery = {};
 			ngCtrl.listIsFiltered = false;
 			ngCtrl.show_filter = false;
-			webvellaCoreService.getRecordsByListMeta(ngCtrl.list.meta, $stateParams.entityName, $stateParams.page, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
+			webvellaCoreService.getRecordsByListMeta(ngCtrl.list.meta, safeListNameAndEntityName.entityName, $stateParams.page, $stateParams, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
 		}
 
 		ngCtrl.applyQueryFilter = function () {
@@ -424,20 +430,13 @@
 				ngCtrl.listIsFiltered = true;
 			}
 			//Find the entity of the list. It could not be the current one as it could be listFromRelation case
-			var listEntityName = $stateParams.entityName;
-			for (var i = 0; i < ngCtrl.entityList.length; i++) {
-				for (var j = 0; j < ngCtrl.entityList[i].recordLists.length; j++) {
-					 if(ngCtrl.entityList[i].recordLists[j].id == ngCtrl.list.meta.id){
-						  listEntityName = fastCopy(ngCtrl.entityList[i].name);
-					 }
-				}
-			}
+			var listEntityName = safeListNameAndEntityName.entityName;
 
-			webvellaCoreService.getRecordsByListMeta(ngCtrl.list.meta, listEntityName, 1, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
+			webvellaCoreService.getRecordsByListMeta(ngCtrl.list.meta, listEntityName, 1, $stateParams, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
 		}
 
 		ngCtrl.ReloadRecordsSuccessCallback = function (response) {
-			ngCtrl.list.data = response.object.data;
+			ngCtrl.list.data = response.object;
 		}
 
 		ngCtrl.ReloadRecordsErrorCallback = function (response) {
@@ -486,8 +485,8 @@
 		ngCtrl.selectPage = function (page) {
 			var params = {
 				areaName: $stateParams.areaName,
-				entityName: $stateParams.entityName,
-				listName: $stateParams.listName,
+				entityName: entityName,
+				listName: listName,
 				page: page
 			};
 			webvellaCoreService.GoToState($state, $state.current.name, params);
@@ -550,15 +549,8 @@
 			}
 
 			var searchParams = $location.search();
-			var listEntityName = $stateParams.entityName;
-			for (var i = 0; i < ngCtrl.entityList.length; i++) {
-				for (var j = 0; j < ngCtrl.entityList[i].recordLists.length; j++) {
-					 if(ngCtrl.entityList[i].recordLists[j].id == ngCtrl.list.meta.id){
-						  listEntityName = fastCopy(ngCtrl.entityList[i].name);
-					 }
-				}
-			}
-			webvellaCoreService.getRecordsByListMeta(ngCtrl.list.meta, listEntityName, 1, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
+			var listEntityName = safeListNameAndEntityName.entityName;
+			webvellaCoreService.getRecordsByListMeta(ngCtrl.list.meta, listEntityName, 1, $stateParams, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
 
 		}
 
@@ -615,9 +607,21 @@
 
 		//#region << Render >>
 		ngCtrl.renderFieldValue = webvellaCoreService.renderFieldValue;
-		ngCtrl.getAutoIncrementPrefix = function (column) {
+		ngCtrl.getAutoIncrementString = function (column) {
+			var returnObject = {};
+			returnObject.prefix = null;
+			returnObject.suffix = null;
 			var keyIndex = column.meta.displayFormat.indexOf('{0}');
-			return column.meta.displayFormat.slice(0, keyIndex);
+			if(keyIndex == 0){
+				return null;
+			}
+			else {
+				returnObject.prefix = column.meta.displayFormat.slice(0, keyIndex);
+				if(keyIndex + 3 < column.meta.displayFormat.length){
+					returnObject.suffix = column.meta.displayFormat.slice(keyIndex + 3, column.meta.displayFormat.length);
+				}
+				return returnObject;
+			}
 		}
 
 		//#endregion

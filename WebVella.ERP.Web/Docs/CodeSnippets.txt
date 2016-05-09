@@ -862,9 +862,20 @@ TREE SELECT
 	//Convert recordList to recordListInput
 	updateViewInput = updateView.DynamicMapTo<InputRecordView>();
 
-	//General view fields
-	//updateViewInput.IconName = "";
+	#region << Details >>
+	//updateViewInput.Label = "Details";
+	#endregion
 
+	#region << Get the header Region >>
+	// var headerRegion = new InputRecordViewRegion();
+	// foreach(var region in updateViewInput.Regions) {
+		// if(region.Name == "header") {
+			// headerRegion = region;
+		// }
+	// }
+	// headerRegion.Sections = new List<InputRecordViewSection>();
+	#endregion	
+	
 	#region << Section >>
 	viewSection = new InputRecordViewSection();
 	viewSection.Id = Guid.NewGuid();
@@ -892,8 +903,8 @@ TREE SELECT
 	#region << name >>
 	{
 	viewItem = new InputRecordViewFieldItem();
-	viewItem.EntityId = ENTITY_ID;
-	viewItem.EntityName = ENTITY_NAME;
+	viewItem.EntityId = updateViewEntity.Id;
+	viewItem.EntityName = updateViewEntity.Name;
 	viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "name").Id;
 	viewItem.FieldName = "name";
 	viewItem.Type = "field";
@@ -907,7 +918,7 @@ TREE SELECT
 	viewItemFromRelation = new InputRecordViewRelationFieldItem();
 	viewItemFromRelation.EntityId = targetEntity.Id;
 	viewItemFromRelation.EntityName = targetEntity.Name;
-	viewItemFromRelation.Type = "field";
+	viewItemFromRelation.Type = "fieldFromRelation";
 	viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
 	viewItemFromRelation.FieldName = "field_name";
 	viewItemFromRelation.FieldLabel = "field_name";
@@ -930,15 +941,14 @@ TREE SELECT
 	#endregion
 
 	//Save section
-	foreach (var region in updateViewInput.Regions)
-	{
-		if (region.Name == "default")
-		{
-			region.Sections.Add(viewSection);
-		}
-	}
+	headerRegion.Sections.Add(viewSection);
 
 	#endregion
+
+	#region << Sidebar >>
+	var sidebarItem = new InputRecordViewSidebarItemBase();
+	#endregion`								
+	
 
 	{
 		var response = entMan.UpdateRecordView(ENTITY_ID, updateViewInput);
@@ -956,8 +966,8 @@ TREE SELECT
 {
 	var createListEntity = entMan.ReadEntity(ENTITY_ID).Object;
 	var createListInput = new InputRecordList();
-	var listItem = new InputRecordListFieldItem();
-	var listItemFromRelation = new InputRecordListRelationFieldItem();
+	var listField = new InputRecordListFieldItem();
+	var listFieldFromRelation = new InputRecordListRelationFieldItem();
 	var listSort = new InputRecordListSort();
 	var listQuery = new InputRecordListQuery();
 
@@ -1031,16 +1041,17 @@ TREE SELECT
 	
 	#region << Columns >>
 	createListInput.Columns = new List<InputRecordListItemBase>();
+	
 	#region << field_name >>
 	{
 		var fieldName = "field_name";
-		listItem = new InputRecordListFieldItem();
-		listItem.EntityId = ENTITY_ID;
-		listItem.EntityName = ENTITY_NAME;
-		listItem.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
-		listItem.FieldName = fieldName;
-		listItem.Type = "field";
-		createListInput.Columns.Add(listItem);
+		listField = new InputRecordListFieldItem();
+		listField.EntityId = ENTITY_ID;
+		listField.EntityName = ENTITY_NAME;
+		listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+		listField.FieldName = fieldName;
+		listField.Type = "field";
+		createListInput.Columns.Add(listField);
 	}
 	#endregion
 
@@ -1052,12 +1063,14 @@ TREE SELECT
 	#endregion	
 	
 	#region << query >>
-	listQuery = new InputRecordListQuery();
-	listQuery.FieldName = "field_name";
-	listQuery.FieldValue = "00000000-0000-0000-0000-000000000000";
-	listQuery.QueryType = "EQ"; //"OR",EQ,NOT,LT,LTE,GT,GTE,CONTAINS,NOTCONTAINS,STARTSWITH,NOTSTARTSWITH
-	listQuery.SubQueries = new List<InputRecordListQuery>();
-	createListInput.Query = listQuery;
+	createListInput.Query = new InputRecordListQuery();
+	//Main query rule
+	createListInput.Query.FieldName = null;
+	createListInput.Query.FieldValue = null;
+	createListInput.Query.QueryType = "AND"; //AND,OR,EQ,NOT,LT,LTE,GT,GTE,CONTAINS,STARTSWITH
+	createListInput.Query.SubQueries = new List<InputRecordListQuery>();
+	
+	//Add sections here
 	#endregion
 
 	#region << Sort >>
@@ -1083,7 +1096,7 @@ TREE SELECT
 	var updateListEntity = entMan.ReadEntity(ENTITY_ID).Object;
 	var updateList = updateListEntity.RecordLists.Single(x => x.Name == "list_name");
 	var updateListInput = new InputRecordList();
-	var listItem = new InputRecordListFieldItem();
+	var listField = new InputRecordListFieldItem();
 	var listSort = new InputRecordListSort();
 	var listQuery = new InputRecordListQuery();
 					
@@ -1095,32 +1108,42 @@ TREE SELECT
 	
 	//Fields
 	#region << field_name >>
-	listItem = new InputRecordListFieldItem();
-	listItem.EntityId = ENTITY_ID;
-	listItem.EntityName = ENTITY_NAME;
-	listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "field_name").Id;
-	listItem.FieldName = "field_name";
-	listItem.Type = "field";
-	updateListInput.Columns.Add(listItem);
+	{
+	listField = new InputRecordListFieldItem();
+	listField.EntityId = updateListEntity.Id;
+	listField.EntityName = updateListEntity.Name;
+	listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "field_name").Id;
+	listField.FieldName = "field_name";
+	listField.Type = "field";
+	updateListInput.Columns.Add(listField);
+	}
 	#endregion
+	
+	//Field from relation
+	#region << field_name >>
+	{
+	listFieldFromRelation = new listFieldFromRelation();
+	listField.EntityId = updateListEntity.Id;
+	listField.EntityName = updateListEntity.Name;
+	listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "field_name").Id;
+	listField.FieldName = "field_name";
+	listField.Type = "field";
+	updateListInput.Columns.Add(listField);
+	}
+	#endregion	
 	
 	//Query
 	#region << query descr >>
-		//listQuery = new InputRecordListQuery();
-		//listQuery.FieldName = "id";
-		//listQuery.FieldValue = "00000000-0000-0000-0000-000000000000";
-		//listQuery.QueryType = "AND"; //"OR",EQ,NOT,LT,LTE,GT,GTE,CONTAINS,NOTCONTAINS,STARTSWITH,NOTSTARTSWITH
-		//listQuery.SubQueries = new List<InputRecordListQuery>();
-		//updateListInput.Query = listQuery;
+	{
+	}
 	#endregion	
 	
 	
 	//Sort
 	#region << Sort >>
-		//listSort = new InputRecordListSort();
-		//listSort.FieldName = "created_on";
-		//listSort.SortType = "descending";
-		//updateListInput.Sorts.Add(listSort);
+	{
+
+	}
 	#endregion
 	{
 		var response = entMan.UpdateRecordList(ENTITY_ID, updateListInput);
@@ -1223,3 +1246,33 @@ TREE SELECT
 	}
 }
 #endregion
+
+////////////////////////////////////////////////////////////////////////////////
+//	CREATE RECORD
+////////////////////////////////////////////////////////////////////////////////
+#region << Create Record: name >>
+	var sampleRecord = new EntityRecord();
+	sampleRecord["id"] = new Guid("guid");
+	sampleRecord["field_name"] = "";
+	var createSampleRecordResult = recMan.CreateRecord(ENTITY_ID, sampleRecord);
+	if (!createSampleRecordResult.Success)
+	{
+		throw new Exception("System error 10060. Create sample milestone. Message:" + createSampleRecordResult.Message);
+	}
+#endregion				
+
+////////////////////////////////////////////////////////////////////////////////
+//	UPDATE RECORD
+////////////////////////////////////////////////////////////////////////////////
+#region << Create Record: name >>
+	{
+		var sampleRecord = new EntityRecord();
+		sampleRecord["id"] = new Guid("guid");
+		sampleRecord["field_name"] = "";
+		var createSampleRecordResult = recMan.CreateRecord(ENTITY_ID, sampleRecord);
+		if (!createSampleRecordResult.Success)
+		{
+			throw new Exception("System error 10060. Create sample milestone. Message:" + createSampleRecordResult.Message);
+		}
+	}
+#endregion						

@@ -23,14 +23,14 @@
 
 	</div>
 	<div id="page-text">
-		<div class="form-horizontal" style="margin-top: 15px;">
+		<div class="form" style="margin-top: 15px;">
 
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="row editable-field field">
-							<label class="control-label col-lg-2" translate="{{'NAME'}}"></label>
-							<div class="col-lg-10">
+						<div class="editable-field field">
+							<label class="control-label" translate="{{'NAME'}}"></label>
+							<div>
 								<div class="editable-wrapper input-group editable-readonly">
 									<input type="text" class="form-control" disabled value="{{::ngCtrl.entity.name}}"></input>
 									<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
@@ -41,9 +41,9 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="row editable-field field">
-							<label class="control-label col-lg-2" translate="{{'SYSTEM'}}"></label>
-							<div class="col-lg-10">
+						<div class="editable-field field">
+							<label class="control-label" translate="{{'SYSTEM'}}"></label>
+							<div>
 								<div class="editable-wrapper input-group first-background-transparent editable-updatable"  ng-dblclick="fieldForm_system.$show()">
 									<span class="input-group-addon" ng-if="ngCtrl.entity.system && !fieldForm_system.$visible">
 										<i class="fa fa-check fa-fw go-green"></i>
@@ -65,9 +65,9 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="row editable-field field">
-							<label class="control-label col-lg-2" translate="{{'LABEL'}}"></label>
-							<div class="col-lg-10">
+						<div class="editable-field field">
+							<label class="control-label" translate="{{'LABEL'}}"></label>
+							<div>
 								<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_label.$show()">
 									<input type="text" class="form-control" disabled editable-text="ngCtrl.entity.label"
 										   value="{{ngCtrl.entity.label}}"
@@ -80,9 +80,9 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="row editable-field field">
-							<label class="control-label col-lg-2" translate="{{'LABEL_PLURAL'}}"></label>
-							<div class="col-lg-10">
+						<div class="editable-field field">
+							<label class="control-label" translate="{{'LABEL_PLURAL'}}"></label>
+							<div>
 								<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_labelPlural.$show()">
 									<input type="text" class="form-control" disabled editable-text="ngCtrl.entity.labelPlural"
 										   value="{{ngCtrl.entity.labelPlural}}"
@@ -98,26 +98,27 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="row editable-field field">
-							<label class="control-label col-lg-2" translate="{{'ICON_NAME'}}"></label>
-							<div class="col-lg-10">
-								<div class="editable-wrapper input-group first-background-transparent editable-updatable" ng-dblclick="fieldForm_iconName.$show()">
+						<div class="editable-field field">
+							<label class="control-label" translate="{{'ICON_NAME'}}"></label>
+							<div>
+								<div class="editable-wrapper input-group first-background-transparent editable-updatable" 
+									ng-dblclick="fieldForm_iconName.$show(); ngCtrl[fieldForm_iconName] = fieldForm_iconName;">
 									<span class="input-group-addon" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-{{ngCtrl.entity.iconName}} fa-fw"></i></span>
 									<input type="text" class="form-control" disabled editable-text="ngCtrl.entity.iconName"
 										   value="{{ngCtrl.entity.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName',$data)" e-form="fieldForm_iconName"  autocomplete="off"
 										   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in ngCtrl.icons | filter:$viewValue | limitTo:8">
-									<span class="input-group-addon" ng-click="fieldForm_iconName.$show()" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+									<span class="input-group-addon" ng-click="fieldForm_iconName.$show();ngCtrl[fieldForm_iconName] = fieldForm_iconName;" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 								</div>
-								<div class="form-description"  translate="{{'ICON_NAME_DESCRIPTION'}}"></div>
+								<div class="form-description"  translate="{{'ICON_NAME_DESCRIPTION'}}" ng-if="ngCtrl[fieldForm_iconName].$visible"></div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="row editable-field field">
-							<label class="control-label col-lg-2" translate="{{'WEIGHT'}}"></label>
-							<div class="col-lg-10">
+						<div class="editable-field field">
+							<label class="control-label" translate="{{'WEIGHT'}}"></label>
+							<div>
 								<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_weight.$show()">
 									<input type="text" class="form-control" disabled editable-text="ngCtrl.entity.weight"
 										   value="{{ngCtrl.entity.weight}}"
@@ -133,9 +134,9 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="form-group">
-						<div class="row editable-field field">
-							<label class="control-label col-lg-1" translate="{{'RECORD_PERMISSIONS'}}"></label>
-							<div class="col-lg-11">
+						<div class="editable-field field">
+							<label class="control-label" translate="{{'RECORD_PERMISSIONS'}}"></label>
+							<div>
 								<table class="table table-bordered table-permissions">
 									<thead>
 										<tr>

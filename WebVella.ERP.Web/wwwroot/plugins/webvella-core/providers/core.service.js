@@ -1,5 +1,4 @@
-﻿/// <reference path="../../webvella-admin/entity-relations.module.js" />
-/* core.service.js */
+﻿/* core.service.js */
 
 /**
 * @desc Javascript API core service
@@ -66,6 +65,7 @@
 		serviceInstance.createEntityView = createEntityView;
 		//Read
 		serviceInstance.getEntityView = getEntityView;
+		serviceInstance.getEntityRecordViewFromEntitiesMetaList = getEntityRecordViewFromEntitiesMetaList;
 		//Update
 		serviceInstance.updateEntityView = updateEntityView;
 		serviceInstance.patchEntityView = patchEntityView;
@@ -81,6 +81,7 @@
 		serviceInstance.convertRowColumnCountVariationKeyToArray = convertRowColumnCountVariationKeyToArray;
 		serviceInstance.getViewMenuOptions = getViewMenuOptions
 		serviceInstance.getItemsFromRegion = getItemsFromRegion;
+		serviceInstance.getSafeViewNameAndEntityName = getSafeViewNameAndEntityName;
 
 		//#endregion
 
@@ -90,18 +91,20 @@
 		serviceInstance.initList = initList;
 		serviceInstance.initListActionItem = initListActionItem;
 		//Create
-		serviceInstance.createEntityList = createEntityList;
+		serviceInstance.createEntityRecordList = createEntityRecordList;
 		//Read
-		serviceInstance.getEntityLists = getEntityLists;
-		serviceInstance.getEntityList = getEntityList;
+		serviceInstance.getEntityRecordLists = getEntityRecordLists;
+		serviceInstance.getEntityRecordList = getEntityRecordList;
+		serviceInstance.getEntityRecordListFromEntitiesMetaList = getEntityRecordListFromEntitiesMetaList;
 		//Update
-		serviceInstance.patchEntityList = patchEntityList;
-		serviceInstance.updateEntityList = updateEntityList;
+		serviceInstance.patchEntityRecordList = patchEntityRecordList;
+		serviceInstance.updateEntityRecordList = updateEntityRecordList;
 		//Delete
-		serviceInstance.deleteEntityList = deleteEntityList;
+		serviceInstance.deleteEntityRecordList = deleteEntityRecordList;
 		//Helpers
-		serviceInstance.getListMenuOptions = getListMenuOptions
-		serviceInstance.extractSupportedFilterFields = extractSupportedFilterFields
+		serviceInstance.getListMenuOptions = getListMenuOptions;
+		serviceInstance.extractSupportedFilterFields = extractSupportedFilterFields;
+		serviceInstance.getSafeListNameAndEntityName = getSafeListNameAndEntityName;
 		//#endregion
 
 		//#region << Tree >>
@@ -134,7 +137,8 @@
 		serviceInstance.updateRelation = updateRelation;
 		//Delete
 		serviceInstance.deleteRelation = deleteRelation;
-
+		//Helpers
+		serviceInstance.getRelationFromRelationsList = getRelationFromRelationsList;
 		//#endregion
 
 		//#region << Record >>
@@ -271,20 +275,7 @@
 			}
 
 		}
-		function handleSuccessResultWithCustomMeta(data,metaObject, status, successCallback, errorCallback) {
-			if (successCallback === undefined || typeof (successCallback) != "function") {
-				alert("The successCallback argument is not a function or missing");
-				return;
-			}
 
-			var response = {};
-			response.success = true;
-			response.message = "Data is received from custom defined data source url"
-			response.object = {};
-			response.object.data = data;
- 			response.object.meta = metaObject;
-			successCallback(response);
-		}
 		//#endregion
 
 		//#region << Entity >>
@@ -1251,6 +1242,22 @@
 		function getEntityView(viewName, entityName, successCallback, errorCallback) {
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/view/' + viewName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
+		///////////////////////
+		function getEntityRecordViewFromEntitiesMetaList(viewName,entityName,entitiesMetaList) {
+			var itemMeta = null;
+			for (var i = 0; i < entitiesMetaList.length; i++) {
+    			 if(entitiesMetaList[i].name == entityName){
+    			 	for (var j = 0; j < entitiesMetaList[i].recordViews.length; j++) {
+    					if(entitiesMetaList[i].recordViews[j].name == viewName){
+							itemMeta = 	entitiesMetaList[i].recordViews[j];
+							break;
+						}
+    			 	}
+					break;
+				 }
+			}
+			return itemMeta;
+		}
 		//////////////////////
 		function createEntityView(viewObj, entityName, successCallback, errorCallback) {
 			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/view", data: viewObj }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
@@ -1534,6 +1541,36 @@
 
 			return usedItemsArray;
 		}
+		/////////////////////
+		function getSafeViewNameAndEntityName(paramsViewName,paramsEntityName,relationsList){
+			var data = {};
+			//if the list is in a view, than the name should be processed as the entity name could differ from the current one as well as the list name is not in fact a dataName
+			//e.g. $list$project_1_n_milestone$general	when from another entity or $list$lookup when from the current
+			data.viewName = paramsViewName;
+			data.entityName = paramsEntityName;
+			var viewDataName = 	paramsViewName;
+			var viewDataNameArray =  viewDataName.split("$");
+			if(viewDataNameArray.length == 3){
+				//this is a list from the current entity ($view$general), we just need to get the proper list name
+				data.viewName = viewDataNameArray[2];
+			}
+			else if (viewDataNameArray.length == 4){
+				//this is a list from another entity ($view$project_1_n_milestone$general), we should get both list name and entity name from the relation
+				var relationName = viewDataNameArray[2];
+				var relation =  getRelationFromRelationsList(relationName,relationsList);
+				if(relation.originEntityName == paramsEntityName){
+					 data.entityName =  relation.targetEntityName;
+				}
+				else if(relation.targetEntityName == paramsEntityName){
+					data.entityName =  relation.originEntityName;
+				}
+				data.viewName = viewDataNameArray[3];
+			}
+
+			return data;
+		}
+		
+		
 		//#endregion
 
 		//#region << List >>
@@ -1637,27 +1674,43 @@
 			return actionItem;
 		}
 		///////////////////////
-		function getEntityLists(entityName, successCallback, errorCallback) {
+		function getEntityRecordLists(entityName, successCallback, errorCallback) {
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/list' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
-		function getEntityList(listName, entityName, successCallback, errorCallback) {
+		function getEntityRecordList(listName, entityName, successCallback, errorCallback) {
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/list/' + listName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
+		///////////////////////
+		function getEntityRecordListFromEntitiesMetaList(listName,entityName,entitiesMetaList) {
+			var itemMeta = null;
+			for (var i = 0; i < entitiesMetaList.length; i++) {
+    			 if(entitiesMetaList[i].name == entityName){
+    			 	for (var j = 0; j < entitiesMetaList[i].recordLists.length; j++) {
+    					if(entitiesMetaList[i].recordLists[j].name == listName){
+							itemMeta = 	entitiesMetaList[i].recordLists[j];
+							break;
+						}
+    			 	}
+					break;
+				 }
+			}
+			return itemMeta;
+		}
 		//////////////////////
-		function createEntityList(submitObj, entityName, successCallback, errorCallback) {
+		function createEntityRecordList(submitObj, entityName, successCallback, errorCallback) {
 			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/list", data: submitObj }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		//////////////////////
-		function patchEntityList(submitObj, listName, entityName, successCallback, errorCallback) {
+		function patchEntityRecordList(submitObj, listName, entityName, successCallback, errorCallback) {
 			$http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/list/" + listName, data: submitObj }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		//////////////////////
-		function updateEntityList(listObj, entityName, successCallback, errorCallback) {
+		function updateEntityRecordList(listObj, entityName, successCallback, errorCallback) {
 			$http({ method: 'PUT', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/list/" + listObj.name, data: listObj }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
-		function deleteEntityList(listName, entityName, successCallback, errorCallback) {
+		function deleteEntityRecordList(listName, entityName, successCallback, errorCallback) {
 			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/list/' + listName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		/////////////////////
@@ -1668,6 +1721,7 @@
 			var supportedFields = extractFieldsFromQuery(recordList.meta.query, []);
 			return supportedFields;
 		}
+		/////////////////////
 		function extractFieldsFromQuery(query, result) {
 			if (query.fieldValue != null && query.fieldValue.trim().startsWith("{")) {
 				var queryObject = angular.fromJson(query.fieldValue);
@@ -1685,6 +1739,34 @@
 			}
 
 			return result;
+		}
+		/////////////////////
+		function getSafeListNameAndEntityName(paramsListName,paramsEntityName,relationsList){
+			var data = {};
+			//if the list is in a view, than the name should be processed as the entity name could differ from the current one as well as the list name is not in fact a dataName
+			//e.g. $list$project_1_n_milestone$general	when from another entity or $list$lookup when from the current
+			data.listName = paramsListName;
+			data.entityName = paramsEntityName;
+			var listDataName = 	paramsListName;
+			var listDataNameArray =  listDataName.split("$");
+			if(listDataNameArray.length == 3){
+				//this is a list from the current entity ($list$lookup), we just need to get the proper list name
+				data.listName = listDataNameArray[2];
+			}
+			else if (listDataNameArray.length == 4){
+				//this is a list from another entity ($list$project_1_n_milestone$general), we should get both list name and entity name from the relation
+				var relationName = listDataNameArray[2];
+				var relation =  getRelationFromRelationsList(relationName,relationsList);
+				if(relation.originEntityName == paramsEntityName){
+					 data.entityName =  relation.targetEntityName;
+				}
+				else if(relation.targetEntityName == paramsEntityName){
+					data.entityName =  relation.originEntityName;
+				}
+				data.listName = listDataNameArray[3];
+			}
+
+			return data;
 		}
 
 		//#endregion
@@ -1785,6 +1867,17 @@
 		function deleteRelation(relationId, successCallback, errorCallback) {
 			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/relation/' + relationId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
+		///////////////////////
+		function getRelationFromRelationsList(relationName,relationList) {
+			var itemMeta = null;
+			for (var i = 0; i < relationList.length; i++) {
+    			 if(relationList[i].name == relationName){
+					itemMeta = 	relationList[i];
+					break;
+				 }
+			}
+			return itemMeta;
+		}
 
 		//#endregion
 
@@ -1812,9 +1905,8 @@
 		function getRecordByViewName(recordId, viewName, entityName, successCallback, errorCallback) {
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewName + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
-
- 		///////////////////////
-		function getRecordByViewMeta(recordId, viewMeta, entityName, successCallback, errorCallback) {
+		///////////////////////
+		function getRecordByViewMeta(recordId, viewMeta, entityName,stateParams, successCallback, errorCallback) {
 			if (viewMeta.dataSourceUrl == null || viewMeta.dataSourceUrl == '') {
 				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewMeta.name + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 			}
@@ -1824,7 +1916,16 @@
 				extraParamQueryString += "entityName=" + entityName + "&";
 				extraParamQueryString += "listName=" + viewMeta.name + "&";
 				extraParamQueryString += "recordId=" + recordId;
-				$http({ method: 'GET', url: viewMeta.dataSourceUrl + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResultWithCustomMeta(response.data,viewMeta, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+				if (stateParams != null) {
+					if (!isEmpty(stateParams)) {
+						for (var param in stateParams) {
+							if(extraParamQueryString.indexOf(param) == -1){
+								extraParamQueryString += param + "=" + stateParams[param] + "&";
+							}
+						}
+					}
+				}
+				$http({ method: 'GET', url: viewMeta.dataSourceUrl + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 			}
 		}
 		/////////////////////
@@ -1847,14 +1948,16 @@
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + page + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
-		function getRecordsByListMeta(listMeta, entityName, page, extraParams, successCallback, errorCallback) {
+		function getRecordsByListMeta(listMeta, entityName, page, stateParams, extraParams, successCallback, errorCallback) {
 			if (listMeta.dataSourceUrl == null || listMeta.dataSourceUrl == '') {
 				var extraParamQueryString = "";
 				if (extraParams != null) {
 					if (!isEmpty(extraParams)) {
 						extraParamQueryString = "?";
 						for (var param in extraParams) {
-							extraParamQueryString += param + "=" + extraParams[param] + "&";
+							if(extraParamQueryString.indexOf(param) == -1){
+								extraParamQueryString += param + "=" + extraParams[param] + "&";
+							}
 						}
 						//remove the last &
 						extraParamQueryString = extraParamQueryString.substring(0, extraParamQueryString.length - 1);
@@ -1871,13 +1974,24 @@
 				if (extraParams != null) {
 					if (!isEmpty(extraParams)) {
 						for (var param in extraParams) {
-							extraParamQueryString += param + "=" + extraParams[param] + "&";
+							if(extraParamQueryString.indexOf(param) == -1){
+								extraParamQueryString += param + "=" + extraParams[param] + "&";
+							}
+						}
+					}
+				}
+				if (stateParams != null) {
+					if (!isEmpty(stateParams)) {
+						for (var param in stateParams) {
+							if(extraParamQueryString.indexOf(param) == -1){
+								extraParamQueryString += param + "=" + stateParams[param] + "&";
+							}
 						}
 					}
 				}
 				//remove the last &
 				extraParamQueryString = extraParamQueryString.substring(0, extraParamQueryString.length - 1);
-				$http({ method: 'GET', url: listMeta.dataSourceUrl + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResultWithCustomMeta(response.data,listMeta, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+				$http({ method: 'GET', url: listMeta.dataSourceUrl + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 			}
 		}
 		///////////////////////
@@ -1944,7 +2058,7 @@
 		function registerHookListener(eventHookName, currentScope, executeOnHookFunction) {
 			if (executeOnHookFunction === undefined || typeof (executeOnHookFunction) != "function") {
 				$translate(['EVENT_HOOKS_REGISTER_ERROR']).then(function (translations) {
-				alert(translations.EVENT_HOOKS_REGISTER_ERROR);
+					alert(translations.EVENT_HOOKS_REGISTER_ERROR);
 				});
 				return;
 			}

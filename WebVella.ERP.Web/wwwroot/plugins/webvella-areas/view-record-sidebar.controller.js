@@ -13,24 +13,24 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedCurrentParentView','resolvedCurrentView', 'resolvedCurrentEntityMeta', 
-						'resolvedAreas', 'resolvedCurrentUser', '$sessionStorage','$timeout'];
+    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedParentViewData','resolvedCurrentViewData', 'resolvedCurrentEntityMeta', 
+						'resolvedAreas', 'resolvedCurrentUser', '$sessionStorage','$timeout','webvellaCoreService','resolvedEntityList'];
 
     
-    function controller($log, $rootScope, $state, $stateParams,resolvedCurrentParentView, resolvedCurrentView, resolvedCurrentEntityMeta, 
-						resolvedAreas, resolvedCurrentUser, $sessionStorage,$timeout) {
+    function controller($log, $rootScope, $state, $stateParams,resolvedParentViewData, resolvedCurrentViewData, resolvedCurrentEntityMeta, 
+						resolvedAreas, resolvedCurrentUser, $sessionStorage,$timeout,webvellaCoreService,resolvedEntityList) {
         var sidebarData = this;
-		if(resolvedCurrentView == null){
+		if(resolvedCurrentViewData == null){
 			sidebarData.view = null; //list in view page		
 		}
 		else {
-			sidebarData.view = fastCopy(resolvedCurrentView.meta);
+			sidebarData.view = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName,$stateParams.entityName,resolvedEntityList);
 		}
-		if(resolvedCurrentParentView == null){
+		if(resolvedParentViewData == null){
 		   sidebarData.parentView = null;
 		}
 		else{
-			sidebarData.parentView = fastCopy(resolvedCurrentParentView.meta);
+			sidebarData.parentView = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName,$stateParams.entityName,resolvedEntityList);
 		}
         sidebarData.stateParams = fastCopy($stateParams);
         sidebarData.entity = fastCopy(resolvedCurrentEntityMeta);
@@ -55,7 +55,7 @@
     	//Generate menu items list
         sidebarData.items = [];
 		sidebarData.sidebarTopActions = [];
-		if(resolvedCurrentParentView == null){
+		if(resolvedParentViewData == null){
 			var generalItem = {
 				is_parent: true,
 				parentViewName: null,

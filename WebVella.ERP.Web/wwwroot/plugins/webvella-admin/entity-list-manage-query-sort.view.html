@@ -54,16 +54,18 @@
 
 		<h4 style="margin-top:2em;margin-bottom:1em" translate="{{'SORT'}}"></h4>
 		<div ng-show="ngCtrl.list.sorts == null || ngCtrl.list.sorts.length == 0" class="ng-hide"><a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSortRule()" translate="{{'SORT_RULE_ADD'}}"></a></div>
-		<div class="panel panel-default" ng-hide="ngCtrl.list.sorts == null || ngCtrl.list.sorts.length == 0">
-			<div class="panel-heading row">
-				<div class="col-sm-8"><p translate="{{'SORT_RULE_DESCRIPTION'}}"></p></div>
-				<div class="col-sm-4" style="text-align:right;">
-					<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSortRule()" translate="{{'SORT_RULE_ADD'}}"></a>
+		<div class="panel panel-default panel-white query" ng-hide="ngCtrl.list.sorts == null || ngCtrl.list.sorts.length == 0">
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-sm-8"><p translate="{{'SORT_RULE_DESCRIPTION'}}"></p></div>
+					<div class="col-sm-4" style="text-align:right;">
+						<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSortRule()" translate="{{'SORT_RULE_ADD'}}"></a>
+					</div>
 				</div>
 			</div>
-			<div class="panel-body">
-				<table class="table table-noborder table-vertical-align-middle" style="border:1px solid #ddd;">
-					<tr ng-repeat="sortRule in ngCtrl.list.sorts">
+			<div class="panel-body" style="background:#fff">
+				<table class="table table-noborder table-vertical-align-middle rule" style="border:1px solid #FFE082 !important;"  ng-repeat="sortRule in ngCtrl.list.sorts">
+					<tr>
 						<td style="width:60px"><span ng-if="$index == 0" translate="{{'First'}}"></span><span ng-if="$index != 0" translate="{{'Than'}}"></span></td>
 						<td style="width:30px;">
 							<a class="btn btn-default btn-outline" ng-click="ngCtrl.manageSortDataLink(currentQuery)"><i class="fa fa-fw fa-database"></i></a>
@@ -77,7 +79,7 @@
 						<td class="editable-field">
 							<div class="editable-wrapper input-group editable-updatable" ng-dblclick="this['fieldForm_sortRule' + $index].$show()">
 								<input type="text" class="form-control" disabled editable-text="sortRule.fieldName"
-									   value="{{sortRule.fieldName}}" onbeforesave="ngCtrl.updateSorts()" e-form="{{'fieldForm_sortRule' + $index}}"  autocomplete="off"
+									   value="{{sortRule.fieldName}}" onbeforesave="ngCtrl.updateSorts()" e-form="{{'fieldForm_sortRule' + $index}}" autocomplete="off"
 									   e-uib-typeahead="item.fieldName as item.meta.name for item in ngCtrl.onlyFieldsLibrary.items | filter:$viewValue | limitTo:8">
 								<span class="input-group-addon" ng-click="this['fieldForm_sortRule' + $index].$show()" ng-hide="this['fieldForm_sortRule' + $index].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 							</div>
@@ -103,7 +105,7 @@
 </div>
 
 <script type="text/ng-template" id="queryRule.html">
-	<table class="table table-noborder table-vertical-align-middle" style="border:1px solid #ddd">
+	<table class="table table-noborder table-vertical-align-middle rule" style="border:1px solid #FFE082 !important">
 		<tr>
 			<td style="width:30px;">
 				<a class="btn btn-default btn-outline" ng-click="ngCtrl.manageQueryDataLink()"><i class="fa fa-fw fa-database"></i></a>
@@ -131,23 +133,25 @@
 </script>
 
 <script type="text/ng-template" id="querySection.html">
-	<div class="panel panel-default">
-		<div class="panel-heading row">
-			<div class="col-sm-8">
-				<select class="form-control pull-left" style="width:80px;" ng-model="currentQuery.queryType" ng-change="ngCtrl.updateQuery()">
-					<option value="AND">{{'ALL' | translate}}</option>
-					<option value="OR">{{'ANY' | translate}}</option>
-				</select>
-				<p style="line-height:30px;padding-left:90px;" translate="{{'QUERY_RULE_CONDITION_SUFIX'}}"></p>
-			</div>
-			<div class="col-sm-4" style="text-align:right;">
-				<a class="btn btn-default go-red btn-outline" ng-click="ngCtrl.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
-				<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSection(currentQuery)" translate="{{'QUERY_SECTION_ADD'}}"></a>
-				<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddRule(currentQuery)" translate="{{'QUERY_RULE_ADD'}}"></a>
+	<div class="panel panel-default panel-white query">
+		<div class="panel-heading">
+			<div class="row">
+				<div class="col-sm-8">
+					<select class="form-control pull-left" style="width:80px;" ng-model="currentQuery.queryType" ng-change="ngCtrl.updateQuery()">
+						<option value="AND">{{'ALL' | translate}}</option>
+						<option value="OR">{{'ANY' | translate}}</option>
+					</select>
+					<p style="line-height:30px;padding-left:90px;" translate="{{'QUERY_RULE_CONDITION_SUFIX'}}"></p>
+				</div>
+				<div class="col-sm-4" style="text-align:right;">
+					<a class="btn btn-default go-red btn-outline" ng-click="ngCtrl.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
+					<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSection(currentQuery)" translate="{{'QUERY_SECTION_ADD'}}"></a>
+					<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddRule(currentQuery)" translate="{{'QUERY_RULE_ADD'}}"></a>
+				</div>
 			</div>
 		</div>
-		<div class="panel-body">
-			<query-item ng-repeat="queryItem in currentQuery.subQueries"
+		<div class="panel-body" style="background:#fff">
+			<query-item ng-repeat="queryItem in currentQuery.subQueries track by $index"
 						current-query="queryItem" parent-query="currentQuery"
 						root-query="ngCtrl.list.query" page-scope="ngCtrl"
 						query-index="$index"></query-item>

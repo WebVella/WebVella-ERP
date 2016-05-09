@@ -118,7 +118,7 @@
 			}
 		}
 
-		webvellaCoreService.getEntityList($stateParams.listName, $stateParams.entityName, successCallback, errorCallback);
+		webvellaCoreService.getEntityRecordList($stateParams.listName, $stateParams.entityName, successCallback, errorCallback);
 
 		return defer.promise;
 	}
@@ -306,7 +306,7 @@
 		popupCtrl.ok = function () {
 			var postObj = {};
 			postObj.serviceCode = fastCopy(popupCtrl.serviceCode);
-			webvellaCoreService.patchEntityList(postObj, popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback)
+			webvellaCoreService.patchEntityRecordList(postObj, popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback)
 		};
 
 		popupCtrl.cancel = function () {
@@ -438,14 +438,14 @@
 				var postObj = {};
 				postObj.actionItems = updatedActionItems;
 				postObj.actionItems.push(popupCtrl.actionItem);
-				webvellaCoreService.patchEntityList(postObj, popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);					
+				webvellaCoreService.patchEntityRecordList(postObj, popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);					
 			}
 			else {
 				if (popupCtrl.validateName(popupCtrl.actionItem.name)) {
 					var postObj = {};
 					postObj.actionItems = popupCtrl.originalActionItems;
 					postObj.actionItems.push(popupCtrl.actionItem);
-					webvellaCoreService.patchEntityList(postObj, popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
+					webvellaCoreService.patchEntityRecordList(postObj, popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
 				}
 			}
 		};
@@ -458,7 +458,7 @@
 			var updatedActionItems = popupCtrl.removeActionItemByName(actionItem.name,popupCtrl.originalActionItems)
 			var postObj = {};
 			postObj.actionItems = updatedActionItems;
-			webvellaCoreService.patchEntityList(postObj, popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
+			webvellaCoreService.patchEntityRecordList(postObj, popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
 		};
 
 		/// Aux

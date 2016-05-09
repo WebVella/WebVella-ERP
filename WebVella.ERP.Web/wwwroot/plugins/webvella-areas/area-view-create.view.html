@@ -408,7 +408,7 @@
 										</div>
 										<!-- Case 2 - Current Entity is Target -->
 										<div ng-switch-when="2">
-											<div class="editable-wrapper input-group editable-updatable">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="ngCtrl.openManageRelationFieldModal(item,1,'target')">
 												<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(ngCtrl.view.data[item.dataName],item.meta)}}"></input>
 												<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.view.data[item.dataName].length > 0"
 													  confirmed-click="ngCtrl.emptyField(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
@@ -426,11 +426,13 @@
 									<div ng-switch-when="2" ng-switch="ngCtrl.getRelation(item.relationName).currentEntityRole">
 										<!-- Case 1 - Current Entity is Origin -->
 										<div ng-switch-when="1" class="position-relative">
-											<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0">
+											<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0"
+												ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin')">
 												<input type="text" class="form-control" disabled value=""></input>
 												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0">
+											<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0"
+												ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin')">
 												<table class="table table-bordered editable origin lookup">
 													<tr ng-repeat="relationDataRecord in ngCtrl.dummyFields[item.dataName]">
 														<td>{{relationDataRecord}}</td>
@@ -444,7 +446,7 @@
 										</div>
 										<!-- Case 2 - Current Entity is Target -->
 										<div ng-switch-when="2">
-											<div class="editable-wrapper input-group editable-updatable">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'target')">
 												<input type="text" class="form-control" disabled value="{{ngCtrl.dummyFields[item.dataName]}}"></input>
 												<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.hasFieldFromRelationValue(item.dataName)"
 													  confirmed-click="ngCtrl.removeFieldFromRelationValue(item.dataName)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
@@ -453,11 +455,13 @@
 										</div>
 										<!-- Case 3 - Current Entity is both Origin and Target -->
 										<div ng-switch-when="3" class="position-relative">
-											<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0">
+											<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0"
+												ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin')">
 												<input type="text" class="form-control" disabled value=""></input>
 												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0">
+											<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0"
+												ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin')">
 												<table class="table table-bordered editable origin lookup">
 													<tr ng-repeat="relationDataRecord in ngCtrl.dummyFields[item.dataName]">
 														<td>{{relationDataRecord}}</td>
@@ -474,11 +478,13 @@
 									<div ng-switch-when="3" ng-switch="ngCtrl.getRelation(item.relationName).currentEntityRole">
 										<!-- Case 1 - Current Entity is Origin -->
 										<div ng-switch-when="1" class="position-relative">
-											<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0">
+											<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0"
+												ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'origin')">
 												<input type="text" class="form-control" disabled value=""></input>
 												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0">
+											<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0"
+												ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'origin')">
 												<table class="table table-bordered editable origin lookup">
 													<tr ng-repeat="relationDataRecord in ngCtrl.dummyFields[item.dataName]">
 														<td>{{relationDataRecord}}</td>
@@ -493,11 +499,13 @@
 
 										<!-- Case 2 - Current Entity is Target -->
 										<div ng-switch-when="2" class="position-relative">
-											<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0">
+											<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0"
+												ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'target')">
 												<input type="text" class="form-control" disabled value=""></input>
 												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'target')"><i class="fa fa-indent fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0">
+											<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0"
+												ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'target')">
 												<table class="table table-bordered editable origin lookup">
 													<tr ng-repeat="relationDataRecord in ngCtrl.dummyFields[item.dataName]">
 														<td>{{relationDataRecord}}</td>
@@ -512,11 +520,13 @@
 
 										<!-- Case 3 - Current Entity is both Origin and Target -->
 										<div ng-switch-when="3" class="position-relative">
-											<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0">
+											<div class="editable-wrapper input-group editable-updatable" ng-if="!ngCtrl.dummyFields[item.dataName] || ngCtrl.dummyFields[item.dataName].length == 0"
+												ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'origin')">
 												<input type="text" class="form-control" disabled value=""></input>
 												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0">
+											<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.dummyFields[item.dataName].length > 0"
+												ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'origin')">
 												<table class="table table-bordered editable origin lookup">
 													<tr ng-repeat="relationDataRecord in ngCtrl.dummyFields[item.dataName]">
 														<td>{{relationDataRecord}}</td>
@@ -582,7 +592,7 @@
 <script type="text/ng-template" id="manageRelationFieldModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Select <span class="go-green">{{popupCtrl.getRelationLabel(popupCtrl.selectedItem.relationName)}}</span></h3>
+		<h3 class="modal-title">Select <span class="go-green">{{popupCtrl.getRelationLabel(popupCtrl.selectedItem)}}</span></h3>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger ng-hide" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>

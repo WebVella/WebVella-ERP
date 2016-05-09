@@ -20,9 +20,13 @@
 	},
 	"module": {
 		"css": [
+			"/plugins/webvella-projects/css/styles.css"
 		],
 		"js": [
+			"/plugins/webvella-projects/base.module.js",
+			"/plugins/webvella-projects/user-dashboard.module.js",
+			"/plugins/webvella-projects/providers/projects.service.js"
 		],
-		"wvApp_injects": [ ]
+		"wvApp_injects": [ "webvellaProjects" ]
 	}
 }

@@ -117,7 +117,7 @@
 			}
 		}
 
-		webvellaCoreService.getEntityList($stateParams.listName, $stateParams.entityName, successCallback, errorCallback);
+		webvellaCoreService.getEntityRecordList($stateParams.listName, $stateParams.entityName, successCallback, errorCallback);
 		return defer.promise;
 	}
 
@@ -263,7 +263,7 @@
 			var postObj = {};
 			postObj.columns = ngCtrl.list.columns;
 			calculateDefaultSearchFieldName();
-			webvellaCoreService.patchEntityList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
+			webvellaCoreService.patchEntityRecordList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
 		}
 
 		//#endregion
@@ -505,7 +505,7 @@
 				}
 			}
 
-			webvellaCoreService.updateEntityList(ngCtrl.list, ngCtrl.entity.name, successCallback, errorCallback);
+			webvellaCoreService.updateEntityRecordList(ngCtrl.list, ngCtrl.entity.name, successCallback, errorCallback);
 		}
 
 		ngCtrl.toggleRelationToLibrary = function (relation) {

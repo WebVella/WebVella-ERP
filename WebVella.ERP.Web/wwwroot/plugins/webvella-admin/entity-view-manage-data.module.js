@@ -122,10 +122,10 @@
 
 	//#region << Controller >> ////////////////////////////
 	controller.$inject = ['$filter', '$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$uibModal', '$timeout',
-                            'resolvedCurrentEntityMeta', 'webvellaCoreService', 'ngToast','$translate','resolvedOneRecord'];
+                            'resolvedCurrentEntityMeta', 'webvellaCoreService', 'ngToast','$translate','resolvedOneRecord','resolvedEntityList'];
 	
 	function controller($filter, $scope, $log, $rootScope, $state, $stateParams, pageTitle, $uibModal, $timeout,
-                        resolvedCurrentEntityMeta, webvellaCoreService, ngToast,$translate,resolvedOneRecord) {
+                        resolvedCurrentEntityMeta, webvellaCoreService, ngToast,$translate,resolvedOneRecord,resolvedEntityList) {
 		var ngCtrl = this;
 		ngCtrl.loading = {};
 		//#region << Initialize Current Entity >>
@@ -152,37 +152,32 @@
 		}
 		//#endregion
 		ngCtrl.sampleRecordId = fastCopy(resolvedOneRecord.data[0].id);
+
 		ngCtrl.getData = function (dataType) {
 			function successCallback(response) {
 				switch (dataType) {
-					case "defaultSample":
-						ngCtrl.defaultData = response.object.data;
+					case "defaultData":
+						ngCtrl.defaultData = response.object;
 						break;
-					case "defaultFull":
-						ngCtrl.defaultData =  response.object;
-						break;
-					case "customSample":
-						ngCtrl.customData  = response.object.data;
+					case "defaultMeta":
+						ngCtrl.defaultMeta =  response.object;
 						break;
 					case "customFull":
-						ngCtrl.customData  =  response.object;
+						ngCtrl.customFull  =  response;
 						break;
 				}
 				ngCtrl.loading[dataType] = false;
  			}
 			function errorCallback(response) {
 				switch (dataType) {
-					case "defaultSample":
+					case "defaultData":
 						ngCtrl.defaultData = "Error: " + response.message;
 						break;
-					case "defaultFull":
-						ngCtrl.defaultData =  "Error: " + response.message;
-						break;
-					case "customSample":
-						ngCtrl.customData  = "Error: " + response.message;
+					case "defaultMeta":
+						ngCtrl.defaultMeta =  "Error: " + response.message;
 						break;
 					case "customFull":
-						ngCtrl.customData  =  "Error: " + response.message;
+						ngCtrl.customFull  =  "Error: " + response.message;
 						break;
 				}				
 				ngCtrl.loading[dataType] = false;
@@ -192,18 +187,23 @@
 
 			ngCtrl.loading[dataType] = true;
 			switch (dataType) {
-				case "defaultSample":
+				case "defaultData":
+					ngCtrl.defaultMeta = null;
 					sampleViewMeta.dataSourceUrl = null;
+					webvellaCoreService.getRecordByViewMeta(ngCtrl.sampleRecordId,sampleViewMeta, ngCtrl.entity.name,null, successCallback, errorCallback);
 					break;
-				case "defaultFull":
-					sampleViewMeta.dataSourceUrl = null;
-					break;
-				case "customSample":
+				case "defaultMeta":
+					ngCtrl.defaultData = null;
+					var response = {};
+					response.success = true;
+					response.object = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList(sampleViewMeta.name,ngCtrl.entity.name,resolvedEntityList);
+					successCallback(response);
 					break;
 				case "customFull":
+					webvellaCoreService.getRecordByViewMeta(ngCtrl.sampleRecordId,sampleViewMeta, ngCtrl.entity.name,null, successCallback, errorCallback);
 					break;
 			}
-			webvellaCoreService.getRecordByViewMeta(ngCtrl.sampleRecordId,sampleViewMeta, ngCtrl.entity.name, successCallback, errorCallback)
+			
 
 		}
 
