@@ -1055,7 +1055,23 @@ TREE SELECT
 	}
 	#endregion
 
-
+	//Field from relation
+	#region << field_name >>
+	{
+	var relatedEntity = entMan.ReadEntity("entity_id").Object;
+	var relation = relMan.Read("relation_name").Object;
+	listFieldFromRelation = new InputRecordListRelationFieldItem();
+	listFieldFromRelation.EntityId = relatedEntity.Id;
+	listFieldFromRelation.EntityName = relatedEntity.Name;
+	listFieldFromRelation.FieldId = relatedEntity.Fields.Single(x => x.Name == "field_name").Id;
+	listFieldFromRelation.FieldName = "field_name";
+	listFieldFromRelation.Type = "field";
+	listFieldFromRelation.RelationId = relation.Id;
+	listFieldFromRelation.RelationName = relation.Name;
+	updateListInput.Columns.Add(listFieldFromRelation);
+	}
+	#endregion	
+	
 	#endregion
 	
 	#region << relation options >>
@@ -1097,6 +1113,7 @@ TREE SELECT
 	var updateList = updateListEntity.RecordLists.Single(x => x.Name == "list_name");
 	var updateListInput = new InputRecordList();
 	var listField = new InputRecordListFieldItem();
+	var listFieldFromRelation = new InputRecordListRelationFieldItem();
 	var listSort = new InputRecordListSort();
 	var listQuery = new InputRecordListQuery();
 					
@@ -1122,15 +1139,19 @@ TREE SELECT
 	//Field from relation
 	#region << field_name >>
 	{
-	listFieldFromRelation = new listFieldFromRelation();
-	listField.EntityId = updateListEntity.Id;
-	listField.EntityName = updateListEntity.Name;
-	listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "field_name").Id;
-	listField.FieldName = "field_name";
-	listField.Type = "field";
-	updateListInput.Columns.Add(listField);
+	var relatedEntity = entMan.ReadEntity("entity_id").Object;
+	var relation = relMan.Read("relation_name").Object;
+	listFieldFromRelation = new InputRecordListRelationFieldItem();
+	listFieldFromRelation.EntityId = relatedEntity.Id;
+	listFieldFromRelation.EntityName = relatedEntity.Name;
+	listFieldFromRelation.FieldId = relatedEntity.Fields.Single(x => x.Name == "field_name").Id;
+	listFieldFromRelation.FieldName = "field_name";
+	listFieldFromRelation.Type = "field";
+	listFieldFromRelation.RelationId = relation.Id;
+	listFieldFromRelation.RelationName = relation.Name;
+	updateListInput.Columns.Add(listFieldFromRelation);
 	}
-	#endregion	
+	#endregion		
 	
 	//Query
 	#region << query descr >>

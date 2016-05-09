@@ -617,7 +617,15 @@
 						<tr>
 							<th class="actions" style="width:80px;" ng-if="popupCtrl.modalMode != 'single-trigger-selection'"></th>
 							<th class="actions" style="width:110px;" ng-if="popupCtrl.modalMode == 'single-trigger-selection'"></th>
-							<th class="wv-{{column.meta.name}}" ng-repeat="column in popupCtrl.relationLookupList.meta.columns  | limitTo: popupCtrl.relationLookupList.meta.visibleColumnsCount">{{column.meta.label}}</th>
+							<th ng-style="{'width': popupCtrl.columnWidths[$index]}" class="wv-{{column.meta.name}}" ng-repeat="column in popupCtrl.relationLookupList.meta.columns  | limitTo: popupCtrl.relationLookupList.meta.visibleColumnsCount"
+								ng-switch="::column.type">
+									<span ng-switch-when="field">{{::column.meta.label}}</span>
+									<span ng-switch-when="fieldFromRelation">{{::column.fieldLabel}}</span>
+									<span ng-switch-when="view">{{::column.meta.label}}</span>
+									<span ng-switch-when="viewFromRelation">{{::column.fieldLabel}}</span>
+									<span ng-switch-when="list">{{::column.meta.label}}</span>
+									<span ng-switch-when="listFromRelation">{{::column.fieldLabel}}</span>
+							</th>
 						</tr>
 					</thead>
 					<tbody>

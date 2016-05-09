@@ -32,7 +32,7 @@
 							<label class="control-label" translate="{{'NAME'}}"></label>
 							<div>
 								<div class="editable-wrapper input-group editable-readonly">
-									<input type="text" class="form-control" disabled value="{{::ngCtrl.entity.name}}"></input>
+									<p class="form-control-static form-control" ng-bind="::ngCtrl.entity.name"></p>
 									<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 								</div>
 							</div>
@@ -42,19 +42,11 @@
 				<div class="col-sm-6">
 					<div class="form-group">
 						<div class="editable-field field">
-							<label class="control-label" translate="{{'SYSTEM'}}"></label>
+							<label class="control-label" translate="{{'Id'}}"></label>
 							<div>
-								<div class="editable-wrapper input-group first-background-transparent editable-updatable"  ng-dblclick="fieldForm_system.$show()">
-									<span class="input-group-addon" ng-if="ngCtrl.entity.system && !fieldForm_system.$visible">
-										<i class="fa fa-check fa-fw go-green"></i>
-									</span>
-									<span class="input-group-addon" ng-if="!ngCtrl.entity.system && !fieldForm_system.$visible">
-										<i class="fa fa-times fa-fw go-red"></i>
-									</span>
-									<input type="text" class="form-control" disabled editable-checkbox="ngCtrl.entity.system"
-											e-title="{{'CHECKBOX_TRUE_LABEL' | translate}}" value="{{ngCtrl.renderFieldValue(ngCtrl.entity.system,{fieldType:2})}}"
-											onbeforesave="ngCtrl.fieldUpdate('system',$data)" e-form="fieldForm_system">
-									<span class="input-group-addon" ng-click="fieldForm_system.$show()" ng-hide="fieldForm_system.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+								<div class="editable-wrapper input-group editable-readonly">
+									<p class="form-control-static form-control" ng-bind="::ngCtrl.entity.id"></p>
+									<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 								</div>
 							</div>
 						</div>
@@ -99,17 +91,20 @@
 				<div class="col-sm-6">
 					<div class="form-group">
 						<div class="editable-field field">
-							<label class="control-label" translate="{{'ICON_NAME'}}"></label>
+							<label class="control-label" translate="{{'SYSTEM'}}"></label>
 							<div>
-								<div class="editable-wrapper input-group first-background-transparent editable-updatable" 
-									ng-dblclick="fieldForm_iconName.$show(); ngCtrl[fieldForm_iconName] = fieldForm_iconName;">
-									<span class="input-group-addon" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-{{ngCtrl.entity.iconName}} fa-fw"></i></span>
-									<input type="text" class="form-control" disabled editable-text="ngCtrl.entity.iconName"
-										   value="{{ngCtrl.entity.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName',$data)" e-form="fieldForm_iconName"  autocomplete="off"
-										   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in ngCtrl.icons | filter:$viewValue | limitTo:8">
-									<span class="input-group-addon" ng-click="fieldForm_iconName.$show();ngCtrl[fieldForm_iconName] = fieldForm_iconName;" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+								<div class="editable-wrapper input-group first-background-transparent editable-updatable"  ng-dblclick="fieldForm_system.$show()">
+									<span class="input-group-addon" ng-if="ngCtrl.entity.system && !fieldForm_system.$visible">
+										<i class="fa fa-check fa-fw go-green"></i>
+									</span>
+									<span class="input-group-addon" ng-if="!ngCtrl.entity.system && !fieldForm_system.$visible">
+										<i class="fa fa-times fa-fw go-red"></i>
+									</span>
+									<input type="text" class="form-control" disabled editable-checkbox="ngCtrl.entity.system"
+											e-title="{{'CHECKBOX_TRUE_LABEL' | translate}}" value="{{ngCtrl.renderFieldValue(ngCtrl.entity.system,{fieldType:2})}}"
+											onbeforesave="ngCtrl.fieldUpdate('system',$data)" e-form="fieldForm_system">
+									<span class="input-group-addon" ng-click="fieldForm_system.$show()" ng-hide="fieldForm_system.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 								</div>
-								<div class="form-description"  translate="{{'ICON_NAME_DESCRIPTION'}}" ng-if="ngCtrl[fieldForm_iconName].$visible"></div>
 							</div>
 						</div>
 					</div>
@@ -130,7 +125,26 @@
 					</div>
 				</div>
 			</div>
-
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<div class="editable-field field">
+							<label class="control-label" translate="{{'ICON_NAME'}}"></label>
+							<div>
+								<div class="editable-wrapper input-group first-background-transparent editable-updatable" 
+									ng-dblclick="fieldForm_iconName.$show(); ngCtrl[fieldForm_iconName] = fieldForm_iconName;">
+									<span class="input-group-addon" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-{{ngCtrl.entity.iconName}} fa-fw"></i></span>
+									<input type="text" class="form-control" disabled editable-text="ngCtrl.entity.iconName"
+										   value="{{ngCtrl.entity.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName',$data)" e-form="fieldForm_iconName"  autocomplete="off"
+										   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in ngCtrl.icons | filter:$viewValue | limitTo:8">
+									<span class="input-group-addon" ng-click="fieldForm_iconName.$show();ngCtrl[fieldForm_iconName] = fieldForm_iconName;" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+								</div>
+								<div class="form-description"  translate="{{'ICON_NAME_DESCRIPTION'}}" ng-if="ngCtrl[fieldForm_iconName].$visible"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="form-group">

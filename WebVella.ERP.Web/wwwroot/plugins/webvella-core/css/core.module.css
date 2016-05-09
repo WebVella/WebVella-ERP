@@ -209,7 +209,8 @@ span.divider {
 }
 
 .navbar.navbar-default.navbar-erp {
-	background: #fff;
+	background: #f2f2f2;
+	border-color:#ccc;
 	margin-bottom: 1em;
 	min-height: 40px;
 }
@@ -3185,17 +3186,12 @@ table .btn-xs.btn-link {
 	.editable-wrapper:hover,
 	.form-control[disabled],
 	fieldset[disabled] .form-control {
-		cursor: default !important;
+		cursor: auto !important;
 	}
 
 	.editable-wrapper .form-control {
 		background-color: #fafafa;
 		color: #333;
-		-moz-user-select: none;
-		-ms-user-select: none;
-		-webkit-touch-callout: none;
-		-webkit-user-select: none;
-		user-select: none;
 		box-shadow: none;
 	}
 
@@ -3206,7 +3202,7 @@ table .btn-xs.btn-link {
 		}
 
 		.editable-wrapper .form-control[disabled]:hover, .editable-wrapper fieldset[disabled] .form-control:hover {
-			cursor: default;
+			cursor: auto;
 		}
 
 .fake-input-wrapper {
