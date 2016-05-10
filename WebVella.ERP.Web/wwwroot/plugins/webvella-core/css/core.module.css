@@ -4961,19 +4961,20 @@ a.link-icon.link[href]:before {
 
 /*#region << Post >>*/
 .post .post-heading {
-	height: 80px;
+	height: 70px;
 	padding: 10px;
 }
 
 	.post .post-heading .avatar {
-		width: 60px;
-		height: 60px;
+		width: 48px;
+		height: 48px;
 		display: block;
 		margin-right: 15px;
 	}
 
 	.post .post-heading .meta .title {
 		margin-bottom: 0;
+		margin-top:5px;
 	}
 
 		.post .post-heading .meta .title a {

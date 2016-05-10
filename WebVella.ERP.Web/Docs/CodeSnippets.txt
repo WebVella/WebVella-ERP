@@ -1068,7 +1068,7 @@ TREE SELECT
 	listFieldFromRelation.Type = "field";
 	listFieldFromRelation.RelationId = relation.Id;
 	listFieldFromRelation.RelationName = relation.Name;
-	updateListInput.Columns.Add(listFieldFromRelation);
+	createListInput.Columns.Add(listFieldFromRelation);
 	}
 	#endregion	
 	
@@ -1090,6 +1090,7 @@ TREE SELECT
 	#endregion
 
 	#region << Sort >>
+	createListInput.Sorts = new List<InputRecordListSort>();
 	listSort = new InputRecordListSort();
 	listSort.FieldName = "field_name";
 	listSort.SortType = "descending";
