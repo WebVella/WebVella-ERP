@@ -4,15 +4,15 @@
     <a class="btn btn-default btn-sm hidden-xs" title="My bookmarked pages and lists"><i class="fa fa-star"></i> <span class="visible-lg-inline">Bookmarks</span></a>
     <a class="btn btn-default btn-sm hidden-xs" title="My alerts"><i class="fa fa-bell"></i>  <span class="visible-lg-inline">Alerts</span> <span class="badge badge-danger">4</span></a>
     <a class="btn btn-default btn-sm hidden-xs" title="Get more info about the page"><i class="fa fa-question-circle"></i>  <span class="visible-lg-inline">Help</span></a>-->
-    <a style="padding-right:0;" class="btn btn-link btn-sm" title="Log out"  ng-click="topnavData.logout()"><i class="fa fa-power-off"></i> <span class="visible-lg-inline" translate="{{' LOG_OUT '}}"></span></a>
+    <a style="padding-right:0;" class="btn btn-link btn-sm" title="Log out"  ng-click="topnavData.logout()"><i class="fa fa-power-off"></i> <span class="visible-lg-inline" translate="{{::'LOG_OUT'}}"></span></a>
 </div>
 <div id="areanav">
-    <a class="btn btn-default btn-sm" href="#/desktop/browse" title="{{'GOTO_DESKTOP_LINK_TITLE' | translate}}"><i class="fa fa-home"></i></a>
+    <a class="btn btn-default btn-sm" href="#/desktop/browse" title="{{::'GOTO_DESKTOP_LINK_TITLE' | translate}}"><i class="fa fa-home"></i></a>
 </div>
 <div id="localnav">
     <a class="btn btn-default visible-xs-inline-block btn-sm" ng-click="openChangeLocalModal()"><i class="fa fa-bars"></i></a>
 </div>
-<div id="area-title" class="hidden-xs" translate="{{' ADMINISTRATION '}}"></div>
+<div id="area-title" class="hidden-xs" translate="{{::'ADMINISTRATION'}}"></div>
 <div class="divider-box hidden-xs"><i class="fa fa-caret-right"></i></div>
 <div id="entity-label" class="hidden-xs">{{topnavData.adminSectionName}}</div>
 <div class="divider-box hidden-xs" ng-if="topnavData.adminSectionName != null"><i class="fa fa-caret-right"></i></div>

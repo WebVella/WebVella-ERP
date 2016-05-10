@@ -144,7 +144,7 @@
 			event.preventDefault();
 			$timeout(function () {
 				$state.go(redirectObject.stateName, redirectObject.params, { reload: true });
-			}, 1);
+			}, 0);
 		});
 
 		$rootScope.$on("$stateChangeSuccess", function () {

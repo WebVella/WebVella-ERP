@@ -5887,8 +5887,8 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "page-title";
 					actionItem.Weight = 1;
 					actionItem.Template = "" +
-@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-    ng-href=""{{ngCtrl.getRecordCreateUrl()}}"">
+@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+    ng-href=""{{::ngCtrl.getRecordCreateUrl()}}"">
 	<i class=""fa fa-fw fa-plus""></i> Add New
 </a>";
 					break;
@@ -5897,7 +5897,7 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 10;
 					actionItem.Template = "" +
-@"<a ng-click=""ngCtrl.openImportModal()"" class=""ng-hide"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate,canUpdate')"">
+@"<a ng-click=""ngCtrl.openImportModal()"" class=""ng-hide"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')"">
 	<i class=""fa fa-fw fa-upload""></i> Import CSV
 </a>";
 					break;
@@ -5906,7 +5906,7 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 11;
 					actionItem.Template = "" +
-@"<a ng-click=""ngCtrl.openExportModal()"" class=""ng-hide"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate,canUpdate')"">
+@"<a ng-click=""ngCtrl.openExportModal()"" class=""ng-hide"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')"">
 	<i class=""fa fa-fw fa-download""></i> Export CSV
 </a>";
 					break;
@@ -5915,7 +5915,7 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "record-row";
 					actionItem.Weight = 1;
 					actionItem.Template = "" +
-@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record)}}"">
+@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record)}}"">
     <i class=""fa fa-fw fa-eye""></i>
 </a>";
 					break;
@@ -5984,8 +5984,8 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 1;
 					actionItem.Template = "" +
-@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
-		ng-if=""ngCtrl.userHasRecordPermissions('canDelete')"">
+@"<a href=""javascript:void(0)"" confirmed-click=""::ngCtrl.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
+		ng-if=""::ngCtrl.userHasRecordPermissions('canDelete')"">
 	<i class=""fa fa-trash go-red""></i> Delete Record
 </a>";
 					break;
@@ -5994,14 +5994,14 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "create-bottom";
 					actionItem.Weight = 1;
 					actionItem.Template = "" +
-@"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""list"")' ng-if=""ngCtrl.createViewRegion != null"">Create & List</a>";
+@"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""list"")' ng-if=""::ngCtrl.createViewRegion != null"">Create & List</a>";
 					break;
 				case "wv_create_and_details":
 					actionItem.Name = "wv_create_and_details";
 					actionItem.Menu = "create-bottom";
 					actionItem.Weight = 2;
 					actionItem.Template = "" +
-@"<a class=""btn btn-default btn-outline"" ng-click='ngCtrl.create(""details"")' ng-if=""ngCtrl.createViewRegion != null"">Create & Details</a>";
+@"<a class=""btn btn-default btn-outline"" ng-click='ngCtrl.create(""details"")' ng-if=""::ngCtrl.createViewRegion != null"">Create & Details</a>";
 					break;
 				case "wv_create_cancel":
 					actionItem.Name = "wv_create_cancel";

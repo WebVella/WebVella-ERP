@@ -58,6 +58,7 @@
 	resolveEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
 	function resolveEntityList($q, $log, webvellaCoreService, $state, $stateParams) {
 		var defer = $q.defer();
+		console.log("entity list parent state");
 		function successCallback(response) {
 			defer.resolve(response.object.entities);
 		}

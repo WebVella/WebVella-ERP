@@ -1,16 +1,16 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-success btn-outline" ng-click="ngCtrl.openManageRoleModal(null)"><i class="fa fa-plus"></i> <span translate="{{'ADD_NEW'}}"></span></a>
+			<a class="btn btn-success btn-outline" ng-click="ngCtrl.openManageRoleModal(null)"><i class="fa fa-plus"></i> <span translate="{{::'ADD_NEW'}}"></span></a>
 			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.roles.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
-					<input ng-model="ngCtrl.search.name" type="text" class="form-control" placeholder="{{'ROLE_NAME' | translate}}">
+					<input ng-model="ngCtrl.search.name" type="text" class="form-control" placeholder="{{::'ROLE_NAME' | translate}}">
 				</div>
 			</div>
 		</div>
 		<div class="meta-label">
-			<h4 translate="{{'ROLES_PAGE_TITLE'}}"></h4>
+			<h4 translate="{{::'ROLES_PAGE_TITLE'}}"></h4>
 		</div>
 	</div>
 </div>
@@ -20,7 +20,7 @@
 			<thead>
 				<tr>
 					<th width="50"></th>
-                    <th translate="{{'NAME'}}"></th>
+                    <th translate="{{::'NAME'}}"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -34,7 +34,7 @@
 				</tr>
 			</tbody>
 		</table>
-		<div class="alert alert-info" ng-show="ngCtrl.roles.length == 0" style="margin-top:2em;" translate="{{'LIST_EMPTY_MESSAGE'}}"></div>
+		<div class="alert alert-info" ng-show="ngCtrl.roles.length == 0" style="margin-top:2em;" translate="{{::'LIST_EMPTY_MESSAGE'}}"></div>
 	</div>
 </div>
 <script type="text/ng-template" id="manageRoleModal.html">
@@ -47,7 +47,7 @@
 			<div class="row" ng-if="popupCtrl.role.id != null">
 				<div class="col-sm-12">
 					<div class="form-group">
-						<label class="control-label" translate="{{'ID'}}"></label>
+						<label class="control-label" translate="{{::'ID'}}"></label>
 						<input class="form-control" ng-model="popupCtrl.role.id" type="text"  disabled/>
 					</div>
 				</div>
@@ -55,11 +55,11 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="form-group" ng-class="{ 'has-error' : manageForm.name.$invalid && !manageForm.name.$pristine || popupCtrl.validation.name.state}">
-						<label class="control-label" translate="{{'NAME'}}"></label>
+						<label class="control-label" translate="{{::'NAME'}}"></label>
 						<input class="form-control" ng-model="popupCtrl.role.name" name="name" type="text"  ng-model-options="{allowInvalid:true}" 
 							   ng-required="true"/>
 						<div class="error" ng-show="manageForm.name.$touched && manageForm.name.$dirty && manageForm.name.$invalid ||  popupCtrl.validation.name.state">
-							<small class="error" ng-show="manageForm.name.$error.required && !popupCtrl.validation.name.state" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>							
+							<small class="error" ng-show="manageForm.name.$error.required && !popupCtrl.validation.name.state" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></small>							
 							<small class="error" ng-show="popupCtrl.validation.name.state">
 								{{popupCtrl.validation.name.message}}
 							</small>
@@ -70,11 +70,11 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="form-group" ng-class="{ 'has-error' : manageForm.description.$invalid && !manageForm.description.$pristine || popupCtrl.validation.description.state}">
-						<label class="control-label" translate="{{'DESCRIPTION'}}"></label>
+						<label class="control-label" translate="{{::'DESCRIPTION'}}"></label>
 						<textarea class="form-control" ng-model="popupCtrl.role.description" name="name" type="text"  ng-model-options="{allowInvalid:true}" 
 							   ng-required="true"></textarea>
 						<div class="error" ng-show="manageForm.description.$touched && manageForm.description.$dirty && manageForm.description.$invalid ||  popupCtrl.validation.description.state">
-							<small class="error" ng-show="manageForm.description.$error.required && !popupCtrl.validation.description.state" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>							
+							<small class="error" ng-show="manageForm.description.$error.required && !popupCtrl.validation.description.state" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></small>							
 							<small class="error" ng-show="popupCtrl.validation.description.state">
 								{{popupCtrl.validation.description.message}}
 							</small>
@@ -85,8 +85,8 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button ng-show="popupCtrl.isUpdate" class="btn btn-link pull-left go-red" ng-click="popupCtrl.deleteRoleModal()" translate="{{'ROLE_DELETE'}}"></button>
-		<button class="btn btn-primary" ng-click="popupCtrl.ok()" translate="{{'SAVE'}}"></button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
+		<button ng-show="popupCtrl.isUpdate" class="btn btn-link pull-left go-red" ng-click="popupCtrl.deleteRoleModal()" translate="{{::'ROLE_DELETE'}}"></button>
+		<button class="btn btn-primary" ng-click="popupCtrl.ok()" translate="{{::'SAVE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
 	</div>
 </script>

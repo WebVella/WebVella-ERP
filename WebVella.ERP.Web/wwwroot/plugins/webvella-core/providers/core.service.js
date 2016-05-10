@@ -1037,7 +1037,7 @@
 				"name": "wv_record_delete",
 				"menu": "page-title-dropdown",
 				"weight": 1,
-				"template": "<a href=\"javascript:void(0)\" confirmed-click=\"ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}\" \n\t\t ng-if=\"ngCtrl.userHasRecordPermissions('canDelete')\"> \n\t <i class=\"fa fa-trash go-red\"></i> Delete Record \n </a>"
+				"template": "<a href=\"javascript:void(0)\" confirmed-click=\"ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"{{'::DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}\" \n\t\t ng-if=\"::ngCtrl.userHasRecordPermissions('canDelete')\"> \n\t <i class=\"fa fa-trash go-red\"></i> Delete Record \n </a>"
 			};
 			var createListAction = {
 				"name": "wv_create_and_list",
@@ -1602,25 +1602,25 @@
 							"name": "wv_create_record",
 							"menu": "page-title",
 							"weight": 1,
-							"template": "<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"ngCtrl.userHasRecordPermissions('canCreate')\"\n ng-href=\"{{ngCtrl.getRecordCreateUrl(ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-plus\"></i> Add New\n</a>"
+							"template": "<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate')\"\n ng-href=\"{{ngCtrl.getRecordCreateUrl(ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-plus\"></i> Add New\n</a>"
 						},
 						{
 							"name": "wv_import_records",
 							"menu": "page-title-dropdown",
 							"weight": 10,
-							"template": "<a ng-click=\"ngCtrl.openImportModal()\" class=\"ng-hide\" ng-show=\"ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-upload\"></i> Import CSV\n</a>"
+							"template": "<a ng-click=\"ngCtrl.openImportModal()\" class=\"ng-hide\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-upload\"></i> Import CSV\n</a>"
 						},
 						{
 							"name": "wv_export_records",
 							"menu": "page-title-dropdown",
 							"weight": 11,
-							"template": "<a ng-click=\"ngCtrl.openExportModal()\" class=\"ng-hide\" ng-show=\"ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-download\"></i> Export CSV\n</a>"
+							"template": "<a ng-click=\"ngCtrl.openExportModal()\" class=\"ng-hide\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-download\"></i> Export CSV\n</a>"
 						},
 						{
 							"name": "wv_record_details",
 							"menu": "record-row",
 							"weight": 1,
-							"template": "<a class=\"btn btn-default btn-outline\" ng-href=\"{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-eye\"></i>\n</a>"
+							"template": "<a class=\"btn btn-default btn-outline\" ng-href=\"{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-eye\"></i>\n</a>"
 						}
 					],
 				}

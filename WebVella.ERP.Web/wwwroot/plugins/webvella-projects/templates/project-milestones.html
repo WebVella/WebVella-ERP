@@ -11,7 +11,7 @@
 	</thead>
 	<tbody>
 		<tr ng-repeat="record in ngCtrl.list.data">
-			<td class="td-action"><a class="btn btn-outline btn-default" ng-href="{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"><i class="fa fa-fw fa-eye"></i></a></td>
+			<td class="td-action"><a class="btn btn-outline btn-default" ng-href="{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"><i class="fa fa-fw fa-eye"></i></a></td>
 			<td class="td-name">{{record.name}}</td>
 			<td class="td-tasks" title="{{record.tasks_completed_count}} completed - {{record.tasks_in_progress_count}} in progress - {{record.tasks_not_started_count}} not started">
 				<span class="counter pull-left" ng-bind="{{record.tasks_completed_count}}"></span>

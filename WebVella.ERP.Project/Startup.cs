@@ -1170,7 +1170,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
-										ng-if=""ngCtrl.userHasRecordPermissions('canDelete')"">
+										ng-if=""::ngCtrl.userHasRecordPermissions('canDelete')"">
 									<i class=""fa fa-trash go-red""></i> Delete Record
 								</a>";
 											createViewInput.ActionItems.Add(actionItem);
@@ -1555,7 +1555,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
-										ng-if=""ngCtrl.userHasRecordPermissions('canDelete')"">
+										ng-if=""::ngCtrl.userHasRecordPermissions('canDelete')"">
 									<i class=""fa fa-trash go-red""></i> Delete Record
 								</a>";
 											createViewInput.ActionItems.Add(actionItem);
@@ -1614,7 +1614,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "record-row";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
 					<i class=""fa fa-fw fa-eye""></i>
 					</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -1625,8 +1625,8 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "page-title";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
 									<i class=""fa fa-fw fa-plus""></i> Add New
 								</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -3014,7 +3014,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "record-row";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
 					<i class=""fa fa-fw fa-eye""></i>
 					</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -3025,8 +3025,8 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "page-title";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
 									<i class=""fa fa-fw fa-plus""></i> Add New
 								</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -3279,7 +3279,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "record-row";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
 					<i class=""fa fa-fw fa-eye""></i>
 					</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -3290,8 +3290,8 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "page-title";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
 									<i class=""fa fa-fw fa-plus""></i> Add New
 								</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -3532,7 +3532,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "record-row";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
 					<i class=""fa fa-fw fa-eye""></i>
 					</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -3543,8 +3543,8 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "page-title";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
 									<i class=""fa fa-fw fa-plus""></i> Add New
 								</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -3763,7 +3763,7 @@ namespace WebVella.ERP.Project
 										createListInput.Type = "general";
 										createListInput.Name = "all_tasks";
 										createListInput.Label = "All Tasks";
-										createListInput.Weight = 2;
+										createListInput.Weight = 12;
 										createListInput.Default = false;
 										createListInput.System = true;
 										createListInput.CssClass = "task-list";
@@ -3772,7 +3772,7 @@ namespace WebVella.ERP.Project
 										createListInput.ColumnWidthsCSV = "80px,auto,30px,120px,120px,120px,120px";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
-										createListInput.DataSourceUrl = @"";
+										createListInput.DataSourceUrl = @"/plugins/webvella-projects/api/task/list/all";
 										createListInput.ServiceCode = null;
 										#endregion
 
@@ -3785,7 +3785,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "record-row";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-											@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+											@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
 											<i class=""fa fa-fw fa-eye""></i>
 											</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -3796,8 +3796,8 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "page-title";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
 									<i class=""fa fa-fw fa-plus""></i> Add New
 								</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -3897,6 +3897,75 @@ namespace WebVella.ERP.Project
 
 										#endregion
 
+
+										#region << query >>
+										createListInput.Query = new InputRecordListQuery();
+										//Main query rule
+										createListInput.Query.FieldName = null;
+										createListInput.Query.FieldValue = null;
+										createListInput.Query.QueryType = "AND";
+										createListInput.Query.SubQueries = new List<InputRecordListQuery>();
+
+										#region << number >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "number";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""number"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											createListInput.Query.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										#region << subject >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "subject";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""subject"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											createListInput.Query.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										#region << status >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "status";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""status"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											createListInput.Query.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										#region << priority >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "priority";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""priority"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											createListInput.Query.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										#endregion
+
+										#region << Sort >>
+										createListInput.Sorts = new List<InputRecordListSort>();
+										listSort = new InputRecordListSort();
+										listSort.FieldName = @"{""name"":""url_sort"", ""option"": ""sortBy"", ""default"": ""end_date"", ""settings"":{""order"":""sortOrder""}}";
+										listSort.SortType = "descending";
+										createListInput.Sorts.Add(listSort);
+										#endregion
+
+										{
+											var response = entMan.CreateRecordList(TASK_ENTITY_ID, createListInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Updated List: all_tickets" + " Message:" + response.Message);
+										}
+
 									}
 									#endregion
 
@@ -3947,7 +4016,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "record-row";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
 					<i class=""fa fa-fw fa-eye""></i>
 					</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -3958,8 +4027,8 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "page-title";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
 									<i class=""fa fa-fw fa-plus""></i> Add New
 								</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -4159,7 +4228,7 @@ namespace WebVella.ERP.Project
 										updateViewInput = updateView.DynamicMapTo<InputRecordView>();
 
 										#region << Details >>
-										updateViewInput.ServiceCode = "/plugins/webvella-projects/providers/create-task.service.js";
+										updateViewInput.ServiceCode = null;
 										#endregion
 
 										#region << Get the header Region >>
@@ -4335,27 +4404,6 @@ namespace WebVella.ERP.Project
 										#region << Sidebar >>
 										var sidebarItem = new InputRecordViewSidebarItemBase();
 										#endregion`								
-
-										#region << Action items edit >>
-										var newActionItemList = new List<ActionItem>();
-										foreach(var actionItem in updateViewInput.ActionItems) {
-											switch(actionItem.Name) {
-												case "wv_create_and_list":
-													actionItem.Template = @"<a class=""btn btn-primary"" ng-click=""ngCtrl.actionService.createTask(ngCtrl)"" ng-if=""ngCtrl.createViewRegion != null"">Create Task</a>";
-													newActionItemList.Add(actionItem);
-													break;
-												case "wv_create_and_details":
-													//remove it
-													break;
-												default:
-													newActionItemList.Add(actionItem);
-													break;
-											}
-											
-										}
-
-										updateViewInput.ActionItems = newActionItemList;
-										#endregion
 
 										{
 											var response = entMan.UpdateRecordView(TASK_ENTITY_ID, updateViewInput);
@@ -5253,7 +5301,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "record-row";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
 					<i class=""fa fa-fw fa-eye""></i>
 					</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -5264,8 +5312,8 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "page-title";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
 									<i class=""fa fa-fw fa-plus""></i> Add New
 								</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -5428,7 +5476,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "record-row";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
 					<i class=""fa fa-fw fa-eye""></i>
 					</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -5439,8 +5487,8 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "page-title";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
 									<i class=""fa fa-fw fa-plus""></i> Add New
 								</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -6249,7 +6297,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "page-title";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
 										ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
 										<i class=""fa fa-fw fa-plus""></i> Add New
 									</a>";
@@ -6960,7 +7008,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "page-title";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-										@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
+										@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
 											ng-click=""ngCtrl.actionService.manageComment(null,ngCtrl)"">
 											<i class=""fa fa-fw fa-plus""></i> Add Comment
 										</a>";

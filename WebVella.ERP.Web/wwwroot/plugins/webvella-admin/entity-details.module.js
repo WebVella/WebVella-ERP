@@ -285,7 +285,7 @@
             $uibModalInstance.close('success');
             $timeout(function() {
                 $state.go("webvella-admin-entities");
-            }, 10);
+            }, 0);
         }
 
         function errorCallback(response) {

@@ -15,30 +15,31 @@ namespace WebVella.ERP.Project
 	public class ApiController : Controller
 	{
 		RecordManager recMan;
-		EntityManager entityManager;
-		EntityRelationManager entityRelationManager;
+		EntityManager entMan;
+		EntityRelationManager relMan;
 		SecurityManager secMan;
 
 		public ApiController()
 		{
 			recMan = new RecordManager();
 			secMan = new SecurityManager();
-			entityManager = new EntityManager();
-			entityRelationManager = new EntityRelationManager();
+			entMan = new EntityManager();
+			relMan = new EntityRelationManager();
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/project/list/my-projects")]
 		public IActionResult MyProjects(string listName = null, string entityName = null, int page = 0)
 		{
 			var response = new ResponseModel();
+			try {
 			//var queryString = HttpContext.Request.QueryString;
 			#region << Can user read projects >>
 			//Get current user
 			ErpUser user = SecurityContext.CurrentUser;
 			//Get entity meta
-			var entity = entityManager.ReadEntity(entityName).Object;
+			var entity = entMan.ReadEntity("wv_project").Object;
 			//Get list meta
-			var list = entityManager.ReadRecordList(entity.Name, listName).Object;
+			var list = entMan.ReadRecordList(entity.Name, listName).Object;
 			//check if user role has permissions
 			var canRead = user.Roles.Any(x => entity.RecordPermissions.CanRead.Any(z => z == x.Id));
 			var canCreate = user.Roles.Any(x => entity.RecordPermissions.CanCreate.Any(z => z == x.Id));
@@ -67,9 +68,6 @@ namespace WebVella.ERP.Project
 			EntityQuery resultQuery = new EntityQuery("wv_project", requestedFields, filterObj, null, null, null, null);
 			#endregion
 
-			#region << Sort >>
-
-			#endregion
 
 			#region << Execute >>
 			QueryResponse result = recMan.Find(resultQuery);
@@ -174,11 +172,11 @@ namespace WebVella.ERP.Project
 			}
 			#endregion
 
-			var skipRecords = list.PageSize * (page - 1);
-			if (page != 0)
-			{
-				resultRecordsList = resultRecordsList.Skip(skipRecords).Take(page).ToList();
-			}
+			//var skipRecords = list.PageSize * (page - 1);
+			//if (page != 0)
+			//{
+			//	resultRecordsList = resultRecordsList.Skip(skipRecords).Take(page).ToList();
+			//}
 
 			response.Success = true;
 			response.Timestamp = DateTime.UtcNow;
@@ -186,6 +184,14 @@ namespace WebVella.ERP.Project
 			response.Object = resultRecordsList;
 
 			return Json(response);
+			}
+			catch(Exception ex) {
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = "Error: " + ex.Message;
+				response.Object = null;
+				return Json(response);	
+			}
 		}
 
 
@@ -198,9 +204,9 @@ namespace WebVella.ERP.Project
 			//Get current user
 			ErpUser user = SecurityContext.CurrentUser;
 			//Get entity meta
-			var entity = entityManager.ReadEntity(entityName).Object;
+			var entity = entMan.ReadEntity(entityName).Object;
 			//Get list meta
-			var list = entityManager.ReadRecordList(entity.Name, listName).Object;
+			var list = entMan.ReadRecordList(entity.Name, listName).Object;
 			//check if user role has permissions
 			var canRead = user.Roles.Any(x => entity.RecordPermissions.CanRead.Any(z => z == x.Id));
 			var canCreate = user.Roles.Any(x => entity.RecordPermissions.CanCreate.Any(z => z == x.Id));
@@ -375,7 +381,8 @@ namespace WebVella.ERP.Project
 			#region << Validation >>
 			var validationErrors = new List<ErrorModel>();
 			var validationError = new ErrorModel();
-			if(!task.Properties.ContainsKey("subject") ||  string.IsNullOrWhiteSpace((string)task["subject"])) {
+			if (!task.Properties.ContainsKey("subject") || string.IsNullOrWhiteSpace((string)task["subject"]))
+			{
 				validationError = new ErrorModel();
 				validationError.Key = "subject";
 				validationError.Message = "subject is required";
@@ -383,7 +390,8 @@ namespace WebVella.ERP.Project
 				validationErrors.Add(validationError);
 			}
 
-			if(!task.Properties.ContainsKey("project_id") ||  string.IsNullOrWhiteSpace((string)task["project_id"])) {
+			if (!task.Properties.ContainsKey("project_id") || string.IsNullOrWhiteSpace((string)task["project_id"]))
+			{
 				validationError = new ErrorModel();
 				validationError.Key = "project_id";
 				validationError.Message = "project_id is required";
@@ -391,7 +399,8 @@ namespace WebVella.ERP.Project
 				validationErrors.Add(validationError);
 			}
 
-			if(!task.Properties.ContainsKey("status") ||  string.IsNullOrWhiteSpace((string)task["status"])) {
+			if (!task.Properties.ContainsKey("status") || string.IsNullOrWhiteSpace((string)task["status"]))
+			{
 				validationError = new ErrorModel();
 				validationError.Key = "status";
 				validationError.Message = "status is required";
@@ -399,7 +408,8 @@ namespace WebVella.ERP.Project
 				validationErrors.Add(validationError);
 			}
 
-			if(!task.Properties.ContainsKey("priority") ||  string.IsNullOrWhiteSpace((string)task["priority"])) {
+			if (!task.Properties.ContainsKey("priority") || string.IsNullOrWhiteSpace((string)task["priority"]))
+			{
 				validationError = new ErrorModel();
 				validationError.Key = "priority";
 				validationError.Message = "priority is required";
@@ -408,7 +418,8 @@ namespace WebVella.ERP.Project
 			}
 
 
-			if(validationErrors.Count > 0) {
+			if (validationErrors.Count > 0)
+			{
 				response.Success = false;
 				response.Timestamp = DateTime.UtcNow;
 				response.Errors = validationErrors;
@@ -501,6 +512,208 @@ namespace WebVella.ERP.Project
 			response.Object = null;
 
 			return Json(response);
+		}
+
+		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/task/list/all")]
+		public IActionResult AllTaskUserCanSee(string listName = null, string entityName = null, int page = 0)
+		{
+			var response = new ResponseModel();
+			try
+			{
+				//var queryString = HttpContext.Request.QueryString;
+				#region << Can user read tasks >>
+				//Get current user
+				ErpUser user = SecurityContext.CurrentUser;
+				//Get entity meta
+				var entity = entMan.ReadEntity("wv_task").Object;
+				//Get list meta
+				var list = entMan.ReadRecordList(entity.Name, listName).Object;
+				//check if user role has permissions
+				var canRead = user.Roles.Any(x => entity.RecordPermissions.CanRead.Any(z => z == x.Id));
+				var canCreate = user.Roles.Any(x => entity.RecordPermissions.CanCreate.Any(z => z == x.Id));
+				var canUpdate = user.Roles.Any(x => entity.RecordPermissions.CanUpdate.Any(z => z == x.Id));
+				var canDelete = user.Roles.Any(x => entity.RecordPermissions.CanDelete.Any(z => z == x.Id));
+
+				if (!canRead)
+				{
+					response.Success = false;
+					response.Message = "You do not have permission to read the projects in this system";
+					response.Timestamp = DateTime.UtcNow;
+					return Json(response); //return empty object
+				}
+				#endregion
+				var taskQueryResponse = new QueryResponse();
+				var userCanSeeProjectIds = new List<Guid>();
+				#region << Generate list of projects user can see >>
+				{
+					var requestedFields = "id,$user_1_n_project_owner.id,$role_n_n_project_team.id,$role_n_n_project_customer.id";
+					//QueryObject filterObj = EntityQuery.QueryEQ("id", recordId);
+					QueryObject filterObj = null;
+					EntityQuery resultQuery = new EntityQuery("wv_project", requestedFields, filterObj, null, null, null, null);
+					QueryResponse result = recMan.Find(resultQuery);
+					var resultRecordsList = new List<EntityRecord>();
+					if (!result.Success)
+					{
+						response.Success = false;
+						response.Timestamp = DateTime.UtcNow;
+						response.Message = result.Message;
+						response.Object = null;
+						return Json(response);
+					}
+					foreach (var record in result.Object.Data)
+					{
+						//Check if user can view the object
+						var userIsPM = false;
+						var userIsStaff = false;
+						var userIsCustomer = false;
+						#region << Check user roles >>
+						foreach (var userRole in user.Roles)
+						{
+							userIsPM = ((List<EntityRecord>)record["$user_1_n_project_owner"]).Any(z => (Guid)z["id"] == user.Id);
+							userIsStaff = ((List<EntityRecord>)record["$role_n_n_project_team"]).Any(z => (Guid)z["id"] == userRole.Id);
+							userIsCustomer = ((List<EntityRecord>)record["$role_n_n_project_customer"]).Any(z => (Guid)z["id"] == userRole.Id);
+						}
+						#endregion
+
+						if (userIsPM || userIsStaff || userIsCustomer)
+						{
+							userCanSeeProjectIds.Add((Guid)record["id"]);
+						}
+					}
+				}
+				#endregion
+
+				#region << Get tasks >>
+				{
+					var fields = "id,number,subject,start_date,end_date,status,priority,$user_1_n_task_owner.id,$user_1_n_task_owner.image";
+
+					QueryObject rootFilterSection = null;
+					QueryObject auxFilterSection = null;
+					QueryObject projectIdFilterSection = null;
+					
+					#region << project id filters >>
+					var projectIdRulesList = new List<QueryObject>();
+					foreach (var projectId in userCanSeeProjectIds)
+					{
+						var projectIdRule = EntityQuery.QueryEQ("project_id", projectId);
+						projectIdRulesList.Add(projectIdRule);
+					}
+					projectIdFilterSection = EntityQuery.QueryOR(projectIdRulesList.ToArray());
+					#endregion
+
+					#region << Aux filters & Sort>>
+					var sortRulesList = new List<QuerySortObject>();
+					var queryString = HttpContext.Request.QueryString.ToString();
+					var queryKeyValueList = QueryHelpers.ParseQuery(queryString);
+					var auxRulesList = new List<QueryObject>();
+					var getListObject = entMan.ReadRecordList(entity.Name, listName).Object;
+					//Currently we will hardcode the query generation
+					//auxFilterSection = RecordListQuery.ConvertQuery(getListObject.Query);		
+					QueryObject auxRule = new QueryObject();
+					foreach(var query in queryKeyValueList) {
+						switch(query.Key.ToLowerInvariant()) {
+							case "number":
+								auxRule = new QueryObject();
+								decimal outDecimal = 0;
+								if(decimal.TryParse((string)query.Value,out outDecimal)){
+									auxRule = EntityQuery.QueryEQ("number", outDecimal);
+									auxRulesList.Add(auxRule);
+								}
+								break;
+							case "subject":
+								auxRule = new QueryObject();
+								auxRule = EntityQuery.QueryContains("subject", (string)query.Value);
+								auxRulesList.Add(auxRule);
+								break;
+							case "status":
+								auxRule = new QueryObject();
+								auxRule = EntityQuery.QueryEQ("status", (string)query.Value);
+								auxRulesList.Add(auxRule);
+								break;
+							case "priority":
+								auxRule = new QueryObject();
+								auxRule = EntityQuery.QueryEQ("priority", (string)query.Value);
+								auxRulesList.Add(auxRule);
+								break;
+							case "sortby":
+								var sortRule = new QuerySortObject((string)query.Value,QuerySortType.Descending);
+								if(!queryKeyValueList.ContainsKey("sortOrder") || (string)queryKeyValueList["sortOrder"] == "ascending"){
+									sortRule = new QuerySortObject((string)query.Value,QuerySortType.Ascending);
+								}
+								sortRulesList.Add(sortRule);
+								break;
+						}
+					
+					
+					}			
+					auxFilterSection = EntityQuery.QueryAND(auxRulesList.ToArray());
+					//Add default sort by created_on
+					var defaultSortRule = new QuerySortObject("created_on",QuerySortType.Ascending);
+					sortRulesList.Add(defaultSortRule);
+
+					#endregion
+
+					rootFilterSection = EntityQuery.QueryAND(projectIdFilterSection,auxFilterSection);
+
+					//Calculate page
+					var pageSize = getListObject.PageSize;
+					var skipRecords = (page-1)*pageSize;
+
+
+					var taskQuery = new EntityQuery("wv_task", fields, rootFilterSection, sortRulesList.ToArray(), skipRecords, pageSize, null);
+
+					taskQueryResponse = recMan.Find(taskQuery);
+					if (!taskQueryResponse.Success)
+					{
+						response.Success = false;
+						response.Timestamp = DateTime.UtcNow;
+						response.Message = taskQueryResponse.Message;
+						response.Object = null;
+						return Json(response);
+					}
+				}
+				#endregion
+				var taskList = new List<EntityRecord>();
+				#region << Post-process >>
+
+				foreach (var task in taskQueryResponse.Object.Data)
+				{
+					var record = new EntityRecord();
+					record["id"] = (Guid)task["id"];
+					record["number"] = (decimal)task["number"];
+					record["subject"] = (string)task["subject"];
+					record["start_date"] = (DateTime)task["start_date"];
+					record["end_date"] = (DateTime)task["end_date"];
+					record["status"] = (string)task["status"];
+					record["priority"] = (string)task["priority"];
+					var taskOwnerIdList = new List<Guid>();
+					var taskOwnerImageList = new List<string>();
+					var taskOwnerId = (Guid)((List<EntityRecord>)task["$user_1_n_task_owner"])[0]["id"];
+					var taskOwnerImage = (string)((List<EntityRecord>)task["$user_1_n_task_owner"])[0]["image"];
+					taskOwnerIdList.Add(taskOwnerId);
+					taskOwnerImageList.Add(taskOwnerImage);
+					record["$field$user_1_n_task_owner$id"] = taskOwnerIdList;
+					record["$field$user_1_n_task_owner$image"] = taskOwnerImageList;
+					taskList.Add(record);
+				}
+				#endregion
+
+				response.Success = true;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = "Successful read";
+				response.Object = taskList;
+
+				return Json(response);
+
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = ex.Message;
+				response.Object = null;
+				return Json(response);
+			}
 		}
 
 	}

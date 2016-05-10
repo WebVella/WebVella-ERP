@@ -23,7 +23,7 @@
 	<p>Currently you are not involved in any records or there are none created yet</p>
 </div>
 <p>
-<a class="btn btn-default btn-outline hidden-xs" ng-show="ngCtrl.userHasRecordPermissions('canCreate')" 
+<a class="btn btn-default btn-outline hidden-xs" ng-show="::ngCtrl.userHasRecordPermissions('canCreate')" 
     ng-click="ngCtrl.actionService.manageComment(null,ngCtrl)">
 	<i class="fa fa-fw fa-plus"></i> Add Comment
 </a>
@@ -50,7 +50,7 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupCtrl.ok()" translate="{{'SAVE'}}"></button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
+		<button class="btn btn-primary" ng-click="popupCtrl.ok()" translate="{{::'SAVE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
 	</div>
 </script>

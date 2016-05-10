@@ -149,6 +149,7 @@
 	resolveRecordListData.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams', '$timeout', 'ngToast', '$location', 'resolvedEntityList'];
 	function resolveRecordListData($q, $log, webvellaCoreService, $state, $stateParams, $timeout, ngToast, $location, resolvedEntityList) {
 		var defer = $q.defer();
+
 		function successCallback(response) {
 			defer.resolve(response.object);
 		}
@@ -168,7 +169,6 @@
 
 		// Initialize
 		var defer = $q.defer();
-
 		// Process
 		function successCallback(response) {
 			if (response.object === null) {
@@ -458,11 +458,11 @@
 		ngCtrl.selectPage = function (page) {
 			var params = {
 				areaName: $stateParams.areaName,
-				entityName: entityName,
-				listName: listName,
+				entityName: safeListNameAndEntityName.entityName,
+				listName: safeListNameAndEntityName.listName,
 				page: page
 			};
-			webvellaCoreService.GoToState($state, $state.current.name, params);
+			webvellaCoreService.GoToState($state.current.name, params);
 		}
 
 		ngCtrl.currentUserRoles = ngCtrl.currentUser.roles;
@@ -607,7 +607,7 @@
 			ngCtrl.actionService = $injector.get(serviceName);
 		}
 		catch(err){
-			console.log(err);
+			//console.log(err);
 			ngCtrl.actionService = {};		
 		}
 		ngCtrl.pageTitleActions = [];
@@ -644,7 +644,6 @@
 		}
 
 		//#endregion
-
 	}
 	//#endregion
 
@@ -723,7 +722,7 @@
 				popupCtrl.uploadProgressCallback = function (response) {
 					$timeout(function () {
 						popupCtrl.uploadProgress = parseInt(100.0 * response.loaded / response.total);
-					}, 100);
+					}, 0);
 				}
 
 				webvellaCoreService.uploadFileToTemp(file, file.name, popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
@@ -736,7 +735,7 @@
 				popupCtrl.uploadedFile = null;
 				popupCtrl.uploadedFilePath = null;
 				popupCtrl.uploadProgress = 0;
-			}, 100);
+			}, 0);
 		}
 
 		popupCtrl.importSuccessCallback = function (response) {
