@@ -293,12 +293,12 @@
 
 	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', '$window', 'pageTitle', 'webvellaCoreService',
         'resolvedAreas', '$timeout', 'resolvedCurrentViewData', 'ngToast', 'wvAppConstants', 'resolvedEntityList', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
-		'resolvedCurrentUserEntityPermissions', 'webvellaViewActionService', '$sessionStorage', 'resolvedParentViewData'];
+		'resolvedCurrentUserEntityPermissions', '$sessionStorage', 'resolvedParentViewData'];
 
 
 	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, $window, pageTitle, webvellaCoreService,
         resolvedAreas, $timeout, resolvedCurrentViewData, ngToast, wvAppConstants, resolvedEntityList, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
-		resolvedCurrentUserEntityPermissions, webvellaViewActionService, $sessionStorage, resolvedParentViewData) {
+		resolvedCurrentUserEntityPermissions, $sessionStorage, resolvedParentViewData) {
 
 		//#region << ngCtrl initialization >>
 		var ngCtrl = this;
@@ -340,25 +340,14 @@
 
 		//#region << Initialize general views alternatives >>
 		ngCtrl.generalViews = [];
-		ngCtrl.entity.recordViews.forEach(function (view) {
-			if (view.type == "general") {
-				ngCtrl.generalViews.push(view);
-			}
-		});
+		if ($stateParams.parentViewName == null) {
+			ngCtrl.entity.recordViews.forEach(function (view) {
+				if (view.type == "general") {
+					ngCtrl.generalViews.push(view);
+				}
+			});
+		}
 		ngCtrl.generalViews.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
-		//#endregion
-
-		//#region << Run  webvellaViewActionService.onload >>
-		if (webvellaViewActionService.onload === undefined || typeof (webvellaViewActionService.onload) != "function") {
-			$log.warn("No webvellaViewActionService.onload function. Skipping");
-		}
-		else {
-			var actionsOnLoadResult = webvellaViewActionService.onload(ngCtrl, $rootScope, $state);
-			if (actionsOnLoadResult != true) {
-				ngCtrl.validation.hasError = true;
-				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);
-			}
-		}
 		//#endregion
 
 		//#region << Entity relations functions >>
@@ -969,7 +958,7 @@
 		// Update field
 		ngCtrl.fieldUpdate = function (item, data, recordId) {
 			//alert("need to pass the recordId too so we can manage and viewFromRelation");
-			webvellaViewActionService.fieldUpdate(item, data, recordId, ngCtrl);
+			webvellaCoreService.viewAction_fieldUpdate(item,data,recordId,ngCtrl);
 		}
 
 		//#region << Remove relation >>
@@ -1371,8 +1360,15 @@
 
 		//#endregion
 
-		//#region << List actions and webvellaViewActionService bind >>
-		ngCtrl.actionService = webvellaViewActionService;
+		//#region << List actions  bind >>
+		var serviceName =  safeViewNameAndEntity.entityName + "_" + safeViewNameAndEntity.viewName + "_view_service";
+		try{
+			ngCtrl.actionService = $injector.get(serviceName);
+		}
+		catch(err){
+			console.log(err);
+			ngCtrl.actionService = {};		
+		}
 		ngCtrl.pageTitleActions = [];
 		ngCtrl.pageTitleDropdownActions = [];
 		ngCtrl.createBottomActions = [];
@@ -1394,21 +1390,11 @@
 					break;
 			}
 		});
-		//#endregion
-
-		//#region << Run  webvellaViewActionService.postload >>
-		if (webvellaViewActionService.postload === undefined || typeof (webvellaViewActionService.postload) != "function") {
-			$log.warn("No webvellaViewActionService.postload function. Skipping");
+		ngCtrl.deleteRecord = function() { 
+			webvellaCoreService.viewAction_deleteRecord(ngCtrl);
 		}
-		else {
-			var actionsOnLoadResult = webvellaViewActionService.postload(ngCtrl, $rootScope, $state);
-			if (actionsOnLoadResult != true) {
-				ngCtrl.validation.hasError = true;
-				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);
-			}
-		}
-		//#endregion
 
+		//#endregion
 	}
 
 	//#region << Modal Controllers >>
