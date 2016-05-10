@@ -1811,6 +1811,13 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult PatchEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
+			//this is a sample code for invocation of injected webhooks
+			//dynamic obj = new ExpandoObject();
+			//obj.record = postObj;
+			//obj = hooksService.ProcessFilters(SystemWebHookNames.PatchRecordInput, entityName, obj);
+
+			//postObj = obj.record;
+
 			//clear authentication cache
 			if (entityName == "user")
 				WebSecurityUtil.RemoveIdentityFromCache(recordId);
