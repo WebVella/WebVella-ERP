@@ -22,12 +22,11 @@
 	angular
     .module('webvellaAreas')
 	.controller('ManageCommentModalController', ManageCommentModalController)
-	.service('wv_project_comment_task_comments_service', service);
+	.service('wv_project_comment_task_comments_list_service', service);
 	service.$inject = ['$log', '$http', 'wvAppConstants', '$timeout', 'ngToast', '$filter', 'webvellaCoreService', '$uibModal','$rootScope'];
 	function service($log, $http, wvAppConstants, $timeout, ngToast, $filter, webvellaCoreService, $uibModal,$rootScope) {
 
 		var serviceInstance = this;
-		console.log("wv_project_comment_task_comments_list_service");
 
 		// CUSTOM
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -364,10 +364,59 @@ namespace WebVella.ERP.Project
 			catch (Exception ex)
 			{
 				response.Success = false;
+				response.Errors = new List<ErrorModel>();
 				response.Timestamp = DateTime.UtcNow;
 				response.Message = "Validation error : " + ex.Message;
 				response.Object = null;
+				return Json(response);
 			}
+			#endregion
+
+			#region << Validation >>
+			var validationErrors = new List<ErrorModel>();
+			var validationError = new ErrorModel();
+			if(!task.Properties.ContainsKey("subject") ||  string.IsNullOrWhiteSpace((string)task["subject"])) {
+				validationError = new ErrorModel();
+				validationError.Key = "subject";
+				validationError.Message = "subject is required";
+				validationError.Value = "";
+				validationErrors.Add(validationError);
+			}
+
+			if(!task.Properties.ContainsKey("project_id") ||  string.IsNullOrWhiteSpace((string)task["project_id"])) {
+				validationError = new ErrorModel();
+				validationError.Key = "project_id";
+				validationError.Message = "project_id is required";
+				validationError.Value = "";
+				validationErrors.Add(validationError);
+			}
+
+			if(!task.Properties.ContainsKey("status") ||  string.IsNullOrWhiteSpace((string)task["status"])) {
+				validationError = new ErrorModel();
+				validationError.Key = "status";
+				validationError.Message = "status is required";
+				validationError.Value = "";
+				validationErrors.Add(validationError);
+			}
+
+			if(!task.Properties.ContainsKey("priority") ||  string.IsNullOrWhiteSpace((string)task["priority"])) {
+				validationError = new ErrorModel();
+				validationError.Key = "priority";
+				validationError.Message = "priority is required";
+				validationError.Value = "";
+				validationErrors.Add(validationError);
+			}
+
+
+			if(validationErrors.Count > 0) {
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Errors = validationErrors;
+				response.Message = "Validation error occurred!";
+				response.Object = null;
+				return Json(response);
+			}
+
 			#endregion
 
 			#region << Get project owner and set as ticket owner >>
@@ -382,6 +431,7 @@ namespace WebVella.ERP.Project
 					response.Timestamp = DateTime.UtcNow;
 					response.Message = "Error getting the project: " + result.Message;
 					response.Object = null;
+					return Json(response);
 				}
 				else if (result.Object == null || result.Object.Data == null || !result.Object.Data.Any())
 				{
@@ -389,6 +439,7 @@ namespace WebVella.ERP.Project
 					response.Timestamp = DateTime.UtcNow;
 					response.Message = "Project not found";
 					response.Object = null;
+					return Json(response);
 				}
 				projectObject = result.Object.Data[0];
 				task["owner_id"] = (Guid)result.Object.Data[0]["owner_id"];
@@ -440,6 +491,7 @@ namespace WebVella.ERP.Project
 					response.Timestamp = DateTime.UtcNow;
 					response.Message = "Error saving the task: " + ex.Message;
 					response.Object = null;
+					return Json(response);
 				}
 
 			}

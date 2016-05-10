@@ -20,19 +20,12 @@
 		var serviceInstance = this;
 
 		//#region << Include functions >> ///////////////////////////////////////////////////////////////////////////////////
-
-		//#region << Task >>
-		serviceInstance.createTask = createTask;
-
-		//#endregion
-
 		//#endregion
 
 
 		//#region << Functions >> ///////////////////////////////////////////////////////////////////////////////////
 
 		//#region << Global HTTP Error and Success Handlers >>
-
 		function handleErrorResult(data, status, errorCallback) {
 			switch (status) {
 				case 401: {
@@ -88,15 +81,6 @@
 			}
 
 		}
-
-		//#endregion
-
-		//#region << Task >>
-		///////////////////////
-		function createTask(postObject, successCallback, errorCallback) {
-			$http({ method: 'POST', url: '/plugins/webvella-projects/api/task', data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
-		}
-
 		//#endregion
 
 		//#endregion
