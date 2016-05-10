@@ -1,7 +1,10 @@
-﻿// IMPORTANT: You must always have at least webvellaViewActionService defined or the page will not load
-// The methods inside it are optional 
-// For usage in action items, the service is bound to the controller with ngCtrl.actionService. So if 
-// what to use a test method from this service in an action you need to call like 'ng-click=""ngCtrl.actionService.test()""'
+﻿// This is a lazy loaded service that is injected into the controller. Here you can write your own script that can interact with your
+// dynamic html template.
+
+// IMPORTANT: the service name should be generated with the format : "entityName_viewName_view_service". This is how it will be looked for
+// end injected in the controller. If it is not found it will not be injected.
+// The service will be loaded in the controller as ngCtrl.actionService
+// So if what to use a test method from this service in an action you need to call like 'ng-click=""ngCtrl.actionService.test()""'
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Objects accessible through the ngCtrl:
@@ -23,38 +26,12 @@
 	'use strict';
 	angular
     .module('webvellaAreas')
-	.service('webvellaViewActionService', service);
+	.service('wv_task_create_view_service', service);
 	service.$inject = ['$log','$location', '$http', 'wvAppConstants', '$timeout', 'ngToast', '$filter', 'webvellaCoreService', 'webvellaProjectsService', '$translate'];
 	function service($log, $location, $http, wvAppConstants, $timeout, ngToast, $filter, webvellaCoreService, webvellaProjectsService, $translate) {
 		var serviceInstance = this;
-		//PRELOAD
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Preload function. Here you can place script that will be executed BEFORE the page load (while resolving the state)
-		serviceInstance.preload = preload;
-		function preload(defer, state) {
 
-			defer.resolve();
-			return defer.promise;
-		}
-		//ONLOAD
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Onload function. Here you can place script that will be executed as the FIRST function from the controller after
-		// the main objects are initialized. With the ngCtrl you can access the scope of the controller
-		serviceInstance.onload = onload;
-		function onload(ngCtrl, rootScope, state) {
-
-			return true; //true for success, or string for an error message to be presented to the user
-		}
-		//POSTLOAD
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Postload function. Here you can place script that will be executed as the LAST function from the controller
-		//with the ngCtrl you can access the scope of the controller
-		serviceInstance.postload = postload;
-		function postload(ngCtrl, rootScope, state) {
-
-			return true; //true for success, or string for an error message to be presented to the user
-		}
-		//FIELD UPDATE
+		//Create task
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		serviceInstance.createTask = createTask;
 		function createTask(ngCtrl) {
@@ -78,19 +55,6 @@
 				});
 			});
 		}
-		//DELETE RECORD
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		serviceInstance.deleteRecord = deleteRecord;
-		function deleteRecord(ngCtrl) {
-			webvellaCoreService.viewAction_deleteRecord(ngCtrl);
-		}
-
-		//CUSTOM
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//User functions. Here you can place all action functions that you need to be executed on action item interaction. 
-		//They can be used inside your actions or custom views with ngCtrl.actionService.function_name(params). As params
-		//you can use all data from the controller scope
-
 
 	}
 })();

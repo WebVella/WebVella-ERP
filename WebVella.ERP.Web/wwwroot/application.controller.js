@@ -151,6 +151,9 @@
 			$rootScope.adminSectionName = null;
 			$rootScope.adminSubSectionName = null;
 		});
+
+		//Set up object for the view and list Action services
+		$rootScope.actionService = {};
 	}
 	//#endregion
 

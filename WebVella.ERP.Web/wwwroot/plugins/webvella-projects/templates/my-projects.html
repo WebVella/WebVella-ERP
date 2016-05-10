@@ -13,7 +13,7 @@
 	</thead>
 	<tbody>
 		<tr ng-repeat="record in ngCtrl.list.data">
-			<td class="td-action"><a class="btn btn-outline btn-default" ng-href="{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}"><i class="fa fa-fw fa-eye"></i></a></td>
+			<td class="td-action"><a class="btn btn-outline btn-default" ng-href="{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"><i class="fa fa-fw fa-eye"></i></a></td>
 			<td class="td-name">{{record.name}}</td>
 			<td class="td-owner">
 				<div class="avatar-wrapper">

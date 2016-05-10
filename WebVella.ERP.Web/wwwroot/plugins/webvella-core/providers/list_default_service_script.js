@@ -1,7 +1,10 @@
-﻿// IMPORTANT: You must always have at least webvellaListActionService defined or the page will not load
-// The methods inside it are optional 
-// For usage in action items, the service is bound to the controller with ngCtrl.actionService. So if 
-// what to use a test method from this service in an action you need to call like 'ng-click=""ngCtrl.actionService.test()""'
+﻿// This is a lazy loaded service that is injected into the controller. Here you can write your own script that can interact with your
+// dynamic html template.
+
+// IMPORTANT: the service name should be generated with the format : "entityName_listName_list_service". This is how it will be looked for
+// end injected in the controller. If it is not found it will not be injected.
+// The service will be loaded in the controller as ngCtrl.actionService
+// So if what to use a test method from this service in an action you need to call like 'ng-click=""ngCtrl.actionService.test()""'
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Objects accessible through the ngCtrl:
@@ -21,78 +24,16 @@
 	'use strict';
 	angular
     .module('webvellaAreas')
-	.service('webvellaListActionService', service);
+	.service('webvellaDefaultListActionService', service); // <<<<< CHANGE THE NAME TO COMPLY WITH THE FORMAT "entityName_listName_list_service"
 	service.$inject = ['$log', '$http', 'wvAppConstants', '$timeout', 'ngToast', '$filter', 'webvellaCoreService'];
 	function service($log, $http, wvAppConstants, $timeout, ngToast, $filter, webvellaCoreService) {
 		var serviceInstance = this;
 
-		// PRELOAD
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Execution: This script will be executed BEFORE the page load (while resolving the state)
-		// Parameters: defer, state
-		serviceInstance.preload = preload;
-		function preload(defer, state) {
-			defer.resolve();
-			return defer.promise;
-		}
-
-		// ONLOAD
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Execution: This script will be executed as the FIRST function from the controller after the main objects are initialized.
-		//			  With the ngCtrl you can access the scope of the controller
-		// Parameters: ngCtrl, rootScope, state
-		serviceInstance.onload = onload;
-		function onload(ngCtrl, rootScope, state) {
-
-			return true; //true for success, or string for an error message to be presented to the user
-		}
-
-		// POSTLOAD
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Execution: This script will be executed as the LAST function from the controller
-		// Parameters: ngCtrl, rootScope, state
-		serviceInstance.postload = postload;
-		function postload(ngCtrl, rootScope, state) {
-
-			return true; //true for success, or string for an error message to be presented to the user
-		}
-
-		// PAGE TITLE ACTIONS
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Execution: This block should contain functions for the user actions rendered inside the page title above the list.
-		// Parameters: It is up to the action template what will be passed as parameter. Accessible is the ngCtrl object.
-
-		serviceInstance.getRecordCreateUrl = getRecordCreateUrl;
-		function getRecordCreateUrl(ngCtrl) {
-			return webvellaCoreService.listAction_getRecordCreateUrl(ngCtrl);
-		}
-
-		// PAGE TITLE DROPDOWN ACTIONS
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Execution: This block should contain functions for the user actions rendered inside the page title dropdown above the list
-		// Parameters: It is up to the action template what will be passed as parameter. Accessible is the ngCtrl object.
-
-		// <<<<< No functions defined yet >>>>>>
-
-		// RECORD ROW ACTIONS
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Execution: This block should contain functions for the user actions rendered on each record row of the list
-		// Parameters: It is up to the action template what will be passed as parameter. Accessible are the record object
-		//			   and the ngCtrl
-
-		serviceInstance.getRecordDetailsUrl = getRecordDetailsUrl;
-		function getRecordDetailsUrl(record, ngCtrl) {
-			return webvellaCoreService.listAction_getRecordDetailsUrl(record, ngCtrl);
-		}
-
-		// RECORD ROW DROPDOWN ACTIONS
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Execution: This block should contain methods for the user actions rendered on the dropdown in each record row of the list
-		// Parameters: It is up to the action template what will be passed as parameter. Accessible are the record object
-		//			   and the ngCtrl
-
 		// Define your functions here
-
+		serviceInstance.foo = foo;
+		function foo(){
+			console.log("foo");
+		}
 
 	}
 })();

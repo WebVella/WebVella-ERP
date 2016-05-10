@@ -5888,7 +5888,7 @@ namespace WebVella.ERP.Api
 					actionItem.Weight = 1;
 					actionItem.Template = "" +
 @"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-    ng-href=""{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}"">
+    ng-href=""{{ngCtrl.getRecordCreateUrl()}}"">
 	<i class=""fa fa-fw fa-plus""></i> Add New
 </a>";
 					break;
@@ -5915,7 +5915,7 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "record-row";
 					actionItem.Weight = 1;
 					actionItem.Template = "" +
-@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}"">
+@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record)}}"">
     <i class=""fa fa-fw fa-eye""></i>
 </a>";
 					break;
@@ -5984,7 +5984,7 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 1;
 					actionItem.Template = "" +
-@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.actionService.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
+@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
 		ng-if=""ngCtrl.userHasRecordPermissions('canDelete')"">
 	<i class=""fa fa-trash go-red""></i> Delete Record
 </a>";

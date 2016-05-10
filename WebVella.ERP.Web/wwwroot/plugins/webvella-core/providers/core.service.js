@@ -1602,7 +1602,7 @@
 							"name": "wv_create_record",
 							"menu": "page-title",
 							"weight": 1,
-							"template": "<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"ngCtrl.userHasRecordPermissions('canCreate')\"\n ng-href=\"{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-plus\"></i> Add New\n</a>"
+							"template": "<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"ngCtrl.userHasRecordPermissions('canCreate')\"\n ng-href=\"{{ngCtrl.getRecordCreateUrl(ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-plus\"></i> Add New\n</a>"
 						},
 						{
 							"name": "wv_import_records",
@@ -1620,7 +1620,7 @@
 							"name": "wv_record_details",
 							"menu": "record-row",
 							"weight": 1,
-							"template": "<a class=\"btn btn-default btn-outline\" ng-href=\"{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-eye\"></i>\n</a>"
+							"template": "<a class=\"btn btn-default btn-outline\" ng-href=\"{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-eye\"></i>\n</a>"
 						}
 					],
 				}
