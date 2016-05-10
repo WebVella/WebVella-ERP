@@ -151,17 +151,17 @@
 		});
 		//#endregion
 
-		ngCtrl.areas = fastCopy(resolvedAreaRecordsList.data);
+		ngCtrl.areas = resolvedAreaRecordsList.data;
 		ngCtrl.areas = ngCtrl.areas.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 
-		ngCtrl.roles = fastCopy(resolvedRolesList.data);
+		ngCtrl.roles = resolvedRolesList.data;
 		ngCtrl.roles = ngCtrl.roles.sort(function (a, b) {
 			if (a.name < b.name) return -1;
 			if (a.name > b.name) return 1;
 			return 0;
 		});
 
-		ngCtrl.entities = fastCopy(resolvedEntityMetaList.entities);
+		ngCtrl.entities = resolvedEntityMetaList.entities;
 		ngCtrl.entities = ngCtrl.entities.sort(function (a, b) {
 			if (a.label < b.label) return -1;
 			if (a.label > b.label) return 1;

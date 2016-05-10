@@ -166,7 +166,7 @@
         ngCtrl.icons = getFontAwesomeIconNames();
 
         //Get Areas list and selected areas for the entity
-        ngCtrl.areas = fastCopy(resolvedAreasList.data);
+        ngCtrl.areas = resolvedAreasList.data;
         ngCtrl.areas = ngCtrl.areas.sort(function (a, b) {
             if (a.label < b.label) return -1;
             if (a.label > b.label) return 1;

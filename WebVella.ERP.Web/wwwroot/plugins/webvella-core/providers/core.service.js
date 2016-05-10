@@ -2533,13 +2533,15 @@
 
 		//#region << Default action services >>
 		function listAction_getRecordCreateUrl(ngCtrl) {
+			console.time("TimerName");
 			//#region << Init >>
-			var siteAreas = fastCopy(ngCtrl.areas);
-			var entityList = fastCopy(ngCtrl.entityList);
-			var currentEntity = fastCopy(ngCtrl.entity);
-			var currentAreaName = fastCopy(ngCtrl.stateParams.areaName);
-			var currentEntityName = fastCopy(ngCtrl.stateParams.entityName);
-			var currentListName = fastCopy(ngCtrl.stateParams.listName);
+	
+			var siteAreas = ngCtrl.areas;
+			var entityList = ngCtrl.entityList;
+			var currentEntity = ngCtrl.entity;
+			var currentAreaName = ngCtrl.stateParams.areaName;
+			var currentEntityName = ngCtrl.stateParams.entityName;
+			var currentListName = ngCtrl.stateParams.listName;
 			var currentRelationName = null; // when the list is listFromRelation
 			var targetEntityName = null;
 			var targetEntity = null;
@@ -2547,11 +2549,11 @@
 			var targetCreateName = null;
 			var targetCreateExists = false;
 			//#endregion		
-
+			  console.timeEnd("TimerName");
 			//#region << Check if listFromRelation, get the relationName if so >>
 			//Example listFromRelation name: "$list$project_1_n_ticket$general"
 			if (currentListName.indexOf('$') > -1 && currentListName.startsWith("$list")) {
-				var dataNameArray = fastCopy(currentListName).split('$');
+				var dataNameArray = currentListName.split('$');
 				if (dataNameArray.length == 4) {
 					//this is a proper listFromRelation format
 					currentRelationName = dataNameArray[2];
@@ -2735,13 +2737,13 @@
 		function listAction_getRecordDetailsUrl(record, ngCtrl) {
 
 			//#region << Init >>
-			var currentRecord = fastCopy(record);
-			var siteAreas = fastCopy(ngCtrl.areas);
-			var entityList = fastCopy(ngCtrl.entityList);
-			var currentEntity = fastCopy(ngCtrl.entity);
-			var currentAreaName = fastCopy(ngCtrl.stateParams.areaName);
-			var currentEntityName = fastCopy(ngCtrl.stateParams.entityName);
-			var currentListName = fastCopy(ngCtrl.stateParams.listName);
+			var currentRecord = record;
+			var siteAreas = ngCtrl.areas;
+			var entityList = ngCtrl.entityList;
+			var currentEntity = ngCtrl.entity;
+			var currentAreaName = ngCtrl.stateParams.areaName;
+			var currentEntityName = ngCtrl.stateParams.entityName;
+			var currentListName = ngCtrl.stateParams.listName;
 			var currentRelationName = null; // when the list is listFromRelation
 			var targetEntityName = null;
 			var targetEntity = null
@@ -2753,7 +2755,7 @@
 			//#region << Check if viewFromRelation, get the relationName if so >>
 			//Example listFromRelation name: "$list$project_1_n_ticket$general"
 			if (currentListName.indexOf('$') > -1 && currentListName.startsWith("$list")) {
-				var dataNameArray = fastCopy(currentListName).split('$');
+				var dataNameArray = currentListName.split('$');
 				if (dataNameArray.length == 4) {
 					//this is a proper listFromRelation format
 					currentRelationName = dataNameArray[2];
