@@ -162,13 +162,13 @@
 			function errorCallback(response) {
 				switch (dataType) {
 					case "defaultData":
-						ngCtrl.defaultData = "Error: " + response.message;
+						ngCtrl.defaultData = "Error: " + response;
 						break;
 					case "defaultMeta":
-						ngCtrl.defaultMeta =  "Error: " + response.message;
+						ngCtrl.defaultMeta =  "Error: " + response;
 						break;
 					case "customFull":
-						ngCtrl.customFull  = "Error: " + response.message;
+						ngCtrl.customFull  = "Error: " + response;
 						break;
 				}				
 				ngCtrl.loading[dataType] = false;
