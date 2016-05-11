@@ -34,7 +34,7 @@ namespace WebVella.ERP.Project
 			var errors = (List<ErrorModel>)data.errors;
 			var record = (EntityRecord)data.record;
 			var recordId = (Guid)data.recordId;
-			var newErrorsList = Validators.ValidateTask(errors,record,recordId);
+			var newErrorsList = Utils.ValidateTask(errors,record,recordId);
 			data.errors = newErrorsList;
 			return data;		
 		}
@@ -101,9 +101,16 @@ namespace WebVella.ERP.Project
 			var errors = (List<ErrorModel>)data.errors;
 			var record = (EntityRecord)data.record;
 			var recordId = (Guid)data.recordId;
-			var newErrorsList = Validators.ValidateTask(errors,record,recordId);
+			var newErrorsList = Utils.ValidateTask(errors,record,recordId);
 			data.errors = newErrorsList;
 			return data;		
+		}
+
+		[WebHook("update_record_pre_save", "wv_task")]
+		public dynamic TaskUpdateRecordPreSave(dynamic data)
+		{
+			data = Utils.UpdateTask(data,recMan);
+			return data;
 		}
 
 		#endregion
@@ -115,8 +122,15 @@ namespace WebVella.ERP.Project
 			var errors = (List<ErrorModel>)data.errors;
 			var record = (EntityRecord)data.record;
 			var recordId = (Guid)data.recordId;
-			var newErrorsList = Validators.ValidateTask(errors,record,recordId);
+			var newErrorsList = Utils.ValidateTask(errors,record,recordId);
 			data.errors = newErrorsList;
+			return data;
+		}
+
+		[WebHook("patch_record_pre_save", "wv_task")]
+		public dynamic TaskPatchRecordPreSave(dynamic data)
+		{
+			data = Utils.UpdateTask(data,recMan);
 			return data;
 		}
 

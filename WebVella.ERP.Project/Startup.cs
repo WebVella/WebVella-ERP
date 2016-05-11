@@ -4412,6 +4412,139 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
+									#region << View name: project_milestone >>
+									{
+										var createViewEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+										var createViewInput = new InputRecordView();
+										var viewRegion = new InputRecordViewRegion();
+										var viewSection = new InputRecordViewSection();
+										var viewRow = new InputRecordViewRow();
+										var viewColumn = new InputRecordViewColumn();
+										var viewItem = new InputRecordViewFieldItem();
+										var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+
+										#region << details >>
+										createViewInput.Id = new Guid("820b6771-3100-4393-982b-3813d79f4df2");
+										createViewInput.Type = "hidden";
+										createViewInput.Name = "project_milestone";
+										createViewInput.Label = "Project & Milestone";
+										createViewInput.Default = false;
+										createViewInput.System = false;
+										createViewInput.Weight = 10;
+										createViewInput.CssClass = null;
+										createViewInput.IconName = "code";
+										createViewInput.DynamicHtmlTemplate = "/plugins/webvella-projects/templates/task-project-milestone-selection.html";
+										createViewInput.DataSourceUrl = null;
+										createViewInput.ServiceCode = null;
+										createViewInput.Regions = new List<InputRecordViewRegion>();
+										#endregion
+
+										#region << Header Region >>
+										viewRegion = new InputRecordViewRegion();
+										viewRegion.Name = "header";
+										viewRegion.Label = "Header";
+										viewRegion.Render = true;
+										viewRegion.Weight = 1;
+										viewRegion.CssClass = "";
+										viewRegion.Sections = new List<InputRecordViewSection>();
+
+										#region << Section >>
+										viewSection = new InputRecordViewSection();
+										viewSection.Id = Guid.NewGuid();
+										viewSection.Name = "details";
+										viewSection.Label = "Details";
+										viewSection.ShowLabel = false;
+										viewSection.CssClass = "";
+										viewSection.Collapsed = false;
+										viewSection.TabOrder = "left-right";
+										viewSection.Weight = 1;
+										viewSection.Rows = new List<InputRecordViewRow>();
+
+										#region << Row Column>>
+										viewRow = new InputRecordViewRow();
+										viewRow.Id = Guid.NewGuid();
+										viewRow.Weight = 1;
+										viewRow.Columns = new List<InputRecordViewColumn>();
+
+										#region << Column 1 >>
+										viewColumn = new InputRecordViewColumn();
+										viewColumn.GridColCount = 12;
+										viewColumn.Items = new List<InputRecordViewItemBase>();
+
+										#region << milestone_1_n_task>name from Relation >>
+										{
+										var targetEntity = entMan.ReadEntity(MILESTONE_ENTITY_ID).Object;
+										var targetRelation = relMan.Read("milestone_1_n_task").Object;
+										viewItemFromRelation = new InputRecordViewRelationFieldItem();
+										viewItemFromRelation.EntityId = targetEntity.Id;
+										viewItemFromRelation.EntityName = targetEntity.Name;
+										viewItemFromRelation.Type = "fieldFromRelation";
+										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+										viewItemFromRelation.FieldName = "name";
+										viewItemFromRelation.FieldLabel = "Milestone";
+										viewItemFromRelation.FieldPlaceholder = "";
+										viewItemFromRelation.FieldRequired = true;
+										viewItemFromRelation.FieldLookupList = "lookup";		
+										viewItemFromRelation.RelationId = targetRelation.Id;
+										viewItemFromRelation.RelationName = targetRelation.Name;
+										viewColumn.Items.Add(viewItemFromRelation);	
+										}
+										#endregion
+
+										#region <<  project_1_n_task>name from Relation >>
+										{
+										var targetEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+										var targetRelation = relMan.Read("project_1_n_task").Object;
+										viewItemFromRelation = new InputRecordViewRelationFieldItem();
+										viewItemFromRelation.EntityId = targetEntity.Id;
+										viewItemFromRelation.EntityName = targetEntity.Name;
+										viewItemFromRelation.Type = "fieldFromRelation";
+										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+										viewItemFromRelation.FieldName = "name";
+										viewItemFromRelation.FieldLabel = "Milestone";
+										viewItemFromRelation.FieldPlaceholder = "";
+										viewItemFromRelation.FieldRequired = true;
+										viewItemFromRelation.FieldLookupList = "lookup";		
+										viewItemFromRelation.RelationId = targetRelation.Id;
+										viewItemFromRelation.RelationName = targetRelation.Name;
+										viewColumn.Items.Add(viewItemFromRelation);	
+										}
+										#endregion
+
+										//Save column
+										viewRow.Columns.Add(viewColumn);
+										#endregion
+
+										//Save row
+										viewSection.Rows.Add(viewRow);
+										#endregion
+
+										//Save section
+										viewRegion.Sections.Add(viewSection);
+										#endregion
+
+										//Save region
+										createViewInput.Regions.Add(viewRegion);
+										#endregion
+
+										createViewInput.RelationOptions = new List<EntityRelationOptionsItem>();
+										createViewInput.ActionItems = new List<ActionItem>();
+										#region << Sidebar >>
+										createViewInput.Sidebar = new InputRecordViewSidebar();
+										createViewInput.Sidebar.CssClass = "";
+										createViewInput.Sidebar.Render = true;
+										createViewInput.Sidebar.Render = true;
+										createViewInput.Sidebar.Items = new List<InputRecordViewSidebarItemBase>();
+										#endregion	
+
+										{
+											var response = entMan.CreateRecordView(createViewEntity.Id, createViewInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + createViewEntity.Name + " Updated view: project_milestone" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
 									#region << update general >>
 									{
 										var updateViewEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
@@ -4422,6 +4555,7 @@ namespace WebVella.ERP.Project
 										var viewColumn = new InputRecordViewColumn();
 										var viewItem = new InputRecordViewFieldItem();
 										var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+										var viewItemView = new InputRecordViewViewItem();
 										//General view fields
 
 										//Convert recordList to recordListInput
@@ -4481,22 +4615,15 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
-										#region << project name >>
+										#region << project_milestone name >>
 										{
-										var targetEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
-										viewItemFromRelation = new InputRecordViewRelationFieldItem();
-										viewItemFromRelation.EntityId = targetEntity.Id;
-										viewItemFromRelation.EntityName = targetEntity.Name;
-										viewItemFromRelation.Type = "fieldFromRelation";
-										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
-										viewItemFromRelation.FieldName = "name";
-										viewItemFromRelation.FieldLabel = "Project";
-										viewItemFromRelation.FieldPlaceholder = "";
-										viewItemFromRelation.FieldRequired = true;
-										viewItemFromRelation.FieldLookupList = "lookup";		
-										viewItemFromRelation.RelationId = new Guid("1f860b8c-7fa1-40fa-874f-19c2b5309817");
-										viewItemFromRelation.RelationName = "project_1_n_task";
-										viewColumn.Items.Add(viewItemFromRelation);	
+										var targetEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+										viewItemView = new InputRecordViewViewItem();
+										viewItemView.EntityId = targetEntity.Id;
+										viewItemView.EntityName = targetEntity.Name;
+										viewItemView.Type = "view";
+										viewItemView.ViewId = targetEntity.RecordViews.Single(x => x.Name == "project_milestone").Id;
+										viewColumn.Items.Add(viewItemView);	
 										}
 										#endregion
 
@@ -4664,6 +4791,7 @@ namespace WebVella.ERP.Project
 										}
 									}
 									#endregion
+
 
 								}
 								#endregion
