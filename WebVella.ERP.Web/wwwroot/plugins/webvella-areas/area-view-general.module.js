@@ -958,7 +958,7 @@
 		// Update field
 		ngCtrl.fieldUpdate = function (item, data, recordId) {
 			//alert("need to pass the recordId too so we can manage and viewFromRelation");
-			webvellaCoreService.viewAction_fieldUpdate(item,data,recordId,ngCtrl);
+			return webvellaCoreService.viewAction_fieldUpdate(item,data,recordId,ngCtrl);
 		}
 
 		//#region << Remove relation >>

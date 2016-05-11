@@ -182,7 +182,7 @@
 		serviceInstance.initArea = initArea;
 		serviceInstance.regenerateAllAreaAttachments = regenerateAllAreaAttachments;
 		serviceInstance.getCurrentAreaFromAreaList = getCurrentAreaFromAreaList;
-		serviceInstance.getDefaultViewNameForAreaEntity =  getDefaultViewNameForAreaEntity;
+		serviceInstance.getDefaultViewNameForAreaEntity = getDefaultViewNameForAreaEntity;
 		//#endregion
 
 		//#region << User >>
@@ -1042,7 +1042,7 @@
 			};
 			var createListAction = {
 				"name": "wv_create_and_list",
-				"menu": "create-bottom",															   
+				"menu": "create-bottom",
 				"weight": 1,
 				"template": "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"default\")' ng-if=\"ngCtrl.createViewRegion != null\">Create</a>"
 			};
@@ -1244,18 +1244,18 @@
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/view/' + viewName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
-		function getEntityRecordViewFromEntitiesMetaList(viewName,entityName,entitiesMetaList) {
+		function getEntityRecordViewFromEntitiesMetaList(viewName, entityName, entitiesMetaList) {
 			var itemMeta = null;
 			for (var i = 0; i < entitiesMetaList.length; i++) {
-    			 if(entitiesMetaList[i].name == entityName){
-    			 	for (var j = 0; j < entitiesMetaList[i].recordViews.length; j++) {
-    					if(entitiesMetaList[i].recordViews[j].name == viewName){
-							itemMeta = 	entitiesMetaList[i].recordViews[j];
+				if (entitiesMetaList[i].name == entityName) {
+					for (var j = 0; j < entitiesMetaList[i].recordViews.length; j++) {
+						if (entitiesMetaList[i].recordViews[j].name == viewName) {
+							itemMeta = entitiesMetaList[i].recordViews[j];
 							break;
 						}
-    			 	}
+					}
 					break;
-				 }
+				}
 			}
 			return itemMeta;
 		}
@@ -1543,35 +1543,35 @@
 			return usedItemsArray;
 		}
 		/////////////////////
-		function getSafeViewNameAndEntityName(paramsViewName,paramsEntityName,relationsList){
+		function getSafeViewNameAndEntityName(paramsViewName, paramsEntityName, relationsList) {
 			var data = {};
 			//if the list is in a view, than the name should be processed as the entity name could differ from the current one as well as the list name is not in fact a dataName
 			//e.g. $list$project_1_n_milestone$general	when from another entity or $list$lookup when from the current
 			data.viewName = paramsViewName;
 			data.entityName = paramsEntityName;
-			var viewDataName = 	paramsViewName;
-			var viewDataNameArray =  viewDataName.split("$");
-			if(viewDataNameArray.length == 3){
+			var viewDataName = paramsViewName;
+			var viewDataNameArray = viewDataName.split("$");
+			if (viewDataNameArray.length == 3) {
 				//this is a list from the current entity ($view$general), we just need to get the proper list name
 				data.viewName = viewDataNameArray[2];
 			}
-			else if (viewDataNameArray.length == 4){
+			else if (viewDataNameArray.length == 4) {
 				//this is a list from another entity ($view$project_1_n_milestone$general), we should get both list name and entity name from the relation
 				var relationName = viewDataNameArray[2];
-				var relation =  getRelationFromRelationsList(relationName,relationsList);
-				if(relation.originEntityName == paramsEntityName){
-					 data.entityName =  relation.targetEntityName;
+				var relation = getRelationFromRelationsList(relationName, relationsList);
+				if (relation.originEntityName == paramsEntityName) {
+					data.entityName = relation.targetEntityName;
 				}
-				else if(relation.targetEntityName == paramsEntityName){
-					data.entityName =  relation.originEntityName;
+				else if (relation.targetEntityName == paramsEntityName) {
+					data.entityName = relation.originEntityName;
 				}
 				data.viewName = viewDataNameArray[3];
 			}
 
 			return data;
 		}
-		
-		
+
+
 		//#endregion
 
 		//#region << List >>
@@ -1683,18 +1683,18 @@
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/list/' + listName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
-		function getEntityRecordListFromEntitiesMetaList(listName,entityName,entitiesMetaList) {
+		function getEntityRecordListFromEntitiesMetaList(listName, entityName, entitiesMetaList) {
 			var itemMeta = null;
 			for (var i = 0; i < entitiesMetaList.length; i++) {
-    			 if(entitiesMetaList[i].name == entityName){
-    			 	for (var j = 0; j < entitiesMetaList[i].recordLists.length; j++) {
-    					if(entitiesMetaList[i].recordLists[j].name == listName){
-							itemMeta = 	entitiesMetaList[i].recordLists[j];
+				if (entitiesMetaList[i].name == entityName) {
+					for (var j = 0; j < entitiesMetaList[i].recordLists.length; j++) {
+						if (entitiesMetaList[i].recordLists[j].name == listName) {
+							itemMeta = entitiesMetaList[i].recordLists[j];
 							break;
 						}
-    			 	}
+					}
 					break;
-				 }
+				}
 			}
 			return itemMeta;
 		}
@@ -1746,27 +1746,27 @@
 			return result;
 		}
 		/////////////////////
-		function getSafeListNameAndEntityName(paramsListName,paramsEntityName,relationsList){
+		function getSafeListNameAndEntityName(paramsListName, paramsEntityName, relationsList) {
 			var data = {};
 			//if the list is in a view, than the name should be processed as the entity name could differ from the current one as well as the list name is not in fact a dataName
 			//e.g. $list$project_1_n_milestone$general	when from another entity or $list$lookup when from the current
 			data.listName = paramsListName;
 			data.entityName = paramsEntityName;
-			var listDataName = 	paramsListName;
-			var listDataNameArray =  listDataName.split("$");
-			if(listDataNameArray.length == 3){
+			var listDataName = paramsListName;
+			var listDataNameArray = listDataName.split("$");
+			if (listDataNameArray.length == 3) {
 				//this is a list from the current entity ($list$lookup), we just need to get the proper list name
 				data.listName = listDataNameArray[2];
 			}
-			else if (listDataNameArray.length == 4){
+			else if (listDataNameArray.length == 4) {
 				//this is a list from another entity ($list$project_1_n_milestone$general), we should get both list name and entity name from the relation
 				var relationName = listDataNameArray[2];
-				var relation =  getRelationFromRelationsList(relationName,relationsList);
-				if(relation.originEntityName == paramsEntityName){
-					 data.entityName =  relation.targetEntityName;
+				var relation = getRelationFromRelationsList(relationName, relationsList);
+				if (relation.originEntityName == paramsEntityName) {
+					data.entityName = relation.targetEntityName;
 				}
-				else if(relation.targetEntityName == paramsEntityName){
-					data.entityName =  relation.originEntityName;
+				else if (relation.targetEntityName == paramsEntityName) {
+					data.entityName = relation.originEntityName;
 				}
 				data.listName = listDataNameArray[3];
 			}
@@ -1873,13 +1873,13 @@
 			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/relation/' + relationId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
-		function getRelationFromRelationsList(relationName,relationList) {
+		function getRelationFromRelationsList(relationName, relationList) {
 			var itemMeta = null;
 			for (var i = 0; i < relationList.length; i++) {
-    			 if(relationList[i].name == relationName){
-					itemMeta = 	relationList[i];
+				if (relationList[i].name == relationName) {
+					itemMeta = relationList[i];
 					break;
-				 }
+				}
 			}
 			return itemMeta;
 		}
@@ -1911,7 +1911,7 @@
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewName + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
-		function getRecordByViewMeta(recordId, viewMeta, entityName,stateParams, successCallback, errorCallback) {
+		function getRecordByViewMeta(recordId, viewMeta, entityName, stateParams, successCallback, errorCallback) {
 			if (viewMeta.dataSourceUrl == null || viewMeta.dataSourceUrl == '') {
 				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewMeta.name + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 			}
@@ -1924,7 +1924,7 @@
 				if (stateParams != null) {
 					if (!isEmpty(stateParams)) {
 						for (var param in stateParams) {
-							if(extraParamQueryString.indexOf(param) == -1){
+							if (extraParamQueryString.indexOf(param) == -1) {
 								extraParamQueryString += param + "=" + stateParams[param] + "&";
 							}
 						}
@@ -1960,7 +1960,7 @@
 					if (!isEmpty(extraParams)) {
 						extraParamQueryString = "?";
 						for (var param in extraParams) {
-							if(extraParamQueryString.indexOf(param) == -1){
+							if (extraParamQueryString.indexOf(param) == -1) {
 								extraParamQueryString += param + "=" + extraParams[param] + "&";
 							}
 						}
@@ -1979,7 +1979,7 @@
 				if (extraParams != null) {
 					if (!isEmpty(extraParams)) {
 						for (var param in extraParams) {
-							if(extraParamQueryString.indexOf(param) == -1){
+							if (extraParamQueryString.indexOf(param) == -1) {
 								extraParamQueryString += param + "=" + extraParams[param] + "&";
 							}
 						}
@@ -1988,7 +1988,7 @@
 				if (stateParams != null) {
 					if (!isEmpty(stateParams)) {
 						for (var param in stateParams) {
-							if(extraParamQueryString.indexOf(param) == -1){
+							if (extraParamQueryString.indexOf(param) == -1) {
 								extraParamQueryString += param + "=" + stateParams[param] + "&";
 							}
 						}
@@ -2167,7 +2167,7 @@
 			function rasGetEntityMetaListSuccessCallback(data, status) {
 				entities = data.object.entities;
 				//Get all areas
-				getRecordsWithoutList(null, null,null, "area", rasGetAreasListSuccessCallback, rasErrorCallback);
+				getRecordsWithoutList(null, null, null, "area", rasGetAreasListSuccessCallback, rasErrorCallback);
 			}
 
 			function rasGetAreasListSuccessCallback(data, status) {
@@ -2425,13 +2425,13 @@
 		}
 
 		////////////////////////
-		function getDefaultViewNameForAreaEntity(currentArea,currentEntity){
+		function getDefaultViewNameForAreaEntity(currentArea, currentEntity) {
 			var targetViewName = null;
 			if (!currentArea || !currentEntity) {
 				return null;
 			}
 			currentArea.attachments = angular.fromJson(currentArea.attachments);
- 			for (var i = 0; i < currentArea.attachments.length; i++) {
+			for (var i = 0; i < currentArea.attachments.length; i++) {
 				if (currentArea.attachments[i].name == currentEntity.name) {
 					targetViewName = currentArea.attachments[i].view.name;
 					break;
@@ -2440,7 +2440,7 @@
 			if (targetViewName != null) {
 				return targetViewName;
 			}
-			else{
+			else {
 				currentEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
 				for (var i = 0; i < currentEntity.recordViews.length; i++) {
 					if (currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "general") {
@@ -2457,8 +2457,8 @@
 							targetViewName = currentEntity.recordViews[i].name;
 							break;
 						}
-					}	
-					return 	targetViewName;
+					}
+					return targetViewName;
 				}
 			}
 		}
@@ -2579,7 +2579,7 @@
 		function listAction_getRecordCreateUrl(ngCtrl) {
 
 			//#region << Init >>
-	
+
 			var siteAreas = ngCtrl.areas;
 			var entityList = ngCtrl.entityList;
 			var currentEntity = ngCtrl.entity;
@@ -2975,111 +2975,115 @@
 
 		///////////////////////
 		function viewAction_fieldUpdate(item, data, recordId, ngCtrl) {
-			var defer = $q.defer();
 			var patchObject = {};
 			var validation = {
 				success: true,
 				message: "successful validation"
 			};
-			if (data != null) {
-				data = data.toString().trim();
-				switch (item.meta.fieldType) {
 
+			data = data.toString().trim();
+			switch (item.meta.fieldType) {
+
+				//Auto increment number
+				case 1:
+					//Readonly
+					break;
+					//Checkbox
+				case 2:
+					data = (data === "true"); // convert string to boolean
+					break;
 					//Auto increment number
-					case 1:
-						//Readonly
-						break;
-						//Checkbox
-					case 2:
-						data = (data === "true"); // convert string to boolean
-						break;
-						//Auto increment number
-					case 3: //Currency
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						validation = checkDecimal(data);
-						if (!validation.success) {
-							return validation.message;
-						}
-						if (decimalPlaces(data) > item.meta.currency.decimalDigits) {
-							return "Decimal places should be " + item.meta.currency.decimalDigits + " or less";
-						}
-						break;
-					case 4: //Date
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						//Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
-						data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toISOString();
+				case 3: //Currency
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					validation = checkDecimal(data);
+					if (!validation.success) {
+						return validation.message;
+					}
+					if (decimalPlaces(data) > item.meta.currency.decimalDigits) {
+						return "Decimal places should be " + item.meta.currency.decimalDigits + " or less";
+					}
+					break;
+				case 4: //Date
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					//Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
+					data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toISOString();
 
-						break;
-					case 5: //Datetime
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('minute').utc().toISOString();
-						break;
-					case 6: //Email
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						validation = checkEmail(data);
-						if (!validation.success) {
-							return validation.message;
-						}
-						break;
-					case 11: // Multiselect
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						//We need to convert data which is "2,3" comma separated string to string array
-						if (data !== '[object Array]') {
-							data = data.split(',');
-						}
-						break;
-						//Number
-					case 12:
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						validation = checkDecimal(data);
-						if (!validation.success) {
-							return validation.message;
-						}
-						if (!data) {
-							data = null;
-						}
-						break;
-						//Percent
-					case 14:
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						validation = checkPercent(data);
-						if (!validation.success) {
-							return validation.message;
-						}
-						if (!data) {
-							data = null;
-						}
-						break;
-					case 15: //Phone
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						validation = checkPhone(data);
-						if (!validation.success) {
-							return validation.message;
-						}
-						break;
-					case 17: // Dropdown
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						break;
-				}
+					break;
+				case 5: //Datetime
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('minute').utc().toISOString();
+					break;
+				case 6: //Email
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					validation = checkEmail(data);
+					if (!validation.success) {
+						return validation.message;
+					}
+					break;
+				case 11: // Multiselect
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					//We need to convert data which is "2,3" comma separated string to string array
+					if (data !== '[object Array]') {
+						data = data.split(',');
+					}
+					break;
+					//Number
+				case 12:
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					validation = checkDecimal(data);
+					if (!validation.success) {
+						return validation.message;
+					}
+					if (!data) {
+						data = null;
+					}
+					break;
+					//Percent
+				case 14:
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					validation = checkPercent(data);
+					if (!validation.success) {
+						return validation.message;
+					}
+					if (!data) {
+						data = null;
+					}
+					break;
+				case 15: //Phone
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					validation = checkPhone(data);
+					if (!validation.success) {
+						return validation.message;
+					}
+					break;
+				case 17: // Dropdown
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					break;
+				default: // Dropdown
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					break;
 			}
+
 			patchObject[item.meta.name] = data;
 
 			function patchSuccessCallback(response) {
@@ -3101,27 +3105,19 @@
 						}
 						break;
 				}
-
-				defer.resolve();
+				return true;
 			}
 
 			function patchFailedCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message,
-					timeout: 7000
-				});
-				defer.resolve("validation error");
+				return "validation error";
 			}
 
 			if (!item.entityName) {
-				alert("item.entityName is missing, fixed this");
-				return defer.reject("error");
+				return "item.entityName is missing, fixed this";
 			}
 			else {
 				patchRecord(recordId, item.entityName, patchObject, patchSuccessCallback, patchFailedCallback);
 			}
-			return defer.promise;
 		}
 
 		function viewAction_deleteRecord(ngCtrl) {
