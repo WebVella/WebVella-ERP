@@ -182,6 +182,7 @@
 		serviceInstance.initArea = initArea;
 		serviceInstance.regenerateAllAreaAttachments = regenerateAllAreaAttachments;
 		serviceInstance.getCurrentAreaFromAreaList = getCurrentAreaFromAreaList;
+		serviceInstance.getDefaultViewNameForAreaEntity =  getDefaultViewNameForAreaEntity;
 		//#endregion
 
 		//#region << User >>
@@ -1043,7 +1044,7 @@
 				"name": "wv_create_and_list",
 				"menu": "create-bottom",															   
 				"weight": 1,
-				"template": "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"list\")' ng-if=\"ngCtrl.createViewRegion != null\">Create & List</a>"
+				"template": "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"default\")' ng-if=\"ngCtrl.createViewRegion != null\">Create</a>"
 			};
 			var createDetailsAction = {
 				"name": "wv_create_and_details",
@@ -2417,6 +2418,45 @@
 
 			currentArea.attachments.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 			return currentArea;
+		}
+
+		////////////////////////
+		function getDefaultViewNameForAreaEntity(currentArea,currentEntity){
+			var targetViewName = null;
+			if (!currentArea || !currentEntity) {
+				return null;
+			}
+			currentArea.attachments = angular.fromJson(currentArea.attachments);
+ 			for (var i = 0; i < currentArea.attachments.length; i++) {
+				if (currentArea.attachments[i].name == currentEntity.name) {
+					targetViewName = currentArea.attachments[i].view.name;
+					break;
+				}
+			}
+			if (targetViewName != null) {
+				return targetViewName;
+			}
+			else{
+				currentEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+				for (var i = 0; i < currentEntity.recordViews.length; i++) {
+					if (currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "general") {
+						targetViewName = currentEntity.recordViews[i].name;
+						break;
+					}
+				}
+				if (targetViewName != null) {
+					return targetViewName;
+				}
+				else {
+					for (var i = 0; i < currentEntity.recordViews.length; i++) {
+						if (currentEntity.recordViews[i].type == "general") {
+							targetViewName = currentEntity.recordViews[i].name;
+							break;
+						}
+					}	
+					return 	targetViewName;
+				}
+			}
 		}
 		//#endregion
 

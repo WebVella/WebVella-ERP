@@ -1454,7 +1454,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "create-bottom";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""list"")' ng-if=""ngCtrl.createViewRegion != null"">Create & List</a>";
+									@"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""default"")' ng-if=""ngCtrl.createViewRegion != null"">Create</a>";
 											createViewInput.ActionItems.Add(actionItem);
 										}
 										{

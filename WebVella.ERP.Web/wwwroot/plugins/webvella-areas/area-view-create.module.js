@@ -527,7 +527,7 @@
 						className: 'success',
 						content: '<span class="go-green">Success:</span> ' + response.message
 					});
-					if ($stateParams.returnUrl) {
+					if ($stateParams.returnUrl && redirectTarget != "details") {
 						var returnUrl = decodeURI($stateParams.returnUrl);
 						$location.search("returnUrl", null);
 						$location.path(returnUrl);
@@ -535,18 +535,25 @@
 					else {
 						switch (redirectTarget) {
 							case "details":
-								alert("the details view name should be generated")
-								//$state.go("webvella-areas-record-view", {
-								//	areaName: $stateParams.areaName,
-								//	entityName: $stateParams.entityName,
-								//	recordId: response.object.data[0].id,
-								//	viewName: detailsViewName,
-								//	auxPageName: "*",
-								//	page: $stateParams.page
-
-								//}, { reload: true });
+								var defaultViewName = webvellaCoreService.getDefaultViewNameForAreaEntity(ngCtrl.currentArea,ngCtrl.entity);
+								if(defaultViewName != null){
+									$state.go("webvella-areas-view-general", {
+										areaName: ngCtrl.currentArea.name,
+										entityName: ngCtrl.entity.name,
+										recordId: response.object.data[0].id,
+										viewName: defaultViewName
+									}, { reload: true });
+								}
+								else{
+									ngToast.create({
+        								className: 'error',
+        								content: '<span class="go-red">Error:</span> This entity does not have default general view',
+        								timeout: 7000
+        							});
+								}
 								break;
-							case "list":
+
+							default:
 								$state.go("webvella-area-list-general", {
 									areaName: $stateParams.areaName,
 									entityName: $stateParams.entityName,
