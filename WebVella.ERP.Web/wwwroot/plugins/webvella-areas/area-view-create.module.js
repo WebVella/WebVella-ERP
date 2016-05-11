@@ -47,7 +47,7 @@
 			}
 		}).state('webvella-area-view-create-with-relation', {
 			parent: 'webvella-area-base',
-			url: '/view-create/:viewName/relation/:relationName/:targetRecordId/:regionName?returnUrl',
+			url: '/view-create/:viewName/relation/:relationName/:direction/:targetRecordId/:regionName?returnUrl',
 			params: {
 				regionName: { value: "header", squash: true }
 			},

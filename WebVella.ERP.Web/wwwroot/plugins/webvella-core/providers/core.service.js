@@ -2583,16 +2583,21 @@
 			var siteAreas = ngCtrl.areas;
 			var entityList = ngCtrl.entityList;
 			var currentEntity = ngCtrl.entity;
+			var currentParent = ngCtrl.parent;
 			var currentAreaName = ngCtrl.stateParams.areaName;
 			var currentEntityName = ngCtrl.stateParams.entityName;
+			var currentListDataName = ngCtrl.stateParams.listName;
 			var currentListName = ngCtrl.stateParams.listName;
 			var currentRelationName = null; // when the list is listFromRelation
+			var currentRelationDirection = "null"; // when the list is listFromRelation
 			var targetEntityName = null;
 			var targetEntity = null;
 			var currentArea = null;
 			var targetCreateName = null;
 			var targetCreateExists = false;
-			//#endregion		
+			//#endregion	
+			
+
 			//#region << Check if listFromRelation, get the relationName if so >>
 			//Example listFromRelation name: "$list$project_1_n_ticket$general"
 			if (currentListName.indexOf('$') > -1 && currentListName.startsWith("$list")) {
@@ -2633,6 +2638,19 @@
 			if (currentRelationName != null && targetEntity == null) {
 				console.log("cannot find the target entity");
 				return null;
+			}
+
+			//#endregion
+
+
+			//#region << Get relation direction if relation exists >>
+			if(currentRelationName != null && currentParent.meta != null){
+				for (var i = 0; i < currentParent.meta.sidebar.items.length; i++) {
+					if(currentParent.meta.sidebar.items[i].dataName == currentListDataName){
+						currentRelationDirection = currentParent.meta.sidebar.items[i].relationDirection;						
+						break;
+					}
+				}
 			}
 
 			//#endregion
@@ -2701,7 +2719,8 @@
 				}
 					//Case 2: - this is a list with relation
 				else {
-					return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+					return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" +
+						currentRelationDirection + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
 				}
 
 			}
@@ -2735,7 +2754,8 @@
 					}
 						//Case 2: - this is a list with relation
 					else {
-						return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+						return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + 
+						currentRelationDirection + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
 					}
 
 				}
@@ -2764,7 +2784,8 @@
 						}
 							//Case 2: - this is a list with relation
 						else {
-							return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+							return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + 
+							currentRelationDirection + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
 						}
 					}
 					else {
