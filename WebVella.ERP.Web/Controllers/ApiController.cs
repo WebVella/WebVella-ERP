@@ -812,13 +812,12 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}/service.js")]
 		public IActionResult GetRecordListServiceJSByName(string Name, string ListName, bool defaultScript = false)
 		{
-	
-			//var list = entityManager.ReadRecordList(Name, ListName);
-			//if (list == null || list.Object == null || list.Success == false)
-			//	return DoPageNotFoundResponse();
 
-			//var code = list.Object.ServiceCode;
-			var code = string.Empty;
+			var list = entityManager.ReadRecordList(Name, ListName);
+			if (list == null || list.Object == null || list.Success == false)
+				return DoPageNotFoundResponse();
+
+			var code = list.Object.ServiceCode;
 			if (string.IsNullOrWhiteSpace(code) || defaultScript)
 				return File("/plugins/webvella-core/providers/list_default_service_script.js", "text/javascript");
 			else if (code.StartsWith("/plugins/") || code.StartsWith("http://") || code.StartsWith("https://"))
