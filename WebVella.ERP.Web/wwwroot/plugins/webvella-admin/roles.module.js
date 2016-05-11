@@ -95,7 +95,7 @@
 		});
     	//#endregion
 
-        ngCtrl.roles = fastCopy(resolvedRolesList.data);
+        ngCtrl.roles = resolvedRolesList.data;
         ngCtrl.roles = ngCtrl.roles.sort(function (a, b) {
             if (a.name < b.name) return -1;
             if (a.name > b.name) return 1;

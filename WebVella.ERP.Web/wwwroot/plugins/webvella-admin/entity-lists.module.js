@@ -129,7 +129,7 @@
 		
 		var ngCtrl = this;
 		//#region << Initialize the current entity >>
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.entity = resolvedCurrentEntityMeta;
 		//#endregion
 
 		//#region << Update page title & hide the side menu >>
@@ -142,7 +142,7 @@
 		//#endregion
 
 		//#region << Initialize the lists >>
-		ngCtrl.lists = fastCopy(resolvedEntityRecordsList.recordLists);
+		ngCtrl.lists = resolvedEntityRecordsList.recordLists;
 		ngCtrl.lists.sort(function (a, b) {
 			if (a.name < b.name) return -1;
 			if (a.name > b.name) return 1;

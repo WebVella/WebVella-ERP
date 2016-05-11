@@ -4,7 +4,7 @@
 
 		</div>
 		<div class="meta-label">
-			<h4><span class="go-gray"><span translate="{{::'RECORD_VIEW_MANAGE_PAGE_TITLE_PREFIX'}}"></span>: </span> {{ngCtrl.view.name}}</h4>
+			<h4><span class="go-gray"><span translate="{{::'RECORD_VIEW_MANAGE_PAGE_TITLE_PREFIX'}}"></span>: </span> {{::ngCtrl.view.name}}</h4>
 		</div>
 	</div>
 </div>
@@ -48,8 +48,8 @@
 			<div class="container-fluid">
 				<ul class="nav navbar-nav navbar-left">
 					<li role="presentation" ui-sref-active="active" ng-repeat="region in ngCtrl.view.regions | filter:{name:'header'} track by region.name">
-						<a class="display-inline-block" style="padding-right:5px" ui-sref='webvella-admin-entity-view-manage({entityName:"{{ngCtrl.stateParams.entityName}}" ,viewName:"{{ngCtrl.stateParams.viewName}}", regionName:"{{region.name}}"})'>
-							<i class="fa fa-fw fa-eye-slash go-red" ng-if="!region.render"></i> {{region.label}}
+						<a class="display-inline-block" style="padding-right:5px" ui-sref='webvella-admin-entity-view-manage({entityName:"{{::ngCtrl.stateParams.entityName}}" ,viewName:"{{::ngCtrl.stateParams.viewName}}", regionName:"{{::region.name}}"})'>
+							<i class="fa fa-fw fa-eye-slash go-red" ng-if="!region.render"></i> {{::region.label}}
 						</a>
 						<a class="action display-inline-block" style="padding-left:0;margin-left:-5px;padding-right:10px;" ng-click="ngCtrl.manageRegion(region)"><i class="fa fa-fw fa-cog"></i></a>
 					</li>
@@ -59,8 +59,8 @@
 				</div>
 				<ul class="nav navbar-nav">
 					<li role="presentation" ui-sref-active="active" ng-repeat="region in ngCtrl.view.regions | filter:{name:'!header'} track by region.name">
-						<a class="display-inline-block" style="padding-right:5px" ui-sref='webvella-admin-entity-view-manage({entityName:"{{ngCtrl.stateParams.entityName}}" ,viewName:"{{ngCtrl.stateParams.viewName}}", regionName:"{{region.name}}"})'>
-							<i class="fa fa-fw fa-eye-slash go-red" ng-if="!region.render"></i> {{region.label}}
+						<a class="display-inline-block" style="padding-right:5px" ui-sref='webvella-admin-entity-view-manage({entityName:"{{::ngCtrl.stateParams.entityName}}" ,viewName:"{{::ngCtrl.stateParams.viewName}}", regionName:"{{::region.name}}"})'>
+							<i class="fa fa-fw fa-eye-slash go-red" ng-if="!region.render"></i> {{::region.label}}
 						</a>
 						<a class="action display-inline-block" style="padding-left:0;margin-left:-5px;padding-right:10px;" ng-click="ngCtrl.manageRegion(region)"><i class="fa fa-fw fa-cog"></i></a>
 					</li>
@@ -122,14 +122,6 @@
 															<div ng-switch-when="treeFromRelation">
 																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-sitemap go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(column,item.dataName)"></i> <i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="ngCtrl.manageFieldFromRelation(item)"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 															</div>
-															<div ng-switch-when="html">
-																<div ng-if='item.tag == ""'>
-																	<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(column,item.dataName)"></i> No tag
-																</div>
-																<div ng-if='item.tag != ""'>
-																	<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(column,item.dataName)"></i> {{::item.tag}}
-																</div>
-															</div>
 														</div>
 													</div>
 												</div>
@@ -158,7 +150,7 @@
 							<div as-sortable="ngCtrl.libraryDragControlListeners" ng-model="ngCtrl.library.items" id="library">
 								<div class="dropped-item" data-as-sortable-item ng-model="item"
 									 ng-repeat="item in ngCtrl.library.items | filter: ngCtrl.search track by item.dataName"
-									 ng-switch="item.type">
+									 ng-switch="::item.type">
 									<div ng-switch-when="field">
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i> {{::item.meta.name}} <i class="fa fa-asterisk go-gray text-small" ng-show="::item.meta.required"></i>
 									</div>
@@ -179,14 +171,6 @@
 									</div>
 									<div ng-switch-when="treeFromRelation">
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-sitemap go-teal"></i> <span class="go-gray">{{::item.relationName}} ></span> {{::item.meta.name}}
-									</div>
-									<div ng-switch-when="html">
-										<div ng-if='item.tag == ""'>
-											<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i> No tag
-										</div>
-										<div ng-if='item.tag != ""'>
-											<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i> {{::item.tag}}
-										</div>
 									</div>
 								</div>
 							</div>

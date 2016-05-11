@@ -925,11 +925,11 @@
 			}
 		}
 		popupCtrl.getTreeSelectRelatedEntityName = function () {
-			var relatedEntity = fastCopy(resolvedRelatedEntity);
+			var relatedEntity = resolvedRelatedEntity;
 			return "<i class='fa fa-fw fa-" + relatedEntity.iconName + "'></i> " + relatedEntity.name;
 		}
 		popupCtrl.getTreeSelectRecordTreeName = function () {
-			var relatedEntity = fastCopy(resolvedRelatedEntity);
+			var relatedEntity = resolvedRelatedEntity;
 			for (var i = 0; i < relatedEntity.recordTrees.length; i++) {
 				if (relatedEntity.recordTrees[i].id === popupCtrl.field.selectedTreeId) {
 					return "<i class='fa fa-fw fa-sitemap'></i> " + relatedEntity.recordTrees[i].name;

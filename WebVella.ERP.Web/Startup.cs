@@ -61,7 +61,7 @@ namespace WebVella.ERP.Web
 				AutoMapperConfiguration.Configure();
 				service.InitializeSystemEntities();
 
-				app.UseDebugLogMiddleware();
+				//app.UseDebugLogMiddleware();
 				app.UseSecurityMiddleware();
 				app.UseDatabaseContextMiddleware();
 

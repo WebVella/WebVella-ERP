@@ -2246,7 +2246,7 @@ namespace WebVella.ERP.Web.Controllers
 				}
 			}
 
-			if (!String.IsNullOrWhiteSpace(fields) && ids != "null")
+			if (!String.IsNullOrWhiteSpace(fields) && fields != "null")
 			{
 				var fieldsArray = fields.Split(',');
 				var hasId = false;
@@ -2286,6 +2286,11 @@ namespace WebVella.ERP.Web.Controllers
 				columns = String.Join(",", fieldList.Select(x => x.ToString()).ToArray());
 			}
 
+			//var sortRulesList = new List<QuerySortObject>();
+			//var sortRule = new QuerySortObject("id",QuerySortType.Descending);
+			//sortRulesList.Add(sortRule);
+			//EntityQuery query = new EntityQuery(entityName, columns, recordsFilterObj, sortRulesList.ToArray(), null, null);
+
 			EntityQuery query = new EntityQuery(entityName, columns, recordsFilterObj, null, null, null);
 			if (limit != null && limit > 0)
 			{
@@ -2307,7 +2312,6 @@ namespace WebVella.ERP.Web.Controllers
 			response.Timestamp = DateTime.UtcNow;
 			response.Success = true;
 			response.Object.Data = queryResponse.Object.Data;
-
 			return DoResponse(response);
 		}
 

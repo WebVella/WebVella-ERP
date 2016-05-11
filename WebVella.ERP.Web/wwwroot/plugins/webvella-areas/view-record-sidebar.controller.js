@@ -32,9 +32,9 @@
 		else{
 			sidebarData.parentView = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName,$stateParams.entityName,resolvedEntityList);
 		}
-        sidebarData.stateParams = fastCopy($stateParams);
-        sidebarData.entity = fastCopy(resolvedCurrentEntityMeta);
-        sidebarData.currentUser = fastCopy(resolvedCurrentUser);
+        sidebarData.stateParams = $stateParams;
+        sidebarData.entity = resolvedCurrentEntityMeta;
+        sidebarData.currentUser = resolvedCurrentUser;
 		sidebarData.$sessionStorage	= $sessionStorage;
 
     	//#region << Select default list >>

@@ -1041,7 +1041,7 @@
 			};
 			var createListAction = {
 				"name": "wv_create_and_list",
-				"menu": "create-bottom",
+				"menu": "create-bottom",															   
 				"weight": 1,
 				"template": "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"list\")' ng-if=\"ngCtrl.createViewRegion != null\">Create & List</a>"
 			};
@@ -2498,17 +2498,17 @@
 		function userHasRecordPermissions(entityMeta, permissionsCsv) {
 			var requestedPermissionsArray = permissionsCsv.split(',');
 			var permissionChecks = {};
-			var createRolesArray = fastCopy(entityMeta.recordPermissions.canCreate);
+			var createRolesArray = entityMeta.recordPermissions.canCreate;
 			if (getCurrentUser() == null) {
 				return false;
 			}
 
-			var userRoles = fastCopy(getCurrentUser().roles);
+			var userRoles = getCurrentUser().roles;
 
 			for (var i = 0; i < requestedPermissionsArray.length; i++) {
 				var permissionName = requestedPermissionsArray[i];
 				permissionChecks[permissionName] = false;
-				var entityAllowedRoles = fastCopy(entityMeta.recordPermissions[permissionName]);
+				var entityAllowedRoles = entityMeta.recordPermissions[permissionName];
 				for (var j = 0; j < entityAllowedRoles.length; j++) {
 					var roleId = entityAllowedRoles[j];
 					if (userRoles.indexOf(roleId) > -1) {
@@ -2533,7 +2533,7 @@
 
 		//#region << Default action services >>
 		function listAction_getRecordCreateUrl(ngCtrl) {
-			console.time("TimerName");
+
 			//#region << Init >>
 	
 			var siteAreas = ngCtrl.areas;
@@ -2549,7 +2549,6 @@
 			var targetCreateName = null;
 			var targetCreateExists = false;
 			//#endregion		
-			  console.timeEnd("TimerName");
 			//#region << Check if listFromRelation, get the relationName if so >>
 			//Example listFromRelation name: "$list$project_1_n_ticket$general"
 			if (currentListName.indexOf('$') > -1 && currentListName.startsWith("$list")) {

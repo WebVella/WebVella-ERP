@@ -179,7 +179,7 @@
 
 
 		var ngCtrl = this;
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.entity = resolvedCurrentEntityMeta;
 		//#region << Update page title & hide the side menu >>
 		$translate(['RECORD_VIEW_MANAGE_PAGE_TITLE', 'ENTITIES']).then(function (translations) {
 			ngCtrl.pageTitle = translations.RECORD_VIEW_MANAGE_PAGE_TITLE + " | " + pageTitle;
@@ -209,9 +209,9 @@
 			}
 		}
 		ngCtrl.generateAlreadyUsed();
-		ngCtrl.relationsList = fastCopy(resolvedEntityRelationsList);
+		ngCtrl.relationsList = resolvedEntityRelationsList;
 		ngCtrl.fullLibrary = {};
-		ngCtrl.fullLibrary.items = fastCopy(resolvedViewLibrary);
+		ngCtrl.fullLibrary.items = resolvedViewLibrary;
 		ngCtrl.fullLibrary.items = ngCtrl.fullLibrary.items.sort(function (a, b) {
 			if (a.type < b.type) return -1;
 			if (a.type > b.type) return 1;

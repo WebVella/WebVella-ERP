@@ -89,7 +89,7 @@
 		////1. CONSTRUCTOR - initialize the factory
 		webvellaDesktopBrowsenavFactory.initBrowsenav();
 
-		var sitemapAreas = fastCopy(resolvedAreas.data);
+		var sitemapAreas = resolvedAreas.data;
 		sitemapAreas.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 		for (var i = 0; i < sitemapAreas.length; i++) {
 			//Generate topnav

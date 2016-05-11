@@ -138,10 +138,10 @@
 
 		//#region << Init >>
 		ngCtrl.search = {};
-		ngCtrl.allRelations = fastCopy(resolvedRelationsList);
+		ngCtrl.allRelations = resolvedRelationsList;
 		ngCtrl.currentEntityRelation = [];
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
-		ngCtrl.trees = fastCopy(resolvedEntityRecordTrees.recordTrees);
+		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.trees = resolvedEntityRecordTrees.recordTrees;
 		//Update page title
 		$translate(['RECORD_TREE_LIST_PAGE_TITLE','ENTITIES']).then(function (translations) {
 			ngCtrl.pageTitle = translations.RECORD_TREE_LIST_PAGE_TITLE + " | " + pageTitle;

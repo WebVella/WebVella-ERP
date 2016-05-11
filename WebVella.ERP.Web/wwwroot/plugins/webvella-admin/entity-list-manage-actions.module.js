@@ -212,8 +212,8 @@
 
 
  		//#region << Initialize the list >>
-		ngCtrl.list = fastCopy(resolvedCurrentEntityList);
-		ngCtrl.relationsList = fastCopy(resolvedEntityRelationsList);
+		ngCtrl.list = resolvedCurrentEntityList;
+		ngCtrl.relationsList = resolvedEntityRelationsList;
 		//#endregion
 	
 		//#region << Order actionItems >>

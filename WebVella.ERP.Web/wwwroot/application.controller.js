@@ -20,30 +20,30 @@
 		//#region << Request interceptors >>
 		$httpProvider.interceptors.push(function ($q, $location, ngToast, $cookies, $rootScope, $timeout) {
 			return {
-				//'request': function (request) {
-				//	if (request.url.indexOf(wvAppConstants.apiBaseUrl) > -1) {
-				//		if (request.url.indexOf("?") > -1) {
-				//			//there are query string params in the request
-				//			request.url = request.url + "&v=" + moment().format("YYYYMMDDHHmmssSSS");
-				//		}
-				//		else {
-				//			//there are no query strings in the params
-				//			request.url = request.url + "?v=" + moment().format("YYYYMMDDHHmmssSSS");
-				//		}
-				//	}
-				//	else if (request.url.indexOf("/plugins/") > -1) {
-				//		if (request.url.indexOf("?") > -1) {
-				//			//there are query string params in the request
-				//			request.url = request.url + "&v=" + wvAppConstants.htmlCacheBreaker;
-				//		}
-				//		else {
-				//			//there are no query strings in the params
-				//			request.url = request.url + "?v=" + wvAppConstants.htmlCacheBreaker;
-				//		}
-				//	}
+				'request': function (request) {
+					if (request.url.indexOf(wvAppConstants.apiBaseUrl) > -1) {
+						if (request.url.indexOf("?") > -1) {
+							//there are query string params in the request
+							request.url = request.url + "&v=" + moment().format("YYYYMMDDHHmmssSSS");
+						}
+						else {
+							//there are no query strings in the params
+							request.url = request.url + "?v=" + moment().format("YYYYMMDDHHmmssSSS");
+						}
+					}
+					else if (request.url.indexOf("/plugins/") > -1) {
+						if (request.url.indexOf("?") > -1) {
+							//there are query string params in the request
+							request.url = request.url + "&v=" + wvAppConstants.htmlCacheBreaker;
+						}
+						else {
+							//there are no query strings in the params
+							request.url = request.url + "?v=" + wvAppConstants.htmlCacheBreaker;
+						}
+					}
 
-				//	return $q.resolve(request);
-				//},
+					return $q.resolve(request);
+				},
 				'responseError': function (errorResponse) {
 					if (errorResponse.status === 401) {
 						//Check if already called if yes do not call redirect or show message

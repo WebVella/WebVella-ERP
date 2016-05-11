@@ -155,10 +155,10 @@
 
 		//#region << Init >>
 		ngCtrl.search = {};
-		ngCtrl.allRelations = fastCopy(resolvedRelationsList);
+		ngCtrl.allRelations = resolvedRelationsList;
 		ngCtrl.currentEntityRelation = [];
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
-		ngCtrl.tree = fastCopy(resolvedCurrentEntityRecordTree);
+		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.tree = resolvedCurrentEntityRecordTree;
 		//Awesome font icon names array 
 		ngCtrl.icons = getFontAwesomeIconNames();
 		//#region << Update page title & hide the side menu >>

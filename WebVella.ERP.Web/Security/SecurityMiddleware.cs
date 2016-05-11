@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
 using WebVella.ERP.Database;
+using System.Diagnostics;
 
 namespace WebVella.ERP.Web.Security
 {
@@ -30,13 +31,19 @@ namespace WebVella.ERP.Web.Security
 
         public async Task Invoke(HttpContext context)
         {
+			Stopwatch stopWatch = new Stopwatch();
+				stopWatch.Start();
 			using (var dbCtx = DbContext.CreateContext(Settings.ConnectionString))
 			{
 				WebSecurityUtil.Authenticate(context);
 				WebSecurityUtil.OpenScope(context);
+				stopWatch.Stop();
 				await next(context);
+				stopWatch.Start();
 				WebSecurityUtil.CloseScope(context);
 			}
+			stopWatch.Stop();
+			Debug.WriteLine("SECURITY MIDDLEWARE: <END>" +  stopWatch.Elapsed);
 		}
     }
 

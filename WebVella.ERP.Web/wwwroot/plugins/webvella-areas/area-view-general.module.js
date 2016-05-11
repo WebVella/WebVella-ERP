@@ -316,20 +316,20 @@
 		//#region << Initialize main objects >>
 		ngCtrl.view = {};
 		ngCtrl.view.meta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList(safeViewNameAndEntity.viewName, safeViewNameAndEntity.entityName, resolvedEntityList);
-		ngCtrl.view.data = fastCopy(resolvedCurrentViewData);
+		ngCtrl.view.data = resolvedCurrentViewData;
 		if (resolvedParentViewData == null) {
 			ngCtrl.parentView = null;
 		}
 		else {
 			ngCtrl.parentView = {};
 			ngCtrl.parentView.meta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
-			ngCtrl.parentView.data = fastCopy(resolvedParentViewData[0]);
+			ngCtrl.parentView.data = resolvedParentViewData[0];
 		}
-		ngCtrl.entityList = fastCopy(resolvedEntityList);
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
-		ngCtrl.entityRelations = fastCopy(resolvedEntityRelationsList);
-		ngCtrl.areas = fastCopy(resolvedAreas.data);
-		ngCtrl.currentUser = fastCopy(resolvedCurrentUser);
+		ngCtrl.entityList = resolvedEntityList;
+		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.entityRelations = resolvedEntityRelationsList;
+		ngCtrl.areas = resolvedAreas.data;
+		ngCtrl.currentUser = resolvedCurrentUser;
 		ngCtrl.$sessionStorage = $sessionStorage;
 		ngCtrl.stateParams = $stateParams;
 		//#endregion

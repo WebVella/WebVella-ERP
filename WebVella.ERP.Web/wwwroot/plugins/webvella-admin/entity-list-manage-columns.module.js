@@ -213,8 +213,8 @@
 		//#endregion
 
 		//#region << Initialize the list >>
-		ngCtrl.list = fastCopy(resolvedCurrentEntityList);
-		ngCtrl.relationsList = fastCopy(resolvedEntityRelationsList);
+		ngCtrl.list = resolvedCurrentEntityList;
+		ngCtrl.relationsList = resolvedEntityRelationsList;
 
 		ngCtrl.defaultFieldName = null;
 		function calculateDefaultSearchFieldName() {
@@ -282,7 +282,7 @@
 		}
 		ngCtrl.generateAlreadyUsed();
 		ngCtrl.fullLibrary = {};
-		ngCtrl.fullLibrary.items = fastCopy(resolvedViewLibrary);
+		ngCtrl.fullLibrary.items = resolvedViewLibrary;
 		//Fields list eligable to be options in the sort and query dropdowns
 		ngCtrl.onlyFieldsLibrary = {};
 		ngCtrl.onlyFieldsLibrary.items = [];
@@ -469,7 +469,7 @@
 			ngCtrl.list.relationOptions = [];
 
 			for (var i = 0; i < ngCtrl.library.relations.length; i++) {
-				var relation = fastCopy(ngCtrl.library.relations[i]);
+				var relation = ngCtrl.library.relations[i];
 				delete relation.addedToLibrary;
 				delete relation.sameOriginTargetEntity;
 				ngCtrl.list.relationOptions.push(relation);

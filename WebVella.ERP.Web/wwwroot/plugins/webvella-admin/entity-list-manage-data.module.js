@@ -141,7 +141,7 @@
 		//#endregion
 
 		//#region << Initialize the list >>
-		ngCtrl.list = fastCopy(resolvedCurrentEntityList);
+		ngCtrl.list = resolvedCurrentEntityList;
 		//#endregion
 
 		ngCtrl.getData = function (dataType) {
@@ -174,7 +174,7 @@
 				ngCtrl.loading[dataType] = false;
 			}
 
-			var sampleListMeta = fastCopy(ngCtrl.list);
+			var sampleListMeta = ngCtrl.list;
 
 			ngCtrl.loading[dataType] = true;
 			switch (dataType) {

@@ -180,7 +180,7 @@
 
 		var ngCtrl = this;
 		//#region << General init >>
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.entity = resolvedCurrentEntityMeta;
 		ngCtrl.stateParams = $stateParams;
 		//#endregion
 
@@ -226,9 +226,9 @@
 			}
 		}
 		ngCtrl.generateAlreadyUsed();
-		ngCtrl.relationsList = fastCopy(resolvedEntityRelationsList);
+		ngCtrl.relationsList = resolvedEntityRelationsList;
 		ngCtrl.fullLibrary = {};
-		ngCtrl.fullLibrary.items = fastCopy(resolvedViewLibrary);
+		ngCtrl.fullLibrary.items = resolvedViewLibrary;
 		ngCtrl.library = {};
 		ngCtrl.library.relations = [];
 		ngCtrl.library.items = [];

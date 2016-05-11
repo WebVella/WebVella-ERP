@@ -97,7 +97,7 @@
 		}
 		else {
 			//Case 2. List is in a view and the listName is a dataName	
-			var dataNameArray = fastCopy($stateParams.listName).split('$');
+			var dataNameArray = $stateParams.listName.split('$');
 			if (dataNameArray.length < 3 || dataNameArray.length > 4) {
 				lazyDeferred.reject("The list dataName is not correct");
 			}
@@ -275,13 +275,13 @@
 
 		//#region << Initialize main objects >>
 		ngCtrl.list = {};
-		ngCtrl.list.data = fastCopy(resolvedRecordListData);
+		ngCtrl.list.data = resolvedRecordListData;
 		ngCtrl.list.meta = webvellaCoreService.getEntityRecordListFromEntitiesMetaList(listName, listEntityName, resolvedEntityList);
-		ngCtrl.entityList = fastCopy(resolvedEntityList);
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
-		ngCtrl.entityRelations = fastCopy(resolvedEntityRelationsList);
-		ngCtrl.areas = fastCopy(resolvedAreas.data);
-		ngCtrl.currentUser = fastCopy(resolvedCurrentUser);
+		ngCtrl.entityList = resolvedEntityList;
+		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.entityRelations = resolvedEntityRelationsList;
+		ngCtrl.areas = resolvedAreas.data;
+		ngCtrl.currentUser = resolvedCurrentUser;
 		ngCtrl.$sessionStorage = $sessionStorage;
 		ngCtrl.stateParams = $stateParams;
 		//#endregion
