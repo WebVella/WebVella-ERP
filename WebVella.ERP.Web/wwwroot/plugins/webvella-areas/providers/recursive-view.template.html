@@ -1,5 +1,5 @@
 ﻿<div ng-if='::viewMeta.meta.dynamicHtmlTemplate'>
-	<dynamic-view template-url="viewMeta.meta.dynamicHtmlTemplate" template-data="viewData[0]" template-meta="viewMeta.meta"></dynamic-view>
+	<div ng-include="viewMeta.meta.dynamicHtmlTemplate"></div>
 </div>
 <div ng-if='::!viewMeta.meta.dynamicHtmlTemplate'>
 	<p ng-if="::(canAddExisting || canCreate) && !hasError">

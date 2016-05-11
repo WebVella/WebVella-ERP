@@ -25,6 +25,20 @@ namespace WebVella.ERP.Project
 			entityRelationManager = new EntityRelationManager();
 		}
 
+		#region << Task >>
+
+		#region << Create >>
+
+		//[WebHook("create_record_validation_errors", "wv_task")] //<<<< UNCOMMENT TO HOOK
+		public dynamic TaskCreateValidateFilter(dynamic data) {
+			var errors = (List<ErrorModel>)data.errors;
+			var record = (EntityRecord)data.record;
+			var recordId = (Guid)data.recordId;
+			var newErrorsList = Validators.ValidateTask(errors,record,recordId);
+			data.errors = newErrorsList;
+			return data;		
+		}
+
 		[WebHook("create_record_pre_save", "wv_task")]
 		public dynamic TaskCreateRecordPreSave(dynamic data)
 		{
@@ -77,6 +91,39 @@ namespace WebVella.ERP.Project
 
 			return data;
 		}
+
+		#endregion
+
+		#region << Update >>
+
+		//[WebHook("update_record_validation_errors", "wv_task")] //<<<< UNCOMMENT TO HOOK
+		public dynamic TaskUpdateValidateFilter(dynamic data) {
+			var errors = (List<ErrorModel>)data.errors;
+			var record = (EntityRecord)data.record;
+			var recordId = (Guid)data.recordId;
+			var newErrorsList = Validators.ValidateTask(errors,record,recordId);
+			data.errors = newErrorsList;
+			return data;		
+		}
+
+		#endregion
+
+		#region << Patch >>
+		
+		//[WebHook("patch_record_validation_errors", "wv_task")] //<<<< UNCOMMENT TO HOOK
+		public dynamic TaskPatchValidateFilter(dynamic data) {
+			var errors = (List<ErrorModel>)data.errors;
+			var record = (EntityRecord)data.record;
+			var recordId = (Guid)data.recordId;
+			var newErrorsList = Validators.ValidateTask(errors,record,recordId);
+			data.errors = newErrorsList;
+			return data;
+		}
+
+		#endregion
+
+
+		#endregion
 
     }
 }

@@ -20,10 +20,19 @@
 		var serviceInstance = this;
 
 		//#region << Include functions >> ///////////////////////////////////////////////////////////////////////////////////
+		serviceInstance.getMyProjectsList = getMyProjectsList
+		serviceInstance.getMyMilestonesList = getMyMilestonesList
 		//#endregion
 
 
 		//#region << Functions >> ///////////////////////////////////////////////////////////////////////////////////
+		function getMyProjectsList(successCallback, errorCallback) {
+			$http({ method: 'GET', url: "/plugins/webvella-projects/api/project/list/my-projects" }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+		///////////////////
+		function getMyMilestonesList(successCallback, errorCallback) {
+			$http({ method: 'GET', url: "/plugins/webvella-projects/api/milestone/list/my-milestones" }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
 
 		//#region << Global HTTP Error and Success Handlers >>
 		function handleErrorResult(data, status, errorCallback) {

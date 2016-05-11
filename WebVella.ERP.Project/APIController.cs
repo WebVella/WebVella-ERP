@@ -39,7 +39,7 @@ namespace WebVella.ERP.Project
 			//Get entity meta
 			var entity = entMan.ReadEntity("wv_project").Object;
 			//Get list meta
-			var list = entMan.ReadRecordList(entity.Name, listName).Object;
+			//var list = entMan.ReadRecordList(entity.Name, listName).Object;
 			//check if user role has permissions
 			var canRead = user.Roles.Any(x => entity.RecordPermissions.CanRead.Any(z => z == x.Id));
 			var canCreate = user.Roles.Any(x => entity.RecordPermissions.CanCreate.Any(z => z == x.Id));
@@ -67,7 +67,6 @@ namespace WebVella.ERP.Project
 			QueryObject filterObj = null;
 			EntityQuery resultQuery = new EntityQuery("wv_project", requestedFields, filterObj, null, null, null, null);
 			#endregion
-
 
 			#region << Execute >>
 			QueryResponse result = recMan.Find(resultQuery);
@@ -165,9 +164,8 @@ namespace WebVella.ERP.Project
 						recordObj["bugs_reopened_percentage"] = 0;
 						recordObj["bugs_closed_percentage"] = 0;
 					}
-					resultRecordsList.Add(recordObj);
 					#endregion
-
+					resultRecordsList.Add(recordObj);
 				}
 			}
 			#endregion
@@ -194,6 +192,146 @@ namespace WebVella.ERP.Project
 			}
 		}
 
+		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/milestone/list/my-milestones")]
+		public IActionResult MyMilestones()
+		{
+			var response = new ResponseModel();
+			var resultProjectIdList = new List<Guid>();
+			try {
+			#region << Get Project Ids >>
+
+			#region << Can user read projects >>
+			//Get current user
+			ErpUser user = SecurityContext.CurrentUser;
+			//Get entity meta
+			var entity = entMan.ReadEntity("wv_project").Object;
+			//check if user role has permissions
+			var canRead = user.Roles.Any(x => entity.RecordPermissions.CanRead.Any(z => z == x.Id));
+			var canCreate = user.Roles.Any(x => entity.RecordPermissions.CanCreate.Any(z => z == x.Id));
+			var canUpdate = user.Roles.Any(x => entity.RecordPermissions.CanUpdate.Any(z => z == x.Id));
+			var canDelete = user.Roles.Any(x => entity.RecordPermissions.CanDelete.Any(z => z == x.Id));
+
+			if (!canRead)
+			{
+				response.Success = false;
+				response.Message = "You do not have permission to read the projects in this system";
+				response.Timestamp = DateTime.UtcNow;
+				return Json(response); //return empty object
+			}
+			var milestone = entMan.ReadEntity("wv_milestone").Object;
+			//check if user role has permissions
+			var canReadMilestone = user.Roles.Any(x => milestone.RecordPermissions.CanRead.Any(z => z == x.Id));
+			var canCreateMilestone = user.Roles.Any(x => milestone.RecordPermissions.CanCreate.Any(z => z == x.Id));
+			var canUpdateMilestone = user.Roles.Any(x => milestone.RecordPermissions.CanUpdate.Any(z => z == x.Id));
+			var canDeleteMilestone = user.Roles.Any(x => milestone.RecordPermissions.CanDelete.Any(z => z == x.Id));
+
+			if (!canReadMilestone)
+			{
+				response.Success = false;
+				response.Message = "You do not have permission to read the milestones in this system";
+				response.Timestamp = DateTime.UtcNow;
+				return Json(response); //return empty object
+			}
+
+			#endregion
+
+			var requestedFields = "id," +
+			"$user_1_n_project_owner.id," +
+			"$role_n_n_project_team.id,$role_n_n_project_customer.id";
+			#region << Query builder >>
+			//QueryObject filterObj = EntityQuery.QueryEQ("id", recordId);
+			QueryObject filterObj = null;
+			EntityQuery resultQuery = new EntityQuery("wv_project", requestedFields, filterObj, null, null, null, null);
+			#endregion
+
+			#region << Execute >>
+			QueryResponse result = recMan.Find(resultQuery);
+			if (!result.Success)
+			{
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = result.Message;
+				response.Object = null;
+				return Json(response);
+			}
+			foreach (var record in result.Object.Data)
+			{
+				//Check if user can view the object
+				var userIsPM = false;
+				var userIsStaff = false;
+				var userIsCustomer = false;
+				#region << Check user roles >>
+				foreach (var userRole in user.Roles)
+				{
+					userIsPM = ((List<EntityRecord>)record["$user_1_n_project_owner"]).Any(z => (Guid)z["id"] == user.Id);
+					userIsStaff = ((List<EntityRecord>)record["$role_n_n_project_team"]).Any(z => (Guid)z["id"] == userRole.Id);
+					userIsCustomer = ((List<EntityRecord>)record["$role_n_n_project_customer"]).Any(z => (Guid)z["id"] == userRole.Id);
+				}
+				#endregion
+
+				if (userIsPM || userIsStaff || userIsCustomer)
+				{
+					resultProjectIdList.Add((Guid)record["id"]);
+				}
+			}
+			#endregion
+			#endregion
+
+			if(resultProjectIdList.Count == 0) {
+				response.Success = true;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = "You do not have access to any project or there are no projects yet";
+				response.Object = null;
+				return Json(response);	
+			}
+
+			#region << Get Milestones >>
+			var milestoneFields = "*";
+
+			QueryObject projectIdFilterSection = null;
+			#region << project id filters >>
+			var projectIdRulesList = new List<QueryObject>();
+			foreach (var projectId in resultProjectIdList)
+			{
+				var projectIdRule = EntityQuery.QueryEQ("project_id", projectId);
+				projectIdRulesList.Add(projectIdRule);
+			}
+			projectIdFilterSection = EntityQuery.QueryOR(projectIdRulesList.ToArray());
+			#endregion
+
+			var sortRulesList = new List<QuerySortObject>();
+			var defaultSortRule = new QuerySortObject("name",QuerySortType.Ascending);
+			sortRulesList.Add(defaultSortRule);
+
+			var milestoneQuery = new EntityQuery("wv_milestone", milestoneFields, projectIdFilterSection, sortRulesList.ToArray(), null, null, null);
+			var milestoneQueryResponse = recMan.Find(milestoneQuery);
+			if (!milestoneQueryResponse.Success)
+			{
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = milestoneQueryResponse.Message;
+				response.Object = null;
+				return Json(response);
+			}
+
+			response.Success = true;
+			response.Timestamp = DateTime.UtcNow;
+			response.Message = "My milestones successfully read";
+			response.Object = milestoneQueryResponse.Object.Data;
+
+			return Json(response);
+
+			#endregion
+
+			}
+			catch(Exception ex) {
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = "Error: " + ex.Message;
+				response.Object = null;
+				return Json(response);	
+			}
+		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/project/milestones-list")]
 		public IActionResult ProjectMilestones(string listName = null, string entityName = null, int page = 0)

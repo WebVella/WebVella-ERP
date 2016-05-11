@@ -7,43 +7,43 @@
 */
 
 (function () {
-    'use strict';
+	'use strict';
 
-    angular
+	angular
         .module('webvellaCore')
         .directive('validDate', directive);
 
-    directive.$inject = [];
+	directive.$inject = [];
 
-    
-    function directive() {
-        // Usage:
-        //
-        // Creates:
-        //
-        var directive = {
-            restrict: 'A',
-            require: "ngModel",
-            link: link
-        };
-        return directive;
 
-        function link(scope, element, attrs, ngModel) {
-            ngModel.$validators.validDate = function (modelValue) {
-                //moment().toISOString();
-            	if (modelValue == "" || modelValue == null) {
-                    return true;
-                } else {
-                    if (moment(modelValue).isValid()) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            }
-        }
+	function directive() {
+		// Usage:
+		//
+		// Creates:
+		//
+		var directive = {
+			restrict: 'A',
+			require: "ngModel",
+			link: link
+		};
+		return directive;
 
-    }
+		function link(scope, element, attrs, ngModel) {
+			ngModel.$validators.validDate = function (modelValue) {
+				//moment().toISOString();
+				if (modelValue == "" || modelValue == null) {
+					return true;
+				} else {
+					if (moment(modelValue).isValid()) {
+						return true;
+					} else {
+						return false;
+					}
+				}
+			}
+		}
+
+	}
 
 })();
 
@@ -52,37 +52,37 @@
 //#region << focus-me >>
 
 (function () {
-    'use strict';
+	'use strict';
 
-    angular
+	angular
         .module('webvellaCore')
         .directive('focusMe', directive);
 
-    directive.$inject = ['$timeout'];
+	directive.$inject = ['$timeout'];
 
-    
-    function directive($timeout) {
-        // Usage:
-        //
-        // Creates:
-        //
-        var directive = {
-            restrict: 'A',
-            link: link
-        };
-        return directive;
 
-        function link(scope, element, attrs) {
-			 scope.$watch(attrs.focusMe, function(value) {
-				if(value === true) { 
-					$timeout(function(){
+	function directive($timeout) {
+		// Usage:
+		//
+		// Creates:
+		//
+		var directive = {
+			restrict: 'A',
+			link: link
+		};
+		return directive;
+
+		function link(scope, element, attrs) {
+			scope.$watch(attrs.focusMe, function (value) {
+				if (value === true) {
+					$timeout(function () {
 						element[0].focus();
-					},0);
+					}, 0);
 				}
 			});
-        }
+		}
 
-    }
+	}
 
 })();
 
@@ -96,29 +96,56 @@
 */
 
 (function () {
-    'use strict';
+	'use strict';
 
-    angular
+	angular
         .module('webvellaCore')
         .directive('ngConfirmClick', directive);
 
-    directive.$inject = [];
+	directive.$inject = [];
 
-    
-    function directive() {
-    	return {
-    		link: function (scope, element, attr) {
-    			var msg = attr.ngConfirmClick || "Are you sure?";
-    			var clickAction = attr.confirmedClick;
-    			element.bind('click', function (event) {
-    				if (window.confirm(msg)) {
-    					scope.$eval(clickAction)
-    				}
-    			});
-    		}
-    	};
-    }
+
+	function directive() {
+		return {
+			link: function (scope, element, attr) {
+				var msg = attr.ngConfirmClick || "Are you sure?";
+				var clickAction = attr.confirmedClick;
+				element.bind('click', function (event) {
+					if (window.confirm(msg)) {
+						scope.$eval(clickAction)
+					}
+				});
+			}
+		};
+	}
 
 })();
+
+//#endregion
+
+//#region << Script lazy load in html dynamic views >>
+//To load scripts in the dynamical html. Better use plugin
+//To use include in app "ngLoadScript"
+
+
+//(function (ng) {
+//    'use strict';
+
+//    var app = ng.module('ngLoadScript', []);
+
+//    app.directive('script', function() {
+//        return {
+//            restrict: 'E',
+//            scope: false,
+//            link: function(scope, elem, attr) {
+//                if (attr.type=='text/javascript-lazy') {
+//                    var code = elem.text();
+//                    var f = new Function(code);
+//                    f();
+//                }
+//            }
+//        };
+//    });
+//}(angular));
 
 //#endregion

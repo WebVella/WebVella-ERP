@@ -2501,7 +2501,6 @@ namespace WebVella.ERP.Project
 										guidField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
 										//UPDATE
 										guidField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
-										guidField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
 										{
 											var response = entMan.CreateField(TASK_ENTITY_ID, guidField, false);
 											if (!response.Success)

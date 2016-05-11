@@ -262,11 +262,11 @@ span.divider {
 }
 
 .recursive-view-wrapper {
-	border: 1px solid #ddd;
+			border:none;
 }
 
 	.recursive-view-wrapper .panel {
-		background: white !important;
+		background: #fafafa !important;
 		margin: 0;
 	}
 
@@ -3322,7 +3322,7 @@ table .btn-xs.btn-link {
 /*HTML*/
 .editable-wrapper .control-cke-editor {
 	min-height: 100px;
-	background: #f2f2f2;
+	background: #fafafa;
 }
 
 
@@ -4128,10 +4128,6 @@ table.editable td {
 		.record-details .panel-heading a {
 			color: #999;
 		}
-
-	.record-details .recursive-view-wrapper .panel-body {
-		padding-top: 20px !important;
-	}
 
 .panel-section .panel-heading {
 	margin-bottom: 1em;
