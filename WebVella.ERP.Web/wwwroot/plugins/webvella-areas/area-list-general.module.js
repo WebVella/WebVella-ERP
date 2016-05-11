@@ -197,13 +197,13 @@
 		}
 
 		var parentView = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
-		webvellaCoreService.getRecordByViewMeta($stateParams.recordId, parentView, $stateParams.entityName,null, successCallback, errorCallback);
+		webvellaCoreService.getRecordByViewMeta($stateParams.recordId, parentView, $stateParams.entityName, null, successCallback, errorCallback);
 
 		return defer.promise;
 	}
 
-	resolveRecordListDataFromView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedParentViewData', 'resolvedEntityList', 'resolvedEntityRelationsList','ngToast'];
-	function resolveRecordListDataFromView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedParentViewData, resolvedEntityList, resolvedEntityRelationsList,ngToast) {
+	resolveRecordListDataFromView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedParentViewData', 'resolvedEntityList', 'resolvedEntityRelationsList', 'ngToast'];
+	function resolveRecordListDataFromView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedParentViewData, resolvedEntityList, resolvedEntityRelationsList, ngToast) {
 		//Temporary method will be replaced when the proper API is ready
 		// Initialize
 		var defer = $q.defer();
@@ -233,15 +233,15 @@
 			}
 		}
 
- 		function successCallback(response) {
+		function successCallback(response) {
 			defer.resolve(response.object);
 		}
 		function errorCallback(response) {
-		ngToast.create({
-			className: 'error',
-			content: '<span class="go-red">Error:</span> ' + response.message,
-			timeout: 7000
-		});
+			ngToast.create({
+				className: 'error',
+				content: '<span class="go-red">Error:</span> ' + response.message,
+				timeout: 7000
+			});
 			defer.reject(response.message);
 		}
 
@@ -251,11 +251,11 @@
 
 	//#region << Controller /////////////////////////////// >>
 	controller.$inject = ['$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaCoreService', '$injector',
-        'resolvedAreas', 'resolvedRecordListData', 'resolvedEntityList', 'resolvedCurrentEntityMeta', '$timeout',
+        'resolvedAreas', 'resolvedRecordListData', 'resolvedEntityList', 'resolvedCurrentEntityMeta', '$timeout','$translate',
 		'resolvedEntityRelationsList', 'resolvedCurrentUser', '$sessionStorage', '$location', '$window', '$sce'];
 
-	function controller($log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaCoreService,$injector,
-        resolvedAreas, resolvedRecordListData, resolvedEntityList, resolvedCurrentEntityMeta, $timeout,
+	function controller($log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaCoreService, $injector,
+        resolvedAreas, resolvedRecordListData, resolvedEntityList, resolvedCurrentEntityMeta, $timeout,$translate,
 		resolvedEntityRelationsList, resolvedCurrentUser, $sessionStorage, $location, $window, $sce) {
 
 		//#region << ngCtrl initialization >>
@@ -429,12 +429,78 @@
 
 		//#region << Extract fields that are supported in the query to be filters>>
 		ngCtrl.fieldsInQueryArray = webvellaCoreService.extractSupportedFilterFields(ngCtrl.list);
-		ngCtrl.checkIfFieldSetInQuery = function (fieldName) {
-			if (ngCtrl.fieldsInQueryArray.indexOf(fieldName) != -1) {
+		ngCtrl.checkIfFieldSetInQuery = function (dataName) {
+			if (ngCtrl.fieldsInQueryArray.fieldNames.indexOf(dataName) != -1) {
 				return true;
 			}
 			else {
 				return false;
+			}
+		}
+
+		ngCtrl.allQueryComparisonList = [];
+		//#region << Query Dictionary >>
+		$translate(['QUERY_RULE_EQ_LABEL', 'QUERY_RULE_NOT_LABEL', 'QUERY_RULE_LT_LABEL', 'QUERY_RULE_LTE_LABEL',
+					'QUERY_RULE_GT_LABEL', 'QUERY_RULE_GTE_LABEL', 'QUERY_RULE_CONTAINS_LABEL', 'QUERY_RULE_NOT_CONTAINS_LABEL',
+					'QUERY_RULE_STARTSWITH_LABEL', 'QUERY_RULE_NOT_STARTSWITH_LABEL']).then(function (translations) {
+						ngCtrl.allQueryComparisonList = [
+							{
+								key: "EQ",
+								value: translations.QUERY_RULE_EQ_LABEL
+							},
+							{
+								key: "NOT",
+								value: translations.QUERY_RULE_NOT_LABEL
+							},
+							{
+								key: "LT",
+								value: translations.QUERY_RULE_LT_LABEL
+							},
+							{
+								key: "LTE",
+								value: translations.QUERY_RULE_LTE_LABEL
+							},
+							{
+								key: "GT",
+								value: translations.QUERY_RULE_GT_LABEL
+							},
+							{
+								key: "GTE",
+								value: translations.QUERY_RULE_GTE_LABEL
+							},
+							{
+								key: "CONTAINS",
+								value: translations.QUERY_RULE_CONTAINS_LABEL
+							},
+							{
+								key: "NOTCONTAINS",
+								value: translations.QUERY_RULE_NOT_CONTAINS_LABEL
+							},
+							{
+								key: "STARTSWITH",
+								value: translations.QUERY_RULE_STARTSWITH_LABEL
+							},
+							{
+								key: "NOTSTARTSWITH",
+								value: translations.QUERY_RULE_NOT_STARTSWITH_LABEL
+							}
+						];
+
+					});
+		//#endregion
+		ngCtrl.getFilterInputPlaceholder = function (dataName) {
+			var fieldIndex = ngCtrl.fieldsInQueryArray.fieldNames.indexOf(dataName);
+			if (fieldIndex == -1) {
+				return "";
+			}
+			else {
+				var fieldQueryType = ngCtrl.fieldsInQueryArray.queryTypes[fieldIndex];
+				for (var i = 0; i < ngCtrl.allQueryComparisonList.length; i++) {
+					if (ngCtrl.allQueryComparisonList[i].key == fieldQueryType) {
+						return ngCtrl.allQueryComparisonList[i].value;
+					}
+				}
+				return "";
 			}
 		}
 		//#endregion
@@ -585,12 +651,12 @@
 			returnObject.prefix = null;
 			returnObject.suffix = null;
 			var keyIndex = column.meta.displayFormat.indexOf('{0}');
-			if(keyIndex == 0){
+			if (keyIndex == 0) {
 				return null;
 			}
 			else {
 				returnObject.prefix = column.meta.displayFormat.slice(0, keyIndex);
-				if(keyIndex + 3 < column.meta.displayFormat.length){
+				if (keyIndex + 3 < column.meta.displayFormat.length) {
 					returnObject.suffix = column.meta.displayFormat.slice(keyIndex + 3, column.meta.displayFormat.length);
 				}
 				return returnObject;
@@ -602,13 +668,13 @@
 		//#region << List actions  >>
 		//load the actionService methods from rootScope
 		//ngCtrl.actionService = $rootScope.actionService;
-		var serviceName =  safeListNameAndEntityName.entityName + "_" + safeListNameAndEntityName.listName + "_list_service";
-		try{
+		var serviceName = safeListNameAndEntityName.entityName + "_" + safeListNameAndEntityName.listName + "_list_service";
+		try {
 			ngCtrl.actionService = $injector.get(serviceName);
 		}
-		catch(err){
+		catch (err) {
 			//console.log(err);
-			ngCtrl.actionService = {};		
+			ngCtrl.actionService = {};
 		}
 		ngCtrl.pageTitleActions = [];
 		ngCtrl.pageTitleDropdownActions = [];
@@ -635,11 +701,11 @@
 					break;
 			}
 		});
-		ngCtrl.getRecordCreateUrl = function(){ 
-			return webvellaCoreService.listAction_getRecordCreateUrl(ngCtrl); 
+		ngCtrl.getRecordCreateUrl = function () {
+			return webvellaCoreService.listAction_getRecordCreateUrl(ngCtrl);
 		}
 
-		ngCtrl.getRecordDetailsUrl = function(record)  {
+		ngCtrl.getRecordDetailsUrl = function (record) {
 			return webvellaCoreService.listAction_getRecordDetailsUrl(record, ngCtrl);
 		}
 

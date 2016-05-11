@@ -1716,10 +1716,13 @@
 		}
 		/////////////////////
 		function extractSupportedFilterFields(recordList) {
+			var result = {};
+			result.fieldNames = [];
+			result.queryTypes = [];
 			if (recordList.meta.query == null || recordList.meta.query.length == 0) {
-				return [];
+				return result;
 			}
-			var supportedFields = extractFieldsFromQuery(recordList.meta.query, []);
+			var supportedFields = extractFieldsFromQuery(recordList.meta.query, result);
 			return supportedFields;
 		}
 		/////////////////////
@@ -1729,7 +1732,8 @@
 				if (queryObject.name == "url_query" && queryObject.option) {
 					//option should equal fieldName in order to preset field to work
 					if (queryObject.option == query.fieldName) {
-						result.push(query.fieldName);
+						result.fieldNames.push(query.fieldName);
+						result.queryTypes.push(query.queryType);
 					}
 				}
 			}

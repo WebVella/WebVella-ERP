@@ -43,15 +43,15 @@
 				<thead>
 					<tr>
 						<th class="actions text-center position-relative" style="padding:0;vertical-align:middle;padding-top:5px;">
-							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#555;margin-top:0;" href="javascript:void(0)" ng-show="!ngCtrl.show_filter && !ngCtrl.listIsFiltered && ngCtrl.fieldsInQueryArray.length > 0" ng-click="ngCtrl.show_filter = !ngCtrl.show_filter">
+							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#555;margin-top:0;" href="javascript:void(0)" ng-show="!ngCtrl.show_filter && !ngCtrl.listIsFiltered && ngCtrl.fieldsInQueryArray.fieldNames.length > 0" ng-click="ngCtrl.show_filter = !ngCtrl.show_filter">
 								<i class="fa fa-fw fa-filter"></i>
 								<em></em>
 							</a>
-							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#999;margin-top:0;" href="javascript:void(0)" ng-show="ngCtrl.listIsFiltered && ngCtrl.fieldsInQueryArray.length > 0" ng-click="ngCtrl.clearQueryFilter()">
+							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#999;margin-top:0;" href="javascript:void(0)" ng-show="ngCtrl.listIsFiltered && ngCtrl.fieldsInQueryArray.fieldNames.length > 0" ng-click="ngCtrl.clearQueryFilter()">
 								<i class="fa fa-fw fa-times go-red"></i>
 								<em></em>
 							</a>
-							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#ccc;margin-top:0;" href="javascript:void(0)" ng-show="ngCtrl.show_filter && !ngCtrl.listIsFiltered && ngCtrl.fieldsInQueryArray.length > 0" ng-click="ngCtrl.show_filter = !ngCtrl.show_filter">
+							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#ccc;margin-top:0;" href="javascript:void(0)" ng-show="ngCtrl.show_filter && !ngCtrl.listIsFiltered && ngCtrl.fieldsInQueryArray.fieldNames.length > 0" ng-click="ngCtrl.show_filter = !ngCtrl.show_filter">
 								<i class="fa fa-fw fa-times"></i>
 								<em></em>
 							</a>
@@ -92,7 +92,7 @@
 											<div class="form-group form-group-sm">
 												<div class="input-group">
 													<span class="input-group-addon" ng-bind="ngCtrl.getAutoIncrementString(column).prefix" ng-if="ngCtrl.getAutoIncrementString(column).prefix != null"></span>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 													<span class="input-group-addon" ng-bind="ngCtrl.getAutoIncrementString(column).suffix" ng-if="ngCtrl.getAutoIncrementString(column).suffix != null"></span>
 												</div>
 											</div>
@@ -112,7 +112,7 @@
 											<div class="form-group form-group-sm">
 												<div class="input-group">
 													<span class="input-group-addon" ng-bind="::column.meta.currency.symbol" ng-if="::column.meta.currency.symbolPlacement == 1"></span>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 													<span class="input-group-addon" ng-bind="::column.meta.currency.symbol" ng-if="::column.meta.currency.symbolPlacement == 2"></span>
 												</div>
 											</div>
@@ -122,7 +122,7 @@
 											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-calendar"></i>
-													<input type="date" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<input type="date" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 												</div>
 											</div>
 										</div>
@@ -132,7 +132,7 @@
 												<div class="col-sm-6" style="padding:0">
 													<div class="left-inner-addon">
 														<i class="fa fa-fw fa-calendar"></i>
-														<input type="date" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+														<input type="date" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 													</div>
 												</div>
 												<div class="col-sm-6" style="padding: 0 0 0 5px">
@@ -148,7 +148,7 @@
 											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-envelope-o"></i>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 												</div>
 											</div>
 										</div>
@@ -157,14 +157,14 @@
 											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-link"></i>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 												</div>
 											</div>
 										</div>
 										<div ng-switch-when="8">
 											<!--html field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 											</div>
 										</div>
 										<div ng-switch-when="9">
@@ -172,14 +172,14 @@
 											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-link"></i>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 												</div>
 											</div>
 										</div>
 										<div ng-switch-when="10">
 											<!--textarea field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 											</div>
 										</div>
 										<div ng-switch-when="11">
@@ -194,7 +194,7 @@
 										<div ng-switch-when="12">
 											<!--number field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 											</div>
 										</div>
 										<div ng-switch-when="13">
@@ -208,20 +208,20 @@
 											<div class="form-group form-group-sm">
 												<div class="right-inner-addon">
 													<i class="fa fa-fw fa-percent"></i>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 												</div>
 											</div>
 										</div>
 										<div ng-switch-when="15">
 											<!--phone field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 											</div>
 										</div>
 										<div ng-switch-when="16">
 											<!--GUID field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 											</div>
 										</div>
 										<div ng-switch-when="17">
@@ -236,7 +236,7 @@
 										<div ng-switch-when="18">
 											<!--text field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 											</div>
 										</div>
 										<div ng-switch-when="19">
@@ -244,7 +244,7 @@
 											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-globe"></i>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 												</div>
 											</div>
 										</div>
