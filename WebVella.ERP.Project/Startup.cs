@@ -6389,7 +6389,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = null;
 										createListInput.IconName = "paperclip";	
 										createListInput.VisibleColumnsCount = 5;
-										createListInput.ColumnWidthsCSV = null;
+										createListInput.ColumnWidthsCSV = "160px,160px,auto";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = null;

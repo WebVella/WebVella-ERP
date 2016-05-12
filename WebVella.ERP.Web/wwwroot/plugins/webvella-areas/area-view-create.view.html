@@ -397,7 +397,7 @@
 							<!--If item is field WITH relation-->
 							<div class="field" ng-switch-when="fieldFromRelation">
 								<label class="control-label"  ng-class="{'required':item.fieldRequired}">{{::ngCtrl.getRelationLabel(item)}}</label>
-								<div ng-switch="::ngCtrl.getRelation(item.relationName).relationType">
+								<div ng-switch="::ngCtrl.getRelation(item.relationName).relationType" ng-if="::!ngCtrl.isRelationFieldLocked(item)">
 									<div ng-switch-when="1" ng-switch="::ngCtrl.getRelation(item.relationName).currentEntityRole">
 										<!-- Case 1 - Current Entity is Origin -->
 										<div ng-switch-when="1">
@@ -408,14 +408,14 @@
 										</div>
 										<!-- Case 2 - Current Entity is Target -->
 										<div ng-switch-when="2">
-											<div class="editable-wrapper input-group editable-updatable" ng-click="ngCtrl.openManageRelationFieldModal(item,1,'target')">
-												<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(ngCtrl.view.data[item.dataName],item.meta)}}" placeholder="Click to select"></input>
+											<div class="editable-wrapper input-group editable-updatable">
+												<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(ngCtrl.view.data[item.dataName],item.meta)}}" 
+													placeholder="Click to select" ng-click="ngCtrl.openManageRelationFieldModal(item,1,'target')"></input>
 												<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.view.data[item.dataName].length > 0"
 													  confirmed-click="ngCtrl.emptyField(item)" ng-confirm-click="{{::'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
 												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,1,'target')"><i class="fa fa-indent fa-fw"></i></span>
 											</div>
 										</div>
-
 										<!-- Case 3 - Current Entity is both Origin and Target -->
 										<div ng-switch-when="3">
 											<span class="go-red">1:1 - origin-target > Not implemented. We need a test case. Please submit an issue in github's project page</span>
@@ -446,8 +446,9 @@
 										</div>
 										<!-- Case 2 - Current Entity is Target -->
 										<div ng-switch-when="2">
-											<div class="editable-wrapper input-group editable-updatable" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target')">
-												<input type="text" class="form-control" disabled value="{{ngCtrl.dummyFields[item.dataName]}}" placeholder="Click to select"></input>
+											<div class="editable-wrapper input-group editable-updatable">
+												<input type="text" class="form-control" disabled value="{{ngCtrl.dummyFields[item.dataName]}}" 
+													placeholder="Click to select" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target')"></input>
 												<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.hasFieldFromRelationValue(item.dataName)"
 													  confirmed-click="ngCtrl.removeFieldFromRelationValue(item.dataName)" ng-confirm-click="{{::'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
 												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target')"><i class="fa fa-indent fa-fw"></i></span>
@@ -540,6 +541,12 @@
 										</div>
 
 										<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
+									</div>
+								</div>
+								<div  ng-if="::ngCtrl.isRelationFieldLocked(item)">
+									<div class="editable-wrapper input-group editable-readonly">
+										<input type="text" class="form-control" disabled placeholder="This field value is preselected by the system"></input>
+										<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 									</div>
 								</div>
 								<div ng-if="::item.meta.helpText" class="form-description">

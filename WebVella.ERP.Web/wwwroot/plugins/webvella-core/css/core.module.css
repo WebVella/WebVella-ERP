@@ -66,11 +66,15 @@ form.form-signin {
 }
 
 .page-buttons {
-	border: 1px solid #ccc;
+	border: 1px solid #FFE082;
 	margin-top: 1em;
-	background: white;
+	background: #ffffe0;
 	padding: 10px;
 }
+
+	.page-buttons .btn-outline {
+		background:rgba(0,0,0,0.1)
+	}
 
 	.page-buttons > span + span {
 		margin-left: 15px;
@@ -216,7 +220,7 @@ span.divider {
 
 	.navbar.navbar-default.navbar-erp .navbar-brand {
 		height: 40px;
-		color: #ccc;
+		color: #999;
 	}
 
 	.navbar.navbar-default.navbar-erp li > a,

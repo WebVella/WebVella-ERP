@@ -5934,7 +5934,7 @@ namespace WebVella.ERP.Api
 			create.Name = "general";
 			create.Label = "General";
 			create.Default = true;
-			create.System = true;
+			create.System = false;
 			create.Type = "general";
 			create.IconName = "list";
 			create.PageSize = 10;
@@ -5955,7 +5955,7 @@ namespace WebVella.ERP.Api
 			lookup.Name = "lookup";
 			lookup.Label = "Lookup";
 			lookup.Default = true;
-			lookup.System = true;
+			lookup.System = false;
 			lookup.Type = "lookup";
 			lookup.IconName = "list";
 			lookup.PageSize = 10;
@@ -6037,7 +6037,7 @@ namespace WebVella.ERP.Api
 			create.Name = "create";
 			create.Label = "Create";
 			create.Default = true;
-			create.System = true;
+			create.System = false;
 			create.Type = "create";
 			create.Weight = 10;
 			create.IconName = "file-text-o";
@@ -6058,7 +6058,7 @@ namespace WebVella.ERP.Api
 			quickCreate.Name = "quick_create";
 			quickCreate.Label = "Quick create";
 			quickCreate.Default = true;
-			quickCreate.System = true;
+			quickCreate.System = false;
 			quickCreate.Type = "quick_create";
 			quickCreate.IconName = "file-text-o";
 			quickCreate.Weight = 10;
@@ -6079,7 +6079,7 @@ namespace WebVella.ERP.Api
 			quickView.Name = "quick_view";
 			quickView.Label = "Quick view";
 			quickView.Default = true;
-			quickView.System = true;
+			quickView.System = false;
 			quickView.Type = "quick_view";
 			quickView.IconName = "file-text-o";
 			quickView.Weight = 10;
@@ -6098,7 +6098,7 @@ namespace WebVella.ERP.Api
 			general.Name = "general";
 			general.Label = "General";
 			general.Default = true;
-			general.System = true;
+			general.System = false;
 			general.Type = "general";
 			general.Weight = 10;
 			general.IconName = "file-text-o";

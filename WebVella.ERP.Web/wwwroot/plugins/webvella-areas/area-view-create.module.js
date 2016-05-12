@@ -403,6 +403,53 @@
 
 		//#endregion
 
+		//#region << If this is a create with relation init the related id >>
+		if(ngCtrl.stateParams.relationName){
+			//get relation
+			var currentRelation = webvellaCoreService.getRelationFromRelationsList(ngCtrl.stateParams.relationName,ngCtrl.entityRelations)
+			var relationFieldDataName = "$"+currentRelation.name + ".id";
+			//Lock the field if present as it should not be edited by the user
+			ngCtrl.isRelationFieldLocked = function(item){
+				var checkstring = "$field$" + currentRelation.name;
+				if(item.dataName.indexOf(checkstring) == -1){
+					return false;
+				}
+				else {
+					return true;
+				}
+			}
+		
+			//generate the relation field dataName for this record and include it in the data
+			switch(currentRelation.relationType){
+				case 1:  //1:1
+					ngCtrl.view.data[relationFieldDataName] = ngCtrl.stateParams.targetRecordId;
+					break;
+				case 2:  //1:N
+					if( ngCtrl.stateParams.direction == "origin-target"){
+						//field expects 1 value - of the origin
+						ngCtrl.view.data[relationFieldDataName] = ngCtrl.stateParams.targetRecordId;
+					}
+					else {
+						//field expects Array of values - of the targets
+						ngCtrl.view.data[relationFieldDataName].push(ngCtrl.stateParams.targetRecordId);
+					}
+					break;
+				case 3:  //N:N
+					if( ngCtrl.stateParams.direction == "origin-target"){
+						//field expects Array value - of the origins
+						ngCtrl.view.data[relationFieldDataName].push(ngCtrl.stateParams.targetRecordId);
+					}
+					else {
+						//field expects Array values - of the targets
+						ngCtrl.view.data[relationFieldDataName].push(ngCtrl.stateParams.targetRecordId);
+					}
+					break;
+			}
+		}
+
+
+		//#endregion
+
 		//#region << Render >>
 		ngCtrl.activeTabName = ngCtrl.stateParams.regionName;
 		ngCtrl.view.meta.regions.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
