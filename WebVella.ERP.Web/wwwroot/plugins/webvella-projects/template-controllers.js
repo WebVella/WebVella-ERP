@@ -194,7 +194,7 @@
 			popupCtrl.myProjectMilestones = [];
 			var emptyMilestone = {};
 			emptyMilestone.id = null;
-			emptyMilestone.name = "== no milestone selected ==";
+			emptyMilestone.name = "No milestone";
 			popupCtrl.myProjectMilestones.push(emptyMilestone);	
 			allMilestones.forEach(function(milestone){
 				if(milestone.project_id == popupCtrl.project_id){

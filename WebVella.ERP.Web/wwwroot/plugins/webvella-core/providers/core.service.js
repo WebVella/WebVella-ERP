@@ -12,11 +12,11 @@
         .service('webvellaCoreService', service);
 
 	service.$inject = ['$cookies', '$q', '$http', '$log', '$location', 'wvAppConstants', '$rootScope', '$anchorScroll', 'ngToast',
-				'$timeout', 'Upload', '$translate', '$filter'];
+				'$timeout', 'Upload', '$translate', '$filter','$state'];
 
 
 	function service($cookies, $q, $http, $log, $location, wvAppConstants, $rootScope, $anchorScroll, ngToast,
-				$timeout, Upload, $translate, $filter) {
+				$timeout, Upload, $translate, $filter,$state) {
 		var serviceInstance = this;
 
 		//#region << Include functions >> ///////////////////////////////////////////////////////////////////////////////////
@@ -3130,7 +3130,13 @@
 			}
 
 			function patchFailedCallback(response) {
-				return "validation error";
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
+				});
+				$state.go($state.current, {}, {reload: true});
+				return "error";
 			}
 
 			if (!item.entityName) {

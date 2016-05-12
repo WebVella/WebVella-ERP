@@ -26,6 +26,9 @@
 			<a ng-switch-when="listFromRelation" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.parentViewName}}/{{::sidebarData.stateParams.recordId}}/list-general/{{::item.name}}">
 				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
 			</a>
+			<!--<a ng-switch-when="listFromRelation" ui-sref="webvella-area-list-general-in-view({areaName:sidebarData.stateParams.areaName,entityName:sidebarData.stateParams.entityName,viewType:'view-general',parentViewName:item.parentViewName,listName:item.name,recordId:sidebarData.stateParams.recordId })">
+				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
+			</a>-->
 		</li>
 	</ul>
 </div>

@@ -4684,25 +4684,6 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
-										#region << milestone >>
-										{
-										var targetEntity = entMan.ReadEntity(MILESTONE_ENTITY_ID).Object;
-										viewItemFromRelation = new InputRecordViewRelationFieldItem();
-										viewItemFromRelation.EntityId = targetEntity.Id;
-										viewItemFromRelation.EntityName = targetEntity.Name;
-										viewItemFromRelation.Type = "fieldFromRelation";
-										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
-										viewItemFromRelation.FieldName = "name";
-										viewItemFromRelation.FieldLabel = "Milestone";
-										viewItemFromRelation.FieldPlaceholder = "";
-										viewItemFromRelation.FieldRequired = false;
-										viewItemFromRelation.FieldLookupList = "lookup";		
-										viewItemFromRelation.RelationId = new Guid("3b600a1c-066e-42e2-a678-0de4f0f8a9e1");
-										viewItemFromRelation.RelationName = "milestone_1_n_task";
-										viewColumn.Items.Add(viewItemFromRelation);	
-										}
-										#endregion
-
 										#region << owner >>
 										{
 										var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;

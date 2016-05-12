@@ -19,211 +19,369 @@ namespace WebVella.ERP.Project
 
 		public static dynamic UpdateTask(dynamic data, RecordManager recMan)
 		{
-
-			//If status is updated we need to check the old one and fix the milestone and project counters
-
-			var record = (EntityRecord)data.record;
-			var recordId = (Guid)data.recordId;
-
-			if (!record.Properties.ContainsKey("status"))
+			try
 			{
-				return data;
-			}
-			EntityRecord updatedTask = null;
-			#region << Get the updated project >>
-			{
-				var filterObj = EntityQuery.QueryEQ("id", recordId);
-				var query = new EntityQuery("wv_task", "*", filterObj, null, null, null);
-				var result = recMan.Find(query);
-				if (!result.Success)
-				{
+				EntityRecord newTaskObject = null;
+				#region << Init checks>>
+				newTaskObject = (EntityRecord)data.record;
+				var recordId = (Guid)data.recordId;
 
-					throw new Exception("Error getting the updated task: " + result.Message);
-				}
-				else if (result.Object == null || result.Object.Data == null || !result.Object.Data.Any())
+				if (!newTaskObject.Properties.ContainsKey("status") && !newTaskObject.Properties.ContainsKey("project_id") && !newTaskObject.Properties.ContainsKey("milestone_id"))
 				{
-					throw new Exception("Task not found");
+					return data;
 				}
-				updatedTask = result.Object.Data[0];
-			}
-			#endregion
+				//Convert ids to guid
+				if(newTaskObject.Properties.ContainsKey("project_id") && newTaskObject["project_id"] != null) {
+					newTaskObject["project_id"] = new Guid((string)newTaskObject["project_id"]);
+				}
+				else if (newTaskObject.Properties.ContainsKey("project_id")) {
+					newTaskObject["project_id"] = null;
+				}
 
-			var oldStatus = (string)updatedTask["status"];
-			var newStatus = (string)record["status"];
-			if (newStatus == oldStatus)
-			{
-				return data;
-			}
+				if(newTaskObject.Properties.ContainsKey("milestone_id") && newTaskObject["milestone_id"] != null) {
+					newTaskObject["milestone_id"] = new Guid((string)newTaskObject["milestone_id"]);
+				}
+				else if (newTaskObject.Properties.ContainsKey("milestone_id")) {
+					newTaskObject["milestone_id"] = null;
+				}
+				#endregion
 
-			EntityRecord taskProject = null;
-			#region << Get the updated project >>
-			{
-				if (updatedTask["project_id"] == null)
+				EntityRecord oldTaskObject = null;
+				#region << Get the old task object >>
 				{
-					throw new Exception("Project cannot be null");
-				}
-				var filterObj = EntityQuery.QueryEQ("id", (Guid)updatedTask["project_id"]);
-				var query = new EntityQuery("wv_project", "*", filterObj, null, null, null);
-				var result = recMan.Find(query);
-				if (!result.Success)
-				{
-
-					throw new Exception("Error getting the updated project: " + result.Message);
-				}
-				else if (result.Object == null || result.Object.Data == null || !result.Object.Data.Any())
-				{
-					throw new Exception("Project not found");
-				}
-				else
-				{
-					taskProject = result.Object.Data[0];
-				}
-			}
-			#endregion
-
-			EntityRecord taskMilestone = null;
-			#region << Get the updated milestone >>
-			{
-				if (updatedTask["milestone_id"] != null)
-				{
-					var filterObj = EntityQuery.QueryEQ("id", (Guid)updatedTask["milestone_id"]);
-					var query = new EntityQuery("wv_milestone", "*", filterObj, null, null, null);
+					var filterObj = EntityQuery.QueryEQ("id", recordId);
+					var query = new EntityQuery("wv_task", "*", filterObj, null, null, null);
 					var result = recMan.Find(query);
 					if (!result.Success)
 					{
 
-						throw new Exception("Error getting the updated milestone: " + result.Message);
+						throw new Exception("Error getting the updated task: " + result.Message);
 					}
 					else if (result.Object == null || result.Object.Data == null || !result.Object.Data.Any())
 					{
-						throw new Exception("Project not found");
+						throw new Exception("Task not found");
+					}
+					oldTaskObject = result.Object.Data[0];
+					//As we will use status checks below a lot, we need to be sure the newTaskObject object (posted by the user) has it also
+					if(!newTaskObject.Properties.ContainsKey("status")) {
+						newTaskObject["status"] = (string)oldTaskObject["status"];
+					}
+
+				}
+				#endregion
+
+				var isProjectChanged = false;
+				var isMilestoneChanged = false;
+				var isStatusChanged = false;
+				#region << Check what is changed >>
+				var oldStatus = (string)oldTaskObject["status"];
+				var newStatus = "";
+				if (newTaskObject.Properties.ContainsKey("status") && oldStatus != (string)newTaskObject["status"])
+				{
+					isStatusChanged = true;
+					newStatus = (string)newTaskObject["status"];
+				}
+
+				var oldProjectId = (Guid?)oldTaskObject["project_id"];
+				Guid? newProjectId = null;
+				if (newTaskObject.Properties.ContainsKey("project_id") && oldProjectId != (Guid?)newTaskObject["project_id"])
+				{
+					isProjectChanged = true;
+					newProjectId = (Guid?)newTaskObject["project_id"];
+				}
+
+				var oldMilestoneId = (Guid?)oldTaskObject["milestone_id"];
+				Guid? newMilestoneId = null;
+				if (newTaskObject.Properties.ContainsKey("milestone_id") && oldMilestoneId != (Guid?)newTaskObject["milestone_id"])
+				{
+					isMilestoneChanged = true;
+					newMilestoneId = (Guid?)newTaskObject["milestone_id"];
+				}
+
+				//If none of the properties of interest is changed, just return
+				if (!isStatusChanged && !isProjectChanged && !isMilestoneChanged)
+				{
+					return data;
+				}
+
+				#endregion
+
+				EntityRecord oldTaskProject = new EntityRecord();
+				EntityRecord newTaskProject = new EntityRecord();
+				#region << Get the task projects new and old >>
+				{
+					if (oldTaskObject["project_id"] != null || isProjectChanged)
+					{
+						var projectFiltersList = new List<QueryObject>();
+						if (oldTaskObject["project_id"] != null)
+						{
+							var oldProjectFilterObj = EntityQuery.QueryEQ("id", (Guid)oldTaskObject["project_id"]);
+							projectFiltersList.Add(oldProjectFilterObj);
+						}
+						if (isProjectChanged && newTaskObject["project_id"] != null)
+						{
+							var newProjectFilterObj = EntityQuery.QueryEQ("id", (Guid)newTaskObject["project_id"]);
+							projectFiltersList.Add(newProjectFilterObj);
+						}
+						var sectionFilter = EntityQuery.QueryOR(projectFiltersList.ToArray());
+						var query = new EntityQuery("wv_project", "*", sectionFilter, null, null, null);
+						var result = recMan.Find(query);
+						if (!result.Success)
+						{
+
+							throw new Exception("Error getting the updated project: " + result.Message);
+						}
+						else if (result.Object == null || result.Object.Data == null || !result.Object.Data.Any())
+						{
+							throw new Exception("Project not found");
+						}
+						else
+						{
+							foreach (var resultObject in result.Object.Data)
+							{
+								if (oldTaskObject["project_id"] != null && (Guid)resultObject["id"] == (Guid)oldTaskObject["project_id"])
+								{
+									oldTaskProject = resultObject;
+								}
+								if (isProjectChanged && newTaskObject["project_id"]!= null && (Guid)resultObject["id"] == (Guid)newTaskObject["project_id"])
+								{
+									newTaskProject = resultObject;
+								}
+							}
+
+						}
+					}
+				}
+				#endregion
+
+
+				EntityRecord oldTaskMilestone = new EntityRecord();
+				EntityRecord newTaskMilestone = new EntityRecord();
+				#region << Get the task milestones old and new >>
+				{
+					if (oldTaskObject["milestone_id"] != null || isMilestoneChanged)
+					{
+						var milestoneFiltersList = new List<QueryObject>();
+						if (oldTaskObject["milestone_id"] != null)
+						{
+							var oldMilestoneFilter = EntityQuery.QueryEQ("id", (Guid)oldTaskObject["milestone_id"]);
+							milestoneFiltersList.Add(oldMilestoneFilter);
+						}
+						if (isMilestoneChanged && newTaskObject["milestone_id"] != null)
+						{
+							var newMilestoneFilter = EntityQuery.QueryEQ("id", (Guid)newTaskObject["milestone_id"]);
+							milestoneFiltersList.Add(newMilestoneFilter);
+						}
+						var sectionFilter = EntityQuery.QueryOR(milestoneFiltersList.ToArray());
+						var query = new EntityQuery("wv_milestone", "*", sectionFilter, null, null, null);
+						var result = recMan.Find(query);
+						if (!result.Success)
+						{
+
+							throw new Exception("Error getting the updated milestone: " + result.Message);
+						}
+						else if (result.Object == null || result.Object.Data == null || !result.Object.Data.Any())
+						{
+							throw new Exception("Project not found");
+						}
+						else
+						{
+							foreach (var resultObject in result.Object.Data)
+							{
+								if (oldTaskObject["milestone_id"] != null && (Guid)resultObject["id"] == (Guid)oldTaskObject["milestone_id"])
+								{
+									oldTaskMilestone = resultObject;
+								}
+								if (isMilestoneChanged && newTaskObject["milestone_id"] != null && (Guid)resultObject["id"] == (Guid)newTaskObject["milestone_id"])
+								{
+									newTaskMilestone = resultObject;
+								}
+							}
+						}
+					}
+				}
+				#endregion
+
+
+				EntityRecord oldProjectPatchObject = new EntityRecord();
+				EntityRecord newProjectPatchObject = new EntityRecord();
+				EntityRecord oldMilestonePatchObject = new EntityRecord();
+				EntityRecord newMilestonePatchObject = new EntityRecord();
+				var isOldProjectPatched = false;
+				var isNewProjectPatched = false;
+				var isOldMilestonePatched = false;
+				var isNewMilestonePatched = false;
+
+				#region << init patch objects >>
+				if (oldTaskProject.Properties.Count > 0)
+				{
+					oldProjectPatchObject["id"] = (Guid)oldTaskProject["id"];
+					oldProjectPatchObject["x_tasks_not_started"] = (decimal)oldTaskProject["x_tasks_not_started"];
+					oldProjectPatchObject["x_tasks_in_progress"] = (decimal)oldTaskProject["x_tasks_in_progress"];
+					oldProjectPatchObject["x_tasks_completed"] = (decimal)oldTaskProject["x_tasks_completed"];
+				}
+				if (newTaskProject.Properties.Count > 0)
+				{
+					newProjectPatchObject["id"] = (Guid)newTaskProject["id"];
+					newProjectPatchObject["x_tasks_not_started"] = (decimal)newTaskProject["x_tasks_not_started"];
+					newProjectPatchObject["x_tasks_in_progress"] = (decimal)newTaskProject["x_tasks_in_progress"];
+					newProjectPatchObject["x_tasks_completed"] = (decimal)newTaskProject["x_tasks_completed"];
+				}
+				if (oldTaskMilestone.Properties.Count > 0)
+				{
+					oldMilestonePatchObject["id"] = (Guid)oldTaskMilestone["id"];
+					oldMilestonePatchObject["x_tasks_not_started"] = (decimal)oldTaskMilestone["x_tasks_not_started"];
+					oldMilestonePatchObject["x_tasks_in_progress"] = (decimal)oldTaskMilestone["x_tasks_in_progress"];
+					oldMilestonePatchObject["x_tasks_completed"] = (decimal)oldTaskMilestone["x_tasks_completed"];
+				}
+				if (newTaskMilestone.Properties.Count > 0)
+				{
+					newMilestonePatchObject["id"] = (Guid)newTaskMilestone["id"];
+					newMilestonePatchObject["x_tasks_not_started"] = (decimal)newTaskMilestone["x_tasks_not_started"];
+					newMilestonePatchObject["x_tasks_in_progress"] = (decimal)newTaskMilestone["x_tasks_in_progress"];
+					newMilestonePatchObject["x_tasks_completed"] = (decimal)newTaskMilestone["x_tasks_completed"];
+				}
+				#endregion
+
+				#region << Case 1 - changes based on Project >>
+				if (isProjectChanged)
+				{
+					//Remove one from the old project <> old status if the target is not null
+					if(oldProjectPatchObject.Properties.Count > 0) {
+						oldProjectPatchObject = UpdateProjectOrTaskCounter(oldProjectPatchObject, (string)oldTaskObject["status"], -1);
+						isOldProjectPatched = true;
+					}
+					//Add one to the new project <> new status if the target is not null
+					if(newProjectPatchObject.Properties.Count > 0) {
+						newProjectPatchObject = UpdateProjectOrTaskCounter(newProjectPatchObject, (string)newTaskObject["status"], 1);
+						isNewProjectPatched = true;
+					}
+				}
+				else
+				{
+					//No change is needed based on this case
+				}
+				#endregion
+
+				#region << Case 2 - changes based on Milestone >>
+				if (isMilestoneChanged)
+				{
+					//Remove one from the old milestone <> old status if the target is not null
+					if(oldMilestonePatchObject.Properties.Count > 0) {
+						oldMilestonePatchObject = UpdateProjectOrTaskCounter(oldMilestonePatchObject, (string)oldTaskObject["status"], -1);
+						isOldMilestonePatched = true;
+					}
+					//Add one to the new milestone <> new status if the target is not null
+					if(newMilestonePatchObject.Properties.Count > 0) {
+						newMilestonePatchObject = UpdateProjectOrTaskCounter(newMilestonePatchObject, (string)newTaskObject["status"], 1);
+						isNewMilestonePatched = true;
+					}
+				}
+				else
+				{
+					//No change is needed based on this case
+				}
+				#endregion
+
+				#region << Case 3 - changes based on Status >>
+				{
+					if (isStatusChanged)
+					{
+						if (isProjectChanged)
+						{
+							//the status change is already set in the new project object in case 1
+						}
+						else
+						{
+							//Remove one from the old project old status
+							oldProjectPatchObject = UpdateProjectOrTaskCounter(oldProjectPatchObject, (string)oldTaskObject["status"], -1);
+							//Add one from the old project new status
+							oldProjectPatchObject = UpdateProjectOrTaskCounter(oldProjectPatchObject, (string)newTaskObject["status"], 1);
+							isOldProjectPatched = true;
+						}
+						if (isMilestoneChanged)
+						{
+							//the status change is already set in the new milestone object in case 2
+						}
+						else
+						{
+							//Remove one from the old milestone old status
+							oldMilestonePatchObject = UpdateProjectOrTaskCounter(oldMilestonePatchObject, (string)oldTaskObject["status"], -1);
+							//Add one from the old milestone new status	
+							oldMilestonePatchObject = UpdateProjectOrTaskCounter(oldMilestonePatchObject, (string)newTaskObject["status"], 1);
+							isOldMilestonePatched = true;
+						}
 					}
 					else
 					{
-						taskMilestone = result.Object.Data[0];
+						//do nothing
 					}
 				}
-			}
-			#endregion
+				#endregion
 
-			#region << Manage the project counter >>
-			{
-				var patchObject = new EntityRecord();
-				patchObject["id"] = (Guid)taskProject["id"];
-				switch (oldStatus)
+				#region << Update objects >>
+				if (isOldProjectPatched)
 				{
-					case "not started":
-						if ((decimal)taskProject["x_tasks_not_started"] > 1)
-						{
-							patchObject["x_tasks_not_started"] = (decimal)taskProject["x_tasks_not_started"] - 1;
-						}
-						else
-						{
-							patchObject["x_tasks_not_started"] = 0;
-						}
-						break;
-					case "in progress":
-						if ((decimal)taskProject["x_tasks_in_progress"] > 1)
-						{
-							patchObject["x_tasks_in_progress"] = (decimal)taskProject["x_tasks_in_progress"] - 1;
-						}
-						else
-						{
-							patchObject["x_tasks_in_progress"] = 0;
-						}
-						break;
-					case "completed":
-						if ((decimal)taskProject["x_tasks_completed"] > 1)
-						{
-							patchObject["x_tasks_completed"] = (decimal)taskProject["x_tasks_completed"] - 1;
-						}
-						else
-						{
-							patchObject["x_tasks_completed"] = 0;
-						}
-						break;
-				}
-				switch (newStatus)
-				{
-					case "not started":
-						patchObject["x_tasks_not_started"] = (decimal)taskProject["x_tasks_not_started"] + 1;
-						break;
-					case "in progress":
-						patchObject["x_tasks_in_progress"] = (decimal)taskProject["x_tasks_in_progress"] + 1;
-						break;
-					case "completed":
-						patchObject["x_tasks_completed"] = (decimal)taskProject["x_tasks_completed"] + 1;
-						break;
-				}
-				var updateResponse = recMan.UpdateRecord("wv_project", patchObject);
-				if (!updateResponse.Success)
-				{
-					throw new Exception(updateResponse.Message);
-				}
-			}
-			#endregion
-
-			#region << Manage the milestone counter >>
-			{
-				if (taskMilestone != null)
-				{
-					var patchObject = new EntityRecord();
-					patchObject["id"] = (Guid)taskMilestone["id"];
-					switch (oldStatus)
-					{
-						case "not started":
-							if ((decimal)taskMilestone["x_tasks_not_started"] > 1)
-							{
-								patchObject["x_tasks_not_started"] = (decimal)taskMilestone["x_tasks_not_started"] - 1;
-							}
-							else
-							{
-								patchObject["x_tasks_not_started"] = 0;
-							}
-							break;
-						case "in progress":
-							if ((decimal)taskMilestone["x_tasks_in_progress"] > 1)
-							{
-								patchObject["x_tasks_in_progress"] = (decimal)taskMilestone["x_tasks_in_progress"] - 1;
-							}
-							else
-							{
-								patchObject["x_tasks_in_progress"] = 0;
-							}
-							break;
-						case "completed":
-							if ((decimal)taskMilestone["x_tasks_completed"] > 1)
-							{
-								patchObject["x_tasks_completed"] = (decimal)taskMilestone["x_tasks_completed"] - 1;
-							}
-							else
-							{
-								patchObject["x_tasks_completed"] = 0;
-							}
-							break;
-					}
-					switch (newStatus)
-					{
-						case "not started":
-							patchObject["x_tasks_not_started"] = (decimal)taskMilestone["x_tasks_not_started"] + 1;
-							break;
-						case "in progress":
-							patchObject["x_tasks_in_progress"] = (decimal)taskMilestone["x_tasks_in_progress"] + 1;
-							break;
-						case "completed":
-							patchObject["x_tasks_completed"] = (decimal)taskMilestone["x_tasks_completed"] + 1;
-							break;
-					}
-					var updateResponse = recMan.UpdateRecord("wv_milestone", patchObject);
+					var updateResponse = recMan.UpdateRecord("wv_project", oldProjectPatchObject);
 					if (!updateResponse.Success)
 					{
-						throw new Exception(updateResponse.Message);
+						throw new Exception("Old project update error: " + updateResponse.Message);
 					}
 				}
-			}
-			#endregion
 
-			return data;
+				if (isNewProjectPatched)
+				{
+					var updateResponse = recMan.UpdateRecord("wv_project", newProjectPatchObject);
+					if (!updateResponse.Success)
+					{
+						throw new Exception("New project update error: " + updateResponse.Message);
+					}
+				}
+
+				if (isOldMilestonePatched)
+				{
+					var updateResponse = recMan.UpdateRecord("wv_milestone", oldMilestonePatchObject);
+					if (!updateResponse.Success)
+					{
+						throw new Exception("Old milestone update error: " + updateResponse.Message);
+					}
+				}
+
+				if (isNewMilestonePatched)
+				{
+					var updateResponse = recMan.UpdateRecord("wv_milestone", newMilestonePatchObject);
+					if (!updateResponse.Success)
+					{
+						throw new Exception("New milestone update error: " + updateResponse.Message);
+					}
+				}
+				#endregion
+
+				return data;
+			}
+			catch (Exception ex)
+			{
+
+				throw new Exception(ex.Message);
+			}
+		}
+
+		public static EntityRecord UpdateProjectOrTaskCounter(EntityRecord targetObject, string status, decimal count)
+		{
+			switch (status)
+			{
+				case "not started":
+					targetObject["x_tasks_not_started"] = (decimal)targetObject["x_tasks_not_started"] + count;
+					break;
+				case "in progress":
+					targetObject["x_tasks_in_progress"] = (decimal)targetObject["x_tasks_in_progress"] + count;
+					break;
+				case "completed":
+					targetObject["x_tasks_completed"] = (decimal)targetObject["x_tasks_completed"] + count;
+					break;
+			}
+
+			return targetObject;
 		}
 
 	}

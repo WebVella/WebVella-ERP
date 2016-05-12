@@ -5209,7 +5209,7 @@ var $AnimateProvider = ['$provide', function($provide) {
      * {@link ngAnimate ngAnimate module page}.
      */
     return {
-      // we don't call it directly since non-existant arguments may
+      // we don't call it directly since non-existent arguments may
       // be interpreted as null within the sub enabled function
 
       /**

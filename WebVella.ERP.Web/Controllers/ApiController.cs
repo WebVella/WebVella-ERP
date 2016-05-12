@@ -1745,12 +1745,17 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK FILTER << get_record_input >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
 				hookFilterObj.recordId = recordId;
 				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.GetRecordInput, entityName, hookFilterObj);
 				recordId = hookFilterObj.recordId;
-			} // <<<
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook get_record_input: " + ex.Message));
+			}// <<<
 
 			QueryObject filterObj = EntityQuery.QueryEQ("id", recordId);
 
@@ -1764,24 +1769,34 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK FILTER << get_record_output >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
 				hookFilterObj.record = record;
 				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.GetRecordOutput, entityName, hookFilterObj);
 				record = hookFilterObj.record;
-			} // <<<
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook get_record_output: " + ex.Message));
+			}// <<<
 
 			result.Object.Data[0] = record;
 
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK ACTION << get_record >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
 				hookFilterObj.recordId = recordId;
 				hookFilterObj.result = result;
 				hooksService.ProcessActions(SystemWebHookNames.GetRecordAction, entityName, hookFilterObj);
-			} // <<<
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook get_record: " + ex.Message));
+			}// <<<
 
 			return Json(result);
 		}
@@ -1794,25 +1809,35 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK FILTER << delete_record_input >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
 				hookFilterObj.recordId = recordId;
 				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.DeleteRecordInput, entityName, hookFilterObj);
 				recordId = hookFilterObj.recordId;
-			} // <<<
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook delete_record_input: " + ex.Message));
+			}// <<<
 
 			var validationErrors = new List<ErrorModel>();
 
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK FILTER << delete_record_validation_errors >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
 				hookFilterObj.errors = validationErrors;
 				hookFilterObj.recordId = recordId;
 				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.DeleteRecordValidationErrors, entityName, hookFilterObj);
 				validationErrors = hookFilterObj.errors;
-			} // <<<
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook delete_record_validation_errors: " + ex.Message));
+			}// <<<
 
 			if (validationErrors.Count > 0)
 			{
@@ -1836,12 +1861,18 @@ namespace WebVella.ERP.Web.Controllers
 					//////////////////////////////////////////////////////////////////////////////////////
 					//WEBHOOK FILTER << delete_record_pre_save >>
 					//////////////////////////////////////////////////////////////////////////////////////
+					try
 					{
 						dynamic hookFilterObj = new ExpandoObject();
 						hookFilterObj.recordId = recordId;
 						hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.DeleteRecordPreSave, entityName, hookFilterObj);
 						recordId = hookFilterObj.recordId;
-					} // <<<
+					}
+					catch (Exception ex)
+					{
+						connection.RollbackTransaction();
+						return Json(CreateErrorResponse("Plugin error in web hook delete_record_pre_save: " + ex.Message));
+					}// <<<
 
 					result = recMan.DeleteRecord(entityName, recordId);
 					connection.CommitTransaction();
@@ -1861,12 +1892,17 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK ACTION << delete_record >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
 				hookFilterObj.recordId = recordId;
 				hookFilterObj.result = result;
 				hooksService.ProcessActions(SystemWebHookNames.DeleteRecordAction, entityName, hookFilterObj);
-			} // <<<	
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook delete_record: " + ex.Message));
+			}// <<<
 
 			return DoResponse(result);
 		}
@@ -1896,12 +1932,17 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK FILTER << create_record_input >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
 				hookFilterObj.record = postObj;
 				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.CreateRecordInput, entityName, hookFilterObj);
 				postObj = hookFilterObj.record;
-			} // <<<
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook create_record_input: " + ex.Message));
+			}// <<<
 
 			var validationErrors = new List<ErrorModel>();
 			//TODO implement validation
@@ -1911,13 +1952,18 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK FILTER << create_record_validation_errors >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
 				hookFilterObj.errors = validationErrors;
 				hookFilterObj.record = postObj;
 				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.CreateRecordValidationErrors, entityName, hookFilterObj);
 				validationErrors = hookFilterObj.errors;
-			} // <<<
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook create_record_validation_errors: " + ex.Message));
+			}// <<<
 
 			if (validationErrors.Count > 0)
 			{
@@ -1946,13 +1992,18 @@ namespace WebVella.ERP.Web.Controllers
 					//////////////////////////////////////////////////////////////////////////////////////
 					//WEBHOOK FILTER << create_record_pre_save >>
 					//////////////////////////////////////////////////////////////////////////////////////
+					try
 					{
 						dynamic hookFilterObj = new ExpandoObject();
 						hookFilterObj.record = postObj;
 						hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.CreateRecordPreSave, entityName, hookFilterObj);
 						postObj = hookFilterObj.record;
-					} // <<<
-
+					}
+					catch (Exception ex)
+					{
+						connection.RollbackTransaction();
+						return Json(CreateErrorResponse("Plugin error in web hook create_record_pre_save: " + ex.Message));
+					}// <<<
 					result = recMan.CreateRecord(entityName, postObj);
 					connection.CommitTransaction();
 				}
@@ -1971,12 +2022,17 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK ACTION << create_record >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
 				hookFilterObj.record = postObj;
 				hookFilterObj.result = result;
 				hooksService.ProcessActions(SystemWebHookNames.CreateRecordAction, entityName, hookFilterObj);
-			} // <<<			
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook create_record: " + ex.Message));
+			}// <<<						
 
 			return DoResponse(result);
 		}
@@ -1989,20 +2045,26 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK FILTER << update_record_input >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
 				hookFilterObj.record = postObj;
 				hookFilterObj.recordId = recordId;
 				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordInput, entityName, hookFilterObj);
 				postObj = hookFilterObj.record;
-			} // <<<			
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook update_record_input: " + ex.Message));
+			}// <<<	
 
 			var validationErrors = new List<ErrorModel>();
 			//TODO implement validation
-		
+
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK FILTER << update_record_validation_errors >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
 				hookFilterObj.errors = validationErrors;
@@ -2010,7 +2072,11 @@ namespace WebVella.ERP.Web.Controllers
 				hookFilterObj.recordId = recordId;
 				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordValidationErrors, entityName, hookFilterObj);
 				validationErrors = hookFilterObj.errors;
-			} // <<<
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook update_record_validation_errors: " + ex.Message));
+			}// <<<
 
 			if (validationErrors.Count > 0)
 			{
@@ -2037,12 +2103,18 @@ namespace WebVella.ERP.Web.Controllers
 					//////////////////////////////////////////////////////////////////////////////////////
 					//WEBHOOK FILTER << update_record_pre_save >>
 					//////////////////////////////////////////////////////////////////////////////////////
+					try
 					{
 						dynamic hookFilterObj = new ExpandoObject();
 						hookFilterObj.record = postObj;
 						hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordPreSave, entityName, hookFilterObj);
 						postObj = hookFilterObj.record;
-					} // <<<
+					}
+					catch (Exception ex)
+					{
+						connection.RollbackTransaction();
+						return Json(CreateErrorResponse("Plugin error in web hook update_record_pre_save: " + ex.Message));
+					}// <<<
 
 					result = recMan.UpdateRecord(entityName, postObj);
 					connection.CommitTransaction();
@@ -2062,12 +2134,17 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK ACTION << update_record >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
 				hookFilterObj.record = postObj;
 				hookFilterObj.result = result;
 				hooksService.ProcessActions(SystemWebHookNames.UpdateRecordAction, entityName, hookFilterObj);
-			} // <<<	
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook update_record: " + ex.Message));
+			}// <<<
 
 			return DoResponse(result);
 		}
@@ -2080,13 +2157,18 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK FILTER << patch_record_input >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
 				hookFilterObj.record = postObj;
 				hookFilterObj.recordId = recordId;
 				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.PatchRecordInput, entityName, hookFilterObj);
 				postObj = hookFilterObj.record;
-			} // <<<
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook patch_record_input: " + ex.Message));
+			}// <<<
 
 			var validationErrors = new List<ErrorModel>();
 			//TODO implement validation
@@ -2096,6 +2178,7 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK FILTER << patch_record_validation_errors >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
 				hookFilterObj.errors = validationErrors;
@@ -2103,7 +2186,11 @@ namespace WebVella.ERP.Web.Controllers
 				hookFilterObj.recordId = recordId;
 				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.PatchRecordValidationErrors, entityName, hookFilterObj);
 				validationErrors = hookFilterObj.errors;
-			} // <<<
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook patch_record_validation_errors: " + ex.Message));
+			}// <<<
 
 			if (validationErrors.Count > 0)
 			{
@@ -2132,13 +2219,19 @@ namespace WebVella.ERP.Web.Controllers
 					//////////////////////////////////////////////////////////////////////////////////////
 					//WEBHOOK FILTER << patch_record_pre_save >>
 					//////////////////////////////////////////////////////////////////////////////////////
+					try
 					{
 						dynamic hookFilterObj = new ExpandoObject();
 						hookFilterObj.record = postObj;
 						hookFilterObj.recordId = recordId;
 						hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.PatchRecordPreSave, entityName, hookFilterObj);
 						postObj = hookFilterObj.record;
-					} // <<<
+					}
+					catch (Exception ex)
+					{
+						connection.RollbackTransaction();
+						return Json(CreateErrorResponse("Plugin error in web hook patch_record_pre_save: " + ex.Message));
+					}// <<<
 					result = recMan.UpdateRecord(entityName, postObj);
 					connection.CommitTransaction();
 				}
@@ -2157,13 +2250,18 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK ACTION << patch_record >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
 				hookFilterObj.record = postObj;
 				hookFilterObj.result = result;
 				hookFilterObj.recordId = recordId;
 				hooksService.ProcessActions(SystemWebHookNames.PatchRecordAction, entityName, hookFilterObj);
-			} // <<<	
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook patch_record: " + ex.Message));
+			}// <<<	
 
 			return DoResponse(result);
 		}
@@ -3524,6 +3622,17 @@ namespace WebVella.ERP.Web.Controllers
 			{
 				return nodes.OrderBy(x => x.Weight).ThenBy(y => y.Name).ToList();
 			}
+		}
+
+
+		private QueryResponse CreateErrorResponse(string message)
+		{
+			var response = new QueryResponse();
+			response.Success = false;
+			response.Timestamp = DateTime.UtcNow;
+			response.Message = message;
+			response.Object = null;
+			return response;
 		}
 
 

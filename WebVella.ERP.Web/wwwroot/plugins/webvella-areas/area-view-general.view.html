@@ -765,18 +765,18 @@
 					<tbody>
 						<tr ng-repeat="record in popupCtrl.relationLookupList.data" ng-class="{'warning': popupCtrl.isSelectedRecord(record.id)}">
 							<td ng-if="popupCtrl.modalMode == 'single-selection'">
-								<a ng-click='popupCtrl.selectSingleRecord(record)' href="javascript:void(0)" ng-if="!popupCtrl.isSelectedRecord(record.id)">
+								<a ng-click='popupCtrl.selectSingleRecord(record)' href="javascript:void(0)" ng-if="!popupCtrl.isSelectedRecord(record.id)" class="btn btn-outline btn-sm">
 									select
 								</a>
-								<span class="go-red" ng-if="popupCtrl.isSelectedRecord(record.id)">
+								<span ng-if="popupCtrl.isSelectedRecord(record.id)"  class="btn btn-success btn-sm">
 									selected
 								</span>
 							</td>
 							<td ng-if="popupCtrl.modalMode == 'multi-selection'">
-								<a ng-click='popupCtrl.attachRecord(record)' href="javascript:void(0)" ng-if="!popupCtrl.isSelectedRecord(record.id)">
+								<a ng-click='popupCtrl.attachRecord(record)' href="javascript:void(0)" ng-if="!popupCtrl.isSelectedRecord(record.id)" class="btn btn-outline btn-sm">
 									select
 								</a>
-								<a ng-click='popupCtrl.detachRecord(record)' href="javascript:void(0)" ng-if="popupCtrl.isSelectedRecord(record.id)">
+								<a ng-click='popupCtrl.detachRecord(record)' href="javascript:void(0)" ng-if="popupCtrl.isSelectedRecord(record.id)" class="btn btn-danger btn-sm">
 									deselect
 								</a>
 							</td>
