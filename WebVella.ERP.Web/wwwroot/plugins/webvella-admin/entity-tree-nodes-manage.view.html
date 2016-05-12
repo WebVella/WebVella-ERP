@@ -22,7 +22,10 @@
 	</div>
 
 	<div id="page-text">
-
+		<div class="alert alert-warning ng-hide" ng-show="ngCtrl.tree.system">
+			<i class="fa fa-fw fa-exclamation go-red"></i>
+			<span translate="{{::'SYSTEM_ITEM_WARNING_TEXT'}}"></span>
+		</div>
 		<!-- Nested node template -->
 		<div ui-tree ="ngCtrl.treeOptions" ng-if="ngCtrl.tree.data.length > 0">
 			<ol ui-tree-nodes ng-model="ngCtrl.tree.data" id="tree-root">

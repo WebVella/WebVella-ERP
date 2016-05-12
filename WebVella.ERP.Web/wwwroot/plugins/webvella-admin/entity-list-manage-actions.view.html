@@ -24,6 +24,10 @@
 
 	</div>
 	<div id="page-text">
+		<div class="alert alert-warning ng-hide" ng-show="ngCtrl.list.system">
+			<i class="fa fa-fw fa-exclamation go-red"></i>
+			<span translate="{{::'SYSTEM_ITEM_WARNING_TEXT'}}"></span>
+		</div>
 		<nav class="navbar navbar-default navbar-erp">
 			<div class="container-fluid">
 				<ul class="nav navbar-nav">

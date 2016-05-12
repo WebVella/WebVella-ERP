@@ -23,6 +23,10 @@
 	</div>
 
 	<div id="page-text">
+		<div class="alert alert-warning ng-hide" ng-show="ngCtrl.tree.system">
+			<i class="fa fa-fw fa-exclamation go-red"></i>
+			<span translate="{{::'SYSTEM_ITEM_WARNING_TEXT'}}"></span>
+		</div>
 		<div class="view-manage-section">
 			<h4 class="page-header" translate="{{::'RECORD_TREE_MANAGE_BASIC_HEADING'}}"></h4>
 			<div class="panel panel-default">

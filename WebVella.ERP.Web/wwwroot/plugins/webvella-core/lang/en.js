@@ -505,6 +505,7 @@ var translationsEN = {
 	SYSTEM: 'System',
 	SYSTEM_ENTITY_CHECKBOX_LABEL: 'this is a system entity. Deletion is locked',
 	SYSTEM_FIELD_CHECKBOX_LABEL: 'this is a system field. Deletion is locked',
+	SYSTEM_ITEM_WARNING_TEXT:'This item is marked as system. Application or Plugin updates can overwrite your changes',
 	SYSTEM_RELATATION_CHECKBOX_LABEL: 'this is a system relation. Deletion is locked',
 	TARGET: 'Target',
 	TEAL: 'Teal',
