@@ -403,7 +403,7 @@
 					return fieldMeta.displayFormat.replace("{0}", data);
 				}
 				else {
-					return data;
+					return escapeHtml(data);
 				}
 			}
 		}
@@ -464,14 +464,14 @@
 			}
 			else if (fieldMeta.currency != null && fieldMeta.currency !== {} && fieldMeta.currency.symbol) {
 				if (fieldMeta.currency.symbolPlacement === 1) {
-					return fieldMeta.currency.symbol + " " + data;
+					return escapeHtml(fieldMeta.currency.symbol + " " + data);
 				}
 				else {
-					return data + " " + fieldMeta.currency.symbol;
+					return escapeHtml(data + " " + fieldMeta.currency.symbol);
 				}
 			}
 			else {
-				return data;
+				return escapeHtml(data);
 			}
 		}
 		//4.Date
@@ -549,18 +549,18 @@
 				}
 			}
 			else {
-				return data;
+				return escapeHtml(data);
 			}
 
 		}
 		//7.File
 		function getFileString(data, fieldMeta) {
 			if (!data) {
-				return "";
+				return "no file";
 			}
 			else if (data instanceof Array) {
 				if (data.length == 0) {
-					return "";
+					return "no file";
 				}
 				else if (data.length == 1) {
 					return getFileString(data[0], fieldMeta);
@@ -577,7 +577,7 @@
 			else {
 				var lastSlashIndex = data.lastIndexOf("/") + 1;
 				var fileName = data.slice(lastSlashIndex, data.length);
-				return "<a href='" + data + "' target='_blank' class='link-icon'>" + fileName + "</a>";
+				return "<a href='" + data + "' target='_blank' class='link-icon'>" + escapeHtml(fileName) + "</a>";
 			}
 		}
 		//8.Html
@@ -608,11 +608,11 @@
 		//9.Image
 		function getImageString(data, fieldMeta) {
 			if (!data) {
-				return "";
+				return "no image";
 			}
 			else if (data instanceof Array) {
 				if (data.length == 0) {
-					return "";
+					return "no image";
 				}
 				else if (data.length == 1) {
 					return getImageString(data[0], fieldMeta);
@@ -627,7 +627,7 @@
 				}
 			}
 			else {
-				return "<a target='_blank' href='" + data + "'><img src='" + data + "' class='table-image'/></a>";
+				return "<a target='_blank' href='" + data + "'><img src='" + escapeHtml(data) + "' class='table-image'/></a>";
 			}
 		}
 		//10. Textarea
@@ -653,7 +653,7 @@
 			}
 			else {
 				//return data.replace(/(?:\r\n|\r|\n)/g, '<br />');
-				return data;
+				return escapeHtml(data);
 			}
 		}
 		//11.Multiselect
@@ -857,7 +857,7 @@
 				}
 			}
 			else {
-				return data;
+				return escapeHtml(data);
 			}
 		}
 		//19.Url

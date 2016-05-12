@@ -5,93 +5,93 @@
 */
 
 (function () {
-    'use strict';
+	'use strict';
 
-    angular
+	angular
         .module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .controller('WebVellaAreasRecordViewSidebarController', controller);
 
 
-    // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedParentViewData','resolvedCurrentViewData', 'resolvedCurrentEntityMeta', 
-						'resolvedAreas', 'resolvedCurrentUser', '$sessionStorage','$timeout','webvellaCoreService','resolvedEntityList'];
+	// Controller ///////////////////////////////
+	controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedParentViewData', 'resolvedCurrentViewData', 'resolvedCurrentEntityMeta',
+						'resolvedAreas', 'resolvedCurrentUser', '$sessionStorage', '$timeout', 'webvellaCoreService', 'resolvedEntityList','$location'];
 
-    
-    function controller($log, $rootScope, $state, $stateParams,resolvedParentViewData, resolvedCurrentViewData, resolvedCurrentEntityMeta, 
-						resolvedAreas, resolvedCurrentUser, $sessionStorage,$timeout,webvellaCoreService,resolvedEntityList) {
-        var sidebarData = this;
-		if(resolvedCurrentViewData == null){
+
+	function controller($log, $rootScope, $state, $stateParams, resolvedParentViewData, resolvedCurrentViewData, resolvedCurrentEntityMeta,
+						resolvedAreas, resolvedCurrentUser, $sessionStorage, $timeout, webvellaCoreService, resolvedEntityList,$location) {
+		var sidebarData = this;
+		if (resolvedCurrentViewData == null) {
 			sidebarData.view = null; //list in view page		
 		}
 		else {
-			sidebarData.view = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName,$stateParams.entityName,resolvedEntityList);
+			sidebarData.view = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName, $stateParams.entityName, resolvedEntityList);
 		}
-		if(resolvedParentViewData == null){
-		   sidebarData.parentView = null;
+		if (resolvedParentViewData == null) {
+			sidebarData.parentView = null;
 		}
-		else{
-			sidebarData.parentView = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName,$stateParams.entityName,resolvedEntityList);
+		else {
+			sidebarData.parentView = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
 		}
-        sidebarData.stateParams = $stateParams;
-        sidebarData.entity = resolvedCurrentEntityMeta;
-        sidebarData.currentUser = resolvedCurrentUser;
-		sidebarData.$sessionStorage	= $sessionStorage;
+		sidebarData.stateParams = $stateParams;
+		sidebarData.entity = resolvedCurrentEntityMeta;
+		sidebarData.currentUser = resolvedCurrentUser;
+		sidebarData.$sessionStorage = $sessionStorage;
 
-    	//#region << Select default list >>
-        sidebarData.defaultEntityAreaListName = "";
-    	//get the current area meta
-	    for (var j = 0; j < resolvedAreas.data.length; j++) {
-	    	if (resolvedAreas.data[j].name === $stateParams.areaName) {
-	    		var areaAttachments = angular.fromJson(resolvedAreas.data[j].attachments);
-	    		for (var k = 0; k < areaAttachments.length; k++) {
-				    if (areaAttachments[k].name === $stateParams.entityName) {
-					    sidebarData.defaultEntityAreaListName = areaAttachments[k].list.name;
-				    }
-			    }
-		    }
-	    }
-    	//#endregion
+		//#region << Select default list >>
+		sidebarData.defaultEntityAreaListName = "";
+		//get the current area meta
+		for (var j = 0; j < resolvedAreas.data.length; j++) {
+			if (resolvedAreas.data[j].name === $stateParams.areaName) {
+				var areaAttachments = angular.fromJson(resolvedAreas.data[j].attachments);
+				for (var k = 0; k < areaAttachments.length; k++) {
+					if (areaAttachments[k].name === $stateParams.entityName) {
+						sidebarData.defaultEntityAreaListName = areaAttachments[k].list.name;
+					}
+				}
+			}
+		}
+		//#endregion
 
-    	//Generate menu items list
-        sidebarData.items = [];
+		//Generate menu items list
+		sidebarData.items = [];
 		sidebarData.sidebarTopActions = [];
-		if(resolvedParentViewData == null){
+		if (resolvedParentViewData == null) {
 			var generalItem = {
 				is_parent: true,
 				parentViewName: null,
-        		name: sidebarData.view.name,
-        		label: sidebarData.view.label,
-        		iconName: sidebarData.view.iconName,
-				type:"view"
+				name: sidebarData.view.name,
+				label: sidebarData.view.label,
+				iconName: sidebarData.view.iconName,
+				type: "view"
 			};
 			sidebarData.items.push(generalItem);
 
-			sidebarData.view.sidebar.items.forEach(function(sidebarItem){
-        		var item = {};
-        		item.name = sidebarItem.dataName;
-        		item.label = sidebarItem.fieldLabel;
+			sidebarData.view.sidebar.items.forEach(function (sidebarItem) {
+				var item = {};
+				item.name = sidebarItem.dataName;
+				item.label = sidebarItem.fieldLabel;
 				item.is_parent = false;
 				item.type = sidebarItem.type;
 				item.parentViewName = sidebarData.view.name;
-        		if (sidebarItem.type === "view" || sidebarItem.type === "viewFromRelation") {
-					if(sidebarItem.type === "view"){
-						 item.label = sidebarItem.meta.label;
+				if (sidebarItem.type === "view" || sidebarItem.type === "viewFromRelation") {
+					if (sidebarItem.type === "view") {
+						item.label = sidebarItem.meta.label;
 					}
-        			item.iconName = "file-text-o";
-        			if (sidebarItem.meta.iconName) {
-        				item.iconName =sidebarItem.meta.iconName;
-        			}
-        		}
-        		else if (sidebarItem.type === "list" || sidebarItem.type === "listFromRelation") {
-					if(sidebarItem.type === "list"){
-						 item.label = sidebarItem.meta.label;
-					}        			
+					item.iconName = "file-text-o";
+					if (sidebarItem.meta.iconName) {
+						item.iconName = sidebarItem.meta.iconName;
+					}
+				}
+				else if (sidebarItem.type === "list" || sidebarItem.type === "listFromRelation") {
+					if (sidebarItem.type === "list") {
+						item.label = sidebarItem.meta.label;
+					}
 					item.iconName = "list";
-        			if (sidebarItem.meta.iconName) {
-        				item.iconName = sidebarItem.meta.iconName;
-        			}
-        		}
-        		sidebarData.items.push(item);
+					if (sidebarItem.meta.iconName) {
+						item.iconName = sidebarItem.meta.iconName;
+					}
+				}
+				sidebarData.items.push(item);
 
 			});
 
@@ -107,120 +107,128 @@
 		else {
 			var generalItem = {
 				is_parent: true,
-        		name: sidebarData.parentView.name,
+				name: sidebarData.parentView.name,
 				parentViewName: null,
-        		label: sidebarData.parentView.label,
-        		iconName: sidebarData.parentView.iconName,
-				type:"view"
+				label: sidebarData.parentView.label,
+				iconName: sidebarData.parentView.iconName,
+				type: "view"
 			};
 			sidebarData.items.push(generalItem);
 
-			sidebarData.parentView.sidebar.items.forEach(function(sidebarItem){
-        		var item = {};
-        		item.name = sidebarItem.dataName;
-        		item.label = sidebarItem.fieldLabel;
+			sidebarData.parentView.sidebar.items.forEach(function (sidebarItem) {
+				var item = {};
+				item.name = sidebarItem.dataName;
+				item.label = sidebarItem.fieldLabel;
 				item.is_parent = false;
 				item.type = sidebarItem.type;
 				item.parentViewName = sidebarData.parentView.name;
-        		if (sidebarItem.type === "view" || sidebarItem.type === "viewFromRelation") {
-					if(sidebarItem.type === "view"){
-						 item.label = sidebarItem.meta.label;
+				if (sidebarItem.type === "view" || sidebarItem.type === "viewFromRelation") {
+					if (sidebarItem.type === "view") {
+						item.label = sidebarItem.meta.label;
 					}
-        			item.iconName = "file-text-o";
-        			if (sidebarItem.meta.iconName) {
-        				item.iconName =sidebarItem.meta.iconName;
-        			}
-        		}
-        		else if (sidebarItem.type === "list" || sidebarItem.type === "listFromRelation") {
-					if(sidebarItem.type === "list"){
-						 item.label = sidebarItem.meta.label;
+					item.iconName = "file-text-o";
+					if (sidebarItem.meta.iconName) {
+						item.iconName = sidebarItem.meta.iconName;
 					}
-        			item.iconName = "list";
-        			if (sidebarItem.meta.iconName) {
-        				item.iconName = sidebarItem.meta.iconName;
-        			}
-        		}
-        		sidebarData.items.push(item);
+				}
+				else if (sidebarItem.type === "list" || sidebarItem.type === "listFromRelation") {
+					if (sidebarItem.type === "list") {
+						item.label = sidebarItem.meta.label;
+					}
+					item.iconName = "list";
+					if (sidebarItem.meta.iconName) {
+						item.iconName = sidebarItem.meta.iconName;
+					}
+				}
+				sidebarData.items.push(item);
 
-			});		
-			
+			});
+
 			sidebarData.parentView.actionItems.forEach(function (actionItem) {
 				switch (actionItem.menu) {
 					case "sidebar-top":
 						sidebarData.sidebarTopActions.push(actionItem);
 						break;
 				}
-			});		
+			});
 
 		}
 
-        sidebarData.isItemActive = function (item) {
-			if(item.type == "view"){
-				if(item.is_parent && sidebarData.view != null &&  item.name == $stateParams.viewName ){ //the main details
+		sidebarData.isItemActive = function (item) {
+			if (item.type == "view") {
+				if (item.is_parent && sidebarData.view != null && item.name == $stateParams.viewName) { //the main details
 					return true;
-				} 
-				else if(item.name == $stateParams.viewName)	{
+				}
+				else if (item.name == $stateParams.viewName) {
 					return true;
 				}
 				else {
 					return false;
 				}
 			}
-			if(item.type == "viewFromRelation"){
-				if(item.name == $stateParams.viewName){
+			if (item.type == "viewFromRelation") {
+				if (item.name == $stateParams.viewName) {
 					return true;
-				} 
+				}
 				else {
 					return false;
 				}
 			}
-			if(item.type == "list"){
-				if(item.name == $stateParams.listName){
+			if (item.type == "list") {
+				if (item.name == $stateParams.listName) {
 					return true;
-				} 
+				}
 				else {
 					return false;
 				}
 			}
-			if(item.type == "listFromRelation"){
-				if(item.name == $stateParams.listName){
+			if (item.type == "listFromRelation") {
+				if (item.name == $stateParams.listName) {
 					return true;
-				} 
+				}
 				else {
 					return false;
 				}
 			}
-        	return false;
-        }
+			return false;
+		}
 
-		sidebarData.goBack = function(){
+		sidebarData.goBack = function () {
+
 			var useSessionBackUrl = false;
-			if(sidebarData.$sessionStorage["last-list-params"]){
-				//Check if the entity and the list name are the same
-				var storedParams = sidebarData.$sessionStorage["last-list-params"];
-				if(storedParams.areaName == sidebarData.stateParams.areaName &&  storedParams.entityName == sidebarData.stateParams.entityName){
-					 useSessionBackUrl = true;
-				}
-			}
-			
-			if(useSessionBackUrl){
-				$timeout(function () {
-                    $state.go('webvella-area-list-general',sidebarData.$sessionStorage["last-list-params"]);
-                }, 0);
+			if ($stateParams.returnUrl) {
+				var returnUrl = decodeURI($stateParams.returnUrl);
+				$location.search("returnUrl", null);
+				$location.path(returnUrl);
 			}
 			else {
-				var defaultParams = {};
-				defaultParams.areaName = sidebarData.stateParams.areaName;
-				defaultParams.entityName = sidebarData.stateParams.entityName;
-				defaultParams.listName = sidebarData.defaultEntityAreaListName;
-				defaultParams.page = 1;
+				if (sidebarData.$sessionStorage["last-list-params"]) {
+					//Check if the entity and the list name are the same
+					var storedParams = sidebarData.$sessionStorage["last-list-params"];
+					if (storedParams.areaName == sidebarData.stateParams.areaName && storedParams.entityName == sidebarData.stateParams.entityName) {
+						useSessionBackUrl = true;
+					}
+				}
 
-			   	$timeout(function () {
-                    $state.go('webvella-area-list-general',defaultParams);
-                }, 0);
+				if (useSessionBackUrl) {
+					$timeout(function () {
+						$state.go('webvella-area-list-general', sidebarData.$sessionStorage["last-list-params"]);
+					}, 0);
+				}
+				else {
+					var defaultParams = {};
+					defaultParams.areaName = sidebarData.stateParams.areaName;
+					defaultParams.entityName = sidebarData.stateParams.entityName;
+					defaultParams.listName = sidebarData.defaultEntityAreaListName;
+					defaultParams.page = 1;
+
+					$timeout(function () {
+						$state.go('webvella-area-list-general', defaultParams);
+					}, 0);
+				}
 			}
-			//href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/{{::sidebarData.defaultEntityAreaListName}}/1"
+
 		}
-    }
+	}
 
 })();

@@ -19,6 +19,10 @@ namespace WebVella.ERP.Project
 
 		public static dynamic UpdateTask(dynamic data, RecordManager recMan)
 		{
+			#region << Task activities to be logged >>
+			//status,milestone,project,priority,owner,start_date,end_date,attachment_add,attachment_delete,comment_add,comment_delete,timelog_add,timelog_update,task_created_task_deleted
+			#endregion
+		
 			try
 			{
 				EntityRecord newTaskObject = null;
@@ -291,7 +295,7 @@ namespace WebVella.ERP.Project
 						{
 							//the status change is already set in the new project object in case 1
 						}
-						else
+						else if(oldProjectPatchObject.Properties.Count > 0 )
 						{
 							//Remove one from the old project old status
 							oldProjectPatchObject = UpdateProjectOrTaskCounter(oldProjectPatchObject, (string)oldTaskObject["status"], -1);
@@ -303,7 +307,7 @@ namespace WebVella.ERP.Project
 						{
 							//the status change is already set in the new milestone object in case 2
 						}
-						else
+						else if(oldMilestonePatchObject.Properties.Count > 0)
 						{
 							//Remove one from the old milestone old status
 							oldMilestonePatchObject = UpdateProjectOrTaskCounter(oldMilestonePatchObject, (string)oldTaskObject["status"], -1);
@@ -355,6 +359,35 @@ namespace WebVella.ERP.Project
 						throw new Exception("New milestone update error: " + updateResponse.Message);
 					}
 				}
+				#endregion
+
+				#region << Create activity >>
+					#region << Old Task activity >>
+					//{
+					//	var activityObj = new EntityRecord();
+					//	activityObj["id"] = Guid.NewGuid();
+					//	activityObj["task_id"] = (Guid)oldTaskObject["id"];
+					//	if(newTaskProject.Properties.Count > 0) {
+					//		activityObj["project_id"] = (Guid)newTaskProject["id"];
+					//	}
+					//	else {
+					//		activityObj["project_id"] = (Guid)oldTaskProject["id"];
+					//	}
+					//	activityObj["subject"] = @"updated the task status from <strong>in progress</strong> to <strong>completed</strong>";
+					//	activityObj["label"] = "updated";
+					//	var createResponse = recMan.CreateRecord("wv_project_activity", activityObj);
+					//	if (!createResponse.Success)
+					//	{
+					//		throw new Exception(createResponse.Message);
+					//	}
+					//}
+					#endregion
+
+					#region << Project activity >>
+					{
+					}
+					#endregion
+
 				#endregion
 
 				return data;

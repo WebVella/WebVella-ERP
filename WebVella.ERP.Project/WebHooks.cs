@@ -92,6 +92,30 @@ namespace WebVella.ERP.Project
 			return data;
 		}
 
+		[WebHook("create_record", "wv_task")]
+		public void TaskCreateRecordAction(dynamic data)
+		{
+			var record = (EntityRecord)data.record;
+			var createResult = (QueryResponse)data.result;
+			var createdRecord = createResult.Object.Data[0];
+			#region << Task activity >>
+			{
+				var activityObj = new EntityRecord();
+				activityObj["id"] = Guid.NewGuid();
+				activityObj["task_id"] = (Guid)createdRecord["id"];
+				activityObj["project_id"] = (Guid)createdRecord["project_id"];
+				activityObj["subject"] = @"created a task #" + (decimal)createdRecord["number"] + " '" + (string)createdRecord["subject"] + "'";
+				activityObj["label"] = "created";
+				var createResponse = recMan.CreateRecord("wv_project_activity", activityObj);
+				if (!createResponse.Success)
+				{
+					throw new Exception(createResponse.Message);
+				}
+			}
+			#endregion
+			
+		}
+
 		#endregion
 
 		#region << Update >>

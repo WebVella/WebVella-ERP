@@ -4108,10 +4108,6 @@ table.editable td {
 /*#endregion*/
 
 /*#region << Record details */
-.record-details {
-	padding: 15px;
-}
-
 	.record-details .form,
 	.record-details .form-horizontal {
 		padding: 0;
