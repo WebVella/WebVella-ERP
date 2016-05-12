@@ -198,6 +198,8 @@
 			var useSessionBackUrl = false;
 			if ($stateParams.returnUrl) {
 				var returnUrl = decodeURI($stateParams.returnUrl);
+				
+				delete sidebarData.$sessionStorage["last-list-params"];
 				$location.search("returnUrl", null);
 				$location.path(returnUrl);
 			}
