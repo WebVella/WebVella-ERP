@@ -46,7 +46,7 @@ namespace WebVella.ERP.Utilities.Dynamic
     /// checks the actual properties of the instance passed via 
     /// constructor.
     /// 
-    /// This class can be subclassed to extend an existing type or 
+    /// This class can be sub-classed to extend an existing type or 
     /// you can pass in an instance to extend. Properties (both
     /// dynamic and strongly typed) can be accessed through an 
     /// indexer.
@@ -358,7 +358,7 @@ namespace WebVella.ERP.Utilities.Dynamic
                     return;
                 }
 
-                // check instance for existance of type first
+                // check instance for existence of type first
                 var miArray = InstanceType.GetMember(key, BindingFlags.Public | BindingFlags.GetProperty);
                 if (miArray != null && miArray.Length > 0)
                     SetProperty(Instance, key, value);
