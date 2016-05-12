@@ -54,9 +54,9 @@
 
     //#region << Resolve Functions >>/////////////////////////
 
-    resolveUserRecordsList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+    resolveUserRecordsList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
     
-    function resolveUserRecordsList($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+    function resolveUserRecordsList($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
 
         // Initialize
         var defer = $q.defer();
@@ -64,9 +64,9 @@
         // Process
         function successCallback(response) {
             if (response.object == null) {
-                $timeout(function () {
-                    alert("error in response!")
-                }, 0);
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
+					alert(translations.ERROR_IN_RESPONSE);
+				});
             }
             else {
                 defer.resolve(response.object);
@@ -75,16 +75,16 @@
 
         function errorCallback(response) {
             if (response.object == null) {
-                $timeout(function () {
-                    alert("error in response!")
-                }, 0);
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
+					alert(translations.ERROR_IN_RESPONSE);
+				});
             }
             else {
             	defer.reject(response.message);
             }
         }
 
-        webvellaCoreService.getRecordsWithoutList("","$user_role.id,$user_role.name,id,email,first_name,last_name,enabled,verified,image","user",successCallback, errorCallback);
+        webvellaCoreService.getRecordsWithoutList("","$user_role.id,$user_role.name,id,email,first_name,username,last_name,enabled,verified,image",null,"user",successCallback, errorCallback);
 
         return defer.promise;
     }
@@ -105,7 +105,7 @@
         	defer.reject(response.message);
         }
 
-        webvellaCoreService.getRecordsWithoutList(null,null,"role", successCallback, errorCallback);
+        webvellaCoreService.getRecordsWithoutList(null,null,null,"role", successCallback, errorCallback);
 
         return defer.promise;
     }
@@ -114,25 +114,26 @@
 
     //#region << Controller >> ///////////////////////////////
     controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedUserRecordsList',
-							'resolvedRolesList', '$uibModal', 'webvellaCoreService','$timeout'];
+							'resolvedRolesList', '$uibModal', 'webvellaCoreService','$timeout','$translate'];
     
     function controller($scope, $log, $rootScope, $state, pageTitle, resolvedUserRecordsList,
-						resolvedRolesList, $uibModal, webvellaCoreService,$timeout) {
+						resolvedRolesList, $uibModal, webvellaCoreService,$timeout,$translate) {
         
         var ngCtrl = this;
         ngCtrl.search = {};
 
-        //#region << Update page title >>
-        ngCtrl.pageTitle = "User List | " + pageTitle;
-		$timeout(function(){
-		 $rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
-		},0);
+		//#region << Update page title & hide the side menu >>
+		$translate(['USERS_PAGE_TITLE', 'USERS']).then(function (translations) {
+			ngCtrl.pageTitle = translations.USERS_PAGE_TITLE + " | " + pageTitle;
+			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
+			$rootScope.adminSectionName = translations.USERS;
+		});
     	//#endregion
 
-        ngCtrl.users = fastCopy(resolvedUserRecordsList.data);
+        ngCtrl.users = resolvedUserRecordsList.data;
         ngCtrl.users = ngCtrl.users.sort(function (a, b) { return parseFloat(a.email) - parseFloat(b.email) });
 
-        ngCtrl.roles = fastCopy(resolvedRolesList.data);
+        ngCtrl.roles = resolvedRolesList.data;
         ngCtrl.roles = ngCtrl.roles.sort(function (a, b) {
             if (a.name < b.name) return -1;
             if (a.name > b.name) return 1;
@@ -167,9 +168,9 @@
 
 
     //// Modal Controllers
-    manageUserController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl'];
+    manageUserController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl','$translate'];
     
-    function manageUserController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaCoreService, ngToast, $timeout, $state, $location, ngCtrl) {
+    function manageUserController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaCoreService, ngToast, $timeout, $state, $location, ngCtrl,$translate) {
         
         var popupCtrl = this;
         popupCtrl.modalInstance = $uibModalInstance;
@@ -183,7 +184,9 @@
         if (popupCtrl.user.id == null) {
         	popupCtrl.isUpdate = false;
         	//popupCtrl.user.$user_role = [];
-            popupCtrl.modalTitle = "Create new area";
+			$translate(['USER_CREATE_MODAL_TITLE']).then(function (translations) {
+				popupCtrl.modalTitle = translations.USER_CREATE_MODAL_TITLE;
+			});
             popupCtrl.user.id = null;
             popupCtrl.userRoles.push("f16ec6db-626d-4c27-8de0-3e7ce542c55f"); //Push regular role by default
         	//Guest role = 987148b1-afa8-4b33-8616-55861e5fd065
@@ -192,7 +195,9 @@
         	for (var i = 0; i < popupCtrl.user.$user_role.length; i++) {
         		popupCtrl.userRoles.push(popupCtrl.user.$user_role[i].id);
         	}
-            popupCtrl.modalTitle ='Edit user <span class="go-green">' + popupCtrl.user.email + '</span>';
+			$translate('USER_MANAGE_MODAL_TITLE', { email: popupCtrl.user.email }).then(function (modalTitle) {
+				popupCtrl.modalTitle =modalTitle;
+			} );
         }
 
 		//Image        

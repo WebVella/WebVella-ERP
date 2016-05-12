@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNet.FileProviders;
-using Microsoft.AspNet.Hosting;
+﻿using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Mvc.Infrastructure;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.PlatformAbstractions;
-using System;
 
 namespace WebVella.ERP.Plugins
 {
@@ -15,6 +13,8 @@ namespace WebVella.ERP.Plugins
 		private readonly IHostingEnvironment hostEnvironment;
 		private readonly IAssemblyLoadContextAccessor loadContextAccessor;
 		private readonly IAssemblyLoaderContainer assemblyLoaderContainer;
+		private static readonly object lockObj = new object();
+		private static List<Assembly> assemblies;
 
 		public PluginDirectoryAssemblyProvider(
 				IHostingEnvironment hostEnvironment,
@@ -30,22 +30,35 @@ namespace WebVella.ERP.Plugins
 		{
 			get
 			{
-				List<Assembly> assemblies = new List<Assembly>();
-				var content = hostEnvironment.WebRootFileProvider.GetDirectoryContents("/plugins");
-				if (!content.Exists)
-					return assemblies;
-
-				foreach (var pluginDir in content.Where(x => x.IsDirectory))
+				lock (lockObj)
 				{
-					var binDir = new DirectoryInfo(Path.Combine(pluginDir.PhysicalPath, "binaries"));
-					if (!binDir.Exists)
-						continue;
+					if (assemblies != null)
+						return assemblies;
 
-					foreach (var assembly in GetAssembliesInFolder(binDir))
-						assemblies.Add(assembly);
+					assemblies = new List<Assembly>();
+
+					var content = hostEnvironment.WebRootFileProvider.GetDirectoryContents("/plugins");
+					if (!content.Exists)
+						return assemblies;
+
+					foreach (var pluginDir in content.Where(x => x.IsDirectory))
+					{
+						//skip folders with no manifest file
+						var manifestFilePath = Path.Combine(pluginDir.PhysicalPath, "manifest.json");
+						var manifestFile = new FileInfo(manifestFilePath);
+						if (!manifestFile.Exists)
+							continue;
+
+						var binDir = new DirectoryInfo(Path.Combine(pluginDir.PhysicalPath, "binaries"));
+						if (!binDir.Exists)
+							continue;
+
+						foreach (var assembly in GetAssembliesInFolder(binDir))
+							assemblies.Add(assembly);
+					}
+
+					return assemblies;
 				}
-
-				return assemblies;
 			}
 		}
 
@@ -56,10 +69,7 @@ namespace WebVella.ERP.Plugins
 			assemblyLoaderContainer.AddLoader(new PluginDirectoryLoader(binPath, loadContext));
 
 			foreach (var fileSystemInfo in binPath.GetFileSystemInfos("*.dll"))
-			{
-				var assembly = loadContext.Load(AssemblyName.GetAssemblyName(fileSystemInfo.FullName));
-				assemblies.Add(assembly);
-			}
+				assemblies.Add(loadContext.Load(AssemblyName.GetAssemblyName(fileSystemInfo.FullName)));
 
 			return assemblies;
 		}

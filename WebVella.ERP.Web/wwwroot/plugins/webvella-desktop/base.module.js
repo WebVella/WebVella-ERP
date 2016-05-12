@@ -57,7 +57,7 @@
 	function controller($scope, $log, $rootScope, $state, $stateParams, webvellaDesktopTopnavFactory, $timeout, webvellaCoreService, resolvedCurrentUser) {
 		var baseCtrl = this;
 		baseCtrl.topnav = [];
-		baseCtrl.user = fastCopy(resolvedCurrentUser);
+		baseCtrl.user = resolvedCurrentUser;
 
 		//Making topnav pluggable
 		////1. CONSTRUCTOR initialize the factory

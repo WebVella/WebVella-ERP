@@ -46,8 +46,8 @@
 			},
 			resolve: {
 				loadDependency: loadDependency,
-				resolvedCurrentParentView: function () { return null; },
-				resolvedCurrentView: resolveCurrentView
+				resolvedParentViewData: function () { return null; },
+				resolvedCurrentViewData: resolveCurrentViewData
 			}
 		})
 		//general view in an area with the area sidebar
@@ -76,8 +76,8 @@
 			},
 			resolve: {
 				loadDependency: loadDependency,
-				resolvedCurrentParentView: function () { return null; },
-				resolvedCurrentView: resolveCurrentView
+				resolvedParentViewData: function () { return null; },
+				resolvedCurrentViewData: resolveCurrentViewData
 			}
 		})
 		.state('webvella-areas-view-general-in-view', {
@@ -105,15 +105,15 @@
 			},
 			resolve: {
 				loadDependency: loadDependency,
-				resolvedCurrentParentView: resolveCurrentParentView,
-				resolvedCurrentView: resolveCurrentView
+				resolvedParentViewData: resolveParentViewData,
+				resolvedCurrentViewData: resolveCurrentViewData
 			}
 		});
 	};
 
 	//#region << Resolve Function >> /////////////////////////
-	resolveCurrentParentView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta'];
-	function resolveCurrentParentView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta) {
+	resolveParentViewData.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta', 'resolvedEntityList'];
+	function resolveParentViewData($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta, resolvedEntityList) {
 
 		// Initialize
 		var defer = $q.defer();
@@ -145,17 +145,57 @@
 			defer.reject("you do not have permissions to view records from this entity");
 		}
 
-		webvellaCoreService.getRecordByViewName($stateParams.recordId, $stateParams.parentViewName, $stateParams.entityName, successCallback, errorCallback);
+		var parentView = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
+
+		webvellaCoreService.getRecordByViewMeta($stateParams.recordId, parentView, $stateParams.entityName,null, successCallback, errorCallback);
 
 		return defer.promise;
 	}
 
-	resolveCurrentView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta', 'resolvedCurrentParentView'];
+	resolveCurrentViewData.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta', 'resolvedParentViewData', 'resolvedEntityList', 'resolvedEntityRelationsList'];
 
-	function resolveCurrentView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta, resolvedCurrentParentView) {
+	function resolveCurrentViewData($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta, resolvedParentViewData, resolvedEntityList, resolvedEntityRelationsList) {
 
 		// Initialize
 		var defer = $q.defer();
+		var userHasUpdateEntityPermission = webvellaCoreService.userHasRecordPermissions(resolvedCurrentEntityMeta, "canRead");
+		if (!userHasUpdateEntityPermission) {
+			alert("you do not have permissions to view records from this entity!");
+			defer.reject("you do not have permissions to view records from this entity");
+		}
+
+		var safeViewNameAndEntity = webvellaCoreService.getSafeViewNameAndEntityName($stateParams.viewName, $stateParams.entityName, resolvedEntityRelationsList);
+		var getViewMeta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList(safeViewNameAndEntity.viewName, safeViewNameAndEntity.entityName, resolvedEntityList);
+		if (getViewMeta.dataSourceUrl != null && getViewMeta.dataSourceUrl != "") {
+			//This view has a dynamicSourceUrl defined
+			webvellaCoreService.getRecordsByViewMeta($stateParams.recordId, getViewMeta, safeViewNameAndEntity.entityName, $stateParams, successCallback, errorCallback);
+		}
+		else {
+			//No dynamicSourceUrl defined
+			var parentView = {};
+			if (resolvedParentViewData == null) {
+
+				webvellaCoreService.getRecordByViewMeta($stateParams.recordId, getViewMeta, $stateParams.entityName,null, successCallback, errorCallback);
+			}
+			else {
+				parentView.data = fastCopy(resolvedParentViewData);
+				parentView.meta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
+				var currentViewData = {};
+				if ($stateParams.viewName.startsWith("$view$")) {
+					//View from the same entity
+					parentView.meta.sidebar.items.forEach(function (sidebarItem) {
+						if (sidebarItem.dataName == $stateParams.viewName) {
+							currentViewData = parentView.data[0][$stateParams.viewName];
+						}
+					});
+					defer.resolve(currentViewData);
+				}
+				else {
+
+				}
+
+			}
+		}
 
 		// Process
 		function successCallback(response) {
@@ -178,43 +218,14 @@
 			}
 		}
 
-		var userHasUpdateEntityPermission = webvellaCoreService.userHasRecordPermissions(resolvedCurrentEntityMeta, "canRead");
-		if (!userHasUpdateEntityPermission) {
-			alert("you do not have permissions to view records from this entity!");
-			defer.reject("you do not have permissions to view records from this entity");
-		}
-		var parentView = fastCopy(resolvedCurrentParentView);
-		if (parentView == null) {
-			webvellaCoreService.getRecordByViewName($stateParams.recordId, $stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
-		}
-		else {
-			var currentView = {};
-			currentView.meta = null;
-			currentView.data = [];
-			if ($stateParams.viewName.startsWith("$view$")) {
-				//View from the same entity
-				parentView.meta.sidebar.items.forEach(function (sidebarItem) {
-					if (sidebarItem.dataName == $stateParams.viewName) {
-						currentView.meta = sidebarItem.meta;
-						currentView.data = parentView.data[0][$stateParams.viewName];
-					}
-				});
-				defer.resolve(currentView);
-			}
-			else {
-
-			}
-
-		}
-
 		return defer.promise;
 	}
 
-	loadDependency.$inject = ['$ocLazyLoad', '$q', '$http', '$state', '$timeout', '$stateParams', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedCurrentParentView', 'resolvedEntityRelationsList'];
-	function loadDependency($ocLazyLoad, $q, $http, $state, $timeout, $stateParams, wvAppConstants, resolvedCurrentEntityMeta, resolvedCurrentParentView, resolvedEntityRelationsList) {
+	loadDependency.$inject = ['$ocLazyLoad', '$q', '$http', '$state', '$timeout', '$stateParams', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedParentViewData', 'resolvedEntityRelationsList'];
+	function loadDependency($ocLazyLoad, $q, $http, $state, $timeout, $stateParams, wvAppConstants, resolvedCurrentEntityMeta, resolvedParentViewData, resolvedEntityRelationsList) {
 		var lazyDeferred = $q.defer();
 		var listServiceJavascriptPath = "";
-		if (resolvedCurrentParentView == null) {
+		if (resolvedParentViewData == null) {
 			//Parent view is reviewed
 			listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' + $stateParams.entityName + '/view/' + $stateParams.viewName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
 		}
@@ -281,13 +292,13 @@
 	// Controller ///////////////////////////////
 
 	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', '$window', 'pageTitle', 'webvellaCoreService',
-        'resolvedAreas', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants','resolvedEntityList', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
-		'resolvedCurrentUserEntityPermissions', 'webvellaViewActionService', '$sessionStorage', 'resolvedCurrentParentView'];
+        'resolvedAreas', '$timeout', 'resolvedCurrentViewData', 'ngToast', 'wvAppConstants', 'resolvedEntityList', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
+		'resolvedCurrentUserEntityPermissions', '$sessionStorage', 'resolvedParentViewData'];
 
 
 	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, $window, pageTitle, webvellaCoreService,
-        resolvedAreas, $timeout, resolvedCurrentView, ngToast, wvAppConstants,resolvedEntityList, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
-		resolvedCurrentUserEntityPermissions, webvellaViewActionService, $sessionStorage, resolvedCurrentParentView) {
+        resolvedAreas, $timeout, resolvedCurrentViewData, ngToast, wvAppConstants, resolvedEntityList, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
+		resolvedCurrentUserEntityPermissions, $sessionStorage, resolvedParentViewData) {
 
 		//#region << ngCtrl initialization >>
 		var ngCtrl = this;
@@ -301,23 +312,24 @@
 		ngCtrl.currentState = $state.current;
 		//#endregion
 
+		var safeViewNameAndEntity = webvellaCoreService.getSafeViewNameAndEntityName($stateParams.viewName, $stateParams.entityName, resolvedEntityRelationsList);
 		//#region << Initialize main objects >>
 		ngCtrl.view = {};
-		ngCtrl.view.meta = fastCopy(resolvedCurrentView.meta);
-		ngCtrl.view.data = fastCopy(resolvedCurrentView.data);
-		if (resolvedCurrentParentView == null) {
+		ngCtrl.view.meta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList(safeViewNameAndEntity.viewName, safeViewNameAndEntity.entityName, resolvedEntityList);
+		ngCtrl.view.data = resolvedCurrentViewData;
+		if (resolvedParentViewData == null) {
 			ngCtrl.parentView = null;
 		}
 		else {
 			ngCtrl.parentView = {};
-			ngCtrl.parentView.meta = fastCopy(resolvedCurrentParentView.meta);
-			ngCtrl.parentView.data = fastCopy(resolvedCurrentParentView.data[0]);
+			ngCtrl.parentView.meta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
+			ngCtrl.parentView.data = resolvedParentViewData[0];
 		}
-		ngCtrl.entityList = fastCopy(resolvedEntityList);
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
-		ngCtrl.entityRelations = fastCopy(resolvedEntityRelationsList);
-		ngCtrl.areas = fastCopy(resolvedAreas.data);
-		ngCtrl.currentUser = fastCopy(resolvedCurrentUser);
+		ngCtrl.entityList = resolvedEntityList;
+		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.entityRelations = resolvedEntityRelationsList;
+		ngCtrl.areas = resolvedAreas.data;
+		ngCtrl.currentUser = resolvedCurrentUser;
 		ngCtrl.$sessionStorage = $sessionStorage;
 		ngCtrl.stateParams = $stateParams;
 		//#endregion
@@ -328,25 +340,14 @@
 
 		//#region << Initialize general views alternatives >>
 		ngCtrl.generalViews = [];
-		ngCtrl.entity.recordViews.forEach(function (view) {
-			if (view.type == "general") {
-				ngCtrl.generalViews.push(view);
-			}
-		});
+		if ($stateParams.parentViewName == null) {
+			ngCtrl.entity.recordViews.forEach(function (view) {
+				if (view.type == "general") {
+					ngCtrl.generalViews.push(view);
+				}
+			});
+		}
 		ngCtrl.generalViews.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
-		//#endregion
-
-		//#region << Run  webvellaViewActionService.onload >>
-		if (webvellaViewActionService.onload === undefined || typeof (webvellaViewActionService.onload) != "function") {
-			$log.warn("No webvellaViewActionService.onload function. Skipping");
-		}
-		else {
-			var actionsOnLoadResult = webvellaViewActionService.onload(ngCtrl, $rootScope, $state);
-			if (actionsOnLoadResult != true) {
-				ngCtrl.validation.hasError = true;
-				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);
-			}
-		}
 		//#endregion
 
 		//#region << Entity relations functions >>
@@ -354,16 +355,16 @@
 			for (var i = 0; i < ngCtrl.entityRelations.length; i++) {
 				if (ngCtrl.entityRelations[i].name == relationName) {
 					//set current entity role
-					if (ngCtrl.entity.id == ngCtrl.entityRelations[i].targetEntityId && ngCtrl.entity.id == ngCtrl.entityRelations[i].originEntityId) {
+					if (safeViewNameAndEntity.entityName == ngCtrl.entityRelations[i].targetEntityName && safeViewNameAndEntity.entityName == ngCtrl.entityRelations[i].originEntityName) {
 						ngCtrl.entityRelations[i].currentEntityRole = 3; //both origin and target
 					}
-					else if (ngCtrl.entity.id == ngCtrl.entityRelations[i].targetEntityId && ngCtrl.entity.id != ngCtrl.entityRelations[i].originEntityId) {
+					else if (safeViewNameAndEntity.entityName == ngCtrl.entityRelations[i].targetEntityName && safeViewNameAndEntity.entityName != ngCtrl.entityRelations[i].originEntityName) {
 						ngCtrl.entityRelations[i].currentEntityRole = 2; //target
 					}
-					else if (ngCtrl.entity.id != ngCtrl.entityRelations[i].targetEntityId && ngCtrl.entity.id == ngCtrl.entityRelations[i].originEntityId) {
+					else if (safeViewNameAndEntity.entityName != ngCtrl.entityRelations[i].targetEntityName && safeViewNameAndEntity.entityName == ngCtrl.entityRelations[i].originEntityName) {
 						ngCtrl.entityRelations[i].currentEntityRole = 1; //origin
 					}
-					else if (ngCtrl.entity.id != ngCtrl.entityRelations[i].targetEntityId && ngCtrl.entity.id != ngCtrl.entityRelations[i].originEntityId) {
+					else if (safeViewNameAndEntity.entityName != ngCtrl.entityRelations[i].targetEntityName && safeViewNameAndEntity.entityName != ngCtrl.entityRelations[i].originEntityName) {
 						ngCtrl.entityRelations[i].currentEntityRole = 0; //possible problem
 					}
 					return ngCtrl.entityRelations[i];
@@ -646,26 +647,33 @@
 		//#endregion
 
 		//#region << Render >>
+		ngCtrl.headerRegion = [];
+		ngCtrl.activeRegion = [];
 		ngCtrl.activeTabName = ngCtrl.stateParams.regionName;
-		ngCtrl.view.meta.regions.sort(sort_by({name:'weight', primer: parseInt, reverse: false}));
-		if(ngCtrl.activeTabName == "header"){
+		ngCtrl.view.meta.regions.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+		if (ngCtrl.activeTabName == "header") {
 			//Set the first tab as active
-			if(ngCtrl.view.meta.regions[0].name != "header"){
+			if (ngCtrl.view.meta.regions[0].name != "header") {
 				ngCtrl.activeTabName = ngCtrl.view.meta.regions[0].name;
 			}
-			else if(ngCtrl.view.meta.regions.length > 1) {
+			else if (ngCtrl.view.meta.regions.length > 1) {
 				ngCtrl.activeTabName = ngCtrl.view.meta.regions[1].name;
 			}
 			else {
 				ngCtrl.activeTabName = null;
 			}
-
 		}
 		ngCtrl.renderTabBar = false;
-		ngCtrl.view.meta.regions.forEach(function(region){
-			if(region.render && region.name != "header"){
-				ngCtrl.renderTabBar = true;		
-			}		
+		ngCtrl.view.meta.regions.forEach(function (region) {
+			if (region.render && region.name != "header") {
+				ngCtrl.renderTabBar = true;
+			}
+			if(region.render && region.name == "header"){
+				ngCtrl.headerRegion.push(region);
+			}
+			else if(region.name == ngCtrl.activeTabName){
+				ngCtrl.activeRegion.push(region);
+			}
 		});
 
 
@@ -686,9 +694,9 @@
 			}
 		}
 		//Date & DateTime 
-		ngCtrl.getTimeString = function (item) {
-			if (item && item.dataName && ngCtrl.view.data[item.dataName]) {
-				var fieldValue = ngCtrl.view.data[item.dataName];
+		ngCtrl.getTimeString = function (item,data) {
+			if (item && item.dataName && data) {
+				var fieldValue = data;
 				if (!fieldValue) {
 					return "";
 				} else {
@@ -725,7 +733,6 @@
 			toolbarLocation: 'top',
 			toolbar: 'full',
 			toolbar_full: [
-				{ name: 'save', items: ['Save'] },
 				{ name: 'basicstyles', items: ['Bold', 'Italic', 'Strike', 'Underline'] },
 				{ name: 'paragraph', items: ['BulletedList', 'NumberedList', 'Blockquote'] },
 				{ name: 'editing', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
@@ -766,7 +773,7 @@
 			if ($event.keyCode == 27) { // escape key maps to keycode `27`
 				//As the id is dynamic in our case and there is a problem with ckeditor and dynamic id-s we should use ng-attr-id in the html and here to cycle through all instances and find the current bye its container.$.id
 				for (var property in CKEDITOR.instances) {
-					if (CKEDITOR.instances[property].container.$.id == item.meta.name) {
+					if (CKEDITOR.instances[property].container.$.id == 'field_' + item.meta.name) {
 
 						CKEDITOR.instances[property].editable().$.blur();
 						//Find the proper data for the recordId	in the view data array
@@ -951,7 +958,7 @@
 		// Update field
 		ngCtrl.fieldUpdate = function (item, data, recordId) {
 			//alert("need to pass the recordId too so we can manage and viewFromRelation");
-			webvellaViewActionService.fieldUpdate(item, data, recordId, ngCtrl);
+			return webvellaCoreService.viewAction_fieldUpdate(item,data,recordId,ngCtrl);
 		}
 
 		//#region << Remove relation >>
@@ -984,7 +991,7 @@
 
 		////////////////////
 		// Single selection modal used in 1:1 relation and in 1:N when the currently viewed entity is a target in this relation
-		ngCtrl.openManageRelationFieldModal = function (item, relationType, dataKind) {
+		ngCtrl.openManageRelationFieldModal = function (item, relationType, dataKind, viewData) {
 			//relationType = 1 (one-to-one) , 2(one-to-many), 3(many-to-many)
 			//dataKind - target, origin, origin-target
 
@@ -999,6 +1006,9 @@
 					resolve: {
 						ngCtrl: function () {
 							return ngCtrl;
+						},
+						viewData: function () {
+							return viewData;
 						},
 						selectedItem: function () {
 							return item;
@@ -1082,6 +1092,9 @@
 						ngCtrl: function () {
 							return ngCtrl;
 						},
+						viewData: function () {
+							return viewData;
+						},
 						selectedItem: function () {
 							return item;
 						},
@@ -1149,6 +1162,9 @@
 						ngCtrl: function () {
 							return ngCtrl;
 						},
+						viewData: function () {
+							return viewData;
+						},
 						selectedItem: function () {
 							return item;
 						},
@@ -1177,6 +1193,7 @@
 		var resolveLookupRecords = function (item, relationType, dataKind) {
 			// Initialize
 			var defer = $q.defer();
+			var defaultLookupList = null;
 			ngCtrl.modalSelectedItem = fastCopy(item);
 			ngCtrl.modalRelationType = fastCopy(relationType);
 			ngCtrl.modalDataKind = fastCopy(dataKind);
@@ -1190,12 +1207,18 @@
 				defer.reject();
 			}
 			function getListRecordsSuccessCallback(response) {
-				defer.resolve(response); //Submitting the whole response to manage the error states
+				var responseObj = {};
+				responseObj.success = response.success;
+				responseObj.message = response.message;
+				responseObj.timestamp = response.timestamp;
+				responseObj.object = {};
+				responseObj.object.data = response.object;
+				responseObj.object.meta = defaultLookupList;
+				defer.resolve(responseObj); //Submitting the whole response to manage the error states
 			}
 
 			function getEntityMetaSuccessCallback(response) {
 				var entityMeta = response.object;
-				var defaultLookupList = null;
 				var selectedLookupListName = ngCtrl.modalSelectedItem.fieldLookupList;
 				var selectedLookupList = null;
 				//Find the default lookup field if none return null.
@@ -1244,12 +1267,12 @@
 							getListRecordsSuccessCallback(lockedChangeResponse);
 						}
 						else {
-							webvellaCoreService.getRecordsByListName(defaultLookupList.name, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
+							webvellaCoreService.getRecordsByListMeta(defaultLookupList, entityMeta.name, 1, null, null, getListRecordsSuccessCallback, errorCallback);
 						}
 					}
 					else if (ngCtrl.modalDataKind == "target") {
 						//Current records is Target
-						webvellaCoreService.getRecordsByListName(defaultLookupList.name, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
+						webvellaCoreService.getRecordsByListMeta(defaultLookupList, entityMeta.name, 1, null, null, getListRecordsSuccessCallback, errorCallback);
 					}
 				}
 			}
@@ -1262,7 +1285,7 @@
 		//#endregion
 
 		//#region << Tree select field >>
-		ngCtrl.openSelectTreeNodesModal = function (item) {
+		ngCtrl.openSelectTreeNodesModal = function (item, viewData) {
 			var treeSelectModalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'selectTreeNodesModal.html',
@@ -1273,6 +1296,9 @@
 				resolve: {
 					ngCtrl: function () {
 						return ngCtrl;
+					},
+					viewData: function () {
+						return viewData;
 					},
 					selectedItem: function () {
 						return item;
@@ -1334,8 +1360,15 @@
 
 		//#endregion
 
-		//#region << List actions and webvellaViewActionService bind >>
-		ngCtrl.actionService = webvellaViewActionService;
+		//#region << List actions  bind >>
+		var serviceName =  safeViewNameAndEntity.entityName + "_" + safeViewNameAndEntity.viewName + "_view_service";
+		try{
+			ngCtrl.actionService = $injector.get(serviceName);
+		}
+		catch(err){
+			//console.log(err);
+			ngCtrl.actionService = {};		
+		}
 		ngCtrl.pageTitleActions = [];
 		ngCtrl.pageTitleDropdownActions = [];
 		ngCtrl.createBottomActions = [];
@@ -1357,36 +1390,26 @@
 					break;
 			}
 		});
-		//#endregion
-
-		//#region << Run  webvellaViewActionService.postload >>
-		if (webvellaViewActionService.postload === undefined || typeof (webvellaViewActionService.postload) != "function") {
-			$log.warn("No webvellaViewActionService.postload function. Skipping");
+		ngCtrl.deleteRecord = function() { 
+			webvellaCoreService.viewAction_deleteRecord(ngCtrl);
 		}
-		else {
-			var actionsOnLoadResult = webvellaViewActionService.postload(ngCtrl, $rootScope, $state);
-			if (actionsOnLoadResult != true) {
-				ngCtrl.validation.hasError = true;
-				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);
-			}
-		}
-		//#endregion
 
+		//#endregion
 	}
 
-	//#region < Modal Controllers >
+	//#region << Modal Controllers >>
 
-	//#region << Manage relation Modal >>
 	//Test to unify all modals - Single select, multiple select, click to select
-	ManageRelationFieldModalController.$inject = ['ngCtrl', '$uibModalInstance', '$log', '$q', '$stateParams', 'modalMode', 'resolvedLookupRecords',
+	ManageRelationFieldModalController.$inject = ['ngCtrl', 'viewData', '$uibModalInstance', '$log', '$q', '$stateParams', 'modalMode', 'resolvedLookupRecords',
         'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
 
-	function ManageRelationFieldModalController(ngCtrl, $uibModalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
+	function ManageRelationFieldModalController(ngCtrl, viewData, $uibModalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
         selectedDataKind, selectedItem, selectedRelationType, webvellaCoreService, ngToast, $timeout, $state) {
 
 		var popupCtrl = this;
 		popupCtrl.currentPage = 1;
 		popupCtrl.parentData = fastCopy(ngCtrl);
+		popupCtrl.parentData.view.data = viewData;
 		popupCtrl.selectedItem = fastCopy(selectedItem);
 		popupCtrl.modalMode = fastCopy(modalMode);
 		popupCtrl.hasWarning = false;
@@ -1425,7 +1448,7 @@
 			if (popupCtrl.searchQuery) {
 				popupCtrl.searchQuery = popupCtrl.searchQuery.trim();
 			}
-			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.selectedItem.entityName, 1, null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.selectedItem.entityName, 1, null, null, successCallback, errorCallback);
 		}
 		//#endregion
 
@@ -1441,7 +1464,7 @@
 
 			}
 
-			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.selectedItem.entityName, page, null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.selectedItem.entityName, page, null, null, successCallback, errorCallback);
 		}
 
 		//#endregion
@@ -1638,13 +1661,11 @@
 
 		//#endregion
 	};
-	//#endregion 
 
-	//#region << Select Tree >>
-	SelectTreeNodesModalController.$inject = ['ngCtrl', '$uibModalInstance', '$rootScope', '$scope', '$log', '$q', '$stateParams', 'resolvedTree',
+	SelectTreeNodesModalController.$inject = ['ngCtrl', 'viewData', '$uibModalInstance', '$rootScope', '$scope', '$log', '$q', '$stateParams', 'resolvedTree',
         'selectedItem', 'resolvedTreeRelation', 'selectedItemData', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$uibModal',
 		'resolvedCurrentUserPermissions'];
-	function SelectTreeNodesModalController(ngCtrl, $uibModalInstance, $rootScope, $scope, $log, $q, $stateParams, resolvedTree,
+	function SelectTreeNodesModalController(ngCtrl, viewData, $uibModalInstance, $rootScope, $scope, $log, $q, $stateParams, resolvedTree,
 			selectedItem, resolvedTreeRelation, selectedItemData, webvellaCoreService, ngToast, $timeout, $state, $uibModal,
 			resolvedCurrentUserPermissions) {
 		var popupCtrl = this;
@@ -1858,7 +1879,6 @@
 
 
 	};
-	//#endregion
 
 	//#endregion
 

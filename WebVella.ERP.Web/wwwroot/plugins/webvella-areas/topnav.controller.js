@@ -20,7 +20,7 @@
         
         var topnavData = this;
         topnavData.currentArea = webvellaCoreService.getCurrentAreaFromAreaList($stateParams.areaName, resolvedAreas.data);
-		topnavData.currentEntity = fastCopy(resolvedCurrentEntityMeta);
+		topnavData.currentEntity = resolvedCurrentEntityMeta;
         topnavData.$storage = $localStorage;
         topnavData.toggleSideNav = function () {
         	topnavData.$storage.isMiniSidebar = !topnavData.$storage.isMiniSidebar;

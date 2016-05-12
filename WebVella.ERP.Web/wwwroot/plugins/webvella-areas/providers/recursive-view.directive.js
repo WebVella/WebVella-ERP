@@ -112,7 +112,7 @@
 
 		$scope.selectedRegion = null;
 		for (var i = 0; i < $scope.viewMeta.meta.regions.length; i++) {
-			if ($scope.viewMeta.meta.regions[i].name === "default") {
+			if ($scope.viewMeta.meta.regions[i].name === "header") {
 				$scope.selectedRegion = $scope.viewMeta.meta.regions[i];
 			}
 		}
@@ -281,7 +281,7 @@
 					if (selectedLookupList != null) {
 						defaultLookupList = selectedLookupList;
 					}
-					webvellaCoreService.getRecordsByListName(defaultLookupList.name, $scope.entity.name, 1, null, getListRecordsSuccessCallback, errorCallback);
+					webvellaCoreService.getRecordsByListMeta(defaultLookupList, $scope.entity.name, 1, null, null, getListRecordsSuccessCallback, errorCallback);
 				}
 			}
 
@@ -314,7 +314,7 @@
 		var resolveManagedRecordQuickCreateView = function (managedRecord) {
 			// Initialize
 			var defer = $q.defer();
-
+			var defaultQuickCreateView = null;
 			// Process
 			function errorCallback(response) {
 				ngToast.create({
@@ -325,7 +325,10 @@
 				defer.reject();
 			}
 			function getViewRecordSuccessCallback(response) {
-				defer.resolve(response.object); //Submitting the whole response to manage the error states
+				var responseObj = {};
+				responseObj.meta = defaultQuickCreateView;
+				responseObj.data = response.object;
+				defer.resolve(responseObj); //Submitting the whole response to manage the error states
 			}
 
 			function getViewMetaSuccessCallback(response) {
@@ -337,7 +340,6 @@
 
 			function getEntityMetaSuccessCallback(response) {
 				var entityMeta = response.object;
-				var defaultQuickCreateView = null;
 				var selectedQuickCreateViewName = $scope.viewMeta.fieldManageView;
 				var selectedQuickCreateView = null;
 				//Find the default lookup field if none return null.
@@ -365,7 +367,7 @@
 						webvellaCoreService.getEntityView(defaultQuickCreateView.name, $scope.entity.name, getViewMetaSuccessCallback, errorCallback);
 					}
 					else {
-						webvellaCoreService.getRecordByViewName(managedRecord.id, defaultQuickCreateView.name, $scope.entity.name, getViewRecordSuccessCallback, errorCallback);
+						webvellaCoreService.getRecordByViewMeta(managedRecord.id, defaultQuickCreateView, $scope.entity.name,null, getViewRecordSuccessCallback, errorCallback);
 					}
 				}
 			}
@@ -421,7 +423,7 @@
 
 			}
 
-			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.parentEntity.name, page, null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.parentEntity.name, page, null, null, successCallback, errorCallback);
 		}
 
 		//#endregion
@@ -445,7 +447,7 @@
 					timeout: 7000
 				});
 			}
-			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.parentEntity.name, popupCtrl.currentPage, null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.parentEntity.name, popupCtrl.currentPage, null, null, successCallback, errorCallback);
 
 		}
 		//#endregion
@@ -513,7 +515,7 @@
 		popupCtrl.viewMeta = fastCopy(resolvedManagedRecordQuickCreateView.meta);
 		popupCtrl.contentRegion = {};
 		for (var j = 0; j < popupCtrl.viewMeta.regions.length; j++) {
-			if (popupCtrl.viewMeta.regions[j].name === "default") {
+			if (popupCtrl.viewMeta.regions[j].name === "header") {
 				popupCtrl.contentRegion = popupCtrl.viewMeta.regions[j];
 			}
 		}

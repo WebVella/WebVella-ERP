@@ -20,6 +20,8 @@ using Microsoft.AspNet.StaticFiles;
 using WebVella.ERP.Utilities;
 using System.Dynamic;
 using WebVella.ERP.Plugins;
+using WebVella.ERP.WebHooks;
+using System.Diagnostics;
 
 
 
@@ -37,26 +39,17 @@ namespace WebVella.ERP.Web.Controllers
 		EntityManager entityManager;
 		EntityRelationManager entityRelationManager;
 		SecurityManager secMan;
+		IWebHookService hooksService;
 
-		public ApiController()
+		public ApiController(IWebHookService hooksService)
 		{
 			recMan = new RecordManager();
 			secMan = new SecurityManager();
 			entityManager = new EntityManager();
 			entityRelationManager = new EntityRelationManager();
+			this.hooksService = hooksService;
 		}
 
-
-		[AllowAnonymous]
-		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/show-plugins")]
-		public IActionResult ShowPlugins()
-		{
-			var responseObj = new ResponseModel();
-			responseObj.Object = new PluginService().Plugins;
-			responseObj.Success = true;
-			responseObj.Timestamp = DateTime.UtcNow;
-			return DoResponse(responseObj);
-		}
 
 		[AllowAnonymous]
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/user/login")]
@@ -819,16 +812,20 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}/service.js")]
 		public IActionResult GetRecordListServiceJSByName(string Name, string ListName, bool defaultScript = false)
 		{
+
 			var list = entityManager.ReadRecordList(Name, ListName);
-			if( list == null || list.Object == null || list.Success == false )
+			if (list == null || list.Object == null || list.Success == false)
 				return DoPageNotFoundResponse();
 
 			var code = list.Object.ServiceCode;
 			if (string.IsNullOrWhiteSpace(code) || defaultScript)
 				return File("/plugins/webvella-core/providers/list_default_service_script.js", "text/javascript");
-
+			else if (code.StartsWith("/plugins/") || code.StartsWith("http://") || code.StartsWith("https://"))
+			{
+				return File(code, "text/javascript");
+			}
 			byte[] bytes = System.Text.Encoding.UTF8.GetBytes(code);
-			return File(bytes, "text/javascript" );
+			return File(bytes, "text/javascript");
 		}
 
 		#endregion
@@ -849,6 +846,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(result);
 			}
 
+
 			var entity = entityManager.ReadEntity(entityName).Object;
 			if (entity == null)
 			{
@@ -857,6 +855,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(result);
 			}
 
+			entity = Helpers.DeepClone(entityManager.ReadEntity(entityName).Object);
 			List<object> itemList = new List<object>();
 
 			//itemList.Add(new { type = "html", tag = "HTML string", content = "" });
@@ -884,7 +883,7 @@ namespace WebVella.ERP.Web.Controllers
 					if (treeRelation == null) //skip if missing relation is used // simple protection
 						continue;
 
-					Entity relatedEntity = entityManager.ReadEntity(treeField.RelatedEntityId).Object;
+					Entity relatedEntity = Helpers.DeepClone(entityManager.ReadEntity(treeField.RelatedEntityId).Object);
 					if (relatedEntity == null) //skip if missing related entity // simple protection
 						continue;
 
@@ -953,7 +952,7 @@ namespace WebVella.ERP.Web.Controllers
 			foreach (var relation in entityRelations)
 			{
 				Guid relatedEntityId = relation.OriginEntityId == entity.Id ? relation.TargetEntityId : relation.OriginEntityId;
-				Entity relatedEntity = entityManager.ReadEntity(relatedEntityId).Object;
+				Entity relatedEntity = Helpers.DeepClone(entityManager.ReadEntity(relatedEntityId).Object);
 
 				itemList.Add(new EntityRelationOptionsItem
 				{
@@ -1046,7 +1045,7 @@ namespace WebVella.ERP.Web.Controllers
 			//TODO remove default values and options and all not needed data
 			if (field is SelectField)
 				((SelectField)field).Options = new List<SelectFieldOption>();
-			else if(field is MultiSelectField)
+			else if (field is MultiSelectField)
 				((MultiSelectField)field).Options = new List<MultiSelectFieldOption>();
 
 			return field;
@@ -1070,7 +1069,7 @@ namespace WebVella.ERP.Web.Controllers
 		//	return DoResponse(entityManager.CreateRecordView(Id, view));
 		//}
 
-		
+
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Name}/view")]
 		public IActionResult CreateRecordViewByName(string Name, [FromBody]JObject submitObj)
 		{
@@ -1099,7 +1098,10 @@ namespace WebVella.ERP.Web.Controllers
 			var code = view.Object.ServiceCode;
 			if (string.IsNullOrWhiteSpace(code) || defaultScript)
 				return File("/plugins/webvella-core/providers/view_default_service_script.js", "text/javascript");
-
+			else if (code.StartsWith("/plugins/") || code.StartsWith("http://") || code.StartsWith("https://"))
+			{
+				return File(code, "text/javascript");
+			}
 			byte[] bytes = System.Text.Encoding.UTF8.GetBytes(code);
 			return File(bytes, "text/javascript");
 		}
@@ -1740,6 +1742,15 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult GetRecord(Guid recordId, string entityName, string fields = "*")
 		{
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK FILTER << get_record_input >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.recordId = recordId;
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.GetRecordInput, entityName, hookFilterObj);
+				recordId = hookFilterObj.recordId;
+			} // <<<
 
 			QueryObject filterObj = EntityQuery.QueryEQ("id", recordId);
 
@@ -1748,6 +1759,30 @@ namespace WebVella.ERP.Web.Controllers
 			QueryResponse result = recMan.Find(query);
 			if (!result.Success)
 				return DoResponse(result);
+
+			EntityRecord record = result.Object.Data[0];
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK FILTER << get_record_output >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.record = record;
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.GetRecordOutput, entityName, hookFilterObj);
+				record = hookFilterObj.record;
+			} // <<<
+
+			result.Object.Data[0] = record;
+
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK ACTION << get_record >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.recordId = recordId;
+				hookFilterObj.result = result;
+				hooksService.ProcessActions(SystemWebHookNames.GetRecordAction, entityName, hookFilterObj);
+			} // <<<
+
 			return Json(result);
 		}
 
@@ -1756,7 +1791,84 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult DeleteRecord(Guid recordId, string entityName)
 		{
-			return DoResponse(recMan.DeleteRecord(entityName, recordId));
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK FILTER << delete_record_input >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.recordId = recordId;
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.DeleteRecordInput, entityName, hookFilterObj);
+				recordId = hookFilterObj.recordId;
+			} // <<<
+
+			var validationErrors = new List<ErrorModel>();
+
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK FILTER << delete_record_validation_errors >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.errors = validationErrors;
+				hookFilterObj.recordId = recordId;
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.DeleteRecordValidationErrors, entityName, hookFilterObj);
+				validationErrors = hookFilterObj.errors;
+			} // <<<
+
+			if (validationErrors.Count > 0)
+			{
+				var response = new ResponseModel();
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Errors = validationErrors;
+				response.Message = "Validation error occurred!";
+				response.Object = null;
+				return Json(response);
+			}
+
+			//Create transaction
+			var result = new QueryResponse();
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				try
+				{
+					connection.BeginTransaction();
+
+					//////////////////////////////////////////////////////////////////////////////////////
+					//WEBHOOK FILTER << delete_record_pre_save >>
+					//////////////////////////////////////////////////////////////////////////////////////
+					{
+						dynamic hookFilterObj = new ExpandoObject();
+						hookFilterObj.recordId = recordId;
+						hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.DeleteRecordPreSave, entityName, hookFilterObj);
+						recordId = hookFilterObj.recordId;
+					} // <<<
+
+					result = recMan.DeleteRecord(entityName, recordId);
+					connection.CommitTransaction();
+				}
+				catch (Exception ex)
+				{
+					connection.RollbackTransaction();
+					var response = new ResponseModel();
+					response.Success = false;
+					response.Timestamp = DateTime.UtcNow;
+					response.Message = "Error while delete the record: " + ex.Message;
+					response.Object = null;
+					return Json(response);
+				}
+			}
+
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK ACTION << delete_record >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.recordId = recordId;
+				hookFilterObj.result = result;
+				hooksService.ProcessActions(SystemWebHookNames.DeleteRecordAction, entityName, hookFilterObj);
+			} // <<<	
+
+			return DoResponse(result);
 		}
 
 		// Get an entity records by field and regex
@@ -1781,16 +1893,91 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}")]
 		public IActionResult CreateEntityRecord(string entityName, [FromBody]EntityRecord postObj)
 		{
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK FILTER << create_record_input >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.record = postObj;
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.CreateRecordInput, entityName, hookFilterObj);
+				postObj = hookFilterObj.record;
+			} // <<<
+
+			var validationErrors = new List<ErrorModel>();
 			//TODO implement validation
 			if (postObj == null)
 				postObj = new EntityRecord();
+
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK FILTER << create_record_validation_errors >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.errors = validationErrors;
+				hookFilterObj.record = postObj;
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.CreateRecordValidationErrors, entityName, hookFilterObj);
+				validationErrors = hookFilterObj.errors;
+			} // <<<
+
+			if (validationErrors.Count > 0)
+			{
+				var response = new ResponseModel();
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Errors = validationErrors;
+				response.Message = "Validation error occurred!";
+				response.Object = null;
+				return Json(response);
+			}
 
 			if (!postObj.GetProperties().Any(x => x.Key == "id"))
 				postObj["id"] = Guid.NewGuid();
 			else if (string.IsNullOrEmpty(postObj["id"] as string))
 				postObj["id"] = Guid.NewGuid();
 
-			QueryResponse result = recMan.CreateRecord(entityName, postObj);
+
+			//Create transaction
+			var result = new QueryResponse();
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				try
+				{
+					connection.BeginTransaction();
+					//////////////////////////////////////////////////////////////////////////////////////
+					//WEBHOOK FILTER << create_record_pre_save >>
+					//////////////////////////////////////////////////////////////////////////////////////
+					{
+						dynamic hookFilterObj = new ExpandoObject();
+						hookFilterObj.record = postObj;
+						hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.CreateRecordPreSave, entityName, hookFilterObj);
+						postObj = hookFilterObj.record;
+					} // <<<
+
+					result = recMan.CreateRecord(entityName, postObj);
+					connection.CommitTransaction();
+				}
+				catch (Exception ex)
+				{
+					connection.RollbackTransaction();
+					var response = new ResponseModel();
+					response.Success = false;
+					response.Timestamp = DateTime.UtcNow;
+					response.Message = "Error while saving the record: " + ex.Message;
+					response.Object = null;
+					return Json(response);
+				}
+			}
+
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK ACTION << create_record >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.record = postObj;
+				hookFilterObj.result = result;
+				hooksService.ProcessActions(SystemWebHookNames.CreateRecordAction, entityName, hookFilterObj);
+			} // <<<			
+
 			return DoResponse(result);
 		}
 
@@ -1799,8 +1986,89 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult UpdateEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK FILTER << update_record_input >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.record = postObj;
+				hookFilterObj.recordId = recordId;
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordInput, entityName, hookFilterObj);
+				postObj = hookFilterObj.record;
+			} // <<<			
+
+			var validationErrors = new List<ErrorModel>();
 			//TODO implement validation
-			QueryResponse result = recMan.UpdateRecord(entityName, postObj);
+		
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK FILTER << update_record_validation_errors >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.errors = validationErrors;
+				hookFilterObj.record = postObj;
+				hookFilterObj.recordId = recordId;
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordValidationErrors, entityName, hookFilterObj);
+				validationErrors = hookFilterObj.errors;
+			} // <<<
+
+			if (validationErrors.Count > 0)
+			{
+				var response = new ResponseModel();
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Errors = validationErrors;
+				response.Message = "Validation error occurred!";
+				response.Object = null;
+				return Json(response);
+			}
+
+			//clear authentication cache
+			if (entityName == "user")
+				WebSecurityUtil.RemoveIdentityFromCache(recordId);
+
+			//Create transaction
+			var result = new QueryResponse();
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				try
+				{
+					connection.BeginTransaction();
+					//////////////////////////////////////////////////////////////////////////////////////
+					//WEBHOOK FILTER << update_record_pre_save >>
+					//////////////////////////////////////////////////////////////////////////////////////
+					{
+						dynamic hookFilterObj = new ExpandoObject();
+						hookFilterObj.record = postObj;
+						hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordPreSave, entityName, hookFilterObj);
+						postObj = hookFilterObj.record;
+					} // <<<
+
+					result = recMan.UpdateRecord(entityName, postObj);
+					connection.CommitTransaction();
+				}
+				catch (Exception ex)
+				{
+					connection.RollbackTransaction();
+					var response = new ResponseModel();
+					response.Success = false;
+					response.Timestamp = DateTime.UtcNow;
+					response.Message = "Error while saving the record: " + ex.Message;
+					response.Object = null;
+					return Json(response);
+				}
+			}
+
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK ACTION << update_record >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.record = postObj;
+				hookFilterObj.result = result;
+				hooksService.ProcessActions(SystemWebHookNames.UpdateRecordAction, entityName, hookFilterObj);
+			} // <<<	
+
 			return DoResponse(result);
 		}
 
@@ -1809,9 +2077,94 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult PatchEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK FILTER << patch_record_input >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.record = postObj;
+				hookFilterObj.recordId = recordId;
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.PatchRecordInput, entityName, hookFilterObj);
+				postObj = hookFilterObj.record;
+			} // <<<
+
+			var validationErrors = new List<ErrorModel>();
 			//TODO implement validation
+			if (postObj == null)
+				postObj = new EntityRecord();
+
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK FILTER << patch_record_validation_errors >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.errors = validationErrors;
+				hookFilterObj.record = postObj;
+				hookFilterObj.recordId = recordId;
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.PatchRecordValidationErrors, entityName, hookFilterObj);
+				validationErrors = hookFilterObj.errors;
+			} // <<<
+
+			if (validationErrors.Count > 0)
+			{
+				var response = new ResponseModel();
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Errors = validationErrors;
+				response.Message = "Validation error occurred!";
+				response.Object = null;
+				return Json(response);
+			}
+
+
+			//clear authentication cache
+			if (entityName == "user")
+				WebSecurityUtil.RemoveIdentityFromCache(recordId);
 			postObj["id"] = recordId;
-			QueryResponse result = recMan.UpdateRecord(entityName, postObj);
+
+			//Create transaction
+			var result = new QueryResponse();
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				try
+				{
+					connection.BeginTransaction();
+					//////////////////////////////////////////////////////////////////////////////////////
+					//WEBHOOK FILTER << patch_record_pre_save >>
+					//////////////////////////////////////////////////////////////////////////////////////
+					{
+						dynamic hookFilterObj = new ExpandoObject();
+						hookFilterObj.record = postObj;
+						hookFilterObj.recordId = recordId;
+						hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.PatchRecordPreSave, entityName, hookFilterObj);
+						postObj = hookFilterObj.record;
+					} // <<<
+					result = recMan.UpdateRecord(entityName, postObj);
+					connection.CommitTransaction();
+				}
+				catch (Exception ex)
+				{
+					connection.RollbackTransaction();
+					var response = new ResponseModel();
+					response.Success = false;
+					response.Timestamp = DateTime.UtcNow;
+					response.Message = "Error while saving the record: " + ex.Message;
+					response.Object = null;
+					return Json(response);
+				}
+			}
+
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK ACTION << patch_record >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.record = postObj;
+				hookFilterObj.result = result;
+				hookFilterObj.recordId = recordId;
+				hooksService.ProcessActions(SystemWebHookNames.PatchRecordAction, entityName, hookFilterObj);
+			} // <<<	
+
 			return DoResponse(result);
 		}
 
@@ -1828,7 +2181,7 @@ namespace WebVella.ERP.Web.Controllers
 			response.Message = "Success";
 			response.Timestamp = DateTime.UtcNow;
 			response.Success = true;
-			response.Object = new RecordListRecord();
+			response.Object = null;
 
 			Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
 
@@ -1851,7 +2204,7 @@ namespace WebVella.ERP.Web.Controllers
 			}
 			try
 			{
-				response.Object.Data = GetListRecords(entities, entity, listName, page, null, pageSize);
+				response.Object = GetListRecords(entities, entity, listName, page, null, pageSize);
 			}
 			catch (Exception ex)
 			{
@@ -1861,49 +2214,51 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(response);
 			}
 
-			RecordList list = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
-			if (list != null)
-			{
-				response.Object.Meta = list;
-			}
-
 			return DoResponse(response);
 		}
 
 		// GET: api/v1/en_US/record/{entityName}/list
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list")]
-		public IActionResult GetRecordsByEntityName(string entityName, string ids = "", string fields = "")
+		public IActionResult GetRecordsByEntityName(string entityName, string ids = "", string fields = "", int? limit = null)
 		{
 			var response = new QueryResponse();
 			var recordIdList = new List<Guid>();
 			var fieldList = new List<string>();
 
-			if(!String.IsNullOrWhiteSpace(ids) && ids != "null") {
+			if (!String.IsNullOrWhiteSpace(ids) && ids != "null")
+			{
 				var idStringList = ids.Split(',');
 				var outGuid = Guid.Empty;
-				foreach(var idString in idStringList) {
-					if(Guid.TryParse(idString, out outGuid)){
+				foreach (var idString in idStringList)
+				{
+					if (Guid.TryParse(idString, out outGuid))
+					{
 						recordIdList.Add(outGuid);
 					}
-					else {
+					else
+					{
 						response.Message = "One of the record ids is not a Guid";
 						response.Timestamp = DateTime.UtcNow;
 						response.Success = false;
-						response.Object.Data = null;						
+						response.Object.Data = null;
 					}
 				}
 			}
 
-			if(!String.IsNullOrWhiteSpace(fields) && ids != "null") {
+			if (!String.IsNullOrWhiteSpace(fields) && fields != "null")
+			{
 				var fieldsArray = fields.Split(',');
 				var hasId = false;
-				foreach(var fieldName in fieldsArray) {
-					if(fieldName == "id") {
+				foreach (var fieldName in fieldsArray)
+				{
+					if (fieldName == "id")
+					{
 						hasId = true;
 					}
 					fieldList.Add(fieldName);
 				}
-				if(!hasId) {
+				if (!hasId)
+				{
 					fieldList.Add("id");
 				}
 			}
@@ -1915,21 +2270,32 @@ namespace WebVella.ERP.Web.Controllers
 			}
 
 			QueryObject recordsFilterObj = null;
-			if(QueryList.Count > 0) {
+			if (QueryList.Count > 0)
+			{
 				recordsFilterObj = EntityQuery.QueryOR(QueryList.ToArray());
 			}
-			
+
 			var columns = "*";
-			if(fieldList.Count > 0) {
-				if(!fieldList.Contains("id")) {
+			if (fieldList.Count > 0)
+			{
+				if (!fieldList.Contains("id"))
+				{
 					fieldList.Add("id");
 				}
 				columns = String.Join(",", fieldList.Select(x => x.ToString()).ToArray());
 			}
 
-
+			//var sortRulesList = new List<QuerySortObject>();
+			//var sortRule = new QuerySortObject("id",QuerySortType.Descending);
+			//sortRulesList.Add(sortRule);
+			//EntityQuery query = new EntityQuery(entityName, columns, recordsFilterObj, sortRulesList.ToArray(), null, null);
 
 			EntityQuery query = new EntityQuery(entityName, columns, recordsFilterObj, null, null, null);
+			if (limit != null && limit > 0)
+			{
+				query = new EntityQuery(entityName, columns, recordsFilterObj, null, null, limit);
+			}
+
 			var queryResponse = recMan.Find(query);
 			if (!queryResponse.Success)
 			{
@@ -1945,8 +2311,6 @@ namespace WebVella.ERP.Web.Controllers
 			response.Timestamp = DateTime.UtcNow;
 			response.Success = true;
 			response.Object.Data = queryResponse.Object.Data;
-
-
 			return DoResponse(response);
 		}
 
@@ -2014,14 +2378,14 @@ namespace WebVella.ERP.Web.Controllers
 			RecordList list = null;
 			if (entity != null && entity.RecordLists != null)
 				list = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
-			
+
 			if (list == null)
 				throw new Exception($"Entity '{entity.Name}' do not have list named '{listName}'");
-			
+
 			List<KeyValuePair<string, string>> queryStringOverwriteParameters = new List<KeyValuePair<string, string>>();
 			foreach (var key in Request.Query.Keys)
 				queryStringOverwriteParameters.Add(new KeyValuePair<string, string>(key, Request.Query[key]));
-			
+
 
 			EntityQuery resultQuery = new EntityQuery(entity.Name, "*", queryObj, null, null, null, queryStringOverwriteParameters);
 			EntityRelationManager relManager = new EntityRelationManager();
@@ -2053,7 +2417,7 @@ namespace WebVella.ERP.Web.Controllers
 						//if (queryObj.SubQueries != null && queryObj.SubQueries.Any())
 						//	queryObj.SubQueries.Add(listQuery);
 						//else
-							queryObj = EntityQuery.QueryAND(listQuery, queryObj);
+						queryObj = EntityQuery.QueryAND(listQuery, queryObj);
 					}
 					else
 						queryObj = listQuery;
@@ -2389,7 +2753,7 @@ namespace WebVella.ERP.Web.Controllers
 			response.Message = "Success";
 			response.Timestamp = DateTime.UtcNow;
 			response.Success = true;
-			response.Object = new RecordViewRecord();
+			response.Object = null;
 
 			Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
 
@@ -2402,14 +2766,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(response);
 			}
 
-			response.Object.Data = GetViewRecords(entities, entity, viewName, "id", id);
-
-			RecordView view = entity.RecordViews.FirstOrDefault(v => v.Name == viewName);
-			if (view != null)
-			{
-				response.Object.Meta = view;
-			}
-
+			response.Object = GetViewRecords(entities, entity, viewName, "id", id);
 			return DoResponse(response);
 		}
 
@@ -3048,7 +3405,8 @@ namespace WebVella.ERP.Web.Controllers
 					children = GetTreeNodeChildren(allRecords, treeIdField.Name,
 									 treeParrentField.Name, nameField.Name, labelField.Name, rootNode.Id, weightField.Name, 1, tree.DepthLimit);
 				}
-				else {
+				else
+				{
 					children = GetTreeNodeChildren(allRecords, treeIdField.Name,
 									 treeParrentField.Name, nameField.Name, labelField.Name, rootNode.Id, "no-weight", 1, tree.DepthLimit);
 				}
@@ -3095,7 +3453,8 @@ namespace WebVella.ERP.Web.Controllers
 						Nodes = GetTreeNodeChildren(entityName, fields, idFieldName, parentIdFieldName, nameFieldName, labelFieldName, (Guid)record[idFieldName], weightFieldName, depth, maxDepth)
 					});
 				}
-				else {
+				else
+				{
 					nodes.Add(new ResponseTreeNode
 					{
 						RecordId = (Guid)record["id"],
@@ -3112,7 +3471,8 @@ namespace WebVella.ERP.Web.Controllers
 			{
 				return nodes.OrderBy(x => x.Name).ToList();
 			}
-			else {
+			else
+			{
 				return nodes.OrderBy(x => x.Weight).ThenBy(y => y.Name).ToList();
 			}
 		}
@@ -3141,7 +3501,8 @@ namespace WebVella.ERP.Web.Controllers
 						Nodes = GetTreeNodeChildren(allRecords, idFieldName, parentIdFieldName, nameFieldName, labelFieldName, (Guid)record[idFieldName], weightFieldName, depth, maxDepth)
 					});
 				}
-				else {
+				else
+				{
 					nodes.Add(new ResponseTreeNode
 					{
 						RecordId = (Guid)record["id"],
@@ -3159,7 +3520,8 @@ namespace WebVella.ERP.Web.Controllers
 			{
 				return nodes.OrderBy(x => x.Name).ToList();
 			}
-			else {
+			else
+			{
 				return nodes.OrderBy(x => x.Weight).ThenBy(y => y.Name).ToList();
 			}
 		}
@@ -3331,219 +3693,219 @@ namespace WebVella.ERP.Web.Controllers
 
 		// Import list records to csv
 		// POST: api/v1/en_US/record/{entityName}/list/{listName}/import
-//		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/import")]
-//		public IActionResult ImportEntityRecordsFromCsv(string entityName, [FromBody]JObject postObject)
-//		{
-//			//The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated. 
-//			//If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones.
+		//		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/import")]
+		//		public IActionResult ImportEntityRecordsFromCsv(string entityName, [FromBody]JObject postObject)
+		//		{
+		//			//The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated. 
+		//			//If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones.
 
-//			ResponseModel response = new ResponseModel();
-//			response.Message = "Records successfully imported";
-//			response.Timestamp = DateTime.UtcNow;
-//			response.Success = true;
-//			response.Object = null;
+		//			ResponseModel response = new ResponseModel();
+		//			response.Message = "Records successfully imported";
+		//			response.Timestamp = DateTime.UtcNow;
+		//			response.Success = true;
+		//			response.Object = null;
 
-//			string fileTempPath = "/fs/tmp/02cf04fc81f747938929b81c55559a04/import_1.csv";
-//			//if (!postObject.IsNullOrEmpty() && postObject.Properties().Any(p => p.Name == "fileTempPath"))
-//			//{
-//			//	fileTempPath = postObject["fileTempPath"].ToString();
-//			//}
+		//			string fileTempPath = "/fs/tmp/02cf04fc81f747938929b81c55559a04/import_1.csv";
+		//			//if (!postObject.IsNullOrEmpty() && postObject.Properties().Any(p => p.Name == "fileTempPath"))
+		//			//{
+		//			//	fileTempPath = postObject["fileTempPath"].ToString();
+		//			//}
 
-//			//if (string.IsNullOrWhiteSpace(fileTempPath))
-//			//{
-//			//	response.Timestamp = DateTime.UtcNow;
-//			//	response.Success = false;
-//			//	response.Message = "Import failed! fileTempPath parameter cannot be empty or null!";
-//			//	response.Errors.Add(new ErrorModel("fileTempPath", fileTempPath, "Import failed! File does not exist!"));
-//			//	return DoItemNotFoundResponse(response);
-//			//}
+		//			//if (string.IsNullOrWhiteSpace(fileTempPath))
+		//			//{
+		//			//	response.Timestamp = DateTime.UtcNow;
+		//			//	response.Success = false;
+		//			//	response.Message = "Import failed! fileTempPath parameter cannot be empty or null!";
+		//			//	response.Errors.Add(new ErrorModel("fileTempPath", fileTempPath, "Import failed! File does not exist!"));
+		//			//	return DoItemNotFoundResponse(response);
+		//			//}
 
-//			if (!fileTempPath.StartsWith("/"))
-//				fileTempPath = "/" + fileTempPath;
+		//			if (!fileTempPath.StartsWith("/"))
+		//				fileTempPath = "/" + fileTempPath;
 
-//			fileTempPath = fileTempPath.ToLowerInvariant();
+		//			fileTempPath = fileTempPath.ToLowerInvariant();
 
-//			using (DbConnection connection = DbContext.Current.CreateConnection())
-//			{
-//				List<EntityRelation> relations = entityRelationManager.Read().Object;
-//				EntityListResponse entitiesResponse = entityManager.ReadEntities();
-//				List<Entity> entities = entitiesResponse.Object.Entities;
-//				Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
+		//			using (DbConnection connection = DbContext.Current.CreateConnection())
+		//			{
+		//				List<EntityRelation> relations = entityRelationManager.Read().Object;
+		//				EntityListResponse entitiesResponse = entityManager.ReadEntities();
+		//				List<Entity> entities = entitiesResponse.Object.Entities;
+		//				Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
 
-//				if (entity == null)
-//				{
-//					response.Timestamp = DateTime.UtcNow;
-//					response.Success = false;
-//					response.Message = "Import failed! Entity with such name does not exist!";
-//					response.Errors.Add(new ErrorModel("entityName", entityName, "Entity with such name does not exist!"));
-//					return DoResponse(response);
-//				}
+		//				if (entity == null)
+		//				{
+		//					response.Timestamp = DateTime.UtcNow;
+		//					response.Success = false;
+		//					response.Message = "Import failed! Entity with such name does not exist!";
+		//					response.Errors.Add(new ErrorModel("entityName", entityName, "Entity with such name does not exist!"));
+		//					return DoResponse(response);
+		//				}
 
-//				DbFileRepository fs = new DbFileRepository();
-//				DbFile file = fs.Find(fileTempPath);
+		//				DbFileRepository fs = new DbFileRepository();
+		//				DbFile file = fs.Find(fileTempPath);
 
-//				if (file == null)
-//				{
-//					response.Timestamp = DateTime.UtcNow;
-//					response.Success = false;
-//					response.Message = "Import failed! File does not exist!";
-//					response.Errors.Add(new ErrorModel("fileTempPath", fileTempPath, "Import failed! File does not exist!"));
-//					return DoItemNotFoundResponse(response);
-//				}
+		//				if (file == null)
+		//				{
+		//					response.Timestamp = DateTime.UtcNow;
+		//					response.Success = false;
+		//					response.Message = "Import failed! File does not exist!";
+		//					response.Errors.Add(new ErrorModel("fileTempPath", fileTempPath, "Import failed! File does not exist!"));
+		//					return DoItemNotFoundResponse(response);
+		//				}
 
-//				byte[] fileBytes = file.GetBytes();
-//				Stream fileStream = new MemoryStream();
-//				fileStream.Write(fileBytes, 0, fileBytes.Length);
-//				TextReader reader = new StreamReader(fileStream);
+		//				byte[] fileBytes = file.GetBytes();
+		//				Stream fileStream = new MemoryStream();
+		//				fileStream.Write(fileBytes, 0, fileBytes.Length);
+		//				TextReader reader = new StreamReader(fileStream);
 
-//				CsvReader csvReader = new CsvReader(reader);
-//				csvReader.Configuration.HasHeaderRecord = false;
-//				csvReader.Configuration.IsHeaderCaseSensitive = false;
+		//				CsvReader csvReader = new CsvReader(reader);
+		//				csvReader.Configuration.HasHeaderRecord = false;
+		//				csvReader.Configuration.IsHeaderCaseSensitive = false;
 
-//				csvReader.Read();
-//				List<string> columns = csvReader.FieldHeaders.ToList();
-//				List<dynamic> fieldMetaList = new List<dynamic>();
+		//				csvReader.Read();
+		//				List<string> columns = csvReader.FieldHeaders.ToList();
+		//				List<dynamic> fieldMetaList = new List<dynamic>();
 
-//				foreach (var column in columns)
-//				{
-//					Field field;
-//					if (column.Contains(RELATION_SEPARATOR))
-//					{
-//						var relationData = column.Split(RELATION_SEPARATOR).Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
-//						if (relationData.Count > 2)
-//							throw new Exception(string.Format("The specified field name '{0}' is incorrect. Only first level relation can be specified.", column));
+		//				foreach (var column in columns)
+		//				{
+		//					Field field;
+		//					if (column.Contains(RELATION_SEPARATOR))
+		//					{
+		//						var relationData = column.Split(RELATION_SEPARATOR).Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+		//						if (relationData.Count > 2)
+		//							throw new Exception(string.Format("The specified field name '{0}' is incorrect. Only first level relation can be specified.", column));
 
-//						string relationName = relationData[0];
-//						string relationFieldName = relationData[1];
+		//						string relationName = relationData[0];
+		//						string relationFieldName = relationData[1];
 
-//						if (string.IsNullOrWhiteSpace(relationName) || relationName == "$" || relationName == "$$")
-//							throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not specified.", column));
-//						else if (!relationName.StartsWith("$"))
-//							throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not correct.", column));
-//						else
-//							relationName = relationName.Substring(1);
+		//						if (string.IsNullOrWhiteSpace(relationName) || relationName == "$" || relationName == "$$")
+		//							throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not specified.", column));
+		//						else if (!relationName.StartsWith("$"))
+		//							throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not correct.", column));
+		//						else
+		//							relationName = relationName.Substring(1);
 
-//						//check for target priority mark $$
-//						if (relationName.StartsWith("$"))
-//						{
-//							relationName = relationName.Substring(1);
-//						}
+		//						//check for target priority mark $$
+		//						if (relationName.StartsWith("$"))
+		//						{
+		//							relationName = relationName.Substring(1);
+		//						}
 
-//						if (string.IsNullOrWhiteSpace(relationFieldName))
-//							throw new Exception(string.Format("Invalid relation '{0}'. The relation field name is not specified.", column));
+		//						if (string.IsNullOrWhiteSpace(relationFieldName))
+		//							throw new Exception(string.Format("Invalid relation '{0}'. The relation field name is not specified.", column));
 
-//						var relation = relations.SingleOrDefault(x => x.Name == relationName);
-//						if (relation == null)
-//							throw new Exception(string.Format("Invalid relation '{0}'. The relation does not exist.", column));
+		//						var relation = relations.SingleOrDefault(x => x.Name == relationName);
+		//						if (relation == null)
+		//							throw new Exception(string.Format("Invalid relation '{0}'. The relation does not exist.", column));
 
-//						if (relation.TargetEntityId != entity.Id && relation.OriginEntityId != entity.Id)
-//							throw new Exception(string.Format("Invalid relation '{0}'. The relation field belongs to entity that does not relate to current entity.", column));
+		//						if (relation.TargetEntityId != entity.Id && relation.OriginEntityId != entity.Id)
+		//							throw new Exception(string.Format("Invalid relation '{0}'. The relation field belongs to entity that does not relate to current entity.", column));
 
-//						Entity relationEntity = null;
+		//						Entity relationEntity = null;
 
-//						if (relation.OriginEntityId == entity.Id)
-//						{
-//							relationEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
-//							field = relationEntity.Fields.FirstOrDefault(f => f.Name == relationFieldName);
-//						}
-//						else
-//						{
-//							relationEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
-//							field = relationEntity.Fields.FirstOrDefault(f => f.Name == relationFieldName);
-//						}
-//					}
-//					else
-//					{
-//						field = entity.Fields.FirstOrDefault(f => f.Name == column);
-//					}
+		//						if (relation.OriginEntityId == entity.Id)
+		//						{
+		//							relationEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
+		//							field = relationEntity.Fields.FirstOrDefault(f => f.Name == relationFieldName);
+		//						}
+		//						else
+		//						{
+		//							relationEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
+		//							field = relationEntity.Fields.FirstOrDefault(f => f.Name == relationFieldName);
+		//						}
+		//					}
+		//					else
+		//					{
+		//						field = entity.Fields.FirstOrDefault(f => f.Name == column);
+		//					}
 
-//					dynamic fieldMeta = new ExpandoObject();
-//					fieldMeta.ColumnName = column;
-//					fieldMeta.FieldType = field.GetFieldType();
+		//					dynamic fieldMeta = new ExpandoObject();
+		//					fieldMeta.ColumnName = column;
+		//					fieldMeta.FieldType = field.GetFieldType();
 
-//					fieldMetaList.Add(fieldMeta);
-//				}
+		//					fieldMetaList.Add(fieldMeta);
+		//				}
 
-//				connection.BeginTransaction();
+		//				connection.BeginTransaction();
 
-//				try
-//				{
-//					while (csvReader.Read())
-//					{
-//						EntityRecord newRecord = new EntityRecord();
-//						foreach (var fieldMeta in fieldMetaList)
-//						{
-//							switch ((FieldType)fieldMeta.FieldType)
-//							{
-//								case FieldType.AutoNumberField:
-//								case FieldType.CurrencyField:
-//								case FieldType.NumberField:
-//								case FieldType.PercentField:
-//									{
-//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<decimal>(fieldMeta.ColumnName);
-//									}
-//									break;
-//								case FieldType.CheckboxField:
-//									{
-//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<bool>(fieldMeta.ColumnName);
-//									}
-//									break;
-//								case FieldType.DateField:
-//								case FieldType.DateTimeField:
-//									{
-//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<DateTime>(fieldMeta.ColumnName);
-//									}
-//									break;
-//								case FieldType.MultiSelectField:
-//									{
-//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<string[]>(fieldMeta.ColumnName);
-//									}
-//									break;
-//								case FieldType.TreeSelectField:
-//									{
-//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<Guid[]>(fieldMeta.ColumnName);
-//									}
-//									break;
-//								default:
-//									{
-//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<string>(fieldMeta.ColumnName);
-//									}
-//									break;
-//							}
-//						}
-//						if (!newRecord.GetProperties().Any(x => x.Key == "id") || string.IsNullOrEmpty(newRecord["id"] as string))
-//						{
-//							newRecord["id"] = Guid.NewGuid();
-//							QueryResponse result = recMan.CreateRecord(entityName, newRecord);
-//						}
-//						else
-//						{
-//							QueryResponse result = recMan.UpdateRecord(entityName, newRecord);
-//						}
-//					}
+		//				try
+		//				{
+		//					while (csvReader.Read())
+		//					{
+		//						EntityRecord newRecord = new EntityRecord();
+		//						foreach (var fieldMeta in fieldMetaList)
+		//						{
+		//							switch ((FieldType)fieldMeta.FieldType)
+		//							{
+		//								case FieldType.AutoNumberField:
+		//								case FieldType.CurrencyField:
+		//								case FieldType.NumberField:
+		//								case FieldType.PercentField:
+		//									{
+		//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<decimal>(fieldMeta.ColumnName);
+		//									}
+		//									break;
+		//								case FieldType.CheckboxField:
+		//									{
+		//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<bool>(fieldMeta.ColumnName);
+		//									}
+		//									break;
+		//								case FieldType.DateField:
+		//								case FieldType.DateTimeField:
+		//									{
+		//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<DateTime>(fieldMeta.ColumnName);
+		//									}
+		//									break;
+		//								case FieldType.MultiSelectField:
+		//									{
+		//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<string[]>(fieldMeta.ColumnName);
+		//									}
+		//									break;
+		//								case FieldType.TreeSelectField:
+		//									{
+		//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<Guid[]>(fieldMeta.ColumnName);
+		//									}
+		//									break;
+		//								default:
+		//									{
+		//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<string>(fieldMeta.ColumnName);
+		//									}
+		//									break;
+		//							}
+		//						}
+		//						if (!newRecord.GetProperties().Any(x => x.Key == "id") || string.IsNullOrEmpty(newRecord["id"] as string))
+		//						{
+		//							newRecord["id"] = Guid.NewGuid();
+		//							QueryResponse result = recMan.CreateRecord(entityName, newRecord);
+		//						}
+		//						else
+		//						{
+		//							QueryResponse result = recMan.UpdateRecord(entityName, newRecord);
+		//						}
+		//					}
 
-//					reader.Close();
-//					fileStream.Close();
+		//					reader.Close();
+		//					fileStream.Close();
 
-//					connection.CommitTransaction();
-//				}
-//				catch (Exception e)
-//				{
-//					connection.RollbackTransaction();
+		//					connection.CommitTransaction();
+		//				}
+		//				catch (Exception e)
+		//				{
+		//					connection.RollbackTransaction();
 
-//					response.Success = false;
-//					response.Object = null;
-//					response.Timestamp = DateTime.UtcNow;
-//#if DEBUG
-//					response.Message = e.Message + e.StackTrace;
-//#else
-//					response.Message = "Import failed! An internal error occurred!";
-//#endif
-//				}
+		//					response.Success = false;
+		//					response.Object = null;
+		//					response.Timestamp = DateTime.UtcNow;
+		//#if DEBUG
+		//					response.Message = e.Message + e.StackTrace;
+		//#else
+		//					response.Message = "Import failed! An internal error occurred!";
+		//#endif
+		//				}
 
-//				return DoResponse(response);
-//			}
-//		}
+		//				return DoResponse(response);
+		//			}
+		//		}
 
 		#endregion
 
@@ -3655,6 +4017,18 @@ namespace WebVella.ERP.Web.Controllers
 			}
 		}
 
+		#endregion
+
+		#region << Plugins >>
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/plugin/list")]
+		public IActionResult GetPlugins()
+		{
+			var responseObj = new ResponseModel();
+			responseObj.Object = new PluginService().Plugins;
+			responseObj.Success = true;
+			responseObj.Timestamp = DateTime.UtcNow;
+			return DoResponse(responseObj);
+		}
 		#endregion
 
 	}

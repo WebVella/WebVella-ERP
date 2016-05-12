@@ -11,6 +11,7 @@ using WebVella.ERP.Web.Security;
 using WebVella.ERP.Database;
 using Microsoft.AspNet.Mvc.Infrastructure;
 using WebVella.ERP.Plugins;
+using WebVella.ERP.WebHooks;
 
 namespace WebVella.ERP.Web
 {
@@ -32,6 +33,7 @@ namespace WebVella.ERP.Web
 			services.AddMvc();
 			services.AddSingleton<IErpService, ErpService>();
 			services.AddSingleton<IPluginService, PluginService>();
+			services.AddSingleton<IWebHookService, WebHookService>();
 
 			services.AddSingleton<IAssemblyProvider, PluginAssemblyProvider>(provider =>
 			{
@@ -59,14 +61,16 @@ namespace WebVella.ERP.Web
 				AutoMapperConfiguration.Configure();
 				service.InitializeSystemEntities();
 
-				app.UseDebugLogMiddleware();
+				//app.UseDebugLogMiddleware();
 				app.UseSecurityMiddleware();
 				app.UseDatabaseContextMiddleware();
 
 				IPluginService pluginService = app.ApplicationServices.GetService<IPluginService>();
-				IAssemblyProvider asmProviderService = app.ApplicationServices.GetService<IAssemblyProvider>();
 				IHostingEnvironment hostingEnvironment = app.ApplicationServices.GetRequiredService<IHostingEnvironment>();
-				pluginService.Initialize(hostingEnvironment,asmProviderService);
+				pluginService.Initialize(hostingEnvironment);
+
+				IWebHookService webHookService = app.ApplicationServices.GetService<IWebHookService>();
+				webHookService.Initialize(pluginService);
 
 			}
 			finally

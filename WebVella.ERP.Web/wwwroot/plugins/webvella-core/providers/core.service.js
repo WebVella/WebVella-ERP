@@ -65,6 +65,7 @@
 		serviceInstance.createEntityView = createEntityView;
 		//Read
 		serviceInstance.getEntityView = getEntityView;
+		serviceInstance.getEntityRecordViewFromEntitiesMetaList = getEntityRecordViewFromEntitiesMetaList;
 		//Update
 		serviceInstance.updateEntityView = updateEntityView;
 		serviceInstance.patchEntityView = patchEntityView;
@@ -80,6 +81,7 @@
 		serviceInstance.convertRowColumnCountVariationKeyToArray = convertRowColumnCountVariationKeyToArray;
 		serviceInstance.getViewMenuOptions = getViewMenuOptions
 		serviceInstance.getItemsFromRegion = getItemsFromRegion;
+		serviceInstance.getSafeViewNameAndEntityName = getSafeViewNameAndEntityName;
 
 		//#endregion
 
@@ -89,18 +91,20 @@
 		serviceInstance.initList = initList;
 		serviceInstance.initListActionItem = initListActionItem;
 		//Create
-		serviceInstance.createEntityList = createEntityList;
+		serviceInstance.createEntityRecordList = createEntityRecordList;
 		//Read
-		serviceInstance.getEntityLists = getEntityLists;
-		serviceInstance.getEntityList = getEntityList;
+		serviceInstance.getEntityRecordLists = getEntityRecordLists;
+		serviceInstance.getEntityRecordList = getEntityRecordList;
+		serviceInstance.getEntityRecordListFromEntitiesMetaList = getEntityRecordListFromEntitiesMetaList;
 		//Update
-		serviceInstance.patchEntityList = patchEntityList;
-		serviceInstance.updateEntityList = updateEntityList;
+		serviceInstance.patchEntityRecordList = patchEntityRecordList;
+		serviceInstance.updateEntityRecordList = updateEntityRecordList;
 		//Delete
-		serviceInstance.deleteEntityList = deleteEntityList;
+		serviceInstance.deleteEntityRecordList = deleteEntityRecordList;
 		//Helpers
-		serviceInstance.getListMenuOptions = getListMenuOptions
-		serviceInstance.extractSupportedFilterFields = extractSupportedFilterFields
+		serviceInstance.getListMenuOptions = getListMenuOptions;
+		serviceInstance.extractSupportedFilterFields = extractSupportedFilterFields;
+		serviceInstance.getSafeListNameAndEntityName = getSafeListNameAndEntityName;
 		//#endregion
 
 		//#region << Tree >>
@@ -133,7 +137,8 @@
 		serviceInstance.updateRelation = updateRelation;
 		//Delete
 		serviceInstance.deleteRelation = deleteRelation;
-
+		//Helpers
+		serviceInstance.getRelationFromRelationsList = getRelationFromRelationsList;
 		//#endregion
 
 		//#region << Record >>
@@ -145,7 +150,9 @@
 		//Read
 		serviceInstance.getRecord = getRecord;
 		serviceInstance.getRecordByViewName = getRecordByViewName;
+		serviceInstance.getRecordByViewMeta = getRecordByViewMeta;
 		serviceInstance.getRecordsWithoutList = getRecordsWithoutList;
+		serviceInstance.getRecordsByListMeta = getRecordsByListMeta;
 		serviceInstance.getRecordsByListName = getRecordsByListName;
 		serviceInstance.getRecordsByTreeName = getRecordsByTreeName;
 		serviceInstance.getRecordsByFieldAndRegex = getRecordsByFieldAndRegex;
@@ -175,6 +182,7 @@
 		serviceInstance.initArea = initArea;
 		serviceInstance.regenerateAllAreaAttachments = regenerateAllAreaAttachments;
 		serviceInstance.getCurrentAreaFromAreaList = getCurrentAreaFromAreaList;
+		serviceInstance.getDefaultViewNameForAreaEntity = getDefaultViewNameForAreaEntity;
 		//#endregion
 
 		//#region << User >>
@@ -202,6 +210,9 @@
 		serviceInstance.currencyMetas = currencyMetas;
 		//#endregion
 
+		//#region << Plugins >>
+		serviceInstance.getPluginsList = getPluginsList;
+		//#endregion
 
 		//#endregion
 
@@ -1027,13 +1038,13 @@
 				"name": "wv_record_delete",
 				"menu": "page-title-dropdown",
 				"weight": 1,
-				"template": "<a href=\"javascript:void(0)\" confirmed-click=\"ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"Are you sure?\" \n\t\t ng-if=\"ngCtrl.userHasRecordPermissions('canDelete')\"> \n\t <i class=\"fa fa-trash go-red\"></i> Delete Record \n </a>"
+				"template": "<a href=\"javascript:void(0)\" confirmed-click=\"ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"{{'::DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}\" \n\t\t ng-if=\"::ngCtrl.userHasRecordPermissions('canDelete')\"> \n\t <i class=\"fa fa-trash go-red\"></i> Delete Record \n </a>"
 			};
 			var createListAction = {
 				"name": "wv_create_and_list",
 				"menu": "create-bottom",
 				"weight": 1,
-				"template": "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"list\")' ng-if=\"ngCtrl.createViewRegion != null\">Create & List</a>"
+				"template": "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"default\")' ng-if=\"ngCtrl.createViewRegion != null\">Create</a>"
 			};
 			var createDetailsAction = {
 				"name": "wv_create_and_details",
@@ -1060,9 +1071,10 @@
 				"label": "",
 				"default": false,
 				"system": false,
-				"weight": 1,
+				"weight": 10,
 				"cssClass": "",
 				"dynamicHtmlTemplate": null,
+				"dataSourceUrl": null,
 				"relationOptions": [],
 				"type": "general",
 				"iconName": "file-text-o",
@@ -1230,6 +1242,22 @@
 		//////////////////////
 		function getEntityView(viewName, entityName, successCallback, errorCallback) {
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/view/' + viewName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+		///////////////////////
+		function getEntityRecordViewFromEntitiesMetaList(viewName, entityName, entitiesMetaList) {
+			var itemMeta = null;
+			for (var i = 0; i < entitiesMetaList.length; i++) {
+				if (entitiesMetaList[i].name == entityName) {
+					for (var j = 0; j < entitiesMetaList[i].recordViews.length; j++) {
+						if (entitiesMetaList[i].recordViews[j].name == viewName) {
+							itemMeta = entitiesMetaList[i].recordViews[j];
+							break;
+						}
+					}
+					break;
+				}
+			}
+			return itemMeta;
 		}
 		//////////////////////
 		function createEntityView(viewObj, entityName, successCallback, errorCallback) {
@@ -1514,6 +1542,36 @@
 
 			return usedItemsArray;
 		}
+		/////////////////////
+		function getSafeViewNameAndEntityName(paramsViewName, paramsEntityName, relationsList) {
+			var data = {};
+			//if the list is in a view, than the name should be processed as the entity name could differ from the current one as well as the list name is not in fact a dataName
+			//e.g. $list$project_1_n_milestone$general	when from another entity or $list$lookup when from the current
+			data.viewName = paramsViewName;
+			data.entityName = paramsEntityName;
+			var viewDataName = paramsViewName;
+			var viewDataNameArray = viewDataName.split("$");
+			if (viewDataNameArray.length == 3) {
+				//this is a list from the current entity ($view$general), we just need to get the proper list name
+				data.viewName = viewDataNameArray[2];
+			}
+			else if (viewDataNameArray.length == 4) {
+				//this is a list from another entity ($view$project_1_n_milestone$general), we should get both list name and entity name from the relation
+				var relationName = viewDataNameArray[2];
+				var relation = getRelationFromRelationsList(relationName, relationsList);
+				if (relation.originEntityName == paramsEntityName) {
+					data.entityName = relation.targetEntityName;
+				}
+				else if (relation.targetEntityName == paramsEntityName) {
+					data.entityName = relation.originEntityName;
+				}
+				data.viewName = viewDataNameArray[3];
+			}
+
+			return data;
+		}
+
+
 		//#endregion
 
 		//#region << List >>
@@ -1536,6 +1594,7 @@
 					"query": null,
 					"sorts": null,
 					"dynamicHtmlTemplate": null,
+					"dataSourceUrl": null,
 					"columnWidthsCSV": null,
 					"relationOptions": [],
 					"serviceCode": null,
@@ -1544,25 +1603,25 @@
 							"name": "wv_create_record",
 							"menu": "page-title",
 							"weight": 1,
-							"template": "<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"ngCtrl.userHasRecordPermissions('canCreate')\"\n ng-href=\"{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-plus\"></i> Add New\n</a>"
+							"template": "<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate')\"\n ng-href=\"{{ngCtrl.getRecordCreateUrl(ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-plus\"></i> Add New\n</a>"
 						},
 						{
 							"name": "wv_import_records",
 							"menu": "page-title-dropdown",
 							"weight": 10,
-							"template": "<a ng-click=\"ngCtrl.openImportModal()\" class=\"ng-hide\" ng-show=\"ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-upload\"></i> Import CSV\n</a>"
+							"template": "<a ng-click=\"ngCtrl.openImportModal()\" class=\"ng-hide\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-upload\"></i> Import CSV\n</a>"
 						},
 						{
 							"name": "wv_export_records",
 							"menu": "page-title-dropdown",
 							"weight": 11,
-							"template": "<a ng-click=\"ngCtrl.openExportModal()\" class=\"ng-hide\" ng-show=\"ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-download\"></i> Export CSV\n</a>"
+							"template": "<a ng-click=\"ngCtrl.openExportModal()\" class=\"ng-hide\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-download\"></i> Export CSV\n</a>"
 						},
 						{
 							"name": "wv_record_details",
 							"menu": "record-row",
 							"weight": 1,
-							"template": "<a class=\"btn btn-default btn-outline\" ng-href=\"{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-eye\"></i>\n</a>"
+							"template": "<a class=\"btn btn-default btn-outline\" ng-href=\"{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-eye\"></i>\n</a>"
 						}
 					],
 				}
@@ -1616,44 +1675,65 @@
 			return actionItem;
 		}
 		///////////////////////
-		function getEntityLists(entityName, successCallback, errorCallback) {
+		function getEntityRecordLists(entityName, successCallback, errorCallback) {
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/list' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
-		function getEntityList(listName, entityName, successCallback, errorCallback) {
+		function getEntityRecordList(listName, entityName, successCallback, errorCallback) {
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/list/' + listName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
+		///////////////////////
+		function getEntityRecordListFromEntitiesMetaList(listName, entityName, entitiesMetaList) {
+			var itemMeta = null;
+			for (var i = 0; i < entitiesMetaList.length; i++) {
+				if (entitiesMetaList[i].name == entityName) {
+					for (var j = 0; j < entitiesMetaList[i].recordLists.length; j++) {
+						if (entitiesMetaList[i].recordLists[j].name == listName) {
+							itemMeta = entitiesMetaList[i].recordLists[j];
+							break;
+						}
+					}
+					break;
+				}
+			}
+			return itemMeta;
+		}
 		//////////////////////
-		function createEntityList(submitObj, entityName, successCallback, errorCallback) {
+		function createEntityRecordList(submitObj, entityName, successCallback, errorCallback) {
 			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/list", data: submitObj }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		//////////////////////
-		function patchEntityList(submitObj, listName, entityName, successCallback, errorCallback) {
+		function patchEntityRecordList(submitObj, listName, entityName, successCallback, errorCallback) {
 			$http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/list/" + listName, data: submitObj }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		//////////////////////
-		function updateEntityList(listObj, entityName, successCallback, errorCallback) {
+		function updateEntityRecordList(listObj, entityName, successCallback, errorCallback) {
 			$http({ method: 'PUT', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/list/" + listObj.name, data: listObj }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
-		function deleteEntityList(listName, entityName, successCallback, errorCallback) {
+		function deleteEntityRecordList(listName, entityName, successCallback, errorCallback) {
 			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/list/' + listName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		/////////////////////
 		function extractSupportedFilterFields(recordList) {
+			var result = {};
+			result.fieldNames = [];
+			result.queryTypes = [];
 			if (recordList.meta.query == null || recordList.meta.query.length == 0) {
-				return [];
+				return result;
 			}
-			var supportedFields = extractFieldsFromQuery(recordList.meta.query, []);
+			var supportedFields = extractFieldsFromQuery(recordList.meta.query, result);
 			return supportedFields;
 		}
+		/////////////////////
 		function extractFieldsFromQuery(query, result) {
 			if (query.fieldValue != null && query.fieldValue.trim().startsWith("{")) {
 				var queryObject = angular.fromJson(query.fieldValue);
 				if (queryObject.name == "url_query" && queryObject.option) {
 					//option should equal fieldName in order to preset field to work
 					if (queryObject.option == query.fieldName) {
-						result.push(query.fieldName);
+						result.fieldNames.push(query.fieldName);
+						result.queryTypes.push(query.queryType);
 					}
 				}
 			}
@@ -1664,6 +1744,34 @@
 			}
 
 			return result;
+		}
+		/////////////////////
+		function getSafeListNameAndEntityName(paramsListName, paramsEntityName, relationsList) {
+			var data = {};
+			//if the list is in a view, than the name should be processed as the entity name could differ from the current one as well as the list name is not in fact a dataName
+			//e.g. $list$project_1_n_milestone$general	when from another entity or $list$lookup when from the current
+			data.listName = paramsListName;
+			data.entityName = paramsEntityName;
+			var listDataName = paramsListName;
+			var listDataNameArray = listDataName.split("$");
+			if (listDataNameArray.length == 3) {
+				//this is a list from the current entity ($list$lookup), we just need to get the proper list name
+				data.listName = listDataNameArray[2];
+			}
+			else if (listDataNameArray.length == 4) {
+				//this is a list from another entity ($list$project_1_n_milestone$general), we should get both list name and entity name from the relation
+				var relationName = listDataNameArray[2];
+				var relation = getRelationFromRelationsList(relationName, relationsList);
+				if (relation.originEntityName == paramsEntityName) {
+					data.entityName = relation.targetEntityName;
+				}
+				else if (relation.targetEntityName == paramsEntityName) {
+					data.entityName = relation.originEntityName;
+				}
+				data.listName = listDataNameArray[3];
+			}
+
+			return data;
 		}
 
 		//#endregion
@@ -1764,6 +1872,17 @@
 		function deleteRelation(relationId, successCallback, errorCallback) {
 			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/relation/' + relationId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
+		///////////////////////
+		function getRelationFromRelationsList(relationName, relationList) {
+			var itemMeta = null;
+			for (var i = 0; i < relationList.length; i++) {
+				if (relationList[i].name == relationName) {
+					itemMeta = relationList[i];
+					break;
+				}
+			}
+			return itemMeta;
+		}
 
 		//#endregion
 
@@ -1791,14 +1910,35 @@
 		function getRecordByViewName(recordId, viewName, entityName, successCallback, errorCallback) {
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewName + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
+		///////////////////////
+		function getRecordByViewMeta(recordId, viewMeta, entityName, stateParams, successCallback, errorCallback) {
+			if (viewMeta.dataSourceUrl == null || viewMeta.dataSourceUrl == '') {
+				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewMeta.name + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
+			else {
+				var extraParamQueryString = "";
+				extraParamQueryString = "?";
+				extraParamQueryString += "entityName=" + entityName + "&";
+				extraParamQueryString += "listName=" + viewMeta.name + "&";
+				extraParamQueryString += "recordId=" + recordId;
+				if (stateParams != null) {
+					if (!isEmpty(stateParams)) {
+						for (var param in stateParams) {
+							if (extraParamQueryString.indexOf(param) == -1) {
+								extraParamQueryString += param + "=" + stateParams[param] + "&";
+							}
+						}
+					}
+				}
+				$http({ method: 'GET', url: viewMeta.dataSourceUrl + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
+		}
 		/////////////////////
-		function getRecordsWithoutList(recordIds, fieldNames, entityName, successCallback, errorCallback) {
-			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list?ids=' + recordIds + "&fields=" + fieldNames }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		function getRecordsWithoutList(recordIds, fieldNames, limit, entityName, successCallback, errorCallback) {
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list?ids=' + recordIds + "&fields=" + fieldNames + "&limit=" + limit }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
 		function getRecordsByListName(listName, entityName, page, extraParams, successCallback, errorCallback) {
-			//submit listName = "null" to get unconfigured records list
-			//submit page = "null" to get all records
 			var extraParamQueryString = "";
 			if (extraParams != null) {
 				if (!isEmpty(extraParams)) {
@@ -1811,6 +1951,53 @@
 				}
 			}
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + page + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+		///////////////////////
+		function getRecordsByListMeta(listMeta, entityName, page, stateParams, extraParams, successCallback, errorCallback) {
+			if (listMeta.dataSourceUrl == null || listMeta.dataSourceUrl == '') {
+				var extraParamQueryString = "";
+				if (extraParams != null) {
+					if (!isEmpty(extraParams)) {
+						extraParamQueryString = "?";
+						for (var param in extraParams) {
+							if (extraParamQueryString.indexOf(param) == -1) {
+								extraParamQueryString += param + "=" + extraParams[param] + "&";
+							}
+						}
+						//remove the last &
+						extraParamQueryString = extraParamQueryString.substring(0, extraParamQueryString.length - 1);
+					}
+				}
+				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listMeta.name + '/' + page + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
+			else {
+				var extraParamQueryString = "";
+				extraParamQueryString = "?";
+				extraParamQueryString += "entityName=" + entityName + "&";
+				extraParamQueryString += "listName=" + listMeta.name + "&";
+				extraParamQueryString += "page=" + page + "&";
+				if (extraParams != null) {
+					if (!isEmpty(extraParams)) {
+						for (var param in extraParams) {
+							if (extraParamQueryString.indexOf(param) == -1) {
+								extraParamQueryString += param + "=" + extraParams[param] + "&";
+							}
+						}
+					}
+				}
+				if (stateParams != null) {
+					if (!isEmpty(stateParams)) {
+						for (var param in stateParams) {
+							if (extraParamQueryString.indexOf(param) == -1) {
+								extraParamQueryString += param + "=" + stateParams[param] + "&";
+							}
+						}
+					}
+				}
+				//remove the last &
+				extraParamQueryString = extraParamQueryString.substring(0, extraParamQueryString.length - 1);
+				$http({ method: 'GET', url: listMeta.dataSourceUrl + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
 		}
 		///////////////////////
 		function getRecordsByTreeName(treeName, entityName, successCallback, errorCallback) {
@@ -1875,7 +2062,9 @@
 		///////////////////////
 		function registerHookListener(eventHookName, currentScope, executeOnHookFunction) {
 			if (executeOnHookFunction === undefined || typeof (executeOnHookFunction) != "function") {
-				alert("The executeOnHookFunction argument is not a function or missing ");
+				$translate(['EVENT_HOOKS_REGISTER_ERROR']).then(function (translations) {
+					alert(translations.EVENT_HOOKS_REGISTER_ERROR);
+				});
 				return;
 			}
 			//When registering listener with $on, it returns automatically a function that can remove this listener. We will use it later
@@ -1916,10 +2105,12 @@
 			//Rebind the form with the data returned from the server
 			formObject = response.object;
 			//Notify with a toast about the error and show the server response.message
-			ngToast.create({
-				className: 'error',
-				content: '<span class="go-red">Error:</span> ' + response.message,
-				timeout: 7000
+			$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'error',
+					content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+					timeout: 7000
+				});
 			});
 			//Scroll top
 			// set the location.hash to the id of
@@ -1976,7 +2167,7 @@
 			function rasGetEntityMetaListSuccessCallback(data, status) {
 				entities = data.object.entities;
 				//Get all areas
-				getRecordsWithoutList(null,null, "area", rasGetAreasListSuccessCallback, rasErrorCallback);
+				getRecordsWithoutList(null, null, null, "area", rasGetAreasListSuccessCallback, rasErrorCallback);
 			}
 
 			function rasGetAreasListSuccessCallback(data, status) {
@@ -2232,6 +2423,45 @@
 			currentArea.attachments.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 			return currentArea;
 		}
+
+		////////////////////////
+		function getDefaultViewNameForAreaEntity(currentArea, currentEntity) {
+			var targetViewName = null;
+			if (!currentArea || !currentEntity) {
+				return null;
+			}
+			currentArea.attachments = angular.fromJson(currentArea.attachments);
+			for (var i = 0; i < currentArea.attachments.length; i++) {
+				if (currentArea.attachments[i].name == currentEntity.name) {
+					targetViewName = currentArea.attachments[i].view.name;
+					break;
+				}
+			}
+			if (targetViewName != null) {
+				return targetViewName;
+			}
+			else {
+				currentEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+				for (var i = 0; i < currentEntity.recordViews.length; i++) {
+					if (currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "general") {
+						targetViewName = currentEntity.recordViews[i].name;
+						break;
+					}
+				}
+				if (targetViewName != null) {
+					return targetViewName;
+				}
+				else {
+					for (var i = 0; i < currentEntity.recordViews.length; i++) {
+						if (currentEntity.recordViews[i].type == "general") {
+							targetViewName = currentEntity.recordViews[i].name;
+							break;
+						}
+					}
+					return targetViewName;
+				}
+			}
+		}
 		//#endregion
 
 		//#region << User >>
@@ -2312,17 +2542,17 @@
 		function userHasRecordPermissions(entityMeta, permissionsCsv) {
 			var requestedPermissionsArray = permissionsCsv.split(',');
 			var permissionChecks = {};
-			var createRolesArray = fastCopy(entityMeta.recordPermissions.canCreate);
+			var createRolesArray = entityMeta.recordPermissions.canCreate;
 			if (getCurrentUser() == null) {
 				return false;
 			}
 
-			var userRoles = fastCopy(getCurrentUser().roles);
+			var userRoles = getCurrentUser().roles;
 
 			for (var i = 0; i < requestedPermissionsArray.length; i++) {
 				var permissionName = requestedPermissionsArray[i];
 				permissionChecks[permissionName] = false;
-				var entityAllowedRoles = fastCopy(entityMeta.recordPermissions[permissionName]);
+				var entityAllowedRoles = entityMeta.recordPermissions[permissionName];
 				for (var j = 0; j < entityAllowedRoles.length; j++) {
 					var roleId = entityAllowedRoles[j];
 					if (userRoles.indexOf(roleId) > -1) {
@@ -2347,25 +2577,31 @@
 
 		//#region << Default action services >>
 		function listAction_getRecordCreateUrl(ngCtrl) {
+
 			//#region << Init >>
-			var siteAreas = fastCopy(ngCtrl.areas);
-			var entityList = fastCopy(ngCtrl.entityList);
-			var currentEntity = fastCopy(ngCtrl.entity);
-			var currentAreaName = fastCopy(ngCtrl.stateParams.areaName);
-			var currentEntityName = fastCopy(ngCtrl.stateParams.entityName);
-			var currentListName = fastCopy(ngCtrl.stateParams.listName);
+
+			var siteAreas = ngCtrl.areas;
+			var entityList = ngCtrl.entityList;
+			var currentEntity = ngCtrl.entity;
+			var currentParent = ngCtrl.parent;
+			var currentAreaName = ngCtrl.stateParams.areaName;
+			var currentEntityName = ngCtrl.stateParams.entityName;
+			var currentListDataName = ngCtrl.stateParams.listName;
+			var currentListName = ngCtrl.stateParams.listName;
 			var currentRelationName = null; // when the list is listFromRelation
+			var currentRelationDirection = "null"; // when the list is listFromRelation
 			var targetEntityName = null;
 			var targetEntity = null;
 			var currentArea = null;
 			var targetCreateName = null;
 			var targetCreateExists = false;
-			//#endregion		
+			//#endregion	
+			
 
 			//#region << Check if listFromRelation, get the relationName if so >>
 			//Example listFromRelation name: "$list$project_1_n_ticket$general"
 			if (currentListName.indexOf('$') > -1 && currentListName.startsWith("$list")) {
-				var dataNameArray = fastCopy(currentListName).split('$');
+				var dataNameArray = currentListName.split('$');
 				if (dataNameArray.length == 4) {
 					//this is a proper listFromRelation format
 					currentRelationName = dataNameArray[2];
@@ -2402,6 +2638,19 @@
 			if (currentRelationName != null && targetEntity == null) {
 				console.log("cannot find the target entity");
 				return null;
+			}
+
+			//#endregion
+
+
+			//#region << Get relation direction if relation exists >>
+			if(currentRelationName != null && currentParent.meta != null){
+				for (var i = 0; i < currentParent.meta.sidebar.items.length; i++) {
+					if(currentParent.meta.sidebar.items[i].dataName == currentListDataName){
+						currentRelationDirection = currentParent.meta.sidebar.items[i].relationDirection;						
+						break;
+					}
+				}
 			}
 
 			//#endregion
@@ -2470,7 +2719,8 @@
 				}
 					//Case 2: - this is a list with relation
 				else {
-					return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+					return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" +
+						currentRelationDirection + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
 				}
 
 			}
@@ -2504,7 +2754,8 @@
 					}
 						//Case 2: - this is a list with relation
 					else {
-						return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+						return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + 
+						currentRelationDirection + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
 					}
 
 				}
@@ -2533,7 +2784,8 @@
 						}
 							//Case 2: - this is a list with relation
 						else {
-							return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+							return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + 
+							currentRelationDirection + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
 						}
 					}
 					else {
@@ -2549,13 +2801,13 @@
 		function listAction_getRecordDetailsUrl(record, ngCtrl) {
 
 			//#region << Init >>
-			var currentRecord = fastCopy(record);
-			var siteAreas = fastCopy(ngCtrl.areas);
-			var entityList = fastCopy(ngCtrl.entityList);
-			var currentEntity = fastCopy(ngCtrl.entity);
-			var currentAreaName = fastCopy(ngCtrl.stateParams.areaName);
-			var currentEntityName = fastCopy(ngCtrl.stateParams.entityName);
-			var currentListName = fastCopy(ngCtrl.stateParams.listName);
+			var currentRecord = record;
+			var siteAreas = ngCtrl.areas;
+			var entityList = ngCtrl.entityList;
+			var currentEntity = ngCtrl.entity;
+			var currentAreaName = ngCtrl.stateParams.areaName;
+			var currentEntityName = ngCtrl.stateParams.entityName;
+			var currentListName = ngCtrl.stateParams.listName;
 			var currentRelationName = null; // when the list is listFromRelation
 			var targetEntityName = null;
 			var targetEntity = null
@@ -2567,7 +2819,7 @@
 			//#region << Check if viewFromRelation, get the relationName if so >>
 			//Example listFromRelation name: "$list$project_1_n_ticket$general"
 			if (currentListName.indexOf('$') > -1 && currentListName.startsWith("$list")) {
-				var dataNameArray = fastCopy(currentListName).split('$');
+				var dataNameArray = currentListName.split('$');
 				if (dataNameArray.length == 4) {
 					//this is a proper listFromRelation format
 					currentRelationName = dataNameArray[2];
@@ -2715,13 +2967,13 @@
 							}
 						}
 					}
-					else{
+					else {
 						for (var i = 0; i < targetEntity.recordViews.length; i++) {
 							if (targetEntity.recordViews[i].default && targetEntity.recordViews[i].type == "hidden") {
 								targetViewName = targetEntity.recordViews[i].name;
 								break;
 							}
-						}					
+						}
 					}
 					if (targetViewName != null) {
 						//Case 1: - list is not from relation
@@ -2744,111 +2996,115 @@
 
 		///////////////////////
 		function viewAction_fieldUpdate(item, data, recordId, ngCtrl) {
-			var defer = $q.defer();
 			var patchObject = {};
 			var validation = {
 				success: true,
 				message: "successful validation"
 			};
-			if (data != null) {
-				data = data.toString().trim();
-				switch (item.meta.fieldType) {
 
+			data = data.toString().trim();
+			switch (item.meta.fieldType) {
+
+				//Auto increment number
+				case 1:
+					//Readonly
+					break;
+					//Checkbox
+				case 2:
+					data = (data === "true"); // convert string to boolean
+					break;
 					//Auto increment number
-					case 1:
-						//Readonly
-						break;
-						//Checkbox
-					case 2:
-						data = (data === "true"); // convert string to boolean
-						break;
-						//Auto increment number
-					case 3: //Currency
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						validation = checkDecimal(data);
-						if (!validation.success) {
-							return validation.message;
-						}
-						if (decimalPlaces(data) > item.meta.currency.decimalDigits) {
-							return "Decimal places should be " + item.meta.currency.decimalDigits + " or less";
-						}
-						break;
-					case 4: //Date
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						//Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
-						data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toISOString();
+				case 3: //Currency
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					validation = checkDecimal(data);
+					if (!validation.success) {
+						return validation.message;
+					}
+					if (decimalPlaces(data) > item.meta.currency.decimalDigits) {
+						return "Decimal places should be " + item.meta.currency.decimalDigits + " or less";
+					}
+					break;
+				case 4: //Date
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					//Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
+					data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toISOString();
 
-						break;
-					case 5: //Datetime
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('minute').utc().toISOString();
-						break;
-					case 6: //Email
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						validation = checkEmail(data);
-						if (!validation.success) {
-							return validation.message;
-						}
-						break;
-					case 11: // Multiselect
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						//We need to convert data which is "2,3" comma separated string to string array
-						if (data !== '[object Array]') {
-							data = data.split(',');
-						}
-						break;
-						//Number
-					case 12:
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						validation = checkDecimal(data);
-						if (!validation.success) {
-							return validation.message;
-						}
-						if (!data) {
-							data = null;
-						}
-						break;
-						//Percent
-					case 14:
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						validation = checkPercent(data);
-						if (!validation.success) {
-							return validation.message;
-						}
-						if (!data) {
-							data = null;
-						}
-						break;
-					case 15: //Phone
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						validation = checkPhone(data);
-						if (!validation.success) {
-							return validation.message;
-						}
-						break;
-					case 17: // Dropdown
-						if (!data && item.meta.required) {
-							return "This is a required field";
-						}
-						break;
-				}
+					break;
+				case 5: //Datetime
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('minute').utc().toISOString();
+					break;
+				case 6: //Email
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					validation = checkEmail(data);
+					if (!validation.success) {
+						return validation.message;
+					}
+					break;
+				case 11: // Multiselect
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					//We need to convert data which is "2,3" comma separated string to string array
+					if (data !== '[object Array]') {
+						data = data.split(',');
+					}
+					break;
+					//Number
+				case 12:
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					validation = checkDecimal(data);
+					if (!validation.success) {
+						return validation.message;
+					}
+					if (!data) {
+						data = null;
+					}
+					break;
+					//Percent
+				case 14:
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					validation = checkPercent(data);
+					if (!validation.success) {
+						return validation.message;
+					}
+					if (!data) {
+						data = null;
+					}
+					break;
+				case 15: //Phone
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					validation = checkPhone(data);
+					if (!validation.success) {
+						return validation.message;
+					}
+					break;
+				case 17: // Dropdown
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					break;
+				default: // Dropdown
+					if (!data && item.meta.required) {
+						return "This is a required field";
+					}
+					break;
 			}
+
 			patchObject[item.meta.name] = data;
 
 			function patchSuccessCallback(response) {
@@ -2870,27 +3126,19 @@
 						}
 						break;
 				}
-
-				defer.resolve();
+				return true;
 			}
 
 			function patchFailedCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message,
-					timeout: 7000
-				});
-				defer.resolve("validation error");
+				return "validation error";
 			}
 
 			if (!item.entityName) {
-				alert("item.entityName is missing, fixed this");
-				return defer.reject("error");
+				return "item.entityName is missing, fixed this";
 			}
 			else {
 				patchRecord(recordId, item.entityName, patchObject, patchSuccessCallback, patchFailedCallback);
 			}
-			return defer.promise;
 		}
 
 		function viewAction_deleteRecord(ngCtrl) {
@@ -4148,6 +4396,14 @@
 			];
 			return meta;
 		}
+		//#endregion
+
+		//#region << Plugins >>
+		///////////////////////
+		function getPluginsList(successCallback, errorCallback) {
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'plugin/list/' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
 		//#endregion
 
 		//#endregion

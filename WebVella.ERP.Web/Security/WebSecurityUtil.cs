@@ -168,6 +168,9 @@ namespace WebVella.ERP.Web.Security
 
         internal static void RemoveIdentityFromCache(Guid userId)
         {
+			if (userId == null)
+				return;
+
             cache.Remove(userId.ToString());
         }
 

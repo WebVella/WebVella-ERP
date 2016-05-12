@@ -5887,8 +5887,8 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "page-title";
 					actionItem.Weight = 1;
 					actionItem.Template = "" +
-@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-    ng-href=""{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}"">
+@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+    ng-href=""{{::ngCtrl.getRecordCreateUrl()}}"">
 	<i class=""fa fa-fw fa-plus""></i> Add New
 </a>";
 					break;
@@ -5897,7 +5897,7 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 10;
 					actionItem.Template = "" +
-@"<a ng-click=""ngCtrl.openImportModal()"" class=""ng-hide"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate,canUpdate')"">
+@"<a ng-click=""ngCtrl.openImportModal()"" class=""ng-hide"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')"">
 	<i class=""fa fa-fw fa-upload""></i> Import CSV
 </a>";
 					break;
@@ -5906,7 +5906,7 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 11;
 					actionItem.Template = "" +
-@"<a ng-click=""ngCtrl.openExportModal()"" class=""ng-hide"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate,canUpdate')"">
+@"<a ng-click=""ngCtrl.openExportModal()"" class=""ng-hide"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')"">
 	<i class=""fa fa-fw fa-download""></i> Export CSV
 </a>";
 					break;
@@ -5915,7 +5915,7 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "record-row";
 					actionItem.Weight = 1;
 					actionItem.Template = "" +
-@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}"">
+@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record)}}"">
     <i class=""fa fa-fw fa-eye""></i>
 </a>";
 					break;
@@ -5941,6 +5941,8 @@ namespace WebVella.ERP.Api
 			create.Weight = 10;
 			create.VisibleColumnsCount = 5;
 			create.ServiceCode = null;
+			create.DynamicHtmlTemplate = null;
+			create.DataSourceUrl = null;
 			create.ActionItems = new List<ActionItem>();
 			create.ActionItems.Add(GenerateListActionItem("wv_create_record"));
 			create.ActionItems.Add(GenerateListActionItem("wv_import_records"));
@@ -5960,6 +5962,8 @@ namespace WebVella.ERP.Api
 			lookup.Weight = 10;
 			lookup.VisibleColumnsCount = 5;
 			lookup.ServiceCode = null;
+			lookup.DynamicHtmlTemplate = null;
+			lookup.DataSourceUrl = null;
 			lookup.ActionItems = new List<ActionItem>();
 			lookup.ActionItems.Add(GenerateListActionItem("wv_create_record"));
 			lookup.ActionItems.Add(GenerateListActionItem("wv_import_records"));
@@ -5980,8 +5984,8 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 1;
 					actionItem.Template = "" +
-@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.actionService.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
-		ng-if=""ngCtrl.userHasRecordPermissions('canDelete')"">
+@"<a href=""javascript:void(0)"" confirmed-click=""::ngCtrl.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
+		ng-if=""::ngCtrl.userHasRecordPermissions('canDelete')"">
 	<i class=""fa fa-trash go-red""></i> Delete Record
 </a>";
 					break;
@@ -5990,14 +5994,14 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "create-bottom";
 					actionItem.Weight = 1;
 					actionItem.Template = "" +
-@"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""list"")' ng-if=""ngCtrl.createViewRegion != null"">Create & List</a>";
+@"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""default"")' ng-if=""::ngCtrl.createViewRegion != null"">Create</a>";
 					break;
 				case "wv_create_and_details":
 					actionItem.Name = "wv_create_and_details";
 					actionItem.Menu = "create-bottom";
 					actionItem.Weight = 2;
 					actionItem.Template = "" +
-@"<a class=""btn btn-default btn-outline"" ng-click='ngCtrl.create(""details"")' ng-if=""ngCtrl.createViewRegion != null"">Create & Details</a>";
+@"<a class=""btn btn-default btn-outline"" ng-click='ngCtrl.create(""details"")' ng-if=""::ngCtrl.createViewRegion != null"">Create & Details</a>";
 					break;
 				case "wv_create_cancel":
 					actionItem.Name = "wv_create_cancel";
@@ -6040,6 +6044,8 @@ namespace WebVella.ERP.Api
 			create.Regions = new List<RecordViewRegion>();
 			create.Regions.Add(headerRegion);
 			create.ServiceCode = null;
+			create.DynamicHtmlTemplate = null;
+			create.DataSourceUrl = null;
 			create.ActionItems = new List<ActionItem>();
 			create.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
 			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
@@ -6059,6 +6065,8 @@ namespace WebVella.ERP.Api
 			quickCreate.Regions = new List<RecordViewRegion>();
 			quickCreate.Regions.Add(headerRegion);
 			quickCreate.ServiceCode = null;
+			quickCreate.DynamicHtmlTemplate = null;
+			quickCreate.DataSourceUrl = null;
 			quickCreate.ActionItems = new List<ActionItem>();
 			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
 			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
@@ -6078,6 +6086,8 @@ namespace WebVella.ERP.Api
 			quickView.Regions = new List<RecordViewRegion>();
 			quickView.Regions.Add(headerRegion);
 			quickView.ServiceCode = null;
+			quickView.DynamicHtmlTemplate = null;
+			quickView.DataSourceUrl = null;
 			quickView.ActionItems = new List<ActionItem>();
 			quickView.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
 			quickView.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
@@ -6095,6 +6105,8 @@ namespace WebVella.ERP.Api
 			general.Regions = new List<RecordViewRegion>();
 			general.Regions.Add(headerRegion);
 			general.ServiceCode = null;
+			general.DynamicHtmlTemplate = null;
+			general.DataSourceUrl = null;
 			general.ActionItems = new List<ActionItem>();
 			general.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
 			general.ActionItems.Add(GenerateViewActionItem("wv_back_button"));

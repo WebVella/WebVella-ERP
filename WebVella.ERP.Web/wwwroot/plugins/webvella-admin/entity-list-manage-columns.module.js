@@ -63,7 +63,7 @@
 		function successCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -74,7 +74,7 @@
 		function errorCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -98,7 +98,7 @@
 		function successCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -109,7 +109,7 @@
 		function errorCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -117,7 +117,7 @@
 			}
 		}
 
-		webvellaCoreService.getEntityList($stateParams.listName, $stateParams.entityName, successCallback, errorCallback);
+		webvellaCoreService.getEntityRecordList($stateParams.listName, $stateParams.entityName, successCallback, errorCallback);
 		return defer.promise;
 	}
 
@@ -132,7 +132,7 @@
 		function successCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -143,7 +143,7 @@
 		function errorCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -213,8 +213,8 @@
 		//#endregion
 
 		//#region << Initialize the list >>
-		ngCtrl.list = fastCopy(resolvedCurrentEntityList);
-		ngCtrl.relationsList = fastCopy(resolvedEntityRelationsList);
+		ngCtrl.list = resolvedCurrentEntityList;
+		ngCtrl.relationsList = resolvedEntityRelationsList;
 
 		ngCtrl.defaultFieldName = null;
 		function calculateDefaultSearchFieldName() {
@@ -263,7 +263,7 @@
 			var postObj = {};
 			postObj.columns = ngCtrl.list.columns;
 			calculateDefaultSearchFieldName();
-			webvellaCoreService.patchEntityList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
+			webvellaCoreService.patchEntityRecordList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
 		}
 
 		//#endregion
@@ -282,7 +282,7 @@
 		}
 		ngCtrl.generateAlreadyUsed();
 		ngCtrl.fullLibrary = {};
-		ngCtrl.fullLibrary.items = fastCopy(resolvedViewLibrary);
+		ngCtrl.fullLibrary.items = resolvedViewLibrary;
 		//Fields list eligable to be options in the sort and query dropdowns
 		ngCtrl.onlyFieldsLibrary = {};
 		ngCtrl.onlyFieldsLibrary.items = [];
@@ -469,7 +469,7 @@
 			ngCtrl.list.relationOptions = [];
 
 			for (var i = 0; i < ngCtrl.library.relations.length; i++) {
-				var relation = fastCopy(ngCtrl.library.relations[i]);
+				var relation = ngCtrl.library.relations[i];
 				delete relation.addedToLibrary;
 				delete relation.sameOriginTargetEntity;
 				ngCtrl.list.relationOptions.push(relation);
@@ -505,7 +505,7 @@
 				}
 			}
 
-			webvellaCoreService.updateEntityList(ngCtrl.list, ngCtrl.entity.name, successCallback, errorCallback);
+			webvellaCoreService.updateEntityRecordList(ngCtrl.list, ngCtrl.entity.name, successCallback, errorCallback);
 		}
 
 		ngCtrl.toggleRelationToLibrary = function (relation) {

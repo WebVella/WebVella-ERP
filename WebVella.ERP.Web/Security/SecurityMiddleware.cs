@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
 using WebVella.ERP.Database;
+using System.Diagnostics;
 
 namespace WebVella.ERP.Web.Security
 {

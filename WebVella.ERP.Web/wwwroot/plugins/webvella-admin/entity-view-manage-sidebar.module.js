@@ -61,7 +61,7 @@
 		function successCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -72,7 +72,7 @@
 		function errorCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -96,7 +96,7 @@
 		function successCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -120,7 +120,7 @@
 		function errorCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -143,7 +143,7 @@
 		function successCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -154,7 +154,7 @@
 		function errorCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -179,7 +179,7 @@
 
 
 		var ngCtrl = this;
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.entity = resolvedCurrentEntityMeta;
 		//#region << Update page title & hide the side menu >>
 		$translate(['RECORD_VIEW_MANAGE_PAGE_TITLE', 'ENTITIES']).then(function (translations) {
 			ngCtrl.pageTitle = translations.RECORD_VIEW_MANAGE_PAGE_TITLE + " | " + pageTitle;
@@ -209,9 +209,9 @@
 			}
 		}
 		ngCtrl.generateAlreadyUsed();
-		ngCtrl.relationsList = fastCopy(resolvedEntityRelationsList);
+		ngCtrl.relationsList = resolvedEntityRelationsList;
 		ngCtrl.fullLibrary = {};
-		ngCtrl.fullLibrary.items = fastCopy(resolvedViewLibrary);
+		ngCtrl.fullLibrary.items = resolvedViewLibrary;
 		ngCtrl.fullLibrary.items = ngCtrl.fullLibrary.items.sort(function (a, b) {
 			if (a.type < b.type) return -1;
 			if (a.type > b.type) return 1;
@@ -364,7 +364,7 @@
 						});
 					});
 					for (var i = 0; i < response.object.regions.length; i++) {
-						if (response.object.regions[i].name === "default") {
+						if (response.object.regions[i].name === "header") {
 							ngCtrl.viewContentRegion = response.object.regions[i];
 						}
 					}

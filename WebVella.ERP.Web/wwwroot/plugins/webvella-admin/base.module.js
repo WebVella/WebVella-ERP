@@ -37,7 +37,8 @@
 					return "Webvella ERP";
 				},
 				resolvedCurrentUser: resolveCurrentUser,
-				checkedAccessPermission: checkAccessPermission
+				checkedAccessPermission: checkAccessPermission,
+				resolvedEntityList: resolveEntityList
 			},
 			'data': {
 				//Custom data is inherited by the parent state 'webvella-core', but it can be overwritten if necessary. Available for all child states in this plugin
@@ -63,7 +64,7 @@
 						"parentName": "",
 						"folder": translations.ADMINISTRATION_ABBR,
 						"nodes": [],
-						"weight": 100.0,
+						"weight": 1000,
 						"color": "red",
 						"iconName": "cogs",
 						"roles": "[\"bdc56420-caf0-4030-8a0e-d264938e0cda\"]"
@@ -89,32 +90,33 @@
 
 	// Resolve ///////////////////////////////////
 	checkAccessPermission.$inject = ['$q', '$log', 'resolvedCurrentUser', 'ngToast', '$translate'];
-	
+
 	function checkAccessPermission($q, $log, resolvedCurrentUser, ngToast, $translate) {
 		var defer = $q.defer();
-		$translate(['NO_ACCESS_TO_AREA']).then(function (translations) {
-			var accessPermission = false;
-			for (var i = 0; i < resolvedCurrentUser.roles.length; i++) {
-				if (resolvedCurrentUser.roles[i] == "bdc56420-caf0-4030-8a0e-d264938e0cda") {
-					accessPermission = true;
-				}
-			}
 
-			if (accessPermission) {
-				defer.resolve();
+		var accessPermission = false;
+		for (var i = 0; i < resolvedCurrentUser.roles.length; i++) {
+			if (resolvedCurrentUser.roles[i] == "bdc56420-caf0-4030-8a0e-d264938e0cda") {
+				accessPermission = true;
 			}
-			else {
+		}
 
+		if (accessPermission) {
+			defer.resolve();
+		}
+		else {
+			$translate(['NO_ACCESS_TO_AREA']).then(function (translations) {
 				ngToast.create({
 					className: 'error',
 					content: translations.NO_ACCESS_TO_AREA,
-				timeout: 7000
+					timeout: 7000
+
+				});
 			});
 			defer.reject("No access");
 		}
 		return defer.promise;
-	});
-}
+	}
 
 	resolveCurrentUser.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams', '$timeout'];
 
@@ -134,6 +136,18 @@
 		return defer.promise;
 	}
 
+	resolveEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
+	function resolveEntityList($q, $log, webvellaCoreService, $state, $stateParams) {
+		var defer = $q.defer();
+		function successCallback(response) {
+			defer.resolve(response.object.entities);
+		}
+		function errorCallback(response) {
+			defer.reject(response.message);
+		}
+		webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
+		return defer.promise;
+	}
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$log', '$scope', '$state', '$rootScope', '$stateParams', 'webvellaCoreService', 'webvellaAdminSidebarFactory', '$timeout', '$translate'];

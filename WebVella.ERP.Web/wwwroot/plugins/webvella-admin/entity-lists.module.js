@@ -61,7 +61,7 @@
 		function successCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -72,7 +72,7 @@
 		function errorCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -97,7 +97,7 @@
 		function successCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -108,7 +108,7 @@
 		function errorCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -116,7 +116,7 @@
 			}
 		}
 
-		webvellaCoreService.getEntityLists($stateParams.entityName, successCallback, errorCallback);
+		webvellaCoreService.getEntityRecordLists($stateParams.entityName, successCallback, errorCallback);
 		return defer.promise;
 	}
 	//#endregion
@@ -129,7 +129,7 @@
 		
 		var ngCtrl = this;
 		//#region << Initialize the current entity >>
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.entity = resolvedCurrentEntityMeta;
 		//#endregion
 
 		//#region << Update page title & hide the side menu >>
@@ -142,7 +142,7 @@
 		//#endregion
 
 		//#region << Initialize the lists >>
-		ngCtrl.lists = fastCopy(resolvedEntityRecordsList.recordLists);
+		ngCtrl.lists = resolvedEntityRecordsList.recordLists;
 		ngCtrl.lists.sort(function (a, b) {
 			if (a.name < b.name) return -1;
 			if (a.name > b.name) return 1;
@@ -221,7 +221,7 @@
 		//The Record Id data is automatically injected by the server. If you want the field to be visible to users you need to add it in the view
 
 		popupCtrl.ok = function () {
-			webvellaCoreService.createEntityList(popupCtrl.list, popupCtrl.ngCtrl.entity.name, successCallback, errorCallback);
+			webvellaCoreService.createEntityRecordList(popupCtrl.list, popupCtrl.ngCtrl.entity.name, successCallback, errorCallback);
 		};
 
 		popupCtrl.cancel = function () {
@@ -281,7 +281,7 @@
 					newList.id = null;
 					newList.name = popupCtrl.listName;
 					newList.label = popupCtrl.listName;
-					webvellaCoreService.createEntityList(newList, popupCtrl.currentEntity.name, successCallback, errorCallback);
+					webvellaCoreService.createEntityRecordList(newList, popupCtrl.currentEntity.name, successCallback, errorCallback);
 				}
 			}
 			else {
@@ -293,7 +293,7 @@
 				oldList.query = newList.query;
 				oldList.sorts = newList.sorts;
 				oldList.relationOptions = newList.relationOptions;
-				webvellaCoreService.updateEntityList(oldList, popupCtrl.currentEntity.name, successCallback, errorCallback);
+				webvellaCoreService.updateEntityRecordList(oldList, popupCtrl.currentEntity.name, successCallback, errorCallback);
 			}
 		};
 

@@ -82,7 +82,7 @@
 
 		$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 			var errorInResponseMessage = translations.ERROR_IN_RESPONSE;
-			webvellaCoreService.getRecordsWithoutList(null,null, "area", successCallback, errorCallback);
+			webvellaCoreService.getRecordsWithoutList(null,null, null, "area", successCallback, errorCallback);
 		});
 		return defer.promise;
 	}
@@ -104,7 +104,7 @@
 			defer.reject(response.message);
 		}
 
-		webvellaCoreService.getRecordsWithoutList(null,null, "role", successCallback, errorCallback);
+		webvellaCoreService.getRecordsWithoutList(null,null,null, "role", successCallback, errorCallback);
 
 		return defer.promise;
 	}
@@ -151,17 +151,17 @@
 		});
 		//#endregion
 
-		ngCtrl.areas = fastCopy(resolvedAreaRecordsList.data);
+		ngCtrl.areas = resolvedAreaRecordsList.data;
 		ngCtrl.areas = ngCtrl.areas.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 
-		ngCtrl.roles = fastCopy(resolvedRolesList.data);
+		ngCtrl.roles = resolvedRolesList.data;
 		ngCtrl.roles = ngCtrl.roles.sort(function (a, b) {
 			if (a.name < b.name) return -1;
 			if (a.name > b.name) return 1;
 			return 0;
 		});
 
-		ngCtrl.entities = fastCopy(resolvedEntityMetaList.entities);
+		ngCtrl.entities = resolvedEntityMetaList.entities;
 		ngCtrl.entities = ngCtrl.entities.sort(function (a, b) {
 			if (a.label < b.label) return -1;
 			if (a.label > b.label) return 1;
@@ -208,6 +208,7 @@
 		popupCtrl.roles = fastCopy(ngCtrl.roles);
 		popupCtrl.entities = fastCopy(ngCtrl.entities);
 		popupCtrl.attachments = [];
+		popupCtrl.form = {};
 		if (popupCtrl.area.attachments != null && popupCtrl.area.attachments.length > 0) {
 			popupCtrl.attachments = angular.fromJson(popupCtrl.area.attachments);
 		}
@@ -596,9 +597,7 @@
 
 	//// Modal Controllers
 	DeleteAreaModalController.$inject = ['parentpopupCtrl', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
-
-
-	function DeleteAreaModalController(parentpopupCtrl, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state) {
+ 	function DeleteAreaModalController(parentpopupCtrl, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state) {
 
 		var popupCtrl = this;
 		popupCtrl.parentData = parentpopupCtrl;

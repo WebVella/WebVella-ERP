@@ -82,7 +82,7 @@
 		function successCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -93,7 +93,7 @@
 		function errorCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -137,10 +137,10 @@
 
 		//#region << Init >>
 		ngCtrl.search = {};
-		ngCtrl.allRelations = fastCopy(resolvedRelationsList);
+		ngCtrl.allRelations = resolvedRelationsList;
 		ngCtrl.currentEntityRelation = [];
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
-		ngCtrl.tree = fastCopy(resolvedCurrentEntityRecordTree);
+		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.tree = resolvedCurrentEntityRecordTree;
 		//Awesome font icon names array 
 		ngCtrl.icons = getFontAwesomeIconNames();
 		//#region << Update page title & hide the side menu >>
@@ -223,7 +223,7 @@
 				errorCallback(response.object);
 			}
 			else {
-				webvellaCoreService.getRecordsByListName(defaultLookupList.name, ngCtrl.entity.name, 1, null, successCallback, errorCallback);
+				webvellaCoreService.getRecordsByListMeta(defaultLookupList, ngCtrl.entity.name, 1,null, null, successCallback, errorCallback);
 			}
 
 
@@ -352,7 +352,7 @@
 			if (popupCtrl.searchQuery) {
 				popupCtrl.searchQuery = popupCtrl.searchQuery.trim();
 			}
-			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.ngCtrl.entity.name, 1, null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.ngCtrl.entity.name, 1, null, null, successCallback, errorCallback);
 		}
 		//#endregion
 
@@ -368,7 +368,7 @@
 
 			}
 
-			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.ngCtrl.entity.name, page, null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.ngCtrl.entity.name, page, null, null, successCallback, errorCallback);
 		}
 
 		//#endregion

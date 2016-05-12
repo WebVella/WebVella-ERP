@@ -5,9 +5,12 @@
 	"version": 20160427,
 	"company": "WebVella",
 	"company_url": "http://webvella.com",
+	"plugin_page_url": "http://webvella.com",
 	"author": "Iglika Raykova,Bozhidar Zashev,George Raykov,Rumen Yankov,Todor Uzunov",
 	"repository": "",
 	"license": "Apache License 2.0",
+	"settings_url": "",
+	"icon_url": "",
 	"load_priority": 11,
 	"libraries": {
 		"css": [
@@ -40,8 +43,8 @@
 			"/plugins/webvella-core/lib/checklist-model/checklist-model.js",
 			"/plugins/webvella-core/lib/ng-file-upload/ng-file-upload-shim.js",
 			"/plugins/webvella-core/lib/ng-file-upload/ng-file-upload.js",
-			"/plugins/webvella-core/lib/offline/offline.min.js",
-			"/plugins/webvella-core/lib/vendor-init.js",
+			//"/plugins/webvella-core/lib/offline/offline.min.js",
+			//"/plugins/webvella-core/lib/vendor-init.js",
 			"/plugins/webvella-core/lib/ng-ckeditor/ng-ckeditor.js",
 			"/plugins/webvella-core/lib/libphonenumber/libphonenumber.js",
 			"/plugins/webvella-core/lib/ngstorage/ngstorage.js",

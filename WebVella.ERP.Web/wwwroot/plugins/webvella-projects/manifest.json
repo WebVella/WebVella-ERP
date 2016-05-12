@@ -5,9 +5,12 @@
 	"version": 20160427,
 	"company": "WebVella",
 	"company_url": "http://webvella.com",
+	"plugin_page_url": "http://webvella.com",
 	"author": "Iglika Raykova,Bozhidar Zashev,George Raykov,Rumen Yankov,Todor Uzunov",
 	"repository": "",
 	"license": "Apache License 2.0",
+	"settings_url": "",
+	"icon_url": "",
 	"load_priority": 15,
 	"libraries": {
 		"css": [
@@ -17,9 +20,14 @@
 	},
 	"module": {
 		"css": [
+			"/plugins/webvella-projects/css/styles.css"
 		],
 		"js": [
+			"/plugins/webvella-projects/base.module.js",
+			"/plugins/webvella-projects/user-dashboard.module.js",
+			"/plugins/webvella-projects/providers/projects.service.js",
+			"/plugins/webvella-projects/template-controllers.js"
 		],
-		"wvApp_injects": []
+		"wvApp_injects": [ "webvellaProjects" ]
 	}
 }

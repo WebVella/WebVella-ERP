@@ -39,7 +39,7 @@
 		function errorCallback(response) {
 			defer.reject(response.message);
 		}
-		webvellaCoreService.getRecordsWithoutList(null,null,"area", successCallback, errorCallback);
+		webvellaCoreService.getRecordsWithoutList(null,null,null,"area", successCallback, errorCallback);
 		return defer.promise;
 	}
 
@@ -89,7 +89,7 @@
 		////1. CONSTRUCTOR - initialize the factory
 		webvellaDesktopBrowsenavFactory.initBrowsenav();
 
-		var sitemapAreas = fastCopy(resolvedAreas.data);
+		var sitemapAreas = resolvedAreas.data;
 		sitemapAreas.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 		for (var i = 0; i < sitemapAreas.length; i++) {
 			//Generate topnav
@@ -126,7 +126,7 @@
 
 
 			var menuItem = webvellaDesktopBrowsenavFactory.generateMenuItemFromArea(sitemapAreas[i]);
-			if (menuItem != null) {
+			if (menuItem != null && menuItem.roles != null) {
 				var userCanUseArrea = false;
 				for (var k = 0; k < resolvedCurrentUser.roles.length; k++) {
 					for (var p = 0; p < menuItem.roles.length; p++) {
