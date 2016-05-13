@@ -46,6 +46,8 @@ namespace WebVella.ERP.Project
 		private static string COMMENT_ENTITY_NAME = "wv_project_comment";
 		private static Guid PROJECT_ADMIN_AREA_ID = new Guid("5b131255-46fc-459d-bbb5-923a4bdfc006");
 		private static Guid PROJECT_WORKPLACE_AREA_ID = new Guid("205877a1-242c-41bf-a080-49ea01d4f519");
+		private static Guid CREATE_TASK_WORKPLACE_AREA_ID = new Guid("aacf2d40-9b03-43d5-aba8-8c8cb3a0133e");
+		private static Guid REPORT_BUG_WORKPLACE_AREA_ID = new Guid("c57fc703-4546-4bfa-9448-29151e21d6ae");
 		private static Guid PROJECT_RELATION_USER_1_N_PROJECT_OWNER_ID = new Guid("0cad07c3-73bd-4c1f-a5d6-552256f679a4");
 		private static Guid PROJECT_RELATION_CUSTOMER_1_N_PROJECT_ID = new Guid("d7f1ec35-9f59-4d75-b8a2-554c7eaeab11");
 		private static Guid PROJECT_RELATION_ROLE_N_N_PROJECT_TEAM_ID = new Guid("4860a4b6-d07e-416f-b548-60491607e93f");
@@ -183,6 +185,72 @@ namespace WebVella.ERP.Project
 									if (!createAreaResult.Success)
 									{
 										throw new Exception("System error 10060. Area create with name : project_admin. Message:" + createAreaResult.Message);
+									}
+								}
+								#endregion
+
+								#region << Create Project create task area >>
+								{
+									var area = new EntityRecord();
+									area["id"] = CREATE_TASK_WORKPLACE_AREA_ID;
+									area["name"] = "create_task";
+									area["label"] = "Create task";
+									area["icon_name"] = "tasks";
+									area["color"] = "teal";
+									area["folder"] = "Workplace";
+									area["weight"] = 1;
+									var areaRoles = new List<Guid>();
+									areaRoles.Add(SystemIds.AdministratorRoleId);
+									areaRoles.Add(SystemIds.RegularRoleId);
+									area["roles"] = JsonConvert.SerializeObject(areaRoles);
+									var createAreaResult = recMan.CreateRecord("area", area);
+									if (!createAreaResult.Success)
+									{
+										throw new Exception("System error 10060. Area create with name : project_admin. Message:" + createAreaResult.Message);
+									}
+								}
+								#endregion
+
+								#region << area add subscription: Create task >>
+								{
+									var updatedAreaId = CREATE_TASK_WORKPLACE_AREA_ID;
+									var updateAreaResult = Helpers.UpsertUrlAsAreaSubscription(entMan, recMan, updatedAreaId, "/#/areas/projects/wv_task/view-create/create?returnUrl=%2Fareas%2Fprojects%2Fwv_task%2Flist-general%2Fmy_tasks", "Create task", 1, "tasks");
+									if (!updateAreaResult.Success)
+									{
+										throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
+									}
+								}
+								#endregion
+
+								#region << Create Project submit bug area >>
+								{
+									var area = new EntityRecord();
+									area["id"] = REPORT_BUG_WORKPLACE_AREA_ID;
+									area["name"] = "report_bug";
+									area["label"] = "Report bug";
+									area["icon_name"] = "bug";
+									area["color"] = "deep-orange";
+									area["folder"] = "Workplace";
+									area["weight"] = 2;
+									var areaRoles = new List<Guid>();
+									areaRoles.Add(SystemIds.AdministratorRoleId);
+									areaRoles.Add(SystemIds.RegularRoleId);
+									area["roles"] = JsonConvert.SerializeObject(areaRoles);
+									var createAreaResult = recMan.CreateRecord("area", area);
+									if (!createAreaResult.Success)
+									{
+										throw new Exception("System error 10060. Area create with name : project_admin. Message:" + createAreaResult.Message);
+									}
+								}
+								#endregion
+
+								#region << area add subscription: Create task >>
+								{
+									var updatedAreaId = REPORT_BUG_WORKPLACE_AREA_ID;
+									var updateAreaResult = Helpers.UpsertUrlAsAreaSubscription(entMan, recMan, updatedAreaId, "/#/areas/projects/wv_bug/view-create/create?returnUrl=%2Fareas%2Fprojects%2Fwv_bug%2Flist-general%2Fmy_bugs", "Report bug", 1, "bug");
+									if (!updateAreaResult.Success)
+									{
+										throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
 									}
 								}
 								#endregion
@@ -1744,6 +1812,23 @@ namespace WebVella.ERP.Project
 										updateListInput.Columns.Add(listItem);
 										#endregion
 
+										#region << Queries >>
+										{
+										if(updateListInput.Query == null) {
+											updateListInput.Query = new InputRecordListQuery();
+										}
+										updateListInput.Query.FieldName = null;
+										updateListInput.Query.FieldValue = null;
+										updateListInput.Query.QueryType = "AND"; //AND,OR,EQ,NOT,LT,LTE,GT,GTE,CONTAINS,STARTSWITH
+										updateListInput.Query.SubQueries = new List<InputRecordListQuery>();
+										var subQuery = new InputRecordListQuery();
+										subQuery.FieldName = "name";
+										subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""name"", ""default"": null, ""settings"":{}}";
+										subQuery.QueryType = "CONTAINS";
+										subQuery.SubQueries = new List<InputRecordListQuery>();
+										updateListInput.Query.SubQueries.Add(subQuery);
+										}
+										#endregion
 										{
 											var response = entMan.UpdateRecordList(PROJECT_ENTITY_ID, updateListInput);
 											if (!response.Success)

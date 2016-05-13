@@ -148,7 +148,8 @@
 					<p style="line-height:30px;padding-left:90px;" translate="{{::'QUERY_RULE_CONDITION_SUFIX'}}"></p>
 				</div>
 				<div class="col-sm-4" style="text-align:right;">
-					<a class="btn btn-default go-red btn-outline" ng-click="ngCtrl.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
+					<a ng-hide="parentQuery.subQueries.length <= 1" class="btn btn-default go-red btn-outline ng-hide" ng-click="ngCtrl.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
+					<span ng-hide="parentQuery.subQueries.length > 1" class="btn go-red " uib-tooltip="section needs to have at least one rule"><i class="fa fa-fw fa-lock"></i></span>
 					<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSection(currentQuery)" translate="{{::'QUERY_SECTION_ADD'}}"></a>
 					<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddRule(currentQuery)" translate="{{::'QUERY_RULE_ADD'}}"></a>
 				</div>

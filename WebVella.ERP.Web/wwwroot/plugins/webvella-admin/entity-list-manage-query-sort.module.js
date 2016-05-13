@@ -602,6 +602,12 @@
 					}
 				]
 			};
+			var subrule = {
+				"queryType": "EQ",
+				"fieldName": "id",
+				"fieldValue": "",
+				"subQueries": []
+			};
 			if (query != null) {
 				query.subQueries.push(subquery);
 			}
@@ -611,7 +617,7 @@
 				ngCtrl.list.query.fieldName = null;
 				ngCtrl.list.query.fieldValue = null;
 				ngCtrl.list.query.subQueries = [];
-				ngCtrl.list.query.subQueries.push(subquery);
+				ngCtrl.list.query.subQueries.push(subrule);
 			}
 			ngCtrl.updateQuery();
 		}
