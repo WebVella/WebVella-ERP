@@ -2220,10 +2220,12 @@ namespace WebVella.ERP.Project
 
 										//Action items
 										var newActionItems = new List<ActionItem>();
-										foreach(var action in updateListInput.ActionItems) {
-											if(action.Name == "wv_create_record") {
+										foreach (var action in updateListInput.ActionItems)
+										{
+											if (action.Name == "wv_create_record")
+											{
 												newActionItems.Add(action);
-											} 
+											}
 										}
 										updateListInput.ActionItems = newActionItems;
 										//Fields
@@ -5552,7 +5554,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = "bug-list";
 										createListInput.IconName = "bug";
 										createListInput.VisibleColumnsCount = 7;
-										createListInput.ColumnWidthsCSV = "80px,auto,30px,120px,120px,120px,120px";
+										createListInput.ColumnWidthsCSV = "80px,auto,30px,160px,120px,120px,120px";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = null;
@@ -6653,7 +6655,7 @@ namespace WebVella.ERP.Project
 
 										#region << Sidebar >>
 										var sidebarItem = new InputRecordViewSidebarItemBase();
-										#endregion								
+										#endregion
 
 										{
 											var response = entMan.UpdateRecordView(BUG_ENTITY_ID, updateViewInput);
@@ -7104,16 +7106,18 @@ namespace WebVella.ERP.Project
 										#region << Sidebar >>
 										var sidebarItem = new InputRecordViewSidebarItemBase();
 										#endregion
-										
+
 										#region << Remove Create & Details button>
 										var newActionList = new List<ActionItem>();
-										foreach(var action in updateView.ActionItems) {
-											if(action.Name != "wv_create_and_details") {
+										foreach (var action in updateView.ActionItems)
+										{
+											if (action.Name != "wv_create_and_details")
+											{
 												newActionList.Add(action);
-											}											
+											}
 										}
 										updateView.ActionItems = newActionList;
-										#endregion								
+										#endregion
 
 										{
 											var response = entMan.UpdateRecordView(TIMELOG_ENTITY_ID, updateViewInput);
@@ -7755,6 +7759,38 @@ namespace WebVella.ERP.Project
 											var response = entMan.CreateField(ACTIVITY_ENTITY_ID, textboxField, false);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + ACTIVITY_ENTITY_NAME + " Field: subject" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << description >>
+									{
+										InputMultiLineTextField textareaField = new InputMultiLineTextField();
+										textareaField.Id = new Guid("6f29022e-c323-42fa-a4cb-76518787ba07");
+										textareaField.Name = "description";
+										textareaField.Label = "Description";
+										textareaField.PlaceholderText = "";
+										textareaField.Description = "";
+										textareaField.HelpText = "";
+										textareaField.Required = false;
+										textareaField.Unique = false;
+										textareaField.Searchable = false;
+										textareaField.Auditable = false;
+										textareaField.System = true;
+										textareaField.DefaultValue = string.Empty;
+										textareaField.VisibleLineNumber = 4;
+										textareaField.EnableSecurity = true;
+										textareaField.Permissions = new FieldPermissions();
+										textareaField.Permissions.CanRead = new List<Guid>();
+										textareaField.Permissions.CanUpdate = new List<Guid>();
+
+										textareaField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+										textareaField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+
+										{
+											var response = entMan.CreateField(ACTIVITY_ENTITY_ID, textareaField, false);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + ACTIVITY_ENTITY_NAME + " Field: description" + " Message:" + response.Message);
 										}
 									}
 									#endregion
