@@ -66,10 +66,15 @@ form.form-signin {
 }
 
 .page-buttons {
-	border: 1px solid #FFE082;
-	margin-top: 1em;
-	background: #ffffe0;
-	padding: 10px;
+	border-top: 2px solid #aaa;
+	background: #ccc;
+	padding:20px 10px;
+	position:absolute;
+	bottom:0;
+	left:0;
+	right:0;
+	margin:0;
+
 }
 
 	.page-buttons .btn-outline {
@@ -1647,7 +1652,6 @@ body.hidden-sidebar #page-topnav {
 #page-content #page-text {
 	min-height: 50px;
 	padding: 15px;
-	position: relative;
 }
 
 
@@ -1985,7 +1989,9 @@ body.hidden-sidebar #page-topnav {
 }
 
 #page-body {
-	min-height: 700px;
+	min-height: 500px;
+	padding-bottom:76px;
+	position:relative;
 }
 
 
@@ -2804,7 +2810,7 @@ table .btn-xs.btn-link {
 	position: absolute;
 	left: -206px;
 	z-index: 10;
-	top: 37px;
+	top: -9px;
 }
 
 #sidebar .tabbable.spilled {
@@ -2953,7 +2959,7 @@ table .btn-xs.btn-link {
 .mini-sidebar .tabbable.spilled {
 	left: -50px;
 	margin: 0;
-	top: 65px;
+	top: 21px;
 }
 
 .mini-sidebar #sidebar .tabbable.spilled {

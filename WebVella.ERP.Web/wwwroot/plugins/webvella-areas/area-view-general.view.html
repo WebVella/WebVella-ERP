@@ -782,10 +782,12 @@
 							</td>
 							<td ng-if="popupCtrl.modalMode == 'single-trigger-selection'">
 								<span class="go-gray" ng-show="popupCtrl.processingRecordId == record.id">processing...</span>
-								<a ng-click='popupCtrl.instantAttachRecord(record)' href="javascript:void(0)" ng-show="!popupCtrl.isSelectedRecord(record.id) && popupCtrl.processingRecordId != record.id">
+								<a ng-click='popupCtrl.instantAttachRecord(record)' href="javascript:void(0)" ng-show="!popupCtrl.isSelectedRecord(record.id) && popupCtrl.processingRecordId != record.id"
+									class="btn btn-outline btn-sm">
 									select now
 								</a>
-								<a ng-click='popupCtrl.instantDetachRecord(record)' href="javascript:void(0)" ng-show="popupCtrl.isSelectedRecord(record.id)  && popupCtrl.processingRecordId != record.id">
+								<a ng-click='popupCtrl.instantDetachRecord(record)' href="javascript:void(0)" ng-show="popupCtrl.isSelectedRecord(record.id)  && popupCtrl.processingRecordId != record.id"
+									class="btn btn-danger btn-sm">
 									deselect now
 								</a>
 							</td>

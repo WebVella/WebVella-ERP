@@ -63,9 +63,23 @@ namespace WebVella.ERP.Project
 			#endregion
 
 			#region << Query builder >>
-			//QueryObject filterObj = EntityQuery.QueryEQ("id", recordId);
-			QueryObject filterObj = null;
-			EntityQuery resultQuery = new EntityQuery("wv_project", requestedFields, filterObj, null, null, null, null);
+			//This list support filters by name
+			var queryString = HttpContext.Request.QueryString.ToString();
+			var queryKeyValue = QueryHelpers.ParseQuery(queryString);
+
+			//Get the project name from query if exists
+			QueryObject rootFilterSection = null;
+			var auxFiltersRuleList = new List<QueryObject>();
+			if (queryKeyValue.ContainsKey("name"))
+			{
+				var projectIdRule = EntityQuery.QueryContains("name", (string)queryKeyValue["name"]);
+				auxFiltersRuleList.Add(projectIdRule);
+			}
+			if(auxFiltersRuleList.Count > 0) {
+				rootFilterSection = EntityQuery.QueryAND(auxFiltersRuleList.ToArray());
+			}
+
+			EntityQuery resultQuery = new EntityQuery("wv_project", requestedFields, rootFilterSection, null, null, null, null);
 			#endregion
 
 			#region << Execute >>

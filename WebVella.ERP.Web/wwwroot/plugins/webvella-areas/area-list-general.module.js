@@ -345,6 +345,7 @@
 		ngCtrl.columnDictionary = {};
 		ngCtrl.columnDataNamesArray = [];
 		ngCtrl.queryParametersArray = [];
+		ngCtrl.filterLoading = false;
 		//Extract the available columns
 		ngCtrl.list.meta.columns.forEach(function (column) {
 			if (ngCtrl.columnDataNamesArray.indexOf(column.dataName) == -1) {
@@ -366,8 +367,13 @@
 				var columnObj = ngCtrl.columnDictionary[dataName];
 				//some data validations and conversions	
 				switch (columnObj.meta.fieldType) {
-					//TODO if percent convert to > 1 %
-					case 14:
+					case 4: //Date
+						ngCtrl.filterQuery[dataName] = moment(queryObject[dataName]).format('D MMM YYYY');
+						break;
+					case 5: //Datetime
+						ngCtrl.filterQuery[dataName] = moment(queryObject[dataName]).format('D MMM YYYY HH:mm');
+						break;
+					case 14:  //TODO if percent convert to > 1 %
 						if (checkDecimal(queryObject[dataName])) {
 							ngCtrl.filterQuery[dataName] = queryObject[dataName] * 100;
 						}
@@ -381,6 +387,7 @@
 		});
 
 		ngCtrl.clearQueryFilter = function () {
+			ngCtrl.filterLoading = true;
 			for (var activeFilter in ngCtrl.filterQuery) {
 				$location.search(activeFilter, null);
 			}
@@ -392,17 +399,32 @@
 		}
 
 		ngCtrl.applyQueryFilter = function () {
-			//TODO - Convert percent into 0 < x < 1
-
-			//TODO - Convert date to ISO
+			ngCtrl.filterLoading = true;
 			var queryFieldsCount = 0;
 			for (var filter in ngCtrl.filterQuery) {
-				if (ngCtrl.filterQuery[filter] == "") {
-					$location.search(filter, null);
+				if(ngCtrl.filterQuery[filter]){
+					for (var i = 0; i < ngCtrl.list.meta.columns.length; i++) {
+						if(ngCtrl.list.meta.columns[i].meta.name == filter){
+							var selectedField = ngCtrl.list.meta.columns[i].meta;
+							switch(selectedField.fieldType){
+								case 4: //Date
+									$location.search(filter, moment(ngCtrl.filterQuery[filter],'D MMM YYYYY').toISOString());
+									break;
+								case 5: //Datetime
+									$location.search(filter, moment(ngCtrl.filterQuery[filter],'D MMM YYYYY HH:mm').toISOString());
+									break;
+								case 14: //Percent
+									$location.search(filter, ngCtrl.filterQuery[filter] / 100);
+									break;
+								default:
+									$location.search(filter, ngCtrl.filterQuery[filter]);
+									break;
+							}
+						}
+					}
 				}
 				else {
-					queryFieldsCount++;
-					$location.search(filter, ngCtrl.filterQuery[filter]);
+					$location.search(filter, null);
 				}
 			}
 			//$window.location.reload();
@@ -417,21 +439,18 @@
 		}
 
 		ngCtrl.ReloadRecordsSuccessCallback = function (response) {
+			$timeout(function(){
+				ngCtrl.filterLoading = false;
+			},300);
 			ngCtrl.list.data = response.object;
 		}
 
 		ngCtrl.ReloadRecordsErrorCallback = function (response) {
+			$timeout(function(){
+				ngCtrl.filterLoading = false;
+			},300);
 			alert(response.message);
 		}
-
-		ngCtrl.checkForSearchEnter = function (e) {
-			var code = (e.keyCode ? e.keyCode : e.which);
-			if (code == 13) { //Enter keycode
-				ngCtrl.applyQueryFilter();
-			}
-		}
-
-
 
 		//#endregion
 

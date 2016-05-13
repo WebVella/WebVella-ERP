@@ -79,8 +79,8 @@
 				<tbody>
 					<tr style="background:#ddd" class="query-filter-row ng-hide" ng-show="ngCtrl.show_filter || ngCtrl.listIsFiltered">
 						<td>
-							<a class="btn btn-default btn-sm btn-block" ng-click="ngCtrl.applyQueryFilter()">
-								<i class="fa fa-fw fa-filter"></i>
+							<a class="btn btn-outline btn-sm btn-block" ng-click="ngCtrl.applyQueryFilter()">
+								<i class="fa fa-fw" ng-class="{'fa-filter':!ngCtrl.filterLoading, 'fa-spin fa-spinner': ngCtrl.filterLoading}"></i>
 							</a>
 						</td>
 						<td ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">
@@ -122,7 +122,7 @@
 											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-calendar"></i>
-													<input type="date" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}} e.g.'15 Feb 2015'">
 												</div>
 											</div>
 										</div>
@@ -132,13 +132,13 @@
 												<div class="col-sm-6" style="padding:0">
 													<div class="left-inner-addon">
 														<i class="fa fa-fw fa-calendar"></i>
-														<input type="date" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
+														<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}} e.g.'15 Feb 2015 14:35'">
 													</div>
 												</div>
 												<div class="col-sm-6" style="padding: 0 0 0 5px">
 													<div class="left-inner-addon">
 														<i class="fa fa-fw fa-clock-o"></i>
-														<input type="time" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+														<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="e.g.'14:35'">
 													</div>
 												</div>
 											</div>
@@ -298,7 +298,7 @@
 							</div>
 						</td>
 					</tr>
-					<tr class="ng-hide" ng-show='::ngCtrl.list.data.length == 0'>
+					<tr class="ng-hide" ng-show='ngCtrl.list.data.length == 0'>
 						<td colspan="{{ngCtrl.list.meta.columns.length + 1}}">
 							<div class="alert alert-info" style="margin:0;">
 								There are no records matching your query
