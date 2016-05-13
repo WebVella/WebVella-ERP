@@ -186,6 +186,11 @@
 				alert("error in response!");
 			}
 			else {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
+				});
 				defer.reject(response.message);
 			}
 		}

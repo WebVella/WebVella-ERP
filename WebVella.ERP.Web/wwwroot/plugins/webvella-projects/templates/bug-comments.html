@@ -1,0 +1,56 @@
+﻿<div ng-if="ngCtrl.list.data.length > 0">
+	<div class="panel panel-white post" ng-repeat="record in ngCtrl.list.data" >
+		<div class="post-heading">
+			<div class="pull-left image">
+				<img ng-src="{{record.$field$user_wv_project_comment_created_by$image[0] || '/plugins/webvella-core/assets/avatar.png'}}" class="img-circle avatar" alt="user profile image">
+			</div>
+			<div class="pull-left meta">
+				<div class="title h5">
+					<b ng-bind="record.$field$user_wv_project_comment_created_by$username[0]"></b>
+					made a comment
+				</div>
+				<h6 class="text-muted time">
+					<span ng-bind="record.created_on | date: 'dd MMM yyyy HH:mm'"></span>
+					<span ng-if="ngCtrl.actionService.isCurrentUserAuthor(record.created_by)"><span class="divider">|</span> <a href="" ng-click="ngCtrl.actionService.manageComment(record,ngCtrl)" class="go-grey">Edit</a></span>
+				</h6>
+			</div>
+		</div>
+		<div class="post-description" ng-bind-html="record.content"></div>
+	</div>
+</div>
+<div class="alert alert-info" ng-if="ngCtrl.list.data.length == 0">
+	<strong>You do not participate in any record yet</strong>
+	<p>Currently you are not involved in any records or there are none created yet</p>
+</div>
+<p>
+<a class="btn btn-default btn-outline hidden-xs" ng-show="::ngCtrl.userHasRecordPermissions('canCreate')" 
+    ng-click="ngCtrl.actionService.manageComment(null,ngCtrl)">
+	<i class="fa fa-fw fa-plus"></i> Add Comment
+</a>
+</p>
+
+
+
+<script type="text/ng-template" id="manageCommentModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Manage comment</h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-danger" ng-if="popupCtrl.validation.hasError" ng-bind="popupCtrl.validation.errorMessage"></div>
+		<form name="manageArea">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group" ng-class="{ 'has-error' : popupCtrl.contentError}">
+						<label class="required" for="areaName">Comment content</label>
+						<textarea class="form-control" ng-model="popupCtrl.record.content" ckeditor="editorOptions"></textarea>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="popupCtrl.ok()" translate="{{::'SAVE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
+	</div>
+</script>

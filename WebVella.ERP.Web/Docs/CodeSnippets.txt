@@ -915,6 +915,7 @@ TREE SELECT
 	#region << name from Relation >>
 	{
 	var targetEntity = entMan.ReadEntity(ENTITY_ID).Object;
+	var targetRelation = relMan.Read("relation_name").Object;
 	viewItemFromRelation = new InputRecordViewRelationFieldItem();
 	viewItemFromRelation.EntityId = targetEntity.Id;
 	viewItemFromRelation.EntityName = targetEntity.Name;
@@ -925,8 +926,8 @@ TREE SELECT
 	viewItemFromRelation.FieldPlaceholder = "";
 	viewItemFromRelation.FieldRequired = true;
 	viewItemFromRelation.FieldLookupList = "lookup";		
-	viewItemFromRelation.RelationId = new Guid("guid");
-	viewItemFromRelation.RelationName = "relation_name";
+	viewItemFromRelation.RelationId = targetRelation.Id;
+	viewItemFromRelation.RelationName = targetRelation.Name;
 	viewColumn.Items.Add(viewItemFromRelation);	
 	}
 	#endregion

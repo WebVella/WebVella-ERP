@@ -1227,6 +1227,11 @@ body.hidden-sidebar #page-topnav {
 	padding: 3px 8px !important;
 }
 
+	.query-filter-row td .btn-outline {
+		background:transparent;
+		border:1px solid #999;
+	}
+
 	.query-filter-row td table th {
 		white-space: nowrap;
 		padding: 0;

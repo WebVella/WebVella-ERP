@@ -119,8 +119,8 @@
 	//#endregion
 
 	//#region << Controller >> ///////////////////////////////
-	controller.$inject = ['$rootScope', '$log', '$cookies', '$localStorage', '$timeout', '$state', 'webvellaCoreService'];
-	function controller($rootScope, $log, $cookies, $localStorage, $timeout, $state, webvellaCoreService) {
+	controller.$inject = ['$rootScope', '$log', '$cookies', '$localStorage', '$timeout', '$state', 'webvellaCoreService','ngToast'];
+	function controller($rootScope, $log, $cookies, $localStorage, $timeout, $state, webvellaCoreService,ngToast) {
 		var appData = this;
 		//Set page title
 		appData.pageTitle = 'WebVella ERP';
@@ -152,6 +152,13 @@
 			$rootScope.adminSubSectionName = null;
 		});
 
+		$rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + error,
+					timeout: 7000
+				});
+		 });
 		//Set up object for the view and list Action services
 		$rootScope.actionService = {};
 	}
