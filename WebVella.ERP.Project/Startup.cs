@@ -8,6 +8,7 @@ using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Api.Models.AutoMapper;
 using WebVella.ERP.Database;
+using WebVella.ERP.Mail;
 using WebVella.ERP.Plugins;
 using WebVella.ERP.Project.Models;
 using WebVella.ERP.Utilities;

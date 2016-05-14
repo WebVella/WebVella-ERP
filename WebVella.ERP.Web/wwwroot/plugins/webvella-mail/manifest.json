@@ -1,7 +1,7 @@
 {
-	"name": "webvella-projects",
+	"name": "webvella-mail",
 	"url": "http://webvella.com",
-	"description": "Project management plugin for WebVella ERP",
+	"description": "Mail plugin for WebVella ERP",
 	"version": 20160427,
 	"company": "WebVella",
 	"company_url": "http://webvella.com",
@@ -11,7 +11,7 @@
 	"license": "Apache License 2.0",
 	"settings_url": "",
 	"icon_url": "",
-	"load_priority": 15,
+	"load_priority": 12,
 	"libraries": {
 		"css": [
 		],
@@ -20,14 +20,9 @@
 	},
 	"module": {
 		"css": [
-			"/plugins/webvella-projects/css/styles.css"
 		],
 		"js": [
-			"/plugins/webvella-projects/base.module.js",
-			"/plugins/webvella-projects/user-dashboard.module.js",
-			"/plugins/webvella-projects/providers/projects.service.js",
-			"/plugins/webvella-projects/template-controllers.js"
 		],
-		"wvApp_injects": [ "webvellaProjects" ]
+		"wvApp_injects": [ ]
 	}
 }

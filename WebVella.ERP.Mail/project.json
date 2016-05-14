@@ -1,6 +1,6 @@
 ﻿{
 	"version": "1.0.0-*",
-	"description": "WebVella.ERP.Project Class Library",
+	"description": "WebVella.ERP.Mail Class Library",
 	"authors": [ "rumen.yankov", "bozhidar zashev" ],
 	"tags": [ "" ],
 	"projectUrl": "",
@@ -18,8 +18,7 @@
 	"dependencies": {
 		"Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
 		"Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
-		"WebVella.ERP": "1.0.0-*",
-		"WebVella.ERP.Mail": "1.0.0-*"
+		"WebVella.ERP": "1.0.0-*"
 	}
 
 }

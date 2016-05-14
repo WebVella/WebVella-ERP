@@ -1299,3 +1299,21 @@ TREE SELECT
 		}
 	}
 #endregion						
+
+
+/////////////////////////////////////////////////////////////////////////////
+//   SENDING EMAILS
+////////////////////////////////////////////////////////////////////////////
+#region << Send emails >>
+1. Add reference to Webvella.ERP.Mail
+
+2.
+var emailService = new EmailService();
+try {
+emailService.SendEmail("recepient@domain.com","Plugin Project successfully started", "The library works");
+}
+catch(Exception ex) {
+	throw ex;
+}
+
+#endregion
