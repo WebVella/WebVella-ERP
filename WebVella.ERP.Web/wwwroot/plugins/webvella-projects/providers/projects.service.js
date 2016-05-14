@@ -20,8 +20,11 @@
 		var serviceInstance = this;
 
 		//#region << Include functions >> ///////////////////////////////////////////////////////////////////////////////////
-		serviceInstance.getMyProjectsList = getMyProjectsList
-		serviceInstance.getMyMilestonesList = getMyMilestonesList
+		serviceInstance.getMyProjectsList = getMyProjectsList;
+		serviceInstance.getMyMilestonesList = getMyMilestonesList;
+		serviceInstance.getActivitiesList = getActivitiesList;
+		serviceInstance.getOwnerLastModifiedTasks = getOwnerLastModifiedTasks;
+		serviceInstance.getOwnerLastModifiedBugs = getOwnerLastModifiedBugs;
 		//#endregion
 
 
@@ -33,6 +36,22 @@
 		function getMyMilestonesList(successCallback, errorCallback) {
 			$http({ method: 'GET', url: "/plugins/webvella-projects/api/milestone/list/my-milestones" }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
+
+		///////////////////
+		function getActivitiesList(page,label,successCallback, errorCallback) {
+			$http({ method: 'GET', url: "/plugins/webvella-projects/api/activity/list/all?page="+page+"&label="+label }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
+		///////////////////
+		function getOwnerLastModifiedTasks(page,successCallback, errorCallback) {
+			$http({ method: 'GET', url: "/plugins/webvella-projects/api/task/list/last-updated-for-owner?page="+page }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
+		///////////////////
+		function getOwnerLastModifiedBugs(page,successCallback, errorCallback) {
+			$http({ method: 'GET', url: "/plugins/webvella-projects/api/bug/list/last-updated-for-owner?page="+page }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
 
 		//#region << Global HTTP Error and Success Handlers >>
 		function handleErrorResult(data, status, errorCallback) {

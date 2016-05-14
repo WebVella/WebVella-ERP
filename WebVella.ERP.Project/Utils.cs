@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace WebVella.ERP.Project
 			#region << Task activities to be logged >>
 			//status,milestone,project,priority,owner,start_date,end_date,attachment_add,attachment_delete,comment_add,comment_delete,timelog_add,timelog_update,task_created_task_deleted
 			#endregion
-		
+
 			try
 			{
 				EntityRecord newTaskObject = null;
@@ -35,17 +36,21 @@ namespace WebVella.ERP.Project
 					return data;
 				}
 				//Convert ids to guid
-				if(newTaskObject.Properties.ContainsKey("project_id") && newTaskObject["project_id"] != null) {
+				if (newTaskObject.Properties.ContainsKey("project_id") && newTaskObject["project_id"] != null)
+				{
 					newTaskObject["project_id"] = new Guid((string)newTaskObject["project_id"]);
 				}
-				else if (newTaskObject.Properties.ContainsKey("project_id")) {
+				else if (newTaskObject.Properties.ContainsKey("project_id"))
+				{
 					newTaskObject["project_id"] = null;
 				}
 
-				if(newTaskObject.Properties.ContainsKey("milestone_id") && newTaskObject["milestone_id"] != null) {
+				if (newTaskObject.Properties.ContainsKey("milestone_id") && newTaskObject["milestone_id"] != null)
+				{
 					newTaskObject["milestone_id"] = new Guid((string)newTaskObject["milestone_id"]);
 				}
-				else if (newTaskObject.Properties.ContainsKey("milestone_id")) {
+				else if (newTaskObject.Properties.ContainsKey("milestone_id"))
+				{
 					newTaskObject["milestone_id"] = null;
 				}
 				#endregion
@@ -67,7 +72,8 @@ namespace WebVella.ERP.Project
 					}
 					oldTaskObject = result.Object.Data[0];
 					//As we will use status checks below a lot, we need to be sure the newTaskObject object (posted by the user) has it also
-					if(!newTaskObject.Properties.ContainsKey("status")) {
+					if (!newTaskObject.Properties.ContainsKey("status"))
+					{
 						newTaskObject["status"] = (string)oldTaskObject["status"];
 					}
 
@@ -79,11 +85,9 @@ namespace WebVella.ERP.Project
 				var isStatusChanged = false;
 				#region << Check what is changed >>
 				var oldStatus = (string)oldTaskObject["status"];
-				var newStatus = "";
 				if (newTaskObject.Properties.ContainsKey("status") && oldStatus != (string)newTaskObject["status"])
 				{
 					isStatusChanged = true;
-					newStatus = (string)newTaskObject["status"];
 				}
 
 				var oldProjectId = (Guid?)oldTaskObject["project_id"];
@@ -147,7 +151,7 @@ namespace WebVella.ERP.Project
 								{
 									oldTaskProject = resultObject;
 								}
-								if (isProjectChanged && newTaskObject["project_id"]!= null && (Guid)resultObject["id"] == (Guid)newTaskObject["project_id"])
+								if (isProjectChanged && newTaskObject["project_id"] != null && (Guid)resultObject["id"] == (Guid)newTaskObject["project_id"])
 								{
 									newTaskProject = resultObject;
 								}
@@ -251,13 +255,15 @@ namespace WebVella.ERP.Project
 				if (isProjectChanged)
 				{
 					//Remove one from the old project <> old status if the target is not null
-					if(oldProjectPatchObject.Properties.Count > 0) {
-						oldProjectPatchObject = UpdateProjectOrTaskCounter(oldProjectPatchObject, (string)oldTaskObject["status"], -1);
+					if (oldProjectPatchObject.Properties.Count > 0)
+					{
+						oldProjectPatchObject = UpdateProjectOrMilestoneCounter(oldProjectPatchObject, (string)oldTaskObject["status"], -1);
 						isOldProjectPatched = true;
 					}
 					//Add one to the new project <> new status if the target is not null
-					if(newProjectPatchObject.Properties.Count > 0) {
-						newProjectPatchObject = UpdateProjectOrTaskCounter(newProjectPatchObject, (string)newTaskObject["status"], 1);
+					if (newProjectPatchObject.Properties.Count > 0)
+					{
+						newProjectPatchObject = UpdateProjectOrMilestoneCounter(newProjectPatchObject, (string)newTaskObject["status"], 1);
 						isNewProjectPatched = true;
 					}
 				}
@@ -271,13 +277,15 @@ namespace WebVella.ERP.Project
 				if (isMilestoneChanged)
 				{
 					//Remove one from the old milestone <> old status if the target is not null
-					if(oldMilestonePatchObject.Properties.Count > 0) {
-						oldMilestonePatchObject = UpdateProjectOrTaskCounter(oldMilestonePatchObject, (string)oldTaskObject["status"], -1);
+					if (oldMilestonePatchObject.Properties.Count > 0)
+					{
+						oldMilestonePatchObject = UpdateProjectOrMilestoneCounter(oldMilestonePatchObject, (string)oldTaskObject["status"], -1);
 						isOldMilestonePatched = true;
 					}
 					//Add one to the new milestone <> new status if the target is not null
-					if(newMilestonePatchObject.Properties.Count > 0) {
-						newMilestonePatchObject = UpdateProjectOrTaskCounter(newMilestonePatchObject, (string)newTaskObject["status"], 1);
+					if (newMilestonePatchObject.Properties.Count > 0)
+					{
+						newMilestonePatchObject = UpdateProjectOrMilestoneCounter(newMilestonePatchObject, (string)newTaskObject["status"], 1);
 						isNewMilestonePatched = true;
 					}
 				}
@@ -295,24 +303,24 @@ namespace WebVella.ERP.Project
 						{
 							//the status change is already set in the new project object in case 1
 						}
-						else if(oldProjectPatchObject.Properties.Count > 0 )
+						else if (oldProjectPatchObject.Properties.Count > 0)
 						{
 							//Remove one from the old project old status
-							oldProjectPatchObject = UpdateProjectOrTaskCounter(oldProjectPatchObject, (string)oldTaskObject["status"], -1);
+							oldProjectPatchObject = UpdateProjectOrMilestoneCounter(oldProjectPatchObject, (string)oldTaskObject["status"], -1);
 							//Add one from the old project new status
-							oldProjectPatchObject = UpdateProjectOrTaskCounter(oldProjectPatchObject, (string)newTaskObject["status"], 1);
+							oldProjectPatchObject = UpdateProjectOrMilestoneCounter(oldProjectPatchObject, (string)newTaskObject["status"], 1);
 							isOldProjectPatched = true;
 						}
 						if (isMilestoneChanged)
 						{
 							//the status change is already set in the new milestone object in case 2
 						}
-						else if(oldMilestonePatchObject.Properties.Count > 0)
+						else if (oldMilestonePatchObject.Properties.Count > 0)
 						{
 							//Remove one from the old milestone old status
-							oldMilestonePatchObject = UpdateProjectOrTaskCounter(oldMilestonePatchObject, (string)oldTaskObject["status"], -1);
+							oldMilestonePatchObject = UpdateProjectOrMilestoneCounter(oldMilestonePatchObject, (string)oldTaskObject["status"], -1);
 							//Add one from the old milestone new status	
-							oldMilestonePatchObject = UpdateProjectOrTaskCounter(oldMilestonePatchObject, (string)newTaskObject["status"], 1);
+							oldMilestonePatchObject = UpdateProjectOrMilestoneCounter(oldMilestonePatchObject, (string)newTaskObject["status"], 1);
 							isOldMilestonePatched = true;
 						}
 					}
@@ -361,33 +369,8 @@ namespace WebVella.ERP.Project
 				}
 				#endregion
 
-				#region << Create activity >>
-					#region << Old Task activity >>
-					//{
-					//	var activityObj = new EntityRecord();
-					//	activityObj["id"] = Guid.NewGuid();
-					//	activityObj["task_id"] = (Guid)oldTaskObject["id"];
-					//	if(newTaskProject.Properties.Count > 0) {
-					//		activityObj["project_id"] = (Guid)newTaskProject["id"];
-					//	}
-					//	else {
-					//		activityObj["project_id"] = (Guid)oldTaskProject["id"];
-					//	}
-					//	activityObj["subject"] = @"updated the task status from <strong>in progress</strong> to <strong>completed</strong>";
-					//	activityObj["label"] = "updated";
-					//	var createResponse = recMan.CreateRecord("wv_project_activity", activityObj);
-					//	if (!createResponse.Success)
-					//	{
-					//		throw new Exception(createResponse.Message);
-					//	}
-					//}
-					#endregion
-
-					#region << Project activity >>
-					{
-					}
-					#endregion
-
+				#region << Create update activity >>
+				Utils.CreateActivity(recMan,"updated","updated a <i class='fa fa-fw fa-tasks go-purple'></i> task #" + oldTaskObject["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + oldTaskObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldTaskObject["subject"])  +"</a>",null,(Guid)oldTaskObject["project_id"],(Guid)oldTaskObject["id"],null);
 				#endregion
 
 				return data;
@@ -399,7 +382,264 @@ namespace WebVella.ERP.Project
 			}
 		}
 
-		public static EntityRecord UpdateProjectOrTaskCounter(EntityRecord targetObject, string status, decimal count)
+		public static dynamic UpdateBug(dynamic data, RecordManager recMan)
+		{
+			#region << Bug activities to be logged >>
+			//status,project,priority,owner,start_date,end_date,attachment_add,attachment_delete,comment_add,comment_delete,timelog_add,timelog_update,task_created_task_deleted
+			#endregion
+
+			EntityRecord newBugObject = null;
+			#region << Init checks>>
+			newBugObject = (EntityRecord)data.record;
+			var recordId = (Guid)data.recordId;
+
+			if (!newBugObject.Properties.ContainsKey("status") && !newBugObject.Properties.ContainsKey("project_id"))
+			{
+				return data;
+			}
+			//Convert ids to guid
+			if (newBugObject.Properties.ContainsKey("project_id") && newBugObject["project_id"] != null)
+			{
+				newBugObject["project_id"] = new Guid((string)newBugObject["project_id"]);
+			}
+			else if (newBugObject.Properties.ContainsKey("project_id"))
+			{
+				newBugObject["project_id"] = null;
+			}
+
+			#endregion
+
+			EntityRecord oldBugObject = null;
+			#region << Get the old bug object >>
+			{
+				var filterObj = EntityQuery.QueryEQ("id", recordId);
+				var query = new EntityQuery("wv_bug", "*", filterObj, null, null, null);
+				var result = recMan.Find(query);
+				if (!result.Success)
+				{
+
+					throw new Exception("Error getting the updated bug: " + result.Message);
+				}
+				else if (result.Object == null || result.Object.Data == null || !result.Object.Data.Any())
+				{
+					throw new Exception("Task not found");
+				}
+				oldBugObject = result.Object.Data[0];
+				//As we will use status checks below a lot, we need to be sure the newTaskObject object (posted by the user) has it also
+				if (!newBugObject.Properties.ContainsKey("status"))
+				{
+					newBugObject["status"] = (string)oldBugObject["status"];
+				}
+
+			}
+			#endregion
+
+			var isProjectChanged = false;
+			var isStatusChanged = false;
+			#region << Check what is changed >>
+			var oldStatus = (string)oldBugObject["status"];
+			if (newBugObject.Properties.ContainsKey("status") && oldStatus != (string)newBugObject["status"])
+			{
+				isStatusChanged = true;
+			}
+
+			var oldProjectId = (Guid?)oldBugObject["project_id"];
+			Guid? newProjectId = null;
+			if (newBugObject.Properties.ContainsKey("project_id") && oldProjectId != (Guid?)newBugObject["project_id"])
+			{
+				isProjectChanged = true;
+				newProjectId = (Guid?)newBugObject["project_id"];
+			}
+
+			//If none of the properties of interest is changed, just return
+			if (!isStatusChanged && !isProjectChanged)
+			{
+				return data;
+			}
+
+			#endregion
+
+			EntityRecord oldBugProject = new EntityRecord();
+			EntityRecord newBugProject = new EntityRecord();
+			#region << Get the bug projects new and old >>
+			{
+				if (oldBugObject["project_id"] != null || isProjectChanged)
+				{
+					var projectFiltersList = new List<QueryObject>();
+					if (oldBugObject["project_id"] != null)
+					{
+						var oldProjectFilterObj = EntityQuery.QueryEQ("id", (Guid)oldBugObject["project_id"]);
+						projectFiltersList.Add(oldProjectFilterObj);
+					}
+					if (isProjectChanged && newBugObject["project_id"] != null)
+					{
+						var newProjectFilterObj = EntityQuery.QueryEQ("id", (Guid)newBugObject["project_id"]);
+						projectFiltersList.Add(newProjectFilterObj);
+					}
+					var sectionFilter = EntityQuery.QueryOR(projectFiltersList.ToArray());
+					var query = new EntityQuery("wv_project", "*", sectionFilter, null, null, null);
+					var result = recMan.Find(query);
+					if (!result.Success)
+					{
+
+						throw new Exception("Error getting the updated project: " + result.Message);
+					}
+					else if (result.Object == null || result.Object.Data == null || !result.Object.Data.Any())
+					{
+						throw new Exception("Project not found");
+					}
+					else
+					{
+						foreach (var resultObject in result.Object.Data)
+						{
+							if (oldBugObject["project_id"] != null && (Guid)resultObject["id"] == (Guid)oldBugObject["project_id"])
+							{
+								oldBugProject = resultObject;
+							}
+							if (isProjectChanged && newBugObject["project_id"] != null && (Guid)resultObject["id"] == (Guid)newBugObject["project_id"])
+							{
+								newBugProject = resultObject;
+							}
+						}
+
+					}
+				}
+			}
+			#endregion
+
+			EntityRecord oldProjectPatchObject = new EntityRecord();
+			EntityRecord newProjectPatchObject = new EntityRecord();
+			var isOldProjectPatched = false;
+			var isNewProjectPatched = false;
+
+			#region << init patch objects >>
+			if (oldBugProject.Properties.Count > 0)
+			{
+				oldProjectPatchObject["id"] = (Guid)oldBugProject["id"];
+				oldProjectPatchObject["x_bugs_closed"] = (decimal)oldBugProject["x_bugs_closed"];
+				oldProjectPatchObject["x_bugs_opened"] = (decimal)oldBugProject["x_bugs_opened"];
+				oldProjectPatchObject["x_bugs_reopened"] = (decimal)oldBugProject["x_bugs_reopened"];
+			}
+			if (newBugProject.Properties.Count > 0)
+			{
+				newProjectPatchObject["id"] = (Guid)newBugProject["id"];
+				newProjectPatchObject["x_bugs_closed"] = (decimal)newBugProject["x_bugs_closed"];
+				newProjectPatchObject["x_bugs_opened"] = (decimal)newBugProject["x_bugs_opened"];
+				newProjectPatchObject["x_bugs_reopened"] = (decimal)newBugProject["x_bugs_reopened"];
+			}
+			#endregion
+
+			#region << Case 1 - changes based on Project >>
+			if (isProjectChanged)
+			{
+				//Remove one from the old project <> old status if the target is not null
+				if (oldProjectPatchObject.Properties.Count > 0)
+				{
+					oldProjectPatchObject = UpdateProjectOrMilestoneCounter(oldProjectPatchObject, (string)oldBugObject["status"], -1);
+					isOldProjectPatched = true;
+				}
+				//Add one to the new project <> new status if the target is not null
+				if (newProjectPatchObject.Properties.Count > 0)
+				{
+					newProjectPatchObject = UpdateProjectOrMilestoneCounter(newProjectPatchObject, (string)newBugObject["status"], 1);
+					isNewProjectPatched = true;
+				}
+			}
+			else
+			{
+				//No change is needed based on this case
+			}
+			#endregion
+
+			#region << Case 2 - changes based on Status >>
+			{
+				if (isStatusChanged)
+				{
+					if (isProjectChanged)
+					{
+						//the status change is already set in the new project object in case 1
+					}
+					else if (oldProjectPatchObject.Properties.Count > 0)
+					{
+						//Remove one from the old project old status
+						oldProjectPatchObject = UpdateProjectOrMilestoneCounter(oldProjectPatchObject, (string)oldBugObject["status"], -1);
+						//Add one from the old project new status
+						oldProjectPatchObject = UpdateProjectOrMilestoneCounter(oldProjectPatchObject, (string)newBugObject["status"], 1);
+						isOldProjectPatched = true;
+					}
+				}
+				else
+				{
+					//do nothing
+				}
+			}
+			#endregion
+
+			#region << Update objects >>
+			if (isOldProjectPatched)
+			{
+				var updateResponse = recMan.UpdateRecord("wv_project", oldProjectPatchObject);
+				if (!updateResponse.Success)
+				{
+					throw new Exception("Old project update error: " + updateResponse.Message);
+				}
+			}
+
+			if (isNewProjectPatched)
+			{
+				var updateResponse = recMan.UpdateRecord("wv_project", newProjectPatchObject);
+				if (!updateResponse.Success)
+				{
+					throw new Exception("New project update error: " + updateResponse.Message);
+				}
+			}
+
+			#endregion
+
+			#region << Update activity >>
+			Utils.CreateActivity(recMan,"updated","updated a <i class='fa fa-fw fa-bug go-red'></i> bug #" + oldBugObject["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + oldBugObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldBugObject["subject"])  +"</a>",null,(Guid)oldBugObject["project_id"],null,(Guid)oldBugObject["id"]);
+			#endregion
+
+
+			return data;
+		}
+
+		public static void UpdateBugActivity(dynamic data, RecordManager recMan)
+		{
+
+		//status,project,priority,owner,start_date,end_date,attachment_add,attachment_delete,comment_add,comment_delete,timelog_add,timelog_update,task_created_task_deleted
+			try
+			{
+				
+				var oldBugObject = (EntityRecord)data.record;
+				var newBugUpdateResult = (QueryResponse)data.result;
+				var newBugObject = newBugUpdateResult.Object.Data[0];
+				var recordId = (Guid)data.recordId;
+				var oldStatus = "";
+				var newStatus = "";
+
+				#region << Init >>
+					if(oldBugObject.Properties.ContainsKey("status")){
+						oldStatus = (string)oldBugObject["status"];
+					}
+					newStatus = (string)newBugObject["status"];
+				#endregion
+
+
+				#region << Generate activities >>
+				if(oldStatus != newStatus) {
+					
+				}
+				#endregion
+
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+		}
+
+		public static EntityRecord UpdateProjectOrMilestoneCounter(EntityRecord targetObject, string status, decimal count)
 		{
 			switch (status)
 			{
@@ -412,10 +652,35 @@ namespace WebVella.ERP.Project
 				case "completed":
 					targetObject["x_tasks_completed"] = (decimal)targetObject["x_tasks_completed"] + count;
 					break;
+				case "opened":
+					targetObject["x_bugs_opened"] = (decimal)targetObject["x_bugs_opened"] + count;
+					break;
+				case "closed":
+					targetObject["x_bugs_closed"] = (decimal)targetObject["x_bugs_closed"] + count;
+					break;
+				case "reopened":
+					targetObject["x_bugs_reopened"] = (decimal)targetObject["x_bugs_reopened"] + count;
+					break;
 			}
 
 			return targetObject;
 		}
 
+		public static void CreateActivity(RecordManager recMan, string label, string subject, string description, Guid projectId, Guid? taskId, Guid? bugId) {
+				var activityObj = new EntityRecord();
+				activityObj["id"] = Guid.NewGuid();
+				activityObj["project_id"] = projectId;
+				activityObj["task_id"] = taskId;
+				activityObj["bug_id"] = bugId;
+				activityObj["label"] = label;
+				activityObj["subject"] = subject;
+				activityObj["description"] = description;
+
+				var createResponse = recMan.CreateRecord("wv_project_activity", activityObj);
+				if (!createResponse.Success)
+				{
+					throw new Exception(createResponse.Message);
+				}			
+		}
 	}
 }

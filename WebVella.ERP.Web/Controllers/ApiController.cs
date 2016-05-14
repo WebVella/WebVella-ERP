@@ -2045,6 +2045,7 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK FILTER << update_record_input >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			#region
 			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
@@ -2057,6 +2058,7 @@ namespace WebVella.ERP.Web.Controllers
 			{
 				return Json(CreateErrorResponse("Plugin error in web hook update_record_input: " + ex.Message));
 			}// <<<	
+			#endregion
 
 			var validationErrors = new List<ErrorModel>();
 			//TODO implement validation
@@ -2064,6 +2066,7 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK FILTER << update_record_validation_errors >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			#region
 			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
@@ -2077,6 +2080,7 @@ namespace WebVella.ERP.Web.Controllers
 			{
 				return Json(CreateErrorResponse("Plugin error in web hook update_record_validation_errors: " + ex.Message));
 			}// <<<
+			#endregion
 
 			if (validationErrors.Count > 0)
 			{
@@ -2103,6 +2107,7 @@ namespace WebVella.ERP.Web.Controllers
 					//////////////////////////////////////////////////////////////////////////////////////
 					//WEBHOOK FILTER << update_record_pre_save >>
 					//////////////////////////////////////////////////////////////////////////////////////
+					#region
 					try
 					{
 						dynamic hookFilterObj = new ExpandoObject();
@@ -2115,6 +2120,7 @@ namespace WebVella.ERP.Web.Controllers
 						connection.RollbackTransaction();
 						return Json(CreateErrorResponse("Plugin error in web hook update_record_pre_save: " + ex.Message));
 					}// <<<
+					#endregion
 
 					result = recMan.UpdateRecord(entityName, postObj);
 					connection.CommitTransaction();
@@ -2134,17 +2140,21 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK ACTION << update_record >>
 			//////////////////////////////////////////////////////////////////////////////////////
+			#region
 			try
 			{
 				dynamic hookFilterObj = new ExpandoObject();
 				hookFilterObj.record = postObj;
+				hookFilterObj.oldRecord = postObj;
 				hookFilterObj.result = result;
+				hookFilterObj.recordId = recordId;
 				hooksService.ProcessActions(SystemWebHookNames.UpdateRecordAction, entityName, hookFilterObj);
 			}
 			catch (Exception ex)
 			{
 				return Json(CreateErrorResponse("Plugin error in web hook update_record: " + ex.Message));
 			}// <<<
+			#endregion
 
 			return DoResponse(result);
 		}

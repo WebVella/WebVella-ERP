@@ -8006,7 +8006,10 @@ namespace WebVella.ERP.Project
 								{
 									new SelectFieldOption(){ Key = "added", Value = "added" },
 									new SelectFieldOption(){ Key = "created", Value = "created" },
-									new SelectFieldOption(){ Key = "updated", Value = "updated" }
+									new SelectFieldOption(){ Key = "updated", Value = "updated" },
+									new SelectFieldOption(){ Key = "deleted", Value = "deleted" },
+									new SelectFieldOption(){ Key = "timelog", Value = "timelog" },
+									new SelectFieldOption(){ Key = "commented", Value = "commented" }
 								};
 										dropdownField.EnableSecurity = true;
 										dropdownField.Permissions = new FieldPermissions();

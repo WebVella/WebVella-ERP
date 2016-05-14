@@ -28,7 +28,7 @@ namespace WebVella.ERP.Project
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/project/list/my-projects")]
-		public IActionResult MyProjects(string listName = null, string entityName = null, int page = 0)
+		public IActionResult MyProjects(int page = 0)
 		{
 			var response = new ResponseModel();
 			try {
@@ -38,8 +38,6 @@ namespace WebVella.ERP.Project
 			ErpUser user = SecurityContext.CurrentUser;
 			//Get entity meta
 			var entity = entMan.ReadEntity("wv_project").Object;
-			//Get list meta
-			//var list = entMan.ReadRecordList(entity.Name, listName).Object;
 			//check if user role has permissions
 			var canRead = user.Roles.Any(x => entity.RecordPermissions.CanRead.Any(z => z == x.Id));
 			var canCreate = user.Roles.Any(x => entity.RecordPermissions.CanCreate.Any(z => z == x.Id));
@@ -348,7 +346,7 @@ namespace WebVella.ERP.Project
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/project/milestones-list")]
-		public IActionResult ProjectMilestones(string listName = null, string entityName = null, int page = 0)
+		public IActionResult ProjectMilestones(int page = 0)
 		{
 			var response = new ResponseModel();
 
@@ -356,9 +354,7 @@ namespace WebVella.ERP.Project
 			//Get current user
 			ErpUser user = SecurityContext.CurrentUser;
 			//Get entity meta
-			var entity = entMan.ReadEntity(entityName).Object;
-			//Get list meta
-			var list = entMan.ReadRecordList(entity.Name, listName).Object;
+			var entity = entMan.ReadEntity("wv_milestone").Object;
 			//check if user role has permissions
 			var canRead = user.Roles.Any(x => entity.RecordPermissions.CanRead.Any(z => z == x.Id));
 			var canCreate = user.Roles.Any(x => entity.RecordPermissions.CanCreate.Any(z => z == x.Id));
@@ -475,7 +471,7 @@ namespace WebVella.ERP.Project
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/task/list/all")]
-		public IActionResult AllTaskUserCanSee(string listName = null, string entityName = null, int page = 0)
+		public IActionResult AllTaskUserCanSee(string listName, int page = 0)
 		{
 			var response = new ResponseModel();
 			try
@@ -486,8 +482,6 @@ namespace WebVella.ERP.Project
 				ErpUser user = SecurityContext.CurrentUser;
 				//Get entity meta
 				var entity = entMan.ReadEntity("wv_task").Object;
-				//Get list meta
-				var list = entMan.ReadRecordList(entity.Name, listName).Object;
 				//check if user role has permissions
 				var canRead = user.Roles.Any(x => entity.RecordPermissions.CanRead.Any(z => z == x.Id));
 				var canCreate = user.Roles.Any(x => entity.RecordPermissions.CanCreate.Any(z => z == x.Id));
@@ -677,7 +671,7 @@ namespace WebVella.ERP.Project
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/bug/list/all")]
-		public IActionResult AllBugsUserCanSee(string listName = null, string entityName = null, int page = 0)
+		public IActionResult AllBugsUserCanSee(string listName, int page = 0)
 		{
 			var response = new ResponseModel();
 			try
@@ -688,8 +682,6 @@ namespace WebVella.ERP.Project
 				ErpUser user = SecurityContext.CurrentUser;
 				//Get entity meta
 				var entity = entMan.ReadEntity("wv_bug").Object;
-				//Get list meta
-				var list = entMan.ReadRecordList(entity.Name, listName).Object;
 				//check if user role has permissions
 				var canRead = user.Roles.Any(x => entity.RecordPermissions.CanRead.Any(z => z == x.Id));
 				var canCreate = user.Roles.Any(x => entity.RecordPermissions.CanCreate.Any(z => z == x.Id));
@@ -862,6 +854,307 @@ namespace WebVella.ERP.Project
 				response.Timestamp = DateTime.UtcNow;
 				response.Message = "Successful read";
 				response.Object = bugList;
+
+				return Json(response);
+
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = ex.Message;
+				response.Object = null;
+				return Json(response);
+			}
+		}
+
+		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/activity/list/all")]
+		public IActionResult AllActivitiesUserCanSee(string label = "all", int page = 1)
+		{
+			var response = new ResponseModel();
+			try
+			{
+				//var queryString = HttpContext.Request.QueryString;
+				#region << Can user read activities >>
+				//Get current user
+				ErpUser user = SecurityContext.CurrentUser;
+				//Get entity meta
+				var entity = entMan.ReadEntity("wv_project_activity").Object;
+				//check if user role has permissions
+				var canRead = user.Roles.Any(x => entity.RecordPermissions.CanRead.Any(z => z == x.Id));
+				var canCreate = user.Roles.Any(x => entity.RecordPermissions.CanCreate.Any(z => z == x.Id));
+				var canUpdate = user.Roles.Any(x => entity.RecordPermissions.CanUpdate.Any(z => z == x.Id));
+				var canDelete = user.Roles.Any(x => entity.RecordPermissions.CanDelete.Any(z => z == x.Id));
+
+				if (!canRead)
+				{
+					response.Success = false;
+					response.Message = "You do not have permission to read the activities in this system";
+					response.Timestamp = DateTime.UtcNow;
+					return Json(response); //return empty object
+				}
+				#endregion
+
+				var activityQueryResponse = new QueryResponse();
+				var userCanSeeProjectIds = new List<Guid>();
+				#region << Generate list of projects user can see >>
+				{
+					var requestedFields = "id,$user_1_n_project_owner.id,$role_n_n_project_team.id,$role_n_n_project_customer.id";
+					//QueryObject filterObj = EntityQuery.QueryEQ("id", recordId);
+					QueryObject filterObj = null;
+					EntityQuery resultQuery = new EntityQuery("wv_project", requestedFields, filterObj, null, null, null, null);
+					QueryResponse result = recMan.Find(resultQuery);
+					var resultRecordsList = new List<EntityRecord>();
+					if (!result.Success)
+					{
+						response.Success = false;
+						response.Timestamp = DateTime.UtcNow;
+						response.Message = result.Message;
+						response.Object = null;
+						return Json(response);
+					}
+					foreach (var record in result.Object.Data)
+					{
+						//Check if user can view the object
+						var userIsPM = false;
+						var userIsStaff = false;
+						var userIsCustomer = false;
+						#region << Check user roles >>
+						foreach (var userRole in user.Roles)
+						{
+							userIsPM = ((List<EntityRecord>)record["$user_1_n_project_owner"]).Any(z => (Guid)z["id"] == user.Id);
+							userIsStaff = ((List<EntityRecord>)record["$role_n_n_project_team"]).Any(z => (Guid)z["id"] == userRole.Id);
+							userIsCustomer = ((List<EntityRecord>)record["$role_n_n_project_customer"]).Any(z => (Guid)z["id"] == userRole.Id);
+						}
+						#endregion
+
+						if (userIsPM || userIsStaff || userIsCustomer)
+						{
+							userCanSeeProjectIds.Add((Guid)record["id"]);
+						}
+					}
+				}
+				#endregion
+
+				#region << Get activities >>
+				{
+					var fields = "id,label,created_on,description,subject,"+
+					"$user_wv_project_activity_created_by.username,$user_wv_project_activity_created_by.image," +
+					"$project_1_n_activity.name";
+
+					QueryObject rootFilterSection = null;
+					QueryObject auxFilterSection = null;
+					QueryObject projectIdFilterSection = null;
+					
+					#region << project id filters >>
+					var projectIdRulesList = new List<QueryObject>();
+					foreach (var projectId in userCanSeeProjectIds)
+					{
+						var projectIdRule = EntityQuery.QueryEQ("project_id", projectId);
+						projectIdRulesList.Add(projectIdRule);
+					}
+					projectIdFilterSection = EntityQuery.QueryOR(projectIdRulesList.ToArray());
+					#endregion
+
+					#region << Aux filters & Sort>>
+					var auxRulesList = new List<QueryObject>();
+					QueryObject auxRule = new QueryObject();
+					if(label != "all") {
+						auxRule = EntityQuery.QueryEQ("label", label);
+						auxRulesList.Add(auxRule);
+					}
+
+					auxFilterSection = EntityQuery.QueryAND(auxRulesList.ToArray());
+					//Add default sort by created_on
+					var sortRulesList = new List<QuerySortObject>();
+					var defaultSortRule = new QuerySortObject("created_on",QuerySortType.Descending);
+					sortRulesList.Add(defaultSortRule);
+
+					#endregion
+
+					rootFilterSection = EntityQuery.QueryAND(projectIdFilterSection,auxFilterSection);
+
+					//Calculate page
+					var pageSize = 15;
+					var skipRecords = (page-1)*pageSize;
+
+
+					var activityQuery = new EntityQuery("wv_project_activity", fields, rootFilterSection, sortRulesList.ToArray(), skipRecords, pageSize, null);
+
+					activityQueryResponse = recMan.Find(activityQuery);
+					if (!activityQueryResponse.Success)
+					{
+						response.Success = false;
+						response.Timestamp = DateTime.UtcNow;
+						response.Message = activityQueryResponse.Message;
+						response.Object = null;
+						return Json(response);
+					}
+				}
+				#endregion
+
+				response.Success = true;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = "Successful read";
+				response.Object = activityQueryResponse.Object.Data;
+
+				return Json(response);
+
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = ex.Message;
+				response.Object = null;
+				return Json(response);
+			}
+		}
+
+		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/task/list/last-updated-for-owner")]
+		public IActionResult LastUpdatedTasksUserOwns(int page = 1)
+		{
+			var response = new ResponseModel();
+			try
+			{
+				//var queryString = HttpContext.Request.QueryString;
+				#region << Can user read activities >>
+				//Get current user
+				ErpUser user = SecurityContext.CurrentUser;
+				//Get entity meta
+				var entity = entMan.ReadEntity("wv_task").Object;
+				//check if user role has permissions
+				var canRead = user.Roles.Any(x => entity.RecordPermissions.CanRead.Any(z => z == x.Id));
+				var canCreate = user.Roles.Any(x => entity.RecordPermissions.CanCreate.Any(z => z == x.Id));
+				var canUpdate = user.Roles.Any(x => entity.RecordPermissions.CanUpdate.Any(z => z == x.Id));
+				var canDelete = user.Roles.Any(x => entity.RecordPermissions.CanDelete.Any(z => z == x.Id));
+
+				if (!canRead)
+				{
+					response.Success = false;
+					response.Message = "You do not have permission to read the tasks in this system";
+					response.Timestamp = DateTime.UtcNow;
+					return Json(response); //return empty object
+				}
+				#endregion
+
+				var taskQueryResponse = new QueryResponse();
+
+				#region << Get activities >>
+				{
+					var fields = "id,number,subject,last_modified_on,$user_wv_task_modified_by.username";
+
+					//Add default sort by created_on
+					var sortRulesList = new List<QuerySortObject>();
+					var defaultSortRule = new QuerySortObject("last_modified_on",QuerySortType.Descending);
+					sortRulesList.Add(defaultSortRule);
+
+					#endregion
+					var ownerFilter = EntityQuery.QueryEQ("owner_id",SecurityContext.CurrentUser.Id);
+					var notClosedFilter = EntityQuery.QueryNOT("status","completed");
+
+					var rootFilterSection = EntityQuery.QueryAND(ownerFilter,notClosedFilter);
+
+					//Calculate page
+					var pageSize = 5;
+					var skipRecords = (page-1)*pageSize;
+
+					var activityQuery = new EntityQuery("wv_task", fields, rootFilterSection, sortRulesList.ToArray(), skipRecords, pageSize, null);
+
+					taskQueryResponse = recMan.Find(activityQuery);
+					if (!taskQueryResponse.Success)
+					{
+						response.Success = false;
+						response.Timestamp = DateTime.UtcNow;
+						response.Message = taskQueryResponse.Message;
+						response.Object = null;
+						return Json(response);
+					}
+				}
+
+				response.Success = true;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = "Successful read";
+				response.Object = taskQueryResponse.Object.Data;
+
+				return Json(response);
+
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = ex.Message;
+				response.Object = null;
+				return Json(response);
+			}
+		}
+
+		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/bug/list/last-updated-for-owner")]
+		public IActionResult LastUpdatedBugsUserOwns(int page = 1)
+		{
+			var response = new ResponseModel();
+			try
+			{
+				//var queryString = HttpContext.Request.QueryString;
+				#region << Can user read activities >>
+				//Get current user
+				ErpUser user = SecurityContext.CurrentUser;
+				//Get entity meta
+				var entity = entMan.ReadEntity("wv_bug").Object;
+				//check if user role has permissions
+				var canRead = user.Roles.Any(x => entity.RecordPermissions.CanRead.Any(z => z == x.Id));
+				var canCreate = user.Roles.Any(x => entity.RecordPermissions.CanCreate.Any(z => z == x.Id));
+				var canUpdate = user.Roles.Any(x => entity.RecordPermissions.CanUpdate.Any(z => z == x.Id));
+				var canDelete = user.Roles.Any(x => entity.RecordPermissions.CanDelete.Any(z => z == x.Id));
+
+				if (!canRead)
+				{
+					response.Success = false;
+					response.Message = "You do not have permission to read the bugs in this system";
+					response.Timestamp = DateTime.UtcNow;
+					return Json(response); //return empty object
+				}
+				#endregion
+
+				var bugQueryResponse = new QueryResponse();
+
+				#region << Get activities >>
+				{
+					var fields = "id,number,subject,last_modified_on,$user_wv_bug_modified_by.username";
+
+					//Add default sort by created_on
+					var sortRulesList = new List<QuerySortObject>();
+					var defaultSortRule = new QuerySortObject("last_modified_on",QuerySortType.Descending);
+					sortRulesList.Add(defaultSortRule);
+
+					#endregion
+					var ownerFilter = EntityQuery.QueryEQ("owner_id",SecurityContext.CurrentUser.Id);
+					var notClosedFilter = EntityQuery.QueryNOT("status","closed");
+
+					var rootFilterSection = EntityQuery.QueryAND(ownerFilter,notClosedFilter);
+
+					//Calculate page
+					var pageSize = 5;
+					var skipRecords = (page-1)*pageSize;
+
+					var activityQuery = new EntityQuery("wv_bug", fields, rootFilterSection, sortRulesList.ToArray(), skipRecords, pageSize, null);
+
+					bugQueryResponse = recMan.Find(activityQuery);
+					if (!bugQueryResponse.Success)
+					{
+						response.Success = false;
+						response.Timestamp = DateTime.UtcNow;
+						response.Message = bugQueryResponse.Message;
+						response.Object = null;
+						return Json(response);
+					}
+				}
+
+				response.Success = true;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = "Successful read";
+				response.Object = bugQueryResponse.Object.Data;
 
 				return Json(response);
 

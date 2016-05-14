@@ -98,22 +98,7 @@ namespace WebVella.ERP.Project
 			var record = (EntityRecord)data.record;
 			var createResult = (QueryResponse)data.result;
 			var createdRecord = createResult.Object.Data[0];
-			#region << Task activity >>
-			{
-				var activityObj = new EntityRecord();
-				activityObj["id"] = Guid.NewGuid();
-				activityObj["task_id"] = (Guid)createdRecord["id"];
-				activityObj["project_id"] = (Guid)createdRecord["project_id"];
-				activityObj["subject"] = @"created a task #" + (decimal)createdRecord["number"] + " '" + (string)createdRecord["subject"] + "'";
-				activityObj["label"] = "created";
-				var createResponse = recMan.CreateRecord("wv_project_activity", activityObj);
-				if (!createResponse.Success)
-				{
-					throw new Exception(createResponse.Message);
-				}
-			}
-			#endregion
-			
+			Utils.CreateActivity(recMan,"created","created a <i class='fa fa-fw fa-tasks go-purple'></i> task #" + createdRecord["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"])  +"</a>",null,(Guid)createdRecord["project_id"],(Guid)createdRecord["id"],null);
 		}
 
 		#endregion
@@ -165,6 +150,7 @@ namespace WebVella.ERP.Project
 
 		#region << Bug >>
 
+		#region << Create >>
 		[WebHook("create_record_pre_save", "wv_bug")]
 		public dynamic BugCreateRecordPreSave(dynamic data)
 		{
@@ -217,7 +203,102 @@ namespace WebVella.ERP.Project
 
 			return data;
 		}
+		
+		[WebHook("create_record", "wv_bug")]
+		public void BugCreateRecordAction(dynamic data)
+		{
+			var record = (EntityRecord)data.record;
+			var createResult = (QueryResponse)data.result;
+			var createdRecord = createResult.Object.Data[0];
+			Utils.CreateActivity(recMan,"created","created a <i class='fa fa-fw fa-bug go-red'></i> bug #" + createdRecord["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"])  +"</a>",null,(Guid)createdRecord["project_id"],null,(Guid)createdRecord["id"]);
+						
+		}
 		#endregion
-    }
+
+
+		#region << Update >>
+		[WebHook("update_record_pre_save", "wv_bug")]
+		public dynamic BugUpdateRecordPreSave(dynamic data)
+		{
+			data = Utils.UpdateBug(data,recMan);
+			return data;
+		}
+		#endregion
+		
+		#region << Patch >>
+		[WebHook("patch_record_pre_save", "wv_bug")]
+		public dynamic BugPatchRecordPreSave(dynamic data)
+		{
+			data = Utils.UpdateBug(data,recMan);
+			return data;
+		}
+		#endregion
+
+		#endregion
+    
+		#region << Time log >>
+		
+		[WebHook("create_record", "wv_timelog")]
+		public void TimelogCreateRecordAction(dynamic data)
+		{
+			var record = (EntityRecord)data.record;
+			var createResult = (QueryResponse)data.result;
+			var createdRecord = createResult.Object.Data[0];
+			var billableString = "not billable";
+			if((bool)createdRecord["billable"]) {
+				billableString = "billable";
+			}
+			if(createdRecord["task_id"] != null) {
+				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["task_id"]);
+				var query = new EntityQuery("wv_task", "*", filterObj, null, null, null);
+				var result = recMan.Find(query);
+				if(result.Success) {
+					var task = result.Object.Data[0];
+					Utils.CreateActivity(recMan,"timelog","created a <i class='fa fa-fw fa-clock-o go-blue'></i> time log of <b>"+ ((decimal)createdRecord["hours"]).ToString("N2") + " " + billableString + "</b> hours for task #" + task["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"])  +"</a>",null,(Guid)task["project_id"],(Guid)task["id"],null);
+				}
+			}
+			else if (createdRecord["bug_id"] != null) {
+				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["bug_id"]);
+				var query = new EntityQuery("wv_bug", "*", filterObj, null, null, null);
+				var result = recMan.Find(query);
+				if(result.Success) {
+					var bug = result.Object.Data[0];
+					Utils.CreateActivity(recMan,"timelog","created a <i class='fa fa-fw fa-clock-o go-blue'></i> time log of <b>"+ ((decimal)createdRecord["hours"]).ToString("N2") + " " + billableString + "</b> hours  for bug #" + bug["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"])  +"</a>",null,(Guid)bug["project_id"],null,(Guid)bug["id"]);
+				}
+			}
+		}
+
+		#endregion	
+
+		#region << Comment >>
+		
+		[WebHook("create_record", "wv_project_comment")]
+		public void CommentCreateRecordAction(dynamic data)
+		{
+			var record = (EntityRecord)data.record;
+			var createResult = (QueryResponse)data.result;
+			var createdRecord = createResult.Object.Data[0];
+			if(createdRecord["task_id"] != null) {
+				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["task_id"]);
+				var query = new EntityQuery("wv_task", "*", filterObj, null, null, null);
+				var result = recMan.Find(query);
+				if(result.Success) {
+					var task = result.Object.Data[0];
+					Utils.CreateActivity(recMan,"commented","created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for task #" + task["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"])  +"</a>",null,(Guid)task["project_id"],(Guid)task["id"],null);
+				}
+			}
+			else if (createdRecord["bug_id"] != null) {
+				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["bug_id"]);
+				var query = new EntityQuery("wv_bug", "*", filterObj, null, null, null);
+				var result = recMan.Find(query);
+				if(result.Success) {
+					var bug = result.Object.Data[0];
+					Utils.CreateActivity(recMan,"commented","created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for bug #" + bug["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"])  +"</a>",null,(Guid)bug["project_id"],null,(Guid)bug["id"]);
+				}
+			}
+		}
+
+		#endregion	
+	}
 
 }
