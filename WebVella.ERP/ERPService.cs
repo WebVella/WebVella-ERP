@@ -133,7 +133,7 @@ namespace WebVella.ERP
 							userName.HelpText = "";
 							userName.Required = true;
 							userName.Unique = true;
-							userName.Searchable = false;
+							userName.Searchable = true;
 							userName.Auditable = false;
 							userName.System = true;
 							userName.DefaultValue = "";
@@ -151,7 +151,7 @@ namespace WebVella.ERP
 							email.HelpText = "";
 							email.Required = true;
 							email.Unique = true;
-							email.Searchable = false;
+							email.Searchable = true;
 							email.Auditable = false;
 							email.System = true;
 							email.DefaultValue = "";

@@ -991,7 +991,6 @@
 
 		//#endregion
 
-
 		//#region << List filter row >>
 		popupCtrl.filterQuery = {};
 		popupCtrl.listIsFiltered = false;

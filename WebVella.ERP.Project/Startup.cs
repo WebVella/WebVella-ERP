@@ -2998,6 +2998,28 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
+									#region << user_n_n_task_watchers Relation >>
+									{
+										var originEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+										var targetEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+										EntityRelation NToNRelation = new EntityRelation();
+										NToNRelation.Id = new Guid("de7e1578-8f8f-4454-a954-0fb62d3bf425");
+										NToNRelation.Name = "user_n_n_task_watchers";
+										NToNRelation.Label = "user_n_n_task_watchers";
+										NToNRelation.System = true;
+										NToNRelation.RelationType = EntityRelationType.ManyToMany;
+										NToNRelation.OriginEntityId = originEntity.Id;
+										NToNRelation.OriginFieldId = originEntity.Fields.Single(x => x.Name == "id").Id;
+										NToNRelation.TargetEntityId = targetEntity.Id;
+										NToNRelation.TargetFieldId = targetEntity.Fields.Single(x => x.Name == "id").Id;
+										{
+											var result = relMan.Create(NToNRelation);
+											if (!result.Success)
+												throw new Exception("CREATE user_n_n_task_watchers RELATION:" + result.Message);
+										}
+									}
+									#endregion
+
 									#region << task_1_n_task_parent Relation >>
 									{
 										var originEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
@@ -4887,6 +4909,26 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
+										#region << watchers >>
+										{
+											var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
+											viewItemFromRelation = new InputRecordViewRelationFieldItem();
+											viewItemFromRelation.EntityId = targetEntity.Id;
+											viewItemFromRelation.EntityName = targetEntity.Name;
+											viewItemFromRelation.Type = "fieldFromRelation";
+											viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
+											viewItemFromRelation.FieldName = "username";
+											viewItemFromRelation.FieldLabel = "Watchers";
+											viewItemFromRelation.FieldPlaceholder = "";
+											viewItemFromRelation.FieldRequired = true;
+											viewItemFromRelation.FieldLookupList = "lookup";
+											viewItemFromRelation.RelationId = targetRelation.Id;
+											viewItemFromRelation.RelationName = targetRelation.Name;
+											viewColumn.Items.Add(viewItemFromRelation);
+										}
+										#endregion
+
 										//Save column
 										viewRow.Columns.Add(viewColumn);
 										#endregion
@@ -5431,6 +5473,28 @@ namespace WebVella.ERP.Project
 											var result = relMan.Create(oneToNRelation);
 											if (!result.Success)
 												throw new Exception("CREATE user_1_n_bug_owner RELATION:" + result.Message);
+										}
+									}
+									#endregion
+
+									#region << user_n_n_bug_watchers Relation >>
+									{
+										var originEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+										var targetEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
+										EntityRelation NToNRelation = new EntityRelation();
+										NToNRelation.Id = new Guid("b71d0c52-1626-48da-91bc-e10999ba79b8");
+										NToNRelation.Name = "user_n_n_bug_watchers";
+										NToNRelation.Label = "user_n_n_bug_watchers";
+										NToNRelation.System = true;
+										NToNRelation.RelationType = EntityRelationType.ManyToMany;
+										NToNRelation.OriginEntityId = originEntity.Id;
+										NToNRelation.OriginFieldId = originEntity.Fields.Single(x => x.Name == "id").Id;
+										NToNRelation.TargetEntityId = targetEntity.Id;
+										NToNRelation.TargetFieldId = targetEntity.Fields.Single(x => x.Name == "id").Id;
+										{
+											var result = relMan.Create(NToNRelation);
+											if (!result.Success)
+												throw new Exception("CREATE user_n_n_bug_watchers RELATION:" + result.Message);
 										}
 									}
 									#endregion
@@ -9615,6 +9679,26 @@ namespace WebVella.ERP.Project
 											viewItem.FieldName = "description";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										#region << watchers >>
+										{
+											var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
+											viewItemFromRelation = new InputRecordViewRelationFieldItem();
+											viewItemFromRelation.EntityId = targetEntity.Id;
+											viewItemFromRelation.EntityName = targetEntity.Name;
+											viewItemFromRelation.Type = "fieldFromRelation";
+											viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
+											viewItemFromRelation.FieldName = "username";
+											viewItemFromRelation.FieldLabel = "Watchers";
+											viewItemFromRelation.FieldPlaceholder = "";
+											viewItemFromRelation.FieldRequired = true;
+											viewItemFromRelation.FieldLookupList = "lookup";
+											viewItemFromRelation.RelationId = targetRelation.Id;
+											viewItemFromRelation.RelationName = targetRelation.Name;
+											viewColumn.Items.Add(viewItemFromRelation);
 										}
 										#endregion
 

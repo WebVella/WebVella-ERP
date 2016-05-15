@@ -17,12 +17,12 @@ namespace WebVella.ERP.Projects
 
 			_settings = new EmailSettings()
 			{
-	Server = "mail.gmail.com",
+	Server = "mail.efrea.com",
 	EnableSsl = false,
 	Port = 25,
-	UserName = "fake@gmail.com",
-	Password = "test",
-	DisplayName = "Peter Dorko"	
+	UserName = "no-reply@efrea.com",
+	Password = "123efrea_",
+	DisplayName = "Peter Dorko"
 			};
 		}
 
