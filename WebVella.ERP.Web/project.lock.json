@@ -2038,19 +2038,6 @@
           "System.Data",
           "System.XML"
         ]
-      },
-      "WebVella.ERP.SamplePlugin/1.0.0": {
-        "type": "project",
-        "framework": "DNX,Version=v4.6",
-        "dependencies": {
-          "Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
-          "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
-          "WebVella.ERP": "1.0.0"
-        },
-        "frameworkAssemblies": [
-          "System.Data",
-          "System.XML"
-        ]
       }
     },
     "DNX,Version=v4.6/win7-x86": {
@@ -4087,19 +4074,6 @@
         ]
       },
       "WebVella.ERP.Project/1.0.0": {
-        "type": "project",
-        "framework": "DNX,Version=v4.6",
-        "dependencies": {
-          "Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
-          "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
-          "WebVella.ERP": "1.0.0"
-        },
-        "frameworkAssemblies": [
-          "System.Data",
-          "System.XML"
-        ]
-      },
-      "WebVella.ERP.SamplePlugin/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -6158,19 +6132,6 @@
           "System.Data",
           "System.XML"
         ]
-      },
-      "WebVella.ERP.SamplePlugin/1.0.0": {
-        "type": "project",
-        "framework": "DNX,Version=v4.6",
-        "dependencies": {
-          "Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
-          "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
-          "WebVella.ERP": "1.0.0"
-        },
-        "frameworkAssemblies": [
-          "System.Data",
-          "System.XML"
-        ]
       }
     }
   },
@@ -6186,10 +6147,6 @@
     "WebVella.ERP.Project/1.0.0": {
       "type": "project",
       "path": "../WebVella.ERP.Project/project.json"
-    },
-    "WebVella.ERP.SamplePlugin/1.0.0": {
-      "type": "project",
-      "path": "../WebVella.ERP.SamplePlugin/project.json"
     },
     "AutoMapper/3.3.1": {
       "type": "package",
@@ -8573,8 +8530,7 @@
       "System.Threading >= 4.0.11-beta-23516",
       "WebVella.ERP >= 1.0.0-*",
       "WebVella.ERP.Project >= 1.0.0-*",
-      "WebVella.ERP.Crm >= 1.0.0-*",
-      "WebVella.ERP.SamplePlugin >= 1.0.0-*"
+      "WebVella.ERP.Crm >= 1.0.0-*"
     ],
     "DNX,Version=v4.6": [
       "fx/System.Drawing >= 4.0.0"
