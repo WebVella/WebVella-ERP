@@ -345,46 +345,124 @@ namespace WebVella.ERP.Project
 			var record = (EntityRecord)data.record;
 			var createResult = (QueryResponse)data.result;
 			var createdRecord = createResult.Object.Data[0];
+			var task = new EntityRecord();
+			var bug = new EntityRecord();
 			if (createdRecord["task_id"] != null)
 			{
 				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["task_id"]);
-				var query = new EntityQuery("wv_task", "*", filterObj, null, null, null);
+				var query = new EntityQuery("wv_task", "id,number,subject,project_id,$$user_n_n_task_watchers.id,$$user_n_n_task_watchers.email,$$project_1_n_task.code", filterObj, null, null, null);
 				var result = recMan.Find(query);
 				if (result.Success)
 				{
-					var task = result.Object.Data[0];
+					task = result.Object.Data[0];
 					Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for task #" + task["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", null, (Guid)task["project_id"], (Guid)task["id"], null);
+				}
+				else
+				{
+					throw new Exception(result.Message);
 				}
 			}
 			else if (createdRecord["bug_id"] != null)
 			{
 				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["bug_id"]);
-				var query = new EntityQuery("wv_bug", "*", filterObj, null, null, null);
+				var query = new EntityQuery("wv_bug", "id,number,subject,project_id,$$user_n_n_bug_watchers.id,$$user_n_n_bug_watchers.email,$$project_1_n_bug.code", filterObj, null, null, null);
 				var result = recMan.Find(query);
 				if (result.Success)
 				{
-					var bug = result.Object.Data[0];
+					bug = result.Object.Data[0];
 					Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for bug #" + bug["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", null, (Guid)bug["project_id"], null, (Guid)bug["id"]);
+				}
+				else
+				{
+					throw new Exception(result.Message);
 				}
 			}
 
-			//Send email notification
-			var emailService = new EmailService();
-			try
+			var recepients = new List<string>();
+			#region << Add the comment creator to the watch list if he is not there, Generate recipients list >>
 			{
 				if (createdRecord["task_id"] != null)
 				{
-					emailService.SendEmail("no-reply@efrea.com", "New comment on task", "A task was commented");
+					var isCommentatorInWatchList = false;
+					#region << Check if is in watch list already >>
+					foreach (var watcher in (List<EntityRecord>)task["$user_n_n_task_watchers"])
+					{
+						if ((Guid)watcher["id"] == (Guid)createdRecord["created_by"])
+						{
+							isCommentatorInWatchList = true;
+						}
+						else
+						{
+							recepients.Add((string)watcher["email"]);
+						}
+					}
+					#endregion
+					if (!isCommentatorInWatchList)
+					{
+						var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
+						var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], (Guid)record["id"]);
+						if (!createRelationNtoNResponse.Success)
+						{
+							throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
+						}
+					}
 				}
 				else if (createdRecord["bug_id"] != null)
 				{
-					emailService.SendEmail("no-reply@efrea.com", "New comment on bug", "A task was commented");
+					var isCommentatorInWatchList = false;
+					#region << Check if is in watch list already >>
+					foreach (var watcher in (List<EntityRecord>)bug["$user_n_n_bug_watchers"])
+					{
+						if ((Guid)watcher["id"] == (Guid)createdRecord["created_by"])
+						{
+							isCommentatorInWatchList = true;
+						}
+						else
+						{
+							recepients.Add((string)watcher["email"]);
+						}
+					}
+					#endregion
+					if (!isCommentatorInWatchList)
+					{
+						var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
+						var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], (Guid)record["id"]);
+						if (!createRelationNtoNResponse.Success)
+						{
+							throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
+						}
+					}
 				}
 			}
-			catch (Exception ex)
+			#endregion
+
+			#region << Generate notifications to watch list>>
+			var emailService = new EmailService();
+			if (recepients.Count > 0)
 			{
-				throw ex;
+				try
+				{
+					if (createdRecord["task_id"] != null)
+					{
+						var subject = "[Task] [New comment] (" + ((List<EntityRecord>)task["$project_1_n_task"])[0]["code"] + "-" + task["number"] + ") " + task["subject"];
+						var content = "<div>Comment contents:</div><div>" + createdRecord["content"] + "</div>";
+						emailService.SendEmail(recepients.ToArray(), subject, content);
+					}
+					else if (createdRecord["bug_id"] != null)
+					{
+						var subject = "[Bug] [New comment] (" + ((List<EntityRecord>)task["$project_1_n_bug"])[0]["code"] + "-" + task["number"] + ") " + task["subject"];
+						var content = "<div>Comment contents:</div><div>" + createdRecord["content"] + "</div>";
+						emailService.SendEmail(recepients.ToArray(), "New comment on bug", content);
+					}
+				}
+				catch (Exception ex)
+				{
+					throw ex;
+				}
 			}
+
+			#endregion
+
 		}
 
 		#endregion

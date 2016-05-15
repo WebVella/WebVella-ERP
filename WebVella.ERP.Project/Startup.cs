@@ -323,6 +323,39 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
+									#region << code >>
+									{
+										InputTextField textboxField = new InputTextField();
+										textboxField.Id = new Guid("d9c6a939-e2e3-4617-900e-e056f0638fa8");
+										textboxField.Name = "code";
+										textboxField.Label = "Code";
+										textboxField.PlaceholderText = "";
+										textboxField.Description = "";
+										textboxField.HelpText = "";
+										textboxField.Required = true;
+										textboxField.Unique = false;
+										textboxField.Searchable = true;
+										textboxField.Auditable = false;
+										textboxField.System = true;
+										textboxField.DefaultValue = string.Empty;
+										textboxField.MaxLength = null;
+										textboxField.EnableSecurity = true;
+										textboxField.Permissions = new FieldPermissions();
+										textboxField.Permissions.CanRead = new List<Guid>();
+										textboxField.Permissions.CanUpdate = new List<Guid>();
+										//READ
+										textboxField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+										textboxField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+										//UPDATE
+										textboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+										{
+											var response = entMan.CreateField(PROJECT_ENTITY_ID, textboxField, false);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + PROJECT_ENTITY_NAME + " Field: code" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
 									#region << description >>
 									{
 										InputHtmlField htmlField = new InputHtmlField();
@@ -1202,6 +1235,18 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
+										#region << code >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = PROJECT_ENTITY_ID;
+											viewItem.EntityName = PROJECT_ENTITY_NAME;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "code").Id;
+											viewItem.FieldName = "code";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
 										//Save column
 										viewRow.Columns.Add(viewColumn);
 										#endregion
@@ -1481,6 +1526,18 @@ namespace WebVella.ERP.Project
 											viewItem.EntityName = PROJECT_ENTITY_NAME;
 											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "end_date").Id;
 											viewItem.FieldName = "end_date";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										#region << code >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = PROJECT_ENTITY_ID;
+											viewItem.EntityName = PROJECT_ENTITY_NAME;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "code").Id;
+											viewItem.FieldName = "code";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
 										}
@@ -9280,6 +9337,18 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
+									#region << code >>
+									{
+										viewItem = new InputRecordViewFieldItem();
+										viewItem.EntityId = PROJECT_ENTITY_ID;
+										viewItem.EntityName = PROJECT_ENTITY_NAME;
+										viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "code").Id;
+										viewItem.FieldName = "code";
+										viewItem.Type = "field";
+										viewColumn.Items.Add(viewItem);
+									}
+									#endregion
+
 									//Save column
 									viewRow.Columns.Add(viewColumn);
 									#endregion
@@ -10004,6 +10073,7 @@ namespace WebVella.ERP.Project
 									sampleRecord["id"] = new Guid("a0141850-b13c-44b4-bb1b-4e0dde4850f4");
 									sampleRecord["name"] = "Corporate website development";
 									sampleRecord["description"] = "All activities for developing a sample application";
+									sampleRecord["code"] = "SMPL";
 									sampleRecord["billable_hour_price"] = 100;
 									sampleRecord["owner_id"] = new Guid("b646c5d4-acc8-4404-af77-6786b81bee05");
 									sampleRecord["customer_id"] = CUSTOMER_RECORD_ID;
