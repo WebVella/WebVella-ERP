@@ -8,7 +8,6 @@ using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Api.Models.AutoMapper;
 using WebVella.ERP.Database;
-using WebVella.ERP.Mail;
 using WebVella.ERP.Plugins;
 using WebVella.ERP.Project.Models;
 using WebVella.ERP.Utilities;
@@ -96,10 +95,12 @@ namespace WebVella.ERP.Project
 						var crmPluginFound = false;
 						foreach (var plugin in installedPlugins)
 						{
-							if (plugin.Name == "webvella-crm")
-							{
-								crmPluginFound = true;
-								break;
+							switch(plugin.Name) {
+								case "webvella-crm":
+									crmPluginFound = true;
+									break;
+								default:
+									break;
 							}
 						}
 

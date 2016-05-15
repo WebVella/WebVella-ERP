@@ -2026,27 +2026,13 @@
           "System.XML"
         ]
       },
-      "WebVella.ERP.Mail/1.0.0": {
-        "type": "project",
-        "framework": "DNX,Version=v4.6",
-        "dependencies": {
-          "Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
-          "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
-          "WebVella.ERP": "1.0.0"
-        },
-        "frameworkAssemblies": [
-          "System.Data",
-          "System.XML"
-        ]
-      },
       "WebVella.ERP.Project/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
           "Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
           "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
-          "WebVella.ERP": "1.0.0",
-          "WebVella.ERP.Mail": "1.0.0"
+          "WebVella.ERP": "1.0.0"
         },
         "frameworkAssemblies": [
           "System.Data",
@@ -4100,27 +4086,13 @@
           "System.XML"
         ]
       },
-      "WebVella.ERP.Mail/1.0.0": {
-        "type": "project",
-        "framework": "DNX,Version=v4.6",
-        "dependencies": {
-          "Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
-          "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
-          "WebVella.ERP": "1.0.0"
-        },
-        "frameworkAssemblies": [
-          "System.Data",
-          "System.XML"
-        ]
-      },
       "WebVella.ERP.Project/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
           "Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
           "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
-          "WebVella.ERP": "1.0.0",
-          "WebVella.ERP.Mail": "1.0.0"
+          "WebVella.ERP": "1.0.0"
         },
         "frameworkAssemblies": [
           "System.Data",
@@ -6174,27 +6146,13 @@
           "System.XML"
         ]
       },
-      "WebVella.ERP.Mail/1.0.0": {
-        "type": "project",
-        "framework": "DNX,Version=v4.6",
-        "dependencies": {
-          "Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
-          "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
-          "WebVella.ERP": "1.0.0"
-        },
-        "frameworkAssemblies": [
-          "System.Data",
-          "System.XML"
-        ]
-      },
       "WebVella.ERP.Project/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
           "Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
           "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
-          "WebVella.ERP": "1.0.0",
-          "WebVella.ERP.Mail": "1.0.0"
+          "WebVella.ERP": "1.0.0"
         },
         "frameworkAssemblies": [
           "System.Data",
@@ -6224,10 +6182,6 @@
     "WebVella.ERP.Crm/1.0.0": {
       "type": "project",
       "path": "../WebVella.ERP.Crm/project.json"
-    },
-    "WebVella.ERP.Mail/1.0.0": {
-      "type": "project",
-      "path": "../WebVella.ERP.Mail/project.json"
     },
     "WebVella.ERP.Project/1.0.0": {
       "type": "project",
@@ -8620,7 +8574,6 @@
       "WebVella.ERP >= 1.0.0-*",
       "WebVella.ERP.Project >= 1.0.0-*",
       "WebVella.ERP.Crm >= 1.0.0-*",
-      "WebVella.ERP.Mail >= 1.0.0-*",
       "WebVella.ERP.SamplePlugin >= 1.0.0-*"
     ],
     "DNX,Version=v4.6": [

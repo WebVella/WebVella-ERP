@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
+using WebVella.ERP.Projects;
 using WebVella.ERP.WebHooks;
 
 namespace WebVella.ERP.Project
@@ -295,6 +296,20 @@ namespace WebVella.ERP.Project
 					var bug = result.Object.Data[0];
 					Utils.CreateActivity(recMan,"commented","created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for bug #" + bug["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"])  +"</a>",null,(Guid)bug["project_id"],null,(Guid)bug["id"]);
 				}
+			}
+
+			//Send email notification
+			var emailService = new EmailService();
+			try {
+				if(createdRecord["task_id"] != null) {
+					emailService.SendEmail("no-reply@efrea.com","New comment on task", "A task was commented");
+				}
+				else if(createdRecord["bug_id"] != null) {
+					emailService.SendEmail("no-reply@efrea.com","New comment on bug", "A task was commented");
+				}
+			}
+			catch(Exception ex) {
+				throw ex;
 			}
 		}
 

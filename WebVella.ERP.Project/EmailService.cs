@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using WebVella.ERP.Mail.Models;
+using WebVella.ERP.Projects.Models;
 
-namespace WebVella.ERP.Mail
+namespace WebVella.ERP.Projects
 {
 	public class EmailService
 	{
@@ -17,12 +17,12 @@ namespace WebVella.ERP.Mail
 
 			_settings = new EmailSettings()
 			{
-			Server = "mail.efrea.com",
-			EnableSsl = false,
-			Port = 25,
-			UserName = "no-reply@efrea.com",
-			Password = "123efrea_",
-			DisplayName = "Peter Dorko"
+	Server = "mail.gmail.com",
+	EnableSsl = false,
+	Port = 25,
+	UserName = "fake@gmail.com",
+	Password = "test",
+	DisplayName = "Peter Dorko"	
 			};
 		}
 
