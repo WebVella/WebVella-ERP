@@ -14,6 +14,7 @@ namespace WebVella.ERP.Api.Models
             Password = String.Empty;
             FirstName = String.Empty;
             LastName = String.Empty;
+			Username = String.Empty;
             Enabled = true;
         }
 

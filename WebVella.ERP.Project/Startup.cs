@@ -1753,9 +1753,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -3352,9 +3350,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -3617,9 +3613,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -3870,9 +3864,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -4123,9 +4115,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -4354,9 +4344,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -4889,7 +4877,7 @@ namespace WebVella.ERP.Project
 										updateViewInput = updateView.DynamicMapTo<InputRecordView>();
 
 										#region << Details >>
-										updateViewInput.Label = "Task details";
+										updateViewInput.Label = "Details";
 										updateViewInput.IconName = "tasks";
 										updateViewInput.ServiceCode = "";
 										#endregion
@@ -4966,25 +4954,6 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
-										#region << watchers >>
-										{
-											var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
-											var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
-											viewItemFromRelation = new InputRecordViewRelationFieldItem();
-											viewItemFromRelation.EntityId = targetEntity.Id;
-											viewItemFromRelation.EntityName = targetEntity.Name;
-											viewItemFromRelation.Type = "fieldFromRelation";
-											viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
-											viewItemFromRelation.FieldName = "username";
-											viewItemFromRelation.FieldLabel = "Watchers";
-											viewItemFromRelation.FieldPlaceholder = "";
-											viewItemFromRelation.FieldRequired = true;
-											viewItemFromRelation.FieldLookupList = "lookup";
-											viewItemFromRelation.RelationId = targetRelation.Id;
-											viewItemFromRelation.RelationName = targetRelation.Name;
-											viewColumn.Items.Add(viewItemFromRelation);
-										}
-										#endregion
 
 										//Save column
 										viewRow.Columns.Add(viewColumn);
@@ -5071,6 +5040,26 @@ namespace WebVella.ERP.Project
 											viewItem.FieldName = "end_date";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										#region << watchers >>
+										{
+											var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
+											viewItemFromRelation = new InputRecordViewRelationFieldItem();
+											viewItemFromRelation.EntityId = targetEntity.Id;
+											viewItemFromRelation.EntityName = targetEntity.Name;
+											viewItemFromRelation.Type = "fieldFromRelation";
+											viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
+											viewItemFromRelation.FieldName = "username";
+											viewItemFromRelation.FieldLabel = "Watchers";
+											viewItemFromRelation.FieldPlaceholder = "";
+											viewItemFromRelation.FieldRequired = true;
+											viewItemFromRelation.FieldLookupList = "lookup";
+											viewItemFromRelation.RelationId = targetRelation.Id;
+											viewItemFromRelation.RelationName = targetRelation.Name;
+											viewColumn.Items.Add(viewItemFromRelation);
 										}
 										#endregion
 
@@ -5794,9 +5783,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -6047,9 +6034,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -6277,9 +6262,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -6507,9 +6490,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -6661,9 +6642,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -7258,9 +7237,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-											ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-											<i class=""fa fa-fw fa-plus""></i> Add New
-										</a>";
+											ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -7376,9 +7353,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-											ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-											<i class=""fa fa-fw fa-plus""></i> Add New
-										</a>";
+											ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -7906,9 +7881,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-										ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-										<i class=""fa fa-fw fa-plus""></i> Add New
-									</a>";
+										ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 
@@ -8884,9 +8857,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 										@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-											ng-click=""ngCtrl.actionService.manageComment(null,ngCtrl)"">
-											<i class=""fa fa-fw fa-plus""></i> Add Comment
-										</a>";
+											ng-click=""ngCtrl.actionService.manageComment(null,ngCtrl)"">Add Comment</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 
@@ -9024,9 +8995,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 										@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-											ng-click=""ngCtrl.actionService.manageComment(null,ngCtrl)"">
-											<i class=""fa fa-fw fa-plus""></i> Add Comment
-										</a>";
+											ng-click=""ngCtrl.actionService.manageComment(null,ngCtrl)"">Add Comment</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 
@@ -9751,26 +9720,6 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
-										#region << watchers >>
-										{
-											var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
-											var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
-											viewItemFromRelation = new InputRecordViewRelationFieldItem();
-											viewItemFromRelation.EntityId = targetEntity.Id;
-											viewItemFromRelation.EntityName = targetEntity.Name;
-											viewItemFromRelation.Type = "fieldFromRelation";
-											viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
-											viewItemFromRelation.FieldName = "username";
-											viewItemFromRelation.FieldLabel = "Watchers";
-											viewItemFromRelation.FieldPlaceholder = "";
-											viewItemFromRelation.FieldRequired = true;
-											viewItemFromRelation.FieldLookupList = "lookup";
-											viewItemFromRelation.RelationId = targetRelation.Id;
-											viewItemFromRelation.RelationName = targetRelation.Name;
-											viewColumn.Items.Add(viewItemFromRelation);
-										}
-										#endregion
-
 										//Save column
 										viewRow.Columns.Add(viewColumn);
 										#endregion
@@ -9836,6 +9785,26 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
+
+										#region << watchers >>
+										{
+											var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
+											viewItemFromRelation = new InputRecordViewRelationFieldItem();
+											viewItemFromRelation.EntityId = targetEntity.Id;
+											viewItemFromRelation.EntityName = targetEntity.Name;
+											viewItemFromRelation.Type = "fieldFromRelation";
+											viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
+											viewItemFromRelation.FieldName = "username";
+											viewItemFromRelation.FieldLabel = "Watchers";
+											viewItemFromRelation.FieldPlaceholder = "";
+											viewItemFromRelation.FieldRequired = true;
+											viewItemFromRelation.FieldLookupList = "lookup";
+											viewItemFromRelation.RelationId = targetRelation.Id;
+											viewItemFromRelation.RelationName = targetRelation.Name;
+											viewColumn.Items.Add(viewItemFromRelation);
+										}
+										#endregion
 										//Save column
 										viewRow.Columns.Add(viewColumn);
 										#endregion

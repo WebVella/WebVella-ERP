@@ -3,9 +3,13 @@
 		<div class="aux-actions">
 
 		</div>
-		<div class="meta-label">
-			<h4><span class="go-gray"><span translate="{{::'RECORD_VIEW_MANAGE_PAGE_TITLE_PREFIX'}}"></span>: </span> {{ngCtrl.view.name}}</h4>
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-file-text-o fa-2x"></i>
 		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux" translate="{{::'RECORD_VIEW_MANAGE_SIDEBAR'}}"></div>
+            <h4 ng-bind="::ngCtrl.view.name"></h4>
+        </div>
 	</div>
 </div>
 <div id="page-body">
@@ -48,6 +52,14 @@
 			</div>
 		</nav>
 		<div class="view-manage-section">
+			<div class="row">
+				<div class="col-xs-8">
+					<h4 style="margin-bottom:1em;" translate="{{::'RECORD_VIEW_SIDEBAR_MANAGE_NOTE'}}"></h4>
+				</div>
+				<div class="col-xs-4">
+					<h4 style="margin-bottom:1em;" translate="{{::'LIBRARY'}}"></h4>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col-sm-8">
 					<div class="panel panel-default wrapper">
@@ -143,8 +155,6 @@
 					</table>
 				</div>
 			</div>
-
-
 		</div>
 	</div>
 </div>

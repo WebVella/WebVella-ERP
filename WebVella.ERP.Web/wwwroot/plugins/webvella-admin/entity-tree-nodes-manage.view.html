@@ -2,9 +2,13 @@
 	<div id="page-meta">
 		<div class="aux-actions">
 		</div>
-		<div class="meta-label">
-			<h4><span class="go-gray"><span translate="{{::'RECORD_TREE_PAGE_TITLE'}}"></span>: </span>{{ngCtrl.tree.meta.label}}</h4>
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-sitemap fa-2x"></i>
 		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux" translate="{{::'RECORD_TREE_MANAGE_NODES'}}"></div>
+            <h4 ng-bind="::ngCtrl.tree.name"></h4>
+        </div>
 	</div>
 </div>
 <div id="page-body">

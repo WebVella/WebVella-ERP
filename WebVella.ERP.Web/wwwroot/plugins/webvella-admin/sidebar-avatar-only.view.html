@@ -1,18 +1,14 @@
-<div id="userbox" class="dropdown" uib-dropdown>
+<!--<div id="userbox" class="dropdown" uib-dropdown>
     <div class="dropdown-toggle" uib-dropdown-toggle>
 		<img class="avatar" src="/plugins/webvella-core/assets/avatar.png" ng-if="::!sidebarData.currentUser.image">
 		<img class="avatar" ng-src="{{::sidebarData.currentUser.image}}" ng-if="::sidebarData.currentUser.image">
 		<span class="username">{{::sidebarData.currentUser.first_name}} {{::sidebarData.currentUser.last_name}}</span>
     </div>
-    <!--<ul class="dropdown-menu dropdown-menu-right">
-        <li>
-            <a href>Account settings</a>
-        </li>
-        <li>
-            <a href>Account settings</a>
-        </li>
-        <li>
-            <a href>Account settings</a>
-        </li>
-    </ul>-->
+</div>-->
+<div id="sidebar-switcher">
+	<ul class="nav nav-pills nav-stacked" style="margin-top:0;">
+		<li>
+			<a ng-click="sidebarData.toggleSideNav()" id="switcher"><i class="fa fa-fw fa-bars"></i></a>
+		</li>
+	</ul>
 </div>

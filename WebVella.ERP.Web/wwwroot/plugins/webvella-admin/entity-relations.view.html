@@ -1,16 +1,20 @@
 <div id="page-title">
     <div id="page-meta">
         <div class="aux-actions">
-			<a class="btn btn-default btn-outline" ng-click="ngCtrl.manageRelationModal(null)"><i class="fa fa-plus"></i> <span translate="{{::'ADD_NEW'}}"></span></a>
 			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.currentEntityRelations.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
 					<input ng-model="ngCtrl.search.name" type="text" class="form-control" placeholder="{{::'RELATION_NAME' | translate}}">
 				</div>
 			</div>            
+			<a class="btn btn-default btn-outline" ng-click="ngCtrl.manageRelationModal(null)"><span translate="{{::'ADD_NEW'}}"></span></a>
         </div>
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-link fa-2x"></i>
+		</div>
         <div class="meta-label">
-            <h4 translate="{{::'RELATIONS'}}"></h4>
+			<div class="meta-label-aux" translate="{{::'ENTITY_MANAGE_RECORD_RELATIONS'}}"></div>
+            <h4 ng-bind="::ngCtrl.entity.name"></h4>
         </div>
     </div>
 </div>

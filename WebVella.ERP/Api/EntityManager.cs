@@ -5888,9 +5888,7 @@ namespace WebVella.ERP.Api
 					actionItem.Weight = 1;
 					actionItem.Template = "" +
 @"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-    ng-href=""{{::ngCtrl.getRecordCreateUrl()}}"">
-	<i class=""fa fa-fw fa-plus""></i> Add New
-</a>";
+    ng-href=""{{::ngCtrl.getRecordCreateUrl()}}"">Add New</a>";
 					break;
 				case "wv_import_records":
 					actionItem.Name = "wv_import_records";

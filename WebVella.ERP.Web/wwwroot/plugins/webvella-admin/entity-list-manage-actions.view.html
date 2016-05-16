@@ -1,12 +1,15 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-default btn-outline" ng-if="!ngCtrl.list.system" ng-click="ngCtrl.deleteListModal()"><i class="fa fa-trash-o go-red"></i> <span translate="{{::'RECORD_LIST_DELETE'}}"></span></a>
-			<a class="btn btn-default btn-outline disabled" ng-if="ngCtrl.list.system" href="javascript:void(0)"><i class="fa fa-lock"></i> <span translate="{{::'DELETE_LOCKED'}}"></span></a>
+			<a class="btn btn-default btn-outline" ng-if="!ngCtrl.list.system" ng-click="ngCtrl.deleteListModal()"><span translate="{{::'RECORD_LIST_DELETE'}}"></span></a>
 		</div>
-		<div class="meta-label">
-			<h4><span class="go-gray" translate="{{::'RECORD_LIST_TITLE_PREFIX'}}"></span> {{ngCtrl.list.name}}</h4>
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-list fa-2x"></i>
 		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux" translate="{{::'RECORD_LIST_MANAGE_ACTIONS'}}"></div>
+            <h4 ng-bind="::ngCtrl.list.name"></h4>
+        </div>
 	</div>
 
 </div>
@@ -49,34 +52,38 @@
 				</ul>
 			</div>
 		</nav>
-		<h4 style="margin-bottom:1em" translate="{{::'RECORD_LIST_TAB_ACTIONS_SERVICE_TITLE'}}"></h4>
-		<p translate="{{::'RECORD_LIST_TAB_ACTIONS_SERVICE_DESCRIPTION'}}"></p>
-		<a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.manageServiceCodeModal()" translate="{{::'MANAGE_CODE'}}"></a> 
-		<span class="divider">|</span>
-		<span class="ng-hide" ng-show="!ngCtrl.list.serviceCode" translate="{{::'RECORD_LIST_TAB_ACTIONS_SERVICE_STATUS_DEFAULT'}}"></span>
-		<span class="ng-hide" ng-show="ngCtrl.list.serviceCode" translate="{{::'RECORD_LIST_TAB_ACTIONS_SERVICE_STATUS_CUSTOM'}}"></span>
+		<div class="row">
+			<div class="col-xs-12">
+				<h4 style="margin-bottom:1em" translate="{{::'RECORD_LIST_TAB_ACTIONS_SERVICE_TITLE'}}"></h4>
+				<p translate="{{::'RECORD_LIST_TAB_ACTIONS_SERVICE_DESCRIPTION'}}"></p>
+				<a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.manageServiceCodeModal()" translate="{{::'MANAGE_CODE'}}"></a>
+				<span class="divider">|</span>
+				<span class="ng-hide" ng-show="!ngCtrl.list.serviceCode" translate="{{::'RECORD_LIST_TAB_ACTIONS_SERVICE_STATUS_DEFAULT'}}"></span>
+				<span class="ng-hide" ng-show="ngCtrl.list.serviceCode" translate="{{::'RECORD_LIST_TAB_ACTIONS_SERVICE_STATUS_CUSTOM'}}"></span>
 
-		<h4 style="margin-bottom:1em;margin-top:2em;" translate="{{::'RECORD_LIST_TAB_ACTIONS_TEMPLATES_TITLE'}}"></h4>
-		<p translate="{{::'RECORD_LIST_TAB_ACTIONS_TEMPLATES_DESCRIPTION'}}"></p>
-		<a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.addManageActionItemModal(null)" translate="{{::'ADD_NEW'}}"></a>
-		<table class="table table-bordered table-hover table-vertical-align-middle ng-hide" style="margin-top:1em;" ng-show="ngCtrl.list.actionItems.length > 0">
-			<thead>
-				<tr>
-					<th width="30"></th>
-					<th width="200" translate="{{::'MENU'}}"></th>
-					<th width="30" translate="{{::'WEIGHT'}}"></th>
-					<th translate="{{::'NAME'}}"></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="actionItem in ngCtrl.list.actionItems track by actionItem.name">
-					<td><a class="btn btn-default btn-outline"  href="javascript:void(0)" ng-click="ngCtrl.addManageActionItemModal(actionItem)"><i class="fa fa-fw fa-pencil"/></a></td>
-					<td ng-bind="actionItem.menu"></td>
-					<td ng-bind="actionItem.weight"></td>
-					<td ng-bind="actionItem.name"></td>
-				</tr>
-			</tbody>
-		</table>
+				<h4 style="margin-bottom:1em;margin-top:2em;" translate="{{::'RECORD_LIST_TAB_ACTIONS_TEMPLATES_TITLE'}}"></h4>
+				<p translate="{{::'RECORD_LIST_TAB_ACTIONS_TEMPLATES_DESCRIPTION'}}"></p>
+				<a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.addManageActionItemModal(null)" translate="{{::'ADD_NEW'}}"></a>
+				<table class="table table-bordered table-hover table-vertical-align-middle ng-hide" style="margin-top:1em;" ng-show="ngCtrl.list.actionItems.length > 0">
+					<thead>
+						<tr>
+							<th width="30"></th>
+							<th width="200" translate="{{::'MENU'}}"></th>
+							<th width="30" translate="{{::'WEIGHT'}}"></th>
+							<th translate="{{::'NAME'}}"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="actionItem in ngCtrl.list.actionItems track by actionItem.name">
+							<td><a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.addManageActionItemModal(actionItem)"><i class="fa fa-fw fa-pencil" /></a></td>
+							<td ng-bind="actionItem.menu"></td>
+							<td ng-bind="actionItem.weight"></td>
+							<td ng-bind="actionItem.name"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 </div>
 
@@ -134,8 +141,8 @@
 						</ng-messages>
 						<small class="error ng-hide" ng-show="popupCtrl.nameError">
 							{{popupCtrl.nameMessage}}
-						</small>	
-						<div class="description ng-hide" ng-show="!popupCtrl.nameError" translate="{{::'RECORD_LIST_TAB_ACTIONS_NAME_UNIQUE_DESCRIPTION'}}"></div>					
+						</small>
+						<div class="description ng-hide" ng-show="!popupCtrl.nameError" translate="{{::'RECORD_LIST_TAB_ACTIONS_NAME_UNIQUE_DESCRIPTION'}}"></div>
 					</div>
 					<label class="control-label col-sm-1" translate="{{::'WEIGHT'}}"></label>
 					<div class="col-sm-3">
@@ -156,7 +163,7 @@
 					<label class="control-label col-sm-1" translate="{{::'MENU'}}"></label>
 					<div class="col-sm-7">
 						<select class="form-control" ng-model="popupCtrl.actionItem.menu" ng-change="popupCtrl.menuChanged()"
-						ng-options="option.value as option.key for option in popupCtrl.menuOptions"></select>
+								ng-options="option.value as option.key for option in popupCtrl.menuOptions"></select>
 					</div>
 				</div>
 			</div>
@@ -164,7 +171,7 @@
 				<div class="row">
 					<label class="control-label col-sm-1" translate="{{::'TEMPLATE'}}"></label>
 					<div class="col-sm-11">
-						<div ui-ace="popupCtrl.aceOptions" ng-model="popupCtrl.actionItem.template" style="height:100px;"></div>						
+						<div ui-ace="popupCtrl.aceOptions" ng-model="popupCtrl.actionItem.template" style="height:100px;"></div>
 					</div>
 				</div>
 			</div>

@@ -1,12 +1,15 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<span class="btn btn-default btn-outline go-grey disabled" title="{{::'ENTITY_DELETE_LOCKED_MESSAGE' | translate}}" ng-show="ngCtrl.entity.system"><i class="fa fa-lock"></i> <span translate="{{::'DELETE_LOCKED'}}"></span></span>
 			<a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.openDeleteEntityModal()" ng-show="!ngCtrl.entity.system"><i class="fa fa-trash go-red"></i> <span translate="{{::'ENTITY_DELETE'}}"></span></a>
 		</div>
-		<div class="meta-label">
-			<h4 translate="{{::'DETAILS'}}"></h4>
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-info-circle fa-2x"></i>
 		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux" translate="{{::'ENTITY_MANAGE_DETAILS'}}"></div>
+            <h4 ng-bind="::ngCtrl.entity.name"></h4>
+        </div>
 	</div>
 </div>
 <div id="page-body">

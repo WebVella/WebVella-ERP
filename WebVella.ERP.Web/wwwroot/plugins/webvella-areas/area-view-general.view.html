@@ -14,11 +14,15 @@
 				</ul>
 			</span>
 		</div>
-		<div class="meta-label">
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-{{::ngCtrl.entity.iconName}} fa-2x"></i>
+		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux">{{::ngCtrl.entity.label}} <span class="ng-hide" ng-show="ngCtrl.showPageTitleAuxLabelSecondary"><span class="divider"><i class="fa fa-caret-right"></i></span> {{::ngCtrl.view.meta.label}}</span></div>
 			<h4>
-				{{::ngCtrl.view.meta.label}}
-				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalViews.length > 1">
-					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-default btn-outline"><i class="fa fa-fw fa-caret-down"></i></a>
+				<span ng-bind="::ngCtrl.generateHighlightString()" title="{{::ngCtrl.generateHighlightString()}}"></span>
+				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalViews.length > 1" dropdown-append-to-body="true">
+					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-default btn-outline"  style="padding:0 10px;"><i class="fa fa-fw fa-caret-down"></i></a>
 					<ul class="dropdown-menu" uib-dropdown-menu>
 						<li ng-repeat="view in ngCtrl.generalViews track by $index">
 							<a href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/view-general/sb/{{::view.name}}/{{ngCtrl.stateParams.recordId}}">
@@ -28,7 +32,7 @@
 					</ul>
 				</span>
 			</h4>
-		</div>
+        </div>
 	</div>
 </div>
 

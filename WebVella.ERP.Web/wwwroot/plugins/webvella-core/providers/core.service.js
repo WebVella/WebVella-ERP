@@ -166,7 +166,7 @@
 		serviceInstance.uploadFileToTemp = uploadFileToTemp;
 		serviceInstance.moveFileFromTempToFS = moveFileFromTempToFS;
 		serviceInstance.deleteFileFromFS = deleteFileFromFS;
-
+		serviceInstance.generateHighlightString = generateHighlightString;
 		//#endregion
 
 		//#region << Site >>
@@ -1603,7 +1603,7 @@
 							"name": "wv_create_record",
 							"menu": "page-title",
 							"weight": 1,
-							"template": "<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate')\"\n ng-href=\"{{ngCtrl.getRecordCreateUrl(ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-plus\"></i> Add New\n</a>"
+							"template": "<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate')\"\n ng-href=\"{{ngCtrl.getRecordCreateUrl(ngCtrl)}}\">Add New</a>"
 						},
 						{
 							"name": "wv_import_records",
@@ -2053,6 +2053,68 @@
 				detachTargetFieldRecordIds: detachTargetFieldRecordIds  //guid array - list of recordIds that needs to be detached to the new origin - should be empty array when the target field is required
 			}
 			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/relation', data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+		////////////////////////
+		function generateHighlightString(viewLabel,viewData,stateParams){
+			//default is the selected view in the area
+			var result = viewLabel;
+			var processedString = viewLabel;
+
+			if (processedString.indexOf('{') != -1 && processedString.indexOf('}') != -1) {
+				var arrayOfTemplateKeys = processedString.match(/\{([\$\w]+)\}/g); //Include support for matching also data from relations which include $ symbol
+				var resultStringStorage = processedString;
+
+				for (var i = 0; i < arrayOfTemplateKeys.length; i++) {
+					if (arrayOfTemplateKeys[i] === "{areaName}" || arrayOfTemplateKeys[i] === "{entityName}") {
+						switch (arrayOfTemplateKeys[i]) {
+							case "{areaName}":
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], stateParams.areaName);
+								break;
+							case "{entityName}":
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], stateParams.entityName);
+								break;
+						}
+					}
+					else {
+						//Extract the dataName from string by removing the leading and the closing {}
+						var dataName = arrayOfTemplateKeys[i].replace('{', '').replace('}', '');
+						//Check template has corresponding list data value
+						if (viewData[dataName]) {
+							//YES -> check the value of this dataName and substitute with it in the string, even if it is null (toString)
+							//Case 1 - data is not from relation (not starting with $)
+							if(!dataName.startsWith('$')){
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], viewData[dataName].toString());
+							}
+							else {
+							//Case 2 - relation field
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], viewData[dataName][0].toString());
+							}
+
+						}
+						else {
+							//Try to look for other views from this entity that may have this value
+							var deepScanMatchFound = false;
+							for (var dataObject in viewData) {
+								  if(dataObject.indexOf('$view$') != -1){
+									if(viewData[dataObject][0][dataName]){
+										resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], viewData[dataObject][0][dataName].toString());
+										deepScanMatchFound = true;
+										break;
+									}								  
+								  }
+							}
+							//NO -> substitute the template key with the dataName only, as no value could be extracted
+							if(!deepScanMatchFound){
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], dataName);
+							}
+						}
+					}
+
+				}
+				result = resultStringStorage;
+			}
+
+			return result;			
 		}
 
 		//#endregion

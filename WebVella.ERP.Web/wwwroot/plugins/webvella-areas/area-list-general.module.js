@@ -289,12 +289,12 @@
 		ngCtrl.currentUser = resolvedCurrentUser;
 		ngCtrl.$sessionStorage = $sessionStorage;
 		ngCtrl.stateParams = $stateParams;
-		ngCtrl.parent = {};
-		ngCtrl.parent.data = null;
-		ngCtrl.parent.meta = null;
+		ngCtrl.parentView = {};
+		ngCtrl.parentView.data = null;
+		ngCtrl.parentView.meta = null;
 		if (resolvedParentViewData != null) {
-			ngCtrl.parent.data = resolvedParentViewData;
-			ngCtrl.parent.meta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
+			ngCtrl.parentView.data = resolvedParentViewData;
+			ngCtrl.parentView.meta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
 		}
 
 		//#endregion
@@ -693,6 +693,19 @@
 				}
 				return returnObject;
 			}
+		}
+
+
+		ngCtrl.showPageTitleAuxLabelSecondary = false;
+
+		ngCtrl.generateHighlightString = function(){
+			if(ngCtrl.parentView && ngCtrl.parentView.data){
+				if(ngCtrl.parentView.meta.label.indexOf("{") != -1 && ngCtrl.parentView.meta.label.indexOf("}") != -1){
+					ngCtrl.showPageTitleAuxLabelSecondary = true;
+					return webvellaCoreService.generateHighlightString(ngCtrl.parentView.meta.label,ngCtrl.parentView.data[0],ngCtrl.stateParams);
+				}
+			}
+			return ngCtrl.list.meta.label;
 		}
 
 		//#endregion

@@ -1,11 +1,15 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-default btn-outline" ng-click="ngCtrl.deleteTreeModal()"><i class="fa fa-fw fa-trash-o go-red"></i>  <span translate="{{::'RECORD_TREE_DELETE'}}"></span></a>
+			<a class="btn btn-default btn-outline" ng-click="ngCtrl.deleteTreeModal()"><span translate="{{::'RECORD_TREE_DELETE'}}"></span></a>
 		</div>
-		<div class="meta-label">
-			<h4><span class="go-gray"><span translate="{{::'RECORD_TREE_PAGE_TITLE'}}"></span>: </span>{{ngCtrl.tree.label}}</h4>
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-sitemap fa-2x"></i>
 		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux" translate="{{::'RECORD_TREE_MANAGE_ATTRIBUTES'}}"></div>
+            <h4 ng-bind="::ngCtrl.tree.name"></h4>
+        </div>
 	</div>
 </div>
 <div id="page-body">

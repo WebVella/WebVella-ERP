@@ -12,18 +12,13 @@
         .controller('WebVellaAdminTopnavController', controller);
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$localStorage', '$log', '$state', '$rootScope', '$timeout', '$window', 'webvellaCoreService'];
+    controller.$inject = ['$state', '$rootScope', '$timeout', 'webvellaCoreService','resolvedCurrentUser'];
 
     
-    function controller($localStorage, $log, $state, $rootScope, $timeout, $window, webvellaCoreService) {
+    function controller($state, $rootScope, $timeout, webvellaCoreService,resolvedCurrentUser) {
         
         var topnavData = this;
         topnavData.currentArea = null;
-
-        topnavData.$storage = $localStorage;
-        topnavData.toggleSideNav = function () {
-        	topnavData.$storage.isMiniSidebar = !topnavData.$storage.isMiniSidebar;
-        }
 
         topnavData.logout = function () {
         	webvellaCoreService.logout(
@@ -45,6 +40,8 @@
 		$rootScope.$watch("adminSubSectionName",function(newValue,oldValue){
 			topnavData.adminSubSectionName = newValue;		
 		});
+
+		topnavData.currentUser = angular.copy(resolvedCurrentUser);
     }
     
 })();

@@ -705,6 +705,23 @@
 			}
 		}
 
+
+		ngCtrl.showPageTitleAuxLabelSecondary = false;
+
+		ngCtrl.generateHighlightString = function(){
+			if(ngCtrl.parentView && ngCtrl.parentView.data){
+				if(ngCtrl.parentView.meta.label.indexOf("{") != -1 && ngCtrl.parentView.meta.label.indexOf("}") != -1){
+					ngCtrl.showPageTitleAuxLabelSecondary = true;
+					return webvellaCoreService.generateHighlightString(ngCtrl.parentView.meta.label,ngCtrl.parentView.data,ngCtrl.stateParams);
+				}
+			}
+			else {
+				if(ngCtrl.view.meta.label.indexOf("{") != -1 && ngCtrl.view.meta.label.indexOf("}") != -1){
+					return webvellaCoreService.generateHighlightString(ngCtrl.view.meta.label,ngCtrl.view.data[0],ngCtrl.stateParams);			
+				}
+			}
+			return ngCtrl.view.meta.label;
+		}
 		//#endregion
 
 		//#region << Logic >>

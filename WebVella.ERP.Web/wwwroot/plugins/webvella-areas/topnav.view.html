@@ -1,21 +1,14 @@
-<a class="btn btn-default hidden-xs hidden-sm" ng-click="topnavData.toggleSideNav()" id="switcher"><i class="fa fa-caret-left"></i></a>
 <div class="aux-actions">
-	<!--<a class="btn btn-link btn-sm" title="Create new item"><i class="fa fa-plus"></i> <span class="visible-md-inline visible-lg-inline">Create</span></a>
-	<a class="btn btn-link btn-sm hidden-md hidden-lg" title="Search in this area"><i class="fa fa-search"></i></a>
-	<a class="btn btn-link btn-sm hidden-xs" title="My bookmarked pages and lists"><i class="fa fa-star"></i> <span class="visible-lg-inline">Bookmarks</span></a>
-	<a class="btn btn-link btn-sm hidden-xs" title="My alerts"><i class="fa fa-bell"></i>  <span class="visible-lg-inline">Alerts</span> <span class="badge badge-danger">4</span></a>
-	<a class="btn btn-link btn-sm hidden-xs" title="Get more info about the page"><i class="fa fa-question-circle"></i>  <span class="visible-lg-inline">Help</span></a>-->
-	<a class="btn btn-link btn-sm" style="padding-right:0;" title="Log out" ng-click="topnavData.logout()"><i class="fa fa-power-off"></i> <span class="visible-lg-inline" translate="{{::' LOG_OUT'}}"></span></a>
+	<a class="btn btn-link btn-sm" href="#/desktop/browse" tooltip-placement="bottom"  tooltip-append-to-body="true" uib-tooltip="{{::'GOTO_DESKTOP_LINK_TITLE' | translate}}"><i class="fa fa-fw fa-home"></i></a>
+	<a class="btn btn-link btn-sm" tooltip-placement="bottom"  tooltip-append-to-body="true" uib-tooltip="{{::'ADMINISTRATION' | translate}}"><i class="fa fa-fw fa-cog"></i></a>
+	<span class="btn btn-link btn-sm" tooltip-placement="bottom"  tooltip-append-to-body="true" uib-tooltip="{{::topnavData.currentUser.username}}">
+		<img class="avatar img-circle" src="/plugins/webvella-core/assets/avatar.png" ng-if="::!topnavData.currentUser.image">
+		<img class="avatar img-circle" ng-src="{{::topnavData.currentUser.image}}" ng-if="::topnavData.currentUser.image">		
+	</span>
+    <a style="padding-right:0;" class="btn btn-link btn-sm" tooltip-placement="bottom"  tooltip-append-to-body="true" ng-click="topnavData.logout()" uib-tooltip="{{::'LOG_OUT' | translate}}"><i class="fa fa-fw fa-power-off"></i></a>
 </div>
-<div id="areanav">
-	<a class="btn btn-default btn-sm" href="#/desktop/browse" title="{{::'GOTO_DESKTOP_LINK_TITLE' | translate}}"><i class="fa fa-home"></i></a>
-</div>
-<div id="localnav">
-	<a class="btn btn-default btn-sm visible-xs-inline-block" ng-click="openChangeLocalModal()"><i class="fa fa-bars"></i></a>
-</div>
+
 <div id="area-title" class="hidden-xs">{{::topnavData.currentArea.label}}</div>
-<div class="divider-box hidden-xs"><i class="fa fa-caret-right"></i></div>
-<div id="entity-label" class="hidden-xs">{{::topnavData.currentEntity.labelPlural}}</div>
 <div class="divider-box hidden-xs"><i class="fa fa-caret-right"></i></div>
 <!--<form id="search-wrapper" class="visible-md-inline-block visible-lg-inline-block">
 	<div class="left-inner-addon">

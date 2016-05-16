@@ -15,15 +15,16 @@
 				</ul>
 			</span>
 		</div>
-		<div class="meta-label">
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-{{::ngCtrl.entity.iconName}} fa-2x"></i>
+		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux">{{::ngCtrl.entity.label}} <span class="ng-hide" ng-show="ngCtrl.showPageTitleAuxLabelSecondary"><span class="divider"><i class="fa fa-caret-right"></i></span> {{::ngCtrl.list.meta.label}}</span></div>
 			<h4>
-				{{::ngCtrl.list.meta.label}}
-				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalLists.length > 1">
-					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-default btn-outline"><i class="fa fa-fw fa-caret-down"></i></a>
+				<span ng-bind="::ngCtrl.generateHighlightString()" title="{{::ngCtrl.generateHighlightString()}}"></span>
+				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalLists.length > 1" dropdown-append-to-body="true">
+					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-default btn-outline" style="padding:0 10px;"><i class="fa fa-fw fa-caret-down"></i></a>
 					<ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
-						<!--<li><a href="javascript:void(0)"><i class="fa fa-fw fa-thumb-tack go-red"></i> set current as default</a></li>
-						<li class="ng-hide"><a href="javascript:void(0)"><span class="go-grey">This is your default list</span></a></li>
-						<li class="divider"></li>-->
 						<li ng-repeat="list in ngCtrl.generalLists track by $index">
 							<a href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/list-general/{{::list.name}}/1">
 								<i class="fa fa-fw fa-{{::list.iconName}}"></i> {{::list.label}}
@@ -32,7 +33,7 @@
 					</ul>
 				</span>
 			</h4>
-		</div>
+        </div>
 	</div>
 </div>
 <div id="page-body">

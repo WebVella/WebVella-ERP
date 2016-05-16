@@ -14,11 +14,11 @@
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedParentViewData', 'resolvedCurrentViewData', 'resolvedCurrentEntityMeta',
-						'resolvedAreas', 'resolvedCurrentUser', '$sessionStorage', '$timeout', 'webvellaCoreService', 'resolvedEntityList','$location'];
+						'resolvedAreas', 'resolvedCurrentUser', '$sessionStorage', '$timeout', 'webvellaCoreService', 'resolvedEntityList','$location','$localStorage'];
 
 
 	function controller($log, $rootScope, $state, $stateParams, resolvedParentViewData, resolvedCurrentViewData, resolvedCurrentEntityMeta,
-						resolvedAreas, resolvedCurrentUser, $sessionStorage, $timeout, webvellaCoreService, resolvedEntityList,$location) {
+						resolvedAreas, resolvedCurrentUser, $sessionStorage, $timeout, webvellaCoreService, resolvedEntityList,$location,$localStorage) {
 		var sidebarData = this;
 		if (resolvedCurrentViewData == null) {
 			sidebarData.view = null; //list in view page		
@@ -231,6 +231,11 @@
 			}
 
 		}
+
+        sidebarData.$storage = $localStorage;
+        sidebarData.toggleSideNav = function () {
+        	sidebarData.$storage.isMiniSidebar = !sidebarData.$storage.isMiniSidebar;
+        }
 	}
 
 })();

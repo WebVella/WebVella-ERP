@@ -13,10 +13,10 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$state', '$stateParams','webvellaCoreService','resolvedCurrentUser','resolvedAreas','$location','resolvedEntityList'];
+    controller.$inject = ['$state', '$stateParams','webvellaCoreService','resolvedCurrentUser','resolvedAreas','$location','resolvedEntityList','$localStorage'];
 
     
-    function controller($state, $stateParams,webvellaCoreService,resolvedCurrentUser,resolvedAreas,$location,resolvedEntityList) {
+    function controller($state, $stateParams,webvellaCoreService,resolvedCurrentUser,resolvedAreas,$location,resolvedEntityList,$localStorage) {
         var sidebarData = this;
 		sidebarData.currentArea = webvellaCoreService.getCurrentAreaFromAreaList($stateParams.areaName, resolvedAreas.data);
 		sidebarData.currentUser = angular.copy(resolvedCurrentUser);
@@ -42,6 +42,11 @@
 			$location.search("returnUrl",null);
 			$location.path(returnUrl);
 		}
+
+        sidebarData.$storage = $localStorage;
+        sidebarData.toggleSideNav = function () {
+        	sidebarData.$storage.isMiniSidebar = !sidebarData.$storage.isMiniSidebar;
+        }
     }
 
 })();

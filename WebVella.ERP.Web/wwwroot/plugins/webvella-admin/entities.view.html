@@ -1,15 +1,19 @@
 <div id="page-title">
     <div id="page-meta">
         <div class="aux-actions">
-			<a class="btn btn-default btn-outline" ng-click="ngCtrl.openAddEntityModal()"><i class="fa fa-plus"></i> <span translate="{{::'ADD_NEW'}}"></span></a>
 			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.entities.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
 					<input ng-model="ngCtrl.search.name" type="text" class="form-control" placeholder="{{::'ENTITY_NAME' | translate}}">
 				</div>
 			</div>
+			<a class="btn btn-default btn-outline" ng-click="ngCtrl.openAddEntityModal()"><span translate="{{::'ADD_NEW'}}"></span></a>
         </div>
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-database fa-2x"></i>
+		</div>
         <div class="meta-label">
+			<div class="meta-label-aux" translate="{{::'ENTITIES'}}"></div>
             <h4 translate="{{::'AVAILABLE_ENTITIES'}}"></h4>
         </div>
     </div>

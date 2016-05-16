@@ -2,9 +2,13 @@
 	<div id="page-meta">
 		<div class="aux-actions">
 		</div>
-		<div class="meta-label">
-			<h4><span class="go-gray"><span translate="{{::'RECORD_VIEW_MANAGE_PAGE_TITLE_PREFIX'}}"></span>: </span> {{ngCtrl.view.name}}</h4>
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-file-text-o fa-2x"></i>
 		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux" translate="{{::'RECORD_VIEW_MANAGE_DATA'}}"></div>
+            <h4 ng-bind="::ngCtrl.view.name"></h4>
+        </div>
 	</div>
 </div>
 <div id="page-body" ng-mousedown="ngCtrl.viewCheckMouseButton($event)">
