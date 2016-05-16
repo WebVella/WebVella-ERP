@@ -2609,6 +2609,40 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
+									#region << code >>
+									{
+										InputTextField textboxField = new InputTextField();
+										textboxField.Id = new Guid("04f31ad8-4583-4237-8d54-f82c3f44b918");
+										textboxField.Name = "code";
+										textboxField.Label = "Code";
+										textboxField.PlaceholderText = "";
+										textboxField.Description = "";
+										textboxField.HelpText = "";
+										textboxField.Required = false;
+										textboxField.Unique = false;
+										textboxField.Searchable = true;
+										textboxField.Auditable = false;
+										textboxField.System = true;
+										textboxField.DefaultValue = string.Empty;
+										textboxField.MaxLength = null;
+										textboxField.EnableSecurity = true;
+										textboxField.Permissions = new FieldPermissions();
+										textboxField.Permissions.CanRead = new List<Guid>();
+										textboxField.Permissions.CanUpdate = new List<Guid>();
+										//READ
+										textboxField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+										textboxField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+										//UPDATE
+										textboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+										textboxField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+										{
+											var response = entMan.CreateField(TASK_ENTITY_ID, textboxField, false);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Field: subject" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
 									#region << subject >>
 									{
 										InputTextField textboxField = new InputTextField();
@@ -3322,7 +3356,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = "task-list";
 										createListInput.IconName = "tasks";
 										createListInput.VisibleColumnsCount = 7;
-										createListInput.ColumnWidthsCSV = "80px,auto,30px,120px,120px,120px,120px";
+										createListInput.ColumnWidthsCSV = "100px,auto,30px,120px,120px,120px,120px";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = null;
@@ -3358,13 +3392,13 @@ namespace WebVella.ERP.Project
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
 
-										#region << number >>
+										#region << code >>
 										{
 											listField = new InputRecordListFieldItem();
 											listField.EntityId = createListEntity.Id;
 											listField.EntityName = createListEntity.Name;
-											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "number").Id;
-											listField.FieldName = "number";
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
 											listField.Type = "field";
 											createListInput.Columns.Add(listField);
 										}
@@ -3499,12 +3533,12 @@ namespace WebVella.ERP.Project
 										listQuery.QueryType = "AND";
 										listQuery.SubQueries = new List<InputRecordListQuery>();
 
-										#region << number >>
+										#region << code >>
 										{
 											var subQuery = new InputRecordListQuery();
-											subQuery.FieldName = "number";
-											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""number"", ""default"": null, ""settings"":{}}";
-											subQuery.QueryType = "EQ";
+											subQuery.FieldName = "code";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""code"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
 											listQuery.SubQueries.Add(subQuery);
 										}
@@ -3585,7 +3619,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = "task-list";
 										createListInput.IconName = "tasks";
 										createListInput.VisibleColumnsCount = 7;
-										createListInput.ColumnWidthsCSV = "80px,auto,30px,120px,120px,120px,120px";
+										createListInput.ColumnWidthsCSV = "100px,auto,30px,120px,120px,120px,120px";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = null;
@@ -3621,13 +3655,13 @@ namespace WebVella.ERP.Project
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
 
-										#region << number >>
+										#region << code >>
 										{
 											listField = new InputRecordListFieldItem();
 											listField.EntityId = createListEntity.Id;
 											listField.EntityName = createListEntity.Name;
-											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "number").Id;
-											listField.FieldName = "number";
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
 											listField.Type = "field";
 											createListInput.Columns.Add(listField);
 										}
@@ -3751,12 +3785,12 @@ namespace WebVella.ERP.Project
 										listQuery.QueryType = "AND";
 										listQuery.SubQueries = new List<InputRecordListQuery>();
 
-										#region << number >>
+										#region << code >>
 										{
 											var subQuery = new InputRecordListQuery();
-											subQuery.FieldName = "number";
-											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""number"", ""default"": null, ""settings"":{}}";
-											subQuery.QueryType = "EQ";
+											subQuery.FieldName = "code";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""code"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
 											listQuery.SubQueries.Add(subQuery);
 										}
@@ -3836,7 +3870,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = "task-list";
 										createListInput.IconName = "tasks";
 										createListInput.VisibleColumnsCount = 7;
-										createListInput.ColumnWidthsCSV = "80px,auto,30px,120px,120px,120px,120px";
+										createListInput.ColumnWidthsCSV = "100px,auto,30px,120px,120px,120px,120px";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = null;
@@ -3872,13 +3906,13 @@ namespace WebVella.ERP.Project
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
 
-										#region << number >>
+										#region << code >>
 										{
 											listField = new InputRecordListFieldItem();
 											listField.EntityId = createListEntity.Id;
 											listField.EntityName = createListEntity.Name;
-											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "number").Id;
-											listField.FieldName = "number";
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
 											listField.Type = "field";
 											createListInput.Columns.Add(listField);
 										}
@@ -4005,9 +4039,9 @@ namespace WebVella.ERP.Project
 										#region << number >>
 										{
 											var subQuery = new InputRecordListQuery();
-											subQuery.FieldName = "number";
+											subQuery.FieldName = "code";
 											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""number"", ""default"": null, ""settings"":{}}";
-											subQuery.QueryType = "EQ";
+											subQuery.QueryType = "CONTAINS";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
 											listQuery.SubQueries.Add(subQuery);
 										}
@@ -4087,7 +4121,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = "task-list";
 										createListInput.IconName = "tasks";
 										createListInput.VisibleColumnsCount = 7;
-										createListInput.ColumnWidthsCSV = "80px,auto,30px,120px,120px,120px,120px";
+										createListInput.ColumnWidthsCSV = "100px,auto,30px,120px,120px,120px,120px";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = @"/plugins/webvella-projects/api/task/list/all";
@@ -4123,13 +4157,13 @@ namespace WebVella.ERP.Project
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
 
-										#region << number >>
+										#region << code >>
 										{
 											listField = new InputRecordListFieldItem();
 											listField.EntityId = createListEntity.Id;
 											listField.EntityName = createListEntity.Name;
-											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "number").Id;
-											listField.FieldName = "number";
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
 											listField.Type = "field";
 											createListInput.Columns.Add(listField);
 										}
@@ -4222,12 +4256,12 @@ namespace WebVella.ERP.Project
 										createListInput.Query.QueryType = "AND";
 										createListInput.Query.SubQueries = new List<InputRecordListQuery>();
 
-										#region << number >>
+										#region << code >>
 										{
 											var subQuery = new InputRecordListQuery();
-											subQuery.FieldName = "number";
-											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""number"", ""default"": null, ""settings"":{}}";
-											subQuery.QueryType = "EQ";
+											subQuery.FieldName = "code";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""code"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
 											createListInput.Query.SubQueries.Add(subQuery);
 										}
@@ -4352,13 +4386,13 @@ namespace WebVella.ERP.Project
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
 
-										#region << number >>
+										#region << code >>
 										{
 											listField = new InputRecordListFieldItem();
 											listField.EntityId = createListEntity.Id;
 											listField.EntityName = createListEntity.Name;
-											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "number").Id;
-											listField.FieldName = "number";
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
 											listField.Type = "field";
 											createListInput.Columns.Add(listField);
 										}
@@ -4454,11 +4488,11 @@ namespace WebVella.ERP.Project
 										listQuery.QueryType = "AND";
 										listQuery.SubQueries = new List<InputRecordListQuery>();
 
-										#region << number >>
+										#region << code >>
 										{
 											var subQuery = new InputRecordListQuery();
 											subQuery.FieldName = "owner_id";
-											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""number"", ""default"": null, ""settings"":{}}";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""code"", ""default"": null, ""settings"":{}}";
 											subQuery.QueryType = "EQ";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
 											listQuery.SubQueries.Add(subQuery);
@@ -4877,7 +4911,7 @@ namespace WebVella.ERP.Project
 										updateViewInput = updateView.DynamicMapTo<InputRecordView>();
 
 										#region << Details >>
-										updateViewInput.Label = "Details";
+										updateViewInput.Label = "[{code}] {subject}";
 										updateViewInput.IconName = "tasks";
 										updateViewInput.ServiceCode = "";
 										#endregion
@@ -4964,13 +4998,13 @@ namespace WebVella.ERP.Project
 										viewColumn.GridColCount = 4;
 										viewColumn.Items = new List<InputRecordViewItemBase>();
 
-										#region << number >>
+										#region << code >>
 										{
 											viewItem = new InputRecordViewFieldItem();
 											viewItem.EntityId = updateViewEntity.Id;
 											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "number").Id;
-											viewItem.FieldName = "number";
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "code").Id;
+											viewItem.FieldName = "code";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
 										}
@@ -5178,6 +5212,40 @@ namespace WebVella.ERP.Project
 											var response = entMan.CreateField(BUG_ENTITY_ID, autonumberField, false);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Field: number" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << code >>
+									{
+										InputTextField textboxField = new InputTextField();
+										textboxField.Id = new Guid("6f2030e9-edd7-42ac-bb2a-2766b76c3da1");
+										textboxField.Name = "code";
+										textboxField.Label = "Code";
+										textboxField.PlaceholderText = "";
+										textboxField.Description = "";
+										textboxField.HelpText = "";
+										textboxField.Required = false;
+										textboxField.Unique = false;
+										textboxField.Searchable = true;
+										textboxField.Auditable = false;
+										textboxField.System = true;
+										textboxField.DefaultValue = string.Empty;
+										textboxField.MaxLength = null;
+										textboxField.EnableSecurity = true;
+										textboxField.Permissions = new FieldPermissions();
+										textboxField.Permissions.CanRead = new List<Guid>();
+										textboxField.Permissions.CanUpdate = new List<Guid>();
+										//READ
+										textboxField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+										textboxField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+										//UPDATE
+										textboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+										textboxField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+										{
+											var response = entMan.CreateField(BUG_ENTITY_ID, textboxField, false);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Field: code" + " Message:" + response.Message);
 										}
 									}
 									#endregion
@@ -5604,7 +5672,7 @@ namespace WebVella.ERP.Project
 
 										//General list details
 										updateListInput.Name = "project_bugs";
-										updateListInput.Label = "Project Bugs";
+										updateListInput.Label = "Bugs";
 										updateListInput.IconName = "bug";
 										updateListInput.ColumnWidthsCSV = "auto,30px,120px,120px,120px";
 										updateListInput.CssClass = "bug-list";
@@ -5755,7 +5823,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = "bug-list";
 										createListInput.IconName = "bug";
 										createListInput.VisibleColumnsCount = 7;
-										createListInput.ColumnWidthsCSV = "80px,auto,30px,160px,120px,120px,120px";
+										createListInput.ColumnWidthsCSV = "100px,auto,30px,160px,120px,120px,120px";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = null;
@@ -5791,13 +5859,13 @@ namespace WebVella.ERP.Project
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
 
-										#region << number >>
+										#region << code >>
 										{
 											listField = new InputRecordListFieldItem();
 											listField.EntityId = createListEntity.Id;
 											listField.EntityName = createListEntity.Name;
-											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "number").Id;
-											listField.FieldName = "number";
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
 											listField.Type = "field";
 											createListInput.Columns.Add(listField);
 										}
@@ -5921,12 +5989,12 @@ namespace WebVella.ERP.Project
 										listQuery.QueryType = "AND";
 										listQuery.SubQueries = new List<InputRecordListQuery>();
 
-										#region << number >>
+										#region << code >>
 										{
 											var subQuery = new InputRecordListQuery();
-											subQuery.FieldName = "number";
-											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""number"", ""default"": null, ""settings"":{}}";
-											subQuery.QueryType = "EQ";
+											subQuery.FieldName = "code";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""code"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
 											listQuery.SubQueries.Add(subQuery);
 										}
@@ -6006,7 +6074,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = "bug-list";
 										createListInput.IconName = "bug";
 										createListInput.VisibleColumnsCount = 7;
-										createListInput.ColumnWidthsCSV = "80px,auto,30px,120px,120px,120px,120px";
+										createListInput.ColumnWidthsCSV = "100px,auto,30px,120px,120px,120px,120px";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = null;
@@ -6042,13 +6110,13 @@ namespace WebVella.ERP.Project
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
 
-										#region << number >>
+										#region << code >>
 										{
 											listField = new InputRecordListFieldItem();
 											listField.EntityId = createListEntity.Id;
 											listField.EntityName = createListEntity.Name;
-											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "number").Id;
-											listField.FieldName = "number";
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
 											listField.Type = "field";
 											createListInput.Columns.Add(listField);
 										}
@@ -6149,12 +6217,12 @@ namespace WebVella.ERP.Project
 										listQuery.QueryType = "AND";
 										listQuery.SubQueries = new List<InputRecordListQuery>();
 
-										#region << number >>
+										#region << code >>
 										{
 											var subQuery = new InputRecordListQuery();
-											subQuery.FieldName = "number";
-											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""number"", ""default"": null, ""settings"":{}}";
-											subQuery.QueryType = "EQ";
+											subQuery.FieldName = "code";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""code"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
 											listQuery.SubQueries.Add(subQuery);
 										}
@@ -6234,7 +6302,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = "bug-list";
 										createListInput.IconName = "bug";
 										createListInput.VisibleColumnsCount = 7;
-										createListInput.ColumnWidthsCSV = "80px,auto,30px,120px,120px,120px,120px";
+										createListInput.ColumnWidthsCSV = "100px,auto,30px,120px,120px,120px,120px";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = null;
@@ -6270,13 +6338,13 @@ namespace WebVella.ERP.Project
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
 
-										#region << number >>
+										#region << code >>
 										{
 											listField = new InputRecordListFieldItem();
 											listField.EntityId = createListEntity.Id;
 											listField.EntityName = createListEntity.Name;
-											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "number").Id;
-											listField.FieldName = "number";
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
 											listField.Type = "field";
 											createListInput.Columns.Add(listField);
 										}
@@ -6377,12 +6445,12 @@ namespace WebVella.ERP.Project
 										listQuery.QueryType = "AND";
 										listQuery.SubQueries = new List<InputRecordListQuery>();
 
-										#region << number >>
+										#region << code >>
 										{
 											var subQuery = new InputRecordListQuery();
-											subQuery.FieldName = "number";
-											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""number"", ""default"": null, ""settings"":{}}";
-											subQuery.QueryType = "EQ";
+											subQuery.FieldName = "code";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""code"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
 											listQuery.SubQueries.Add(subQuery);
 										}
@@ -6462,7 +6530,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = "bug-list";
 										createListInput.IconName = "bug";
 										createListInput.VisibleColumnsCount = 7;
-										createListInput.ColumnWidthsCSV = "80px,auto,30px,120px,120px,120px,120px";
+										createListInput.ColumnWidthsCSV = "100px,auto,30px,120px,120px,120px,120px";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = @"/plugins/webvella-projects/api/bug/list/all";
@@ -6498,13 +6566,13 @@ namespace WebVella.ERP.Project
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
 
-										#region << number >>
+										#region << code >>
 										{
 											listField = new InputRecordListFieldItem();
 											listField.EntityId = createListEntity.Id;
 											listField.EntityName = createListEntity.Name;
-											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "number").Id;
-											listField.FieldName = "number";
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
 											listField.Type = "field";
 											createListInput.Columns.Add(listField);
 										}
@@ -9116,7 +9184,7 @@ namespace WebVella.ERP.Project
 
 									#region << Details >>
 									updateViewInput.Type = "hidden";
-									updateViewInput.Label = "Details";
+									updateViewInput.Label = "{name}";
 									#endregion
 
 									#region << Get the header Region >>
@@ -9635,7 +9703,7 @@ namespace WebVella.ERP.Project
 									updateViewInput = updateView.DynamicMapTo<InputRecordView>();
 
 										#region << Details >>
-										updateViewInput.Label = "Bug details";
+										updateViewInput.Label = "[{code}] {subject}";
 										updateViewInput.IconName = "bug";
 										updateViewInput.ServiceCode = "";
 										#endregion
@@ -9729,13 +9797,13 @@ namespace WebVella.ERP.Project
 										viewColumn.GridColCount = 4;
 										viewColumn.Items = new List<InputRecordViewItemBase>();
 
-										#region << number >>
+										#region << code >>
 										{
 											viewItem = new InputRecordViewFieldItem();
 											viewItem.EntityId = updateViewEntity.Id;
 											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "number").Id;
-											viewItem.FieldName = "number";
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "code").Id;
+											viewItem.FieldName = "code";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
 										}
@@ -10091,6 +10159,7 @@ namespace WebVella.ERP.Project
 									sampleRecord["milestone_id"] = new Guid("42b881fc-d93f-46cf-b39d-391cd42fd2f6");
 									sampleRecord["description"] = "This is a sample task describing how to generate a corporate identity document";
 									sampleRecord["parent_id"] = null;
+									sampleRecord["code"] = "SMPL-T1";
 									sampleRecord["start_date"] = DateTime.UtcNow.AddDays(3);
 									sampleRecord["end_date"] = DateTime.UtcNow.AddDays(90);
 									sampleRecord["priority"] = "medium";
@@ -10115,6 +10184,7 @@ namespace WebVella.ERP.Project
 									sampleRecord["milestone_id"] = new Guid("42b881fc-d93f-46cf-b39d-391cd42fd2f6");
 									sampleRecord["description"] = "This is a sample bug about the project";
 									sampleRecord["priority"] = "medium";
+									sampleRecord["code"] = "SMPL-B1";
 									sampleRecord["status"] = "opened";
 									sampleRecord["x_billable_hours"] = 0;
 									sampleRecord["x_nonbillable_hours"] = 0;

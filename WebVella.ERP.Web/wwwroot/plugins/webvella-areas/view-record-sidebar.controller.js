@@ -60,7 +60,7 @@
 				is_parent: true,
 				parentViewName: null,
 				name: sidebarData.view.name,
-				label: sidebarData.view.label,
+				label: sidebarData.view.name,
 				iconName: sidebarData.view.iconName,
 				type: "view"
 			};
@@ -109,7 +109,7 @@
 				is_parent: true,
 				name: sidebarData.parentView.name,
 				parentViewName: null,
-				label: sidebarData.parentView.label,
+				label: sidebarData.parentView.name,
 				iconName: sidebarData.parentView.iconName,
 				type: "view"
 			};

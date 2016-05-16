@@ -129,6 +129,22 @@ namespace WebVella.ERP.Project
 			}
 			#endregion
 
+			#region << Generate the code field value >>
+			var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["project_id"]);
+			var query = new EntityQuery("wv_project", "*", filterObj, null, null, null);
+			var result = recMan.Find(query);
+			if (result.Success && result.Object.Data.Any())
+			{
+				var patchObject = new EntityRecord();
+				patchObject["id"] = (Guid)createdRecord["id"];
+				patchObject["code"] = result.Object.Data[0]["code"] + "-T" + createdRecord["number"];
+				var patchResult = recMan.UpdateRecord("wv_task",patchObject);
+				if(!patchResult.Success) {
+					throw new Exception(patchResult.Message);
+				}
+			}
+			#endregion
+
 			#endregion
 
 		}
@@ -273,6 +289,22 @@ namespace WebVella.ERP.Project
 			}
 			#endregion
 
+			#endregion
+
+			#region << Generate the code field value >>
+			var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["project_id"]);
+			var query = new EntityQuery("wv_project", "*", filterObj, null, null, null);
+			var result = recMan.Find(query);
+			if (result.Success && result.Object.Data.Any())
+			{
+				var patchObject = new EntityRecord();
+				patchObject["id"] = (Guid)createdRecord["id"];
+				patchObject["code"] = result.Object.Data[0]["code"] + "-B" + createdRecord["number"];
+				var patchResult = recMan.UpdateRecord("wv_bug",patchObject);
+				if(!patchResult.Success) {
+					throw new Exception(patchResult.Message);
+				}
+			}
 			#endregion
 		}
 		#endregion

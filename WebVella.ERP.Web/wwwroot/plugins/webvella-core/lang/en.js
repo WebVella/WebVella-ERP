@@ -420,6 +420,7 @@ var translationsEN = {
 	RECORD_VIEW_DELETE_MODAL_TITLE: 'Delete view',
 	RECORD_VIEW_DELETE_MODAL_QUESTION: 'Are you sure that you need this view deleted?',
 	RECORD_VIEW_LABEL_PLACEHOLDER:'e.g. Short details',
+	RECORD_VIEW_LABEL_DESCRIPTION:'View label will be used in the record highlighted area. You can use tags list {field_name}, which will be substituted if the field is found in the view data. Only views from the current entity will be scanned for the field value',
 	RECORD_VIEW_LIST_PAGE_TITLE:'Record views',
 	RECORD_VIEW_MANAGE_PAGE_TITLE_PREFIX:'View name',
 	RECORD_VIEW_MANAGE_PAGE_TITLE:'Manage view',

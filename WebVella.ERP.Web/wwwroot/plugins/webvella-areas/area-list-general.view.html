@@ -6,12 +6,6 @@
 				<a class="btn btn-default btn-outline" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
 				<ul class="dropdown-menu  dropdown-menu-right" uib-dropdown-menu style="margin-top:10px;">
 					<li dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageTitleDropdownActions track by actionItem.name" />
-					<li class="divider"></li>
-					<li>
-						<a href="/#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.stateParams.listName}}">
-							<i class="fa fa-fw fa-wrench"></i> Manage List
-						</a>
-					</li>
 				</ul>
 			</span>
 		</div>

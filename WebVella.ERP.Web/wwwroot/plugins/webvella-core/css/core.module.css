@@ -746,6 +746,7 @@ body.hidden-sidebar #page-topnav {
 	-ms-text-overflow: ellipsis;
 	-o-text-overflow: ellipsis;
 	text-overflow: ellipsis;
+	text-transform:capitalize;
 }
 
 /* Sidebar switcher */
@@ -1261,7 +1262,7 @@ body.hidden-sidebar #page-topnav {
 #page-title #page-meta {
 	background: #FAFBFD;
 	border-bottom: 1px solid #ECEFF1;
-	padding: 12px 10px 12px 63px;
+	padding: 12px 10px 12px 67px;
 	height: 56px;
 }
 
@@ -1318,10 +1319,6 @@ body.hidden-sidebar #page-topnav {
 		height:1.2em;
 		white-space:nowrap;
 	}
-
-		#page-meta .meta-label h4:first-letter {
-			text-transform:capitalize;		
-		}
 
 #page-meta .meta-label .selector {
 	color: #bdbdbd;

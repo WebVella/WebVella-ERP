@@ -92,12 +92,13 @@
 							<div class="editable-field field">
 								<label class="control-label" translate="{{::'LABEL'}}"></label>
 								<div>
-									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_label.$show()">
+									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_label.$show(); ngCtrl.fieldForm_label = fieldForm_label">
 										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.label"
 											   value="{{ngCtrl.view.label}}"
 											   onbeforesave="ngCtrl.fieldUpdate('label',$data)" e-form="fieldForm_label">
-										<span class="input-group-addon" ng-click="fieldForm_label.$show()" ng-hide="fieldForm_label.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+										<span class="input-group-addon" ng-click="fieldForm_label.$show(); ngCtrl.fieldForm_label = fieldForm_label" ng-hide="fieldForm_label.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 									</div>
+									<div class="form-description" translate="{{::'RECORD_VIEW_LABEL_DESCRIPTION'}}" ng-if="ngCtrl.fieldForm_label.$visible"></div>
 								</div>
 							</div>
 						</div>
