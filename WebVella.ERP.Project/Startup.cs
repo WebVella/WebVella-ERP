@@ -1635,7 +1635,7 @@ namespace WebVella.ERP.Project
 										createViewInput.Id = new Guid("68402d13-d9e7-4fb3-9394-40ba598f3f1a");
 										createViewInput.Type = "general";
 										createViewInput.Name = "dashboard";
-										createViewInput.Label = "Dashboard";
+										createViewInput.Label = "[{code}] {name}";
 										createViewInput.Default = false;
 										createViewInput.System = false;
 										createViewInput.Weight = 10;

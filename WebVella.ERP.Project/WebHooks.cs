@@ -138,8 +138,9 @@ namespace WebVella.ERP.Project
 				var patchObject = new EntityRecord();
 				patchObject["id"] = (Guid)createdRecord["id"];
 				patchObject["code"] = result.Object.Data[0]["code"] + "-T" + createdRecord["number"];
-				var patchResult = recMan.UpdateRecord("wv_task",patchObject);
-				if(!patchResult.Success) {
+				var patchResult = recMan.UpdateRecord("wv_task", patchObject);
+				if (!patchResult.Success)
+				{
 					throw new Exception(patchResult.Message);
 				}
 			}
@@ -300,8 +301,9 @@ namespace WebVella.ERP.Project
 				var patchObject = new EntityRecord();
 				patchObject["id"] = (Guid)createdRecord["id"];
 				patchObject["code"] = result.Object.Data[0]["code"] + "-B" + createdRecord["number"];
-				var patchResult = recMan.UpdateRecord("wv_bug",patchObject);
-				if(!patchResult.Success) {
+				var patchResult = recMan.UpdateRecord("wv_bug", patchObject);
+				if (!patchResult.Success)
+				{
 					throw new Exception(patchResult.Message);
 				}
 			}
@@ -498,6 +500,68 @@ namespace WebVella.ERP.Project
 		}
 
 		#endregion
+
+		#region << Relation >>
+		[WebHook("manage_relation_pre_save", "wv_bug")]
+		public dynamic ManageRelationPreSave(dynamic data)
+		{
+			var relation = (EntityRelation)data.relation;
+			var attachTargetRecords = (List<EntityRecord>)data.attachTargetRecords;
+			var detachTargetRecords = (List<EntityRecord>)data.detachTargetRecords;
+			var originEntity = (Entity)data.originEntity;
+			var targetEntity = (Entity)data.targetEntity;
+			var newOriginRecord = (EntityRecord)data.originRecord;
+			var newProjectRecord = new EntityRecord();
+			var attachedRecordForeachObject = new EntityRecord();
+			if (relation.Name == "project_1_n_bug")
+			{
+
+				#region << Select the project >>
+				{
+					newProjectRecord = new EntityRecord();
+					EntityQuery query = new EntityQuery("wv_project", "code", EntityQuery.QueryEQ("id", (Guid)newOriginRecord["id"]), null, null, null);
+					QueryResponse result = recMan.Find(query);
+					if (!result.Success || result.Object.Data.Count == 0)
+					{
+						throw new Exception("could not select the new project record");
+					}
+					newProjectRecord = result.Object.Data.First();
+				}
+				#endregion
+
+
+				foreach (var attachedRecord in attachTargetRecords)
+				{
+					#region << Select the attached >>
+					{
+						attachedRecordForeachObject = new EntityRecord();
+						EntityQuery query = new EntityQuery("wv_bug", "id,number", EntityQuery.QueryEQ("id", (Guid)attachedRecord["id"]), null, null, null);
+						QueryResponse result = recMan.Find(query);
+						if (!result.Success || result.Object.Data.Count == 0)
+						{
+							throw new Exception("could not select the bug record");
+						}
+						attachedRecordForeachObject = result.Object.Data.First();
+					}
+					#endregion
+
+					var patchObject = new EntityRecord();
+					patchObject["id"] = attachedRecordForeachObject["id"];
+					patchObject["code"] = newProjectRecord["code"] + "-B" + attachedRecordForeachObject["number"];
+					var patchResult = recMan.UpdateRecord("wv_bug", patchObject);
+					if (!patchResult.Success)
+					{
+						//nothing for now
+					}
+				}
+			}
+
+
+			return data;
+		}
+
+		#endregion
+
 	}
 
 }

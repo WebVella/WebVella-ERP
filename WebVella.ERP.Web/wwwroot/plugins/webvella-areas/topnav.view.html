@@ -5,10 +5,10 @@
 		<img class="avatar img-circle" src="/plugins/webvella-core/assets/avatar.png" ng-if="::!topnavData.currentUser.image">
 		<img class="avatar img-circle" ng-src="{{::topnavData.currentUser.image}}" ng-if="::topnavData.currentUser.image">		
 	</span>
-    <a style="padding-right:0;" class="btn btn-link btn-sm" tooltip-placement="bottom"  tooltip-append-to-body="true" ng-click="topnavData.logout()" uib-tooltip="{{::'LOG_OUT' | translate}}"><i class="fa fa-fw fa-power-off"></i></a>
+    <a style="padding-right:0;" class="btn btn-link btn-sm" tooltip-placement="bottom" tooltip-append-to-body="true" ng-click="topnavData.logout()" uib-tooltip="{{::'LOG_OUT' | translate}}"><i class="fa fa-fw fa-power-off"></i></a>
 </div>
 
-<div id="area-title" class="hidden-xs">{{::topnavData.currentArea.label}}</div>
+<a id="area-title" class="hidden-xs" href="#/desktop/browse">{{::topnavData.currentArea.label}}</a>
 <div class="divider-box hidden-xs"><i class="fa fa-caret-right"></i></div>
 <!--<form id="search-wrapper" class="visible-md-inline-block visible-lg-inline-block">
 	<div class="left-inner-addon">

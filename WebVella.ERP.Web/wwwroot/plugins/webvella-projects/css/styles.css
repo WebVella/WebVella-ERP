@@ -32,6 +32,10 @@
 	width: 24px;
 }
 
+.project-list .th-code {
+	width:70px;
+}
+
 .project-list .th-tasks,
 .project-list .th-milestones,
 .project-list .th-bugs {

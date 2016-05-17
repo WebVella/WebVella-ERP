@@ -45,6 +45,10 @@ namespace WebVella.ERP.Api
 		public const string DeleteRecordInput = "delete_record_input";
 		public const string DeleteRecordValidationErrors = "delete_record_validation_errors";
 		public const string DeleteRecordPreSave = "delete_record_pre_save";	
+
+		public const string ManageRelationAction = "manage_relation";
+		public const string ManageRelationInput = "manage_relation_input";
+		public const string ManageRelationPreSave = "manage_relation_pre_save";	
 	}
 
 	public enum RecordsListTypes

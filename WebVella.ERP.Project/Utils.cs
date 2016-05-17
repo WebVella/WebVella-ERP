@@ -219,7 +219,7 @@ namespace WebVella.ERP.Project
 				var isNewProjectPatched = false;
 				var isOldMilestonePatched = false;
 				var isNewMilestonePatched = false;
-
+				var isTaskPatched = false;
 				#region << init patch objects >>
 				if (oldTaskProject.Properties.Count > 0)
 				{
@@ -266,6 +266,10 @@ namespace WebVella.ERP.Project
 						newProjectPatchObject = UpdateProjectOrMilestoneCounter(newProjectPatchObject, (string)newTaskObject["status"], 1);
 						isNewProjectPatched = true;
 					}
+
+					//Regenerate the task Code
+					data.record["code"] = newTaskProject["code"] + "-T" + oldTaskObject["number"]; 
+
 				}
 				else
 				{
@@ -544,6 +548,9 @@ namespace WebVella.ERP.Project
 					newProjectPatchObject = UpdateProjectOrMilestoneCounter(newProjectPatchObject, (string)newBugObject["status"], 1);
 					isNewProjectPatched = true;
 				}
+
+				//Regenerate the task Code
+				data.record["code"] = newBugProject["code"] + "-T" + oldBugObject["number"]; 
 			}
 			else
 			{

@@ -54,7 +54,7 @@ namespace WebVella.ERP.Project
 			#endregion
 
 			#region << Init fields >>
-			var requestedFields = "id,name,start_date,end_date," +
+			var requestedFields = "id,name,code,start_date,end_date," +
 			"x_milestones_opened,x_milestones_completed,x_tasks_not_started,x_tasks_in_progress,x_tasks_completed,x_bugs_opened,x_bugs_reopened,x_bugs_closed," +
 			"$user_1_n_project_owner.id,$user_1_n_project_owner.image,$user_1_n_project_owner.username," +
 			"$role_n_n_project_team.id,$role_n_n_project_customer.id";
@@ -111,6 +111,7 @@ namespace WebVella.ERP.Project
 					var recordObj = new EntityRecord();
 					recordObj["id"] = record["id"];
 					recordObj["name"] = record["name"];
+					recordObj["code"] = record["code"];
 					recordObj["start_date"] = record["start_date"];
 					recordObj["end_date"] = record["end_date"];
 					recordObj["owner_image"] = ((List<EntityRecord>)record["$user_1_n_project_owner"])[0]["image"];

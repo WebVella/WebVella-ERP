@@ -1549,6 +1549,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/relation")]
 		public IActionResult UpdateEntityRelationRecord([FromBody]InputEntityRelationRecordUpdateModel model)
 		{
+		
 			var recMan = new RecordManager();
 			var entMan = new EntityManager();
 			BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
@@ -1590,7 +1591,36 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(response);
 			}
 
-			EntityQuery query = new EntityQuery(originEntity.Name, "*", EntityQuery.QueryEQ("id", model.OriginFieldRecordId), null, null, null);
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK FILTER << manage_relation_input >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			try
+			{
+				//Hook for the origin entity
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.record = model;
+				hookFilterObj.relation = relation;
+				hookFilterObj.originEntity = originEntity;
+				hookFilterObj.targetEntity = targetEntity;
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.ManageRelationInput, originEntity.Name, hookFilterObj);
+				model = hookFilterObj.record;
+				
+				//Hook for the target entity
+				hookFilterObj = new ExpandoObject();
+				hookFilterObj.record = model;
+				hookFilterObj.relation = relation;
+				hookFilterObj.originEntity = originEntity;
+				hookFilterObj.targetEntity = targetEntity;
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.ManageRelationInput, targetEntity.Name, hookFilterObj);
+				model = hookFilterObj.record;
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook manage_relation_input: " + ex.Message));
+			}// <<<		
+
+
+			EntityQuery query = new EntityQuery(originEntity.Name, "id," + originField.Name, EntityQuery.QueryEQ("id", model.OriginFieldRecordId), null, null, null);
 			QueryResponse result = recMan.Find(query);
 			if (result.Object.Data.Count == 0)
 			{
@@ -1602,12 +1632,12 @@ namespace WebVella.ERP.Web.Controllers
 			var originRecord = result.Object.Data[0];
 			object originValue = originRecord[originField.Name];
 
-			List<EntityRecord> attachTargetRecords = new List<EntityRecord>();
-			List<EntityRecord> detachTargetRecords = new List<EntityRecord>();
+			var attachTargetRecords = new List<EntityRecord>();
+			var detachTargetRecords = new List<EntityRecord>();
 
 			foreach (var targetId in model.AttachTargetFieldRecordIds)
 			{
-				query = new EntityQuery(targetEntity.Name, "*", EntityQuery.QueryEQ("id", targetId), null, null, null);
+				query = new EntityQuery(targetEntity.Name, "id," + targetField.Name, EntityQuery.QueryEQ("id", targetId), null, null, null);
 				result = recMan.Find(query);
 				if (result.Object.Data.Count == 0)
 				{
@@ -1626,7 +1656,7 @@ namespace WebVella.ERP.Web.Controllers
 
 			foreach (var targetId in model.DetachTargetFieldRecordIds)
 			{
-				query = new EntityQuery(targetEntity.Name, "*", EntityQuery.QueryEQ("id", targetId), null, null, null);
+				query = new EntityQuery(targetEntity.Name, "id," + targetField.Name, EntityQuery.QueryEQ("id", targetId), null, null, null);
 				result = recMan.Find(query);
 				if (result.Object.Data.Count == 0)
 				{
@@ -1646,6 +1676,41 @@ namespace WebVella.ERP.Web.Controllers
 			using (var connection = DbContext.Current.CreateConnection())
 			{
 				connection.BeginTransaction();
+
+				//////////////////////////////////////////////////////////////////////////////////////
+				//WEBHOOK FILTER << manage_relation_pre_save >>
+				//////////////////////////////////////////////////////////////////////////////////////
+				try
+				{
+					//Hook for the origin entity
+					dynamic hookFilterObj = new ExpandoObject();
+					hookFilterObj.attachTargetRecords = attachTargetRecords;
+					hookFilterObj.detachTargetRecords = detachTargetRecords;
+					hookFilterObj.originRecord = originRecord;
+					hookFilterObj.originEntity = originEntity;
+					hookFilterObj.targetEntity = targetEntity;
+					hookFilterObj.relation = relation;
+					hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.ManageRelationPreSave, originEntity.Name, hookFilterObj);
+					attachTargetRecords = hookFilterObj.attachTargetRecords;
+					detachTargetRecords = hookFilterObj.detachTargetRecords;
+				
+					//Hook for the target entity
+					hookFilterObj = new ExpandoObject();
+					hookFilterObj.attachTargetRecords = attachTargetRecords;
+					hookFilterObj.detachTargetRecords = detachTargetRecords;
+					hookFilterObj.originRecord = originRecord;
+					hookFilterObj.originEntity = originEntity;
+					hookFilterObj.targetEntity = targetEntity;
+					hookFilterObj.relation = relation;
+					hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.ManageRelationPreSave, targetEntity.Name, hookFilterObj);
+					attachTargetRecords = hookFilterObj.attachTargetRecords;
+					detachTargetRecords = hookFilterObj.detachTargetRecords;
+				}
+				catch (Exception ex)
+				{
+					return Json(CreateErrorResponse("Plugin error in web hook manage_relation_pre_save: " + ex.Message));
+				}// <<<	
+
 
 				try
 				{
@@ -1671,9 +1736,11 @@ namespace WebVella.ERP.Web.Controllers
 
 								foreach (var record in attachTargetRecords)
 								{
-									record[targetField.Name] = originValue;
+									var patchObject = new EntityRecord();	
+									patchObject["id"] = (Guid)record["id"];
+									patchObject[targetField.Name] = originValue;
 
-									var updResult = recMan.UpdateRecord(targetEntity, record);
+									var updResult = recMan.UpdateRecord(targetEntity, patchObject);
 									if (!updResult.Success)
 									{
 										connection.RollbackTransaction();
@@ -1734,6 +1801,28 @@ namespace WebVella.ERP.Web.Controllers
 					return DoResponse(response);
 				}
 			}
+
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK ACTION << manage_relation >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			try
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.record = model;
+				hookFilterObj.result = result;
+				hookFilterObj.relation = relation;
+				hooksService.ProcessActions(SystemWebHookNames.ManageRelationAction, originEntity.Name, hookFilterObj);
+				hookFilterObj = new ExpandoObject();
+				hookFilterObj.record = model;
+				hookFilterObj.result = result;
+				hookFilterObj.relation = relation;
+				hooksService.ProcessActions(SystemWebHookNames.ManageRelationAction, targetEntity.Name, hookFilterObj);
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook create_record: " + ex.Message));
+			}// <<<		
+
 			return DoResponse(response);
 		}
 
