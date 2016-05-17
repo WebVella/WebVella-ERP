@@ -10,8 +10,8 @@
         .module('webvellaDesktop')
         .factory('webvellaDesktopTopnavFactory', factory);
 
-    factory.$inject = ['$log','$rootScope','$timeout'];
-    function factory($log,$rootScope,$timeout) {
+    factory.$inject = ['$log','$rootScope','$timeout','webvellaCoreService'];
+    function factory($log,$rootScope,$timeout,webvellaCoreService) {
         var topnav = [];
         var exports = {
             initTopnav:initTopnav,
@@ -28,6 +28,28 @@
         }
 
         function addItem(item) {
+			//check if user has permission to view the nodes of the item
+			var currentUser = webvellaCoreService.getCurrentUser();
+			var permittedNodes = [];
+			for (var j = 0; j < item.nodes.length; j++) {
+    			var node = item.nodes[j];
+				var nodeRoles = angular.fromJson(item.nodes[j].roles);
+				var nodeCanBeViewed = false;
+
+				for (var i = 0; i < nodeRoles.length; i++) {
+					var roleId = nodeRoles[i];
+					if(currentUser.roles.indexOf(roleId) != -1){
+						nodeCanBeViewed = true;
+						break;
+					}
+				}
+				if(nodeCanBeViewed){
+					permittedNodes.push(node);
+				}
+
+			};			
+			if(permittedNodes.length > 0){
+			item.nodes =  permittedNodes;
 			//check label is not already added
 			var navLabelAlreadyAdded = false;
         	for (var i = 0; i < topnav.length; i++) {
@@ -41,6 +63,8 @@
 				$timeout(function(){
 					$rootScope.$emit('webvellaDesktop-topnav-updated', topnav)
 				},0);
+			}
+
 			}
         }
 

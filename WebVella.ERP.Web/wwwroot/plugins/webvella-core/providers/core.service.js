@@ -36,7 +36,8 @@
 		serviceInstance.patchEntity = patchEntity;
 		//Delete
 		serviceInstance.deleteEntity = deleteEntity;
-
+		//Helpers
+		serviceInstance.getEntityMetaFromEntityList	 = getEntityMetaFromEntityList;
 		//#endregion
 
 		//#region << Field >>
@@ -328,6 +329,16 @@
 		function deleteEntity(entityId, successCallback, errorCallback) {
 			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
+		/////////////////////
+		function getEntityMetaFromEntityList(entityName, entityMetaList){
+			for (var i = 0; i < entityMetaList.length; i++) {
+				if(entityMetaList[i].name == entityName){
+					return 	entityMetaList[i];
+				}
+			}
+			return null;
+		}
+
 
 		//#endregion << Entity >>
 

@@ -139,8 +139,8 @@
 			}
 		}
 
-		var userHasUpdateEntityPermission = webvellaCoreService.userHasRecordPermissions(resolvedCurrentEntityMeta, "canRead");
-		if (!userHasUpdateEntityPermission) {
+		var userHasReadEntityPermission = webvellaCoreService.userHasRecordPermissions(resolvedCurrentEntityMeta, "canRead");
+		if (!userHasReadEntityPermission) {
 			alert("you do not have permissions to view records from this entity!");
 			defer.reject("you do not have permissions to view records from this entity");
 		}
@@ -158,8 +158,8 @@
 
 		// Initialize
 		var defer = $q.defer();
-		var userHasUpdateEntityPermission = webvellaCoreService.userHasRecordPermissions(resolvedCurrentEntityMeta, "canRead");
-		if (!userHasUpdateEntityPermission) {
+		var userHasReadEntityPermission = webvellaCoreService.userHasRecordPermissions(resolvedCurrentEntityMeta, "canRead");
+		if (!userHasReadEntityPermission) {
 			alert("you do not have permissions to view records from this entity!");
 			defer.reject("you do not have permissions to view records from this entity");
 		}
@@ -393,7 +393,9 @@
 		ngCtrl.currentUserHasUpdatePermission = function (item) {
 			var result = false;
 			//Check first if the entity allows it
-			var userHasUpdateEntityPermission = webvellaCoreService.userHasRecordPermissions(ngCtrl.entity, "canUpdate");
+			var viewEntity = webvellaCoreService.getEntityMetaFromEntityList(safeViewNameAndEntity.entityName,resolvedEntityList);
+			var userHasUpdateEntityPermission = webvellaCoreService.userHasRecordPermissions(viewEntity, "canUpdate");
+			
 			if (!userHasUpdateEntityPermission) {
 				return false;
 			}
@@ -411,11 +413,13 @@
 		}
 
 		ngCtrl.userHasRecordDeletePermission = function () {
-			return webvellaCoreService.userHasRecordPermissions(ngCtrl.entity, "canDelete");
+			var viewEntity = webvellaCoreService.getEntityMetaFromEntityList(safeViewNameAndEntity.entityName,resolvedEntityList);
+			return webvellaCoreService.userHasRecordPermissions(viewEntity, "canDelete");
 		}
 
 		ngCtrl.userHasRecordPermissions = function (permissionsCsv) {
-			return webvellaCoreService.userHasRecordPermissions(ngCtrl.entity, permissionsCsv);
+			var viewEntity = webvellaCoreService.getEntityMetaFromEntityList(safeViewNameAndEntity.entityName,resolvedEntityList);
+			return webvellaCoreService.userHasRecordPermissions(viewEntity, permissionsCsv);
 		}
 
 
