@@ -552,15 +552,18 @@
 		//#endregion
 
 		//#region << Logic >> 
-
+		ngCtrl.PagingReloadRecordsSuccessCallback = function (response) {
+			$timeout(function(){
+				ngCtrl.filterLoading = false;
+			},300);
+			ngCtrl.list.data = response.object;
+			$window.scrollTo(0, 0);
+		}
 		ngCtrl.selectPage = function (page) {
-			var params = {
-				areaName: $stateParams.areaName,
-				entityName: safeListNameAndEntityName.entityName,
-				listName: safeListNameAndEntityName.listName,
-				page: page
-			};
-			webvellaCoreService.GoToState($state.current.name, params);
+			var searchParams = $location.search();
+			var listEntityName = safeListNameAndEntityName.entityName;
+			ngCtrl.currentPage = page;
+			webvellaCoreService.getRecordsByListMeta(ngCtrl.list.meta, listEntityName, page, $stateParams, searchParams, ngCtrl.PagingReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
 		}
 
 		ngCtrl.currentUserRoles = ngCtrl.currentUser.roles;

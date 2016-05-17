@@ -9423,10 +9423,10 @@ namespace WebVella.ERP.Project
 									var viewColumn = new InputRecordViewColumn();
 									var viewItem = new InputRecordViewFieldItem();
 									var viewItemFromRelation = new InputRecordViewRelationFieldItem();
-									//General view fields
 
 									//Convert recordList to recordListInput
 									updateViewInput = updateView.DynamicMapTo<InputRecordView>();
+									updateViewInput.DynamicHtmlTemplate="/plugins/webvella-projects/templates/project-dashboard.html";
 
 									#region << Get the header Region >>
 									var headerRegion = new InputRecordViewRegion();
