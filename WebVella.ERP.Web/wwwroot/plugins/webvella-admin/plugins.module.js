@@ -94,7 +94,7 @@
 		});
     	//#endregion
 
-        ngCtrl.plugins = fastCopy(resolvedPluginsList);
+        ngCtrl.plugins = resolvedPluginsList;
 
     }
     //#endregion

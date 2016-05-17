@@ -6,19 +6,18 @@
 				<a class="btn btn-default btn-outline" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
 				<ul class="dropdown-menu  dropdown-menu-right" uib-dropdown-menu style="margin-top:10px;">
 					<li dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageTitleDropdownActions track by actionItem.name" />
-					<li>
-						<a href="/#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.stateParams.viewName}}">
-							<i class="fa fa-fw fa-wrench"></i> Manage View
-						</a>
-					</li>
 				</ul>
 			</span>
 		</div>
-		<div class="meta-label">
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-{{::ngCtrl.entity.iconName}} fa-2x"></i>
+		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux">{{::ngCtrl.entity.label}} <span class="ng-hide" ng-show="ngCtrl.showPageTitleAuxLabelSecondary"><span class="divider"><i class="fa fa-caret-right"></i></span> {{::ngCtrl.view.meta.label}}</span></div>
 			<h4>
-				{{::ngCtrl.view.meta.label}}
-				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalViews.length > 1">
-					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-default btn-outline"><i class="fa fa-fw fa-caret-down"></i></a>
+				<span ng-bind="::ngCtrl.generateHighlightString()" title="{{::ngCtrl.generateHighlightString()}}"></span>
+				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalViews.length > 1" dropdown-append-to-body="true">
+					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-default btn-outline"  style="padding:0 10px;"><i class="fa fa-fw fa-caret-down"></i></a>
 					<ul class="dropdown-menu" uib-dropdown-menu>
 						<li ng-repeat="view in ngCtrl.generalViews track by $index">
 							<a href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/view-general/sb/{{::view.name}}/{{ngCtrl.stateParams.recordId}}">
@@ -28,7 +27,7 @@
 					</ul>
 				</span>
 			</h4>
-		</div>
+        </div>
 	</div>
 </div>
 
@@ -40,12 +39,12 @@
 			<div class="region" ng-repeat="region in ngCtrl.headerRegion track by region.name">
 				<div ng-include="'regionTemplate.html'"></div>
 			</div>
-			<nav class="navbar navbar-default navbar-erp" ng-if="ngCtrl.renderTabBar">
+			<nav class="navbar navbar-default navbar-erp" ng-if="::ngCtrl.renderTabBar">
 				<div class="container-fluid">
 					<ul class="nav navbar-nav">
 						<li role="presentation" ng-class="{'active': ngCtrl.activeTabName == region.name}" ng-repeat="region in ngCtrl.view.meta.regions | filter: {render:true,name:'!header'} track by region.name">
-							<a ui-sref='{{ngCtrl.currentState.name}}({areaName:"{{ngCtrl.stateParams.areaName}}" ,entityName:"{{ngCtrl.stateParams.entityName}}" ,viewName:"{{ngCtrl.stateParams.viewName}}" ,recordId:"{{ngCtrl.stateParams.recordId}}",regionName:"{{region.name}}"})'
-							   ng-click="ngCtrl.goToRegion(region.name)">{{region.label}}</a>
+							<a ui-sref='{{::ngCtrl.currentState.name}}({areaName:"{{::ngCtrl.stateParams.areaName}}" ,entityName:"{{::ngCtrl.stateParams.entityName}}" ,viewName:"{{::ngCtrl.stateParams.viewName}}" ,recordId:"{{::ngCtrl.stateParams.recordId}}",regionName:"{{::region.name}}"})'
+							   ng-click="ngCtrl.goToRegion(region.name)">{{::region.label}}</a>
 						</li>
 					</ul>
 				</div>
@@ -58,7 +57,7 @@
 	</div>
 
 	<div id="page-text" ng-if='::ngCtrl.view.meta.dynamicHtmlTemplate'>
-		<div ng-include="ngCtrl.view.meta.dynamicHtmlTemplate"></div>
+		<div ng-include="::ngCtrl.view.meta.dynamicHtmlTemplate"></div>
 		<div class="page-bottom-actions" dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageBottomActions track by actionItem.name"></div>
 	</div>
 
@@ -99,7 +98,7 @@
 											</span>
 											<input type="text" class="form-control" disabled editable-checkbox="viewData[item.dataName]"
 												   e-title="set as TRUE" value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"
-												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{'fieldForm_' + item.dataName}}">
+												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
 											<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 										</div>
 										<div class="editable-wrapper input-group editable-readonly" ng-switch-when="2" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
@@ -117,7 +116,7 @@
 											 ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">
 											<input type="text" class="form-control" disabled editable-text="viewData[item.dataName]"
 												   value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"
-												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{'fieldForm_' + item.dataName}}">
+												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
 											<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 										</div>
 										<div class="editable-wrapper input-group editable-readonly" ng-switch-when="3" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
@@ -131,7 +130,7 @@
 												   e-datepicker-popup="{{item.meta.format}}" e-is-open="ngCtrl.opened[item.dataName]" e-init-date="false"
 												   onshow="ngCtrl.open(item.dataName,true)" onhide="ngCtrl.open(item.dataName,false)"
 												   value='{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}'
-												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{'fieldForm_' + item.dataName}}">
+												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
 											<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];"
 											 ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-calendar fa-fw"></i></span>
 										</div>
@@ -148,7 +147,7 @@
 														   data-e-datepicker-popup="yyyy-MMM-dd" e-is-open="ngCtrl.opened[item.dataName]" e-init-date="false"
 														   onshow="ngCtrl.open(item.dataName,true)" onhide="ngCtrl.open(item.dataName,false)"
 														   value='{{ngCtrl.renderFieldValue(viewData[item.dataName],{fieldType:4})}}'
-														   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{'fieldForm_' + item.dataName}}">
+														   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
 													<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-calendar fa-fw"></i></span>
 												</div>
 												<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
@@ -162,7 +161,7 @@
 														   e-show-meridian="false" e-minute-step="10" e-is-open="ngCtrl.opened[item.dataName]"
 														   onshow="ngCtrl.open(item.dataName,true)" onhide="ngCtrl.open(item.dataName,false)"
 														   value='{{ngCtrl.getTimeString(item,viewData[item.dataName])}}'
-														   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{'fieldForm_' + item.dataName}}">
+														   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
 													<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-clock-o fa-fw"></i></span>
 												</div>
 												<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
@@ -176,7 +175,7 @@
 											 ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">
 											<input type="text" class="form-control" disabled editable-text="viewData[item.dataName]"
 												   value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"
-												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{'fieldForm_' + item.dataName}}">
+												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
 											<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 										</div>
 										<div class="editable-wrapper input-group editable-readonly" ng-switch-when="6" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
@@ -185,16 +184,16 @@
 										</div>
 										<!-- If type 7 - fileupload -->
 										<div ng-switch-when="7" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)" ng-init="ngCtrl.progress[item.dataName] ={}; ngCtrl.progress[item.dataName][viewData['id']] = 0; ngCtrl.files[item.dataName]={}; ngCtrl.cacheBreakers[item.dataName]={};">
-											<a ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName][viewData['id']] == 0" href="javascript:void(0)" class="btn btn-default btn-outline" ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false' translate="{{'BROWSE'}}"></a>
+											<a ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName][viewData['id']] == 0" href="javascript:void(0)" class="btn btn-default btn-outline" ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false' translate="{{::'BROWSE'}}"></a>
 											<div class="progress" ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName][viewData['id']] > 0 && ngCtrl.progress[item.dataName][viewData['id']] <= 100">
 												<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName][viewData['id']]}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': ngCtrl.progress[item.dataName][viewData['id']]+'%'}">
 													<span ng-if="ngCtrl.progress[item.dataName][viewData['id']] < 100">{{ngCtrl.progress[item.dataName][viewData['id']] || '0'}}%</span>
-													<span ng-if="ngCtrl.progress[item.dataName][viewData['id']] == 100"  translate="{{'FILE_UPLOAD_ALMOST_DONE'}}"></span>
+													<span ng-if="ngCtrl.progress[item.dataName][viewData['id']] == 100"  translate="{{::'FILE_UPLOAD_ALMOST_DONE'}}"></span>
 												</div>
 											</div>
 											<div class="editable-wrapper input-group file-upload" ng-if='viewData[item.dataName]'>
 												<span class="form-control" ng-bind-html="ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)"></span>
-												<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item,viewData['id'])" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
+												<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item,viewData['id'])" ng-confirm-click="{{::'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 												<a class="input-group-addon update" href='javascript:void(0)' ngf-select="ngCtrl.updateFileUpload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false'><i class="fa fa-fw fa-refresh"></i></a>
 											</div>
 										</div>
@@ -208,16 +207,16 @@
 										<div ng-switch-when="8" class="not-editable fake-input-wrapper" readonly ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-bind-html="::ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)"></div>
 										<!-- If type 9 - image -->
 										<div ng-switch-when="9" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)" ng-init="ngCtrl.progress[item.dataName] ={}; ngCtrl.progress[item.dataName][viewData['id']] = 0;  ngCtrl.files[item.dataName]={}; ngCtrl.cacheBreakers[item.dataName]={};">
-											<a ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName][viewData['id']] == 0" href='javascript:void(0)' class='btn btn-default btn-outline' ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false' accept="image/*" translate="{{'BROWSE'}}"></a>
+											<a ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName][viewData['id']] == 0" href='javascript:void(0)' class='btn btn-default btn-outline' ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false' accept="image/*" translate="{{::'BROWSE'}}"></a>
 											<div class="progress" ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName][viewData['id']] > 0 && ngCtrl.progress[item.dataName][viewData['id']] <= 100">
 												<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName][viewData['id']]}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': ngCtrl.progress[item.dataName][viewData['id']]+'%'}">
 													<span ng-if="ngCtrl.progress[item.dataName][viewData['id']] < 100">{{ngCtrl.progress[item.dataName][viewData['id']] || '0'}}%</span>
-													<span ng-if="ngCtrl.progress[item.dataName][viewData['id']] == 100" translate="{{'FILE_UPLOAD_ALMOST_DONE'}}"></span>
+													<span ng-if="ngCtrl.progress[item.dataName][viewData['id']] == 100" translate="{{::'FILE_UPLOAD_ALMOST_DONE'}}"></span>
 												</div>
 											</div>
 											<div class="image-upload" ng-if='viewData[item.dataName]'>
 												<img class="img-thumbnail" ng-src="{{viewData[item.dataName] + ngCtrl.cacheBreakers[item.dataName][viewData['id']]}}" style="width:120px" />
-												<a class="delete-link" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item,viewData['id'])" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
+												<a class="delete-link" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item,viewData['id'])" ng-confirm-click="{{::'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 												<a class="update-link" href='javascript:void(0)' ngf-select="ngCtrl.updateFileUpload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false' accept="image/*"><i class="fa fa-fw fa-refresh"></i></a>
 											</div>
 										</div>
@@ -227,7 +226,7 @@
 											 ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">
 											<div class="form-control" disabled editable-textarea="viewData[item.dataName]" e-rows="3"
 												ng-bind="ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)"
-												 onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{'fieldForm_' + item.dataName}}">
+												 onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
 											</div>
 											<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 										</div>
@@ -242,7 +241,7 @@
 											<input type="text" class="form-control" disabled editable-checklist="viewData[item.dataName]"
 												   e-ng-options="s.key as s.value for s in item.meta.options"
 												   value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"
-												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{'fieldForm_' + item.dataName}}">
+												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
 											<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 										</div>
 										<div class="editable-wrapper input-group editable-readonly" ng-switch-when="11" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
@@ -254,7 +253,7 @@
 											 ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">
 											<input type="text" class="form-control" disabled editable-text="viewData[item.dataName]"
 												   value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"
-												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{'fieldForm_' + item.dataName}}">
+												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
 											<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 										</div>
 										<div class="editable-wrapper input-group editable-readonly" ng-switch-when="12" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
@@ -267,7 +266,7 @@
 											 ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">
 											<input type="text" class="form-control" disabled editable-text="viewData[item.dataName]"
 												   value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"
-												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{'fieldForm_' + item.dataName}}">
+												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
 											<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 										</div>
 										<div class="editable-wrapper input-group editable-readonly" ng-switch-when="13" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
@@ -279,7 +278,7 @@
 											 ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">
 											<input type="text" class="form-control" disabled editable-text="viewData[item.dataName]"
 												   value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"
-												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{'fieldForm_' + item.dataName}}">
+												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
 											<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 										</div>
 										<div class="editable-wrapper input-group editable-readonly" ng-switch-when="14" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
@@ -291,7 +290,7 @@
 											 ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">
 											<input type="text" class="form-control" disabled editable-text="viewData[item.dataName]"
 												   value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"
-												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{'fieldForm_' + item.dataName}}">
+												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
 											<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 										</div>
 										<div class="editable-wrapper input-group editable-readonly" ng-switch-when="15" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
@@ -303,7 +302,7 @@
 											 ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">
 											<input type="text" class="form-control" disabled editable-text="viewData[item.dataName]"
 												   value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"
-												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{'fieldForm_' + item.dataName}}">
+												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
 											<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 										</div>
 										<div class="editable-wrapper input-group editable-readonly" ng-switch-when="16" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
@@ -316,7 +315,7 @@
 											<input type="text" class="form-control" disabled editable-select="viewData[item.dataName]"
 												   e-ng-options="s.key as s.value for s in item.meta.options"
 												   value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"
-												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{'fieldForm_' + item.dataName}}">
+												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
 											<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 										</div>
 										<div class="editable-wrapper input-group editable-readonly" ng-switch-when="17" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
@@ -328,7 +327,7 @@
 											 ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">
 											<input type="text" class="form-control" disabled editable-text="viewData[item.dataName]"
 												   value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"
-												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{'fieldForm_' + item.dataName}}">
+												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
 											<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 										</div>
 										<div class="editable-wrapper input-group editable-readonly" ng-switch-when="18" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
@@ -343,7 +342,7 @@
 											</span>
 											<input type="text" class="form-control" disabled editable-text="viewData[item.dataName]"
 												   value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"
-												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{'fieldForm_' + item.dataName}}">
+												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
 											<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 										</div>
 										<div class="editable-wrapper input-group editable-readonly" ng-switch-when="19" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
@@ -382,7 +381,7 @@
 													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,1,'target',viewData)">
 													<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"></input>
 													<span class="input-group-addon remove-addon ng-hide" ng-show="viewData[item.dataName].length > 0"
-														  confirmed-click="ngCtrl.removeRelation(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
+														  confirmed-click="ngCtrl.removeRelation(item)" ng-confirm-click="{{::'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
 													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,1,'target',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 												</div>
 												<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
@@ -400,7 +399,7 @@
 												<span class="go-red">Possible relation error</span>
 											</div>
 										</div>
-										<div ng-switch-when="2" ng-switch="ngCtrl.getRelation(item.relationName).currentEntityRole">
+										<div ng-switch-when="2" ng-switch="::ngCtrl.getRelation(item.relationName).currentEntityRole">
 											<!-- Case 1 - Current Entity is Origin -->
 											<div ng-switch-when="1" class="position-relative">
 												<div class="editable-wrapper input-group editable-updatable" ng-if="viewData[item.dataName].length == 0"
@@ -438,7 +437,7 @@
 													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'target',viewData)">
 													<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"></input>
 													<span class="input-group-addon remove-addon ng-hide" ng-show="viewData[item.dataName].length > 0 && !item.fieldRequired"
-														  confirmed-click="ngCtrl.removeRelation(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
+														  confirmed-click="ngCtrl.removeRelation(item)" ng-confirm-click="{{::'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
 													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 												</div>
 												<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
@@ -483,7 +482,7 @@
 														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'target',viewData)">
 														<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"></input>
 														<span class="input-group-addon remove-addon ng-hide" ng-show="viewData[item.dataName].length > 0"
-															  confirmed-click="ngCtrl.removeRelation(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
+															  confirmed-click="ngCtrl.removeRelation(item)" ng-confirm-click="{{::'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
 														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
 													<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
@@ -496,7 +495,7 @@
 												<span class="go-red">Possible relation error</span>
 											</div>
 										</div>
-										<div ng-switch-when="3" ng-switch="ngCtrl.getRelation(item.relationName).currentEntityRole">
+										<div ng-switch-when="3" ng-switch="::ngCtrl.getRelation(item.relationName).currentEntityRole">
 											<!-- Case 1 - Current Entity is Origin -->
 											<div ng-switch-when="1" class="position-relative">
 												<div class="editable-wrapper input-group editable-updatable" ng-if="viewData[item.dataName].length == 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
@@ -627,7 +626,7 @@
 									<span class="not-editable not-readable">hidden</span>
 								</div>
 								<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{ngCtrl.calculatefieldWidths('field',column.gridColCount)}}">
-									<dynamic-view template-url="item.meta.dynamicHtmlTemplate" template-data="viewData[item.dataName][0]" template-meta="item.meta"></dynamic-view>
+									<div ng-include="item.meta.dynamicHtmlTemplate"></div>
 								</div>
 							</div>
 
@@ -653,7 +652,7 @@
 									<span class="not-editable not-readable">hidden</span>
 								</div>
 								<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{ngCtrl.calculatefieldWidths('field',column.gridColCount)}}">
-									<dynamic-view template-url="item.meta.dynamicHtmlTemplate" template-data="viewData[item.dataName][0]" template-meta="item.meta"></dynamic-view>
+									<div ng-include="item.meta.dynamicHtmlTemplate"></div>
 								</div>
 							</div>
 
@@ -759,33 +758,220 @@
 						<tr>
 							<th class="actions" style="width:80px;" ng-if="popupCtrl.modalMode != 'single-trigger-selection'"></th>
 							<th class="actions" style="width:110px;" ng-if="popupCtrl.modalMode == 'single-trigger-selection'"></th>
-							<th class="wv-{{column.meta.name}}" ng-repeat="column in popupCtrl.relationLookupList.meta.columns  | limitTo: popupCtrl.relationLookupList.meta.visibleColumnsCount">{{column.meta.label}}</th>
+							<th ng-style="{'width': popupCtrl.columnWidths[$index]}" class="wv-{{column.meta.name}}" ng-repeat="column in popupCtrl.relationLookupList.meta.columns  | limitTo: popupCtrl.relationLookupList.meta.visibleColumnsCount">{{column.meta.label}}</th>
 						</tr>
 					</thead>
 					<tbody>
+					<tr style="background:#ddd" class="query-filter-row">
+						<td>
+							<a class="btn btn-outline btn-sm btn-block" ng-click="popupCtrl.applyQueryFilter()">
+								<i class="fa fa-fw" ng-class="{'fa-filter':!popupCtrl.filterLoading, 'fa-spin fa-spinner': popupCtrl.filterLoading}"></i>
+							</a>
+						</td>
+						<td ng-repeat="column in popupCtrl.relationLookupList.meta.columns | limitTo: popupCtrl.relationLookupList.meta.visibleColumnsCount">
+							<form ng-switch="column.type" ng-submit="popupCtrl.applyQueryFilter()" novalidate ng-if="::popupCtrl.checkIfFieldSetInQuery(column.dataName)">
+								<div ng-switch-when="field" ng-switch="::column.meta.fieldType">
+									<div ng-switch="column.meta.fieldType" ng-if="::column.meta.searchable">
+										<div ng-switch-when="1">
+											<!--AutoNumber field-->
+											<div class="form-group form-group-sm">
+												<div class="input-group">
+													<span class="input-group-addon" ng-bind="popupCtrl.getAutoIncrementString(column).prefix" ng-if="popupCtrl.getAutoIncrementString(column).prefix != null"></span>
+													<input type="text" class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]" placeholder="{{::popupCtrl.getFilterInputPlaceholder(column.dataName)}}">
+													<span class="input-group-addon" ng-bind="popupCtrl.getAutoIncrementString(column).suffix" ng-if="popupCtrl.getAutoIncrementString(column).suffix != null"></span>
+												</div>
+											</div>
+										</div>
+										<div ng-switch-when="2">
+											<!--checkbox field-->
+											<div class="form-group form-group-sm">
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" ng-model="popupCtrl.filterQuery[column.dataName]" ng-true-value="'true'" ng-false-value="'false'" /> true
+													</label>
+												</div>
+											</div>
+										</div>
+										<div ng-switch-when="3">
+											<!--Currency field-->
+											<div class="form-group form-group-sm">
+												<div class="input-group">
+													<span class="input-group-addon" ng-bind="::column.meta.currency.symbol" ng-if="::column.meta.currency.symbolPlacement == 1"></span>
+													<input type="text" class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]" placeholder="{{::popupCtrl.getFilterInputPlaceholder(column.dataName)}}">
+													<span class="input-group-addon" ng-bind="::column.meta.currency.symbol" ng-if="::column.meta.currency.symbolPlacement == 2"></span>
+												</div>
+											</div>
+										</div>
+										<div ng-switch-when="4">
+											<!--date field-->
+											<div class="form-group form-group-sm">
+												<div class="left-inner-addon">
+													<i class="fa fa-fw fa-calendar"></i>
+													<input type="text" class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]" placeholder="{{::popupCtrl.getFilterInputPlaceholder(column.dataName)}} e.g.'15 Feb 2015'">
+												</div>
+											</div>
+										</div>
+										<div ng-switch-when="5">
+											<!--datetime field-->
+											<div class="form-group form-group-sm">
+												<div class="col-sm-6" style="padding:0">
+													<div class="left-inner-addon">
+														<i class="fa fa-fw fa-calendar"></i>
+														<input type="text" class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]" placeholder="{{::popupCtrl.getFilterInputPlaceholder(column.dataName)}} e.g.'15 Feb 2015'">
+													</div>
+												</div>
+												<div class="col-sm-6" style="padding: 0 0 0 5px">
+													<div class="left-inner-addon">
+														<i class="fa fa-fw fa-clock-o"></i>
+														<input type="time" class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]" placeholder="e.g.'14:35'">
+													</div>
+												</div>
+											</div>
+										</div>
+										<div ng-switch-when="6">
+											<!--email field-->
+											<div class="form-group form-group-sm">
+												<div class="left-inner-addon">
+													<i class="fa fa-fw fa-envelope-o"></i>
+													<input type="text" class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]" placeholder="{{::popupCtrl.getFilterInputPlaceholder(column.dataName)}}">
+												</div>
+											</div>
+										</div>
+										<div ng-switch-when="7">
+											<!--file field-->
+											<div class="form-group form-group-sm">
+												<div class="left-inner-addon">
+													<i class="fa fa-fw fa-link"></i>
+													<input type="text" class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]" placeholder="{{::popupCtrl.getFilterInputPlaceholder(column.dataName)}}">
+												</div>
+											</div>
+										</div>
+										<div ng-switch-when="8">
+											<!--html field-->
+											<div class="form-group form-group-sm">
+												<input type="text" class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]" placeholder="{{::popupCtrl.getFilterInputPlaceholder(column.dataName)}}">
+											</div>
+										</div>
+										<div ng-switch-when="9">
+											<!--image field-->
+											<div class="form-group form-group-sm">
+												<div class="left-inner-addon">
+													<i class="fa fa-fw fa-link"></i>
+													<input type="text" class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]" placeholder="{{::popupCtrl.getFilterInputPlaceholder(column.dataName)}}">
+												</div>
+											</div>
+										</div>
+										<div ng-switch-when="10">
+											<!--textarea field-->
+											<div class="form-group form-group-sm">
+												<input type="text" class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]" placeholder="{{::popupCtrl.getFilterInputPlaceholder(column.dataName)}}">
+											</div>
+										</div>
+										<div ng-switch-when="11">
+											<!--multiselect field-->
+											<div class="form-group form-group-sm">
+												<select class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]">
+														<option value=""></option>
+														<option value="{{::option.key}}" ng-repeat="option in column.meta.options">{{::option.value}}</option>
+												</select>
+											</div>
+										</div>
+										<div ng-switch-when="12">
+											<!--number field-->
+											<div class="form-group form-group-sm">
+												<input type="text" class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]" placeholder="{{::popupCtrl.getFilterInputPlaceholder(column.dataName)}}">
+											</div>
+										</div>
+										<div ng-switch-when="13">
+											<!--password field-->
+											<div class="form-group form-group-sm">
+												<p class="form-control-static" style="padding:6px 0">*******</p>
+											</div>
+										</div>
+										<div ng-switch-when="14">
+											<!--percent field-->
+											<div class="form-group form-group-sm">
+												<div class="right-inner-addon">
+													<i class="fa fa-fw fa-percent"></i>
+													<input type="text" class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]" placeholder="{{::popupCtrl.getFilterInputPlaceholder(column.dataName)}}">
+												</div>
+											</div>
+										</div>
+										<div ng-switch-when="15">
+											<!--phone field-->
+											<div class="form-group form-group-sm">
+												<input type="text" class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]" placeholder="{{::popupCtrl.getFilterInputPlaceholder(column.dataName)}}">
+											</div>
+										</div>
+										<div ng-switch-when="16">
+											<!--GUID field-->
+											<div class="form-group form-group-sm">
+												<input type="text" class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]" placeholder="{{::popupCtrl.getFilterInputPlaceholder(column.dataName)}}">
+											</div>
+										</div>
+										<div ng-switch-when="17">
+											<!--dropdown field-->
+											<div class="form-group form-group-sm">
+												<select class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]">
+														<option value=""></option>
+														<option value="{{::option.key}}" ng-repeat="option in column.meta.options">{{::option.value}}</option>
+												</select>
+											</div>
+										</div>
+										<div ng-switch-when="18">
+											<!--text field-->
+											<div class="form-group form-group-sm">
+												<input type="text" class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]" placeholder="{{::popupCtrl.getFilterInputPlaceholder(column.dataName)}}">
+											</div>
+										</div>
+										<div ng-switch-when="19">
+											<!--url field-->
+											<div class="form-group form-group-sm">
+												<div class="left-inner-addon">
+													<i class="fa fa-fw fa-globe"></i>
+													<input type="text" class="form-control" ng-model="popupCtrl.filterQuery[column.dataName]" placeholder="{{::popupCtrl.getFilterInputPlaceholder(column.dataName)}}">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div ng-if="::!column.meta.searchable">
+										not searchable
+									</div>
+								</div>
+								<div ng-switch-when="fieldFromRelation">field from relation</div>
+								<div ng-switch-when="view">view</div>
+								<div ng-switch-when="viewFromRelation">view from relation</div>
+								<div ng-switch-when="list">list</div>
+								<div ng-switch-when="listFromRelation">list from relation</div>
+								<div ng-switch-when="treeFromRelation">tree from relation</div>
+							</form>
+						</td>
+					</tr>
 						<tr ng-repeat="record in popupCtrl.relationLookupList.data" ng-class="{'warning': popupCtrl.isSelectedRecord(record.id)}">
 							<td ng-if="popupCtrl.modalMode == 'single-selection'">
-								<a ng-click='popupCtrl.selectSingleRecord(record)' href="javascript:void(0)" ng-if="!popupCtrl.isSelectedRecord(record.id)">
+								<a ng-click='popupCtrl.selectSingleRecord(record)' href="javascript:void(0)" ng-if="!popupCtrl.isSelectedRecord(record.id)" class="btn btn-outline btn-sm">
 									select
 								</a>
-								<span class="go-red" ng-if="popupCtrl.isSelectedRecord(record.id)">
+								<span ng-if="popupCtrl.isSelectedRecord(record.id)"  class="btn btn-success btn-sm">
 									selected
 								</span>
 							</td>
 							<td ng-if="popupCtrl.modalMode == 'multi-selection'">
-								<a ng-click='popupCtrl.attachRecord(record)' href="javascript:void(0)" ng-if="!popupCtrl.isSelectedRecord(record.id)">
+								<a ng-click='popupCtrl.attachRecord(record)' href="javascript:void(0)" ng-if="!popupCtrl.isSelectedRecord(record.id)" class="btn btn-outline btn-sm">
 									select
 								</a>
-								<a ng-click='popupCtrl.detachRecord(record)' href="javascript:void(0)" ng-if="popupCtrl.isSelectedRecord(record.id)">
+								<a ng-click='popupCtrl.detachRecord(record)' href="javascript:void(0)" ng-if="popupCtrl.isSelectedRecord(record.id)" class="btn btn-danger btn-sm">
 									deselect
 								</a>
 							</td>
 							<td ng-if="popupCtrl.modalMode == 'single-trigger-selection'">
 								<span class="go-gray" ng-show="popupCtrl.processingRecordId == record.id">processing...</span>
-								<a ng-click='popupCtrl.instantAttachRecord(record)' href="javascript:void(0)" ng-show="!popupCtrl.isSelectedRecord(record.id) && popupCtrl.processingRecordId != record.id">
+								<a ng-click='popupCtrl.instantAttachRecord(record)' href="javascript:void(0)" ng-show="!popupCtrl.isSelectedRecord(record.id) && popupCtrl.processingRecordId != record.id"
+									class="btn btn-outline btn-sm">
 									select now
 								</a>
-								<a ng-click='popupCtrl.instantDetachRecord(record)' href="javascript:void(0)" ng-show="popupCtrl.isSelectedRecord(record.id)  && popupCtrl.processingRecordId != record.id">
+								<a ng-click='popupCtrl.instantDetachRecord(record)' href="javascript:void(0)" ng-show="popupCtrl.isSelectedRecord(record.id)  && popupCtrl.processingRecordId != record.id"
+									class="btn btn-danger btn-sm">
 									deselect now
 								</a>
 							</td>
@@ -808,8 +994,8 @@
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupCtrl.saveRelationChanges()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.modalMode == 'multi-selection'" translate="{{'SAVE'}}"></button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
+		<button class="btn btn-primary" ng-click="popupCtrl.saveRelationChanges()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.modalMode == 'multi-selection'" translate="{{::'SAVE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
 	</div>
 </script>
 

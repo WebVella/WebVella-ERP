@@ -22,48 +22,16 @@
 	angular
     .module('webvellaAreas')
 	.controller('ManageCommentModalController', ManageCommentModalController)
-	.service('webvellaListActionService', service);
-	service.$inject = ['$log', '$http', 'wvAppConstants', '$timeout', 'ngToast', '$filter', 'webvellaCoreService', '$uibModal'];
-	function service($log, $http, wvAppConstants, $timeout, ngToast, $filter, webvellaCoreService, $uibModal) {
+	.service('wv_project_comment_bug_comments_list_service', service);
+	service.$inject = ['$log', '$http', 'wvAppConstants', '$timeout', 'ngToast', '$filter', 'webvellaCoreService', '$uibModal','$rootScope'];
+	function service($log, $http, wvAppConstants, $timeout, ngToast, $filter, webvellaCoreService, $uibModal,$rootScope) {
+
 		var serviceInstance = this;
-		// PRELOAD
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Execution: This script will be executed BEFORE the page load (while resolving the state)
-		// Parameters: defer, state
-		serviceInstance.preload = preload;
-		function preload(defer, state) {
-			console.log("preload");
-			defer.resolve();
-			return defer.promise;
-		}
-
-		// ONLOAD
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Execution: This script will be executed as the FIRST function from the controller after the main objects are initialized.
-		//			  With the ngCtrl you can access the scope of the controller
-		// Parameters: ngCtrl, rootScope, state
-		serviceInstance.onload = onload;
-		function onload(ngCtrl, rootScope, state) {
-			 console.log("onload");
-			return true; //true for success, or string for an error message to be presented to the user
-		}
-
-		// POSTLOAD
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Execution: This script will be executed as the LAST function from the controller
-		// Parameters: ngCtrl, rootScope, state
-		serviceInstance.postload = postload;
-		function postload(ngCtrl, rootScope, state) {
-			console.log("postload");
-			return true; //true for success, or string for an error message to be presented to the user
-		}
-
 
 		// CUSTOM
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		serviceInstance.isCurrentUserAuthor = isCurrentUserAuthor;
 		function isCurrentUserAuthor(authorId) {
-			console.log("check");
 			var currentUser = webvellaCoreService.getCurrentUser();
 			if (authorId == currentUser.id) {
 				return true;
@@ -108,7 +76,7 @@
 			popupCtrl.record = {};
 			popupCtrl.record.id = null;
 			popupCtrl.record.content = null;
-			popupCtrl.record.task_id = fastCopy(ngCtrl.stateParams.recordId);
+			popupCtrl.record.bug_id = fastCopy(ngCtrl.stateParams.recordId);
 		}
 
 

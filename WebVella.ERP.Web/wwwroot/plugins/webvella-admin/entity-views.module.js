@@ -92,8 +92,8 @@
 	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $uibModal, $timeout,$translate) {
 		
 		var ngCtrl = this;
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
-		ngCtrl.views = fastCopy(resolvedCurrentEntityMeta.recordViews);
+		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.views = resolvedCurrentEntityMeta.recordViews;
 		if (ngCtrl.views === null) {
 			ngCtrl.views = [];
 		}

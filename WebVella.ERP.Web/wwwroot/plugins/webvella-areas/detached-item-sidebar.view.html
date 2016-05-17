@@ -9,7 +9,7 @@
 	<!--<a class="back clearfix" href="javascript:void(0)" ng-click="sidebarData.goBack()"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>-->
 
 	<ul class="nav nav-tabs" ng-if="sidebarData.sidebarTopActions.length > 0" ng-class="{'only-back':sidebarData.onlyBackButton}">
-		<li dynamic-html template="actionItem.template" ng-repeat="actionItem in sidebarData.sidebarTopActions track by actionItem.name" />
+		<li class="dynamic" dynamic-html template="actionItem.template" ng-repeat="actionItem in sidebarData.sidebarTopActions track by actionItem.name" />
 	</ul>
 </div>
 <!-- -->

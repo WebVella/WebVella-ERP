@@ -47,7 +47,7 @@
 			}
 		}).state('webvella-area-view-create-with-relation', {
 			parent: 'webvella-area-base',
-			url: '/view-create/:viewName/relation/:relationName/:targetRecordId/:regionName?returnUrl',
+			url: '/view-create/:viewName/relation/:relationName/:direction/:targetRecordId/:regionName?returnUrl',
 			params: {
 				regionName: { value: "header", squash: true }
 			},
@@ -128,10 +128,10 @@
 		ngCtrl.view = {};
 		ngCtrl.view.data = {}; //Initially now, will be later filled in by the user
 		ngCtrl.view.meta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName, $stateParams.entityName, resolvedEntityList);
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
-		ngCtrl.entityRelations = fastCopy(resolvedEntityRelationsList);
-		ngCtrl.areas = fastCopy(resolvedAreas.data);
-		ngCtrl.currentUser = fastCopy(resolvedCurrentUser);
+		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.entityRelations = resolvedEntityRelationsList;
+		ngCtrl.areas = resolvedAreas.data;
+		ngCtrl.currentUser = resolvedCurrentUser;
 		ngCtrl.$sessionStorage = $sessionStorage;
 		ngCtrl.stateParams = $stateParams;
 		//#endregion
@@ -403,6 +403,53 @@
 
 		//#endregion
 
+		//#region << If this is a create with relation init the related id >>
+		if(ngCtrl.stateParams.relationName){
+			//get relation
+			var currentRelation = webvellaCoreService.getRelationFromRelationsList(ngCtrl.stateParams.relationName,ngCtrl.entityRelations)
+			var relationFieldDataName = "$"+currentRelation.name + ".id";
+			//Lock the field if present as it should not be edited by the user
+			ngCtrl.isRelationFieldLocked = function(item){
+				var checkstring = "$field$" + currentRelation.name;
+				if(item.dataName.indexOf(checkstring) == -1){
+					return false;
+				}
+				else {
+					return true;
+				}
+			}
+		
+			//generate the relation field dataName for this record and include it in the data
+			switch(currentRelation.relationType){
+				case 1:  //1:1
+					ngCtrl.view.data[relationFieldDataName] = ngCtrl.stateParams.targetRecordId;
+					break;
+				case 2:  //1:N
+					if( ngCtrl.stateParams.direction == "origin-target"){
+						//field expects 1 value - of the origin
+						ngCtrl.view.data[relationFieldDataName] = ngCtrl.stateParams.targetRecordId;
+					}
+					else {
+						//field expects Array of values - of the targets
+						ngCtrl.view.data[relationFieldDataName].push(ngCtrl.stateParams.targetRecordId);
+					}
+					break;
+				case 3:  //N:N
+					if( ngCtrl.stateParams.direction == "origin-target"){
+						//field expects Array value - of the origins
+						ngCtrl.view.data[relationFieldDataName].push(ngCtrl.stateParams.targetRecordId);
+					}
+					else {
+						//field expects Array values - of the targets
+						ngCtrl.view.data[relationFieldDataName].push(ngCtrl.stateParams.targetRecordId);
+					}
+					break;
+			}
+		}
+
+
+		//#endregion
+
 		//#region << Render >>
 		ngCtrl.activeTabName = ngCtrl.stateParams.regionName;
 		ngCtrl.view.meta.regions.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
@@ -527,7 +574,7 @@
 						className: 'success',
 						content: '<span class="go-green">Success:</span> ' + response.message
 					});
-					if ($stateParams.returnUrl) {
+					if ($stateParams.returnUrl && redirectTarget != "details") {
 						var returnUrl = decodeURI($stateParams.returnUrl);
 						$location.search("returnUrl", null);
 						$location.path(returnUrl);
@@ -535,18 +582,25 @@
 					else {
 						switch (redirectTarget) {
 							case "details":
-								alert("the details view name should be generated")
-								//$state.go("webvella-areas-record-view", {
-								//	areaName: $stateParams.areaName,
-								//	entityName: $stateParams.entityName,
-								//	recordId: response.object.data[0].id,
-								//	viewName: detailsViewName,
-								//	auxPageName: "*",
-								//	page: $stateParams.page
-
-								//}, { reload: true });
+								var defaultViewName = webvellaCoreService.getDefaultViewNameForAreaEntity(ngCtrl.currentArea,ngCtrl.entity);
+								if(defaultViewName != null){
+									$state.go("webvella-areas-view-general", {
+										areaName: ngCtrl.currentArea.name,
+										entityName: ngCtrl.entity.name,
+										recordId: response.object.data[0].id,
+										viewName: defaultViewName
+									}, { reload: true });
+								}
+								else{
+									ngToast.create({
+        								className: 'error',
+        								content: '<span class="go-red">Error:</span> This entity does not have default general view',
+        								timeout: 7000
+        							});
+								}
 								break;
-							case "list":
+
+							default:
 								$state.go("webvella-area-list-general", {
 									areaName: $stateParams.areaName,
 									entityName: $stateParams.entityName,
@@ -839,7 +893,7 @@
 			ngCtrl.actionService = $injector.get(serviceName);
 		}
 		catch(err){
-			console.log(err);
+			//console.log(err);
 			ngCtrl.actionService = {};		
 		}
 		ngCtrl.pageTitleActions = [];
@@ -869,9 +923,9 @@
 
 	//#region < Modal Controllers >
 	CreateRelationFieldModalController.$inject = ['ngCtrl', '$uibModalInstance', '$log', '$q', '$stateParams', 'modalMode', 'resolvedLookupRecords',
-        'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
+        'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaCoreService', 'ngToast', '$timeout', '$state','$location','$translate'];
 	function CreateRelationFieldModalController(ngCtrl, $uibModalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
-        selectedDataKind, selectedItem, selectedRelationType, webvellaCoreService, ngToast, $timeout, $state) {
+        selectedDataKind, selectedItem, selectedRelationType, webvellaCoreService, ngToast, $timeout, $state,$location,$translate) {
 
 
 		var popupCtrl = this;
@@ -937,26 +991,190 @@
 
 		//#endregion
 
+		//#region << List filter row >>
+		popupCtrl.filterQuery = {};
+		popupCtrl.listIsFiltered = false;
+		popupCtrl.columnDictionary = {};
+		popupCtrl.columnDataNamesArray = [];
+		popupCtrl.queryParametersArray = [];
+		//Extract the available columns
+		popupCtrl.relationLookupList.meta.columns.forEach(function (column) {
+			if (popupCtrl.columnDataNamesArray.indexOf(column.dataName) == -1) {
+				popupCtrl.columnDataNamesArray.push(column.dataName);
+			}
+			popupCtrl.columnDictionary[column.dataName] = column;
+		});
+		popupCtrl.filterLoading = false;
+		popupCtrl.columnDataNamesArray.forEach(function (dataName) {
+			if (popupCtrl.queryParametersArray.indexOf(dataName) > -1) {
+				popupCtrl.listIsFiltered = true;
+				var columnObj = popupCtrl.columnDictionary[dataName];
+				//some data validations and conversions	
+				switch (columnObj.meta.fieldType) {
+					//TODO if percent convert to > 1 %
+					case 14:
+						if (checkDecimal(queryObject[dataName])) {
+							popupCtrl.filterQuery[dataName] = queryObject[dataName] * 100;
+						}
+						break;
+					default:
+						popupCtrl.filterQuery[dataName] = queryObject[dataName];
+						break;
 
-		//#region << Search >>
-		popupCtrl.checkForSearchEnter = function (e) {
-			var code = (e.keyCode ? e.keyCode : e.which);
-			if (code == 13) { //Enter keycode
-				popupCtrl.submitSearchQuery();
+				}
+			}
+		});
+
+		popupCtrl.applyQueryFilter = function () {
+			var searchParams = {};
+			popupCtrl.filterLoading = true;
+			for (var filter in popupCtrl.filterQuery) {
+				//Check if the field is percent or date
+				if(popupCtrl.filterQuery[filter]){
+					for (var i = 0; i < popupCtrl.relationLookupList.meta.columns.length; i++) {
+						if(popupCtrl.relationLookupList.meta.columns[i].meta.name == filter){
+							var selectedField = popupCtrl.relationLookupList.meta.columns[i].meta;
+							switch(selectedField.fieldType){
+								case 4: //Date
+									searchParams[filter] = moment(popupCtrl.filterQuery[filter],'D MMM YYYY').toISOString();
+									break;
+								case 5: //Datetime
+									searchParams[filter] = moment(popupCtrl.filterQuery[filter],'D MMM YYYY HH:mm').toISOString();
+									break;
+								case 14: //Percent
+									searchParams[filter] = popupCtrl.filterQuery[filter] / 100;
+									break;
+								default:
+									searchParams[filter] = 	popupCtrl.filterQuery[filter];
+									break;
+							}
+						}
+					}
+				}
+				else {
+					delete 	searchParams[filter];
+				}				
+			}
+			//Find the entity of the list. It could not be the current one as it could be listFromRelation case
+			var listEntityName =popupCtrl.selectedItem.entityName;
+
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, listEntityName, 1, $stateParams, searchParams, popupCtrl.ReloadRecordsSuccessCallback, popupCtrl.ReloadRecordsErrorCallback);
+		}
+
+		popupCtrl.ReloadRecordsSuccessCallback = function (response) {
+			popupCtrl.relationLookupList.data = response.object;
+			//Just a little wait
+			$timeout(function(){
+				popupCtrl.filterLoading = false;
+			},300);
+		}
+
+		popupCtrl.ReloadRecordsErrorCallback = function (response) {
+			//Just a little wait
+			$timeout(function(){
+				popupCtrl.filterLoading = false;
+			},300);
+			alert(response.message);
+		}
+
+
+		popupCtrl.getAutoIncrementString = function (column) {
+			var returnObject = {};
+			returnObject.prefix = null;
+			returnObject.suffix = null;
+			var keyIndex = column.meta.displayFormat.indexOf('{0}');
+			if (keyIndex == 0) {
+				return null;
+			}
+			else {
+				returnObject.prefix = column.meta.displayFormat.slice(0, keyIndex);
+				if (keyIndex + 3 < column.meta.displayFormat.length) {
+					returnObject.suffix = column.meta.displayFormat.slice(keyIndex + 3, column.meta.displayFormat.length);
+				}
+				return returnObject;
 			}
 		}
-		popupCtrl.submitSearchQuery = function () {
-			function successCallback(response) {
-				popupCtrl.relationLookupList = fastCopy(response.object);
-			}
-			function errorCallback(response) { }
 
-			if (popupCtrl.searchQuery) {
-				popupCtrl.searchQuery = popupCtrl.searchQuery.trim();
+		//#endregion
+
+		//#region << Extract fields that are supported in the query to be filters>>
+		popupCtrl.fieldsInQueryArray = webvellaCoreService.extractSupportedFilterFields(popupCtrl.relationLookupList);
+		popupCtrl.checkIfFieldSetInQuery = function (dataName) {
+			if (popupCtrl.fieldsInQueryArray.fieldNames.indexOf(dataName) != -1) {
+				return true;
 			}
-			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.selectedItem.entityName, 1, null, null, successCallback, errorCallback);
+			else {
+				return false;
+			}
+		}
+
+		popupCtrl.allQueryComparisonList = [];
+		//#region << Query Dictionary >>
+		$translate(['QUERY_RULE_EQ_LABEL', 'QUERY_RULE_NOT_LABEL', 'QUERY_RULE_LT_LABEL', 'QUERY_RULE_LTE_LABEL',
+					'QUERY_RULE_GT_LABEL', 'QUERY_RULE_GTE_LABEL', 'QUERY_RULE_CONTAINS_LABEL', 'QUERY_RULE_NOT_CONTAINS_LABEL',
+					'QUERY_RULE_STARTSWITH_LABEL', 'QUERY_RULE_NOT_STARTSWITH_LABEL']).then(function (translations) {
+						popupCtrl.allQueryComparisonList = [
+							{
+								key: "EQ",
+								value: translations.QUERY_RULE_EQ_LABEL
+							},
+							{
+								key: "NOT",
+								value: translations.QUERY_RULE_NOT_LABEL
+							},
+							{
+								key: "LT",
+								value: translations.QUERY_RULE_LT_LABEL
+							},
+							{
+								key: "LTE",
+								value: translations.QUERY_RULE_LTE_LABEL
+							},
+							{
+								key: "GT",
+								value: translations.QUERY_RULE_GT_LABEL
+							},
+							{
+								key: "GTE",
+								value: translations.QUERY_RULE_GTE_LABEL
+							},
+							{
+								key: "CONTAINS",
+								value: translations.QUERY_RULE_CONTAINS_LABEL
+							},
+							{
+								key: "NOTCONTAINS",
+								value: translations.QUERY_RULE_NOT_CONTAINS_LABEL
+							},
+							{
+								key: "STARTSWITH",
+								value: translations.QUERY_RULE_STARTSWITH_LABEL
+							},
+							{
+								key: "NOTSTARTSWITH",
+								value: translations.QUERY_RULE_NOT_STARTSWITH_LABEL
+							}
+						];
+
+					});
+		//#endregion
+		popupCtrl.getFilterInputPlaceholder = function (dataName) {
+			var fieldIndex = popupCtrl.fieldsInQueryArray.fieldNames.indexOf(dataName);
+			if (fieldIndex == -1) {
+				return "";
+			}
+			else {
+				var fieldQueryType = popupCtrl.fieldsInQueryArray.queryTypes[fieldIndex];
+				for (var i = 0; i < popupCtrl.allQueryComparisonList.length; i++) {
+					if (popupCtrl.allQueryComparisonList[i].key == fieldQueryType) {
+						return popupCtrl.allQueryComparisonList[i].value;
+					}
+				}
+				return "";
+			}
 		}
 		//#endregion
+
 
 		//#region << Paging >>
 		popupCtrl.selectPage = function (page) {

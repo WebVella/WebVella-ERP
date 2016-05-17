@@ -2,27 +2,34 @@
 	<div id="page-meta">
 		<div class="aux-actions">
 		</div>
-		<div class="meta-label">
-			<h4><span class="go-gray"><span translate="{{'RECORD_TREE_PAGE_TITLE'}}"></span>: </span>{{ngCtrl.tree.meta.label}}</h4>
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-sitemap fa-2x"></i>
 		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux" translate="{{::'RECORD_TREE_MANAGE_NODES'}}"></div>
+            <h4 ng-bind="::ngCtrl.tree.name"></h4>
+        </div>
 	</div>
 </div>
 <div id="page-body">
 	<div class="tabbable tabs-left spilled">
-		<a class="back" href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{'BACK'}}"></span></a>
+		<a class="back" href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{::'BACK'}}"></span></a>
 		<ul class="nav nav-tabs">
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text" translate="{{'DETAILS'}}"></span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text" translate="{{'FIELDS'}}"></span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text" translate="{{'RECORD_VIEWS'}}"></span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text" translate="{{'RECORD_LISTS'}}"></span></a></li>
-			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text" translate="{{'RECORD_TREES'}}"></span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text" translate="{{'RELATIONS'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text" translate="{{::'DETAILS'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text" translate="{{::'FIELDS'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text" translate="{{::'RECORD_VIEWS'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text" translate="{{::'RECORD_LISTS'}}"></span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text" translate="{{::'RECORD_TREES'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text" translate="{{::'RELATIONS'}}"></span></a></li>
 		</ul>
 
 	</div>
 
 	<div id="page-text">
-
+		<div class="alert alert-warning ng-hide" ng-show="ngCtrl.tree.system">
+			<i class="fa fa-fw fa-exclamation go-red"></i>
+			<span translate="{{::'SYSTEM_ITEM_WARNING_TEXT'}}"></span>
+		</div>
 		<!-- Nested node template -->
 		<div ui-tree ="ngCtrl.treeOptions" ng-if="ngCtrl.tree.data.length > 0">
 			<ol ui-tree-nodes ng-model="ngCtrl.tree.data" id="tree-root">
@@ -30,7 +37,7 @@
 					ng-class="{parent_li:node.nodes.length > 0, hovered: ngCtrl.attachHoverEffectClass[node.id]}"></li>
 			</ol>
 		</div>
-		<div class="alert alert-info" ng-if="ngCtrl.tree.data.length == 0" translate="{{'RECORD_TREE_MANAGE_NODES_NO_ITEMS_ALERT'}}"></div>
+		<div class="alert alert-info" ng-if="ngCtrl.tree.data.length == 0" translate="{{::'RECORD_TREE_MANAGE_NODES_NO_ITEMS_ALERT'}}"></div>
 	</div>
 </div>
 <script type="text/ng-template" id="nodes_renderer.html">
@@ -42,7 +49,7 @@
 		<span class="btn btn-default disabled">
 			{{node.label}}
 			<span class="btn btn-default btn-xs add-node" ng-click="ngCtrl.addNodeModal(node)"><i class="fa fa-fw" ng-class="{'fa-plus go-green': !ngCtrl.addButtonLoadingClass[node.id], 'fa-cog fa-spin go-orange': ngCtrl.addButtonLoadingClass[node.id]}"></i></span>
-			<span class="btn btn-default btn-xs delete-node" confirmed-click="ngCtrl.removeNodeModal(node)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" ng-if="node.parentId != null"><i class="fa fa-fw fa-minus go-red"></i></span>
+			<span class="btn btn-default btn-xs delete-node" confirmed-click="ngCtrl.removeNodeModal(node)" ng-confirm-click="{{::'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" ng-if="node.parentId != null"><i class="fa fa-fw fa-minus go-red"></i></span>
 		</span>
 	</div>
 	<ol ui-tree-nodes ng-model="node.nodes">
@@ -55,7 +62,7 @@
 <script type="text/ng-template" id="addNewTreeNodeModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title" translate="{{'SELECT'}}"><span></span> <span class="go-green">{{popupCtrl.getRelationLabel(popupCtrl.selectedItem.relationName)}}</span></h3>
+		<h3 class="modal-title" translate="{{::'SELECT'}}"><span></span> <span class="go-green">{{popupCtrl.getRelationLabel(popupCtrl.selectedItem.relationName)}}</span></h3>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger ng-hide" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
@@ -98,18 +105,18 @@
 						</tr>
 					</tbody>
 				</table>
-				<div class="alert alert-info" ng-show="popupCtrl.relationLookupList.data.length == 0" translate="{{'LIST_EMPTY_MESSAGE'}}"></div>
+				<div class="alert alert-info" ng-show="popupCtrl.relationLookupList.data.length == 0" translate="{{::'LIST_EMPTY_MESSAGE'}}"></div>
 				<ul class="pager" ng-if="popupCtrl.relationLookupList.meta.pageSize > 0">
 					<!--<li ng-if="popupCtrl.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
-					<li ng-if="popupCtrl.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupCtrl.selectPage(popupCtrl.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> <span  translate="{{'PREVIOUS'}}"></span></a></li>
-					<li ng-if="popupCtrl.relationLookupList.meta.pageSize <= popupCtrl.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupCtrl.selectPage(popupCtrl.currentPage + 1, $event)"><span  translate="{{'NEXT'}}"></span> <i class="fa fa-fw fa-chevron-right"></i></a></li>
+					<li ng-if="popupCtrl.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupCtrl.selectPage(popupCtrl.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> <span  translate="{{::'PREVIOUS'}}"></span></a></li>
+					<li ng-if="popupCtrl.relationLookupList.meta.pageSize <= popupCtrl.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupCtrl.selectPage(popupCtrl.currentPage + 1, $event)"><span  translate="{{::'NEXT'}}"></span> <i class="fa fa-fw fa-chevron-right"></i></a></li>
 					<!--<li ng-if="popupCtrl.relationLookupList.meta.pageSize > popupCtrl.relationLookupList.data.length" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>-->
 				</ul>
 			</div>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupCtrl.saveRelationChanges()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.modalMode == 'multi-selection'"  translate="{{'SAVE'}}"></button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()"  translate="{{'CANCEL'}}"></button>
+		<button class="btn btn-primary" ng-click="popupCtrl.saveRelationChanges()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.modalMode == 'multi-selection'"  translate="{{::'SAVE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()"  translate="{{::'CANCEL'}}"></button>
 	</div>
 </script>

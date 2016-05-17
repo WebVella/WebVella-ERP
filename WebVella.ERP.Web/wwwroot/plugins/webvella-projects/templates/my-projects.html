@@ -2,6 +2,7 @@
 	<thead>
 		<tr>
 			<th class="th-action"></th>
+			<th class="th-code">code</th>
 			<th class="th-name">project name</th>
 			<th class="th-owner">owner</th>
 			<th class="th-tasks">tasks</th>
@@ -13,11 +14,12 @@
 	</thead>
 	<tbody>
 		<tr ng-repeat="record in ngCtrl.list.data">
-			<td class="td-action"><a class="btn btn-outline btn-default" ng-href="{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"><i class="fa fa-fw fa-eye"></i></a></td>
+			<td class="td-action"><a class="btn btn-outline btn-default" ng-href="{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"><i class="fa fa-fw fa-eye"></i></a></td>
+			<td class="td-code">{{record.code}}</td>
 			<td class="td-name">{{record.name}}</td>
 			<td class="td-owner">
 				<div class="avatar-wrapper">
-					<img class="avatar" ng-src="{{record.owner_image}}" title="{{record.owner_username}}" />
+					<img class="avatar" ng-src="{{record.owner_image || '/plugins/webvella-core/assets/avatar.png'}}" title="{{record.owner_username}}" />
 				</div>
 			</td>
 			<td class="td-tasks" title="{{record.tasks_completed_count}} completed - {{record.tasks_in_progress_count}} in progress - {{record.tasks_not_started_count}} not started">

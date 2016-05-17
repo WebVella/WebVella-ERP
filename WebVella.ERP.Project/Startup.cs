@@ -46,6 +46,8 @@ namespace WebVella.ERP.Project
 		private static string COMMENT_ENTITY_NAME = "wv_project_comment";
 		private static Guid PROJECT_ADMIN_AREA_ID = new Guid("5b131255-46fc-459d-bbb5-923a4bdfc006");
 		private static Guid PROJECT_WORKPLACE_AREA_ID = new Guid("205877a1-242c-41bf-a080-49ea01d4f519");
+		private static Guid CREATE_TASK_WORKPLACE_AREA_ID = new Guid("aacf2d40-9b03-43d5-aba8-8c8cb3a0133e");
+		private static Guid REPORT_BUG_WORKPLACE_AREA_ID = new Guid("c57fc703-4546-4bfa-9448-29151e21d6ae");
 		private static Guid PROJECT_RELATION_USER_1_N_PROJECT_OWNER_ID = new Guid("0cad07c3-73bd-4c1f-a5d6-552256f679a4");
 		private static Guid PROJECT_RELATION_CUSTOMER_1_N_PROJECT_ID = new Guid("d7f1ec35-9f59-4d75-b8a2-554c7eaeab11");
 		private static Guid PROJECT_RELATION_ROLE_N_N_PROJECT_TEAM_ID = new Guid("4860a4b6-d07e-416f-b548-60491607e93f");
@@ -93,10 +95,12 @@ namespace WebVella.ERP.Project
 						var crmPluginFound = false;
 						foreach (var plugin in installedPlugins)
 						{
-							if (plugin.Name == "webvella-crm")
-							{
-								crmPluginFound = true;
-								break;
+							switch(plugin.Name) {
+								case "webvella-crm":
+									crmPluginFound = true;
+									break;
+								default:
+									break;
 							}
 						}
 
@@ -187,6 +191,72 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 
+								#region << Create Project create task area >>
+								{
+									var area = new EntityRecord();
+									area["id"] = CREATE_TASK_WORKPLACE_AREA_ID;
+									area["name"] = "create_task";
+									area["label"] = "Create task";
+									area["icon_name"] = "tasks";
+									area["color"] = "teal";
+									area["folder"] = "Workplace";
+									area["weight"] = 1;
+									var areaRoles = new List<Guid>();
+									areaRoles.Add(SystemIds.AdministratorRoleId);
+									areaRoles.Add(SystemIds.RegularRoleId);
+									area["roles"] = JsonConvert.SerializeObject(areaRoles);
+									var createAreaResult = recMan.CreateRecord("area", area);
+									if (!createAreaResult.Success)
+									{
+										throw new Exception("System error 10060. Area create with name : project_admin. Message:" + createAreaResult.Message);
+									}
+								}
+								#endregion
+
+								#region << area add subscription: Create task >>
+								{
+									var updatedAreaId = CREATE_TASK_WORKPLACE_AREA_ID;
+									var updateAreaResult = Helpers.UpsertUrlAsAreaSubscription(entMan, recMan, updatedAreaId, "/#/areas/projects/wv_task/view-create/create?returnUrl=%2Fareas%2Fprojects%2Fwv_task%2Flist-general%2Fmy_tasks", "Create task", 1, "tasks");
+									if (!updateAreaResult.Success)
+									{
+										throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
+									}
+								}
+								#endregion
+
+								#region << Create Project submit bug area >>
+								{
+									var area = new EntityRecord();
+									area["id"] = REPORT_BUG_WORKPLACE_AREA_ID;
+									area["name"] = "report_bug";
+									area["label"] = "Report bug";
+									area["icon_name"] = "bug";
+									area["color"] = "deep-orange";
+									area["folder"] = "Workplace";
+									area["weight"] = 2;
+									var areaRoles = new List<Guid>();
+									areaRoles.Add(SystemIds.AdministratorRoleId);
+									areaRoles.Add(SystemIds.RegularRoleId);
+									area["roles"] = JsonConvert.SerializeObject(areaRoles);
+									var createAreaResult = recMan.CreateRecord("area", area);
+									if (!createAreaResult.Success)
+									{
+										throw new Exception("System error 10060. Area create with name : project_admin. Message:" + createAreaResult.Message);
+									}
+								}
+								#endregion
+
+								#region << area add subscription: Create task >>
+								{
+									var updatedAreaId = REPORT_BUG_WORKPLACE_AREA_ID;
+									var updateAreaResult = Helpers.UpsertUrlAsAreaSubscription(entMan, recMan, updatedAreaId, "/#/areas/projects/wv_bug/view-create/create?returnUrl=%2Fareas%2Fprojects%2Fwv_bug%2Flist-general%2Fmy_bugs", "Report bug", 1, "bug");
+									if (!updateAreaResult.Success)
+									{
+										throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
+									}
+								}
+								#endregion
+
 								#region << wv_project >>
 								{
 									#region << entity >>
@@ -249,6 +319,39 @@ namespace WebVella.ERP.Project
 											var response = entMan.CreateField(PROJECT_ENTITY_ID, textboxField, false);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + PROJECT_ENTITY_NAME + " Field: name" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << code >>
+									{
+										InputTextField textboxField = new InputTextField();
+										textboxField.Id = new Guid("d9c6a939-e2e3-4617-900e-e056f0638fa8");
+										textboxField.Name = "code";
+										textboxField.Label = "Code";
+										textboxField.PlaceholderText = "";
+										textboxField.Description = "";
+										textboxField.HelpText = "";
+										textboxField.Required = true;
+										textboxField.Unique = false;
+										textboxField.Searchable = true;
+										textboxField.Auditable = false;
+										textboxField.System = true;
+										textboxField.DefaultValue = string.Empty;
+										textboxField.MaxLength = null;
+										textboxField.EnableSecurity = true;
+										textboxField.Permissions = new FieldPermissions();
+										textboxField.Permissions.CanRead = new List<Guid>();
+										textboxField.Permissions.CanUpdate = new List<Guid>();
+										//READ
+										textboxField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+										textboxField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+										//UPDATE
+										textboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+										{
+											var response = entMan.CreateField(PROJECT_ENTITY_ID, textboxField, false);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + PROJECT_ENTITY_NAME + " Field: code" + " Message:" + response.Message);
 										}
 									}
 									#endregion
@@ -1132,6 +1235,18 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
+										#region << code >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = PROJECT_ENTITY_ID;
+											viewItem.EntityName = PROJECT_ENTITY_NAME;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "code").Id;
+											viewItem.FieldName = "code";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
 										//Save column
 										viewRow.Columns.Add(viewColumn);
 										#endregion
@@ -1170,7 +1285,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
-										ng-if=""ngCtrl.userHasRecordPermissions('canDelete')"">
+										ng-if=""::ngCtrl.userHasRecordPermissions('canDelete')"">
 									<i class=""fa fa-trash go-red""></i> Delete Record
 								</a>";
 											createViewInput.ActionItems.Add(actionItem);
@@ -1416,6 +1531,18 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
+										#region << code >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = PROJECT_ENTITY_ID;
+											viewItem.EntityName = PROJECT_ENTITY_NAME;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "code").Id;
+											viewItem.FieldName = "code";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
 										//Save column
 										viewRow.Columns.Add(viewColumn);
 										#endregion
@@ -1454,7 +1581,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "create-bottom";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""list"")' ng-if=""ngCtrl.createViewRegion != null"">Create & List</a>";
+									@"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""default"")' ng-if=""ngCtrl.createViewRegion != null"">Create</a>";
 											createViewInput.ActionItems.Add(actionItem);
 										}
 										{
@@ -1508,7 +1635,7 @@ namespace WebVella.ERP.Project
 										createViewInput.Id = new Guid("68402d13-d9e7-4fb3-9394-40ba598f3f1a");
 										createViewInput.Type = "general";
 										createViewInput.Name = "dashboard";
-										createViewInput.Label = "Dashboard";
+										createViewInput.Label = "[{code}] {name}";
 										createViewInput.Default = false;
 										createViewInput.System = false;
 										createViewInput.Weight = 10;
@@ -1555,7 +1682,7 @@ namespace WebVella.ERP.Project
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
 									@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
-										ng-if=""ngCtrl.userHasRecordPermissions('canDelete')"">
+										ng-if=""::ngCtrl.userHasRecordPermissions('canDelete')"">
 									<i class=""fa fa-trash go-red""></i> Delete Record
 								</a>";
 											createViewInput.ActionItems.Add(actionItem);
@@ -1614,7 +1741,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "record-row";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
 					<i class=""fa fa-fw fa-eye""></i>
 					</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -1625,10 +1752,8 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "page-title";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -1744,6 +1869,23 @@ namespace WebVella.ERP.Project
 										updateListInput.Columns.Add(listItem);
 										#endregion
 
+										#region << Queries >>
+										{
+										if(updateListInput.Query == null) {
+											updateListInput.Query = new InputRecordListQuery();
+										}
+										updateListInput.Query.FieldName = null;
+										updateListInput.Query.FieldValue = null;
+										updateListInput.Query.QueryType = "AND"; //AND,OR,EQ,NOT,LT,LTE,GT,GTE,CONTAINS,STARTSWITH
+										updateListInput.Query.SubQueries = new List<InputRecordListQuery>();
+										var subQuery = new InputRecordListQuery();
+										subQuery.FieldName = "name";
+										subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""name"", ""default"": null, ""settings"":{}}";
+										subQuery.QueryType = "CONTAINS";
+										subQuery.SubQueries = new List<InputRecordListQuery>();
+										updateListInput.Query.SubQueries.Add(subQuery);
+										}
+										#endregion
 										{
 											var response = entMan.UpdateRecordList(PROJECT_ENTITY_ID, updateListInput);
 											if (!response.Success)
@@ -2213,26 +2355,186 @@ namespace WebVella.ERP.Project
 										updateListInput = updateList.DynamicMapTo<InputRecordList>();
 
 										//General list details
+										updateListInput.Name = "project_milestones";
 										updateListInput.Label = "Milestones";
 										updateListInput.IconName = "map-signs";
 										updateListInput.DynamicHtmlTemplate = "/plugins/webvella-projects/templates/project-milestones.html";
 										updateListInput.DataSourceUrl = "/plugins/webvella-projects/api/project/milestones-list";
 
+										//Action items
+										var newActionItems = new List<ActionItem>();
+										foreach (var action in updateListInput.ActionItems)
+										{
+											if (action.Name == "wv_create_record")
+											{
+												newActionItems.Add(action);
+											}
+										}
+										updateListInput.ActionItems = newActionItems;
 										//Fields
-										#region << name >>
-										listItem = new InputRecordListFieldItem();
-										listItem.EntityId = MILESTONE_ENTITY_ID;
-										listItem.EntityName = MILESTONE_ENTITY_NAME;
-										listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "name").Id;
-										listItem.FieldName = "name";
-										listItem.Type = "field";
-										updateListInput.Columns.Add(listItem);
-										#endregion
 
 										{
 											var response = entMan.UpdateRecordList(MILESTONE_ENTITY_ID, updateListInput);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + MILESTONE_ENTITY_NAME + " Updated List: general" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << update create >>
+									{
+										var updateViewEntity = entMan.ReadEntity(MILESTONE_ENTITY_ID).Object;
+										var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "create");
+										var updateViewInput = new InputRecordView();
+										var viewSection = new InputRecordViewSection();
+										var viewRow = new InputRecordViewRow();
+										var viewColumn = new InputRecordViewColumn();
+										var viewItem = new InputRecordViewFieldItem();
+										var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+										//General view fields
+
+										//Convert recordList to recordListInput
+										updateViewInput = updateView.DynamicMapTo<InputRecordView>();
+
+										#region << Details >>
+										updateViewInput.ServiceCode = null;
+										#endregion
+
+										#region << Get the header Region >>
+										var headerRegion = new InputRecordViewRegion();
+										foreach (var region in updateViewInput.Regions)
+										{
+											if (region.Name == "header")
+											{
+												headerRegion = region;
+											}
+										}
+										headerRegion.Sections = new List<InputRecordViewSection>();
+										#endregion
+
+										#region << Section >>
+										viewSection = new InputRecordViewSection();
+										viewSection.Id = Guid.NewGuid();
+										viewSection.Name = "details";
+										viewSection.Label = "Details";
+										viewSection.ShowLabel = false;
+										viewSection.CssClass = "";
+										viewSection.Collapsed = false;
+										viewSection.TabOrder = "left-right";
+										viewSection.Weight = 1;
+										viewSection.Rows = new List<InputRecordViewRow>();
+
+										#region << Row 1 >>
+										viewRow = new InputRecordViewRow();
+										viewRow.Id = Guid.NewGuid();
+										viewRow.Weight = 1;
+										viewRow.Columns = new List<InputRecordViewColumn>();
+
+										#region << Column 1 >>
+										viewColumn = new InputRecordViewColumn();
+										viewColumn.GridColCount = 6;
+										viewColumn.Items = new List<InputRecordViewItemBase>();
+
+
+										#region << name >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "name").Id;
+											viewItem.FieldName = "name";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										#region << start_date >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "start_date").Id;
+											viewItem.FieldName = "start_date";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										#region << project name >>
+										{
+											var targetEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+											var targetRelation = relMan.Read("project_1_n_milestone").Object;
+											viewItemFromRelation = new InputRecordViewRelationFieldItem();
+											viewItemFromRelation.EntityId = targetEntity.Id;
+											viewItemFromRelation.EntityName = targetEntity.Name;
+											viewItemFromRelation.Type = "fieldFromRelation";
+											viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+											viewItemFromRelation.FieldName = "name";
+											viewItemFromRelation.FieldLabel = "Project";
+											viewItemFromRelation.FieldPlaceholder = "";
+											viewItemFromRelation.FieldRequired = true;
+											viewItemFromRelation.FieldLookupList = "lookup";
+											viewItemFromRelation.RelationId = targetRelation.Id;
+											viewItemFromRelation.RelationName = targetRelation.Name;
+											viewColumn.Items.Add(viewItemFromRelation);
+										}
+										#endregion
+
+										//Save column
+										viewRow.Columns.Add(viewColumn);
+										#endregion
+
+										#region << Column 1 >>
+										viewColumn = new InputRecordViewColumn();
+										viewColumn.GridColCount = 6;
+										viewColumn.Items = new List<InputRecordViewItemBase>();
+
+
+										#region << status >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "status").Id;
+											viewItem.FieldName = "status";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										#region << end_date >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "end_date").Id;
+											viewItem.FieldName = "end_date";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										//Save column
+										viewRow.Columns.Add(viewColumn);
+										#endregion
+
+										//Save row
+										viewSection.Rows.Add(viewRow);
+										#endregion
+
+										//Save section
+										headerRegion.Sections.Add(viewSection);
+
+										#endregion
+
+										#region << Sidebar >>
+										var sidebarItem = new InputRecordViewSidebarItemBase();
+										#endregion`								
+
+										{
+											var response = entMan.UpdateRecordView(MILESTONE_ENTITY_ID, updateViewInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + MILESTONE_ENTITY_NAME + " Updated view: create" + " Message:" + response.Message);
 										}
 									}
 									#endregion
@@ -2303,6 +2605,40 @@ namespace WebVella.ERP.Project
 											var response = entMan.CreateField(TASK_ENTITY_ID, autonumberField, false);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Field: number" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << code >>
+									{
+										InputTextField textboxField = new InputTextField();
+										textboxField.Id = new Guid("04f31ad8-4583-4237-8d54-f82c3f44b918");
+										textboxField.Name = "code";
+										textboxField.Label = "Code";
+										textboxField.PlaceholderText = "";
+										textboxField.Description = "";
+										textboxField.HelpText = "";
+										textboxField.Required = false;
+										textboxField.Unique = false;
+										textboxField.Searchable = true;
+										textboxField.Auditable = false;
+										textboxField.System = true;
+										textboxField.DefaultValue = string.Empty;
+										textboxField.MaxLength = null;
+										textboxField.EnableSecurity = true;
+										textboxField.Permissions = new FieldPermissions();
+										textboxField.Permissions.CanRead = new List<Guid>();
+										textboxField.Permissions.CanUpdate = new List<Guid>();
+										//READ
+										textboxField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+										textboxField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+										//UPDATE
+										textboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+										textboxField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+										{
+											var response = entMan.CreateField(TASK_ENTITY_ID, textboxField, false);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Field: subject" + " Message:" + response.Message);
 										}
 									}
 									#endregion
@@ -2501,7 +2837,6 @@ namespace WebVella.ERP.Project
 										guidField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
 										//UPDATE
 										guidField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
-										guidField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
 										{
 											var response = entMan.CreateField(TASK_ENTITY_ID, guidField, false);
 											if (!response.Success)
@@ -2658,11 +2993,11 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
-									#region << billable_hours >>
+									#region << x_billable_hours >>
 									{
 										InputNumberField numberField = new InputNumberField();
 										numberField.Id = new Guid("d79a25e4-3eeb-4a5b-84e8-294b0c146c4d");
-										numberField.Name = "billable_hours";
+										numberField.Name = "x_billable_hours";
 										numberField.Label = "Billable hours";
 										numberField.PlaceholderText = "";
 										numberField.Description = "";
@@ -2689,16 +3024,16 @@ namespace WebVella.ERP.Project
 										{
 											var response = entMan.CreateField(TASK_ENTITY_ID, numberField, false);
 											if (!response.Success)
-												throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Field: billable_hours" + " Message:" + response.Message);
+												throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Field: x_billable_hours" + " Message:" + response.Message);
 										}
 									}
 									#endregion
 
-									#region << nonbillable_hours >>
+									#region << x_nonbillable_hours >>
 									{
 										InputNumberField numberField = new InputNumberField();
 										numberField.Id = new Guid("a4196b7b-1de7-4106-b393-79eb3d1b4b79");
-										numberField.Name = "nonbillable_hours";
+										numberField.Name = "x_nonbillable_hours";
 										numberField.Label = "Non-Billable hours";
 										numberField.PlaceholderText = "";
 										numberField.Description = "";
@@ -2725,7 +3060,7 @@ namespace WebVella.ERP.Project
 										{
 											var response = entMan.CreateField(TASK_ENTITY_ID, numberField, false);
 											if (!response.Success)
-												throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Field: nonbillable_hours" + " Message:" + response.Message);
+												throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Field: x_nonbillable_hours" + " Message:" + response.Message);
 										}
 									}
 									#endregion
@@ -2748,6 +3083,28 @@ namespace WebVella.ERP.Project
 											var result = relMan.Create(oneToNRelation);
 											if (!result.Success)
 												throw new Exception("CREATE user_1_n_task_owner RELATION:" + result.Message);
+										}
+									}
+									#endregion
+
+									#region << user_n_n_task_watchers Relation >>
+									{
+										var originEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+										var targetEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+										EntityRelation NToNRelation = new EntityRelation();
+										NToNRelation.Id = new Guid("de7e1578-8f8f-4454-a954-0fb62d3bf425");
+										NToNRelation.Name = "user_n_n_task_watchers";
+										NToNRelation.Label = "user_n_n_task_watchers";
+										NToNRelation.System = true;
+										NToNRelation.RelationType = EntityRelationType.ManyToMany;
+										NToNRelation.OriginEntityId = originEntity.Id;
+										NToNRelation.OriginFieldId = originEntity.Fields.Single(x => x.Name == "id").Id;
+										NToNRelation.TargetEntityId = targetEntity.Id;
+										NToNRelation.TargetFieldId = targetEntity.Fields.Single(x => x.Name == "id").Id;
+										{
+											var result = relMan.Create(NToNRelation);
+											if (!result.Success)
+												throw new Exception("CREATE user_n_n_task_watchers RELATION:" + result.Message);
 										}
 									}
 									#endregion
@@ -2832,6 +3189,7 @@ namespace WebVella.ERP.Project
 										updateListInput = updateList.DynamicMapTo<InputRecordList>();
 
 										//General list details
+										updateListInput.Name = "project_tasks";
 										updateListInput.Label = "Project Tasks";
 										updateListInput.IconName = "tasks";
 										updateListInput.Type = "hidden";
@@ -2998,7 +3356,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = "task-list";
 										createListInput.IconName = "tasks";
 										createListInput.VisibleColumnsCount = 7;
-										createListInput.ColumnWidthsCSV = "80px,auto,30px,120px,120px,120px,120px";
+										createListInput.ColumnWidthsCSV = "100px,auto,30px,120px,120px,120px,120px";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = null;
@@ -3014,7 +3372,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "record-row";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
 					<i class=""fa fa-fw fa-eye""></i>
 					</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -3025,10 +3383,8 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "page-title";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -3036,13 +3392,13 @@ namespace WebVella.ERP.Project
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
 
-										#region << number >>
+										#region << code >>
 										{
 											listField = new InputRecordListFieldItem();
 											listField.EntityId = createListEntity.Id;
 											listField.EntityName = createListEntity.Name;
-											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "number").Id;
-											listField.FieldName = "number";
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
 											listField.Type = "field";
 											createListInput.Columns.Add(listField);
 										}
@@ -3177,12 +3533,12 @@ namespace WebVella.ERP.Project
 										listQuery.QueryType = "AND";
 										listQuery.SubQueries = new List<InputRecordListQuery>();
 
-										#region << number >>
+										#region << code >>
 										{
 											var subQuery = new InputRecordListQuery();
-											subQuery.FieldName = "number";
-											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""number"", ""default"": null, ""settings"":{}}";
-											subQuery.QueryType = "EQ";
+											subQuery.FieldName = "code";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""code"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
 											listQuery.SubQueries.Add(subQuery);
 										}
@@ -3263,7 +3619,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = "task-list";
 										createListInput.IconName = "tasks";
 										createListInput.VisibleColumnsCount = 7;
-										createListInput.ColumnWidthsCSV = "80px,auto,30px,120px,120px,120px,120px";
+										createListInput.ColumnWidthsCSV = "100px,auto,30px,120px,120px,120px,120px";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = null;
@@ -3279,7 +3635,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "record-row";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
 					<i class=""fa fa-fw fa-eye""></i>
 					</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -3290,10 +3646,8 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "page-title";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -3301,13 +3655,13 @@ namespace WebVella.ERP.Project
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
 
-										#region << number >>
+										#region << code >>
 										{
 											listField = new InputRecordListFieldItem();
 											listField.EntityId = createListEntity.Id;
 											listField.EntityName = createListEntity.Name;
-											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "number").Id;
-											listField.FieldName = "number";
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
 											listField.Type = "field";
 											createListInput.Columns.Add(listField);
 										}
@@ -3431,12 +3785,12 @@ namespace WebVella.ERP.Project
 										listQuery.QueryType = "AND";
 										listQuery.SubQueries = new List<InputRecordListQuery>();
 
-										#region << number >>
+										#region << code >>
 										{
 											var subQuery = new InputRecordListQuery();
-											subQuery.FieldName = "number";
-											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""number"", ""default"": null, ""settings"":{}}";
-											subQuery.QueryType = "EQ";
+											subQuery.FieldName = "code";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""code"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
 											listQuery.SubQueries.Add(subQuery);
 										}
@@ -3516,7 +3870,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = "task-list";
 										createListInput.IconName = "tasks";
 										createListInput.VisibleColumnsCount = 7;
-										createListInput.ColumnWidthsCSV = "80px,auto,30px,120px,120px,120px,120px";
+										createListInput.ColumnWidthsCSV = "100px,auto,30px,120px,120px,120px,120px";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = null;
@@ -3532,7 +3886,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "record-row";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
 					<i class=""fa fa-fw fa-eye""></i>
 					</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -3543,10 +3897,8 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "page-title";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -3554,13 +3906,13 @@ namespace WebVella.ERP.Project
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
 
-										#region << number >>
+										#region << code >>
 										{
 											listField = new InputRecordListFieldItem();
 											listField.EntityId = createListEntity.Id;
 											listField.EntityName = createListEntity.Name;
-											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "number").Id;
-											listField.FieldName = "number";
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
 											listField.Type = "field";
 											createListInput.Columns.Add(listField);
 										}
@@ -3687,9 +4039,9 @@ namespace WebVella.ERP.Project
 										#region << number >>
 										{
 											var subQuery = new InputRecordListQuery();
-											subQuery.FieldName = "number";
+											subQuery.FieldName = "code";
 											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""number"", ""default"": null, ""settings"":{}}";
-											subQuery.QueryType = "EQ";
+											subQuery.QueryType = "CONTAINS";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
 											listQuery.SubQueries.Add(subQuery);
 										}
@@ -3749,6 +4101,224 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
+									#region << List name: all_tasks >>
+									{
+										var createListEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+										var createListInput = new InputRecordList();
+										var listField = new InputRecordListFieldItem();
+										var listFieldFromRelation = new InputRecordListRelationFieldItem();
+										var listSort = new InputRecordListSort();
+										var listQuery = new InputRecordListQuery();
+
+										#region << details >>
+										createListInput.Id = new Guid("6b6ac308-bb21-46a3-b83c-0559348b2f46");
+										createListInput.Type = "general";
+										createListInput.Name = "all_tasks";
+										createListInput.Label = "All Tasks";
+										createListInput.Weight = 12;
+										createListInput.Default = false;
+										createListInput.System = true;
+										createListInput.CssClass = "task-list";
+										createListInput.IconName = "tasks";
+										createListInput.VisibleColumnsCount = 7;
+										createListInput.ColumnWidthsCSV = "100px,auto,30px,120px,120px,120px,120px";
+										createListInput.PageSize = 10;
+										createListInput.DynamicHtmlTemplate = null;
+										createListInput.DataSourceUrl = @"/plugins/webvella-projects/api/task/list/all";
+										createListInput.ServiceCode = null;
+										#endregion
+
+										#region << action items >>
+										createListInput.ActionItems = new List<ActionItem>();
+										var actionItem = new ActionItem();
+										{
+											actionItem = new ActionItem();
+											actionItem.Name = "wv_record_details";
+											actionItem.Menu = "record-row";
+											actionItem.Weight = 1;
+											actionItem.Template = "" +
+											@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+											<i class=""fa fa-fw fa-eye""></i>
+											</a>";
+											createListInput.ActionItems.Add(actionItem);
+										}
+										{
+											actionItem = new ActionItem();
+											actionItem.Name = "wv_create_record";
+											actionItem.Menu = "page-title";
+											actionItem.Weight = 1;
+											actionItem.Template = "" +
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
+											createListInput.ActionItems.Add(actionItem);
+										}
+										#endregion
+
+										#region << Columns >>
+										createListInput.Columns = new List<InputRecordListItemBase>();
+
+										#region << code >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << subject >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "subject").Id;
+											listField.FieldName = "subject";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << owner - image >>
+										{
+											var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											listFieldFromRelation = new InputRecordListRelationFieldItem();
+											listFieldFromRelation.EntityId = targetEntity.Id;
+											listFieldFromRelation.EntityName = targetEntity.Name;
+											listFieldFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "image").Id;
+											listFieldFromRelation.FieldName = "image";
+											listFieldFromRelation.FieldLabel = "Owner";
+											listFieldFromRelation.RelationId = new Guid("7ce76c81-e604-401e-907f-23de982b930e");
+											listFieldFromRelation.RelationName = "user_1_n_task_owner";
+											listFieldFromRelation.Type = "fieldFromRelation";
+											createListInput.Columns.Add(listFieldFromRelation);
+										}
+										#endregion
+
+										#region << start_date >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "start_date").Id;
+											listField.FieldName = "start_date";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << end_date >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "end_date").Id;
+											listField.FieldName = "end_date";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << status >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "status").Id;
+											listField.FieldName = "status";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << priority >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "priority").Id;
+											listField.FieldName = "priority";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#endregion
+
+
+										#region << query >>
+										createListInput.Query = new InputRecordListQuery();
+										//Main query rule
+										createListInput.Query.FieldName = null;
+										createListInput.Query.FieldValue = null;
+										createListInput.Query.QueryType = "AND";
+										createListInput.Query.SubQueries = new List<InputRecordListQuery>();
+
+										#region << code >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "code";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""code"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											createListInput.Query.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										#region << subject >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "subject";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""subject"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											createListInput.Query.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										#region << status >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "status";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""status"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											createListInput.Query.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										#region << priority >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "priority";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""priority"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											createListInput.Query.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										#endregion
+
+										#region << Sort >>
+										createListInput.Sorts = new List<InputRecordListSort>();
+										listSort = new InputRecordListSort();
+										listSort.FieldName = @"{""name"":""url_sort"", ""option"": ""sortBy"", ""default"": ""end_date"", ""settings"":{""order"":""sortOrder""}}";
+										listSort.SortType = "descending";
+										createListInput.Sorts.Add(listSort);
+										#endregion
+
+										{
+											var response = entMan.CreateRecordList(TASK_ENTITY_ID, createListInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Updated List: all_tickets" + " Message:" + response.Message);
+										}
+
+									}
+									#endregion
+
 									#region << area add subscription: Project Workplace -> My tasks >>
 									{
 										var updatedAreaId = PROJECT_WORKPLACE_AREA_ID;
@@ -3796,7 +4366,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "record-row";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
 					<i class=""fa fa-fw fa-eye""></i>
 					</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -3807,10 +4377,8 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "page-title";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -3818,13 +4386,13 @@ namespace WebVella.ERP.Project
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
 
-										#region << number >>
+										#region << code >>
 										{
 											listField = new InputRecordListFieldItem();
 											listField.EntityId = createListEntity.Id;
 											listField.EntityName = createListEntity.Name;
-											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "number").Id;
-											listField.FieldName = "number";
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
 											listField.Type = "field";
 											createListInput.Columns.Add(listField);
 										}
@@ -3920,11 +4488,11 @@ namespace WebVella.ERP.Project
 										listQuery.QueryType = "AND";
 										listQuery.SubQueries = new List<InputRecordListQuery>();
 
-										#region << number >>
+										#region << code >>
 										{
 											var subQuery = new InputRecordListQuery();
 											subQuery.FieldName = "owner_id";
-											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""number"", ""default"": null, ""settings"":{}}";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""code"", ""default"": null, ""settings"":{}}";
 											subQuery.QueryType = "EQ";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
 											listQuery.SubQueries.Add(subQuery);
@@ -4008,7 +4576,7 @@ namespace WebVella.ERP.Project
 										updateViewInput = updateView.DynamicMapTo<InputRecordView>();
 
 										#region << Details >>
-										updateViewInput.ServiceCode = "/plugins/webvella-projects/providers/create-task.service.js";
+										updateViewInput.ServiceCode = null;
 										#endregion
 
 										#region << Get the header Region >>
@@ -4061,20 +4629,20 @@ namespace WebVella.ERP.Project
 
 										#region << project name >>
 										{
-										var targetEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
-										viewItemFromRelation = new InputRecordViewRelationFieldItem();
-										viewItemFromRelation.EntityId = targetEntity.Id;
-										viewItemFromRelation.EntityName = targetEntity.Name;
-										viewItemFromRelation.Type = "fieldFromRelation";
-										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
-										viewItemFromRelation.FieldName = "name";
-										viewItemFromRelation.FieldLabel = "Project";
-										viewItemFromRelation.FieldPlaceholder = "";
-										viewItemFromRelation.FieldRequired = true;
-										viewItemFromRelation.FieldLookupList = "lookup";		
-										viewItemFromRelation.RelationId = new Guid("1f860b8c-7fa1-40fa-874f-19c2b5309817");
-										viewItemFromRelation.RelationName = "project_1_n_task";
-										viewColumn.Items.Add(viewItemFromRelation);	
+											var targetEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+											viewItemFromRelation = new InputRecordViewRelationFieldItem();
+											viewItemFromRelation.EntityId = targetEntity.Id;
+											viewItemFromRelation.EntityName = targetEntity.Name;
+											viewItemFromRelation.Type = "fieldFromRelation";
+											viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+											viewItemFromRelation.FieldName = "name";
+											viewItemFromRelation.FieldLabel = "Project";
+											viewItemFromRelation.FieldPlaceholder = "";
+											viewItemFromRelation.FieldRequired = true;
+											viewItemFromRelation.FieldLookupList = "lookup";
+											viewItemFromRelation.RelationId = new Guid("1f860b8c-7fa1-40fa-874f-19c2b5309817");
+											viewItemFromRelation.RelationName = "project_1_n_task";
+											viewColumn.Items.Add(viewItemFromRelation);
 										}
 										#endregion
 
@@ -4109,7 +4677,7 @@ namespace WebVella.ERP.Project
 										viewColumn = new InputRecordViewColumn();
 										viewColumn.GridColCount = 6;
 										viewColumn.Items = new List<InputRecordViewItemBase>();
-										
+
 										#region << status >>
 										{
 											viewItem = new InputRecordViewFieldItem();
@@ -4185,31 +4753,143 @@ namespace WebVella.ERP.Project
 										var sidebarItem = new InputRecordViewSidebarItemBase();
 										#endregion`								
 
-										#region << Action items edit >>
-										var newActionItemList = new List<ActionItem>();
-										foreach(var actionItem in updateViewInput.ActionItems) {
-											switch(actionItem.Name) {
-												case "wv_create_and_list":
-													actionItem.Template = @"<a class=""btn btn-primary"" ng-click=""ngCtrl.actionService.createTask(ngCtrl)"" ng-if=""ngCtrl.createViewRegion != null"">Create Task</a>";
-													newActionItemList.Add(actionItem);
-													break;
-												case "wv_create_and_details":
-													//remove it
-													break;
-												default:
-													newActionItemList.Add(actionItem);
-													break;
-											}
-											
-										}
-
-										updateViewInput.ActionItems = newActionItemList;
-										#endregion
-
 										{
 											var response = entMan.UpdateRecordView(TASK_ENTITY_ID, updateViewInput);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Updated view: create" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << View name: project_milestone >>
+									{
+										var createViewEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+										var createViewInput = new InputRecordView();
+										var viewRegion = new InputRecordViewRegion();
+										var viewSection = new InputRecordViewSection();
+										var viewRow = new InputRecordViewRow();
+										var viewColumn = new InputRecordViewColumn();
+										var viewItem = new InputRecordViewFieldItem();
+										var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+
+										#region << details >>
+										createViewInput.Id = new Guid("820b6771-3100-4393-982b-3813d79f4df2");
+										createViewInput.Type = "hidden";
+										createViewInput.Name = "project_milestone";
+										createViewInput.Label = "Project & Milestone";
+										createViewInput.Default = false;
+										createViewInput.System = false;
+										createViewInput.Weight = 10;
+										createViewInput.CssClass = null;
+										createViewInput.IconName = "code";
+										createViewInput.DynamicHtmlTemplate = "/plugins/webvella-projects/templates/task-project-milestone-selection.html";
+										createViewInput.DataSourceUrl = null;
+										createViewInput.ServiceCode = null;
+										createViewInput.Regions = new List<InputRecordViewRegion>();
+										#endregion
+
+										#region << Header Region >>
+										viewRegion = new InputRecordViewRegion();
+										viewRegion.Name = "header";
+										viewRegion.Label = "Header";
+										viewRegion.Render = true;
+										viewRegion.Weight = 1;
+										viewRegion.CssClass = "";
+										viewRegion.Sections = new List<InputRecordViewSection>();
+
+										#region << Section >>
+										viewSection = new InputRecordViewSection();
+										viewSection.Id = Guid.NewGuid();
+										viewSection.Name = "details";
+										viewSection.Label = "Details";
+										viewSection.ShowLabel = false;
+										viewSection.CssClass = "";
+										viewSection.Collapsed = false;
+										viewSection.TabOrder = "left-right";
+										viewSection.Weight = 1;
+										viewSection.Rows = new List<InputRecordViewRow>();
+
+										#region << Row Column>>
+										viewRow = new InputRecordViewRow();
+										viewRow.Id = Guid.NewGuid();
+										viewRow.Weight = 1;
+										viewRow.Columns = new List<InputRecordViewColumn>();
+
+										#region << Column 1 >>
+										viewColumn = new InputRecordViewColumn();
+										viewColumn.GridColCount = 12;
+										viewColumn.Items = new List<InputRecordViewItemBase>();
+
+										#region << milestone_1_n_task>name from Relation >>
+										{
+											var targetEntity = entMan.ReadEntity(MILESTONE_ENTITY_ID).Object;
+											var targetRelation = relMan.Read("milestone_1_n_task").Object;
+											viewItemFromRelation = new InputRecordViewRelationFieldItem();
+											viewItemFromRelation.EntityId = targetEntity.Id;
+											viewItemFromRelation.EntityName = targetEntity.Name;
+											viewItemFromRelation.Type = "fieldFromRelation";
+											viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+											viewItemFromRelation.FieldName = "name";
+											viewItemFromRelation.FieldLabel = "Milestone";
+											viewItemFromRelation.FieldPlaceholder = "";
+											viewItemFromRelation.FieldRequired = true;
+											viewItemFromRelation.FieldLookupList = "lookup";
+											viewItemFromRelation.RelationId = targetRelation.Id;
+											viewItemFromRelation.RelationName = targetRelation.Name;
+											viewColumn.Items.Add(viewItemFromRelation);
+										}
+										#endregion
+
+										#region <<  project_1_n_task>name from Relation >>
+										{
+											var targetEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+											var targetRelation = relMan.Read("project_1_n_task").Object;
+											viewItemFromRelation = new InputRecordViewRelationFieldItem();
+											viewItemFromRelation.EntityId = targetEntity.Id;
+											viewItemFromRelation.EntityName = targetEntity.Name;
+											viewItemFromRelation.Type = "fieldFromRelation";
+											viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+											viewItemFromRelation.FieldName = "name";
+											viewItemFromRelation.FieldLabel = "Milestone";
+											viewItemFromRelation.FieldPlaceholder = "";
+											viewItemFromRelation.FieldRequired = true;
+											viewItemFromRelation.FieldLookupList = "lookup";
+											viewItemFromRelation.RelationId = targetRelation.Id;
+											viewItemFromRelation.RelationName = targetRelation.Name;
+											viewColumn.Items.Add(viewItemFromRelation);
+										}
+										#endregion
+
+										//Save column
+										viewRow.Columns.Add(viewColumn);
+										#endregion
+
+										//Save row
+										viewSection.Rows.Add(viewRow);
+										#endregion
+
+										//Save section
+										viewRegion.Sections.Add(viewSection);
+										#endregion
+
+										//Save region
+										createViewInput.Regions.Add(viewRegion);
+										#endregion
+
+										createViewInput.RelationOptions = new List<EntityRelationOptionsItem>();
+										createViewInput.ActionItems = new List<ActionItem>();
+										#region << Sidebar >>
+										createViewInput.Sidebar = new InputRecordViewSidebar();
+										createViewInput.Sidebar.CssClass = "";
+										createViewInput.Sidebar.Render = true;
+										createViewInput.Sidebar.Render = true;
+										createViewInput.Sidebar.Items = new List<InputRecordViewSidebarItemBase>();
+										#endregion
+
+										{
+											var response = entMan.CreateRecordView(createViewEntity.Id, createViewInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + createViewEntity.Name + " Updated view: project_milestone" + " Message:" + response.Message);
 										}
 									}
 									#endregion
@@ -4224,13 +4904,14 @@ namespace WebVella.ERP.Project
 										var viewColumn = new InputRecordViewColumn();
 										var viewItem = new InputRecordViewFieldItem();
 										var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+										var viewItemView = new InputRecordViewViewItem();
 										//General view fields
 
 										//Convert recordList to recordListInput
 										updateViewInput = updateView.DynamicMapTo<InputRecordView>();
 
 										#region << Details >>
-										updateViewInput.Label = "Task details";
+										updateViewInput.Label = "[{code}] {subject}";
 										updateViewInput.IconName = "tasks";
 										updateViewInput.ServiceCode = "";
 										#endregion
@@ -4283,22 +4964,15 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
-										#region << project name >>
+										#region << project_milestone name >>
 										{
-										var targetEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
-										viewItemFromRelation = new InputRecordViewRelationFieldItem();
-										viewItemFromRelation.EntityId = targetEntity.Id;
-										viewItemFromRelation.EntityName = targetEntity.Name;
-										viewItemFromRelation.Type = "fieldFromRelation";
-										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
-										viewItemFromRelation.FieldName = "name";
-										viewItemFromRelation.FieldLabel = "Project";
-										viewItemFromRelation.FieldPlaceholder = "";
-										viewItemFromRelation.FieldRequired = true;
-										viewItemFromRelation.FieldLookupList = "lookup";		
-										viewItemFromRelation.RelationId = new Guid("1f860b8c-7fa1-40fa-874f-19c2b5309817");
-										viewItemFromRelation.RelationName = "project_1_n_task";
-										viewColumn.Items.Add(viewItemFromRelation);	
+											var targetEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+											viewItemView = new InputRecordViewViewItem();
+											viewItemView.EntityId = targetEntity.Id;
+											viewItemView.EntityName = targetEntity.Name;
+											viewItemView.Type = "view";
+											viewItemView.ViewId = targetEntity.RecordViews.Single(x => x.Name == "project_milestone").Id;
+											viewColumn.Items.Add(viewItemView);
 										}
 										#endregion
 
@@ -4314,6 +4988,7 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
+
 										//Save column
 										viewRow.Columns.Add(viewColumn);
 										#endregion
@@ -4323,13 +4998,13 @@ namespace WebVella.ERP.Project
 										viewColumn.GridColCount = 4;
 										viewColumn.Items = new List<InputRecordViewItemBase>();
 
-										#region << number >>
+										#region << code >>
 										{
 											viewItem = new InputRecordViewFieldItem();
 											viewItem.EntityId = updateViewEntity.Id;
 											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "number").Id;
-											viewItem.FieldName = "number";
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "code").Id;
+											viewItem.FieldName = "code";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
 										}
@@ -4359,41 +5034,22 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
-										#region << milestone >>
-										{
-										var targetEntity = entMan.ReadEntity(MILESTONE_ENTITY_ID).Object;
-										viewItemFromRelation = new InputRecordViewRelationFieldItem();
-										viewItemFromRelation.EntityId = targetEntity.Id;
-										viewItemFromRelation.EntityName = targetEntity.Name;
-										viewItemFromRelation.Type = "fieldFromRelation";
-										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
-										viewItemFromRelation.FieldName = "name";
-										viewItemFromRelation.FieldLabel = "Milestone";
-										viewItemFromRelation.FieldPlaceholder = "";
-										viewItemFromRelation.FieldRequired = false;
-										viewItemFromRelation.FieldLookupList = "lookup";		
-										viewItemFromRelation.RelationId = new Guid("3b600a1c-066e-42e2-a678-0de4f0f8a9e1");
-										viewItemFromRelation.RelationName = "milestone_1_n_task";
-										viewColumn.Items.Add(viewItemFromRelation);	
-										}
-										#endregion
-
 										#region << owner >>
 										{
-										var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
-										viewItemFromRelation = new InputRecordViewRelationFieldItem();
-										viewItemFromRelation.EntityId = targetEntity.Id;
-										viewItemFromRelation.EntityName = targetEntity.Name;
-										viewItemFromRelation.Type = "fieldFromRelation";
-										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
-										viewItemFromRelation.FieldName = "username";
-										viewItemFromRelation.FieldLabel = "Owner";
-										viewItemFromRelation.FieldPlaceholder = "";
-										viewItemFromRelation.FieldRequired = true;
-										viewItemFromRelation.FieldLookupList = "lookup";		
-										viewItemFromRelation.RelationId = new Guid("7ce76c81-e604-401e-907f-23de982b930e");
-										viewItemFromRelation.RelationName = "user_1_n_task_owner";
-										viewColumn.Items.Add(viewItemFromRelation);	
+											var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											viewItemFromRelation = new InputRecordViewRelationFieldItem();
+											viewItemFromRelation.EntityId = targetEntity.Id;
+											viewItemFromRelation.EntityName = targetEntity.Name;
+											viewItemFromRelation.Type = "fieldFromRelation";
+											viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
+											viewItemFromRelation.FieldName = "username";
+											viewItemFromRelation.FieldLabel = "Owner";
+											viewItemFromRelation.FieldPlaceholder = "";
+											viewItemFromRelation.FieldRequired = true;
+											viewItemFromRelation.FieldLookupList = "lookup";
+											viewItemFromRelation.RelationId = new Guid("7ce76c81-e604-401e-907f-23de982b930e");
+											viewItemFromRelation.RelationName = "user_1_n_task_owner";
+											viewColumn.Items.Add(viewItemFromRelation);
 										}
 										#endregion
 
@@ -4421,6 +5077,26 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
+										#region << watchers >>
+										{
+											var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
+											viewItemFromRelation = new InputRecordViewRelationFieldItem();
+											viewItemFromRelation.EntityId = targetEntity.Id;
+											viewItemFromRelation.EntityName = targetEntity.Name;
+											viewItemFromRelation.Type = "fieldFromRelation";
+											viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
+											viewItemFromRelation.FieldName = "username";
+											viewItemFromRelation.FieldLabel = "Watchers";
+											viewItemFromRelation.FieldPlaceholder = "";
+											viewItemFromRelation.FieldRequired = true;
+											viewItemFromRelation.FieldLookupList = "lookup";
+											viewItemFromRelation.RelationId = targetRelation.Id;
+											viewItemFromRelation.RelationName = targetRelation.Name;
+											viewColumn.Items.Add(viewItemFromRelation);
+										}
+										#endregion
+
 										//Save column
 										viewRow.Columns.Add(viewColumn);
 										#endregion
@@ -4440,8 +5116,10 @@ namespace WebVella.ERP.Project
 
 										#region << Action items edit >>
 										var newActionItemList = new List<ActionItem>();
-										foreach(var actionItem in updateViewInput.ActionItems) {
-											switch(actionItem.Name) {
+										foreach (var actionItem in updateViewInput.ActionItems)
+										{
+											switch (actionItem.Name)
+											{
 												case "wv_create_and_list":
 													actionItem.Template = @"<a class=""btn btn-primary"" ng-click=""ngCtrl.actionService.createTask(ngCtrl)"" ng-if=""ngCtrl.createViewRegion != null"">Create Task</a>";
 													newActionItemList.Add(actionItem);
@@ -4453,7 +5131,7 @@ namespace WebVella.ERP.Project
 													newActionItemList.Add(actionItem);
 													break;
 											}
-											
+
 										}
 
 										updateViewInput.ActionItems = newActionItemList;
@@ -4466,6 +5144,7 @@ namespace WebVella.ERP.Project
 										}
 									}
 									#endregion
+
 
 								}
 								#endregion
@@ -4533,6 +5212,40 @@ namespace WebVella.ERP.Project
 											var response = entMan.CreateField(BUG_ENTITY_ID, autonumberField, false);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Field: number" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << code >>
+									{
+										InputTextField textboxField = new InputTextField();
+										textboxField.Id = new Guid("6f2030e9-edd7-42ac-bb2a-2766b76c3da1");
+										textboxField.Name = "code";
+										textboxField.Label = "Code";
+										textboxField.PlaceholderText = "";
+										textboxField.Description = "";
+										textboxField.HelpText = "";
+										textboxField.Required = false;
+										textboxField.Unique = false;
+										textboxField.Searchable = true;
+										textboxField.Auditable = false;
+										textboxField.System = true;
+										textboxField.DefaultValue = string.Empty;
+										textboxField.MaxLength = null;
+										textboxField.EnableSecurity = true;
+										textboxField.Permissions = new FieldPermissions();
+										textboxField.Permissions.CanRead = new List<Guid>();
+										textboxField.Permissions.CanUpdate = new List<Guid>();
+										//READ
+										textboxField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+										textboxField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+										//UPDATE
+										textboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+										textboxField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+										{
+											var response = entMan.CreateField(BUG_ENTITY_ID, textboxField, false);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Field: code" + " Message:" + response.Message);
 										}
 									}
 									#endregion
@@ -4784,11 +5497,11 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
-									#region << billable_hours >>
+									#region << x_billable_hours >>
 									{
 										InputNumberField numberField = new InputNumberField();
 										numberField.Id = new Guid("20fa3394-39f8-4ad0-8743-3f75afed8f8f");
-										numberField.Name = "billable_hours";
+										numberField.Name = "x_billable_hours";
 										numberField.Label = "Billable hours";
 										numberField.PlaceholderText = "";
 										numberField.Description = "";
@@ -4815,16 +5528,16 @@ namespace WebVella.ERP.Project
 										{
 											var response = entMan.CreateField(BUG_ENTITY_ID, numberField, false);
 											if (!response.Success)
-												throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Field: billable_hours" + " Message:" + response.Message);
+												throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Field: x_billable_hours" + " Message:" + response.Message);
 										}
 									}
 									#endregion
 
-									#region << nonbillable_hours >>
+									#region << x_nonbillable_hours >>
 									{
 										InputNumberField numberField = new InputNumberField();
 										numberField.Id = new Guid("08c8cea9-79e1-4908-8611-abfa4c087209");
-										numberField.Name = "nonbillable_hours";
+										numberField.Name = "x_nonbillable_hours";
 										numberField.Label = "Non-Billable hours";
 										numberField.PlaceholderText = "";
 										numberField.Description = "";
@@ -4851,7 +5564,7 @@ namespace WebVella.ERP.Project
 										{
 											var response = entMan.CreateField(BUG_ENTITY_ID, numberField, false);
 											if (!response.Success)
-												throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Field: nonbillable_hours" + " Message:" + response.Message);
+												throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Field: x_nonbillable_hours" + " Message:" + response.Message);
 										}
 									}
 									#endregion
@@ -4874,6 +5587,28 @@ namespace WebVella.ERP.Project
 											var result = relMan.Create(oneToNRelation);
 											if (!result.Success)
 												throw new Exception("CREATE user_1_n_bug_owner RELATION:" + result.Message);
+										}
+									}
+									#endregion
+
+									#region << user_n_n_bug_watchers Relation >>
+									{
+										var originEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+										var targetEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
+										EntityRelation NToNRelation = new EntityRelation();
+										NToNRelation.Id = new Guid("b71d0c52-1626-48da-91bc-e10999ba79b8");
+										NToNRelation.Name = "user_n_n_bug_watchers";
+										NToNRelation.Label = "user_n_n_bug_watchers";
+										NToNRelation.System = true;
+										NToNRelation.RelationType = EntityRelationType.ManyToMany;
+										NToNRelation.OriginEntityId = originEntity.Id;
+										NToNRelation.OriginFieldId = originEntity.Fields.Single(x => x.Name == "id").Id;
+										NToNRelation.TargetEntityId = targetEntity.Id;
+										NToNRelation.TargetFieldId = targetEntity.Fields.Single(x => x.Name == "id").Id;
+										{
+											var result = relMan.Create(NToNRelation);
+											if (!result.Success)
+												throw new Exception("CREATE user_n_n_bug_watchers RELATION:" + result.Message);
 										}
 									}
 									#endregion
@@ -4936,10 +5671,12 @@ namespace WebVella.ERP.Project
 										updateListInput = updateList.DynamicMapTo<InputRecordList>();
 
 										//General list details
-										updateListInput.Label = "Project Bugs";
+										updateListInput.Name = "project_bugs";
+										updateListInput.Label = "Bugs";
 										updateListInput.IconName = "bug";
 										updateListInput.ColumnWidthsCSV = "auto,30px,120px,120px,120px";
 										updateListInput.CssClass = "bug-list";
+										updateListInput.Type = "hidden";
 
 										//Fields
 										#region << subject >>
@@ -5077,16 +5814,16 @@ namespace WebVella.ERP.Project
 
 										#region << details >>
 										createListInput.Id = new Guid("2ac91f01-0ee5-420e-8981-4f57eaea255e");
-										createListInput.Type = "hidden";
+										createListInput.Type = "general";
 										createListInput.Name = "my_bugs";
 										createListInput.Label = "My Bugs";
-										createListInput.Weight = 3;
+										createListInput.Weight = 1;
 										createListInput.Default = false;
 										createListInput.System = true;
 										createListInput.CssClass = "bug-list";
 										createListInput.IconName = "bug";
 										createListInput.VisibleColumnsCount = 7;
-										createListInput.ColumnWidthsCSV = "auto,30px,120px,120px,120px,120px";
+										createListInput.ColumnWidthsCSV = "100px,auto,30px,160px,120px,120px,120px";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = null;
@@ -5102,7 +5839,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "record-row";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
 					<i class=""fa fa-fw fa-eye""></i>
 					</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -5113,16 +5850,26 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "page-title";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
 
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
+
+										#region << code >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
 
 										#region << subject >>
 										{
@@ -5139,14 +5886,15 @@ namespace WebVella.ERP.Project
 										#region << owner - image >>
 										{
 											var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var targetRelation = relMan.Read("user_1_n_bug_owner").Object;
 											listFieldFromRelation = new InputRecordListRelationFieldItem();
 											listFieldFromRelation.EntityId = targetEntity.Id;
 											listFieldFromRelation.EntityName = targetEntity.Name;
 											listFieldFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "image").Id;
 											listFieldFromRelation.FieldName = "image";
 											listFieldFromRelation.FieldLabel = "Owner";
-											listFieldFromRelation.RelationId = new Guid("cddc10b6-30ff-4a86-96e4-645b3ea59fd9");
-											listFieldFromRelation.RelationName = "user_1_n_bug_owner";
+											listFieldFromRelation.RelationId = targetRelation.Id;
+											listFieldFromRelation.RelationName = targetRelation.Name;
 											listFieldFromRelation.Type = "fieldFromRelation";
 											createListInput.Columns.Add(listFieldFromRelation);
 										}
@@ -5196,10 +5944,17 @@ namespace WebVella.ERP.Project
 
 										#region << query >>
 										createListInput.Query = new InputRecordListQuery();
+										//Main query rule
+										createListInput.Query.FieldName = null;
+										createListInput.Query.FieldValue = null;
+										createListInput.Query.QueryType = "AND";
+										createListInput.Query.SubQueries = new List<InputRecordListQuery>();
+
+										#region << Section 1 >>
 										listQuery = new InputRecordListQuery();
 										listQuery.FieldName = null;
 										listQuery.FieldValue = null;
-										listQuery.QueryType = "AND";
+										listQuery.QueryType = "OR";
 										listQuery.SubQueries = new List<InputRecordListQuery>();
 
 										#region << owner_id >>
@@ -5212,14 +5967,83 @@ namespace WebVella.ERP.Project
 											listQuery.SubQueries.Add(subQuery);
 										}
 										#endregion
-										createListInput.Query = listQuery;
+
+										#region << created_by >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "created_by";
+											subQuery.FieldValue = @"{""name"":""current_user"", ""option"": ""id"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										createListInput.Query.SubQueries.Add(listQuery);
+										#endregion
+
+										#region << Section 2 >>
+										listQuery = new InputRecordListQuery();
+										listQuery.FieldName = null;
+										listQuery.FieldValue = null;
+										listQuery.QueryType = "AND";
+										listQuery.SubQueries = new List<InputRecordListQuery>();
+
+										#region << code >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "code";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""code"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										#region << subject >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "subject";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""subject"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										#region << status >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "status";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""status"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+
+										#region << priority >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "priority";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""priority"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										createListInput.Query.SubQueries.Add(listQuery);
+										#endregion
+
 										#endregion
 
 										#region << Sort >>
 										createListInput.Sorts = new List<InputRecordListSort>();
 										listSort = new InputRecordListSort();
 										listSort.FieldName = @"{""name"":""url_sort"", ""option"": ""sortBy"", ""default"": ""created_on"", ""settings"":{""order"":""sortOrder""}}";
-										listSort.SortType = "descending";
+										listSort.SortType = "ascending";
 										createListInput.Sorts.Add(listSort);
 										#endregion
 										{
@@ -5227,6 +6051,603 @@ namespace WebVella.ERP.Project
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Updated List: my_tickets" + " Message:" + response.Message);
 										}
+									}
+									#endregion
+
+									#region << List name: created_bugs >>
+									{
+										var createListEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
+										var createListInput = new InputRecordList();
+										var listField = new InputRecordListFieldItem();
+										var listFieldFromRelation = new InputRecordListRelationFieldItem();
+										var listSort = new InputRecordListSort();
+										var listQuery = new InputRecordListQuery();
+
+										#region << details >>
+										createListInput.Id = new Guid("42356233-9a6b-4fcb-ae2b-42ca29d84fe8");
+										createListInput.Type = "general";
+										createListInput.Name = "created_bugs";
+										createListInput.Label = "Bugs created by me";
+										createListInput.Weight = 3;
+										createListInput.Default = false;
+										createListInput.System = true;
+										createListInput.CssClass = "bug-list";
+										createListInput.IconName = "bug";
+										createListInput.VisibleColumnsCount = 7;
+										createListInput.ColumnWidthsCSV = "100px,auto,30px,120px,120px,120px,120px";
+										createListInput.PageSize = 10;
+										createListInput.DynamicHtmlTemplate = null;
+										createListInput.DataSourceUrl = null;
+										createListInput.ServiceCode = null;
+										#endregion
+
+										#region << action items >>
+										createListInput.ActionItems = new List<ActionItem>();
+										var actionItem = new ActionItem();
+										{
+											actionItem = new ActionItem();
+											actionItem.Name = "wv_record_details";
+											actionItem.Menu = "record-row";
+											actionItem.Weight = 1;
+											actionItem.Template = "" +
+									@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+					<i class=""fa fa-fw fa-eye""></i>
+					</a>";
+											createListInput.ActionItems.Add(actionItem);
+										}
+										{
+											actionItem = new ActionItem();
+											actionItem.Name = "wv_create_record";
+											actionItem.Menu = "page-title";
+											actionItem.Weight = 1;
+											actionItem.Template = "" +
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
+											createListInput.ActionItems.Add(actionItem);
+										}
+										#endregion
+
+										#region << Columns >>
+										createListInput.Columns = new List<InputRecordListItemBase>();
+
+										#region << code >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << subject >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "subject").Id;
+											listField.FieldName = "subject";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << owner - image >>
+										{
+											var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var targetRelation = relMan.Read("user_1_n_bug_owner").Object;
+											listFieldFromRelation = new InputRecordListRelationFieldItem();
+											listFieldFromRelation.EntityId = targetEntity.Id;
+											listFieldFromRelation.EntityName = targetEntity.Name;
+											listFieldFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "image").Id;
+											listFieldFromRelation.FieldName = "image";
+											listFieldFromRelation.FieldLabel = "Owner";
+											listFieldFromRelation.RelationId = targetRelation.Id;
+											listFieldFromRelation.RelationName = targetRelation.Name;
+											listFieldFromRelation.Type = "fieldFromRelation";
+											createListInput.Columns.Add(listFieldFromRelation);
+										}
+										#endregion
+
+										#region << status >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "status").Id;
+											listField.FieldName = "status";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << priority >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "priority").Id;
+											listField.FieldName = "priority";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#endregion
+
+										#region << relation options >>
+										createListInput.RelationOptions = new List<EntityRelationOptionsItem>();
+										#endregion
+
+										#region << query >>
+										createListInput.Query = new InputRecordListQuery();
+										//Main query rule
+										createListInput.Query.FieldName = null;
+										createListInput.Query.FieldValue = null;
+										createListInput.Query.QueryType = "AND";
+										createListInput.Query.SubQueries = new List<InputRecordListQuery>();
+
+										#region << Section 1 >>
+										listQuery = new InputRecordListQuery();
+										listQuery.FieldName = null;
+										listQuery.FieldValue = null;
+										listQuery.QueryType = "AND";
+										listQuery.SubQueries = new List<InputRecordListQuery>();
+
+										#region << created_by >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "created_by";
+											subQuery.FieldValue = @"{""name"":""current_user"", ""option"": ""id"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										createListInput.Query.SubQueries.Add(listQuery);
+										#endregion
+
+										#region << Section 2 >>
+										listQuery = new InputRecordListQuery();
+										listQuery.FieldName = null;
+										listQuery.FieldValue = null;
+										listQuery.QueryType = "AND";
+										listQuery.SubQueries = new List<InputRecordListQuery>();
+
+										#region << code >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "code";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""code"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										#region << subject >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "subject";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""subject"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										#region << status >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "status";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""status"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+
+										#region << priority >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "priority";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""priority"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										createListInput.Query.SubQueries.Add(listQuery);
+										#endregion
+
+										#endregion
+
+										#region << Sort >>
+										createListInput.Sorts = new List<InputRecordListSort>();
+										listSort = new InputRecordListSort();
+										listSort.FieldName = @"{""name"":""url_sort"", ""option"": ""sortBy"", ""default"": ""created_on"", ""settings"":{""order"":""sortOrder""}}";
+										listSort.SortType = "ascending";
+										createListInput.Sorts.Add(listSort);
+										#endregion
+										{
+											var response = entMan.CreateRecordList(BUG_ENTITY_ID, createListInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Updated List: bug_created" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << List name: owned_bugs >>
+									{
+										var createListEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
+										var createListInput = new InputRecordList();
+										var listField = new InputRecordListFieldItem();
+										var listFieldFromRelation = new InputRecordListRelationFieldItem();
+										var listSort = new InputRecordListSort();
+										var listQuery = new InputRecordListQuery();
+
+										#region << details >>
+										createListInput.Id = new Guid("c3f5b3f5-9d15-4b5a-a2cc-70e0d85efaf7");
+										createListInput.Type = "general";
+										createListInput.Name = "owned_bugs";
+										createListInput.Label = "Bugs owned by me";
+										createListInput.Weight = 2;
+										createListInput.Default = false;
+										createListInput.System = true;
+										createListInput.CssClass = "bug-list";
+										createListInput.IconName = "bug";
+										createListInput.VisibleColumnsCount = 7;
+										createListInput.ColumnWidthsCSV = "100px,auto,30px,120px,120px,120px,120px";
+										createListInput.PageSize = 10;
+										createListInput.DynamicHtmlTemplate = null;
+										createListInput.DataSourceUrl = null;
+										createListInput.ServiceCode = null;
+										#endregion
+
+										#region << action items >>
+										createListInput.ActionItems = new List<ActionItem>();
+										var actionItem = new ActionItem();
+										{
+											actionItem = new ActionItem();
+											actionItem.Name = "wv_record_details";
+											actionItem.Menu = "record-row";
+											actionItem.Weight = 1;
+											actionItem.Template = "" +
+									@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+					<i class=""fa fa-fw fa-eye""></i>
+					</a>";
+											createListInput.ActionItems.Add(actionItem);
+										}
+										{
+											actionItem = new ActionItem();
+											actionItem.Name = "wv_create_record";
+											actionItem.Menu = "page-title";
+											actionItem.Weight = 1;
+											actionItem.Template = "" +
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
+											createListInput.ActionItems.Add(actionItem);
+										}
+										#endregion
+
+										#region << Columns >>
+										createListInput.Columns = new List<InputRecordListItemBase>();
+
+										#region << code >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << subject >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "subject").Id;
+											listField.FieldName = "subject";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << owner - image >>
+										{
+											var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var targetRelation = relMan.Read("user_1_n_bug_owner").Object;
+											listFieldFromRelation = new InputRecordListRelationFieldItem();
+											listFieldFromRelation.EntityId = targetEntity.Id;
+											listFieldFromRelation.EntityName = targetEntity.Name;
+											listFieldFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "image").Id;
+											listFieldFromRelation.FieldName = "image";
+											listFieldFromRelation.FieldLabel = "Owner";
+											listFieldFromRelation.RelationId = targetRelation.Id;
+											listFieldFromRelation.RelationName = targetRelation.Name;
+											listFieldFromRelation.Type = "fieldFromRelation";
+											createListInput.Columns.Add(listFieldFromRelation);
+										}
+										#endregion
+
+										#region << status >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "status").Id;
+											listField.FieldName = "status";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << priority >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "priority").Id;
+											listField.FieldName = "priority";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#endregion
+
+										#region << relation options >>
+										createListInput.RelationOptions = new List<EntityRelationOptionsItem>();
+										#endregion
+
+										#region << query >>
+										createListInput.Query = new InputRecordListQuery();
+										//Main query rule
+										createListInput.Query.FieldName = null;
+										createListInput.Query.FieldValue = null;
+										createListInput.Query.QueryType = "AND";
+										createListInput.Query.SubQueries = new List<InputRecordListQuery>();
+
+										#region << Section 1 >>
+										listQuery = new InputRecordListQuery();
+										listQuery.FieldName = null;
+										listQuery.FieldValue = null;
+										listQuery.QueryType = "OR";
+										listQuery.SubQueries = new List<InputRecordListQuery>();
+
+										#region << owner_id >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "owner_id";
+											subQuery.FieldValue = @"{""name"":""current_user"", ""option"": ""id"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										createListInput.Query.SubQueries.Add(listQuery);
+										#endregion
+
+										#region << Section 2 >>
+										listQuery = new InputRecordListQuery();
+										listQuery.FieldName = null;
+										listQuery.FieldValue = null;
+										listQuery.QueryType = "AND";
+										listQuery.SubQueries = new List<InputRecordListQuery>();
+
+										#region << code >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "code";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""code"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										#region << subject >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "subject";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""subject"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										#region << status >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "status";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""status"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+
+										#region << priority >>
+										{
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "priority";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""priority"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "EQ";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											listQuery.SubQueries.Add(subQuery);
+										}
+										#endregion
+
+										createListInput.Query.SubQueries.Add(listQuery);
+										#endregion
+
+										#endregion
+
+										#region << Sort >>
+										createListInput.Sorts = new List<InputRecordListSort>();
+										listSort = new InputRecordListSort();
+										listSort.FieldName = @"{""name"":""url_sort"", ""option"": ""sortBy"", ""default"": ""created_on"", ""settings"":{""order"":""sortOrder""}}";
+										listSort.SortType = "ascending";
+										createListInput.Sorts.Add(listSort);
+										#endregion
+										{
+											var response = entMan.CreateRecordList(BUG_ENTITY_ID, createListInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Updated List: owned_bug" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << List name: all_bugs >>
+									{
+										var createListEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
+										var createListInput = new InputRecordList();
+										var listField = new InputRecordListFieldItem();
+										var listFieldFromRelation = new InputRecordListRelationFieldItem();
+										var listSort = new InputRecordListSort();
+										var listQuery = new InputRecordListQuery();
+
+										#region << details >>
+										createListInput.Id = new Guid("97658e2a-69fb-48f5-b84c-236e1bd0103b");
+										createListInput.Type = "general";
+										createListInput.Name = "all_bugs";
+										createListInput.Label = "All Bugs";
+										createListInput.Weight = 12;
+										createListInput.Default = false;
+										createListInput.System = true;
+										createListInput.CssClass = "bug-list";
+										createListInput.IconName = "bug";
+										createListInput.VisibleColumnsCount = 7;
+										createListInput.ColumnWidthsCSV = "100px,auto,30px,120px,120px,120px,120px";
+										createListInput.PageSize = 10;
+										createListInput.DynamicHtmlTemplate = null;
+										createListInput.DataSourceUrl = @"/plugins/webvella-projects/api/bug/list/all";
+										createListInput.ServiceCode = null;
+										#endregion
+
+										#region << action items >>
+										createListInput.ActionItems = new List<ActionItem>();
+										var actionItem = new ActionItem();
+										{
+											actionItem = new ActionItem();
+											actionItem.Name = "wv_record_details";
+											actionItem.Menu = "record-row";
+											actionItem.Weight = 1;
+											actionItem.Template = "" +
+											@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+											<i class=""fa fa-fw fa-eye""></i>
+											</a>";
+											createListInput.ActionItems.Add(actionItem);
+										}
+										{
+											actionItem = new ActionItem();
+											actionItem.Name = "wv_create_record";
+											actionItem.Menu = "page-title";
+											actionItem.Weight = 1;
+											actionItem.Template = "" +
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
+											createListInput.ActionItems.Add(actionItem);
+										}
+										#endregion
+
+										#region << Columns >>
+										createListInput.Columns = new List<InputRecordListItemBase>();
+
+										#region << code >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "code").Id;
+											listField.FieldName = "code";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << subject >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "subject").Id;
+											listField.FieldName = "subject";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << owner - image >>
+										{
+											var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var targetRelation = relMan.Read("user_1_n_bug_owner").Object;
+											listFieldFromRelation = new InputRecordListRelationFieldItem();
+											listFieldFromRelation.EntityId = targetEntity.Id;
+											listFieldFromRelation.EntityName = targetEntity.Name;
+											listFieldFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "image").Id;
+											listFieldFromRelation.FieldName = "image";
+											listFieldFromRelation.FieldLabel = "Owner";
+											listFieldFromRelation.RelationId = targetRelation.Id;
+											listFieldFromRelation.RelationName = targetRelation.Name;
+											listFieldFromRelation.Type = "fieldFromRelation";
+											createListInput.Columns.Add(listFieldFromRelation);
+										}
+										#endregion
+
+										#region << status >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "status").Id;
+											listField.FieldName = "status";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << priority >>
+										{
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "priority").Id;
+											listField.FieldName = "priority";
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#endregion
+
+
+										#region << query >>
+										createListInput.Query = null;
+										#endregion
+
+										#region << Sort >>
+										createListInput.Sorts = new List<InputRecordListSort>();
+										#endregion
+
+										{
+											var response = entMan.CreateRecordList(BUG_ENTITY_ID, createListInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Updated List: all_bugs" + " Message:" + response.Message);
+										}
+
 									}
 									#endregion
 
@@ -5277,7 +6698,7 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "record-row";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+									@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
 					<i class=""fa fa-fw fa-eye""></i>
 					</a>";
 											createListInput.ActionItems.Add(actionItem);
@@ -5288,10 +6709,8 @@ namespace WebVella.ERP.Project
 											actionItem.Menu = "page-title";
 											actionItem.Weight = 1;
 											actionItem.Template = "" +
-									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-									ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-									<i class=""fa fa-fw fa-plus""></i> Add New
-								</a>";
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+									ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 											createListInput.ActionItems.Add(actionItem);
 										}
 										#endregion
@@ -5394,6 +6813,184 @@ namespace WebVella.ERP.Project
 										}
 									}
 									#endregion
+
+									#region << update create >>
+									{
+										var updateViewEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
+										var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "create");
+										var updateViewInput = new InputRecordView();
+										var viewSection = new InputRecordViewSection();
+										var viewRow = new InputRecordViewRow();
+										var viewColumn = new InputRecordViewColumn();
+										var viewItem = new InputRecordViewFieldItem();
+										var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+										//General view fields
+
+										//Convert recordList to recordListInput
+										updateViewInput = updateView.DynamicMapTo<InputRecordView>();
+
+										#region << Details >>
+										updateViewInput.ServiceCode = null;
+										#endregion
+
+										#region << Get the header Region >>
+										var headerRegion = new InputRecordViewRegion();
+										foreach (var region in updateViewInput.Regions)
+										{
+											if (region.Name == "header")
+											{
+												headerRegion = region;
+											}
+										}
+										headerRegion.Sections = new List<InputRecordViewSection>();
+										#endregion
+
+										#region << Section >>
+										viewSection = new InputRecordViewSection();
+										viewSection.Id = Guid.NewGuid();
+										viewSection.Name = "details";
+										viewSection.Label = "Details";
+										viewSection.ShowLabel = false;
+										viewSection.CssClass = "";
+										viewSection.Collapsed = false;
+										viewSection.TabOrder = "left-right";
+										viewSection.Weight = 1;
+										viewSection.Rows = new List<InputRecordViewRow>();
+
+										#region << Row 1 >>
+										viewRow = new InputRecordViewRow();
+										viewRow.Id = Guid.NewGuid();
+										viewRow.Weight = 1;
+										viewRow.Columns = new List<InputRecordViewColumn>();
+
+										#region << Column 1 >>
+										viewColumn = new InputRecordViewColumn();
+										viewColumn.GridColCount = 12;
+										viewColumn.Items = new List<InputRecordViewItemBase>();
+
+
+										#region << subject >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "subject").Id;
+											viewItem.FieldName = "subject";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										#region << project name >>
+										{
+											var targetEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+											var targetRelation = relMan.Read("project_1_n_bug").Object;
+											viewItemFromRelation = new InputRecordViewRelationFieldItem();
+											viewItemFromRelation.EntityId = targetEntity.Id;
+											viewItemFromRelation.EntityName = targetEntity.Name;
+											viewItemFromRelation.Type = "fieldFromRelation";
+											viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+											viewItemFromRelation.FieldName = "name";
+											viewItemFromRelation.FieldLabel = "Project";
+											viewItemFromRelation.FieldPlaceholder = "";
+											viewItemFromRelation.FieldRequired = true;
+											viewItemFromRelation.FieldLookupList = "lookup";
+											viewItemFromRelation.RelationId = targetRelation.Id;
+											viewItemFromRelation.RelationName = targetRelation.Name;
+											viewColumn.Items.Add(viewItemFromRelation);
+										}
+										#endregion
+
+
+										#region << description >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "description").Id;
+											viewItem.FieldName = "description";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										//Save column
+										viewRow.Columns.Add(viewColumn);
+										#endregion
+
+										//Save row
+										viewSection.Rows.Add(viewRow);
+										#endregion
+
+										#region << Row 2 >>
+										viewRow = new InputRecordViewRow();
+										viewRow.Id = Guid.NewGuid();
+										viewRow.Weight = 2;
+										viewRow.Columns = new List<InputRecordViewColumn>();
+
+										#region << Column 1 >>
+										viewColumn = new InputRecordViewColumn();
+										viewColumn.GridColCount = 6;
+										viewColumn.Items = new List<InputRecordViewItemBase>();
+
+										#region << status >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "status").Id;
+											viewItem.FieldName = "status";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										//Save column
+										viewRow.Columns.Add(viewColumn);
+										#endregion
+
+										#region << Column 2 >>
+										viewColumn = new InputRecordViewColumn();
+										viewColumn.GridColCount = 6;
+										viewColumn.Items = new List<InputRecordViewItemBase>();
+
+
+										#region << priority >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "priority").Id;
+											viewItem.FieldName = "priority";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										//Save column
+										viewRow.Columns.Add(viewColumn);
+										#endregion
+
+										//Save row
+										viewSection.Rows.Add(viewRow);
+										#endregion
+
+										//Save section
+										headerRegion.Sections.Add(viewSection);
+
+										#endregion
+
+										#region << Sidebar >>
+										var sidebarItem = new InputRecordViewSidebarItemBase();
+										#endregion
+
+										{
+											var response = entMan.UpdateRecordView(BUG_ENTITY_ID, updateViewInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Updated view: create" + " Message:" + response.Message);
+										}
+									}
+									#endregion
 								}
 								#endregion
 
@@ -5446,7 +7043,7 @@ namespace WebVella.ERP.Project
 										checkboxField.Searchable = false;
 										checkboxField.Auditable = false;
 										checkboxField.System = true;
-										checkboxField.DefaultValue = false;
+										checkboxField.DefaultValue = true;
 										checkboxField.EnableSecurity = true;
 										checkboxField.Permissions = new FieldPermissions();
 										checkboxField.Permissions.CanRead = new List<Guid>();
@@ -5510,7 +7107,7 @@ namespace WebVella.ERP.Project
 										guidField.PlaceholderText = "";
 										guidField.Description = "";
 										guidField.HelpText = "";
-										guidField.Required = true;
+										guidField.Required = false;
 										guidField.Unique = false;
 										guidField.Searchable = false;
 										guidField.Auditable = false;
@@ -5544,7 +7141,7 @@ namespace WebVella.ERP.Project
 										guidField.PlaceholderText = "";
 										guidField.Description = "";
 										guidField.HelpText = "";
-										guidField.Required = true;
+										guidField.Required = false;
 										guidField.Unique = false;
 										guidField.Searchable = false;
 										guidField.Auditable = false;
@@ -5609,6 +7206,364 @@ namespace WebVella.ERP.Project
 											var result = relMan.Create(oneToNRelation);
 											if (!result.Success)
 												throw new Exception("CREATE bug_1_n_time_log RELATION:" + result.Message);
+										}
+									}
+									#endregion
+
+									#region << List name: task_timelogs >>
+									{
+										var createListEntity = entMan.ReadEntity(TIMELOG_ENTITY_ID).Object;
+										var createListInput = new InputRecordList();
+										var listField = new InputRecordListFieldItem();
+										var listFieldFromRelation = new InputRecordListRelationFieldItem();
+										var listSort = new InputRecordListSort();
+										var listQuery = new InputRecordListQuery();
+
+										#region << details >>
+										createListInput.Id = new Guid("c105b3f8-e140-4150-a587-a31cf600d99b");
+										createListInput.Type = "hidden";
+										createListInput.Name = "task_timelogs";
+										createListInput.Label = "Time logs";
+										createListInput.Weight = 25;
+										createListInput.Default = false;
+										createListInput.System = true;
+										createListInput.CssClass = null;
+										createListInput.IconName = "clock-o";
+										createListInput.VisibleColumnsCount = 5;
+										createListInput.ColumnWidthsCSV = "160px,160px,auto";
+										createListInput.PageSize = 10;
+										createListInput.DynamicHtmlTemplate = null;
+										createListInput.DataSourceUrl = null;
+										createListInput.ServiceCode = null;
+										#endregion
+
+										#region << action items >>
+										createListInput.ActionItems = new List<ActionItem>();
+
+										#endregion
+
+										#region << Columns >>
+										createListInput.Columns = new List<InputRecordListItemBase>();
+
+										#region << created_on >>
+										{
+											var fieldName = "created_on";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << user_wv_timelog_created_by > username  >>
+										{
+											var relatedEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var relation = relMan.Read("user_wv_timelog_created_by").Object;
+											listFieldFromRelation = new InputRecordListRelationFieldItem();
+											listFieldFromRelation.EntityId = relatedEntity.Id;
+											listFieldFromRelation.EntityName = relatedEntity.Name;
+											listFieldFromRelation.FieldId = relatedEntity.Fields.Single(x => x.Name == "username").Id;
+											listFieldFromRelation.FieldName = "username";
+											listFieldFromRelation.FieldLabel = "username";
+											listFieldFromRelation.Type = "field";
+											listFieldFromRelation.RelationId = relation.Id;
+											listFieldFromRelation.RelationName = relation.Name;
+											createListInput.Columns.Add(listFieldFromRelation);
+										}
+										#endregion
+
+										#region << hours >>
+										{
+											var fieldName = "hours";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+
+										#endregion
+
+										#region << relation options >>
+										createListInput.RelationOptions = new List<EntityRelationOptionsItem>();
+										#endregion
+
+										#region << action items >>
+										createListInput.ActionItems = new List<ActionItem>();
+										var actionItem = new ActionItem();
+										{
+											actionItem = new ActionItem();
+											actionItem.Name = "wv_create_record";
+											actionItem.Menu = "page-title";
+											actionItem.Weight = 1;
+											actionItem.Template = "" +
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+											ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
+											createListInput.ActionItems.Add(actionItem);
+										}
+										#endregion
+
+
+										#region << Sort >>
+										createListInput.Sorts = new List<InputRecordListSort>();
+										listSort = new InputRecordListSort();
+										listSort.FieldName = "created_on";
+										listSort.SortType = "ascending";
+										createListInput.Sorts.Add(listSort);
+										#endregion
+										{
+											var response = entMan.CreateRecordList(TIMELOG_ENTITY_ID, createListInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + TIMELOG_ENTITY_NAME + " Updated List: task_timelogs" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << List name: bug_timelogs >>
+									{
+										var createListEntity = entMan.ReadEntity(TIMELOG_ENTITY_ID).Object;
+										var createListInput = new InputRecordList();
+										var listField = new InputRecordListFieldItem();
+										var listFieldFromRelation = new InputRecordListRelationFieldItem();
+										var listSort = new InputRecordListSort();
+										var listQuery = new InputRecordListQuery();
+
+										#region << details >>
+										createListInput.Id = new Guid("f9a12626-08db-4fd2-a443-b521162be2b5");
+										createListInput.Type = "hidden";
+										createListInput.Name = "bug_timelogs";
+										createListInput.Label = "Time logs";
+										createListInput.Weight = 25;
+										createListInput.Default = false;
+										createListInput.System = true;
+										createListInput.CssClass = null;
+										createListInput.IconName = "clock-o";
+										createListInput.VisibleColumnsCount = 5;
+										createListInput.ColumnWidthsCSV = "160px,160px,auto";
+										createListInput.PageSize = 10;
+										createListInput.DynamicHtmlTemplate = null;
+										createListInput.DataSourceUrl = null;
+										createListInput.ServiceCode = null;
+										#endregion
+
+										#region << action items >>
+										createListInput.ActionItems = new List<ActionItem>();
+
+										#endregion
+
+										#region << Columns >>
+										createListInput.Columns = new List<InputRecordListItemBase>();
+
+										#region << created_on >>
+										{
+											var fieldName = "created_on";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << user_wv_timelog_created_by > username  >>
+										{
+											var relatedEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var relation = relMan.Read("user_wv_timelog_created_by").Object;
+											listFieldFromRelation = new InputRecordListRelationFieldItem();
+											listFieldFromRelation.EntityId = relatedEntity.Id;
+											listFieldFromRelation.EntityName = relatedEntity.Name;
+											listFieldFromRelation.FieldId = relatedEntity.Fields.Single(x => x.Name == "username").Id;
+											listFieldFromRelation.FieldName = "username";
+											listFieldFromRelation.FieldLabel = "username";
+											listFieldFromRelation.Type = "field";
+											listFieldFromRelation.RelationId = relation.Id;
+											listFieldFromRelation.RelationName = relation.Name;
+											createListInput.Columns.Add(listFieldFromRelation);
+										}
+										#endregion
+
+										#region << hours >>
+										{
+											var fieldName = "hours";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+
+										#endregion
+
+										#region << relation options >>
+										createListInput.RelationOptions = new List<EntityRelationOptionsItem>();
+										#endregion
+
+										#region << action items >>
+										createListInput.ActionItems = new List<ActionItem>();
+										var actionItem = new ActionItem();
+										{
+											actionItem = new ActionItem();
+											actionItem.Name = "wv_create_record";
+											actionItem.Menu = "page-title";
+											actionItem.Weight = 1;
+											actionItem.Template = "" +
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+											ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
+											createListInput.ActionItems.Add(actionItem);
+										}
+										#endregion
+
+
+										#region << Sort >>
+										createListInput.Sorts = new List<InputRecordListSort>();
+										listSort = new InputRecordListSort();
+										listSort.FieldName = "created_on";
+										listSort.SortType = "ascending";
+										createListInput.Sorts.Add(listSort);
+										#endregion
+										{
+											var response = entMan.CreateRecordList(TIMELOG_ENTITY_ID, createListInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + TIMELOG_ENTITY_NAME + " Updated List: task_timelogs" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << update create >>
+									{
+										var updateViewEntity = entMan.ReadEntity(TIMELOG_ENTITY_ID).Object;
+										var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "create");
+										var updateViewInput = new InputRecordView();
+										var viewSection = new InputRecordViewSection();
+										var viewRow = new InputRecordViewRow();
+										var viewColumn = new InputRecordViewColumn();
+										var viewItem = new InputRecordViewFieldItem();
+										var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+										//General view fields
+
+										//Convert recordList to recordListInput
+										updateViewInput = updateView.DynamicMapTo<InputRecordView>();
+
+										#region << Details >>
+										updateViewInput.ServiceCode = null;
+										#endregion
+
+										#region << Get the header Region >>
+										var headerRegion = new InputRecordViewRegion();
+										foreach (var region in updateViewInput.Regions)
+										{
+											if (region.Name == "header")
+											{
+												headerRegion = region;
+											}
+										}
+										headerRegion.Sections = new List<InputRecordViewSection>();
+										#endregion
+
+										#region << Section >>
+										viewSection = new InputRecordViewSection();
+										viewSection.Id = Guid.NewGuid();
+										viewSection.Name = "details";
+										viewSection.Label = "Details";
+										viewSection.ShowLabel = false;
+										viewSection.CssClass = "";
+										viewSection.Collapsed = false;
+										viewSection.TabOrder = "left-right";
+										viewSection.Weight = 1;
+										viewSection.Rows = new List<InputRecordViewRow>();
+
+										#region << Row 1 >>
+										viewRow = new InputRecordViewRow();
+										viewRow.Id = Guid.NewGuid();
+										viewRow.Weight = 1;
+										viewRow.Columns = new List<InputRecordViewColumn>();
+
+										#region << Column 1 >>
+										viewColumn = new InputRecordViewColumn();
+										viewColumn.GridColCount = 6;
+										viewColumn.Items = new List<InputRecordViewItemBase>();
+
+
+										#region << hours >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "hours").Id;
+											viewItem.FieldName = "hours";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										//Save column
+										viewRow.Columns.Add(viewColumn);
+										#endregion
+
+										#region << Column 2 >>
+										viewColumn = new InputRecordViewColumn();
+										viewColumn.GridColCount = 6;
+										viewColumn.Items = new List<InputRecordViewItemBase>();
+
+
+										#region << subject >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "billable").Id;
+											viewItem.FieldName = "billable";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										//Save column
+										viewRow.Columns.Add(viewColumn);
+										#endregion
+
+										//Save row
+										viewSection.Rows.Add(viewRow);
+										#endregion
+
+										//Save section
+										headerRegion.Sections.Add(viewSection);
+
+										#endregion
+
+										#region << Sidebar >>
+										var sidebarItem = new InputRecordViewSidebarItemBase();
+										#endregion
+
+										#region << Remove Create & Details button>
+										var newActionList = new List<ActionItem>();
+										foreach (var action in updateView.ActionItems)
+										{
+											if (action.Name != "wv_create_and_details")
+											{
+												newActionList.Add(action);
+											}
+										}
+										updateView.ActionItems = newActionList;
+										#endregion
+
+										{
+											var response = entMan.UpdateRecordView(TIMELOG_ENTITY_ID, updateViewInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + TIMELOG_ENTITY_NAME + " Updated view: create" + " Message:" + response.Message);
 										}
 									}
 									#endregion
@@ -5854,7 +7809,7 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
-									#region << general >>
+									#region << general list -> bug_attachments >>
 									{
 										var updateListEntity = entMan.ReadEntity(ATTACHMENT_ENTITY_ID).Object;
 										var updateList = updateListEntity.RecordLists.Single(x => x.Name == "general");
@@ -5863,51 +7818,63 @@ namespace WebVella.ERP.Project
 										var listFieldFromRelation = new InputRecordListRelationFieldItem();
 										var listSort = new InputRecordListSort();
 										var listQuery = new InputRecordListQuery();
-					
+
 										//Convert recordList to recordListInput
 										updateListInput = updateList.DynamicMapTo<InputRecordList>();
-	
+
 										//General list details
+										updateListInput.Name = "bug_attachments";
 										updateListInput.Label = "Attachments";
-										updateListInput.IconName = "paperclip";	
-	
+										updateListInput.IconName = "paperclip";
+										updateListInput.Weight = 10;
+										updateListInput.Default = false;
+										updateListInput.System = true;
+										updateListInput.CssClass = null;
+										updateListInput.IconName = "paperclip";
+										updateListInput.VisibleColumnsCount = 5;
+										updateListInput.ColumnWidthsCSV = "160px,160px,auto";
+										updateListInput.PageSize = 10;
+										updateListInput.DynamicHtmlTemplate = null;
+										updateListInput.DataSourceUrl = null;
+										updateListInput.ServiceCode = null;
+
 										#region << created_on >>
 										{
-										listField = new InputRecordListFieldItem();
-										listField.EntityId = updateListEntity.Id;
-										listField.EntityName = updateListEntity.Name;
-										listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "created_on").Id;
-										listField.FieldName = "created_on";
-										listField.Type = "field";
-										updateListInput.Columns.Add(listField);
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = updateListEntity.Id;
+											listField.EntityName = updateListEntity.Name;
+											listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "created_on").Id;
+											listField.FieldName = "created_on";
+											listField.Type = "field";
+											updateListInput.Columns.Add(listField);
 										}
 										#endregion
-	
+
 										#region << created_by_username >>
 										{
-										var relatedEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
-										var relation = relMan.Read("user_wv_project_attachment_created_by").Object;
-										listFieldFromRelation = new InputRecordListRelationFieldItem();
-										listFieldFromRelation.EntityId = relatedEntity.Id;
-										listFieldFromRelation.EntityName = relatedEntity.Name;
-										listFieldFromRelation.FieldId = relatedEntity.Fields.Single(x => x.Name == "username").Id;
-										listFieldFromRelation.FieldName = "username";
-										listFieldFromRelation.Type = "field";
-										listFieldFromRelation.RelationId = relation.Id;
-										listFieldFromRelation.RelationName = relation.Name;
-										updateListInput.Columns.Add(listFieldFromRelation);
+											var relatedEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var relation = relMan.Read("user_wv_project_attachment_created_by").Object;
+											listFieldFromRelation = new InputRecordListRelationFieldItem();
+											listFieldFromRelation.EntityId = relatedEntity.Id;
+											listFieldFromRelation.EntityName = relatedEntity.Name;
+											listFieldFromRelation.FieldId = relatedEntity.Fields.Single(x => x.Name == "username").Id;
+											listFieldFromRelation.FieldName = "username";
+											listFieldFromRelation.Type = "field";
+											listFieldFromRelation.RelationId = relation.Id;
+											listFieldFromRelation.RelationName = relation.Name;
+											updateListInput.Columns.Add(listFieldFromRelation);
 										}
-										#endregion	
-	
+										#endregion
+
 										#region << file >>
 										{
-										listField = new InputRecordListFieldItem();
-										listField.EntityId = updateListEntity.Id;
-										listField.EntityName = updateListEntity.Name;
-										listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "file").Id;
-										listField.FieldName = "file";
-										listField.Type = "field";
-										updateListInput.Columns.Add(listField);
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = updateListEntity.Id;
+											listField.EntityName = updateListEntity.Name;
+											listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "file").Id;
+											listField.FieldName = "file";
+											listField.Type = "field";
+											updateListInput.Columns.Add(listField);
 										}
 										#endregion
 
@@ -5915,22 +7882,234 @@ namespace WebVella.ERP.Project
 										#region << query descr >>
 										{
 										}
-										#endregion	
-	
-	
+										#endregion
+
+										//Action items
+										var newActionItems = new List<ActionItem>();
+										foreach (var action in updateListInput.ActionItems)
+										{
+											if (action.Name == "wv_create_record")
+											{
+												newActionItems.Add(action);
+											}
+										}
+										updateListInput.ActionItems = newActionItems;
+
 										//Sort
 										#region << Sort >>
 										{
-										listSort = new InputRecordListSort();
-										listSort.FieldName = "created_on";
-										listSort.SortType = "ascending";
-										updateListInput.Sorts.Add(listSort);
+											listSort = new InputRecordListSort();
+											listSort.FieldName = "created_on";
+											listSort.SortType = "ascending";
+											updateListInput.Sorts.Add(listSort);
 										}
 										#endregion
 										{
 											var response = entMan.UpdateRecordList(ATTACHMENT_ENTITY_ID, updateListInput);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + ATTACHMENT_ENTITY_NAME + " Updated List: general" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << List name: task_attachments >>
+									{
+										var createListEntity = entMan.ReadEntity(ATTACHMENT_ENTITY_ID).Object;
+										var createListInput = new InputRecordList();
+										var listField = new InputRecordListFieldItem();
+										var listFieldFromRelation = new InputRecordListRelationFieldItem();
+										var listSort = new InputRecordListSort();
+										var listQuery = new InputRecordListQuery();
+
+										#region << details >>
+										createListInput.Id = new Guid("6fc374ac-ba6b-4009-ade4-988304071f29");
+										createListInput.Type = "hidden";
+										createListInput.Name = "task_attachments";
+										createListInput.Label = "Attachments";
+										createListInput.Weight = 10;
+										createListInput.Default = false;
+										createListInput.System = true;
+										createListInput.CssClass = null;
+										createListInput.IconName = "paperclip";
+										createListInput.VisibleColumnsCount = 5;
+										createListInput.ColumnWidthsCSV = "160px,160px,auto";
+										createListInput.PageSize = 10;
+										createListInput.DynamicHtmlTemplate = null;
+										createListInput.DataSourceUrl = null;
+										createListInput.ServiceCode = null;
+										#endregion
+
+										#region << action items >>
+										createListInput.ActionItems = new List<ActionItem>();
+										var actionItem = new ActionItem();
+										{
+											actionItem = new ActionItem();
+											actionItem.Name = "wv_create_record";
+											actionItem.Menu = "page-title";
+											actionItem.Weight = 1;
+											actionItem.Template = "" +
+									@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+										ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
+											createListInput.ActionItems.Add(actionItem);
+										}
+
+										#endregion
+
+										#region << Columns >>
+										createListInput.Columns = new List<InputRecordListItemBase>();
+
+										#region << created_on >>
+										{
+											var fieldName = "created_on";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										//Field from relation
+										#region << user_wv_project_attachment_created_by > username  >>
+										{
+											var relatedEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var relation = relMan.Read("user_wv_project_attachment_created_by").Object;
+											listFieldFromRelation = new InputRecordListRelationFieldItem();
+											listFieldFromRelation.EntityId = relatedEntity.Id;
+											listFieldFromRelation.EntityName = relatedEntity.Name;
+											listFieldFromRelation.FieldId = relatedEntity.Fields.Single(x => x.Name == "username").Id;
+											listFieldFromRelation.FieldName = "username";
+											listFieldFromRelation.Type = "field";
+											listFieldFromRelation.RelationId = relation.Id;
+											listFieldFromRelation.RelationName = relation.Name;
+											createListInput.Columns.Add(listFieldFromRelation);
+										}
+										#endregion
+
+										#region << file >>
+										{
+											var fieldName = "file";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#endregion
+
+										#region << relation options >>
+										createListInput.RelationOptions = new List<EntityRelationOptionsItem>();
+										#endregion
+
+										#region << Sort >>
+										createListInput.Sorts = new List<InputRecordListSort>();
+										listSort = new InputRecordListSort();
+										listSort.FieldName = "created_on";
+										listSort.SortType = "ascending";
+										createListInput.Sorts.Add(listSort);
+										#endregion
+										{
+											var response = entMan.CreateRecordList(ATTACHMENT_ENTITY_ID, createListInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + ATTACHMENT_ENTITY_NAME + " Updated List: task_attachment" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << update create >>
+									{
+										var updateViewEntity = entMan.ReadEntity(ATTACHMENT_ENTITY_ID).Object;
+										var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "create");
+										var updateViewInput = new InputRecordView();
+										var viewSection = new InputRecordViewSection();
+										var viewRow = new InputRecordViewRow();
+										var viewColumn = new InputRecordViewColumn();
+										var viewItem = new InputRecordViewFieldItem();
+										var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+										//General view fields
+
+										//Convert recordList to recordListInput
+										updateViewInput = updateView.DynamicMapTo<InputRecordView>();
+
+										#region << Details >>
+										updateViewInput.ServiceCode = null;
+										#endregion
+
+										#region << Get the header Region >>
+										var headerRegion = new InputRecordViewRegion();
+										foreach (var region in updateViewInput.Regions)
+										{
+											if (region.Name == "header")
+											{
+												headerRegion = region;
+											}
+										}
+										headerRegion.Sections = new List<InputRecordViewSection>();
+										#endregion
+
+										#region << Section >>
+										viewSection = new InputRecordViewSection();
+										viewSection.Id = Guid.NewGuid();
+										viewSection.Name = "details";
+										viewSection.Label = "Details";
+										viewSection.ShowLabel = false;
+										viewSection.CssClass = "";
+										viewSection.Collapsed = false;
+										viewSection.TabOrder = "left-right";
+										viewSection.Weight = 1;
+										viewSection.Rows = new List<InputRecordViewRow>();
+
+										#region << Row 1 >>
+										viewRow = new InputRecordViewRow();
+										viewRow.Id = Guid.NewGuid();
+										viewRow.Weight = 1;
+										viewRow.Columns = new List<InputRecordViewColumn>();
+
+										#region << Column 1 >>
+										viewColumn = new InputRecordViewColumn();
+										viewColumn.GridColCount = 12;
+										viewColumn.Items = new List<InputRecordViewItemBase>();
+
+
+										#region << subject >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "file").Id;
+											viewItem.FieldName = "file";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										//Save column
+										viewRow.Columns.Add(viewColumn);
+										#endregion
+
+										//Save row
+										viewSection.Rows.Add(viewRow);
+										#endregion
+
+										//Save section
+										headerRegion.Sections.Add(viewSection);
+
+										#endregion
+
+										#region << Sidebar >>
+										var sidebarItem = new InputRecordViewSidebarItemBase();
+										#endregion`								
+
+										{
+											var response = entMan.UpdateRecordView(ATTACHMENT_ENTITY_ID, updateViewInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + ATTACHMENT_ENTITY_NAME + " Updated view: create" + " Message:" + response.Message);
 										}
 									}
 									#endregion
@@ -5991,7 +8170,10 @@ namespace WebVella.ERP.Project
 								{
 									new SelectFieldOption(){ Key = "added", Value = "added" },
 									new SelectFieldOption(){ Key = "created", Value = "created" },
-									new SelectFieldOption(){ Key = "updated", Value = "updated" }
+									new SelectFieldOption(){ Key = "updated", Value = "updated" },
+									new SelectFieldOption(){ Key = "deleted", Value = "deleted" },
+									new SelectFieldOption(){ Key = "timelog", Value = "timelog" },
+									new SelectFieldOption(){ Key = "commented", Value = "commented" }
 								};
 										dropdownField.EnableSecurity = true;
 										dropdownField.Permissions = new FieldPermissions();
@@ -6041,6 +8223,38 @@ namespace WebVella.ERP.Project
 											var response = entMan.CreateField(ACTIVITY_ENTITY_ID, textboxField, false);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + ACTIVITY_ENTITY_NAME + " Field: subject" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << description >>
+									{
+										InputMultiLineTextField textareaField = new InputMultiLineTextField();
+										textareaField.Id = new Guid("6f29022e-c323-42fa-a4cb-76518787ba07");
+										textareaField.Name = "description";
+										textareaField.Label = "Description";
+										textareaField.PlaceholderText = "";
+										textareaField.Description = "";
+										textareaField.HelpText = "";
+										textareaField.Required = false;
+										textareaField.Unique = false;
+										textareaField.Searchable = false;
+										textareaField.Auditable = false;
+										textareaField.System = true;
+										textareaField.DefaultValue = string.Empty;
+										textareaField.VisibleLineNumber = 4;
+										textareaField.EnableSecurity = true;
+										textareaField.Permissions = new FieldPermissions();
+										textareaField.Permissions.CanRead = new List<Guid>();
+										textareaField.Permissions.CanUpdate = new List<Guid>();
+
+										textareaField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+										textareaField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+
+										{
+											var response = entMan.CreateField(ACTIVITY_ENTITY_ID, textareaField, false);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + ACTIVITY_ENTITY_NAME + " Field: description" + " Message:" + response.Message);
 										}
 									}
 									#endregion
@@ -6209,6 +8423,286 @@ namespace WebVella.ERP.Project
 											var result = relMan.Create(oneToNRelation);
 											if (!result.Success)
 												throw new Exception("CREATE bug_1_n_activity RELATION:" + result.Message);
+										}
+									}
+									#endregion
+
+									#region << List name: task_activities >>
+									{
+										var createListEntity = entMan.ReadEntity(ACTIVITY_ENTITY_ID).Object;
+										var createListInput = new InputRecordList();
+										var listField = new InputRecordListFieldItem();
+										var listFieldFromRelation = new InputRecordListRelationFieldItem();
+										var listSort = new InputRecordListSort();
+										var listQuery = new InputRecordListQuery();
+
+										#region << details >>
+										createListInput.Id = new Guid("121ce540-7838-4459-8357-d0d0ad2b65a4");
+										createListInput.Type = "hidden";
+										createListInput.Name = "task_activities";
+										createListInput.Label = "Activities";
+										createListInput.Weight = 30;
+										createListInput.Default = false;
+										createListInput.System = true;
+										createListInput.CssClass = null;
+										createListInput.IconName = "history";
+										createListInput.VisibleColumnsCount = 5;
+										createListInput.ColumnWidthsCSV = null;
+										createListInput.PageSize = 10;
+										createListInput.DynamicHtmlTemplate = null;
+										createListInput.DataSourceUrl = null;
+										createListInput.ServiceCode = null;
+										#endregion
+
+										#region << action items >>
+										createListInput.ActionItems = new List<ActionItem>();
+
+										#endregion
+
+										#region << Columns >>
+										createListInput.Columns = new List<InputRecordListItemBase>();
+
+										#region << created_on >>
+										{
+											var fieldName = "created_on";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << user_wv_project_activity_created_by > username  >>
+										{
+											var relatedEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var relation = relMan.Read("user_wv_project_activity_created_by").Object;
+											listFieldFromRelation = new InputRecordListRelationFieldItem();
+											listFieldFromRelation.EntityId = relatedEntity.Id;
+											listFieldFromRelation.EntityName = relatedEntity.Name;
+											listFieldFromRelation.FieldId = relatedEntity.Fields.Single(x => x.Name == "username").Id;
+											listFieldFromRelation.FieldName = "username";
+											listFieldFromRelation.Type = "field";
+											listFieldFromRelation.RelationId = relation.Id;
+											listFieldFromRelation.RelationName = relation.Name;
+											createListInput.Columns.Add(listFieldFromRelation);
+										}
+										#endregion
+
+										#region << subject >>
+										{
+											var fieldName = "subject";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << label >>
+										{
+											var fieldName = "label";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << user_wv_project_activity_created_by > image  >>
+										{
+											var relatedEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var relation = relMan.Read("user_wv_project_activity_created_by").Object;
+											listFieldFromRelation = new InputRecordListRelationFieldItem();
+											listFieldFromRelation.EntityId = relatedEntity.Id;
+											listFieldFromRelation.EntityName = relatedEntity.Name;
+											listFieldFromRelation.FieldId = relatedEntity.Fields.Single(x => x.Name == "image").Id;
+											listFieldFromRelation.FieldName = "image";
+											listFieldFromRelation.Type = "field";
+											listFieldFromRelation.RelationId = relation.Id;
+											listFieldFromRelation.RelationName = relation.Name;
+											createListInput.Columns.Add(listFieldFromRelation);
+										}
+										#endregion
+
+										#region << created_by >>
+										{
+											var fieldName = "created_by";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#endregion
+
+										#region << relation options >>
+										createListInput.RelationOptions = new List<EntityRelationOptionsItem>();
+										#endregion
+
+										#region << Sort >>
+										createListInput.Sorts = new List<InputRecordListSort>();
+										listSort = new InputRecordListSort();
+										listSort.FieldName = "created_on";
+										listSort.SortType = "ascending";
+										createListInput.Sorts.Add(listSort);
+										#endregion
+										{
+											var response = entMan.CreateRecordList(ACTIVITY_ENTITY_ID, createListInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + ACTIVITY_ENTITY_NAME + " Updated List: task_activities" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << List name: bug_activities >>
+									{
+										var createListEntity = entMan.ReadEntity(ACTIVITY_ENTITY_ID).Object;
+										var createListInput = new InputRecordList();
+										var listField = new InputRecordListFieldItem();
+										var listFieldFromRelation = new InputRecordListRelationFieldItem();
+										var listSort = new InputRecordListSort();
+										var listQuery = new InputRecordListQuery();
+
+										#region << details >>
+										createListInput.Id = new Guid("57c3062c-df6e-488a-a432-dd927b0dd013");
+										createListInput.Type = "hidden";
+										createListInput.Name = "bug_activities";
+										createListInput.Label = "Activities";
+										createListInput.Weight = 30;
+										createListInput.Default = false;
+										createListInput.System = true;
+										createListInput.CssClass = null;
+										createListInput.IconName = "history";
+										createListInput.VisibleColumnsCount = 5;
+										createListInput.ColumnWidthsCSV = null;
+										createListInput.PageSize = 10;
+										createListInput.DynamicHtmlTemplate = null;
+										createListInput.DataSourceUrl = null;
+										createListInput.ServiceCode = null;
+										#endregion
+
+										#region << action items >>
+										createListInput.ActionItems = new List<ActionItem>();
+
+										#endregion
+
+										#region << Columns >>
+										createListInput.Columns = new List<InputRecordListItemBase>();
+
+										#region << created_on >>
+										{
+											var fieldName = "created_on";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << user_wv_project_activity_created_by > username  >>
+										{
+											var relatedEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var relation = relMan.Read("user_wv_project_activity_created_by").Object;
+											listFieldFromRelation = new InputRecordListRelationFieldItem();
+											listFieldFromRelation.EntityId = relatedEntity.Id;
+											listFieldFromRelation.EntityName = relatedEntity.Name;
+											listFieldFromRelation.FieldId = relatedEntity.Fields.Single(x => x.Name == "username").Id;
+											listFieldFromRelation.FieldName = "username";
+											listFieldFromRelation.Type = "field";
+											listFieldFromRelation.RelationId = relation.Id;
+											listFieldFromRelation.RelationName = relation.Name;
+											createListInput.Columns.Add(listFieldFromRelation);
+										}
+										#endregion
+
+										#region << subject >>
+										{
+											var fieldName = "subject";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << label >>
+										{
+											var fieldName = "label";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << user_wv_project_activity_created_by > image  >>
+										{
+											var relatedEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var relation = relMan.Read("user_wv_project_activity_created_by").Object;
+											listFieldFromRelation = new InputRecordListRelationFieldItem();
+											listFieldFromRelation.EntityId = relatedEntity.Id;
+											listFieldFromRelation.EntityName = relatedEntity.Name;
+											listFieldFromRelation.FieldId = relatedEntity.Fields.Single(x => x.Name == "image").Id;
+											listFieldFromRelation.FieldName = "image";
+											listFieldFromRelation.Type = "field";
+											listFieldFromRelation.RelationId = relation.Id;
+											listFieldFromRelation.RelationName = relation.Name;
+											createListInput.Columns.Add(listFieldFromRelation);
+										}
+										#endregion
+
+										#region << created_by >>
+										{
+											var fieldName = "created_by";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#endregion
+
+										#region << relation options >>
+										createListInput.RelationOptions = new List<EntityRelationOptionsItem>();
+										#endregion
+
+										#region << Sort >>
+										createListInput.Sorts = new List<InputRecordListSort>();
+										listSort = new InputRecordListSort();
+										listSort.FieldName = "created_on";
+										listSort.SortType = "ascending";
+										createListInput.Sorts.Add(listSort);
+										#endregion
+										{
+											var response = entMan.CreateRecordList(ACTIVITY_ENTITY_ID, createListInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + ACTIVITY_ENTITY_NAME + " Updated List: task_activities" + " Message:" + response.Message);
 										}
 									}
 									#endregion
@@ -6394,6 +8888,281 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
+									#region << List name: task_comments >>
+									{
+										var createListEntity = entMan.ReadEntity(COMMENT_ENTITY_ID).Object;
+										var createListInput = new InputRecordList();
+										var listField = new InputRecordListFieldItem();
+										var listFieldFromRelation = new InputRecordListRelationFieldItem();
+										var listSort = new InputRecordListSort();
+										var listQuery = new InputRecordListQuery();
+
+										#region << details >>
+										createListInput.Id = new Guid("b8a7a81d-9176-47e6-90c5-3cabc2a4ceff");
+										createListInput.Type = "hidden";
+										createListInput.Name = "task_comments";
+										createListInput.Label = "Comments";
+										createListInput.Weight = 10;
+										createListInput.Default = false;
+										createListInput.System = true;
+										createListInput.CssClass = null;
+										createListInput.IconName = "comments-o";
+										createListInput.VisibleColumnsCount = 5;
+										createListInput.ColumnWidthsCSV = null;
+										createListInput.PageSize = 10;
+										createListInput.DynamicHtmlTemplate = @"\plugins\webvella-projects\templates\task-comments.html";
+										createListInput.DataSourceUrl = null;
+										createListInput.ServiceCode = @"/plugins/webvella-projects/providers/task-comments.service.js";
+										#endregion
+
+										#region << action items >>
+										createListInput.ActionItems = new List<ActionItem>();
+										var actionItem = new ActionItem();
+										{
+											actionItem = new ActionItem();
+											actionItem.Name = "wv_create_record";
+											actionItem.Menu = "page-title";
+											actionItem.Weight = 1;
+											actionItem.Template = "" +
+										@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+											ng-click=""ngCtrl.actionService.manageComment(null,ngCtrl)"">Add Comment</a>";
+											createListInput.ActionItems.Add(actionItem);
+										}
+
+										#endregion
+
+										#region << Columns >>
+										createListInput.Columns = new List<InputRecordListItemBase>();
+
+										#region << created_on >>
+										{
+											var fieldName = "created_on";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << user_wv_project_comment_created_by > username  >>
+										{
+											var relatedEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var relation = relMan.Read("user_wv_project_comment_created_by").Object;
+											listFieldFromRelation = new InputRecordListRelationFieldItem();
+											listFieldFromRelation.EntityId = relatedEntity.Id;
+											listFieldFromRelation.EntityName = relatedEntity.Name;
+											listFieldFromRelation.FieldId = relatedEntity.Fields.Single(x => x.Name == "username").Id;
+											listFieldFromRelation.FieldName = "username";
+											listFieldFromRelation.Type = "field";
+											listFieldFromRelation.RelationId = relation.Id;
+											listFieldFromRelation.RelationName = relation.Name;
+											createListInput.Columns.Add(listFieldFromRelation);
+										}
+										#endregion
+
+										#region << file >>
+										{
+											var fieldName = "content";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << user_wv_project_comment_created_by > image  >>
+										{
+											var relatedEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var relation = relMan.Read("user_wv_project_comment_created_by").Object;
+											listFieldFromRelation = new InputRecordListRelationFieldItem();
+											listFieldFromRelation.EntityId = relatedEntity.Id;
+											listFieldFromRelation.EntityName = relatedEntity.Name;
+											listFieldFromRelation.FieldId = relatedEntity.Fields.Single(x => x.Name == "image").Id;
+											listFieldFromRelation.FieldName = "image";
+											listFieldFromRelation.Type = "field";
+											listFieldFromRelation.RelationId = relation.Id;
+											listFieldFromRelation.RelationName = relation.Name;
+											createListInput.Columns.Add(listFieldFromRelation);
+										}
+										#endregion
+
+										#region << created_by >>
+										{
+											var fieldName = "created_by";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#endregion
+
+										#region << relation options >>
+										createListInput.RelationOptions = new List<EntityRelationOptionsItem>();
+										#endregion
+
+										#region << Sort >>
+										createListInput.Sorts = new List<InputRecordListSort>();
+										listSort = new InputRecordListSort();
+										listSort.FieldName = "created_on";
+										listSort.SortType = "ascending";
+										createListInput.Sorts.Add(listSort);
+										#endregion
+										{
+											var response = entMan.CreateRecordList(COMMENT_ENTITY_ID, createListInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + COMMENT_ENTITY_NAME + " Updated List: task_comments" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << List name: bug_comments >>
+									{
+										var createListEntity = entMan.ReadEntity(COMMENT_ENTITY_ID).Object;
+										var createListInput = new InputRecordList();
+										var listField = new InputRecordListFieldItem();
+										var listFieldFromRelation = new InputRecordListRelationFieldItem();
+										var listSort = new InputRecordListSort();
+										var listQuery = new InputRecordListQuery();
+
+										#region << details >>
+										createListInput.Id = new Guid("b143b82f-b79f-47c1-87e7-ecba6f6f2a32");
+										createListInput.Type = "hidden";
+										createListInput.Name = "bug_comments";
+										createListInput.Label = "Comments";
+										createListInput.Weight = 10;
+										createListInput.Default = false;
+										createListInput.System = true;
+										createListInput.CssClass = null;
+										createListInput.IconName = "comments-o";
+										createListInput.VisibleColumnsCount = 5;
+										createListInput.ColumnWidthsCSV = null;
+										createListInput.PageSize = 10;
+										createListInput.DynamicHtmlTemplate = @"\plugins\webvella-projects\templates\bug-comments.html";
+										createListInput.DataSourceUrl = null;
+										createListInput.ServiceCode = @"/plugins/webvella-projects/providers/bug-comments.service.js";
+										#endregion
+
+										#region << action items >>
+										createListInput.ActionItems = new List<ActionItem>();
+										var actionItem = new ActionItem();
+										{
+											actionItem = new ActionItem();
+											actionItem.Name = "wv_create_record";
+											actionItem.Menu = "page-title";
+											actionItem.Weight = 1;
+											actionItem.Template = "" +
+										@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+											ng-click=""ngCtrl.actionService.manageComment(null,ngCtrl)"">Add Comment</a>";
+											createListInput.ActionItems.Add(actionItem);
+										}
+
+										#endregion
+
+										#region << Columns >>
+										createListInput.Columns = new List<InputRecordListItemBase>();
+
+										#region << created_on >>
+										{
+											var fieldName = "created_on";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << user_wv_project_comment_created_by > username  >>
+										{
+											var relatedEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var relation = relMan.Read("user_wv_project_comment_created_by").Object;
+											listFieldFromRelation = new InputRecordListRelationFieldItem();
+											listFieldFromRelation.EntityId = relatedEntity.Id;
+											listFieldFromRelation.EntityName = relatedEntity.Name;
+											listFieldFromRelation.FieldId = relatedEntity.Fields.Single(x => x.Name == "username").Id;
+											listFieldFromRelation.FieldName = "username";
+											listFieldFromRelation.Type = "field";
+											listFieldFromRelation.RelationId = relation.Id;
+											listFieldFromRelation.RelationName = relation.Name;
+											createListInput.Columns.Add(listFieldFromRelation);
+										}
+										#endregion
+
+										#region << file >>
+										{
+											var fieldName = "content";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#region << user_wv_project_comment_created_by > image  >>
+										{
+											var relatedEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var relation = relMan.Read("user_wv_project_comment_created_by").Object;
+											listFieldFromRelation = new InputRecordListRelationFieldItem();
+											listFieldFromRelation.EntityId = relatedEntity.Id;
+											listFieldFromRelation.EntityName = relatedEntity.Name;
+											listFieldFromRelation.FieldId = relatedEntity.Fields.Single(x => x.Name == "image").Id;
+											listFieldFromRelation.FieldName = "image";
+											listFieldFromRelation.Type = "field";
+											listFieldFromRelation.RelationId = relation.Id;
+											listFieldFromRelation.RelationName = relation.Name;
+											createListInput.Columns.Add(listFieldFromRelation);
+										}
+										#endregion
+
+										#region << created_by >>
+										{
+											var fieldName = "created_by";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
+
+										#endregion
+
+										#region << relation options >>
+										createListInput.RelationOptions = new List<EntityRelationOptionsItem>();
+										#endregion
+
+										#region << Sort >>
+										createListInput.Sorts = new List<InputRecordListSort>();
+										listSort = new InputRecordListSort();
+										listSort.FieldName = "created_on";
+										listSort.SortType = "ascending";
+										createListInput.Sorts.Add(listSort);
+										#endregion
+										{
+											var response = entMan.CreateRecordList(COMMENT_ENTITY_ID, createListInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + COMMENT_ENTITY_NAME + " Updated List: task_comments" + " Message:" + response.Message);
+										}
+									}
+									#endregion
 
 								}
 								#endregion
@@ -6415,7 +9184,7 @@ namespace WebVella.ERP.Project
 
 									#region << Details >>
 									updateViewInput.Type = "hidden";
-									updateViewInput.Label = "Details";
+									updateViewInput.Label = "{name}";
 									#endregion
 
 									#region << Get the header Region >>
@@ -6605,6 +9374,18 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
+									#region << code >>
+									{
+										viewItem = new InputRecordViewFieldItem();
+										viewItem.EntityId = PROJECT_ENTITY_ID;
+										viewItem.EntityName = PROJECT_ENTITY_NAME;
+										viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "code").Id;
+										viewItem.FieldName = "code";
+										viewItem.Type = "field";
+										viewColumn.Items.Add(viewItem);
+									}
+									#endregion
+
 									//Save column
 									viewRow.Columns.Add(viewColumn);
 									#endregion
@@ -6664,7 +9445,7 @@ namespace WebVella.ERP.Project
 									#region << Tasks >>
 									{
 										var targetEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
-										var targetGeneralList = targetEntity.RecordLists.Single(x => x.Name == "general");
+										var targetGeneralList = targetEntity.RecordLists.Single(x => x.Name == "project_tasks");
 										var targetRelation = relMan.Read(new Guid("1f860b8c-7fa1-40fa-874f-19c2b5309817")).Object;
 										sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
 										sidebarListFromRelationItem.EntityId = targetEntity.Id;
@@ -6687,7 +9468,7 @@ namespace WebVella.ERP.Project
 									#region << Milestone list >>
 									{
 										var milestoneEntity = entMan.ReadEntity(MILESTONE_ENTITY_ID).Object;
-										var milestoneGeneralList = milestoneEntity.RecordLists.Single(x => x.Name == "general");
+										var milestoneGeneralList = milestoneEntity.RecordLists.Single(x => x.Name == "project_milestones");
 										var projectMilestoneRelation = relMan.Read(new Guid("0c446f98-eec2-40c1-9d66-8a3c2a2498e9")).Object;
 										sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
 										sidebarListFromRelationItem.EntityId = MILESTONE_ENTITY_ID;
@@ -6710,7 +9491,7 @@ namespace WebVella.ERP.Project
 									#region << Bugs >>
 									{
 										var targetEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
-										var targetGeneralList = targetEntity.RecordLists.Single(x => x.Name == "general");
+										var targetGeneralList = targetEntity.RecordLists.Single(x => x.Name == "project_bugs");
 										var targetRelation = relMan.Read(new Guid("d94f100c-024c-47e7-af32-d67a49be2b6c")).Object;
 										sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
 										sidebarListFromRelationItem.EntityId = targetEntity.Id;
@@ -6770,6 +9551,442 @@ namespace WebVella.ERP.Project
 									if (!updateAreaResult.Success)
 									{
 										throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
+									}
+								}
+								#endregion
+
+								#region << update task general view >>
+								{
+									var updateViewEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+									var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "general");
+									var updateViewInput = new InputRecordView();
+									var viewSection = new InputRecordViewSection();
+									var viewRow = new InputRecordViewRow();
+									var viewColumn = new InputRecordViewColumn();
+									var viewItem = new InputRecordViewFieldItem();
+									var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+									//General view fields
+
+									//Convert recordList to recordListInput
+									updateViewInput = updateView.DynamicMapTo<InputRecordView>();
+
+									#region << Get the header Region >>
+									var headerRegion = new InputRecordViewRegion();
+									foreach (var region in updateViewInput.Regions)
+									{
+										if (region.Name == "header")
+										{
+											headerRegion = region;
+										}
+									}
+									#endregion
+
+									#region << Sidebar >>
+									var sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
+									var sidebarViewItem = new InputRecordViewSidebarViewItem();
+
+									#region << Attachments >>
+									{
+										var targetEntity = entMan.ReadEntity(ATTACHMENT_ENTITY_ID).Object;
+										var targetGeneralList = targetEntity.RecordLists.Single(x => x.Name == "task_attachments");
+										var targetRelation = relMan.Read(new Guid("f79f76e2-06b1-463a-9675-63845814bf22")).Object;
+										sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
+										sidebarListFromRelationItem.EntityId = targetEntity.Id;
+										sidebarListFromRelationItem.EntityName = targetEntity.Name;
+										sidebarListFromRelationItem.FieldHelpText = "";
+										sidebarListFromRelationItem.FieldLabel = "Attachments";
+										sidebarListFromRelationItem.FieldLookupList = "lookup";
+										sidebarListFromRelationItem.FieldManageView = "general";
+										sidebarListFromRelationItem.FieldPlaceholder = "";
+										sidebarListFromRelationItem.FieldRequired = false;
+										sidebarListFromRelationItem.ListId = targetGeneralList.Id;
+										sidebarListFromRelationItem.ListName = targetGeneralList.Name;
+										sidebarListFromRelationItem.RelationId = targetRelation.Id;
+										sidebarListFromRelationItem.RelationName = targetRelation.Name;
+										sidebarListFromRelationItem.Type = "listFromRelation";
+										updateViewInput.Sidebar.Items.Add(sidebarListFromRelationItem);
+									}
+									#endregion
+
+									#region << Comments >>
+									{
+										var targetEntity = entMan.ReadEntity(COMMENT_ENTITY_ID).Object;
+										var targetGeneralList = targetEntity.RecordLists.Single(x => x.Name == "task_comments");
+										var targetRelation = relMan.Read(new Guid("884b9480-dc1c-468a-98f0-2d5f10084622")).Object;
+										sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
+										sidebarListFromRelationItem.EntityId = targetEntity.Id;
+										sidebarListFromRelationItem.EntityName = targetEntity.Name;
+										sidebarListFromRelationItem.FieldHelpText = "";
+										sidebarListFromRelationItem.FieldLabel = "Comments";
+										sidebarListFromRelationItem.FieldLookupList = "lookup";
+										sidebarListFromRelationItem.FieldManageView = "general";
+										sidebarListFromRelationItem.FieldPlaceholder = "";
+										sidebarListFromRelationItem.FieldRequired = false;
+										sidebarListFromRelationItem.ListId = targetGeneralList.Id;
+										sidebarListFromRelationItem.ListName = targetGeneralList.Name;
+										sidebarListFromRelationItem.RelationId = targetRelation.Id;
+										sidebarListFromRelationItem.RelationName = targetRelation.Name;
+										sidebarListFromRelationItem.Type = "listFromRelation";
+										updateViewInput.Sidebar.Items.Add(sidebarListFromRelationItem);
+									}
+									#endregion
+
+									#region << Time logs >>
+									{
+										var targetEntity = entMan.ReadEntity(TIMELOG_ENTITY_ID).Object;
+										var targetGeneralList = targetEntity.RecordLists.Single(x => x.Name == "task_timelogs");
+										var targetRelation = relMan.Read(new Guid("61f1cd54-bcd6-4061-9c96-7934e01f0857")).Object;
+										sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
+										sidebarListFromRelationItem.EntityId = targetEntity.Id;
+										sidebarListFromRelationItem.EntityName = targetEntity.Name;
+										sidebarListFromRelationItem.FieldHelpText = "";
+										sidebarListFromRelationItem.FieldLabel = "Time logs";
+										sidebarListFromRelationItem.FieldLookupList = "lookup";
+										sidebarListFromRelationItem.FieldManageView = "general";
+										sidebarListFromRelationItem.FieldPlaceholder = "";
+										sidebarListFromRelationItem.FieldRequired = false;
+										sidebarListFromRelationItem.ListId = targetGeneralList.Id;
+										sidebarListFromRelationItem.ListName = targetGeneralList.Name;
+										sidebarListFromRelationItem.RelationId = targetRelation.Id;
+										sidebarListFromRelationItem.RelationName = targetRelation.Name;
+										sidebarListFromRelationItem.Type = "listFromRelation";
+										updateViewInput.Sidebar.Items.Add(sidebarListFromRelationItem);
+									}
+									#endregion
+
+									#region << Activities >>
+									{
+										var targetEntity = entMan.ReadEntity(ACTIVITY_ENTITY_ID).Object;
+										var targetGeneralList = targetEntity.RecordLists.Single(x => x.Name == "task_activities");
+										var targetRelation = relMan.Read(new Guid("8f294277-fd60-496e-bff7-9391fffcda41")).Object;
+										sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
+										sidebarListFromRelationItem.EntityId = targetEntity.Id;
+										sidebarListFromRelationItem.EntityName = targetEntity.Name;
+										sidebarListFromRelationItem.FieldHelpText = "";
+										sidebarListFromRelationItem.FieldLabel = "Activities";
+										sidebarListFromRelationItem.FieldLookupList = "lookup";
+										sidebarListFromRelationItem.FieldManageView = "general";
+										sidebarListFromRelationItem.FieldPlaceholder = "";
+										sidebarListFromRelationItem.FieldRequired = false;
+										sidebarListFromRelationItem.ListId = targetGeneralList.Id;
+										sidebarListFromRelationItem.ListName = targetGeneralList.Name;
+										sidebarListFromRelationItem.RelationId = targetRelation.Id;
+										sidebarListFromRelationItem.RelationName = targetRelation.Name;
+										sidebarListFromRelationItem.Type = "listFromRelation";
+										updateViewInput.Sidebar.Items.Add(sidebarListFromRelationItem);
+									}
+									#endregion
+
+									#endregion
+									{
+										var response = entMan.UpdateRecordView(TASK_ENTITY_ID, updateViewInput);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Updated view: general" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
+								#region << update bug general view >>
+								{
+									var updateViewEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
+									var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "general");
+									var updateViewInput = new InputRecordView();
+									var viewSection = new InputRecordViewSection();
+									var viewRow = new InputRecordViewRow();
+									var viewColumn = new InputRecordViewColumn();
+									var viewItem = new InputRecordViewFieldItem();
+									var viewItemView = new InputRecordViewViewItem();
+									var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+									//General view fields
+
+									//Convert recordList to recordListInput
+									updateViewInput = updateView.DynamicMapTo<InputRecordView>();
+
+										#region << Details >>
+										updateViewInput.Label = "[{code}] {subject}";
+										updateViewInput.IconName = "bug";
+										updateViewInput.ServiceCode = "";
+										#endregion
+
+										#region << Get the header Region >>
+										var headerRegion = new InputRecordViewRegion();
+										foreach (var region in updateViewInput.Regions)
+										{
+											if (region.Name == "header")
+											{
+												headerRegion = region;
+											}
+										}
+										headerRegion.Sections = new List<InputRecordViewSection>();
+										#endregion
+
+										#region << Section >>
+										viewSection = new InputRecordViewSection();
+										viewSection.Id = Guid.NewGuid();
+										viewSection.Name = "details";
+										viewSection.Label = "Details";
+										viewSection.ShowLabel = false;
+										viewSection.CssClass = "";
+										viewSection.Collapsed = false;
+										viewSection.TabOrder = "left-right";
+										viewSection.Weight = 1;
+										viewSection.Rows = new List<InputRecordViewRow>();
+
+										#region << Row 1 >>
+										viewRow = new InputRecordViewRow();
+										viewRow.Id = Guid.NewGuid();
+										viewRow.Weight = 1;
+										viewRow.Columns = new List<InputRecordViewColumn>();
+
+										#region << Column 1 >>
+										viewColumn = new InputRecordViewColumn();
+										viewColumn.GridColCount = 8;
+										viewColumn.Items = new List<InputRecordViewItemBase>();
+
+
+										#region << subject >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "subject").Id;
+											viewItem.FieldName = "subject";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										#region << project name from Relation >>
+										{
+										var targetEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+										var targetRelation = relMan.Read("project_1_n_bug").Object;
+										viewItemFromRelation = new InputRecordViewRelationFieldItem();
+										viewItemFromRelation.EntityId = targetEntity.Id;
+										viewItemFromRelation.EntityName = targetEntity.Name;
+										viewItemFromRelation.Type = "fieldFromRelation";
+										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "name").Id;
+										viewItemFromRelation.FieldName = "name";
+										viewItemFromRelation.FieldLabel = "Project";
+										viewItemFromRelation.FieldPlaceholder = "";
+										viewItemFromRelation.FieldRequired = true;
+										viewItemFromRelation.FieldLookupList = "lookup";		
+										viewItemFromRelation.RelationId = targetRelation.Id;
+										viewItemFromRelation.RelationName = targetRelation.Name;
+										viewColumn.Items.Add(viewItemFromRelation);	
+										}
+										#endregion
+
+										#region << description >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "description").Id;
+											viewItem.FieldName = "description";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										//Save column
+										viewRow.Columns.Add(viewColumn);
+										#endregion
+
+										#region << Column 2 >>
+										viewColumn = new InputRecordViewColumn();
+										viewColumn.GridColCount = 4;
+										viewColumn.Items = new List<InputRecordViewItemBase>();
+
+										#region << code >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "code").Id;
+											viewItem.FieldName = "code";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										#region << status >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "status").Id;
+											viewItem.FieldName = "status";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										#region << priority >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "priority").Id;
+											viewItem.FieldName = "priority";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										#region << owner >>
+										{
+											var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var targetRelation = relMan.Read("user_1_n_bug_owner").Object;
+											viewItemFromRelation = new InputRecordViewRelationFieldItem();
+											viewItemFromRelation.EntityId = targetEntity.Id;
+											viewItemFromRelation.EntityName = targetEntity.Name;
+											viewItemFromRelation.Type = "fieldFromRelation";
+											viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
+											viewItemFromRelation.FieldName = "username";
+											viewItemFromRelation.FieldLabel = "Owner";
+											viewItemFromRelation.FieldPlaceholder = "";
+											viewItemFromRelation.FieldRequired = true;
+											viewItemFromRelation.FieldLookupList = "lookup";
+											viewItemFromRelation.RelationId = targetRelation.Id;
+											viewItemFromRelation.RelationName = targetRelation.Name;
+											viewColumn.Items.Add(viewItemFromRelation);
+										}
+										#endregion
+
+
+										#region << watchers >>
+										{
+											var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+											var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
+											viewItemFromRelation = new InputRecordViewRelationFieldItem();
+											viewItemFromRelation.EntityId = targetEntity.Id;
+											viewItemFromRelation.EntityName = targetEntity.Name;
+											viewItemFromRelation.Type = "fieldFromRelation";
+											viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
+											viewItemFromRelation.FieldName = "username";
+											viewItemFromRelation.FieldLabel = "Watchers";
+											viewItemFromRelation.FieldPlaceholder = "";
+											viewItemFromRelation.FieldRequired = true;
+											viewItemFromRelation.FieldLookupList = "lookup";
+											viewItemFromRelation.RelationId = targetRelation.Id;
+											viewItemFromRelation.RelationName = targetRelation.Name;
+											viewColumn.Items.Add(viewItemFromRelation);
+										}
+										#endregion
+										//Save column
+										viewRow.Columns.Add(viewColumn);
+										#endregion
+
+										//Save row
+										viewSection.Rows.Add(viewRow);
+										#endregion
+
+										//Save section
+										headerRegion.Sections.Add(viewSection);
+
+										#endregion
+
+									#region << Sidebar >>
+									var sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
+									var sidebarViewItem = new InputRecordViewSidebarViewItem();
+
+									#region << Attachments >>
+									{
+										var targetEntity = entMan.ReadEntity(ATTACHMENT_ENTITY_ID).Object;
+										var targetGeneralList = targetEntity.RecordLists.Single(x => x.Name == "bug_attachments");
+										var targetRelation = relMan.Read("bug_1_n_attachment").Object;
+										sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
+										sidebarListFromRelationItem.EntityId = targetEntity.Id;
+										sidebarListFromRelationItem.EntityName = targetEntity.Name;
+										sidebarListFromRelationItem.FieldHelpText = "";
+										sidebarListFromRelationItem.FieldLabel = "Attachments";
+										sidebarListFromRelationItem.FieldLookupList = "lookup";
+										sidebarListFromRelationItem.FieldManageView = "general";
+										sidebarListFromRelationItem.FieldPlaceholder = "";
+										sidebarListFromRelationItem.FieldRequired = false;
+										sidebarListFromRelationItem.ListId = targetGeneralList.Id;
+										sidebarListFromRelationItem.ListName = targetGeneralList.Name;
+										sidebarListFromRelationItem.RelationId = targetRelation.Id;
+										sidebarListFromRelationItem.RelationName = targetRelation.Name;
+										sidebarListFromRelationItem.Type = "listFromRelation";
+										updateViewInput.Sidebar.Items.Add(sidebarListFromRelationItem);
+									}
+									#endregion
+
+									#region << Comments >>
+									{
+										var targetEntity = entMan.ReadEntity(COMMENT_ENTITY_ID).Object;
+										var targetGeneralList = targetEntity.RecordLists.Single(x => x.Name == "bug_comments");
+										var targetRelation = relMan.Read("bug_1_n_comment").Object;
+										sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
+										sidebarListFromRelationItem.EntityId = targetEntity.Id;
+										sidebarListFromRelationItem.EntityName = targetEntity.Name;
+										sidebarListFromRelationItem.FieldHelpText = "";
+										sidebarListFromRelationItem.FieldLabel = "Comments";
+										sidebarListFromRelationItem.FieldLookupList = "lookup";
+										sidebarListFromRelationItem.FieldManageView = "general";
+										sidebarListFromRelationItem.FieldPlaceholder = "";
+										sidebarListFromRelationItem.FieldRequired = false;
+										sidebarListFromRelationItem.ListId = targetGeneralList.Id;
+										sidebarListFromRelationItem.ListName = targetGeneralList.Name;
+										sidebarListFromRelationItem.RelationId = targetRelation.Id;
+										sidebarListFromRelationItem.RelationName = targetRelation.Name;
+										sidebarListFromRelationItem.Type = "listFromRelation";
+										updateViewInput.Sidebar.Items.Add(sidebarListFromRelationItem);
+									}
+									#endregion
+
+									#region << Time logs >>
+									{
+										var targetEntity = entMan.ReadEntity(TIMELOG_ENTITY_ID).Object;
+										var targetGeneralList = targetEntity.RecordLists.Single(x => x.Name == "bug_timelogs");
+										var targetRelation = relMan.Read("bug_1_n_time_log").Object;
+										sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
+										sidebarListFromRelationItem.EntityId = targetEntity.Id;
+										sidebarListFromRelationItem.EntityName = targetEntity.Name;
+										sidebarListFromRelationItem.FieldHelpText = "";
+										sidebarListFromRelationItem.FieldLabel = "Time logs";
+										sidebarListFromRelationItem.FieldLookupList = "lookup";
+										sidebarListFromRelationItem.FieldManageView = "general";
+										sidebarListFromRelationItem.FieldPlaceholder = "";
+										sidebarListFromRelationItem.FieldRequired = false;
+										sidebarListFromRelationItem.ListId = targetGeneralList.Id;
+										sidebarListFromRelationItem.ListName = targetGeneralList.Name;
+										sidebarListFromRelationItem.RelationId = targetRelation.Id;
+										sidebarListFromRelationItem.RelationName = targetRelation.Name;
+										sidebarListFromRelationItem.Type = "listFromRelation";
+										updateViewInput.Sidebar.Items.Add(sidebarListFromRelationItem);
+									}
+									#endregion
+
+									#region << Activities >>
+									{
+										var targetEntity = entMan.ReadEntity(ACTIVITY_ENTITY_ID).Object;
+										var targetGeneralList = targetEntity.RecordLists.Single(x => x.Name == "bug_activities");
+										var targetRelation = relMan.Read("bug_1_n_activity").Object;
+										sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
+										sidebarListFromRelationItem.EntityId = targetEntity.Id;
+										sidebarListFromRelationItem.EntityName = targetEntity.Name;
+										sidebarListFromRelationItem.FieldHelpText = "";
+										sidebarListFromRelationItem.FieldLabel = "Activities";
+										sidebarListFromRelationItem.FieldLookupList = "lookup";
+										sidebarListFromRelationItem.FieldManageView = "general";
+										sidebarListFromRelationItem.FieldPlaceholder = "";
+										sidebarListFromRelationItem.FieldRequired = false;
+										sidebarListFromRelationItem.ListId = targetGeneralList.Id;
+										sidebarListFromRelationItem.ListName = targetGeneralList.Name;
+										sidebarListFromRelationItem.RelationId = targetRelation.Id;
+										sidebarListFromRelationItem.RelationName = targetRelation.Name;
+										sidebarListFromRelationItem.Type = "listFromRelation";
+										updateViewInput.Sidebar.Items.Add(sidebarListFromRelationItem);
+									}
+									#endregion
+
+									#endregion
+									{
+										var response = entMan.UpdateRecordView(BUG_ENTITY_ID, updateViewInput);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Updated view: general" + " Message:" + response.Message);
 									}
 								}
 								#endregion
@@ -6893,6 +10110,7 @@ namespace WebVella.ERP.Project
 									sampleRecord["id"] = new Guid("a0141850-b13c-44b4-bb1b-4e0dde4850f4");
 									sampleRecord["name"] = "Corporate website development";
 									sampleRecord["description"] = "All activities for developing a sample application";
+									sampleRecord["code"] = "SMPL";
 									sampleRecord["billable_hour_price"] = 100;
 									sampleRecord["owner_id"] = new Guid("b646c5d4-acc8-4404-af77-6786b81bee05");
 									sampleRecord["customer_id"] = CUSTOMER_RECORD_ID;
@@ -6941,12 +10159,13 @@ namespace WebVella.ERP.Project
 									sampleRecord["milestone_id"] = new Guid("42b881fc-d93f-46cf-b39d-391cd42fd2f6");
 									sampleRecord["description"] = "This is a sample task describing how to generate a corporate identity document";
 									sampleRecord["parent_id"] = null;
+									sampleRecord["code"] = "SMPL-T1";
 									sampleRecord["start_date"] = DateTime.UtcNow.AddDays(3);
 									sampleRecord["end_date"] = DateTime.UtcNow.AddDays(90);
 									sampleRecord["priority"] = "medium";
 									sampleRecord["status"] = "not started";
-									sampleRecord["billable_hours"] = 0;
-									sampleRecord["nonbillable_hours"] = 0;
+									sampleRecord["x_billable_hours"] = 0;
+									sampleRecord["x_nonbillable_hours"] = 0;
 									sampleRecord["project_id"] = new Guid("a0141850-b13c-44b4-bb1b-4e0dde4850f4");
 									var createSampleRecordResult = recMan.CreateRecord(TASK_ENTITY_ID, sampleRecord);
 									if (!createSampleRecordResult.Success)
@@ -6965,9 +10184,10 @@ namespace WebVella.ERP.Project
 									sampleRecord["milestone_id"] = new Guid("42b881fc-d93f-46cf-b39d-391cd42fd2f6");
 									sampleRecord["description"] = "This is a sample bug about the project";
 									sampleRecord["priority"] = "medium";
+									sampleRecord["code"] = "SMPL-B1";
 									sampleRecord["status"] = "opened";
-									sampleRecord["billable_hours"] = 0;
-									sampleRecord["nonbillable_hours"] = 0;
+									sampleRecord["x_billable_hours"] = 0;
+									sampleRecord["x_nonbillable_hours"] = 0;
 									sampleRecord["project_id"] = new Guid("a0141850-b13c-44b4-bb1b-4e0dde4850f4");
 									var createSampleRecordResult = recMan.CreateRecord(BUG_ENTITY_ID, sampleRecord);
 									if (!createSampleRecordResult.Success)

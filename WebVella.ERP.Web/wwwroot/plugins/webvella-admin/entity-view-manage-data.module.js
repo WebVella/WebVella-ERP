@@ -129,7 +129,7 @@
 		var ngCtrl = this;
 		ngCtrl.loading = {};
 		//#region << Initialize Current Entity >>
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.entity = resolvedCurrentEntityMeta;
 		//#endregion
 
 		//#region << Update page title & hide the side menu >>
@@ -171,13 +171,13 @@
 			function errorCallback(response) {
 				switch (dataType) {
 					case "defaultData":
-						ngCtrl.defaultData = "Error: " + response.message;
+						ngCtrl.defaultData = "Error: " + response;
 						break;
 					case "defaultMeta":
-						ngCtrl.defaultMeta =  "Error: " + response.message;
+						ngCtrl.defaultMeta =  "Error: " + response;
 						break;
 					case "customFull":
-						ngCtrl.customFull  =  "Error: " + response.message;
+						ngCtrl.customFull  =  "Error: " + response;
 						break;
 				}				
 				ngCtrl.loading[dataType] = false;
@@ -190,7 +190,13 @@
 				case "defaultData":
 					ngCtrl.defaultMeta = null;
 					sampleViewMeta.dataSourceUrl = null;
-					webvellaCoreService.getRecordByViewMeta(ngCtrl.sampleRecordId,sampleViewMeta, ngCtrl.entity.name,null, successCallback, errorCallback);
+					if(!ngCtrl.sampleRecordId){
+						ngCtrl.loading[dataType] = false;
+						 ngCtrl.defaultData = "There are no records for this entity";
+					}
+					else{
+						webvellaCoreService.getRecordByViewMeta(ngCtrl.sampleRecordId,sampleViewMeta, ngCtrl.entity.name,null, successCallback, errorCallback);
+					}
 					break;
 				case "defaultMeta":
 					ngCtrl.defaultData = null;

@@ -97,7 +97,7 @@
 		}
 		else {
 			//Case 2. List is in a view and the listName is a dataName	
-			var dataNameArray = fastCopy($stateParams.listName).split('$');
+			var dataNameArray = $stateParams.listName.split('$');
 			if (dataNameArray.length < 3 || dataNameArray.length > 4) {
 				lazyDeferred.reject("The list dataName is not correct");
 			}
@@ -149,6 +149,7 @@
 	resolveRecordListData.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams', '$timeout', 'ngToast', '$location', 'resolvedEntityList'];
 	function resolveRecordListData($q, $log, webvellaCoreService, $state, $stateParams, $timeout, ngToast, $location, resolvedEntityList) {
 		var defer = $q.defer();
+
 		function successCallback(response) {
 			defer.resolve(response.object);
 		}
@@ -168,7 +169,6 @@
 
 		// Initialize
 		var defer = $q.defer();
-
 		// Process
 		function successCallback(response) {
 			if (response.object === null) {
@@ -186,6 +186,11 @@
 				alert("error in response!");
 			}
 			else {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
+				});
 				defer.reject(response.message);
 			}
 		}
@@ -197,13 +202,13 @@
 		}
 
 		var parentView = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
-		webvellaCoreService.getRecordByViewMeta($stateParams.recordId, parentView, $stateParams.entityName,null, successCallback, errorCallback);
+		webvellaCoreService.getRecordByViewMeta($stateParams.recordId, parentView, $stateParams.entityName, null, successCallback, errorCallback);
 
 		return defer.promise;
 	}
 
-	resolveRecordListDataFromView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedParentViewData', 'resolvedEntityList', 'resolvedEntityRelationsList','ngToast'];
-	function resolveRecordListDataFromView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedParentViewData, resolvedEntityList, resolvedEntityRelationsList,ngToast) {
+	resolveRecordListDataFromView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedParentViewData', 'resolvedEntityList', 'resolvedEntityRelationsList', 'ngToast'];
+	function resolveRecordListDataFromView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedParentViewData, resolvedEntityList, resolvedEntityRelationsList, ngToast) {
 		//Temporary method will be replaced when the proper API is ready
 		// Initialize
 		var defer = $q.defer();
@@ -233,15 +238,15 @@
 			}
 		}
 
- 		function successCallback(response) {
+		function successCallback(response) {
 			defer.resolve(response.object);
 		}
 		function errorCallback(response) {
-		ngToast.create({
-			className: 'error',
-			content: '<span class="go-red">Error:</span> ' + response.message,
-			timeout: 7000
-		});
+			ngToast.create({
+				className: 'error',
+				content: '<span class="go-red">Error:</span> ' + response.message,
+				timeout: 7000
+			});
 			defer.reject(response.message);
 		}
 
@@ -251,12 +256,12 @@
 
 	//#region << Controller /////////////////////////////// >>
 	controller.$inject = ['$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaCoreService', '$injector',
-        'resolvedAreas', 'resolvedRecordListData', 'resolvedEntityList', 'resolvedCurrentEntityMeta', '$timeout',
-		'resolvedEntityRelationsList', 'resolvedCurrentUser', '$sessionStorage', '$location', '$window', '$sce'];
+        'resolvedAreas', 'resolvedRecordListData', 'resolvedEntityList', 'resolvedCurrentEntityMeta', '$timeout', '$translate',
+		'resolvedEntityRelationsList', 'resolvedCurrentUser', '$sessionStorage', '$location', '$window', '$sce', 'resolvedParentViewData'];
 
-	function controller($log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaCoreService,$injector,
-        resolvedAreas, resolvedRecordListData, resolvedEntityList, resolvedCurrentEntityMeta, $timeout,
-		resolvedEntityRelationsList, resolvedCurrentUser, $sessionStorage, $location, $window, $sce) {
+	function controller($log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaCoreService, $injector,
+        resolvedAreas, resolvedRecordListData, resolvedEntityList, resolvedCurrentEntityMeta, $timeout, $translate,
+		resolvedEntityRelationsList, resolvedCurrentUser, $sessionStorage, $location, $window, $sce, resolvedParentViewData) {
 
 		//#region << ngCtrl initialization >>
 		var ngCtrl = this;
@@ -275,15 +280,23 @@
 
 		//#region << Initialize main objects >>
 		ngCtrl.list = {};
-		ngCtrl.list.data = fastCopy(resolvedRecordListData);
+		ngCtrl.list.data = resolvedRecordListData;
 		ngCtrl.list.meta = webvellaCoreService.getEntityRecordListFromEntitiesMetaList(listName, listEntityName, resolvedEntityList);
-		ngCtrl.entityList = fastCopy(resolvedEntityList);
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
-		ngCtrl.entityRelations = fastCopy(resolvedEntityRelationsList);
-		ngCtrl.areas = fastCopy(resolvedAreas.data);
-		ngCtrl.currentUser = fastCopy(resolvedCurrentUser);
+		ngCtrl.entityList = resolvedEntityList;
+		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.entityRelations = resolvedEntityRelationsList;
+		ngCtrl.areas = resolvedAreas.data;
+		ngCtrl.currentUser = resolvedCurrentUser;
 		ngCtrl.$sessionStorage = $sessionStorage;
 		ngCtrl.stateParams = $stateParams;
+		ngCtrl.parentView = {};
+		ngCtrl.parentView.data = null;
+		ngCtrl.parentView.meta = null;
+		if (resolvedParentViewData != null) {
+			ngCtrl.parentView.data = resolvedParentViewData;
+			ngCtrl.parentView.meta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
+		}
+
 		//#endregion
 
 		//#region << Set Page meta >>
@@ -337,6 +350,7 @@
 		ngCtrl.columnDictionary = {};
 		ngCtrl.columnDataNamesArray = [];
 		ngCtrl.queryParametersArray = [];
+		ngCtrl.filterLoading = false;
 		//Extract the available columns
 		ngCtrl.list.meta.columns.forEach(function (column) {
 			if (ngCtrl.columnDataNamesArray.indexOf(column.dataName) == -1) {
@@ -358,8 +372,13 @@
 				var columnObj = ngCtrl.columnDictionary[dataName];
 				//some data validations and conversions	
 				switch (columnObj.meta.fieldType) {
-					//TODO if percent convert to > 1 %
-					case 14:
+					case 4: //Date
+						ngCtrl.filterQuery[dataName] = moment(queryObject[dataName]).format('D MMM YYYY');
+						break;
+					case 5: //Datetime
+						ngCtrl.filterQuery[dataName] = moment(queryObject[dataName]).format('D MMM YYYY HH:mm');
+						break;
+					case 14:  //TODO if percent convert to > 1 %
 						if (checkDecimal(queryObject[dataName])) {
 							ngCtrl.filterQuery[dataName] = queryObject[dataName] * 100;
 						}
@@ -373,6 +392,7 @@
 		});
 
 		ngCtrl.clearQueryFilter = function () {
+			ngCtrl.filterLoading = true;
 			for (var activeFilter in ngCtrl.filterQuery) {
 				$location.search(activeFilter, null);
 			}
@@ -384,17 +404,32 @@
 		}
 
 		ngCtrl.applyQueryFilter = function () {
-			//TODO - Convert percent into 0 < x < 1
-
-			//TODO - Convert date to ISO
+			ngCtrl.filterLoading = true;
 			var queryFieldsCount = 0;
 			for (var filter in ngCtrl.filterQuery) {
-				if (ngCtrl.filterQuery[filter] == "") {
-					$location.search(filter, null);
+				if(ngCtrl.filterQuery[filter]){
+					for (var i = 0; i < ngCtrl.list.meta.columns.length; i++) {
+						if(ngCtrl.list.meta.columns[i].meta.name == filter){
+							var selectedField = ngCtrl.list.meta.columns[i].meta;
+							switch(selectedField.fieldType){
+								case 4: //Date
+									$location.search(filter, moment(ngCtrl.filterQuery[filter],'D MMM YYYYY').toISOString());
+									break;
+								case 5: //Datetime
+									$location.search(filter, moment(ngCtrl.filterQuery[filter],'D MMM YYYYY HH:mm').toISOString());
+									break;
+								case 14: //Percent
+									$location.search(filter, ngCtrl.filterQuery[filter] / 100);
+									break;
+								default:
+									$location.search(filter, ngCtrl.filterQuery[filter]);
+									break;
+							}
+						}
+					}
 				}
 				else {
-					queryFieldsCount++;
-					$location.search(filter, ngCtrl.filterQuery[filter]);
+					$location.search(filter, null);
 				}
 			}
 			//$window.location.reload();
@@ -409,32 +444,95 @@
 		}
 
 		ngCtrl.ReloadRecordsSuccessCallback = function (response) {
+			$timeout(function(){
+				ngCtrl.filterLoading = false;
+			},300);
 			ngCtrl.list.data = response.object;
 		}
 
 		ngCtrl.ReloadRecordsErrorCallback = function (response) {
+			$timeout(function(){
+				ngCtrl.filterLoading = false;
+			},300);
 			alert(response.message);
 		}
-
-		ngCtrl.checkForSearchEnter = function (e) {
-			var code = (e.keyCode ? e.keyCode : e.which);
-			if (code == 13) { //Enter keycode
-				ngCtrl.applyQueryFilter();
-			}
-		}
-
-
 
 		//#endregion
 
 		//#region << Extract fields that are supported in the query to be filters>>
 		ngCtrl.fieldsInQueryArray = webvellaCoreService.extractSupportedFilterFields(ngCtrl.list);
-		ngCtrl.checkIfFieldSetInQuery = function (fieldName) {
-			if (ngCtrl.fieldsInQueryArray.indexOf(fieldName) != -1) {
+		ngCtrl.checkIfFieldSetInQuery = function (dataName) {
+			if (ngCtrl.fieldsInQueryArray.fieldNames.indexOf(dataName) != -1) {
 				return true;
 			}
 			else {
 				return false;
+			}
+		}
+
+		ngCtrl.allQueryComparisonList = [];
+		//#region << Query Dictionary >>
+		$translate(['QUERY_RULE_EQ_LABEL', 'QUERY_RULE_NOT_LABEL', 'QUERY_RULE_LT_LABEL', 'QUERY_RULE_LTE_LABEL',
+					'QUERY_RULE_GT_LABEL', 'QUERY_RULE_GTE_LABEL', 'QUERY_RULE_CONTAINS_LABEL', 'QUERY_RULE_NOT_CONTAINS_LABEL',
+					'QUERY_RULE_STARTSWITH_LABEL', 'QUERY_RULE_NOT_STARTSWITH_LABEL']).then(function (translations) {
+						ngCtrl.allQueryComparisonList = [
+							{
+								key: "EQ",
+								value: translations.QUERY_RULE_EQ_LABEL
+							},
+							{
+								key: "NOT",
+								value: translations.QUERY_RULE_NOT_LABEL
+							},
+							{
+								key: "LT",
+								value: translations.QUERY_RULE_LT_LABEL
+							},
+							{
+								key: "LTE",
+								value: translations.QUERY_RULE_LTE_LABEL
+							},
+							{
+								key: "GT",
+								value: translations.QUERY_RULE_GT_LABEL
+							},
+							{
+								key: "GTE",
+								value: translations.QUERY_RULE_GTE_LABEL
+							},
+							{
+								key: "CONTAINS",
+								value: translations.QUERY_RULE_CONTAINS_LABEL
+							},
+							{
+								key: "NOTCONTAINS",
+								value: translations.QUERY_RULE_NOT_CONTAINS_LABEL
+							},
+							{
+								key: "STARTSWITH",
+								value: translations.QUERY_RULE_STARTSWITH_LABEL
+							},
+							{
+								key: "NOTSTARTSWITH",
+								value: translations.QUERY_RULE_NOT_STARTSWITH_LABEL
+							}
+						];
+
+					});
+		//#endregion
+		ngCtrl.getFilterInputPlaceholder = function (dataName) {
+			var fieldIndex = ngCtrl.fieldsInQueryArray.fieldNames.indexOf(dataName);
+			if (fieldIndex == -1) {
+				return "";
+			}
+			else {
+				var fieldQueryType = ngCtrl.fieldsInQueryArray.queryTypes[fieldIndex];
+				for (var i = 0; i < ngCtrl.allQueryComparisonList.length; i++) {
+					if (ngCtrl.allQueryComparisonList[i].key == fieldQueryType) {
+						return ngCtrl.allQueryComparisonList[i].value;
+					}
+				}
+				return "";
 			}
 		}
 		//#endregion
@@ -458,11 +556,11 @@
 		ngCtrl.selectPage = function (page) {
 			var params = {
 				areaName: $stateParams.areaName,
-				entityName: entityName,
-				listName: listName,
+				entityName: safeListNameAndEntityName.entityName,
+				listName: safeListNameAndEntityName.listName,
 				page: page
 			};
-			webvellaCoreService.GoToState($state, $state.current.name, params);
+			webvellaCoreService.GoToState($state.current.name, params);
 		}
 
 		ngCtrl.currentUserRoles = ngCtrl.currentUser.roles;
@@ -585,16 +683,29 @@
 			returnObject.prefix = null;
 			returnObject.suffix = null;
 			var keyIndex = column.meta.displayFormat.indexOf('{0}');
-			if(keyIndex == 0){
+			if (keyIndex == 0) {
 				return null;
 			}
 			else {
 				returnObject.prefix = column.meta.displayFormat.slice(0, keyIndex);
-				if(keyIndex + 3 < column.meta.displayFormat.length){
+				if (keyIndex + 3 < column.meta.displayFormat.length) {
 					returnObject.suffix = column.meta.displayFormat.slice(keyIndex + 3, column.meta.displayFormat.length);
 				}
 				return returnObject;
 			}
+		}
+
+
+		ngCtrl.showPageTitleAuxLabelSecondary = false;
+
+		ngCtrl.generateHighlightString = function(){
+			if(ngCtrl.parentView && ngCtrl.parentView.data){
+				if(ngCtrl.parentView.meta.label.indexOf("{") != -1 && ngCtrl.parentView.meta.label.indexOf("}") != -1){
+					ngCtrl.showPageTitleAuxLabelSecondary = true;
+					return webvellaCoreService.generateHighlightString(ngCtrl.parentView.meta.label,ngCtrl.parentView.data[0],ngCtrl.stateParams);
+				}
+			}
+			return ngCtrl.list.meta.label;
 		}
 
 		//#endregion
@@ -602,13 +713,13 @@
 		//#region << List actions  >>
 		//load the actionService methods from rootScope
 		//ngCtrl.actionService = $rootScope.actionService;
-		var serviceName =  safeListNameAndEntityName.entityName + "_" + safeListNameAndEntityName.listName + "_list_service";
-		try{
+		var serviceName = safeListNameAndEntityName.entityName + "_" + safeListNameAndEntityName.listName + "_list_service";
+		try {
 			ngCtrl.actionService = $injector.get(serviceName);
 		}
-		catch(err){
-			console.log(err);
-			ngCtrl.actionService = {};		
+		catch (err) {
+			//console.log(err);
+			ngCtrl.actionService = {};
 		}
 		ngCtrl.pageTitleActions = [];
 		ngCtrl.pageTitleDropdownActions = [];
@@ -635,16 +746,15 @@
 					break;
 			}
 		});
-		ngCtrl.getRecordCreateUrl = function(){ 
-			return webvellaCoreService.listAction_getRecordCreateUrl(ngCtrl); 
+		ngCtrl.getRecordCreateUrl = function () {
+			return webvellaCoreService.listAction_getRecordCreateUrl(ngCtrl);
 		}
 
-		ngCtrl.getRecordDetailsUrl = function(record)  {
+		ngCtrl.getRecordDetailsUrl = function (record) {
 			return webvellaCoreService.listAction_getRecordDetailsUrl(record, ngCtrl);
 		}
 
 		//#endregion
-
 	}
 	//#endregion
 
@@ -723,7 +833,7 @@
 				popupCtrl.uploadProgressCallback = function (response) {
 					$timeout(function () {
 						popupCtrl.uploadProgress = parseInt(100.0 * response.loaded / response.total);
-					}, 100);
+					}, 0);
 				}
 
 				webvellaCoreService.uploadFileToTemp(file, file.name, popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
@@ -736,7 +846,7 @@
 				popupCtrl.uploadedFile = null;
 				popupCtrl.uploadedFilePath = null;
 				popupCtrl.uploadProgress = 0;
-			}, 100);
+			}, 0);
 		}
 
 		popupCtrl.importSuccessCallback = function (response) {

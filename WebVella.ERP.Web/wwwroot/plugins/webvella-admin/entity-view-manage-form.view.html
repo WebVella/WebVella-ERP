@@ -3,42 +3,50 @@
 		<div class="aux-actions">
 
 		</div>
-		<div class="meta-label">
-			<h4><span class="go-gray"><span translate="{{'RECORD_VIEW_MANAGE_PAGE_TITLE_PREFIX'}}"></span>: </span> {{ngCtrl.view.name}}</h4>
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-file-text-o fa-2x"></i>
 		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux" translate="{{::'RECORD_VIEW_MANAGE_FORM'}}"></div>
+            <h4 ng-bind="::ngCtrl.view.name"></h4>
+        </div>
 	</div>
 </div>
 <div id="page-body">
 	<div class="tabbable tabs-left spilled">
-		<a class="back" href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{'BACK'}}"></span></a>
+		<a class="back" href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{::'BACK'}}"></span></a>
 		<ul class="nav nav-tabs">
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text" translate="{{'DETAILS'}}"></span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text" translate="{{'FIELDS'}}"></span></a></li>
-			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text" translate="{{'RECORD_VIEWS'}}"></span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text" translate="{{'RECORD_LISTS'}}"></span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text" translate="{{'RECORD_TREES'}}"></span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text" translate="{{'RELATIONS'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text" translate="{{::'DETAILS'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text" translate="{{::'FIELDS'}}"></span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text" translate="{{::'RECORD_VIEWS'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text" translate="{{::'RECORD_LISTS'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text" translate="{{::'RECORD_TREES'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text" translate="{{::'RELATIONS'}}"></span></a></li>
 		</ul>
 	</div>
 
 	<div id="page-text">
+		<div class="alert alert-warning ng-hide" ng-show="ngCtrl.view.system">
+			<i class="fa fa-fw fa-exclamation go-red"></i>
+			<span translate="{{::'SYSTEM_ITEM_WARNING_TEXT'}}"></span>
+		</div>
 		<nav class="navbar navbar-default navbar-erp">
 			<div class="container-fluid">
 				<ul class="nav navbar-nav">
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}" translate="{{'RECORD_VIEW_TAB_BASIC'}}"></a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}" translate="{{::'RECORD_VIEW_TAB_BASIC'}}"></a>
 					</li>
 					<li role="presentation" class="active">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/form" translate="{{'RECORD_VIEW_TAB_MAIN_FORM'}}"></a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/form" translate="{{::'RECORD_VIEW_TAB_MAIN_FORM'}}"></a>
 					</li>
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/sidebar" translate="{{'RECORD_VIEW_TAB_SIDEBAR_FORM'}}"></a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/sidebar" translate="{{::'RECORD_VIEW_TAB_SIDEBAR_FORM'}}"></a>
 					</li>
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/actions" translate="{{'RECORD_VIEW_TAB_ACTIONS'}}"></a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/actions" translate="{{::'RECORD_VIEW_TAB_ACTIONS'}}"></a>
 					</li>
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/data" translate="{{'RECORD_VIEW_TAB_DATA'}}"></a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/data" translate="{{::'RECORD_VIEW_TAB_DATA'}}"></a>
 					</li>
 				</ul>
 			</div>
@@ -48,8 +56,8 @@
 			<div class="container-fluid">
 				<ul class="nav navbar-nav navbar-left">
 					<li role="presentation" ui-sref-active="active" ng-repeat="region in ngCtrl.view.regions | filter:{name:'header'} track by region.name">
-						<a class="display-inline-block" style="padding-right:5px" ui-sref='webvella-admin-entity-view-manage({entityName:"{{ngCtrl.stateParams.entityName}}" ,viewName:"{{ngCtrl.stateParams.viewName}}", regionName:"{{region.name}}"})'>
-							<i class="fa fa-fw fa-eye-slash go-red" ng-if="!region.render"></i> {{region.label}}
+						<a class="display-inline-block" style="padding-right:5px" ui-sref='webvella-admin-entity-view-manage({entityName:"{{::ngCtrl.stateParams.entityName}}" ,viewName:"{{::ngCtrl.stateParams.viewName}}", regionName:"{{::region.name}}"})'>
+							<i class="fa fa-fw fa-eye-slash go-red" ng-if="!region.render"></i> {{::region.label}}
 						</a>
 						<a class="action display-inline-block" style="padding-left:0;margin-left:-5px;padding-right:10px;" ng-click="ngCtrl.manageRegion(region)"><i class="fa fa-fw fa-cog"></i></a>
 					</li>
@@ -59,15 +67,15 @@
 				</div>
 				<ul class="nav navbar-nav">
 					<li role="presentation" ui-sref-active="active" ng-repeat="region in ngCtrl.view.regions | filter:{name:'!header'} track by region.name">
-						<a class="display-inline-block" style="padding-right:5px" ui-sref='webvella-admin-entity-view-manage({entityName:"{{ngCtrl.stateParams.entityName}}" ,viewName:"{{ngCtrl.stateParams.viewName}}", regionName:"{{region.name}}"})'>
-							<i class="fa fa-fw fa-eye-slash go-red" ng-if="!region.render"></i> {{region.label}}
+						<a class="display-inline-block" style="padding-right:5px" ui-sref='webvella-admin-entity-view-manage({entityName:"{{::ngCtrl.stateParams.entityName}}" ,viewName:"{{::ngCtrl.stateParams.viewName}}", regionName:"{{::region.name}}"})'>
+							<i class="fa fa-fw fa-eye-slash go-red" ng-if="!region.render"></i> {{::region.label}}
 						</a>
 						<a class="action display-inline-block" style="padding-left:0;margin-left:-5px;padding-right:10px;" ng-click="ngCtrl.manageRegion(region)"><i class="fa fa-fw fa-cog"></i></a>
 					</li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li role="presentation">
-						<a ng-click="ngCtrl.manageRegion(null)"><i class="fa fa-fw fa-plus-circle"></i> <span translate="{{'ADD_NEW_TAB'}}"></span></a>
+						<a ng-click="ngCtrl.manageRegion(null)"><i class="fa fa-fw fa-plus-circle"></i> <span translate="{{::'ADD_NEW_TAB'}}"></span></a>
 					</li>
 				</ul>
 
@@ -76,24 +84,32 @@
 
 		<div class="view-manage-section">
 			<div class="row">
+				<div class="col-xs-8">
+					<h4 style="margin-bottom:1em;" translate="{{::'RECORD_VIEW_REGION_MANAGE_NOTE'}}"></h4>
+				</div>
+				<div class="col-xs-4">
+					<h4 style="margin-bottom:1em;" translate="{{::'LIBRARY'}}"></h4>
+				</div>
+			</div>
+			<div class="row">
 				<div class="col-sm-8">
 					<div class="panel panel-default wrapper" style="height:700px;overflow-y:auto;">
-						<div class="view-divider section" ng-click="ngCtrl.manageSectionModalOpen(null,1)" title="click to add section"><span translate="{{'RECORD_VIEW_SECTION_ADD'}}"></span></div>
+						<div class="view-divider section" ng-click="ngCtrl.manageSectionModalOpen(null,1)" title="click to add section"><span translate="{{::'RECORD_VIEW_SECTION_ADD'}}"></span></div>
 						<div class="section-wrapper" ng-repeat="section in ngCtrl.viewSelectedRegion.sections track by section.id">
 							<div class="panel panel-default section">
 								<div class="panel-heading">
 									<span class="actions pull-right">
-										<a href="javascript:void(0)" ng-click="ngCtrl.removeSection(section.id)" title="{{'RECORD_VIEW_SECTION_REMOVE' | translate}}"><i class="fa fa-fw fa-close go-red"></i></a>
+										<a href="javascript:void(0)" ng-click="ngCtrl.removeSection(section.id)" title="{{::'RECORD_VIEW_SECTION_REMOVE' | translate}}"><i class="fa fa-fw fa-close go-red"></i></a>
 										<a href="javascript:void(0)" ng-click="ngCtrl.manageSectionModalOpen(section,section.weight)" title="section settings"><i class="fa fa-fw fa-cog"></i></a>
 									</span>
 									<span class="go-gray">({{section.weight}})</span> {{section.label}} <span class="text-muted">({{section.name}})</span> <i class="fa fa-fw fa-eye-slash go-red" ng-show="!section.showLabel"></i>
 								</div>
 								<div class="panel-body">
-									<div title="click to add row" class="view-divider" ng-click="ngCtrl.manageRowModalOpen(null,section,1)"><span translate="{{'RECORD_VIEW_ROW_ADD'}}"></span></div>
+									<div title="click to add row" class="view-divider" ng-click="ngCtrl.manageRowModalOpen(null,section,1)"><span translate="{{::'RECORD_VIEW_ROW_ADD'}}"></span></div>
 									<div class="row-wrapper" ng-repeat="row in section.rows track by row.id">
 										<div class="row-actions clearfix">
 											<a title="row settings" class="pull-right" href="javascript:void(0)" ng-click="ngCtrl.manageRowModalOpen(row,section,row.weight)"><i class="fa fa-fw fa-cog"></i></a>
-											<a title="{{'RECORD_VIEW_ROW_REMOVE' | translate}}" class="pull-right" href="javascript:void(0)" ng-click="ngCtrl.removeRow(row.id,section.id)"><i class="fa fa-fw fa-close go-red"></i></a>
+											<a title="{{::'RECORD_VIEW_ROW_REMOVE' | translate}}" class="pull-right" href="javascript:void(0)" ng-click="ngCtrl.removeRow(row.id,section.id)"><i class="fa fa-fw fa-close go-red"></i></a>
 										</div>
 										<div class="row">
 											<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
@@ -122,24 +138,16 @@
 															<div ng-switch-when="treeFromRelation">
 																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-sitemap go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(column,item.dataName)"></i> <i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="ngCtrl.manageFieldFromRelation(item)"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 															</div>
-															<div ng-switch-when="html">
-																<div ng-if='item.tag == ""'>
-																	<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(column,item.dataName)"></i> No tag
-																</div>
-																<div ng-if='item.tag != ""'>
-																	<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(column,item.dataName)"></i> {{::item.tag}}
-																</div>
-															</div>
 														</div>
 													</div>
 												</div>
 											</div>
 										</div>
-										<div class="view-divider" ng-click="ngCtrl.manageRowModalOpen(null,section,row.weight + 1)"><span translate="{{'RECORD_VIEW_ROW_ADD'}}"></span></div>
+										<div class="view-divider" ng-click="ngCtrl.manageRowModalOpen(null,section,row.weight + 1)"><span translate="{{::'RECORD_VIEW_ROW_ADD'}}"></span></div>
 									</div>
 								</div>
 							</div>
-							<div class="view-divider section" ng-click="ngCtrl.manageSectionModalOpen(null, section.weight + 1)"><span translate="{{'RECORD_VIEW_SECTION_ADD'}}"></span></div>
+							<div class="view-divider section" ng-click="ngCtrl.manageSectionModalOpen(null, section.weight + 1)"><span translate="{{::'RECORD_VIEW_SECTION_ADD'}}"></span></div>
 						</div>
 					</div>
 				</div>
@@ -158,7 +166,7 @@
 							<div as-sortable="ngCtrl.libraryDragControlListeners" ng-model="ngCtrl.library.items" id="library">
 								<div class="dropped-item" data-as-sortable-item ng-model="item"
 									 ng-repeat="item in ngCtrl.library.items | filter: ngCtrl.search track by item.dataName"
-									 ng-switch="item.type">
+									 ng-switch="::item.type">
 									<div ng-switch-when="field">
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i> {{::item.meta.name}} <i class="fa fa-asterisk go-gray text-small" ng-show="::item.meta.required"></i>
 									</div>
@@ -180,14 +188,6 @@
 									<div ng-switch-when="treeFromRelation">
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-sitemap go-teal"></i> <span class="go-gray">{{::item.relationName}} ></span> {{::item.meta.name}}
 									</div>
-									<div ng-switch-when="html">
-										<div ng-if='item.tag == ""'>
-											<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i> No tag
-										</div>
-										<div ng-if='item.tag != ""'>
-											<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i> {{::item.tag}}
-										</div>
-									</div>
 								</div>
 							</div>
 						</div>
@@ -196,9 +196,9 @@
 					<table class="table table-bordered ng-hide" ng-show="ngCtrl.library.relations.length > 0">
 						<thead>
 							<tr>
-								<th class="go-bkg-white" translate="{{'RELATIONS'}}"></th>
-								<th width="90" class="go-bkg-white" translate="{{'IN_LIBRARY'}}"></th>
-								<th width="125" class="go-bkg-white" translate="{{'DIRECTION'}}"></th>
+								<th class="go-bkg-white" translate="{{::'RELATIONS'}}"></th>
+								<th width="90" class="go-bkg-white" translate="{{::'IN_LIBRARY'}}"></th>
+								<th width="125" class="go-bkg-white" translate="{{::'DIRECTION'}}"></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -213,15 +213,15 @@
 								</td>
 								<td>
 									<a ng-click="ngCtrl.toggleRelationToLibrary(relation)" href="javascript:void(0)" style="color:#2196F3 !important">
-										<span class="ng-hide" ng-show="relation.addedToLibrary" translate="{{'REMOVE'}}"></span>
-										<span class="ng-hide" ng-show="!relation.addedToLibrary" translate="{{'ADD'}}"></span>
+										<span class="ng-hide" ng-show="relation.addedToLibrary" translate="{{::'REMOVE'}}"></span>
+										<span class="ng-hide" ng-show="!relation.addedToLibrary" translate="{{::'ADD'}}"></span>
 									</a>
 								</td>
 								<td>
-									<span class="go-gray" ng-if="!relation.sameOriginTargetEntity" title="{{'RECORDS_RELATION_STATUS_TOOLTIP' | translate}}" translate="{{'RECORDS_RELATION_STATUS_ORIGIN_NOT_TARGET'}}"></span>
+									<span class="go-gray" ng-if="!relation.sameOriginTargetEntity" title="{{::'RECORDS_RELATION_STATUS_TOOLTIP' | translate}}" translate="{{::'RECORDS_RELATION_STATUS_ORIGIN_NOT_TARGET'}}"></span>
 									<a ng-click="ngCtrl.changeRelationDirection(relation)" href="javascript:void(0)" style="color:#2196F3 !important" ng-if="relation.sameOriginTargetEntity">
-										<span class="ng-hide" ng-show="relation.direction == 'origin-target'" translate="{{'RECORDS_RELATION_STATUS_ORIGIN_TO_TARGET'}}"></span>
-										<span class="ng-hide" ng-show="relation.direction == 'target-origin'" translate="{{'RECORDS_RELATION_STATUS_ORIGIN_FROM_TARGET'}}"></span>
+										<span class="ng-hide" ng-show="relation.direction == 'origin-target'" translate="{{::'RECORDS_RELATION_STATUS_ORIGIN_TO_TARGET'}}"></span>
+										<span class="ng-hide" ng-show="relation.direction == 'target-origin'" translate="{{::'RECORDS_RELATION_STATUS_ORIGIN_FROM_TARGET'}}"></span>
 									</a>
 								</td>
 							</tr>
@@ -236,32 +236,32 @@
 <script type="text/ng-template" id="manageRegionModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title ng-hide" ng-show="popupCtrl.row.id == null" translate="{{'RECORD_VIEW_REGION_CREATE_MODAL_TITLE'}}"></h3>
-		<h3 class="modal-title ng-hide" ng-show="popupCtrl.row.id != null" translate="{{'RECORD_VIEW_REGION_MANAGE_MODAL_TITLE'}}"></h3>
+		<h3 class="modal-title ng-hide" ng-show="popupCtrl.row.id == null" translate="{{::'RECORD_VIEW_REGION_CREATE_MODAL_TITLE'}}"></h3>
+		<h3 class="modal-title ng-hide" ng-show="popupCtrl.row.id != null" translate="{{::'RECORD_VIEW_REGION_MANAGE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
 		<form name="manageRegion">
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageRegion.name.$invalid && !manageRegion.name.$pristine}">
-						<label translate="{{'NAME'}}"></label>
+						<label translate="{{::'NAME'}}"></label>
 						<input ng-model="popupCtrl.region.name" name="name" type="text" class="form-control" ng-disabled="popupCtrl.region.name == 'header'"
 							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
 						<ng-messages for="manageRegion.name.$error" ng-if="manageRegion.name.$touched && manageRegion.name.$dirty && manageRegion.name.$invalid || popupCtrl.nameError">
-							<ng-message when="required" class="error" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></ng-message>
-							<ng-message when="pattern" class="error" translate="{{'VALIDATION_ONLY_ALPHANUMERIC_AND_UNDERSCODE'}}"></ng-message>
-							<ng-message when="maxlength" class="error" translate="{{' VALIDATION_LESS_THAN_50_CHARS '}}"></ng-message>
+							<ng-message when="required" class="error" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></ng-message>
+							<ng-message when="pattern" class="error" translate="{{::'VALIDATION_ONLY_ALPHANUMERIC_AND_UNDERSCODE'}}"></ng-message>
+							<ng-message when="maxlength" class="error" translate="{{::'VALIDATION_LESS_THAN_50_CHARS'}}"></ng-message>
 						</ng-messages>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageRegion.label.$invalid && !manageRegion.label.$pristine}">
-						<label translate="{{'LABEL'}}"></label>
+						<label translate="{{::'LABEL'}}"></label>
 						<input ng-model="popupCtrl.region.label" name="label" type="text" class="form-control"
 							   required maxlength="50" ng-model-options="{allowInvalid:true}">
 						<ng-messages for="manageRegion.label.$error" ng-if="manageRegion.label.$touched && manageRegion.label.$dirty && manageRegion.label.$invalid || popupCtrl.labelError">
-							<ng-message when="required" class="error" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></ng-message>
-							<ng-message when="maxlength" class="error" translate="{{' VALIDATION_LESS_THAN_50_CHARS '}}"></ng-message>
+							<ng-message when="required" class="error" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></ng-message>
+							<ng-message when="maxlength" class="error" translate="{{::'VALIDATION_LESS_THAN_50_CHARS'}}"></ng-message>
 						</ng-messages>
 					</div>
 				</div>
@@ -269,17 +269,17 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageRegion.cssClass.$invalid && !manageRegion.cssClass.$pristine}">
-						<label translate="{{'CSS_CLASS'}}"></label>
+						<label translate="{{::'CSS_CLASS'}}"></label>
 						<input ng-model="popupCtrl.region.cssClass" name="cssClass" type="text" class="form-control" ng-model-options="{allowInvalid:true}">
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label translate="{{'RENDER'}}"></label>
+						<label translate="{{::'RENDER'}}"></label>
 						<div class="checkbox">
 							<label>
 								<input ng-model="popupCtrl.region.render" type="checkbox" value="true">
-								<span translate="{{'RENDER_CHECKBOX_LABEL'}}"></span>
+								<span translate="{{::'RENDER_CHECKBOX_LABEL'}}"></span>
 							</label>
 						</div>
 					</div>
@@ -288,13 +288,13 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageRegion.weight.$invalid && !manageRegion.weight.$pristine}">
-						<label for="place" translate="{{'WEIGHT'}}"></label>
+						<label for="place" translate="{{::'WEIGHT'}}"></label>
 						<div ng-if="popupCtrl.region.name != 'header'">
 							<input ng-model="popupCtrl.region.weight" name="weight" type="text" class="form-control" id="row" required
 								   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}">
 							<div class="error ng-hide" ng-show="manageRegion.weight.$dirty && manageRegion.weight.$invalid">
-								<small class="error ng-hide" ng-show="manageRegion.weight.$error.required" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
-								<small class="error ng-hide" ng-show="manageRegion.weight.$error.pattern" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
+								<small class="error ng-hide" ng-show="manageRegion.weight.$error.required" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="manageRegion.weight.$error.pattern" translate="{{::'VALIDATION_POSITIVE_INTEGER'}}"></small>
 							</div>
 						</div>
 						<div ng-if="popupCtrl.region.name == 'header'">
@@ -308,43 +308,43 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button ng-if="popupCtrl.isUpdate && popupCtrl.region.name != 'header'" class="btn btn-link pull-left go-red" ng-click="popupCtrl.delete()" translate="{{'DELETE'}}"></button>
-		<button class="btn btn-primary ng-hide" ng-show="popupCtrl.isUpdate" ng-click="popupCtrl.ok()" translate="{{'SAVE'}}"></button>
-		<button class="btn btn-primary ng-hide" ng-show="!popupCtrl.isUpdate" ng-click="popupCtrl.ok()" translate="{{'CREATE'}}"></button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
+		<button ng-if="popupCtrl.isUpdate && popupCtrl.region.name != 'header'" class="btn btn-link pull-left go-red" ng-click="popupCtrl.delete()" translate="{{::'DELETE'}}"></button>
+		<button class="btn btn-primary ng-hide" ng-show="popupCtrl.isUpdate" ng-click="popupCtrl.ok()" translate="{{::'SAVE'}}"></button>
+		<button class="btn btn-primary ng-hide" ng-show="!popupCtrl.isUpdate" ng-click="popupCtrl.ok()" translate="{{::'CREATE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
 	</div>
 </script>
 
 <script type="text/ng-template" id="manageSectionModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title ng-hide" ng-show="popupCtrl.isUpdate" translate="{{'RECORD_VIEW_SECTION_MANAGE_MODAL_TITLE'}}"></h3>
-		<h3 class="modal-title ng-hide" ng-show="!popupCtrl.isUpdate" translate="{{'RECORD_VIEW_SECTION_CREATE_MODAL_TITLE'}}"></h3>
+		<h3 class="modal-title ng-hide" ng-show="popupCtrl.isUpdate" translate="{{::'RECORD_VIEW_SECTION_MANAGE_MODAL_TITLE'}}"></h3>
+		<h3 class="modal-title ng-hide" ng-show="!popupCtrl.isUpdate" translate="{{::'RECORD_VIEW_SECTION_CREATE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
 		<form name="manageSection">
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageSection.name.$invalid && !manageSection.name.$pristine}">
-						<label class="required" for="sectionName" translate="{{'NAME'}}"></label>
+						<label class="required" for="sectionName" translate="{{::'NAME'}}"></label>
 						<input ng-model="popupCtrl.section.name" name="name" type="text" class="form-control" id="sectionName" placeholder="e.g. details"
 							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}" autofocus ng-disabled="popupCtrl.isUpdate">
 						<div class="error ng-hide" ng-show="manageSection.name.$dirty && manageSection.name.$invalid">
-							<small class="error ng-hide" ng-show="manageSection.name.$error.required" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
-							<small class="error ng-hide" ng-show="manageSection.name.$error.pattern" translate="{{'VALIDATION_ONLY_ALPHANUMERIC_AND_UNDERSCODE'}}"></small>
-							<small class="error ng-hide" ng-show="manageSection.name.$error.maxlength" translate="{{'VALIDATION_LESS_THAN_50_CHARS'}}"></small>
-							<small class="error ng-hide" ng-show="manageSection.name.$error.unique" translate="{{'RECORD_VIEW_TAB_ACTIONS_NAME_UNIQUE_DESCRIPTION'}}"></small>
+							<small class="error ng-hide" ng-show="manageSection.name.$error.required" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></small>
+							<small class="error ng-hide" ng-show="manageSection.name.$error.pattern" translate="{{::'VALIDATION_ONLY_ALPHANUMERIC_AND_UNDERSCODE'}}"></small>
+							<small class="error ng-hide" ng-show="manageSection.name.$error.maxlength" translate="{{::'VALIDATION_LESS_THAN_50_CHARS'}}"></small>
+							<small class="error ng-hide" ng-show="manageSection.name.$error.unique" translate="{{::'RECORD_VIEW_TAB_ACTIONS_NAME_UNIQUE_DESCRIPTION'}}"></small>
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageSection.label.$invalid && !manageSection.label.$pristine}">
-						<label class="required" for="title" translate="{{'LABEL'}}"></label>
+						<label class="required" for="title" translate="{{::'LABEL'}}"></label>
 						<input ng-model="popupCtrl.section.label" name="label" type="text" class="form-control" id="label" placeholder="e.g. Details"
 							   required maxlength="50" ng-model-options="{allowInvalid:true}">
 						<div class="error ng-hide" ng-show="manageSection.label.$dirty && manageSection.label.$invalid">
-							<small class="error ng-hide" ng-show="manageSection.label.$error.required" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
-							<small class="error ng-hide" ng-show="manageSection.label.$error.maxlength" translate="{{'VALIDATION_LESS_THAN_50_CHARS'}}"></small>
+							<small class="error ng-hide" ng-show="manageSection.label.$error.required" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></small>
+							<small class="error ng-hide" ng-show="manageSection.label.$error.maxlength" translate="{{::'VALIDATION_LESS_THAN_50_CHARS'}}"></small>
 						</div>
 					</div>
 				</div>
@@ -352,22 +352,22 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageSection.cssClass.$invalid && !manageSection.cssClass.$pristine}">
-						<label for="cssClass" translate="{{'CSS_CLASS'}}"></label>
+						<label for="cssClass" translate="{{::'CSS_CLASS'}}"></label>
 						<input ng-model="popupCtrl.section.cssClass" name="cssClass" type="text" class="form-control" id="cssClass"
 							   maxlength="50" ng-model-options="{allowInvalid:true}">
 						<div class="error ng-hide" ng-show="manageSection.cssClass.$dirty && manageSection.cssClass.$invalid">
-							<small class="error ng-hide" ng-show="manageSection.cssClass.$error.maxlength" translate="{{'VALIDATION_LESS_THAN_50_CHARS'}}"></small>
+							<small class="error ng-hide" ng-show="manageSection.cssClass.$error.maxlength" translate="{{::'VALIDATION_LESS_THAN_50_CHARS'}}"></small>
 						</div>
-						<div class="form-description" translate="{{'RECORD_VIEW_SECTION_CSS_CLASS_DESCRIPTION'}}"></div>
+						<div class="form-description" translate="{{::'RECORD_VIEW_SECTION_CSS_CLASS_DESCRIPTION'}}"></div>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageSection.weight.$invalid && !manageSection.weight.$pristine}">
-						<label for="place" translate="{{'PLACE'}}"></label>
+						<label for="place" translate="{{::'PLACE'}}"></label>
 						<input ng-model="popupCtrl.section.weight" name="weight" type="text" class="form-control" id="weight" placeholder="e.g. 1, empty for last"
 							   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}">
 						<div class="error ng-hide" ng-show="manageSection.weight.$dirty && manageSection.weight.$invalid">
-							<small class="error ng-hide" ng-show="manageSection.weight.$error.pattern" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
+							<small class="error ng-hide" ng-show="manageSection.weight.$error.pattern" translate="{{::'VALIDATION_POSITIVE_INTEGER'}}"></small>
 						</div>
 					</div>
 				</div>
@@ -375,22 +375,22 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label for="showLabel" translate="{{'RECORD_VIEW_SECTION_LABEL_VISIBILITY'}}"></label>
+						<label for="showLabel" translate="{{::'RECORD_VIEW_SECTION_LABEL_VISIBILITY'}}"></label>
 						<div class="checkbox">
 							<label>
 								<input ng-model="popupCtrl.section.showLabel" type="checkbox" id="showLabel" value="true">
-								<span translate="{{'RECORD_VIEW_SECTION_LABEL_VISIBILITY_CHECKBOX_LABEL'}}"></span>
+								<span translate="{{::'RECORD_VIEW_SECTION_LABEL_VISIBILITY_CHECKBOX_LABEL'}}"></span>
 							</label>
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label for="collapsed" translate="{{'RECORD_VIEW_SECTION_COLLAPSED'}}"></label>
+						<label for="collapsed" translate="{{::'RECORD_VIEW_SECTION_COLLAPSED'}}"></label>
 						<div class="checkbox">
 							<label>
 								<input ng-model="popupCtrl.section.collapsed" type="checkbox" id="collapsed" value="true">
-								<span translate="{{'RECORD_VIEW_SECTION_COLLAPSED_CHECKBOX_LABEL'}}"></span>
+								<span translate="{{::'RECORD_VIEW_SECTION_COLLAPSED_CHECKBOX_LABEL'}}"></span>
 							</label>
 						</div>
 					</div>
@@ -399,10 +399,10 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label for="tabOrder" translate="{{'RECORD_VIEW_SECTION_TAB_ORDER'}}"></label>
+						<label for="tabOrder" translate="{{::'RECORD_VIEW_SECTION_TAB_ORDER'}}"></label>
 						<select class="form-control" ng-model="popupCtrl.section.tabOrder">
-							<option value="left-right">{{'RECORD_VIEW_SECTION_TAB_ORDER_LEFT_RIGHT' | translate}}</option>
-							<option value="top-down">{{'RECORD_VIEW_SECTION_TAB_ORDER_TOP_DOWN' | translate}}</option>
+							<option value="left-right">{{::'RECORD_VIEW_SECTION_TAB_ORDER_LEFT_RIGHT' | translate}}</option>
+							<option value="top-down">{{::'RECORD_VIEW_SECTION_TAB_ORDER_TOP_DOWN' | translate}}</option>
 						</select>
 					</div>
 				</div>
@@ -410,34 +410,34 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary ng-hide" ng-show="popupCtrl.isUpdate" ng-click="popupCtrl.ok()" translate="{{'SAVE'}}"></button>
-		<button class="btn btn-primary ng-hide" ng-show="!popupCtrl.isUpdate" ng-click="popupCtrl.ok()" translate="{{'ADD'}}"></button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
+		<button class="btn btn-primary ng-hide" ng-show="popupCtrl.isUpdate" ng-click="popupCtrl.ok()" translate="{{::'SAVE'}}"></button>
+		<button class="btn btn-primary ng-hide" ng-show="!popupCtrl.isUpdate" ng-click="popupCtrl.ok()" translate="{{::'ADD'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
 	</div>
 </script>
 
 <script type="text/ng-template" id="manageRowModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title ng-hide" ng-show="popupCtrl.row.id == null" translate="{{'RECORD_VIEW_ROW_CREATE_MODAL_TITLE'}}"></h3>
-		<h3 class="modal-title ng-hide" ng-show="popupCtrl.row.id != null" translate="{{'RECORD_VIEW_ROW_MANAGE_MODAL_TITLE'}}"></h3>
+		<h3 class="modal-title ng-hide" ng-show="popupCtrl.row.id == null" translate="{{::'RECORD_VIEW_ROW_CREATE_MODAL_TITLE'}}"></h3>
+		<h3 class="modal-title ng-hide" ng-show="popupCtrl.row.id != null" translate="{{::'RECORD_VIEW_ROW_MANAGE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
 		<form name="manageRow">
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label for="tabOrder" translate="{{'RECORD_VIEW_ROW_COLUMNS'}}"></label>
+						<label for="tabOrder" translate="{{::'RECORD_VIEW_ROW_COLUMNS'}}"></label>
 						<select class="form-control" ng-model="popupCtrl.selectedRowOption" ng-options="option.value for option in popupCtrl.rowOptions"></select>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageRow.weight.$invalid && !manageRow.weight.$pristine}">
-						<label for="place" translate="{{'WEIGHT'}}">Weight</label>
+						<label for="place" translate="{{::'WEIGHT'}}">Weight</label>
 						<input ng-model="popupCtrl.row.weight" name="weight" type="text" class="form-control" id="row" placeholder="e.g. 1, empty for last"
 							   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}">
 						<div class="error ng-hide" ng-show="manageRow.weight.$dirty && manageRow.weight.$invalid">
-							<small class="error ng-hide" ng-show="manageRow.weight.$error.pattern" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
+							<small class="error ng-hide" ng-show="manageRow.weight.$error.pattern" translate="{{::'VALIDATION_POSITIVE_INTEGER'}}"></small>
 						</div>
 					</div>
 				</div>
@@ -445,16 +445,16 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary ng-hide" ng-show="popupCtrl.isUpdate" ng-click="popupCtrl.ok()" translate="{{'SAVE'}}"></button>
-		<button class="btn btn-primary ng-hide" ng-show="!popupCtrl.isUpdate" ng-click="popupCtrl.ok()" translate="{{'ADD'}}"></button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
+		<button class="btn btn-primary ng-hide" ng-show="popupCtrl.isUpdate" ng-click="popupCtrl.ok()" translate="{{::'SAVE'}}"></button>
+		<button class="btn btn-primary ng-hide" ng-show="!popupCtrl.isUpdate" ng-click="popupCtrl.ok()" translate="{{::'ADD'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
 	</div>
 </script>
 
 <script type="text/ng-template" id="manageFromRelationModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title" translate="{{'RECORD_VIEW_RELATION_ITEM_MANAGE_MODAL_TITLE'}}"></h3>
+		<h3 class="modal-title" translate="{{::'RECORD_VIEW_RELATION_ITEM_MANAGE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger ng-hide" ng-show="popupCtrl.error">{{popupCtrl.errorMessage}}</div>
@@ -462,10 +462,10 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageForm.fieldLabel.$invalid && !manageForm.fieldLabel.$pristine || popupCtrl.fieldLabelError}">
-						<label class="control-label required" translate="{{'LABEL'}}">Label</label>
+						<label class="control-label required" translate="{{::'LABEL'}}">Label</label>
 						<input class="form-control" ng-model="popupCtrl.field.fieldLabel" name="fieldLabel" type="text" ng-model-options="{allowInvalid:true}" required />
 						<div class="error ng-hide" ng-show="manageForm.fieldLabel.$touched && manageForm.fieldLabel.$dirty && manageForm.fieldLabel.$invalid || popupCtrl.fieldLabelError">
-							<small class="error ng-hide" ng-show="manageForm.fieldLabel.$error.required && !popupCtrl.fieldLabelError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+							<small class="error ng-hide" ng-show="manageForm.fieldLabel.$error.required && !popupCtrl.fieldLabelError" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></small>
 							<small class="error" ng-show="popupCtrl.fieldLabelError">
 								{{popupCtrl.fieldLabelMessage}}
 							</small>
@@ -474,11 +474,11 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label for="requiredStatus" class="control-label" translate="{{'REQUIRED'}}"></label>
+						<label for="requiredStatus" class="control-label" translate="{{::'REQUIRED'}}"></label>
 						<div class="checkbox">
 							<label>
 								<input ng-model="popupCtrl.field.fieldRequired" type="checkbox" value="true">
-								<span translate="{{'REQUIRED_CHECKBOX_LABEL'}}"></span>
+								<span translate="{{::'REQUIRED_CHECKBOX_LABEL'}}"></span>
 							</label>
 						</div>
 					</div>
@@ -487,7 +487,7 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageForm.fieldPlaceholder.$invalid && !manageForm.fieldPlaceholder.$pristine || popupCtrl.fieldPlaceholderError}">
-						<label class="control-label" translate="{{'PLACEHOLDER_TEXT'}}"></label>
+						<label class="control-label" translate="{{::'PLACEHOLDER_TEXT'}}"></label>
 						<input class="form-control" ng-model="popupCtrl.field.fieldPlaceholder" name="fieldPlaceholder" type="text" ng-model-options="{allowInvalid:true}" />
 						<div class="error ng-hide" ng-show="manageForm.fieldPlaceholder.$touched && manageForm.fieldPlaceholder.$dirty && manageForm.fieldPlaceholder.$invalid || popupCtrl.fieldPlaceholderError">
 							<small class="error" ng-show="popupCtrl.fieldPlaceholderError">
@@ -498,7 +498,7 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageForm.fieldHelpText.$invalid && !manageForm.fieldHelpText.$pristine || popupCtrl.fieldHelpTextError}">
-						<label class="control-label" translate="{{'HELP_TEXT'}}"></label>
+						<label class="control-label" translate="{{::'HELP_TEXT'}}"></label>
 						<input class="form-control" ng-model="popupCtrl.field.fieldHelpText" name="fieldHelpText" type="text" ng-model-options="{allowInvalid:true}" />
 						<div class="error ng-hide" ng-show="manageForm.fieldHelpText.$touched && manageForm.fieldHelpText.$dirty && manageForm.fieldHelpText.$invalid || popupCtrl.fieldHelpTextError">
 							<small class="error ng-hide" ng-show="popupCtrl.fieldHelpTextError">
@@ -511,13 +511,13 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label class="control-label required" translate="{{'LOOKUP_LIST'}}"></label>
+						<label class="control-label required" translate="{{::'LOOKUP_LIST'}}"></label>
 						<select class="form-control" ng-model="popupCtrl.field.fieldLookupList" ng-options="item.name as item.name for item in popupCtrl.lookupLists"></select>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group" ng-if="popupCtrl.field.type == 'viewFromRelation' || popupCtrl.field.type == 'listFromRelation'">
-						<label class="control-label required" translate="{{'LIST_QUICK_CREATE'}}"></label>
+						<label class="control-label required" translate="{{::'LIST_QUICK_CREATE'}}"></label>
 						<select class="form-control" ng-model="popupCtrl.field.fieldManageView" ng-options="item.name as item.name for item in popupCtrl.quickCreateViews"></select>
 					</div>
 				</div>
@@ -525,14 +525,14 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary ng-hide" ng-show="!popupCtrl.error" ng-click="popupCtrl.ok()" translate="{{'ADD'}}"></button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
+		<button class="btn btn-primary ng-hide" ng-show="!popupCtrl.error" ng-click="popupCtrl.ok()" translate="{{::'ADD'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
 	</div>
 </script>
 
 <script type="text/ng-template" id="dataBindTemplate.html">
-	<div class="tooltip-description" translate="{{'FIELD_DATABIND_NOTE_1'}}"></div>
+	<div class="tooltip-description" translate="{{::'FIELD_DATABIND_NOTE_1'}}"></div>
 	<div class="tooltip-databind"><span>{</span>{templateData.{{item.dataName}}<span>}</span>}</div>
-	<div class="tooltip-description" translate="{{'FIELD_DATABIND_NOTE_2'}}"></div>
+	<div class="tooltip-description" translate="{{::'FIELD_DATABIND_NOTE_2'}}"></div>
 	<div class="tooltip-databind"><span>{</span>{templateMeta<span>}</span>}</div>
 </script>

@@ -130,10 +130,10 @@
 		});
     	//#endregion
 
-        ngCtrl.users = fastCopy(resolvedUserRecordsList.data);
+        ngCtrl.users = resolvedUserRecordsList.data;
         ngCtrl.users = ngCtrl.users.sort(function (a, b) { return parseFloat(a.email) - parseFloat(b.email) });
 
-        ngCtrl.roles = fastCopy(resolvedRolesList.data);
+        ngCtrl.roles = resolvedRolesList.data;
         ngCtrl.roles = ngCtrl.roles.sort(function (a, b) {
             if (a.name < b.name) return -1;
             if (a.name > b.name) return 1;

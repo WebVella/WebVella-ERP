@@ -158,8 +158,8 @@
 
 		//#region << Init >>
 		ngCtrl.search = {};
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
-		ngCtrl.rolesList = fastCopy(resolvedRolesList);
+		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.rolesList = resolvedRolesList;
 		ngCtrl.entity.fields = ngCtrl.entity.fields.sort(function (a, b) {
 			if (a.name < b.name) return -1;
 			if (a.name > b.name) return 1;
@@ -181,7 +181,7 @@
 		//Currency meta - used in Create and Manage fields
 		ngCtrl.currencyMetas = webvellaCoreService.currencyMetas();
 
-		ngCtrl.relationsList = fastCopy(resolvedRelationsList);
+		ngCtrl.relationsList = resolvedRelationsList;
 		//#endregion
 
 		//Create new field modal
@@ -925,11 +925,11 @@
 			}
 		}
 		popupCtrl.getTreeSelectRelatedEntityName = function () {
-			var relatedEntity = fastCopy(resolvedRelatedEntity);
+			var relatedEntity = resolvedRelatedEntity;
 			return "<i class='fa fa-fw fa-" + relatedEntity.iconName + "'></i> " + relatedEntity.name;
 		}
 		popupCtrl.getTreeSelectRecordTreeName = function () {
-			var relatedEntity = fastCopy(resolvedRelatedEntity);
+			var relatedEntity = resolvedRelatedEntity;
 			for (var i = 0; i < relatedEntity.recordTrees.length; i++) {
 				if (relatedEntity.recordTrees[i].id === popupCtrl.field.selectedTreeId) {
 					return "<i class='fa fa-fw fa-sitemap'></i> " + relatedEntity.recordTrees[i].name;

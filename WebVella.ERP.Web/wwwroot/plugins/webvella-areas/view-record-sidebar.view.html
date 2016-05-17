@@ -1,15 +1,22 @@
-<div id="userbox" class="dropdown" uib-dropdown>
+<!--<div id="userbox" class="dropdown" uib-dropdown>
 	<div class="dropdown-toggle" uib-dropdown-toggle>
 		<img class="avatar" src="/plugins/webvella-core/assets/avatar.png" ng-if="::!sidebarData.currentUser.image">
 		<img class="avatar" ng-src="{{::sidebarData.currentUser.image}}" ng-if="::sidebarData.currentUser.image">
 		<span class="username">{{::sidebarData.currentUser.first_name}} {{::sidebarData.currentUser.last_name}}</span>
 	</div>
+</div>-->
+<div id="sidebar-switcher">
+	<ul class="nav nav-pills nav-stacked" style="margin-top:0;">
+		<li>
+			<a ng-click="sidebarData.toggleSideNav()" id="switcher"><i class="fa fa-fw fa-bars"></i></a>
+		</li>
+	</ul>
 </div>
 <div class="tabbable tabs-left spilled">
 	<!--<a class="back clearfix" href="javascript:void(0)" ng-click="sidebarData.goBack()"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>-->
 
 	<ul class="nav nav-tabs">
-		<li dynamic-html template="actionItem.template" ng-repeat="actionItem in sidebarData.sidebarTopActions track by actionItem.name" />
+		<li dynamic-html template="actionItem.template" ng-repeat="actionItem in sidebarData.sidebarTopActions track by actionItem.name" class="dynamic"/>
 		<li role="presentation" ng-class="::{active: sidebarData.isItemActive(item)}" ng-repeat="item in sidebarData.items" ng-switch="item.type">
 			<a ng-switch-when="view" ng-if="item.is_parent" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.name}}/{{::sidebarData.stateParams.recordId}}">
 				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
@@ -26,6 +33,9 @@
 			<a ng-switch-when="listFromRelation" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.parentViewName}}/{{::sidebarData.stateParams.recordId}}/list-general/{{::item.name}}">
 				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
 			</a>
+			<!--<a ng-switch-when="listFromRelation" ui-sref="webvella-area-list-general-in-view({areaName:sidebarData.stateParams.areaName,entityName:sidebarData.stateParams.entityName,viewType:'view-general',parentViewName:item.parentViewName,listName:item.name,recordId:sidebarData.stateParams.recordId })">
+				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
+			</a>-->
 		</li>
 	</ul>
 </div>

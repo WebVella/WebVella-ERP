@@ -36,8 +36,7 @@
 		"System.Threading": "4.0.11-beta-23516",
 		"WebVella.ERP": "1.0.0-*",
 		"WebVella.ERP.Project": "1.0.0-*",
-		"WebVella.ERP.Crm": "1.0.0-*",
-		"WebVella.ERP.SamplePlugin": "1.0.0-*"
+		"WebVella.ERP.Crm": "1.0.0-*"
 	},
 
 	"commands": {

@@ -94,7 +94,7 @@
         
         var ngCtrl = this;
         //#region << Initialize Current Entity >>
-        ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+        ngCtrl.entity = resolvedCurrentEntityMeta;
         //#endregion
 
 		//#region << Update page title & hide the side menu >>

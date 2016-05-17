@@ -1,35 +1,31 @@
-<div id="userbox" class="dropdown" uib-dropdown>
+<!--<div id="userbox" class="dropdown" uib-dropdown>
     <div class="dropdown-toggle" uib-dropdown-toggle>
 		<img class="avatar" src="/plugins/webvella-core/assets/avatar.png" ng-if="::!sidebarData.currentUser.image">
 		<img class="avatar" ng-src="{{::sidebarData.currentUser.image}}" ng-if="::sidebarData.currentUser.image">
 		<span class="username">{{::sidebarData.currentUser.first_name}} {{::sidebarData.currentUser.last_name}}</span>
     </div>
-    <!--<ul class="dropdown-menu dropdown-menu-right">
-        <li>
-            <a href>Account settings</a>
-        </li>
-        <li>
-            <a href>Account settings</a>
-        </li>
-        <li>
-            <a href>Account settings</a>
-        </li>
-    </ul>-->
+</div>-->
+<div id="sidebar-switcher">
+	<ul class="nav nav-pills nav-stacked" style="margin-top:0;">
+		<li>
+			<a ng-click="sidebarData.toggleSideNav()" id="switcher"><i class="fa fa-fw fa-bars"></i></a>
+		</li>
+	</ul>
 </div>
 <ul class="nav nav-pills nav-stacked">
     <li role="presentation" ui-sref-active="active">
-        <a ui-sref="webvella-admin-entities" title="Entities"><i class="fa fa-database fa-fw"></i><span class="text" translate="{{'ENTITIES'}}"></span></a>
+        <a ui-sref="webvella-admin-entities" title="Entities"><i class="fa fa-database fa-fw"></i><span class="text" translate="{{::'ENTITIES'}}"></span></a>
     </li>
     <li role="presentation" ui-sref-active="active">
-        <a ui-sref="webvella-admin-areas-lists" title="Areas"><i class="fa fa-th-large fa-fw"></i><span class="text" translate="{{'AREAS'}}"></span></a>
+        <a ui-sref="webvella-admin-areas-lists" title="Areas"><i class="fa fa-th-large fa-fw"></i><span class="text" translate="{{::'AREAS'}}"></span></a>
     </li>
     <li role="presentation" ui-sref-active="active">
-        <a ui-sref="webvella-admin-users" title="Users"><i class="fa fa-user fa-fw"></i><span class="text" translate="{{'USERS'}}"></span></a>
+        <a ui-sref="webvella-admin-users" title="Users"><i class="fa fa-user fa-fw"></i><span class="text" translate="{{::'USERS'}}"></span></a>
     </li>
 	<li role="presentation" ui-sref-active="active">
-		<a ui-sref="webvella-admin-roles" title="Roles"><i class="fa fa-key fa-fw"></i><span class="text" translate="{{'ROLES'}}"></span></a>
+		<a ui-sref="webvella-admin-roles" title="Roles"><i class="fa fa-key fa-fw"></i><span class="text" translate="{{::'ROLES'}}"></span></a>
 	</li>
 	<li role="presentation" ui-sref-active="active">
-		<a ui-sref="webvella-admin-plugins" title="Plugins"><i class="fa fa-puzzle-piece fa-fw"></i><span class="text" translate="{{'PLUGINS'}}"></span></a>
+		<a ui-sref="webvella-admin-plugins" title="Plugins"><i class="fa fa-puzzle-piece fa-fw"></i><span class="text" translate="{{::'PLUGINS'}}"></span></a>
 	</li>
 </ul>

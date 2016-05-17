@@ -80,7 +80,7 @@ namespace WebVella.ERP.Database
 		public void CommitTransaction()
 		{
 			if (transaction == null)
-				throw new Exception("Trying to commit non existant transaction.");
+				throw new Exception("Trying to commit non existent transaction.");
 
 			if (transactionStack.Count() > 0)
 			{
@@ -107,7 +107,7 @@ namespace WebVella.ERP.Database
 		public void RollbackTransaction()
 		{
 			if (transaction == null)
-				throw new Exception("Trying to rollback non existant transaction.");
+				throw new Exception("Trying to rollback non existent transaction.");
 
 			if (transactionStack.Count() > 0)
 			{

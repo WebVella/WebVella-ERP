@@ -31,6 +31,9 @@ namespace WebVella.ERP.Web.Security
         [JsonProperty(PropertyName = "email")]
         public string Email { get; set; }
 
+        [JsonProperty(PropertyName = "username")]
+        public string Username { get; set; }
+
         [JsonProperty(PropertyName = "first_name")]
         public string FirstName { get; set; }
 
@@ -51,6 +54,7 @@ namespace WebVella.ERP.Web.Security
         {
             UserId = user.Id;
             Email = user.Email;
+			Username = user.Username;
             FirstName = user.FirstName;
             LastName = user.LastName;
             LastModified = user.ModifiedOn;
@@ -104,6 +108,9 @@ namespace WebVella.ERP.Web.Security
             [JsonProperty(PropertyName = "email")]
             public string Email { get; set; }
 
+            [JsonProperty(PropertyName = "username")]
+            public string Username { get; set; }
+
             [JsonProperty(PropertyName = "first_name")]
             public string FirstName { get; set; }
 
@@ -127,6 +134,7 @@ namespace WebVella.ERP.Web.Security
             {
                 UserId = token.UserId;
                 Email = token.Email;
+				Username = token.Username;
                 FirstName = token.FirstName;
                 LastName = token.LastName;
                 Image = token.Image;

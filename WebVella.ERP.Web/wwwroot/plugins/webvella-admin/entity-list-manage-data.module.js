@@ -141,7 +141,7 @@
 		//#endregion
 
 		//#region << Initialize the list >>
-		ngCtrl.list = fastCopy(resolvedCurrentEntityList);
+		ngCtrl.list = resolvedCurrentEntityList;
 		//#endregion
 
 		ngCtrl.getData = function (dataType) {
@@ -162,19 +162,19 @@
 			function errorCallback(response) {
 				switch (dataType) {
 					case "defaultData":
-						ngCtrl.defaultData = "Error: " + response.message;
+						ngCtrl.defaultData = "Error: " + response;
 						break;
 					case "defaultMeta":
-						ngCtrl.defaultMeta =  "Error: " + response.message;
+						ngCtrl.defaultMeta =  "Error: " + response;
 						break;
 					case "customFull":
-						ngCtrl.customFull  = "Error: " + response.message;
+						ngCtrl.customFull  = "Error: " + response;
 						break;
 				}				
 				ngCtrl.loading[dataType] = false;
 			}
 
-			var sampleListMeta = fastCopy(ngCtrl.list);
+			var sampleListMeta = ngCtrl.list;
 
 			ngCtrl.loading[dataType] = true;
 			switch (dataType) {

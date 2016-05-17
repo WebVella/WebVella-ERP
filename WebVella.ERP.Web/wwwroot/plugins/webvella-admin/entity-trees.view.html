@@ -1,43 +1,47 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-default btn-outline" ng-click="ngCtrl.createTreeModal()"><i class="fa fa-plus"></i> <span translate="{{'ADD_NEW'}}"></span></a>
 			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.trees.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
-					<input ng-model="ngCtrl.search.name" type="text" class="form-control" placeholder="{{'RECORD_TREE_NAME' | translate}}">
+					<input ng-model="ngCtrl.search.name" type="text" class="form-control" placeholder="{{::'RECORD_TREE_NAME' | translate}}">
 				</div>
 			</div>
+			<a class="btn btn-default btn-outline" ng-click="ngCtrl.createTreeModal()"><span translate="{{::'ADD_NEW'}}"></span></a>
 		</div>
-		<div class="meta-label">
-			<h4 class="no-link" translate="{{'RECORD_TREE_LIST_PAGE_TITLE'}}"></h4>
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-sitemap fa-2x"></i>
 		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux" translate="{{::'ENTITY_MANAGE_RECORD_TREES'}}"></div>
+            <h4 ng-bind="::ngCtrl.entity.name"></h4>
+        </div>
 	</div>
 </div>
 <div id="page-body">
 	<div class="tabbable tabs-left spilled">
-		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{'BACK'}}"></span></a>
+		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{::'BACK'}}"></span></a>
 		<ul class="nav nav-tabs">
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text" translate="{{'DETAILS'}}"></span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text" translate="{{'FIELDS'}}"></span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text" translate="{{'RECORD_VIEWS'}}"></span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text" translate="{{'RECORD_LISTS'}}"></span></a></li>
-			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text" translate="{{'RECORD_TREES'}}"></span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text" translate="{{'RELATIONS'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text" translate="{{::'DETAILS'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text" translate="{{::'FIELDS'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text" translate="{{::'RECORD_VIEWS'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text" translate="{{::'RECORD_LISTS'}}"></span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text" translate="{{::'RECORD_TREES'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text" translate="{{::'RELATIONS'}}"></span></a></li>
 		</ul>
 
 	</div>
 
 
 	<div id="page-text">
-		<div class="alert alert-info" ng-show="::ngCtrl.trees.length == 0" translate="{{'LIST_EMPTY_MESSAGE'}}"></div>
+		<div class="alert alert-info" ng-show="::ngCtrl.trees.length == 0" translate="{{::'LIST_EMPTY_MESSAGE'}}"></div>
 		<table class="table table-bordered table-hover table-vertical-align-middle" ng-show="::ngCtrl.trees.length != 0">
 			<thead>
 				<tr>
 					<th class="actions"></th>
-					<th translate="{{'NAME'}}"></th>
-					<th translate="{{'RELATION'}}"></th>
-					<th translate="{{'RECORD_TREE_ROOT_NODES'}}"></th>
+					<th translate="{{::'NAME'}}"></th>
+					<th translate="{{::'RELATION'}}"></th>
+					<th translate="{{::'RECORD_TREE_ROOT_NODES'}}"></th>
 			</thead>
 			<tbody>
 				<tr ng-repeat="tree in ngCtrl.trees | filter: ngCtrl.search track by tree.id">
@@ -63,21 +67,21 @@
 <script type="text/ng-template" id="createTreeModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title" translate="{{'RECORD_TREE_CREATE_MODAL_TITLE'}}"></h3>
+		<h3 class="modal-title" translate="{{::'RECORD_TREE_CREATE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
-		<div class="alert alert-danger ng-hide" ng-show="::popupCtrl.eligibleRelations.length == 0" translate="{{'RECORD_TREE_CREATE_MODAL_ERROR'}}"></div>
+		<div class="alert alert-danger ng-hide" ng-show="::popupCtrl.eligibleRelations.length == 0" translate="{{::'RECORD_TREE_CREATE_MODAL_ERROR'}}"></div>
 		<form name="createFrom" class="ng-hide" ng-show="::popupCtrl.eligibleRelations.length > 0">
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : createFrom.name.$invalid && !createFrom.name.$pristine || popupCtrl.validation.name.state}">
-						<label class="required" for="name" translate="{{'NAME'}}"></label>
-						<input ng-model="popupCtrl.tree.name" name="name" type="text" class="form-control" id="name" placeholder="{{'RECORD_TREE_NAME_PLACEHOLDER' | translate}}"
+						<label class="required" for="name" translate="{{::'NAME'}}"></label>
+						<input ng-model="popupCtrl.tree.name" name="name" type="text" class="form-control" id="name" placeholder="{{::'RECORD_TREE_NAME_PLACEHOLDER' | translate}}"
 							   required pattern="^[a-z~](?!.*__)[a-z0-9_~]*[a-z0-9~]$" maxlength="50" ng-model-options="{allowInvalid:true}">
 						<div class="error ng-hide" ng-show="createFrom.name.$touched && createFrom.name.$dirty && createFrom.name.$invalid || popupCtrl.validation.name.state">
-							<small class="error" ng-show="createFrom.name.$error.required && !popupCtrl.validation.name.state" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
-							<small class="error" ng-show="createFrom.name.$error.pattern && !popupCtrl.validation.name.state" translate="{{'VALIDATION_ONLY_ALPHANUMERIC_AND_UNDERSCODE'}}"></small>
-							<small class="error" ng-show="createFrom.name.$error.maxlength && !popupCtrl.validation.name.state" translate="{{'VALIDATION_LESS_THAN_50_CHARS'}}"></small>
+							<small class="error" ng-show="createFrom.name.$error.required && !popupCtrl.validation.name.state" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></small>
+							<small class="error" ng-show="createFrom.name.$error.pattern && !popupCtrl.validation.name.state" translate="{{::'VALIDATION_ONLY_ALPHANUMERIC_AND_UNDERSCODE'}}"></small>
+							<small class="error" ng-show="createFrom.name.$error.maxlength && !popupCtrl.validation.name.state" translate="{{::'VALIDATION_LESS_THAN_50_CHARS'}}"></small>
 							<small class="error" ng-show="popupCtrl.validation.name.state">
 								{{popupCtrl.validation.name.message}}
 							</small>
@@ -86,11 +90,11 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : createFrom.label.$invalid && !createFrom.label.$pristine || popupCtrl.validation.label.state }">
-						<label class="required" for="label" translate="{{'LABEL'}}"></label>
-						<input ng-model="popupCtrl.tree.label" type="text" class="form-control" id="label" name="label" placeholder="{{'RECORD_TREE_LABEL_PLACEHOLDER' | translate}}"
+						<label class="required" for="label" translate="{{::'LABEL'}}"></label>
+						<input ng-model="popupCtrl.tree.label" type="text" class="form-control" id="label" name="label" placeholder="{{::'RECORD_TREE_LABEL_PLACEHOLDER' | translate}}"
 							   required ng-model-options="{allowInvalid:true}">
 						<div class="error ng-hide" ng-show="createFrom.label.$touched && createFrom.label.$dirty && createFrom.label.$invalid || popupCtrl.validation.label.state">
-							<small class="error" ng-show="createFrom.label.$error.required && !popupCtrl.validation.label.state" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+							<small class="error" ng-show="createFrom.label.$error.required && !popupCtrl.validation.label.state" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></small>
 							<small class="error" ng-show="popupCtrl.validation.label.state">
 								{{popupCtrl.validation.label.message}}
 							</small>
@@ -101,16 +105,16 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="form-group" ng-class="{ 'has-error' : createFrom.relationId.$invalid && !createFrom.relationId.$pristine || popupCtrl.validation.relationId.state}">
-						<label class="required" translate="{{'RECORD_TREE_USED_RELATION'}}"></label>
+						<label class="required" translate="{{::'RECORD_TREE_USED_RELATION'}}"></label>
 						<select class="form-control" ng-model="popupCtrl.tree.relationId" ng-options="relation.id as relation.name for relation in popupCtrl.eligibleRelations"></select>
-						<div class="form-description" translate="{{'RECORD_TREE_USED_RELATION_DESCRIPTION'}}"></div>
+						<div class="form-description" translate="{{::'RECORD_TREE_USED_RELATION_DESCRIPTION'}}"></div>
 					</div>
 				</div>
 			</div>
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary ng-hide" ng-click="popupCtrl.ok()" ng-show="::popupCtrl.eligibleRelations.length > 0" translate="{{'RECORD_TREE_CREATE'}}"></button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
+		<button class="btn btn-primary ng-hide" ng-click="popupCtrl.ok()" ng-show="::popupCtrl.eligibleRelations.length > 0" translate="{{::'RECORD_TREE_CREATE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
 	</div>
 </script>

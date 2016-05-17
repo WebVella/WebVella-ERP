@@ -318,7 +318,7 @@ namespace WebVella.Crm.Project
 									actionItem.Weight = 1;
 									actionItem.Template = "" +
 							@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
-										ng-if=""ngCtrl.userHasRecordPermissions('canDelete')"">
+										ng-if=""::ngCtrl.userHasRecordPermissions('canDelete')"">
 									<i class=""fa fa-trash go-red""></i> Delete Record
 								</a>";
 									createViewInput.ActionItems.Add(actionItem);
@@ -452,7 +452,7 @@ namespace WebVella.Crm.Project
 									actionItem.Menu = "create-bottom";
 									actionItem.Weight = 1;
 									actionItem.Template = "" +
-							@"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""list"")' ng-if=""ngCtrl.createViewRegion != null"">Create & List</a>";
+							@"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""default"")' ng-if=""ngCtrl.createViewRegion != null"">Create</a>";
 									createViewInput.ActionItems.Add(actionItem);
 								}
 								{
@@ -526,7 +526,7 @@ namespace WebVella.Crm.Project
 									actionItem.Menu = "record-row";
 									actionItem.Weight = 1;
 									actionItem.Template = "" +
-							@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
+							@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"">
 							<i class=""fa fa-fw fa-eye""></i>
 							</a>";
 									createListInput.ActionItems.Add(actionItem);
@@ -537,10 +537,8 @@ namespace WebVella.Crm.Project
 									actionItem.Menu = "page-title";
 									actionItem.Weight = 1;
 									actionItem.Template = "" +
-@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-    ng-href=""{{ngCtrl.getRecordCreateUrl(ngCtrl)}}"">
-	<i class=""fa fa-fw fa-plus""></i> Add New
-</a>";
+@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
+    ng-href=""{{::ngCtrl.getRecordCreateUrl(ngCtrl)}}"">Add New</a>";
 									createListInput.ActionItems.Add(actionItem);
 								}
 								#endregion

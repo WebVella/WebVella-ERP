@@ -22,10 +22,33 @@ namespace WebVella.ERP.Api
 
 	public class SystemWebHookNames
 	{
+		public const string CreateRecordAction = "create_record";
+		public const string CreateRecordInput = "create_record_input";
+		public const string CreateRecordValidationErrors = "create_record_validation_errors";
+		public const string CreateRecordPreSave = "create_record_pre_save";		
+
+		public const string GetRecordAction = "get_record";
+		public const string GetRecordInput = "get_record_input";
+		public const string GetRecordOutput = "get_record_output";	
+
+		public const string UpdateRecordAction = "update_record";
+		public const string UpdateRecordInput = "update_record_input";
+		public const string UpdateRecordValidationErrors = "update_record_validation_errors";
+		public const string UpdateRecordPreSave = "update_record_pre_save";
+
 		public const string PatchRecordAction = "patch_record";
 		public const string PatchRecordInput = "patch_record_input";
 		public const string PatchRecordValidationErrors = "patch_record_validation_errors";
 		public const string PatchRecordPreSave = "patch_record_pre_save";
+
+		public const string DeleteRecordAction = "delete_record";
+		public const string DeleteRecordInput = "delete_record_input";
+		public const string DeleteRecordValidationErrors = "delete_record_validation_errors";
+		public const string DeleteRecordPreSave = "delete_record_pre_save";	
+
+		public const string ManageRelationAction = "manage_relation";
+		public const string ManageRelationInput = "manage_relation_input";
+		public const string ManageRelationPreSave = "manage_relation_pre_save";	
 	}
 
 	public enum RecordsListTypes

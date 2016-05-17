@@ -2,9 +2,13 @@
 	<div id="page-meta">
 		<div class="aux-actions">
 		</div>
-		<div class="meta-label">
-			<h4 translate="{{'PLUGINS_PAGE_TITLE'}}"></h4>
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-puzzle-piece fa-2x"></i>
 		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux" translate="{{::'PLUGINS'}}"></div>
+            <h4 translate="{{::'PLUGINS_PAGE_TITLE'}}"></h4>
+        </div>
 	</div>
 </div>
 <div id="page-body">
@@ -13,8 +17,8 @@
 			<thead>
 				<tr>
 					<th width="40"></th>
-                    <th width="200" translate="{{'NAME'}}"></th>
-					<th translate="{{'DESCRIPTION'}}"></th>
+                    <th width="200" translate="{{::'NAME'}}"></th>
+					<th translate="{{::'DESCRIPTION'}}"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -25,18 +29,18 @@
 					</td>
 					<td>
 						<p><strong>{{plugin.name}}</strong></p>
-						<div style="font-size:13px;"><a href="{{plugin.settings_url}}" ng-if="plugin.settings_url && plugin.settings_url != ''" translate="{{'SETTINGS'}}"></a> </div>	
+						<div style="font-size:13px;"><a href="{{plugin.settings_url}}" ng-if="plugin.settings_url && plugin.settings_url != ''" translate="{{::'SETTINGS'}}"></a> </div>	
 					</td>
 					<td>
 						<p>{{plugin.description}}</p>
 						<div class="go-grey" style="font-size:13px;">
-							<span translate="{{'VERSION'}}"></span>: {{plugin.version}}
+							<span translate="{{::'VERSION'}}"></span>: {{plugin.version}}
 							<span class="divider go-grey-light">|</span>
-							<span translate="{{'COMPANY'}}"></span>: <a href="{{plugin.company_url}}" target="_blank">{{plugin.company}}</a>
+							<span translate="{{::'COMPANY'}}"></span>: <a href="{{plugin.company_url}}" target="_blank">{{plugin.company}}</a>
 							<span class="divider go-grey-light">|</span>
-							<span translate="{{'AUTHOR'}}"></span>: {{plugin.author}}
+							<span translate="{{::'AUTHOR'}}"></span>: {{plugin.author}}
 							<span class="divider go-grey-light">|</span>
-							<a href="{{plugin.plugin_page_url}}" target="_blank" translate="{{'VIEW_DETAILS'}}"></a>
+							<a href="{{plugin.plugin_page_url}}" target="_blank" translate="{{::'VIEW_DETAILS'}}"></a>
 						 </div>
 					</td>
 				</tr>
