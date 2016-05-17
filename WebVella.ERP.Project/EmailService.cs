@@ -17,6 +17,7 @@ namespace WebVella.ERP.Projects
 
 			_settings = new EmailSettings()
 			{
+			Enabled = true,
 			Server = "mail.gmail.com",
 			EnableSsl = false,
 			Port = 25,
