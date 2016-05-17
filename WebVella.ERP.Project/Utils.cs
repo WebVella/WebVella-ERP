@@ -611,6 +611,73 @@ namespace WebVella.ERP.Project
 			return data;
 		}
 
+		public static dynamic ManageRelationWithProject(dynamic data, RecordManager recMan,string itemType) {
+			var relation = (EntityRelation)data.relation;
+			var attachTargetRecords = (List<EntityRecord>)data.attachTargetRecords;
+			var detachTargetRecords = (List<EntityRecord>)data.detachTargetRecords;
+			var originEntity = (Entity)data.originEntity;
+			var targetEntity = (Entity)data.targetEntity;
+			var newOriginRecord = (EntityRecord)data.originRecord;
+			var newProjectRecord = new EntityRecord();
+			var attachedRecordForeachObject = new EntityRecord();
+			var hookedRelationName = "project_1_n_task";
+			var hookedEntityName = "wv_task";
+			if(itemType == "bug") {
+				hookedRelationName = "project_1_n_bug";
+				hookedEntityName = "wv_bug";
+			}
+
+			if (relation.Name == hookedRelationName)
+			{
+
+				#region << Select the project >>
+				{
+					newProjectRecord = new EntityRecord();
+					EntityQuery query = new EntityQuery("wv_project", "code", EntityQuery.QueryEQ("id", (Guid)newOriginRecord["id"]), null, null, null);
+					QueryResponse result = recMan.Find(query);
+					if (!result.Success || result.Object.Data.Count == 0)
+					{
+						throw new Exception("could not select the new project record");
+					}
+					newProjectRecord = result.Object.Data.First();
+				}
+				#endregion
+
+
+				foreach (var attachedRecord in attachTargetRecords)
+				{
+					#region << Select the attached >>
+					{
+						attachedRecordForeachObject = new EntityRecord();
+						EntityQuery query = new EntityQuery(hookedEntityName, "id,number", EntityQuery.QueryEQ("id", (Guid)attachedRecord["id"]), null, null, null);
+						QueryResponse result = recMan.Find(query);
+						if (!result.Success || result.Object.Data.Count == 0)
+						{
+							throw new Exception("could not select the bug record");
+						}
+						attachedRecordForeachObject = result.Object.Data.First();
+					}
+					#endregion
+
+					var patchObject = new EntityRecord();
+					patchObject["id"] = attachedRecordForeachObject["id"];
+					patchObject["code"] = newProjectRecord["code"] + "-T" + attachedRecordForeachObject["number"];
+					if(itemType == "bug") {
+					patchObject["code"] = newProjectRecord["code"] + "-B" + attachedRecordForeachObject["number"];
+					}
+					var patchResult = recMan.UpdateRecord(hookedEntityName, patchObject);
+					if (!patchResult.Success)
+					{
+						//nothing for now
+					}
+				}
+			}
+
+
+			return data;		
+			
+		}
+
 		public static void UpdateBugActivity(dynamic data, RecordManager recMan)
 		{
 

@@ -1323,11 +1323,9 @@ catch(Exception ex) {
 {
 	EntityQuery query = new EntityQuery("entity_name", "fields csv or * for all", EntityQuery.QueryEQ("id", new Guid("")), null, null, null);
 	QueryResponse result = recMan.Find(query);
-	if (result.Object.Data.Count == 0)
+	if (!result.Success)
 	{
-		response.Errors.Add(new ErrorModel { Message = "Origin record was not found. Id=[" + model.OriginFieldRecordId + "]", Key = "originFieldRecordId" });
-		response.Success = false;
-		return DoResponse(response);
+		throw new Exception("");
 	}
 }
 #endregion

@@ -2645,7 +2645,7 @@
 			var siteAreas = ngCtrl.areas;
 			var entityList = ngCtrl.entityList;
 			var currentEntity = ngCtrl.entity;
-			var currentParent = ngCtrl.parent;
+			var currentParent = ngCtrl.parentView;
 			var currentAreaName = ngCtrl.stateParams.areaName;
 			var currentEntityName = ngCtrl.stateParams.entityName;
 			var currentListDataName = ngCtrl.stateParams.listName;
