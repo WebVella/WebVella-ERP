@@ -108,6 +108,7 @@
 				controllerAs: "popupCtrl",
 				//size: "lg",
 				resolve: {
+					recordData:function(){ return $scope.ngCtrl.view.data[0];},
 					taskPMTemplateCtrl: function () { return taskPMTemplateCtrl; },
 					myProjects: function(){
 						var defer = $q.defer();
@@ -174,10 +175,10 @@
 
 	//// Modal Controllers
 	changeProjectMilestoneModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'taskPMTemplateCtrl', 
-		'webvellaCoreService','$translate','myProjects','myMilestones'];
+		'webvellaCoreService','$translate','myProjects','myMilestones','recordData'];
 
 	function changeProjectMilestoneModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, taskPMTemplateCtrl, 
-		webvellaCoreService,$translate,myProjects,myMilestones) {
+		webvellaCoreService,$translate,myProjects,myMilestones,recordData) {
 		
 		var popupCtrl = this;
 		var parentScope = taskPMTemplateCtrl;
@@ -252,7 +253,7 @@
 				break;
 			   }
 			}
-	
+			recordData["code"] = response.object.data[0]["code"];
 			$uibModalInstance.close('success');
 		}
 

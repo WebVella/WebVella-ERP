@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNet.Http;
+using Microsoft.AspNet.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
@@ -99,7 +102,9 @@ namespace WebVella.ERP.Project
 		{
 			var record = (EntityRecord)data.record;
 			var createResult = (QueryResponse)data.result;
+			var controller = (Controller)data.controller;
 			var createdRecord = createResult.Object.Data[0];
+			var patchObject = new EntityRecord();
 			Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-tasks go-purple'></i> task #" + createdRecord["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], (Guid)createdRecord["id"], null);
 
 			#region << Add the task owner and creator in the watch list>>
@@ -130,12 +135,13 @@ namespace WebVella.ERP.Project
 			#endregion
 
 			#region << Generate the code field value >>
+			{
 			var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["project_id"]);
 			var query = new EntityQuery("wv_project", "*", filterObj, null, null, null);
 			var result = recMan.Find(query);
 			if (result.Success && result.Object.Data.Any())
 			{
-				var patchObject = new EntityRecord();
+				patchObject = new EntityRecord();
 				patchObject["id"] = (Guid)createdRecord["id"];
 				patchObject["code"] = result.Object.Data[0]["code"] + "-T" + createdRecord["number"];
 				var patchResult = recMan.UpdateRecord("wv_task", patchObject);
@@ -144,8 +150,62 @@ namespace WebVella.ERP.Project
 					throw new Exception(patchResult.Message);
 				}
 			}
+			}
 			#endregion
 
+			#endregion
+
+
+			var creatorUsername = "";
+			#region << Get username of the creator>>
+			{
+				EntityQuery query = new EntityQuery("user", "username", EntityQuery.QueryEQ("id", (Guid)createdRecord["created_by"]), null, null, null);
+				QueryResponse result = recMan.Find(query);
+				if (!result.Success)
+				{
+					throw new Exception("Cannot get the username of the commentator");
+				}
+				creatorUsername = (string)result.Object.Data[0]["username"];
+			}
+			#endregion
+
+			#region << Sent email notification>>
+			{
+				//At this moment only if the project manager is different than the item creator should get an email
+				if ((Guid)createdRecord["created_by"] != (Guid)createdRecord["owner_id"])
+				{
+					var emailService = new EmailService();
+					var emailSubjectParameters = new Dictionary<string, string>();
+					emailSubjectParameters["code"] = (string)patchObject["code"];
+					emailSubjectParameters["subject"] = (string)createdRecord["subject"];
+
+					var subject = Regex.Replace(EmailTemplates.NewBugOrTaskNotificationSubject, @"\{(.+?)\}", m => emailSubjectParameters[m.Groups[1].Value]);
+
+					var emailContentParameters = new Dictionary<string, string>();
+					emailContentParameters["baseUrl"] = controller.HttpContext.Request.Scheme + "://" + controller.HttpContext.Request.Host.Value;
+					emailContentParameters["subject"] = subject;
+					emailContentParameters["type"] = "task";
+					emailContentParameters["creator"] = creatorUsername;
+					emailContentParameters["taskOrBugUrl"] = emailContentParameters["baseUrl"] + "/#/areas/projects/wv_task/view-general/sb/general/" + createdRecord["id"];
+					emailContentParameters["taskOrBugDescription"] = (string)createdRecord["description"];
+
+					var content = Regex.Replace(EmailTemplates.NewBugOrTaskNotificationContent, @"\{(.+?)\}", m => emailContentParameters[m.Groups[1].Value]);
+
+					var resepients = new List<string>();
+
+					#region << Get pm email>>
+					{
+						EntityQuery query = new EntityQuery("user", "email", EntityQuery.QueryEQ("id", (Guid)createdRecord["owner_id"]), null, null, null);
+						QueryResponse result = recMan.Find(query);
+						if (!result.Success)
+						{
+							throw new Exception("Cannot get the username of the commentator");
+						}
+						emailService.SendEmail((string)result.Object.Data[0]["email"], subject, content);
+					}
+					#endregion
+				}
+			}
 			#endregion
 
 		}
@@ -260,7 +320,9 @@ namespace WebVella.ERP.Project
 		{
 			var record = (EntityRecord)data.record;
 			var createResult = (QueryResponse)data.result;
+			var controller = (Controller)data.controller;
 			var createdRecord = createResult.Object.Data[0];
+			var patchObject = new EntityRecord();
 			Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-bug go-red'></i> bug #" + createdRecord["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], null, (Guid)createdRecord["id"]);
 
 			#region << Add the task owner and creator in the watch list>>
@@ -293,21 +355,76 @@ namespace WebVella.ERP.Project
 			#endregion
 
 			#region << Generate the code field value >>
-			var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["project_id"]);
-			var query = new EntityQuery("wv_project", "*", filterObj, null, null, null);
-			var result = recMan.Find(query);
-			if (result.Success && result.Object.Data.Any())
 			{
-				var patchObject = new EntityRecord();
-				patchObject["id"] = (Guid)createdRecord["id"];
-				patchObject["code"] = result.Object.Data[0]["code"] + "-B" + createdRecord["number"];
-				var patchResult = recMan.UpdateRecord("wv_bug", patchObject);
-				if (!patchResult.Success)
+				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["project_id"]);
+				var query = new EntityQuery("wv_project", "*", filterObj, null, null, null);
+				var result = recMan.Find(query);
+				if (result.Success && result.Object.Data.Any())
 				{
-					throw new Exception(patchResult.Message);
+					patchObject = new EntityRecord();
+					patchObject["id"] = (Guid)createdRecord["id"];
+					patchObject["code"] = result.Object.Data[0]["code"] + "-B" + createdRecord["number"];
+					var patchResult = recMan.UpdateRecord("wv_bug", patchObject);
+					if (!patchResult.Success)
+					{
+						throw new Exception(patchResult.Message);
+					}
 				}
 			}
 			#endregion
+
+			var creatorUsername = "";
+			#region << Get username of the creator>>
+			{
+				EntityQuery query = new EntityQuery("user", "username", EntityQuery.QueryEQ("id", (Guid)createdRecord["created_by"]), null, null, null);
+				QueryResponse result = recMan.Find(query);
+				if (!result.Success)
+				{
+					throw new Exception("Cannot get the username of the commentator");
+				}
+				creatorUsername = (string)result.Object.Data[0]["username"];
+			}
+			#endregion
+
+			#region << Sent email notification>>
+			{
+				if ((Guid)createdRecord["created_by"] != (Guid)createdRecord["owner_id"])
+				{
+					//At this moment only if the project manager is different than the item creator should get an email
+					var emailService = new EmailService();
+					var emailSubjectParameters = new Dictionary<string, string>();
+					emailSubjectParameters["code"] = (string)patchObject["code"];
+					emailSubjectParameters["subject"] = (string)createdRecord["subject"];
+
+					var subject = Regex.Replace(EmailTemplates.NewCommentNotificationSubject, @"\{(.+?)\}", m => emailSubjectParameters[m.Groups[1].Value]);
+
+					var emailContentParameters = new Dictionary<string, string>();
+					emailContentParameters["baseUrl"] = controller.HttpContext.Request.Scheme + "://" + controller.HttpContext.Request.Host.Value;
+					emailContentParameters["subject"] = subject;
+					emailContentParameters["type"] = "bug";
+					emailContentParameters["creator"] = creatorUsername;
+					emailContentParameters["taskOrBugUrl"] = emailContentParameters["baseUrl"] + "/#/areas/projects/wv_bug/view-general/sb/general/" + createdRecord["id"];
+					emailContentParameters["taskOrBugDescription"] = (string)createdRecord["description"];
+
+					var content = Regex.Replace(EmailTemplates.NewCommentNotificationContent, @"\{(.+?)\}", m => emailContentParameters[m.Groups[1].Value]);
+
+					var resepients = new List<string>();
+
+					#region << Get pm email>>
+					{
+						EntityQuery query = new EntityQuery("user", "email", EntityQuery.QueryEQ("id", (Guid)createdRecord["owner_id"]), null, null, null);
+						QueryResponse result = recMan.Find(query);
+						if (!result.Success)
+						{
+							throw new Exception("Cannot get the username of the commentator");
+						}
+						emailService.SendEmail((string)result.Object.Data[0]["email"], subject, content);
+					}
+					#endregion
+				}
+			}
+			#endregion
+
 		}
 		#endregion
 
@@ -378,18 +495,20 @@ namespace WebVella.ERP.Project
 		{
 			var record = (EntityRecord)data.record;
 			var createResult = (QueryResponse)data.result;
+			var controller = (Controller)data.controller;
 			var createdRecord = createResult.Object.Data[0];
 			var task = new EntityRecord();
 			var bug = new EntityRecord();
+			#region << Init >>
 			if (createdRecord["task_id"] != null)
 			{
 				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["task_id"]);
-				var query = new EntityQuery("wv_task", "id,number,subject,project_id,$$user_n_n_task_watchers.id,$$user_n_n_task_watchers.email,$$project_1_n_task.code", filterObj, null, null, null);
+				var query = new EntityQuery("wv_task", "id,code,subject,description,project_id,$$user_n_n_task_watchers.id,$$user_n_n_task_watchers.email,$$project_1_n_task.code", filterObj, null, null, null);
 				var result = recMan.Find(query);
 				if (result.Success)
 				{
 					task = result.Object.Data[0];
-					Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for task #" + task["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", null, (Guid)task["project_id"], (Guid)task["id"], null);
+					Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for task [" + task["code"] + "] <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", null, (Guid)task["project_id"], (Guid)task["id"], null);
 				}
 				else
 				{
@@ -399,18 +518,19 @@ namespace WebVella.ERP.Project
 			else if (createdRecord["bug_id"] != null)
 			{
 				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["bug_id"]);
-				var query = new EntityQuery("wv_bug", "id,number,subject,project_id,$$user_n_n_bug_watchers.id,$$user_n_n_bug_watchers.email,$$project_1_n_bug.code", filterObj, null, null, null);
+				var query = new EntityQuery("wv_bug", "id,code,subject,description,project_id,$$user_n_n_bug_watchers.id,$$user_n_n_bug_watchers.email,$$project_1_n_bug.code", filterObj, null, null, null);
 				var result = recMan.Find(query);
 				if (result.Success)
 				{
 					bug = result.Object.Data[0];
-					Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for bug #" + bug["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", null, (Guid)bug["project_id"], null, (Guid)bug["id"]);
+					Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for bug [" + bug["code"] + "] <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", null, (Guid)bug["project_id"], null, (Guid)bug["id"]);
 				}
 				else
 				{
 					throw new Exception(result.Message);
 				}
 			}
+			#endregion
 
 			var recepients = new List<string>();
 			#region << Add the comment creator to the watch list if he is not there, Generate recipients list >>
@@ -470,6 +590,19 @@ namespace WebVella.ERP.Project
 			}
 			#endregion
 
+			var commentatorUsername = "";
+			#region << Get username of the commentator>>
+			{
+				EntityQuery query = new EntityQuery("user", "username", EntityQuery.QueryEQ("id", (Guid)createdRecord["created_by"]), null, null, null);
+				QueryResponse result = recMan.Find(query);
+				if (!result.Success)
+				{
+					throw new Exception("Cannot get the username of the commentator");
+				}
+				commentatorUsername = (string)result.Object.Data[0]["username"];
+			}
+			#endregion
+
 			#region << Generate notifications to watch list>>
 			var emailService = new EmailService();
 			if (recepients.Count > 0)
@@ -478,15 +611,45 @@ namespace WebVella.ERP.Project
 				{
 					if (createdRecord["task_id"] != null)
 					{
-						var subject = "[Task] [New comment] (" + ((List<EntityRecord>)task["$project_1_n_task"])[0]["code"] + "-" + task["number"] + ") " + task["subject"];
-						var content = "<div>Comment contents:</div><div>" + createdRecord["content"] + "</div>";
+						var emailSubjectParameters = new Dictionary<string, string>();
+						emailSubjectParameters["code"] = (string)task["code"];
+						emailSubjectParameters["subject"] = (string)task["subject"];
+
+						var subject = Regex.Replace(EmailTemplates.NewCommentNotificationSubject, @"\{(.+?)\}", m => emailSubjectParameters[m.Groups[1].Value]);
+
+						var emailContentParameters = new Dictionary<string, string>();
+						emailContentParameters["baseUrl"] = controller.HttpContext.Request.Scheme + "://" + controller.HttpContext.Request.Host.Value;
+						emailContentParameters["subject"] = subject;
+						emailContentParameters["type"] = "task";
+						emailContentParameters["creator"] = commentatorUsername;
+						emailContentParameters["taskOrBugUrl"] = emailContentParameters["baseUrl"] + "/#/areas/projects/wv_task/view-general/sb/general/" + createdRecord["task_id"];
+						emailContentParameters["commentContent"] = (string)createdRecord["content"];
+						emailContentParameters["taskOrBugDescription"] = (string)task["description"];
+
+						var content = Regex.Replace(EmailTemplates.NewCommentNotificationContent, @"\{(.+?)\}", m => emailContentParameters[m.Groups[1].Value]);
+
 						emailService.SendEmail(recepients.ToArray(), subject, content);
 					}
 					else if (createdRecord["bug_id"] != null)
 					{
-						var subject = "[Bug] [New comment] (" + ((List<EntityRecord>)task["$project_1_n_bug"])[0]["code"] + "-" + task["number"] + ") " + task["subject"];
-						var content = "<div>Comment contents:</div><div>" + createdRecord["content"] + "</div>";
-						emailService.SendEmail(recepients.ToArray(), "New comment on bug", content);
+						var emailSubjectParameters = new Dictionary<string, string>();
+						emailSubjectParameters["code"] = (string)bug["code"];
+						emailSubjectParameters["subject"] = (string)bug["subject"];
+
+						var subject = Regex.Replace(EmailTemplates.NewCommentNotificationSubject, @"\{(.+?)\}", m => emailSubjectParameters[m.Groups[1].Value]);
+
+						var emailContentParameters = new Dictionary<string, string>();
+						emailContentParameters["baseUrl"] = controller.HttpContext.Request.Scheme + "://" + controller.HttpContext.Request.Host.Value;
+						emailContentParameters["subject"] = subject;
+						emailContentParameters["type"] = "bug";
+						emailContentParameters["creator"] = commentatorUsername;
+						emailContentParameters["taskOrBugUrl"] = emailContentParameters["baseUrl"] + "/#/areas/projects/wv_bug/view-general/sb/general/" + createdRecord["bug_id"];
+						emailContentParameters["commentContent"] = (string)createdRecord["content"];
+						emailContentParameters["taskOrBugDescription"] = (string)bug["description"];
+
+						var content = Regex.Replace(EmailTemplates.NewCommentNotificationContent, @"\{(.+?)\}", m => emailContentParameters[m.Groups[1].Value]);
+
+						emailService.SendEmail(recepients.ToArray(), subject, content);
 					}
 				}
 				catch (Exception ex)
@@ -502,62 +665,16 @@ namespace WebVella.ERP.Project
 		#endregion
 
 		#region << Relation >>
-		[WebHook("manage_relation_pre_save", "wv_bug")]
-		public dynamic ManageRelationPreSave(dynamic data)
+		[WebHook("manage_relation_pre_save", "wv_task")]
+		public dynamic TaskManageRelationPreSave(dynamic data)
 		{
-			var relation = (EntityRelation)data.relation;
-			var attachTargetRecords = (List<EntityRecord>)data.attachTargetRecords;
-			var detachTargetRecords = (List<EntityRecord>)data.detachTargetRecords;
-			var originEntity = (Entity)data.originEntity;
-			var targetEntity = (Entity)data.targetEntity;
-			var newOriginRecord = (EntityRecord)data.originRecord;
-			var newProjectRecord = new EntityRecord();
-			var attachedRecordForeachObject = new EntityRecord();
-			if (relation.Name == "project_1_n_bug")
-			{
+			return Utils.ManageRelationWithProject(data, recMan, "bug");
+		}
 
-				#region << Select the project >>
-				{
-					newProjectRecord = new EntityRecord();
-					EntityQuery query = new EntityQuery("wv_project", "code", EntityQuery.QueryEQ("id", (Guid)newOriginRecord["id"]), null, null, null);
-					QueryResponse result = recMan.Find(query);
-					if (!result.Success || result.Object.Data.Count == 0)
-					{
-						throw new Exception("could not select the new project record");
-					}
-					newProjectRecord = result.Object.Data.First();
-				}
-				#endregion
-
-
-				foreach (var attachedRecord in attachTargetRecords)
-				{
-					#region << Select the attached >>
-					{
-						attachedRecordForeachObject = new EntityRecord();
-						EntityQuery query = new EntityQuery("wv_bug", "id,number", EntityQuery.QueryEQ("id", (Guid)attachedRecord["id"]), null, null, null);
-						QueryResponse result = recMan.Find(query);
-						if (!result.Success || result.Object.Data.Count == 0)
-						{
-							throw new Exception("could not select the bug record");
-						}
-						attachedRecordForeachObject = result.Object.Data.First();
-					}
-					#endregion
-
-					var patchObject = new EntityRecord();
-					patchObject["id"] = attachedRecordForeachObject["id"];
-					patchObject["code"] = newProjectRecord["code"] + "-B" + attachedRecordForeachObject["number"];
-					var patchResult = recMan.UpdateRecord("wv_bug", patchObject);
-					if (!patchResult.Success)
-					{
-						//nothing for now
-					}
-				}
-			}
-
-
-			return data;
+		[WebHook("manage_relation_pre_save", "wv_bug")]
+		public dynamic BugManageRelationPreSave(dynamic data)
+		{
+			return Utils.ManageRelationWithProject(data, recMan, "bug");
 		}
 
 		#endregion

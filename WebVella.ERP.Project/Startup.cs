@@ -95,7 +95,8 @@ namespace WebVella.ERP.Project
 						var crmPluginFound = false;
 						foreach (var plugin in installedPlugins)
 						{
-							switch(plugin.Name) {
+							switch (plugin.Name)
+							{
 								case "webvella-crm":
 									crmPluginFound = true;
 									break;
@@ -176,7 +177,7 @@ namespace WebVella.ERP.Project
 									area["name"] = "projects";
 									area["label"] = "Projects";
 									area["icon_name"] = "product-hunt";
-									area["color"] = "deep-purple";
+									area["color"] = "indigo";
 									area["folder"] = "Workplace";
 									area["weight"] = 5;
 									var areaRoles = new List<Guid>();
@@ -1871,19 +1872,20 @@ namespace WebVella.ERP.Project
 
 										#region << Queries >>
 										{
-										if(updateListInput.Query == null) {
-											updateListInput.Query = new InputRecordListQuery();
-										}
-										updateListInput.Query.FieldName = null;
-										updateListInput.Query.FieldValue = null;
-										updateListInput.Query.QueryType = "AND"; //AND,OR,EQ,NOT,LT,LTE,GT,GTE,CONTAINS,STARTSWITH
-										updateListInput.Query.SubQueries = new List<InputRecordListQuery>();
-										var subQuery = new InputRecordListQuery();
-										subQuery.FieldName = "name";
-										subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""name"", ""default"": null, ""settings"":{}}";
-										subQuery.QueryType = "CONTAINS";
-										subQuery.SubQueries = new List<InputRecordListQuery>();
-										updateListInput.Query.SubQueries.Add(subQuery);
+											if (updateListInput.Query == null)
+											{
+												updateListInput.Query = new InputRecordListQuery();
+											}
+											updateListInput.Query.FieldName = null;
+											updateListInput.Query.FieldValue = null;
+											updateListInput.Query.QueryType = "AND"; //AND,OR,EQ,NOT,LT,LTE,GT,GTE,CONTAINS,STARTSWITH
+											updateListInput.Query.SubQueries = new List<InputRecordListQuery>();
+											var subQuery = new InputRecordListQuery();
+											subQuery.FieldName = "name";
+											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""name"", ""default"": null, ""settings"":{}}";
+											subQuery.QueryType = "CONTAINS";
+											subQuery.SubQueries = new List<InputRecordListQuery>();
+											updateListInput.Query.SubQueries.Add(subQuery);
 										}
 										#endregion
 										{
@@ -9421,10 +9423,10 @@ namespace WebVella.ERP.Project
 									var viewColumn = new InputRecordViewColumn();
 									var viewItem = new InputRecordViewFieldItem();
 									var viewItemFromRelation = new InputRecordViewRelationFieldItem();
-									//General view fields
 
 									//Convert recordList to recordListInput
 									updateViewInput = updateView.DynamicMapTo<InputRecordView>();
+									updateViewInput.DynamicHtmlTemplate="/plugins/webvella-projects/templates/project-dashboard.html";
 
 									#region << Get the header Region >>
 									var headerRegion = new InputRecordViewRegion();
@@ -9702,62 +9704,62 @@ namespace WebVella.ERP.Project
 									//Convert recordList to recordListInput
 									updateViewInput = updateView.DynamicMapTo<InputRecordView>();
 
-										#region << Details >>
-										updateViewInput.Label = "[{code}] {subject}";
-										updateViewInput.IconName = "bug";
-										updateViewInput.ServiceCode = "";
-										#endregion
+									#region << Details >>
+									updateViewInput.Label = "[{code}] {subject}";
+									updateViewInput.IconName = "bug";
+									updateViewInput.ServiceCode = "";
+									#endregion
 
-										#region << Get the header Region >>
-										var headerRegion = new InputRecordViewRegion();
-										foreach (var region in updateViewInput.Regions)
+									#region << Get the header Region >>
+									var headerRegion = new InputRecordViewRegion();
+									foreach (var region in updateViewInput.Regions)
+									{
+										if (region.Name == "header")
 										{
-											if (region.Name == "header")
-											{
-												headerRegion = region;
-											}
+											headerRegion = region;
 										}
-										headerRegion.Sections = new List<InputRecordViewSection>();
-										#endregion
+									}
+									headerRegion.Sections = new List<InputRecordViewSection>();
+									#endregion
 
-										#region << Section >>
-										viewSection = new InputRecordViewSection();
-										viewSection.Id = Guid.NewGuid();
-										viewSection.Name = "details";
-										viewSection.Label = "Details";
-										viewSection.ShowLabel = false;
-										viewSection.CssClass = "";
-										viewSection.Collapsed = false;
-										viewSection.TabOrder = "left-right";
-										viewSection.Weight = 1;
-										viewSection.Rows = new List<InputRecordViewRow>();
+									#region << Section >>
+									viewSection = new InputRecordViewSection();
+									viewSection.Id = Guid.NewGuid();
+									viewSection.Name = "details";
+									viewSection.Label = "Details";
+									viewSection.ShowLabel = false;
+									viewSection.CssClass = "";
+									viewSection.Collapsed = false;
+									viewSection.TabOrder = "left-right";
+									viewSection.Weight = 1;
+									viewSection.Rows = new List<InputRecordViewRow>();
 
-										#region << Row 1 >>
-										viewRow = new InputRecordViewRow();
-										viewRow.Id = Guid.NewGuid();
-										viewRow.Weight = 1;
-										viewRow.Columns = new List<InputRecordViewColumn>();
+									#region << Row 1 >>
+									viewRow = new InputRecordViewRow();
+									viewRow.Id = Guid.NewGuid();
+									viewRow.Weight = 1;
+									viewRow.Columns = new List<InputRecordViewColumn>();
 
-										#region << Column 1 >>
-										viewColumn = new InputRecordViewColumn();
-										viewColumn.GridColCount = 8;
-										viewColumn.Items = new List<InputRecordViewItemBase>();
+									#region << Column 1 >>
+									viewColumn = new InputRecordViewColumn();
+									viewColumn.GridColCount = 8;
+									viewColumn.Items = new List<InputRecordViewItemBase>();
 
 
-										#region << subject >>
-										{
-											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "subject").Id;
-											viewItem.FieldName = "subject";
-											viewItem.Type = "field";
-											viewColumn.Items.Add(viewItem);
-										}
-										#endregion
+									#region << subject >>
+									{
+										viewItem = new InputRecordViewFieldItem();
+										viewItem.EntityId = updateViewEntity.Id;
+										viewItem.EntityName = updateViewEntity.Name;
+										viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "subject").Id;
+										viewItem.FieldName = "subject";
+										viewItem.Type = "field";
+										viewColumn.Items.Add(viewItem);
+									}
+									#endregion
 
-										#region << project name from Relation >>
-										{
+									#region << project name from Relation >>
+									{
 										var targetEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
 										var targetRelation = relMan.Read("project_1_n_bug").Object;
 										viewItemFromRelation = new InputRecordViewRelationFieldItem();
@@ -9769,122 +9771,122 @@ namespace WebVella.ERP.Project
 										viewItemFromRelation.FieldLabel = "Project";
 										viewItemFromRelation.FieldPlaceholder = "";
 										viewItemFromRelation.FieldRequired = true;
-										viewItemFromRelation.FieldLookupList = "lookup";		
+										viewItemFromRelation.FieldLookupList = "lookup";
 										viewItemFromRelation.RelationId = targetRelation.Id;
 										viewItemFromRelation.RelationName = targetRelation.Name;
-										viewColumn.Items.Add(viewItemFromRelation);	
-										}
-										#endregion
+										viewColumn.Items.Add(viewItemFromRelation);
+									}
+									#endregion
 
-										#region << description >>
-										{
-											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "description").Id;
-											viewItem.FieldName = "description";
-											viewItem.Type = "field";
-											viewColumn.Items.Add(viewItem);
-										}
-										#endregion
+									#region << description >>
+									{
+										viewItem = new InputRecordViewFieldItem();
+										viewItem.EntityId = updateViewEntity.Id;
+										viewItem.EntityName = updateViewEntity.Name;
+										viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "description").Id;
+										viewItem.FieldName = "description";
+										viewItem.Type = "field";
+										viewColumn.Items.Add(viewItem);
+									}
+									#endregion
 
-										//Save column
-										viewRow.Columns.Add(viewColumn);
-										#endregion
+									//Save column
+									viewRow.Columns.Add(viewColumn);
+									#endregion
 
-										#region << Column 2 >>
-										viewColumn = new InputRecordViewColumn();
-										viewColumn.GridColCount = 4;
-										viewColumn.Items = new List<InputRecordViewItemBase>();
+									#region << Column 2 >>
+									viewColumn = new InputRecordViewColumn();
+									viewColumn.GridColCount = 4;
+									viewColumn.Items = new List<InputRecordViewItemBase>();
 
-										#region << code >>
-										{
-											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "code").Id;
-											viewItem.FieldName = "code";
-											viewItem.Type = "field";
-											viewColumn.Items.Add(viewItem);
-										}
-										#endregion
+									#region << code >>
+									{
+										viewItem = new InputRecordViewFieldItem();
+										viewItem.EntityId = updateViewEntity.Id;
+										viewItem.EntityName = updateViewEntity.Name;
+										viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "code").Id;
+										viewItem.FieldName = "code";
+										viewItem.Type = "field";
+										viewColumn.Items.Add(viewItem);
+									}
+									#endregion
 
-										#region << status >>
-										{
-											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "status").Id;
-											viewItem.FieldName = "status";
-											viewItem.Type = "field";
-											viewColumn.Items.Add(viewItem);
-										}
-										#endregion
+									#region << status >>
+									{
+										viewItem = new InputRecordViewFieldItem();
+										viewItem.EntityId = updateViewEntity.Id;
+										viewItem.EntityName = updateViewEntity.Name;
+										viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "status").Id;
+										viewItem.FieldName = "status";
+										viewItem.Type = "field";
+										viewColumn.Items.Add(viewItem);
+									}
+									#endregion
 
-										#region << priority >>
-										{
-											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "priority").Id;
-											viewItem.FieldName = "priority";
-											viewItem.Type = "field";
-											viewColumn.Items.Add(viewItem);
-										}
-										#endregion
+									#region << priority >>
+									{
+										viewItem = new InputRecordViewFieldItem();
+										viewItem.EntityId = updateViewEntity.Id;
+										viewItem.EntityName = updateViewEntity.Name;
+										viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "priority").Id;
+										viewItem.FieldName = "priority";
+										viewItem.Type = "field";
+										viewColumn.Items.Add(viewItem);
+									}
+									#endregion
 
-										#region << owner >>
-										{
-											var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
-											var targetRelation = relMan.Read("user_1_n_bug_owner").Object;
-											viewItemFromRelation = new InputRecordViewRelationFieldItem();
-											viewItemFromRelation.EntityId = targetEntity.Id;
-											viewItemFromRelation.EntityName = targetEntity.Name;
-											viewItemFromRelation.Type = "fieldFromRelation";
-											viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
-											viewItemFromRelation.FieldName = "username";
-											viewItemFromRelation.FieldLabel = "Owner";
-											viewItemFromRelation.FieldPlaceholder = "";
-											viewItemFromRelation.FieldRequired = true;
-											viewItemFromRelation.FieldLookupList = "lookup";
-											viewItemFromRelation.RelationId = targetRelation.Id;
-											viewItemFromRelation.RelationName = targetRelation.Name;
-											viewColumn.Items.Add(viewItemFromRelation);
-										}
-										#endregion
+									#region << owner >>
+									{
+										var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+										var targetRelation = relMan.Read("user_1_n_bug_owner").Object;
+										viewItemFromRelation = new InputRecordViewRelationFieldItem();
+										viewItemFromRelation.EntityId = targetEntity.Id;
+										viewItemFromRelation.EntityName = targetEntity.Name;
+										viewItemFromRelation.Type = "fieldFromRelation";
+										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
+										viewItemFromRelation.FieldName = "username";
+										viewItemFromRelation.FieldLabel = "Owner";
+										viewItemFromRelation.FieldPlaceholder = "";
+										viewItemFromRelation.FieldRequired = true;
+										viewItemFromRelation.FieldLookupList = "lookup";
+										viewItemFromRelation.RelationId = targetRelation.Id;
+										viewItemFromRelation.RelationName = targetRelation.Name;
+										viewColumn.Items.Add(viewItemFromRelation);
+									}
+									#endregion
 
 
-										#region << watchers >>
-										{
-											var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
-											var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
-											viewItemFromRelation = new InputRecordViewRelationFieldItem();
-											viewItemFromRelation.EntityId = targetEntity.Id;
-											viewItemFromRelation.EntityName = targetEntity.Name;
-											viewItemFromRelation.Type = "fieldFromRelation";
-											viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
-											viewItemFromRelation.FieldName = "username";
-											viewItemFromRelation.FieldLabel = "Watchers";
-											viewItemFromRelation.FieldPlaceholder = "";
-											viewItemFromRelation.FieldRequired = true;
-											viewItemFromRelation.FieldLookupList = "lookup";
-											viewItemFromRelation.RelationId = targetRelation.Id;
-											viewItemFromRelation.RelationName = targetRelation.Name;
-											viewColumn.Items.Add(viewItemFromRelation);
-										}
-										#endregion
-										//Save column
-										viewRow.Columns.Add(viewColumn);
-										#endregion
+									#region << watchers >>
+									{
+										var targetEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+										var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
+										viewItemFromRelation = new InputRecordViewRelationFieldItem();
+										viewItemFromRelation.EntityId = targetEntity.Id;
+										viewItemFromRelation.EntityName = targetEntity.Name;
+										viewItemFromRelation.Type = "fieldFromRelation";
+										viewItemFromRelation.FieldId = targetEntity.Fields.Single(x => x.Name == "username").Id;
+										viewItemFromRelation.FieldName = "username";
+										viewItemFromRelation.FieldLabel = "Watchers";
+										viewItemFromRelation.FieldPlaceholder = "";
+										viewItemFromRelation.FieldRequired = true;
+										viewItemFromRelation.FieldLookupList = "lookup";
+										viewItemFromRelation.RelationId = targetRelation.Id;
+										viewItemFromRelation.RelationName = targetRelation.Name;
+										viewColumn.Items.Add(viewItemFromRelation);
+									}
+									#endregion
+									//Save column
+									viewRow.Columns.Add(viewColumn);
+									#endregion
 
-										//Save row
-										viewSection.Rows.Add(viewRow);
-										#endregion
+									//Save row
+									viewSection.Rows.Add(viewRow);
+									#endregion
 
-										//Save section
-										headerRegion.Sections.Add(viewSection);
+									//Save section
+									headerRegion.Sections.Add(viewSection);
 
-										#endregion
+									#endregion
 
 									#region << Sidebar >>
 									var sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
@@ -10153,7 +10155,7 @@ namespace WebVella.ERP.Project
 								#region << Create Sample Task >>
 								{
 									var sampleRecord = new EntityRecord();
-									sampleRecord["id"] = new Guid("42b881fc-d93f-46cf-b39d-391cd42fd2f6");
+									sampleRecord["id"] = new Guid("70515386-7612-480d-99e6-76b97ca4190a");
 									sampleRecord["subject"] = "Corporate identity specification";
 									sampleRecord["owner_id"] = new Guid("b646c5d4-acc8-4404-af77-6786b81bee05");
 									sampleRecord["milestone_id"] = new Guid("42b881fc-d93f-46cf-b39d-391cd42fd2f6");
@@ -10175,10 +10177,31 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 
+								#region << Add watchers to the task >>
+								//Creator
+								{
+									var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
+									var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, SystemIds.FirstUserId, new Guid("70515386-7612-480d-99e6-76b97ca4190a"));
+									if (!createRelationNtoNResponse.Success)
+									{
+										throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
+									}
+								}
+								// Project manager
+								{
+									var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
+									var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, new Guid("b646c5d4-acc8-4404-af77-6786b81bee05"), new Guid("70515386-7612-480d-99e6-76b97ca4190a"));
+									if (!createRelationNtoNResponse.Success)
+									{
+										throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
+									}
+								}
+								#endregion
+
 								#region << Create Sample BUG >>
 								{
 									var sampleRecord = new EntityRecord();
-									sampleRecord["id"] = new Guid("42b881fc-d93f-46cf-b39d-391cd42fd2f6");
+									sampleRecord["id"] = new Guid("18934091-b4e4-4db4-8beb-678cd29b6916");
 									sampleRecord["subject"] = "Sample bug subject";
 									sampleRecord["owner_id"] = new Guid("b646c5d4-acc8-4404-af77-6786b81bee05");
 									sampleRecord["milestone_id"] = new Guid("42b881fc-d93f-46cf-b39d-391cd42fd2f6");
@@ -10193,6 +10216,28 @@ namespace WebVella.ERP.Project
 									if (!createSampleRecordResult.Success)
 									{
 										throw new Exception("System error 10060. Create sample bug. Message:" + createSampleRecordResult.Message);
+									}
+								}
+								#endregion
+
+
+								#region << Add watchers to the bug >>
+								//Creator
+								{
+									var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
+									var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, SystemIds.FirstUserId, new Guid("18934091-b4e4-4db4-8beb-678cd29b6916"));
+									if (!createRelationNtoNResponse.Success)
+									{
+										throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
+									}
+								}
+								// Project manager
+								{
+									var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
+									var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, new Guid("b646c5d4-acc8-4404-af77-6786b81bee05"), new Guid("18934091-b4e4-4db4-8beb-678cd29b6916"));
+									if (!createRelationNtoNResponse.Success)
+									{
+										throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
 									}
 								}
 								#endregion
