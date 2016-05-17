@@ -8911,7 +8911,7 @@ namespace WebVella.ERP.Project
 										createListInput.IconName = "comments-o";
 										createListInput.VisibleColumnsCount = 5;
 										createListInput.ColumnWidthsCSV = null;
-										createListInput.PageSize = 10;
+										createListInput.PageSize = 0;
 										createListInput.DynamicHtmlTemplate = @"\plugins\webvella-projects\templates\task-comments.html";
 										createListInput.DataSourceUrl = null;
 										createListInput.ServiceCode = @"/plugins/webvella-projects/providers/task-comments.service.js";
@@ -9049,7 +9049,7 @@ namespace WebVella.ERP.Project
 										createListInput.IconName = "comments-o";
 										createListInput.VisibleColumnsCount = 5;
 										createListInput.ColumnWidthsCSV = null;
-										createListInput.PageSize = 10;
+										createListInput.PageSize = 0;
 										createListInput.DynamicHtmlTemplate = @"\plugins\webvella-projects\templates\bug-comments.html";
 										createListInput.DataSourceUrl = null;
 										createListInput.ServiceCode = @"/plugins/webvella-projects/providers/bug-comments.service.js";

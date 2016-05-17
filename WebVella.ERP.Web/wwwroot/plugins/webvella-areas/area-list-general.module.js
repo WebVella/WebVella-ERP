@@ -195,8 +195,8 @@
 			}
 		}
 
-		var userHasUpdateEntityPermission = webvellaCoreService.userHasRecordPermissions(resolvedCurrentEntityMeta, "canRead");
-		if (!userHasUpdateEntityPermission) {
+		var userHasReadEntityPermission = webvellaCoreService.userHasRecordPermissions(resolvedCurrentEntityMeta, "canRead");
+		if (!userHasReadEntityPermission) {
 			alert("you do not have permissions to view records from this entity!");
 			defer.reject("you do not have permissions to view records from this entity");
 		}
@@ -584,7 +584,9 @@
 		}
 
 		ngCtrl.userHasRecordPermissions = function (permissionsCsv) {
-			return webvellaCoreService.userHasRecordPermissions(ngCtrl.entity, permissionsCsv);
+			//Get the entity of the current list or view
+			var listEntity = webvellaCoreService.getEntityMetaFromEntityList(safeListNameAndEntityName.entityName,resolvedEntityList);
+			return webvellaCoreService.userHasRecordPermissions(listEntity, permissionsCsv);
 		}
 
 		ngCtrl.saveStateParamsToSessionStorage = function () {

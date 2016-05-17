@@ -2051,6 +2051,8 @@
         "dependencies": {
           "Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
           "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
+          "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Configuration.Json": "1.0.0-rc1-final",
           "WebVella.ERP": "1.0.0"
         },
         "frameworkAssemblies": [
@@ -4117,6 +4119,8 @@
         "dependencies": {
           "Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
           "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
+          "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Configuration.Json": "1.0.0-rc1-final",
           "WebVella.ERP": "1.0.0"
         },
         "frameworkAssemblies": [
@@ -6183,6 +6187,8 @@
         "dependencies": {
           "Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
           "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
+          "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Configuration.Json": "1.0.0-rc1-final",
           "WebVella.ERP": "1.0.0"
         },
         "frameworkAssemblies": [
