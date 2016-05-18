@@ -7,13 +7,13 @@ namespace WebVella.ERP.SamplePlugin
 {
     public class WebHooks
     {
-		[WebHook("patch_record", "wv_project")]
+		[WebHook("patch_record_success_action", "wv_project")]
 		public void PatchRecordAction( dynamic data )
 		{
 			Debug.WriteLine("PatchRecordActionHook");
 		}
 
-		[WebHook("patch_record_input", "wv_project")]
+		[WebHook("patch_record_input_filter", "wv_project")]
 		public dynamic PatchRecordInput(dynamic data)
 		{
 			//EntityRecord record = (EntityRecord)data.record;
@@ -23,7 +23,7 @@ namespace WebVella.ERP.SamplePlugin
 			return data;
 		}
 
-		[WebHook("patch_record_input", "wv_project", 11)]
+		[WebHook("patch_record_input_filter", "wv_project", 11)]
 		public dynamic PatchRecordInput2(dynamic data)
 		{
 			//EntityRecord record = (EntityRecord)data.record;
@@ -34,14 +34,14 @@ namespace WebVella.ERP.SamplePlugin
 			return data;
 		}
 
-		[WebHook("patch_record_validation_errors", "wv_project")]
+		[WebHook("patch_record_validation_errors_filter", "wv_project")]
 		public dynamic PatchRecordValidationErrors(dynamic data)
 		{
 			Debug.WriteLine("PatchRecordValidationErrors");
 			return data;
 		}
 
-		[WebHook("patch_record_pre_save", "wv_project")]
+		[WebHook("patch_record_pre_save_filter", "wv_project")]
 		public dynamic PatchRecordPreSave(dynamic data)
 		{
 			Debug.WriteLine("PatchRecordPreSave");

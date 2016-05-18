@@ -7133,6 +7133,42 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 
+
+									#region << log_date >>
+									{
+										InputDateField dateField = new InputDateField();
+										dateField.Id = new Guid("29a32ad7-7b1c-4ea0-a06b-57b30be9b107");
+										dateField.Name = "log_date";
+										dateField.Label = "Logged for date";
+										dateField.PlaceholderText = "";
+										dateField.Description = "";
+										dateField.HelpText = "";
+										dateField.Required = true;
+										dateField.Unique = false;
+										dateField.Searchable = false;
+										dateField.Auditable = false;
+										dateField.System = true;
+										dateField.DefaultValue = null;
+										dateField.Format = "dd MMM yyyy";
+										dateField.UseCurrentTimeAsDefaultValue = true;
+										dateField.EnableSecurity = true;
+										dateField.Permissions = new FieldPermissions();
+										dateField.Permissions.CanRead = new List<Guid>();
+										dateField.Permissions.CanUpdate = new List<Guid>();
+										//READ
+										dateField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+										dateField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+										//UPDATE
+										dateField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+										dateField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+										{
+											var response = entMan.CreateField(TIMELOG_ENTITY_ID, dateField, false);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + TIMELOG_ENTITY_NAME + " Field: log_date" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
 									#region << task_id >>
 									{
 										InputGuidField guidField = new InputGuidField();
@@ -7265,7 +7301,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = null;
 										createListInput.IconName = "clock-o";
 										createListInput.VisibleColumnsCount = 5;
-										createListInput.ColumnWidthsCSV = "160px,160px,auto";
+										createListInput.ColumnWidthsCSV = "160px,160px,80px,auto";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = null;
@@ -7280,9 +7316,9 @@ namespace WebVella.ERP.Project
 										#region << Columns >>
 										createListInput.Columns = new List<InputRecordListItemBase>();
 
-										#region << created_on >>
+										#region << log_date >>
 										{
-											var fieldName = "created_on";
+											var fieldName = "log_date";
 											listField = new InputRecordListFieldItem();
 											listField.EntityId = createListEntity.Id;
 											listField.EntityName = createListEntity.Name;
@@ -7323,6 +7359,18 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
+										#region << description >>
+										{
+											var fieldName = "description";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
 
 										#endregion
 
@@ -7349,7 +7397,7 @@ namespace WebVella.ERP.Project
 										#region << Sort >>
 										createListInput.Sorts = new List<InputRecordListSort>();
 										listSort = new InputRecordListSort();
-										listSort.FieldName = "created_on";
+										listSort.FieldName = "log_date";
 										listSort.SortType = "ascending";
 										createListInput.Sorts.Add(listSort);
 										#endregion
@@ -7381,7 +7429,7 @@ namespace WebVella.ERP.Project
 										createListInput.CssClass = null;
 										createListInput.IconName = "clock-o";
 										createListInput.VisibleColumnsCount = 5;
-										createListInput.ColumnWidthsCSV = "160px,160px,auto";
+										createListInput.ColumnWidthsCSV = "160px,160px,80px,auto";
 										createListInput.PageSize = 10;
 										createListInput.DynamicHtmlTemplate = null;
 										createListInput.DataSourceUrl = null;
@@ -7398,7 +7446,7 @@ namespace WebVella.ERP.Project
 
 										#region << created_on >>
 										{
-											var fieldName = "created_on";
+											var fieldName = "log_date";
 											listField = new InputRecordListFieldItem();
 											listField.EntityId = createListEntity.Id;
 											listField.EntityName = createListEntity.Name;
@@ -7439,6 +7487,18 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
+										#region << description >>
+										{
+											var fieldName = "description";
+											listField = new InputRecordListFieldItem();
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == fieldName).Id;
+											listField.FieldName = fieldName;
+											listField.Type = "field";
+											createListInput.Columns.Add(listField);
+										}
+										#endregion
 
 										#endregion
 
@@ -7465,7 +7525,7 @@ namespace WebVella.ERP.Project
 										#region << Sort >>
 										createListInput.Sorts = new List<InputRecordListSort>();
 										listSort = new InputRecordListSort();
-										listSort.FieldName = "created_on";
+										listSort.FieldName = "log_date";
 										listSort.SortType = "ascending";
 										createListInput.Sorts.Add(listSort);
 										#endregion
@@ -7544,6 +7604,17 @@ namespace WebVella.ERP.Project
 										}
 										#endregion
 
+										#region << hours >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "log_date").Id;
+											viewItem.FieldName = "log_date";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
 										//Save column
 										viewRow.Columns.Add(viewColumn);
 										#endregion

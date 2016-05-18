@@ -7,7 +7,11 @@
 			<i class="fa fa-fw fa-list fa-2x"></i>
 		</div>
         <div class="meta-label">
-			<div class="meta-label-aux" translate="{{::'RECORD_LIST_MANAGE_DATA'}}"></div>
+			<div class="meta-label-aux">
+				<span translate="{{::'RECORD_LIST_MANAGE_DATA'}}"></span>
+				<span class="divider"><i class="fa fa-caret-right"></i></span>
+				<span ng-bind="ngCtrl.entity.name"></span>
+			</div>
             <h4 ng-bind="::ngCtrl.list.name"></h4>
         </div>
 	</div>

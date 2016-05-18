@@ -7,7 +7,11 @@
 			<i class="fa fa-fw fa-file-text-o fa-2x"></i>
 		</div>
         <div class="meta-label">
-			<div class="meta-label-aux" translate="{{::'RECORD_VIEW_MANAGE_ATTRIBUTES'}}"></div>
+			<div class="meta-label-aux">
+				<span translate="{{::'RECORD_VIEW_MANAGE_ATTRIBUTES'}}"></span>
+				<span class="divider"><i class="fa fa-caret-right"></i></span>
+				<span ng-bind="ngCtrl.entity.name"></span>
+			</div>
             <h4 ng-bind="::ngCtrl.view.name"></h4>
         </div>
 	</div>

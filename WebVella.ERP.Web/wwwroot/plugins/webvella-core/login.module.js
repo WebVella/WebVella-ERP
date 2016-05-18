@@ -74,7 +74,7 @@
 					webvellaCoreService.GoToState("webvella-desktop-browse", {});
 				}
 			}, function (response) {
-				alert(response.message);
+				//alert(response.message);
 			});
 		}
 	}

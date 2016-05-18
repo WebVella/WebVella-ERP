@@ -60,6 +60,7 @@
 	border-radius: 0;
 	box-shadow: none;
 	margin: 0 30px;
+	position:relative;
 }
 
 .project-list .progress-bar {
@@ -68,8 +69,12 @@
 
 .project-list .progress .percents {
 	text-align: center !important;
-	color: #999;
+	color: #DCEDC8;
 	font-size: 12px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
 }
 
 .project-list .counter {

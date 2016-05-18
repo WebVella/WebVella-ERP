@@ -194,6 +194,7 @@
 		serviceInstance.getCurrentUserPermissions = getCurrentUserPermissions;
 		serviceInstance.applyAreaAccessPolicy = applyAreaAccessPolicy;
 		serviceInstance.userHasRecordPermissions = userHasRecordPermissions;
+		serviceInstance.userIsInRole = userIsInRole;
 		//#endregion
 
 		//#region << Default list actions >>
@@ -2645,7 +2646,10 @@
 
 			return userHasAllPermissions;
 		}
-
+		///////////////////////
+		function userIsInRole(roleName){
+		
+		}
 		//#endregion
 
 		//#region << Default action services >>
@@ -3074,8 +3078,9 @@
 				success: true,
 				message: "successful validation"
 			};
-
-			data = data.toString().trim();
+			if(data != null){
+				data = data.toString().trim();
+			}
 			switch (item.meta.fieldType) {
 
 				//Auto increment number
@@ -3103,15 +3108,18 @@
 					if (!data && item.meta.required) {
 						return "This is a required field";
 					}
+					if(data != null){
 					//Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
-					data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toISOString();
-
+						data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toISOString();
+					}
 					break;
 				case 5: //Datetime
 					if (!data && item.meta.required) {
 						return "This is a required field";
 					}
+					if(data != null){
 					data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('minute').utc().toISOString();
+					}
 					break;
 				case 6: //Email
 					if (!data && item.meta.required) {

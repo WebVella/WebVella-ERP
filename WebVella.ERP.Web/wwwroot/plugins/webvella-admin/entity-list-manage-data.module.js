@@ -174,7 +174,7 @@
 				ngCtrl.loading[dataType] = false;
 			}
 
-			var sampleListMeta = ngCtrl.list;
+			var sampleListMeta = fastCopy(ngCtrl.list);
 
 			ngCtrl.loading[dataType] = true;
 			switch (dataType) {

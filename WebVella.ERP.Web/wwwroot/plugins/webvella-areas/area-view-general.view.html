@@ -13,7 +13,7 @@
 			<i class="fa fa-fw fa-{{::ngCtrl.entity.iconName}} fa-2x"></i>
 		</div>
         <div class="meta-label">
-			<div class="meta-label-aux">{{::ngCtrl.entity.label}} <span class="ng-hide" ng-show="ngCtrl.showPageTitleAuxLabelSecondary"><span class="divider"><i class="fa fa-caret-right"></i></span> {{::ngCtrl.view.meta.label}}</span></div>
+			<div class="meta-label-aux">{{::ngCtrl.entity.label}} <span class="ng-hide" ng-show="ngCtrl.showPageTitleAuxLabelSecondary"><span class="divider"><i class="fa fa-caret-right"></i></span> {{::ngCtrl.view.meta.name}}</span></div>
 			<h4>
 				<span ng-bind="::ngCtrl.generateHighlightString()" title="{{::ngCtrl.generateHighlightString()}}"></span>
 				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalViews.length > 1" dropdown-append-to-body="true">
@@ -129,7 +129,7 @@
 											<input type="text" class="form-control" disabled editable-bsdate="viewData[item.dataName]"
 												   e-datepicker-popup="{{item.meta.format}}" e-is-open="ngCtrl.opened[item.dataName]" e-init-date="false"
 												   onshow="ngCtrl.open(item.dataName,true)" onhide="ngCtrl.open(item.dataName,false)"
-												   value='{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}'
+												   value='{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}' 
 												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
 											<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];"
 											 ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-calendar fa-fw"></i></span>

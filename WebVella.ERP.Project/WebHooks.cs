@@ -33,7 +33,7 @@ namespace WebVella.ERP.Project
 
 		#region << Create >>
 
-		//[WebHook("create_record_validation_errors", "wv_task")] //<<<< UNCOMMENT TO HOOK
+		//[WebHook("create_record_validation_errors_filter", "wv_task")] //<<<< UNCOMMENT TO HOOK
 		public dynamic TaskCreateValidateFilter(dynamic data)
 		{
 			var errors = (List<ErrorModel>)data.errors;
@@ -44,7 +44,7 @@ namespace WebVella.ERP.Project
 			return data;
 		}
 
-		[WebHook("create_record_pre_save", "wv_task")]
+		[WebHook("create_record_pre_save_filter", "wv_task")]
 		public dynamic TaskCreateRecordPreSave(dynamic data)
 		{
 			EntityRecord record = (EntityRecord)data.record;
@@ -98,7 +98,7 @@ namespace WebVella.ERP.Project
 			return data;
 		}
 
-		[WebHook("create_record", "wv_task")]
+		[WebHook("create_record_success_action", "wv_task")]
 		public void TaskCreateRecordAction(dynamic data)
 		{
 			var record = (EntityRecord)data.record;
@@ -106,10 +106,10 @@ namespace WebVella.ERP.Project
 			var controller = (Controller)data.controller;
 			var createdRecord = createResult.Object.Data[0];
 			var patchObject = new EntityRecord();
+
+			Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-tasks go-purple'></i> task #" + createdRecord["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], (Guid)createdRecord["id"], null);
 			using (SecurityContext.OpenSystemScope())
 			{
-				Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-tasks go-purple'></i> task #" + createdRecord["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], (Guid)createdRecord["id"], null);
-
 				#region << Add creator in watch list >>
 				{
 					var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
@@ -212,7 +212,7 @@ namespace WebVella.ERP.Project
 
 		#region << Update >>
 
-		//[WebHook("update_record_validation_errors", "wv_task")] //<<<< UNCOMMENT TO HOOK
+		//[WebHook("update_record_validation_errors_filter", "wv_task")] //<<<< UNCOMMENT TO HOOK
 		public dynamic TaskUpdateValidateFilter(dynamic data)
 		{
 			var errors = (List<ErrorModel>)data.errors;
@@ -223,7 +223,7 @@ namespace WebVella.ERP.Project
 			return data;
 		}
 
-		[WebHook("update_record_pre_save", "wv_task")]
+		[WebHook("update_record_pre_save_filter", "wv_task")]
 		public dynamic TaskUpdateRecordPreSave(dynamic data)
 		{
 			data = Utils.UpdateTask(data, recMan);
@@ -234,7 +234,7 @@ namespace WebVella.ERP.Project
 
 		#region << Patch >>
 
-		//[WebHook("patch_record_validation_errors", "wv_task")] //<<<< UNCOMMENT TO HOOK
+		//[WebHook("patch_record_validation_errors_filter", "wv_task")] //<<<< UNCOMMENT TO HOOK
 		public dynamic TaskPatchValidateFilter(dynamic data)
 		{
 			var errors = (List<ErrorModel>)data.errors;
@@ -245,7 +245,7 @@ namespace WebVella.ERP.Project
 			return data;
 		}
 
-		[WebHook("patch_record_pre_save", "wv_task")]
+		[WebHook("patch_record_pre_save_filter", "wv_task")]
 		public dynamic TaskPatchRecordPreSave(dynamic data)
 		{
 			data = Utils.UpdateTask(data, recMan);
@@ -260,7 +260,7 @@ namespace WebVella.ERP.Project
 		#region << Bug >>
 
 		#region << Create >>
-		[WebHook("create_record_pre_save", "wv_bug")]
+		[WebHook("create_record_pre_save_filter", "wv_bug")]
 		public dynamic BugCreateRecordPreSave(dynamic data)
 		{
 			EntityRecord record = (EntityRecord)data.record;
@@ -315,7 +315,7 @@ namespace WebVella.ERP.Project
 			return data;
 		}
 
-		[WebHook("create_record", "wv_bug")]
+		[WebHook("create_record_success_action", "wv_bug")]
 		public void BugCreateRecordAction(dynamic data)
 		{
 			var record = (EntityRecord)data.record;
@@ -324,10 +324,10 @@ namespace WebVella.ERP.Project
 			var createdRecord = createResult.Object.Data[0];
 			var patchObject = new EntityRecord();
 
+			Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-bug go-red'></i> bug #" + createdRecord["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], null, (Guid)createdRecord["id"]);
+
 			using (SecurityContext.OpenSystemScope())
 			{
-				Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-bug go-red'></i> bug #" + createdRecord["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], null, (Guid)createdRecord["id"]);
-
 				#region << Add the task owner and creator in the watch list>>
 
 				#region << Add creator in watch list >>
@@ -433,7 +433,7 @@ namespace WebVella.ERP.Project
 
 
 		#region << Update >>
-		[WebHook("update_record_pre_save", "wv_bug")]
+		[WebHook("update_record_pre_save_filter", "wv_bug")]
 		public dynamic BugUpdateRecordPreSave(dynamic data)
 		{
 			data = Utils.UpdateBug(data, recMan);
@@ -442,7 +442,7 @@ namespace WebVella.ERP.Project
 		#endregion
 
 		#region << Patch >>
-		[WebHook("patch_record_pre_save", "wv_bug")]
+		[WebHook("patch_record_pre_save_filter", "wv_bug")]
 		public dynamic BugPatchRecordPreSave(dynamic data)
 		{
 			data = Utils.UpdateBug(data, recMan);
@@ -454,7 +454,7 @@ namespace WebVella.ERP.Project
 
 		#region << Time log >>
 
-		[WebHook("create_record", "wv_timelog")]
+		[WebHook("create_record_success_action", "wv_timelog")]
 		public void TimelogCreateRecordAction(dynamic data)
 		{
 			var record = (EntityRecord)data.record;
@@ -465,38 +465,74 @@ namespace WebVella.ERP.Project
 			{
 				billableString = "billable";
 			}
-			using (SecurityContext.OpenSystemScope())
+
+			if (createdRecord["task_id"] != null)
 			{
-				if (createdRecord["task_id"] != null)
+				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["task_id"]);
+				var query = new EntityQuery("wv_task", "*", filterObj, null, null, null);
+				var result = recMan.Find(query);
+				if (result.Success)
 				{
-					var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["task_id"]);
-					var query = new EntityQuery("wv_task", "*", filterObj, null, null, null);
-					var result = recMan.Find(query);
-					if (result.Success)
-					{
-						var task = result.Object.Data[0];
-						Utils.CreateActivity(recMan, "timelog", "created a <i class='fa fa-fw fa-clock-o go-blue'></i> time log of <b>" + ((decimal)createdRecord["hours"]).ToString("N2") + " " + billableString + "</b> hours for task #" + task["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", null, (Guid)task["project_id"], (Guid)task["id"], null);
-					}
-				}
-				else if (createdRecord["bug_id"] != null)
-				{
-					var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["bug_id"]);
-					var query = new EntityQuery("wv_bug", "*", filterObj, null, null, null);
-					var result = recMan.Find(query);
-					if (result.Success)
-					{
-						var bug = result.Object.Data[0];
-						Utils.CreateActivity(recMan, "timelog", "created a <i class='fa fa-fw fa-clock-o go-blue'></i> time log of <b>" + ((decimal)createdRecord["hours"]).ToString("N2") + " " + billableString + "</b> hours  for bug #" + bug["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", null, (Guid)bug["project_id"], null, (Guid)bug["id"]);
-					}
+					var task = result.Object.Data[0];
+					Utils.CreateActivity(recMan, "timelog", "created a <i class='fa fa-fw fa-clock-o go-blue'></i> time log of <b>" + ((decimal)createdRecord["hours"]).ToString("N2") + " " + billableString + "</b> hours for task #" + task["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", null, (Guid)task["project_id"], (Guid)task["id"], null);
 				}
 			}
+			else if (createdRecord["bug_id"] != null)
+			{
+				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["bug_id"]);
+				var query = new EntityQuery("wv_bug", "*", filterObj, null, null, null);
+				var result = recMan.Find(query);
+				if (result.Success)
+				{
+					var bug = result.Object.Data[0];
+					Utils.CreateActivity(recMan, "timelog", "created a <i class='fa fa-fw fa-clock-o go-blue'></i> time log of <b>" + ((decimal)createdRecord["hours"]).ToString("N2") + " " + billableString + "</b> hours  for bug #" + bug["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", null, (Guid)bug["project_id"], null, (Guid)bug["id"]);
+				}
+			}
+
 		}
 
 		#endregion
 
 		#region << Comment >>
 
-		[WebHook("create_record", "wv_project_comment")]
+		[WebHook("create_record_pre_save_filter", "wv_project_comment")]
+		public dynamic CommentCreateRecordPreSave(dynamic data)
+		{
+			EntityRecord record = (EntityRecord)data.record;
+
+			if (record["task_id"] != null)
+			{
+				using (SecurityContext.OpenSystemScope())
+				{
+					var patchObject = new EntityRecord();
+					patchObject["id"] = (Guid)record["task_id"];
+					patchObject["last_modified_on"] = DateTime.UtcNow;
+					patchObject["last_modified_by"] = SecurityContext.CurrentUser.Id;
+					var updateResponse = recMan.UpdateRecord("wv_task", patchObject);
+					if (!updateResponse.Success)
+					{
+						throw new Exception(updateResponse.Message);
+					}
+				}
+			}
+			else if (record["bug_id"] != null)
+			{
+				var patchObject = new EntityRecord();
+				patchObject["id"] = (Guid)record["bug_id"];
+				patchObject["last_modified_on"] = DateTime.UtcNow;
+				patchObject["last_modified_by"] = SecurityContext.CurrentUser.Id;
+				var updateResponse = recMan.UpdateRecord("wv_bug", patchObject);
+				if (!updateResponse.Success)
+				{
+					throw new Exception(updateResponse.Message);
+				}
+			}
+
+			return data;
+		}
+
+
+		[WebHook("create_record_success_action", "wv_project_comment")]
 		public void CommentCreateRecordAction(dynamic data)
 		{
 			var record = (EntityRecord)data.record;
@@ -506,40 +542,41 @@ namespace WebVella.ERP.Project
 			var task = new EntityRecord();
 			var bug = new EntityRecord();
 			var recepients = new List<string>();
+
+			#region << Init >>
+			if (createdRecord["task_id"] != null)
+			{
+				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["task_id"]);
+				var query = new EntityQuery("wv_task", "id,code,subject,description,project_id,$$user_n_n_task_watchers.id,$$user_n_n_task_watchers.email,$$project_1_n_task.code", filterObj, null, null, null);
+				var result = recMan.Find(query);
+				if (result.Success)
+				{
+					task = result.Object.Data[0];
+					Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for task [" + task["code"] + "] <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", null, (Guid)task["project_id"], (Guid)task["id"], null);
+				}
+				else
+				{
+					throw new Exception(result.Message);
+				}
+			}
+			else if (createdRecord["bug_id"] != null)
+			{
+				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["bug_id"]);
+				var query = new EntityQuery("wv_bug", "id,code,subject,description,project_id,$$user_n_n_bug_watchers.id,$$user_n_n_bug_watchers.email,$$project_1_n_bug.code", filterObj, null, null, null);
+				var result = recMan.Find(query);
+				if (result.Success)
+				{
+					bug = result.Object.Data[0];
+					Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for bug [" + bug["code"] + "] <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", null, (Guid)bug["project_id"], null, (Guid)bug["id"]);
+				}
+				else
+				{
+					throw new Exception(result.Message);
+				}
+			}
+			#endregion
 			using (SecurityContext.OpenSystemScope())
 			{
-				#region << Init >>
-				if (createdRecord["task_id"] != null)
-				{
-					var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["task_id"]);
-					var query = new EntityQuery("wv_task", "id,code,subject,description,project_id,$$user_n_n_task_watchers.id,$$user_n_n_task_watchers.email,$$project_1_n_task.code", filterObj, null, null, null);
-					var result = recMan.Find(query);
-					if (result.Success)
-					{
-						task = result.Object.Data[0];
-						Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for task [" + task["code"] + "] <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", null, (Guid)task["project_id"], (Guid)task["id"], null);
-					}
-					else
-					{
-						throw new Exception(result.Message);
-					}
-				}
-				else if (createdRecord["bug_id"] != null)
-				{
-					var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["bug_id"]);
-					var query = new EntityQuery("wv_bug", "id,code,subject,description,project_id,$$user_n_n_bug_watchers.id,$$user_n_n_bug_watchers.email,$$project_1_n_bug.code", filterObj, null, null, null);
-					var result = recMan.Find(query);
-					if (result.Success)
-					{
-						bug = result.Object.Data[0];
-						Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for bug [" + bug["code"] + "] <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", null, (Guid)bug["project_id"], null, (Guid)bug["id"]);
-					}
-					else
-					{
-						throw new Exception(result.Message);
-					}
-				}
-				#endregion
 				#region << Add the comment creator to the watch list if he is not there, Generate recipients list >>
 				{
 					if (createdRecord["task_id"] != null)
@@ -672,13 +709,13 @@ namespace WebVella.ERP.Project
 		#endregion
 
 		#region << Relation >>
-		[WebHook("manage_relation_pre_save", "wv_task")]
+		[WebHook("manage_relation_pre_save_filter", "wv_task")]
 		public dynamic TaskManageRelationPreSave(dynamic data)
 		{
 			return Utils.ManageRelationWithProject(data, recMan, "bug");
 		}
 
-		[WebHook("manage_relation_pre_save", "wv_bug")]
+		[WebHook("manage_relation_pre_save_filter", "wv_bug")]
 		public dynamic BugManageRelationPreSave(dynamic data)
 		{
 			return Utils.ManageRelationWithProject(data, recMan, "bug");

@@ -31,180 +31,189 @@ namespace WebVella.ERP.Project
 		public IActionResult MyProjects(int page = 0)
 		{
 			var response = new ResponseModel();
-			try {
-			//var queryString = HttpContext.Request.QueryString;
-			#region << Can user read projects >>
-			//Get current user
-			ErpUser user = SecurityContext.CurrentUser;
-			//Get entity meta
-			var entity = entMan.ReadEntity("wv_project").Object;
-			//check if user role has permissions
-			var canRead = user.Roles.Any(x => entity.RecordPermissions.CanRead.Any(z => z == x.Id));
-			var canCreate = user.Roles.Any(x => entity.RecordPermissions.CanCreate.Any(z => z == x.Id));
-			var canUpdate = user.Roles.Any(x => entity.RecordPermissions.CanUpdate.Any(z => z == x.Id));
-			var canDelete = user.Roles.Any(x => entity.RecordPermissions.CanDelete.Any(z => z == x.Id));
-
-			if (!canRead)
+			try
 			{
-				response.Success = false;
-				response.Message = "You do not have permission to read the projects in this system";
-				response.Timestamp = DateTime.UtcNow;
-				return Json(response); //return empty object
-			}
-			#endregion
+				//var queryString = HttpContext.Request.QueryString;
+				#region << Can user read projects >>
+				//Get current user
+				ErpUser user = SecurityContext.CurrentUser;
+				//Get entity meta
+				var entity = entMan.ReadEntity("wv_project").Object;
+				//check if user role has permissions
+				var canRead = user.Roles.Any(x => entity.RecordPermissions.CanRead.Any(z => z == x.Id));
+				var canCreate = user.Roles.Any(x => entity.RecordPermissions.CanCreate.Any(z => z == x.Id));
+				var canUpdate = user.Roles.Any(x => entity.RecordPermissions.CanUpdate.Any(z => z == x.Id));
+				var canDelete = user.Roles.Any(x => entity.RecordPermissions.CanDelete.Any(z => z == x.Id));
 
-			#region << Init fields >>
-			var requestedFields = "id,name,code,start_date,end_date," +
-			"x_milestones_opened,x_milestones_completed,x_tasks_not_started,x_tasks_in_progress,x_tasks_completed,x_bugs_opened,x_bugs_reopened,x_bugs_closed," +
-			"$user_1_n_project_owner.id,$user_1_n_project_owner.image,$user_1_n_project_owner.username," +
-			"$role_n_n_project_team.id,$role_n_n_project_customer.id";
-			#endregion
-
-			#region << Query builder >>
-			//This list support filters by name
-			var queryString = HttpContext.Request.QueryString.ToString();
-			var queryKeyValue = QueryHelpers.ParseQuery(queryString);
-
-			//Get the project name from query if exists
-			QueryObject rootFilterSection = null;
-			var auxFiltersRuleList = new List<QueryObject>();
-			if (queryKeyValue.ContainsKey("name"))
-			{
-				var projectIdRule = EntityQuery.QueryContains("name", (string)queryKeyValue["name"]);
-				auxFiltersRuleList.Add(projectIdRule);
-			}
-			if(auxFiltersRuleList.Count > 0) {
-				rootFilterSection = EntityQuery.QueryAND(auxFiltersRuleList.ToArray());
-			}
-
-			EntityQuery resultQuery = new EntityQuery("wv_project", requestedFields, rootFilterSection, null, null, null, null);
-			#endregion
-
-			#region << Execute >>
-			QueryResponse result = recMan.Find(resultQuery);
-			var resultRecordsList = new List<EntityRecord>();
-			if (!result.Success)
-			{
-				response.Success = false;
-				response.Timestamp = DateTime.UtcNow;
-				response.Message = result.Message;
-				response.Object = null;
-				return Json(response);
-			}
-			foreach (var record in result.Object.Data)
-			{
-				//Check if user can view the object
-				var userIsPM = false;
-				var userIsStaff = false;
-				var userIsCustomer = false;
-				#region << Check user roles >>
-				foreach (var userRole in user.Roles)
+				if (!canRead)
 				{
-					if(!userIsPM)
-						userIsPM = ((List<EntityRecord>)record["$user_1_n_project_owner"]).Any(z => (Guid)z["id"] == user.Id);
-					if(!userIsStaff)
-						userIsStaff = ((List<EntityRecord>)record["$role_n_n_project_team"]).Any(z => (Guid)z["id"] == userRole.Id);
-					if(!userIsCustomer)
-						userIsCustomer = ((List<EntityRecord>)record["$role_n_n_project_customer"]).Any(z => (Guid)z["id"] == userRole.Id);
+					response.Success = false;
+					response.Message = "You do not have permission to read the projects in this system";
+					response.Timestamp = DateTime.UtcNow;
+					return Json(response); //return empty object
 				}
 				#endregion
 
-				if (userIsPM || userIsStaff || userIsCustomer)
+				#region << Init fields >>
+				var requestedFields = "id,name,code,start_date,end_date," +
+				"x_milestones_opened,x_milestones_completed,x_tasks_not_started,x_tasks_in_progress,x_tasks_completed,x_bugs_opened,x_bugs_reopened,x_bugs_closed," +
+				"$user_1_n_project_owner.id,$user_1_n_project_owner.image,$user_1_n_project_owner.username," +
+				"$role_n_n_project_team.id,$role_n_n_project_customer.id";
+				#endregion
+
+				#region << Query builder >>
+				//This list support filters by name
+				var queryString = HttpContext.Request.QueryString.ToString();
+				var queryKeyValue = QueryHelpers.ParseQuery(queryString);
+
+				//Get the project name from query if exists
+				QueryObject rootFilterSection = null;
+				var auxFiltersRuleList = new List<QueryObject>();
+				if (queryKeyValue.ContainsKey("name"))
 				{
-					var recordObj = new EntityRecord();
-					recordObj["id"] = record["id"];
-					recordObj["name"] = record["name"];
-					recordObj["code"] = record["code"];
-					recordObj["start_date"] = record["start_date"];
-					recordObj["end_date"] = record["end_date"];
-					recordObj["owner_image"] = ((List<EntityRecord>)record["$user_1_n_project_owner"])[0]["image"];
-					recordObj["owner_username"] = ((List<EntityRecord>)record["$user_1_n_project_owner"])[0]["username"];
-
-					#region << milestones Count "opened" vs "completed" >>
-					var milestonesOpened = (decimal)record["x_milestones_opened"];
-					var milestonesCompleted = (decimal)record["x_milestones_completed"];
-					recordObj["milestones_opened_count"] = milestonesOpened;
-					recordObj["milestones_completed_count"] = milestonesCompleted;
-					if (milestonesOpened + milestonesCompleted > 0)
-					{
-						recordObj["milestones_opened_percentage"] = Math.Round((decimal)(milestonesOpened * 100) / (milestonesOpened + milestonesCompleted));
-						recordObj["milestones_completed_percentage"] = 100 - Math.Round((decimal)(milestonesOpened * 100) / (milestonesOpened + milestonesCompleted));
-					}
-					else
-					{
-						recordObj["milestones_opened_percentage"] = 0;
-						recordObj["milestones_completed_percentage"] = 0;
-					}
-
-					#endregion
-
-					#region << tasks Count "not started" vs "in progress" vs "completed" >>
-					var tasksNotStarted = (decimal)record["x_tasks_not_started"];
-					var tasksInProgress = (decimal)record["x_tasks_in_progress"];
-					var tasksCompleted = (decimal)record["x_tasks_completed"];
-
-					recordObj["tasks_not_started_count"] = tasksNotStarted;
-					recordObj["tasks_in_progress_count"] = tasksInProgress;
-					recordObj["tasks_completed_count"] = tasksCompleted;
-					if (tasksNotStarted + tasksInProgress + tasksCompleted > 0)
-					{
-						recordObj["tasks_not_started_percentage"] = Math.Round((decimal)(tasksNotStarted * 100) / (tasksNotStarted + tasksInProgress + tasksCompleted));
-						recordObj["tasks_in_progress_percentage"] = Math.Round((decimal)(tasksInProgress * 100) / (tasksNotStarted + tasksInProgress + tasksCompleted));
-						recordObj["tasks_completed_percentage"] = 100 - Math.Round((decimal)(tasksNotStarted * 100) / (tasksNotStarted + tasksInProgress + tasksCompleted)) - Math.Round((decimal)(tasksInProgress * 100) / (tasksNotStarted + tasksInProgress + tasksCompleted));
-					}
-					else
-					{
-						recordObj["tasks_not_started_percentage"] = 0;
-						recordObj["tasks_in_progress_percentage"] = 0;
-						recordObj["tasks_completed_percentage"] = 0;
-					}
-					#endregion
-
-					#region << bugs Count "opened" & "reopened" vs "closed" >>
-					var bugsOpened = (decimal)record["x_bugs_opened"];
-					var bugsReOpened = (decimal)record["x_bugs_reopened"];
-					var bugsClosed = (decimal)record["x_bugs_closed"];
-
-					recordObj["bugs_opened_count"] = bugsOpened;
-					recordObj["bugs_reopened_count"] = bugsReOpened;
-					recordObj["bugs_closed_count"] = bugsClosed;
-					if (bugsOpened + bugsReOpened + bugsClosed > 0)
-					{
-						recordObj["bugs_opened_percentage"] = Math.Round((decimal)(bugsOpened * 100) / (bugsOpened + bugsReOpened + bugsClosed));
-						recordObj["bugs_reopened_percentage"] = Math.Round((decimal)(bugsReOpened * 100) / (bugsOpened + bugsReOpened + bugsClosed));
-						recordObj["bugs_closed_percentage"] = 100 - Math.Round((decimal)(bugsOpened * 100) / (bugsOpened + bugsReOpened + bugsClosed)) - Math.Round((decimal)(bugsReOpened * 100) / (bugsOpened + bugsReOpened + bugsClosed));
-					}
-					else
-					{
-						recordObj["bugs_opened_percentage"] = 0;
-						recordObj["bugs_reopened_percentage"] = 0;
-						recordObj["bugs_closed_percentage"] = 0;
-					}
-					#endregion
-					resultRecordsList.Add(recordObj);
+					var projectIdRule = EntityQuery.QueryContains("name", (string)queryKeyValue["name"]);
+					auxFiltersRuleList.Add(projectIdRule);
 				}
+				if (auxFiltersRuleList.Count > 0)
+				{
+					rootFilterSection = EntityQuery.QueryAND(auxFiltersRuleList.ToArray());
+				}
+
+				EntityQuery resultQuery = new EntityQuery("wv_project", requestedFields, rootFilterSection, null, null, null, null);
+				#endregion
+
+				#region << Execute >>
+				QueryResponse result = recMan.Find(resultQuery);
+				var resultRecordsList = new List<EntityRecord>();
+				if (!result.Success)
+				{
+					response.Success = false;
+					response.Timestamp = DateTime.UtcNow;
+					response.Message = result.Message;
+					response.Object = null;
+					return Json(response);
+				}
+				foreach (var record in result.Object.Data)
+				{
+					//Check if user can view the object
+					var userIsPM = false;
+					var userIsStaff = false;
+					var userIsCustomer = false;
+					#region << Check user roles >>
+					foreach (var userRole in user.Roles)
+					{
+						if (!userIsPM)
+						{
+							userIsPM = ((List<EntityRecord>)record["$user_1_n_project_owner"]).Any(z => (Guid)z["id"] == user.Id);
+						}
+						if (!userIsStaff)
+						{
+							userIsStaff = ((List<EntityRecord>)record["$role_n_n_project_team"]).Any(z => (Guid)z["id"] == userRole.Id);
+						}
+						if (!userIsCustomer)
+						{
+							userIsCustomer = ((List<EntityRecord>)record["$role_n_n_project_customer"]).Any(z => (Guid)z["id"] == userRole.Id);
+						}
+					}
+					#endregion
+
+					if (userIsPM || userIsStaff || userIsCustomer)
+					{
+						var recordObj = new EntityRecord();
+						recordObj["id"] = record["id"];
+						recordObj["name"] = record["name"];
+						recordObj["code"] = record["code"];
+						recordObj["start_date"] = record["start_date"];
+						recordObj["end_date"] = record["end_date"];
+						recordObj["owner_image"] = ((List<EntityRecord>)record["$user_1_n_project_owner"])[0]["image"];
+						recordObj["owner_username"] = ((List<EntityRecord>)record["$user_1_n_project_owner"])[0]["username"];
+
+						#region << milestones Count "opened" vs "completed" >>
+						var milestonesOpened = (decimal)record["x_milestones_opened"];
+						var milestonesCompleted = (decimal)record["x_milestones_completed"];
+						recordObj["milestones_opened_count"] = milestonesOpened;
+						recordObj["milestones_completed_count"] = milestonesCompleted;
+						if (milestonesOpened + milestonesCompleted > 0)
+						{
+							recordObj["milestones_opened_percentage"] = Math.Round((decimal)(milestonesOpened * 100) / (milestonesOpened + milestonesCompleted));
+							recordObj["milestones_completed_percentage"] = 100 - Math.Round((decimal)(milestonesOpened * 100) / (milestonesOpened + milestonesCompleted));
+						}
+						else
+						{
+							recordObj["milestones_opened_percentage"] = 0;
+							recordObj["milestones_completed_percentage"] = 0;
+						}
+
+						#endregion
+
+						#region << tasks Count "not started" vs "in progress" vs "completed" >>
+						var tasksNotStarted = (decimal)record["x_tasks_not_started"];
+						var tasksInProgress = (decimal)record["x_tasks_in_progress"];
+						var tasksCompleted = (decimal)record["x_tasks_completed"];
+
+						recordObj["tasks_not_started_count"] = tasksNotStarted;
+						recordObj["tasks_in_progress_count"] = tasksInProgress;
+						recordObj["tasks_completed_count"] = tasksCompleted;
+						if (tasksNotStarted + tasksInProgress + tasksCompleted > 0)
+						{
+							recordObj["tasks_not_started_percentage"] = Math.Round((decimal)(tasksNotStarted * 100) / (tasksNotStarted + tasksInProgress + tasksCompleted));
+							recordObj["tasks_in_progress_percentage"] = Math.Round((decimal)(tasksInProgress * 100) / (tasksNotStarted + tasksInProgress + tasksCompleted));
+							recordObj["tasks_completed_percentage"] = 100 - Math.Round((decimal)(tasksNotStarted * 100) / (tasksNotStarted + tasksInProgress + tasksCompleted)) - Math.Round((decimal)(tasksInProgress * 100) / (tasksNotStarted + tasksInProgress + tasksCompleted));
+						}
+						else
+						{
+							recordObj["tasks_not_started_percentage"] = 0;
+							recordObj["tasks_in_progress_percentage"] = 0;
+							recordObj["tasks_completed_percentage"] = 0;
+						}
+						#endregion
+
+						#region << bugs Count "opened" & "reopened" vs "closed" >>
+						var bugsOpened = (decimal)record["x_bugs_opened"];
+						var bugsReOpened = (decimal)record["x_bugs_reopened"];
+						var bugsClosed = (decimal)record["x_bugs_closed"];
+
+						recordObj["bugs_opened_count"] = bugsOpened;
+						recordObj["bugs_reopened_count"] = bugsReOpened;
+						recordObj["bugs_closed_count"] = bugsClosed;
+						if (bugsOpened + bugsReOpened + bugsClosed > 0)
+						{
+							recordObj["bugs_opened_percentage"] = Math.Round((decimal)(bugsOpened * 100) / (bugsOpened + bugsReOpened + bugsClosed));
+							recordObj["bugs_reopened_percentage"] = Math.Round((decimal)(bugsReOpened * 100) / (bugsOpened + bugsReOpened + bugsClosed));
+							recordObj["bugs_closed_percentage"] = 100 - Math.Round((decimal)(bugsOpened * 100) / (bugsOpened + bugsReOpened + bugsClosed)) - Math.Round((decimal)(bugsReOpened * 100) / (bugsOpened + bugsReOpened + bugsClosed));
+						}
+						else
+						{
+							recordObj["bugs_opened_percentage"] = 0;
+							recordObj["bugs_reopened_percentage"] = 0;
+							recordObj["bugs_closed_percentage"] = 0;
+						}
+						#endregion
+						resultRecordsList.Add(recordObj);
+					}
+				}
+				#endregion
+
+				//var skipRecords = list.PageSize * (page - 1);
+				//if (page != 0)
+				//{
+				//	resultRecordsList = resultRecordsList.Skip(skipRecords).Take(page).ToList();
+				//}
+
+				response.Success = true;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = "My projects successfully read";
+				response.Object = resultRecordsList;
+
+				return Json(response);
 			}
-			#endregion
-
-			//var skipRecords = list.PageSize * (page - 1);
-			//if (page != 0)
-			//{
-			//	resultRecordsList = resultRecordsList.Skip(skipRecords).Take(page).ToList();
-			//}
-
-			response.Success = true;
-			response.Timestamp = DateTime.UtcNow;
-			response.Message = "My projects successfully read";
-			response.Object = resultRecordsList;
-
-			return Json(response);
-			}
-			catch(Exception ex) {
+			catch (Exception ex)
+			{
 				response.Success = false;
 				response.Timestamp = DateTime.UtcNow;
 				response.Message = "Error: " + ex.Message;
 				response.Object = null;
-				return Json(response);	
+				return Json(response);
 			}
 		}
 
@@ -213,139 +222,151 @@ namespace WebVella.ERP.Project
 		{
 			var response = new ResponseModel();
 			var resultProjectIdList = new List<Guid>();
-			try {
-			#region << Get Project Ids >>
-
-			#region << Can user read projects >>
-			//Get current user
-			ErpUser user = SecurityContext.CurrentUser;
-			//Get entity meta
-			var entity = entMan.ReadEntity("wv_project").Object;
-			//check if user role has permissions
-			var canRead = user.Roles.Any(x => entity.RecordPermissions.CanRead.Any(z => z == x.Id));
-			var canCreate = user.Roles.Any(x => entity.RecordPermissions.CanCreate.Any(z => z == x.Id));
-			var canUpdate = user.Roles.Any(x => entity.RecordPermissions.CanUpdate.Any(z => z == x.Id));
-			var canDelete = user.Roles.Any(x => entity.RecordPermissions.CanDelete.Any(z => z == x.Id));
-
-			if (!canRead)
+			try
 			{
-				response.Success = false;
-				response.Message = "You do not have permission to read the projects in this system";
-				response.Timestamp = DateTime.UtcNow;
-				return Json(response); //return empty object
-			}
-			var milestone = entMan.ReadEntity("wv_milestone").Object;
-			//check if user role has permissions
-			var canReadMilestone = user.Roles.Any(x => milestone.RecordPermissions.CanRead.Any(z => z == x.Id));
-			var canCreateMilestone = user.Roles.Any(x => milestone.RecordPermissions.CanCreate.Any(z => z == x.Id));
-			var canUpdateMilestone = user.Roles.Any(x => milestone.RecordPermissions.CanUpdate.Any(z => z == x.Id));
-			var canDeleteMilestone = user.Roles.Any(x => milestone.RecordPermissions.CanDelete.Any(z => z == x.Id));
+				#region << Get Project Ids >>
 
-			if (!canReadMilestone)
-			{
-				response.Success = false;
-				response.Message = "You do not have permission to read the milestones in this system";
-				response.Timestamp = DateTime.UtcNow;
-				return Json(response); //return empty object
-			}
+				#region << Can user read projects >>
+				//Get current user
+				ErpUser user = SecurityContext.CurrentUser;
+				//Get entity meta
+				var entity = entMan.ReadEntity("wv_project").Object;
+				//check if user role has permissions
+				var canRead = user.Roles.Any(x => entity.RecordPermissions.CanRead.Any(z => z == x.Id));
+				var canCreate = user.Roles.Any(x => entity.RecordPermissions.CanCreate.Any(z => z == x.Id));
+				var canUpdate = user.Roles.Any(x => entity.RecordPermissions.CanUpdate.Any(z => z == x.Id));
+				var canDelete = user.Roles.Any(x => entity.RecordPermissions.CanDelete.Any(z => z == x.Id));
 
-			#endregion
-
-			var requestedFields = "id," +
-			"$user_1_n_project_owner.id," +
-			"$role_n_n_project_team.id,$role_n_n_project_customer.id";
-			#region << Query builder >>
-			//QueryObject filterObj = EntityQuery.QueryEQ("id", recordId);
-			QueryObject filterObj = null;
-			EntityQuery resultQuery = new EntityQuery("wv_project", requestedFields, filterObj, null, null, null, null);
-			#endregion
-
-			#region << Execute >>
-			QueryResponse result = recMan.Find(resultQuery);
-			if (!result.Success)
-			{
-				response.Success = false;
-				response.Timestamp = DateTime.UtcNow;
-				response.Message = result.Message;
-				response.Object = null;
-				return Json(response);
-			}
-			foreach (var record in result.Object.Data)
-			{
-				//Check if user can view the object
-				var userIsPM = false;
-				var userIsStaff = false;
-				var userIsCustomer = false;
-				#region << Check user roles >>
-				foreach (var userRole in user.Roles)
+				if (!canRead)
 				{
-					userIsPM = ((List<EntityRecord>)record["$user_1_n_project_owner"]).Any(z => (Guid)z["id"] == user.Id);
-					userIsStaff = ((List<EntityRecord>)record["$role_n_n_project_team"]).Any(z => (Guid)z["id"] == userRole.Id);
-					userIsCustomer = ((List<EntityRecord>)record["$role_n_n_project_customer"]).Any(z => (Guid)z["id"] == userRole.Id);
+					response.Success = false;
+					response.Message = "You do not have permission to read the projects in this system";
+					response.Timestamp = DateTime.UtcNow;
+					return Json(response); //return empty object
 				}
+				var milestone = entMan.ReadEntity("wv_milestone").Object;
+				//check if user role has permissions
+				var canReadMilestone = user.Roles.Any(x => milestone.RecordPermissions.CanRead.Any(z => z == x.Id));
+				var canCreateMilestone = user.Roles.Any(x => milestone.RecordPermissions.CanCreate.Any(z => z == x.Id));
+				var canUpdateMilestone = user.Roles.Any(x => milestone.RecordPermissions.CanUpdate.Any(z => z == x.Id));
+				var canDeleteMilestone = user.Roles.Any(x => milestone.RecordPermissions.CanDelete.Any(z => z == x.Id));
+
+				if (!canReadMilestone)
+				{
+					response.Success = false;
+					response.Message = "You do not have permission to read the milestones in this system";
+					response.Timestamp = DateTime.UtcNow;
+					return Json(response); //return empty object
+				}
+
 				#endregion
 
-				if (userIsPM || userIsStaff || userIsCustomer)
-				{
-					resultProjectIdList.Add((Guid)record["id"]);
-				}
-			}
-			#endregion
-			#endregion
+				var requestedFields = "id," +
+				"$user_1_n_project_owner.id," +
+				"$role_n_n_project_team.id,$role_n_n_project_customer.id";
+				#region << Query builder >>
+				//QueryObject filterObj = EntityQuery.QueryEQ("id", recordId);
+				QueryObject filterObj = null;
+				EntityQuery resultQuery = new EntityQuery("wv_project", requestedFields, filterObj, null, null, null, null);
+				#endregion
 
-			if(resultProjectIdList.Count == 0) {
+				#region << Execute >>
+				QueryResponse result = recMan.Find(resultQuery);
+				if (!result.Success)
+				{
+					response.Success = false;
+					response.Timestamp = DateTime.UtcNow;
+					response.Message = result.Message;
+					response.Object = null;
+					return Json(response);
+				}
+				foreach (var record in result.Object.Data)
+				{
+					//Check if user can view the object
+					var userIsPM = false;
+					var userIsStaff = false;
+					var userIsCustomer = false;
+					#region << Check user roles >>
+					foreach (var userRole in user.Roles)
+					{
+						if (!userIsPM)
+						{
+							userIsPM = ((List<EntityRecord>)record["$user_1_n_project_owner"]).Any(z => (Guid)z["id"] == user.Id);
+						}
+						if (!userIsStaff)
+						{
+							userIsStaff = ((List<EntityRecord>)record["$role_n_n_project_team"]).Any(z => (Guid)z["id"] == userRole.Id);
+						}
+						if (!userIsCustomer)
+						{
+							userIsCustomer = ((List<EntityRecord>)record["$role_n_n_project_customer"]).Any(z => (Guid)z["id"] == userRole.Id);
+						}
+					}
+					#endregion
+
+					if (userIsPM || userIsStaff || userIsCustomer)
+					{
+						resultProjectIdList.Add((Guid)record["id"]);
+					}
+				}
+				#endregion
+				#endregion
+
+				if (resultProjectIdList.Count == 0)
+				{
+					response.Success = true;
+					response.Timestamp = DateTime.UtcNow;
+					response.Message = "You do not have access to any project or there are no projects yet";
+					response.Object = null;
+					return Json(response);
+				}
+
+				#region << Get Milestones >>
+				var milestoneFields = "*";
+
+				QueryObject projectIdFilterSection = null;
+				#region << project id filters >>
+				var projectIdRulesList = new List<QueryObject>();
+				foreach (var projectId in resultProjectIdList)
+				{
+					var projectIdRule = EntityQuery.QueryEQ("project_id", projectId);
+					projectIdRulesList.Add(projectIdRule);
+				}
+				projectIdFilterSection = EntityQuery.QueryOR(projectIdRulesList.ToArray());
+				#endregion
+
+				var sortRulesList = new List<QuerySortObject>();
+				var defaultSortRule = new QuerySortObject("name", QuerySortType.Ascending);
+				sortRulesList.Add(defaultSortRule);
+
+				var milestoneQuery = new EntityQuery("wv_milestone", milestoneFields, projectIdFilterSection, sortRulesList.ToArray(), null, null, null);
+				var milestoneQueryResponse = recMan.Find(milestoneQuery);
+				if (!milestoneQueryResponse.Success)
+				{
+					response.Success = false;
+					response.Timestamp = DateTime.UtcNow;
+					response.Message = milestoneQueryResponse.Message;
+					response.Object = null;
+					return Json(response);
+				}
+
 				response.Success = true;
 				response.Timestamp = DateTime.UtcNow;
-				response.Message = "You do not have access to any project or there are no projects yet";
-				response.Object = null;
-				return Json(response);	
-			}
+				response.Message = "My milestones successfully read";
+				response.Object = milestoneQueryResponse.Object.Data;
 
-			#region << Get Milestones >>
-			var milestoneFields = "*";
-
-			QueryObject projectIdFilterSection = null;
-			#region << project id filters >>
-			var projectIdRulesList = new List<QueryObject>();
-			foreach (var projectId in resultProjectIdList)
-			{
-				var projectIdRule = EntityQuery.QueryEQ("project_id", projectId);
-				projectIdRulesList.Add(projectIdRule);
-			}
-			projectIdFilterSection = EntityQuery.QueryOR(projectIdRulesList.ToArray());
-			#endregion
-
-			var sortRulesList = new List<QuerySortObject>();
-			var defaultSortRule = new QuerySortObject("name",QuerySortType.Ascending);
-			sortRulesList.Add(defaultSortRule);
-
-			var milestoneQuery = new EntityQuery("wv_milestone", milestoneFields, projectIdFilterSection, sortRulesList.ToArray(), null, null, null);
-			var milestoneQueryResponse = recMan.Find(milestoneQuery);
-			if (!milestoneQueryResponse.Success)
-			{
-				response.Success = false;
-				response.Timestamp = DateTime.UtcNow;
-				response.Message = milestoneQueryResponse.Message;
-				response.Object = null;
 				return Json(response);
-			}
 
-			response.Success = true;
-			response.Timestamp = DateTime.UtcNow;
-			response.Message = "My milestones successfully read";
-			response.Object = milestoneQueryResponse.Object.Data;
-
-			return Json(response);
-
-			#endregion
+				#endregion
 
 			}
-			catch(Exception ex) {
+			catch (Exception ex)
+			{
 				response.Success = false;
 				response.Timestamp = DateTime.UtcNow;
 				response.Message = "Error: " + ex.Message;
 				response.Object = null;
-				return Json(response);	
+				return Json(response);
 			}
 		}
 
@@ -527,9 +548,18 @@ namespace WebVella.ERP.Project
 						#region << Check user roles >>
 						foreach (var userRole in user.Roles)
 						{
-							userIsPM = ((List<EntityRecord>)record["$user_1_n_project_owner"]).Any(z => (Guid)z["id"] == user.Id);
-							userIsStaff = ((List<EntityRecord>)record["$role_n_n_project_team"]).Any(z => (Guid)z["id"] == userRole.Id);
-							userIsCustomer = ((List<EntityRecord>)record["$role_n_n_project_customer"]).Any(z => (Guid)z["id"] == userRole.Id);
+							if (!userIsPM)
+							{
+								userIsPM = ((List<EntityRecord>)record["$user_1_n_project_owner"]).Any(z => (Guid)z["id"] == user.Id);
+							}
+							if (!userIsStaff)
+							{
+								userIsStaff = ((List<EntityRecord>)record["$role_n_n_project_team"]).Any(z => (Guid)z["id"] == userRole.Id);
+							}
+							if (!userIsCustomer)
+							{
+								userIsCustomer = ((List<EntityRecord>)record["$role_n_n_project_customer"]).Any(z => (Guid)z["id"] == userRole.Id);
+							}
 						}
 						#endregion
 
@@ -548,7 +578,7 @@ namespace WebVella.ERP.Project
 					QueryObject rootFilterSection = null;
 					QueryObject auxFilterSection = null;
 					QueryObject projectIdFilterSection = null;
-					
+
 					#region << project id filters >>
 					var projectIdRulesList = new List<QueryObject>();
 					foreach (var projectId in userCanSeeProjectIds)
@@ -568,12 +598,15 @@ namespace WebVella.ERP.Project
 					//Currently we will hardcode the query generation
 					//auxFilterSection = RecordListQuery.ConvertQuery(getListObject.Query);		
 					QueryObject auxRule = new QueryObject();
-					foreach(var query in queryKeyValueList) {
-						switch(query.Key.ToLowerInvariant()) {
+					foreach (var query in queryKeyValueList)
+					{
+						switch (query.Key.ToLowerInvariant())
+						{
 							case "number":
 								auxRule = new QueryObject();
 								decimal outDecimal = 0;
-								if(decimal.TryParse((string)query.Value,out outDecimal)){
+								if (decimal.TryParse((string)query.Value, out outDecimal))
+								{
 									auxRule = EntityQuery.QueryEQ("number", outDecimal);
 									auxRulesList.Add(auxRule);
 								}
@@ -594,28 +627,29 @@ namespace WebVella.ERP.Project
 								auxRulesList.Add(auxRule);
 								break;
 							case "sortby":
-								var sortRule = new QuerySortObject((string)query.Value,QuerySortType.Descending);
-								if(!queryKeyValueList.ContainsKey("sortOrder") || (string)queryKeyValueList["sortOrder"] == "ascending"){
-									sortRule = new QuerySortObject((string)query.Value,QuerySortType.Ascending);
+								var sortRule = new QuerySortObject((string)query.Value, QuerySortType.Descending);
+								if (!queryKeyValueList.ContainsKey("sortOrder") || (string)queryKeyValueList["sortOrder"] == "ascending")
+								{
+									sortRule = new QuerySortObject((string)query.Value, QuerySortType.Ascending);
 								}
 								sortRulesList.Add(sortRule);
 								break;
 						}
-					
-					
-					}			
+
+
+					}
 					auxFilterSection = EntityQuery.QueryAND(auxRulesList.ToArray());
 					//Add default sort by created_on
-					var defaultSortRule = new QuerySortObject("created_on",QuerySortType.Ascending);
+					var defaultSortRule = new QuerySortObject("created_on", QuerySortType.Ascending);
 					sortRulesList.Add(defaultSortRule);
 
 					#endregion
 
-					rootFilterSection = EntityQuery.QueryAND(projectIdFilterSection,auxFilterSection);
+					rootFilterSection = EntityQuery.QueryAND(projectIdFilterSection, auxFilterSection);
 
 					//Calculate page
 					var pageSize = getListObject.PageSize;
-					var skipRecords = (page-1)*pageSize;
+					var skipRecords = (page - 1) * pageSize;
 
 
 					var taskQuery = new EntityQuery("wv_task", fields, rootFilterSection, sortRulesList.ToArray(), skipRecords, pageSize, null);
@@ -727,9 +761,18 @@ namespace WebVella.ERP.Project
 						#region << Check user roles >>
 						foreach (var userRole in user.Roles)
 						{
-							userIsPM = ((List<EntityRecord>)record["$user_1_n_project_owner"]).Any(z => (Guid)z["id"] == user.Id);
-							userIsStaff = ((List<EntityRecord>)record["$role_n_n_project_team"]).Any(z => (Guid)z["id"] == userRole.Id);
-							userIsCustomer = ((List<EntityRecord>)record["$role_n_n_project_customer"]).Any(z => (Guid)z["id"] == userRole.Id);
+							if (!userIsPM)
+							{
+								userIsPM = ((List<EntityRecord>)record["$user_1_n_project_owner"]).Any(z => (Guid)z["id"] == user.Id);
+							}
+							if (!userIsStaff)
+							{
+								userIsStaff = ((List<EntityRecord>)record["$role_n_n_project_team"]).Any(z => (Guid)z["id"] == userRole.Id);
+							}
+							if (!userIsCustomer)
+							{
+								userIsCustomer = ((List<EntityRecord>)record["$role_n_n_project_customer"]).Any(z => (Guid)z["id"] == userRole.Id);
+							}
 						}
 						#endregion
 
@@ -748,7 +791,7 @@ namespace WebVella.ERP.Project
 					QueryObject rootFilterSection = null;
 					QueryObject auxFilterSection = null;
 					QueryObject projectIdFilterSection = null;
-					
+
 					#region << project id filters >>
 					var projectIdRulesList = new List<QueryObject>();
 					foreach (var projectId in userCanSeeProjectIds)
@@ -768,12 +811,15 @@ namespace WebVella.ERP.Project
 					//Currently we will hardcode the query generation
 					//auxFilterSection = RecordListQuery.ConvertQuery(getListObject.Query);		
 					QueryObject auxRule = new QueryObject();
-					foreach(var query in queryKeyValueList) {
-						switch(query.Key.ToLowerInvariant()) {
+					foreach (var query in queryKeyValueList)
+					{
+						switch (query.Key.ToLowerInvariant())
+						{
 							case "number":
 								auxRule = new QueryObject();
 								decimal outDecimal = 0;
-								if(decimal.TryParse((string)query.Value,out outDecimal)){
+								if (decimal.TryParse((string)query.Value, out outDecimal))
+								{
 									auxRule = EntityQuery.QueryEQ("number", outDecimal);
 									auxRulesList.Add(auxRule);
 								}
@@ -794,28 +840,29 @@ namespace WebVella.ERP.Project
 								auxRulesList.Add(auxRule);
 								break;
 							case "sortby":
-								var sortRule = new QuerySortObject((string)query.Value,QuerySortType.Descending);
-								if(!queryKeyValueList.ContainsKey("sortOrder") || (string)queryKeyValueList["sortOrder"] == "ascending"){
-									sortRule = new QuerySortObject((string)query.Value,QuerySortType.Ascending);
+								var sortRule = new QuerySortObject((string)query.Value, QuerySortType.Descending);
+								if (!queryKeyValueList.ContainsKey("sortOrder") || (string)queryKeyValueList["sortOrder"] == "ascending")
+								{
+									sortRule = new QuerySortObject((string)query.Value, QuerySortType.Ascending);
 								}
 								sortRulesList.Add(sortRule);
 								break;
 						}
-					
-					
-					}			
+
+
+					}
 					auxFilterSection = EntityQuery.QueryAND(auxRulesList.ToArray());
 					//Add default sort by created_on
-					var defaultSortRule = new QuerySortObject("created_on",QuerySortType.Ascending);
+					var defaultSortRule = new QuerySortObject("created_on", QuerySortType.Ascending);
 					sortRulesList.Add(defaultSortRule);
 
 					#endregion
 
-					rootFilterSection = EntityQuery.QueryAND(projectIdFilterSection,auxFilterSection);
+					rootFilterSection = EntityQuery.QueryAND(projectIdFilterSection, auxFilterSection);
 
 					//Calculate page
 					var pageSize = getListObject.PageSize;
-					var skipRecords = (page-1)*pageSize;
+					var skipRecords = (page - 1) * pageSize;
 
 
 					var bugQuery = new EntityQuery("wv_bug", fields, rootFilterSection, sortRulesList.ToArray(), skipRecords, pageSize, null);
@@ -926,9 +973,18 @@ namespace WebVella.ERP.Project
 						#region << Check user roles >>
 						foreach (var userRole in user.Roles)
 						{
-							userIsPM = ((List<EntityRecord>)record["$user_1_n_project_owner"]).Any(z => (Guid)z["id"] == user.Id);
-							userIsStaff = ((List<EntityRecord>)record["$role_n_n_project_team"]).Any(z => (Guid)z["id"] == userRole.Id);
-							userIsCustomer = ((List<EntityRecord>)record["$role_n_n_project_customer"]).Any(z => (Guid)z["id"] == userRole.Id);
+							if (!userIsPM)
+							{
+								userIsPM = ((List<EntityRecord>)record["$user_1_n_project_owner"]).Any(z => (Guid)z["id"] == user.Id);
+							}
+							if (!userIsStaff)
+							{
+								userIsStaff = ((List<EntityRecord>)record["$role_n_n_project_team"]).Any(z => (Guid)z["id"] == userRole.Id);
+							}
+							if (!userIsCustomer)
+							{
+								userIsCustomer = ((List<EntityRecord>)record["$role_n_n_project_customer"]).Any(z => (Guid)z["id"] == userRole.Id);
+							}
 						}
 						#endregion
 
@@ -942,14 +998,14 @@ namespace WebVella.ERP.Project
 
 				#region << Get activities >>
 				{
-					var fields = "id,label,created_on,description,subject,"+
+					var fields = "id,label,created_on,description,subject," +
 					"$user_wv_project_activity_created_by.username,$user_wv_project_activity_created_by.image," +
 					"$project_1_n_activity.name";
 
 					QueryObject rootFilterSection = null;
 					QueryObject auxFilterSection = null;
 					QueryObject projectIdFilterSection = null;
-					
+
 					#region << project id filters >>
 					var projectIdRulesList = new List<QueryObject>();
 					foreach (var projectId in userCanSeeProjectIds)
@@ -963,7 +1019,8 @@ namespace WebVella.ERP.Project
 					#region << Aux filters & Sort>>
 					var auxRulesList = new List<QueryObject>();
 					QueryObject auxRule = new QueryObject();
-					if(label != "all") {
+					if (label != "all")
+					{
 						auxRule = EntityQuery.QueryEQ("label", label);
 						auxRulesList.Add(auxRule);
 					}
@@ -971,16 +1028,16 @@ namespace WebVella.ERP.Project
 					auxFilterSection = EntityQuery.QueryAND(auxRulesList.ToArray());
 					//Add default sort by created_on
 					var sortRulesList = new List<QuerySortObject>();
-					var defaultSortRule = new QuerySortObject("created_on",QuerySortType.Descending);
+					var defaultSortRule = new QuerySortObject("created_on", QuerySortType.Descending);
 					sortRulesList.Add(defaultSortRule);
 
 					#endregion
 
-					rootFilterSection = EntityQuery.QueryAND(projectIdFilterSection,auxFilterSection);
+					rootFilterSection = EntityQuery.QueryAND(projectIdFilterSection, auxFilterSection);
 
 					//Calculate page
 					var pageSize = 15;
-					var skipRecords = (page-1)*pageSize;
+					var skipRecords = (page - 1) * pageSize;
 
 
 					var activityQuery = new EntityQuery("wv_project_activity", fields, rootFilterSection, sortRulesList.ToArray(), skipRecords, pageSize, null);
@@ -1050,18 +1107,18 @@ namespace WebVella.ERP.Project
 
 					//Add default sort by created_on
 					var sortRulesList = new List<QuerySortObject>();
-					var defaultSortRule = new QuerySortObject("last_modified_on",QuerySortType.Descending);
+					var defaultSortRule = new QuerySortObject("last_modified_on", QuerySortType.Descending);
 					sortRulesList.Add(defaultSortRule);
 
 					#endregion
-					var ownerFilter = EntityQuery.QueryEQ("owner_id",SecurityContext.CurrentUser.Id);
-					var notClosedFilter = EntityQuery.QueryNOT("status","completed");
+					var ownerFilter = EntityQuery.QueryEQ("owner_id", SecurityContext.CurrentUser.Id);
+					var notClosedFilter = EntityQuery.QueryNOT("status", "completed");
 
-					var rootFilterSection = EntityQuery.QueryAND(ownerFilter,notClosedFilter);
+					var rootFilterSection = EntityQuery.QueryAND(ownerFilter, notClosedFilter);
 
 					//Calculate page
 					var pageSize = 5;
-					var skipRecords = (page-1)*pageSize;
+					var skipRecords = (page - 1) * pageSize;
 
 					var activityQuery = new EntityQuery("wv_task", fields, rootFilterSection, sortRulesList.ToArray(), skipRecords, pageSize, null);
 
@@ -1129,18 +1186,18 @@ namespace WebVella.ERP.Project
 
 					//Add default sort by created_on
 					var sortRulesList = new List<QuerySortObject>();
-					var defaultSortRule = new QuerySortObject("last_modified_on",QuerySortType.Descending);
+					var defaultSortRule = new QuerySortObject("last_modified_on", QuerySortType.Descending);
 					sortRulesList.Add(defaultSortRule);
 
 					#endregion
-					var ownerFilter = EntityQuery.QueryEQ("owner_id",SecurityContext.CurrentUser.Id);
-					var notClosedFilter = EntityQuery.QueryNOT("status","closed");
+					var ownerFilter = EntityQuery.QueryEQ("owner_id", SecurityContext.CurrentUser.Id);
+					var notClosedFilter = EntityQuery.QueryNOT("status", "closed");
 
-					var rootFilterSection = EntityQuery.QueryAND(ownerFilter,notClosedFilter);
+					var rootFilterSection = EntityQuery.QueryAND(ownerFilter, notClosedFilter);
 
 					//Calculate page
 					var pageSize = 5;
-					var skipRecords = (page-1)*pageSize;
+					var skipRecords = (page - 1) * pageSize;
 
 					var activityQuery = new EntityQuery("wv_bug", fields, rootFilterSection, sortRulesList.ToArray(), skipRecords, pageSize, null);
 

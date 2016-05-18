@@ -178,7 +178,7 @@ DATE
 	//UPDATE
 	dateField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 	{
-		var response = entMan.CreateField(ENTITY_ID, datetimeField, false);
+		var response = entMan.CreateField(ENTITY_ID, dateField, false);
 		if (!response.Success)
 			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Field: field_name" + " Message:" + response.Message);
 	}

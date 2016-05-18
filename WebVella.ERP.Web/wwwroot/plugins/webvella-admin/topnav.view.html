@@ -1,6 +1,5 @@
 <div class="aux-actions">
 	<a class="btn btn-link btn-sm" href="#/desktop/browse" tooltip-placement="bottom"  tooltip-append-to-body="true" uib-tooltip="{{::'GOTO_DESKTOP_LINK_TITLE' | translate}}"><i class="fa fa-fw fa-home"></i></a>
-	<a class="btn btn-link btn-sm" href="#/admin/entities" tooltip-placement="bottom"  tooltip-append-to-body="true" uib-tooltip="{{::'ADMINISTRATION' | translate}}"><i class="fa fa-fw fa-cog" style="color:#555"></i></a>
 	<span class="btn btn-link btn-sm" tooltip-placement="bottom"  tooltip-append-to-body="true" uib-tooltip="{{::topnavData.currentUser.username}}">
 		<img class="avatar img-circle" src="/plugins/webvella-core/assets/avatar.png" ng-if="::!topnavData.currentUser.image">
 		<img class="avatar img-circle" ng-src="{{::topnavData.currentUser.image}}" ng-if="::topnavData.currentUser.image">		
