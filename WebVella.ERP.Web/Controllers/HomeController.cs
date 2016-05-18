@@ -53,6 +53,8 @@ namespace WebVella.ERP.Web.Controllers
 
 			ViewBag.CacheBreaker = 20150920;
 			ViewBag.Lang = Settings.Lang;
+			ViewBag.CompanyName = Settings.CompanyName;
+			ViewBag.CompanyLogo = Settings.CompanyLogo;
 			ViewBag.LibraryCssFileList = libraryCssFileList;
 			ViewBag.ModuleCssFileList = moduleCssFileList;
 			ViewBag.LibraryJsFileList = libraryJsFileList;

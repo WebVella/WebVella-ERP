@@ -34,7 +34,7 @@
 			'resolve': {
 				//here you can resolve any plugin wide data you need. It will be available for all children states. Parent resolved objects can be injected in the functions too
 				'pageTitle': function () {
-					return "Webvella ERP";
+					return GlobalCompanyName;
 				},
 				resolvedCurrentUser: resolveCurrentUser,
 				checkedAccessPermission: checkAccessPermission,

@@ -1,9 +1,9 @@
 <nav class="navbar navbar-inverse desktop">
 	<div>
 		<div class="navbar-header">
-			<span class="navbar-brand" title="WebVella ERP">
-				<img alt="Brand" src="/plugins/webvella-desktop/assets/logo.png" style="width:20px;display:inline-block;margin-right:10px; position: relative; top: -2px;" />
-				<span class="hidden-xs hidden-sm">WebVella ERP</span>
+			<span class="navbar-brand" title="{{baseCtrl.companyName}}">
+				<img alt="Brand" ng-src="{{baseCtrl.companyLogo}}" style="width:20px;display:inline-block;margin-right:10px; position: relative; top: -2px;" />
+				<span class="hidden-xs hidden-sm" ng-bind="baseCtrl.companyName"></span>
 			</span>
 		</div>
 		<div class="collapse navbar-collapse" ng-class="{'display-block':baseCtrl.collapsedNav}">

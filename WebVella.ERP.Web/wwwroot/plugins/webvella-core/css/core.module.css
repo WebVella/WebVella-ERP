@@ -202,6 +202,10 @@ span.divider {
 		color: #333;
 	}
 
+#page-text .alert {
+	border:none;
+	border-radius:0;
+}
 
 .display-block {
 	display: block !important;

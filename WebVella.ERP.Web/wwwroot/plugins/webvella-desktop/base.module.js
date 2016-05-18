@@ -27,7 +27,7 @@
 			},
 			resolve: {
 				pageTitle: function () {
-					return "Webvella ERP";
+					return GlobalCompanyName;
 				},
 				resolvedCurrentUser: resolveCurrentUser
 			},
@@ -58,7 +58,8 @@
 		var baseCtrl = this;
 		baseCtrl.topnav = [];
 		baseCtrl.user = resolvedCurrentUser;
-
+		baseCtrl.companyName = GlobalCompanyName;
+		baseCtrl.companyLogo = GlobalCompanyLogo;
 		//Making topnav pluggable
 		////1. CONSTRUCTOR initialize the factory
 		webvellaDesktopTopnavFactory.initTopnav();
