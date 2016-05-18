@@ -24,7 +24,7 @@ namespace WebVella.ERP.Project
 		//Check out the CodeSnippets.txt file in WebVella.ERP.Web > Docs folder for code pieces on how to create or update some elements
 
 
-		private bool createSampleRecords = false;
+		private bool createSampleRecords = true;
 		//Constants
 		private static Guid WEBVELLA_PROJECT_PLUGIN_ID = new Guid("2a7bc24a-da6a-48f0-a0c7-7156a8ac69bd");
 		private static string WEBVELLA_PROJECT_PLUGIN_NAME = "webvella-project";

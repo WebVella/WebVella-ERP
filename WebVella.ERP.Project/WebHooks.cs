@@ -70,30 +70,31 @@ namespace WebVella.ERP.Project
 				record["owner_id"] = (Guid)result.Object.Data[0]["owner_id"];
 			}
 			#endregion
-
-			#region << Increase the project counter >>
-			var patchObject = new EntityRecord();
-			patchObject["id"] = (Guid)projectObject["id"];
-			switch ((string)record["status"])
+			using (SecurityContext.OpenSystemScope())
 			{
-				case "not started":
-					patchObject["x_tasks_not_started"] = (decimal)projectObject["x_tasks_not_started"] + 1;
-					break;
-				case "in progress":
-					patchObject["x_tasks_in_progress"] = (decimal)projectObject["x_tasks_in_progress"] + 1;
-					break;
-				case "completed":
-					patchObject["x_tasks_completed"] = (decimal)projectObject["x_tasks_completed"] + 1;
-					break;
-			}
-			var updateResponse = recMan.UpdateRecord("wv_project", patchObject);
-			if (!updateResponse.Success)
-			{
-				throw new Exception(updateResponse.Message);
-			}
+				#region << Increase the project counter >>
+				var patchObject = new EntityRecord();
+				patchObject["id"] = (Guid)projectObject["id"];
+				switch ((string)record["status"])
+				{
+					case "not started":
+						patchObject["x_tasks_not_started"] = (decimal)projectObject["x_tasks_not_started"] + 1;
+						break;
+					case "in progress":
+						patchObject["x_tasks_in_progress"] = (decimal)projectObject["x_tasks_in_progress"] + 1;
+						break;
+					case "completed":
+						patchObject["x_tasks_completed"] = (decimal)projectObject["x_tasks_completed"] + 1;
+						break;
+				}
+				var updateResponse = recMan.UpdateRecord("wv_project", patchObject);
+				if (!updateResponse.Success)
+				{
+					throw new Exception(updateResponse.Message);
+				}
 
-			#endregion
-
+				#endregion
+			}
 			return data;
 		}
 
@@ -105,57 +106,54 @@ namespace WebVella.ERP.Project
 			var controller = (Controller)data.controller;
 			var createdRecord = createResult.Object.Data[0];
 			var patchObject = new EntityRecord();
-			Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-tasks go-purple'></i> task #" + createdRecord["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], (Guid)createdRecord["id"], null);
-
-			#region << Add the task owner and creator in the watch list>>
-
-			#region << Add creator in watch list >>
+			using (SecurityContext.OpenSystemScope())
 			{
-				var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
-				var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], (Guid)record["id"]);
-				if (!createRelationNtoNResponse.Success)
-				{
-					throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
-				}
-			}
-			#endregion
+				Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-tasks go-purple'></i> task #" + createdRecord["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], (Guid)createdRecord["id"], null);
 
-			#region << Add creator in watch list >>
-			{
-				if ((Guid)record["created_by"] != (Guid)record["owner_id"])
+				#region << Add creator in watch list >>
 				{
 					var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
-					var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["owner_id"], (Guid)record["id"]);
+					var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], (Guid)record["id"]);
 					if (!createRelationNtoNResponse.Success)
 					{
 						throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
 					}
 				}
-			}
-			#endregion
+				#endregion
 
-			#region << Generate the code field value >>
-			{
-			var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["project_id"]);
-			var query = new EntityQuery("wv_project", "*", filterObj, null, null, null);
-			var result = recMan.Find(query);
-			if (result.Success && result.Object.Data.Any())
-			{
-				patchObject = new EntityRecord();
-				patchObject["id"] = (Guid)createdRecord["id"];
-				patchObject["code"] = result.Object.Data[0]["code"] + "-T" + createdRecord["number"];
-				var patchResult = recMan.UpdateRecord("wv_task", patchObject);
-				if (!patchResult.Success)
+				#region << Add owner in watch list >>
 				{
-					throw new Exception(patchResult.Message);
+					if ((Guid)record["created_by"] != (Guid)record["owner_id"])
+					{
+						var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
+						var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["owner_id"], (Guid)record["id"]);
+						if (!createRelationNtoNResponse.Success)
+						{
+							throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
+						}
+					}
 				}
+				#endregion
+
+				#region << Generate the code field value >>
+				{
+					var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["project_id"]);
+					var query = new EntityQuery("wv_project", "*", filterObj, null, null, null);
+					var result = recMan.Find(query);
+					if (result.Success && result.Object.Data.Any())
+					{
+						patchObject = new EntityRecord();
+						patchObject["id"] = (Guid)createdRecord["id"];
+						patchObject["code"] = result.Object.Data[0]["code"] + "-T" + createdRecord["number"];
+						var patchResult = recMan.UpdateRecord("wv_task", patchObject);
+						if (!patchResult.Success)
+						{
+							throw new Exception(patchResult.Message);
+						}
+					}
+				}
+				#endregion
 			}
-			}
-			#endregion
-
-			#endregion
-
-
 			var creatorUsername = "";
 			#region << Get username of the creator>>
 			{
@@ -304,12 +302,14 @@ namespace WebVella.ERP.Project
 					patchObject["x_bugs_reopened"] = (decimal)projectObject["x_bugs_reopened"] + 1;
 					break;
 			}
-			var updateResponse = recMan.UpdateRecord("wv_project", patchObject);
-			if (!updateResponse.Success)
+			using (SecurityContext.OpenSystemScope())
 			{
-				throw new Exception(updateResponse.Message);
+				var updateResponse = recMan.UpdateRecord("wv_project", patchObject);
+				if (!updateResponse.Success)
+				{
+					throw new Exception(updateResponse.Message);
+				}
 			}
-
 			#endregion
 
 			return data;
@@ -323,56 +323,59 @@ namespace WebVella.ERP.Project
 			var controller = (Controller)data.controller;
 			var createdRecord = createResult.Object.Data[0];
 			var patchObject = new EntityRecord();
-			Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-bug go-red'></i> bug #" + createdRecord["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], null, (Guid)createdRecord["id"]);
 
-			#region << Add the task owner and creator in the watch list>>
-
-			#region << Add creator in watch list >>
+			using (SecurityContext.OpenSystemScope())
 			{
-				var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
-				var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], (Guid)record["id"]);
-				if (!createRelationNtoNResponse.Success)
-				{
-					throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
-				}
-			}
-			#endregion
+				Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-bug go-red'></i> bug #" + createdRecord["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], null, (Guid)createdRecord["id"]);
 
-			#region << Add creator in watch list >>
-			{
-				if ((Guid)record["created_by"] != (Guid)record["owner_id"])
+				#region << Add the task owner and creator in the watch list>>
+
+				#region << Add creator in watch list >>
 				{
 					var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
-					var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["owner_id"], (Guid)record["id"]);
+					var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], (Guid)record["id"]);
 					if (!createRelationNtoNResponse.Success)
 					{
 						throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
 					}
 				}
-			}
-			#endregion
+				#endregion
 
-			#endregion
-
-			#region << Generate the code field value >>
-			{
-				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["project_id"]);
-				var query = new EntityQuery("wv_project", "*", filterObj, null, null, null);
-				var result = recMan.Find(query);
-				if (result.Success && result.Object.Data.Any())
+				#region << Add creator in watch list >>
 				{
-					patchObject = new EntityRecord();
-					patchObject["id"] = (Guid)createdRecord["id"];
-					patchObject["code"] = result.Object.Data[0]["code"] + "-B" + createdRecord["number"];
-					var patchResult = recMan.UpdateRecord("wv_bug", patchObject);
-					if (!patchResult.Success)
+					if ((Guid)record["created_by"] != (Guid)record["owner_id"])
 					{
-						throw new Exception(patchResult.Message);
+						var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
+						var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["owner_id"], (Guid)record["id"]);
+						if (!createRelationNtoNResponse.Success)
+						{
+							throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
+						}
 					}
 				}
-			}
-			#endregion
+				#endregion
 
+				#endregion
+
+				#region << Generate the code field value >>
+				{
+					var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["project_id"]);
+					var query = new EntityQuery("wv_project", "*", filterObj, null, null, null);
+					var result = recMan.Find(query);
+					if (result.Success && result.Object.Data.Any())
+					{
+						patchObject = new EntityRecord();
+						patchObject["id"] = (Guid)createdRecord["id"];
+						patchObject["code"] = result.Object.Data[0]["code"] + "-B" + createdRecord["number"];
+						var patchResult = recMan.UpdateRecord("wv_bug", patchObject);
+						if (!patchResult.Success)
+						{
+							throw new Exception(patchResult.Message);
+						}
+					}
+				}
+				#endregion
+			}
 			var creatorUsername = "";
 			#region << Get username of the creator>>
 			{
@@ -462,26 +465,29 @@ namespace WebVella.ERP.Project
 			{
 				billableString = "billable";
 			}
-			if (createdRecord["task_id"] != null)
+			using (SecurityContext.OpenSystemScope())
 			{
-				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["task_id"]);
-				var query = new EntityQuery("wv_task", "*", filterObj, null, null, null);
-				var result = recMan.Find(query);
-				if (result.Success)
+				if (createdRecord["task_id"] != null)
 				{
-					var task = result.Object.Data[0];
-					Utils.CreateActivity(recMan, "timelog", "created a <i class='fa fa-fw fa-clock-o go-blue'></i> time log of <b>" + ((decimal)createdRecord["hours"]).ToString("N2") + " " + billableString + "</b> hours for task #" + task["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", null, (Guid)task["project_id"], (Guid)task["id"], null);
+					var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["task_id"]);
+					var query = new EntityQuery("wv_task", "*", filterObj, null, null, null);
+					var result = recMan.Find(query);
+					if (result.Success)
+					{
+						var task = result.Object.Data[0];
+						Utils.CreateActivity(recMan, "timelog", "created a <i class='fa fa-fw fa-clock-o go-blue'></i> time log of <b>" + ((decimal)createdRecord["hours"]).ToString("N2") + " " + billableString + "</b> hours for task #" + task["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", null, (Guid)task["project_id"], (Guid)task["id"], null);
+					}
 				}
-			}
-			else if (createdRecord["bug_id"] != null)
-			{
-				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["bug_id"]);
-				var query = new EntityQuery("wv_bug", "*", filterObj, null, null, null);
-				var result = recMan.Find(query);
-				if (result.Success)
+				else if (createdRecord["bug_id"] != null)
 				{
-					var bug = result.Object.Data[0];
-					Utils.CreateActivity(recMan, "timelog", "created a <i class='fa fa-fw fa-clock-o go-blue'></i> time log of <b>" + ((decimal)createdRecord["hours"]).ToString("N2") + " " + billableString + "</b> hours  for bug #" + bug["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", null, (Guid)bug["project_id"], null, (Guid)bug["id"]);
+					var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["bug_id"]);
+					var query = new EntityQuery("wv_bug", "*", filterObj, null, null, null);
+					var result = recMan.Find(query);
+					if (result.Success)
+					{
+						var bug = result.Object.Data[0];
+						Utils.CreateActivity(recMan, "timelog", "created a <i class='fa fa-fw fa-clock-o go-blue'></i> time log of <b>" + ((decimal)createdRecord["hours"]).ToString("N2") + " " + billableString + "</b> hours  for bug #" + bug["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", null, (Guid)bug["project_id"], null, (Guid)bug["id"]);
+					}
 				}
 			}
 		}
@@ -499,97 +505,98 @@ namespace WebVella.ERP.Project
 			var createdRecord = createResult.Object.Data[0];
 			var task = new EntityRecord();
 			var bug = new EntityRecord();
-			#region << Init >>
-			if (createdRecord["task_id"] != null)
-			{
-				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["task_id"]);
-				var query = new EntityQuery("wv_task", "id,code,subject,description,project_id,$$user_n_n_task_watchers.id,$$user_n_n_task_watchers.email,$$project_1_n_task.code", filterObj, null, null, null);
-				var result = recMan.Find(query);
-				if (result.Success)
-				{
-					task = result.Object.Data[0];
-					Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for task [" + task["code"] + "] <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", null, (Guid)task["project_id"], (Guid)task["id"], null);
-				}
-				else
-				{
-					throw new Exception(result.Message);
-				}
-			}
-			else if (createdRecord["bug_id"] != null)
-			{
-				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["bug_id"]);
-				var query = new EntityQuery("wv_bug", "id,code,subject,description,project_id,$$user_n_n_bug_watchers.id,$$user_n_n_bug_watchers.email,$$project_1_n_bug.code", filterObj, null, null, null);
-				var result = recMan.Find(query);
-				if (result.Success)
-				{
-					bug = result.Object.Data[0];
-					Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for bug [" + bug["code"] + "] <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", null, (Guid)bug["project_id"], null, (Guid)bug["id"]);
-				}
-				else
-				{
-					throw new Exception(result.Message);
-				}
-			}
-			#endregion
-
 			var recepients = new List<string>();
-			#region << Add the comment creator to the watch list if he is not there, Generate recipients list >>
+			using (SecurityContext.OpenSystemScope())
 			{
+				#region << Init >>
 				if (createdRecord["task_id"] != null)
 				{
-					var isCommentatorInWatchList = false;
-					#region << Check if is in watch list already >>
-					foreach (var watcher in (List<EntityRecord>)task["$user_n_n_task_watchers"])
+					var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["task_id"]);
+					var query = new EntityQuery("wv_task", "id,code,subject,description,project_id,$$user_n_n_task_watchers.id,$$user_n_n_task_watchers.email,$$project_1_n_task.code", filterObj, null, null, null);
+					var result = recMan.Find(query);
+					if (result.Success)
 					{
-						if ((Guid)watcher["id"] == (Guid)createdRecord["created_by"])
-						{
-							isCommentatorInWatchList = true;
-						}
-						else
-						{
-							recepients.Add((string)watcher["email"]);
-						}
+						task = result.Object.Data[0];
+						Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for task [" + task["code"] + "] <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", null, (Guid)task["project_id"], (Guid)task["id"], null);
 					}
-					#endregion
-					if (!isCommentatorInWatchList)
+					else
 					{
-						var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
-						var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], (Guid)record["id"]);
-						if (!createRelationNtoNResponse.Success)
-						{
-							throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
-						}
+						throw new Exception(result.Message);
 					}
 				}
 				else if (createdRecord["bug_id"] != null)
 				{
-					var isCommentatorInWatchList = false;
-					#region << Check if is in watch list already >>
-					foreach (var watcher in (List<EntityRecord>)bug["$user_n_n_bug_watchers"])
+					var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["bug_id"]);
+					var query = new EntityQuery("wv_bug", "id,code,subject,description,project_id,$$user_n_n_bug_watchers.id,$$user_n_n_bug_watchers.email,$$project_1_n_bug.code", filterObj, null, null, null);
+					var result = recMan.Find(query);
+					if (result.Success)
 					{
-						if ((Guid)watcher["id"] == (Guid)createdRecord["created_by"])
+						bug = result.Object.Data[0];
+						Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for bug [" + bug["code"] + "] <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", null, (Guid)bug["project_id"], null, (Guid)bug["id"]);
+					}
+					else
+					{
+						throw new Exception(result.Message);
+					}
+				}
+				#endregion
+				#region << Add the comment creator to the watch list if he is not there, Generate recipients list >>
+				{
+					if (createdRecord["task_id"] != null)
+					{
+						var isCommentatorInWatchList = false;
+						#region << Check if is in watch list already >>
+						foreach (var watcher in (List<EntityRecord>)task["$user_n_n_task_watchers"])
 						{
-							isCommentatorInWatchList = true;
+							if ((Guid)watcher["id"] == (Guid)createdRecord["created_by"])
+							{
+								isCommentatorInWatchList = true;
+							}
+							else
+							{
+								recepients.Add((string)watcher["email"]);
+							}
 						}
-						else
+						#endregion
+						if (!isCommentatorInWatchList)
 						{
-							recepients.Add((string)watcher["email"]);
+							var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
+							var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], (Guid)record["id"]);
+							if (!createRelationNtoNResponse.Success)
+							{
+								throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
+							}
 						}
 					}
-					#endregion
-					if (!isCommentatorInWatchList)
+					else if (createdRecord["bug_id"] != null)
 					{
-						var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
-						var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], (Guid)record["id"]);
-						if (!createRelationNtoNResponse.Success)
+						var isCommentatorInWatchList = false;
+						#region << Check if is in watch list already >>
+						foreach (var watcher in (List<EntityRecord>)bug["$user_n_n_bug_watchers"])
 						{
-							throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
+							if ((Guid)watcher["id"] == (Guid)createdRecord["created_by"])
+							{
+								isCommentatorInWatchList = true;
+							}
+							else
+							{
+								recepients.Add((string)watcher["email"]);
+							}
+						}
+						#endregion
+						if (!isCommentatorInWatchList)
+						{
+							var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
+							var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], (Guid)record["id"]);
+							if (!createRelationNtoNResponse.Success)
+							{
+								throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
+							}
 						}
 					}
 				}
+				#endregion
 			}
-			#endregion
-
 			var commentatorUsername = "";
 			#region << Get username of the commentator>>
 			{
