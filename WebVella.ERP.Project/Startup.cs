@@ -7098,6 +7098,41 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
+									#region << description >>
+								{
+									InputMultiLineTextField textareaField = new InputMultiLineTextField();
+									textareaField.Id = new Guid("1a1b646e-93df-4035-ace0-d844f62bad63");
+									textareaField.Name = "description";
+									textareaField.Label = "Description";
+									textareaField.PlaceholderText = "";
+									textareaField.Description = "";
+									textareaField.HelpText = "";
+									textareaField.Required = false;
+									textareaField.Unique = false;
+									textareaField.Searchable = false;
+									textareaField.Auditable = false;
+									textareaField.System = true;
+									textareaField.DefaultValue = string.Empty;
+									textareaField.VisibleLineNumber = 4;
+									textareaField.EnableSecurity = true;
+									textareaField.Permissions = new FieldPermissions();
+									textareaField.Permissions.CanRead = new List<Guid>();
+									textareaField.Permissions.CanUpdate = new List<Guid>();
+	
+									textareaField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+									textareaField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+
+									textareaField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+									textareaField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+
+									{
+										var response = entMan.CreateField(TIMELOG_ENTITY_ID, textareaField, false);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + TIMELOG_ENTITY_NAME + " Field: description" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
 									#region << task_id >>
 									{
 										InputGuidField guidField = new InputGuidField();
@@ -7526,6 +7561,38 @@ namespace WebVella.ERP.Project
 											viewItem.EntityName = updateViewEntity.Name;
 											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "billable").Id;
 											viewItem.FieldName = "billable";
+											viewItem.Type = "field";
+											viewColumn.Items.Add(viewItem);
+										}
+										#endregion
+
+										//Save column
+										viewRow.Columns.Add(viewColumn);
+										#endregion
+
+										//Save row
+										viewSection.Rows.Add(viewRow);
+										#endregion
+
+										#region << Row 2 >>
+										viewRow = new InputRecordViewRow();
+										viewRow.Id = Guid.NewGuid();
+										viewRow.Weight = 2;
+										viewRow.Columns = new List<InputRecordViewColumn>();
+
+										#region << Column 1 >>
+										viewColumn = new InputRecordViewColumn();
+										viewColumn.GridColCount = 12;
+										viewColumn.Items = new List<InputRecordViewItemBase>();
+
+
+										#region << description >>
+										{
+											viewItem = new InputRecordViewFieldItem();
+											viewItem.EntityId = updateViewEntity.Id;
+											viewItem.EntityName = updateViewEntity.Name;
+											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "description").Id;
+											viewItem.FieldName = "description";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
 										}
@@ -10218,7 +10285,6 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 
-
 								#region << Add watchers to the bug >>
 								//Creator
 								{
@@ -10282,6 +10348,7 @@ namespace WebVella.ERP.Project
 								#endregion
 							}
 						}
+
 						#endregion
 
 						#region << 4. Save needed changes to the plugin setting data >>
