@@ -1,6 +1,6 @@
 ﻿{
 	"EmailSettings": {
-		"enabled": true,
+		"enabled": false,
 		"server": "mail.gmail.com",
 		"enable_ssl": false,
 		"port": 25,
