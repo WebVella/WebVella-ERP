@@ -7695,7 +7695,7 @@ namespace WebVella.ERP.Project
 												newActionList.Add(action);
 											}
 										}
-										updateView.ActionItems = newActionList;
+										updateViewInput.ActionItems = newActionList;
 										#endregion
 
 										{
