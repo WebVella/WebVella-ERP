@@ -268,7 +268,7 @@ namespace WebVella.ERP.Project
 					}
 
 					//Regenerate the task Code
-					data.record["code"] = newTaskProject["code"] + "-T" + oldTaskObject["number"]; 
+					data.record["code"] = newTaskProject["code"] + "-T" + oldTaskObject["number"];
 
 				}
 				else
@@ -335,48 +335,50 @@ namespace WebVella.ERP.Project
 				}
 				#endregion
 
-				#region << Update objects >>
-				if (isOldProjectPatched)
+				using (SecurityContext.OpenSystemScope())
 				{
-					var updateResponse = recMan.UpdateRecord("wv_project", oldProjectPatchObject);
-					if (!updateResponse.Success)
+					#region << Update objects >>
+					if (isOldProjectPatched)
 					{
-						throw new Exception("Old project update error: " + updateResponse.Message);
+						var updateResponse = recMan.UpdateRecord("wv_project", oldProjectPatchObject);
+						if (!updateResponse.Success)
+						{
+							throw new Exception("Old project update error: " + updateResponse.Message);
+						}
 					}
-				}
 
-				if (isNewProjectPatched)
-				{
-					var updateResponse = recMan.UpdateRecord("wv_project", newProjectPatchObject);
-					if (!updateResponse.Success)
+					if (isNewProjectPatched)
 					{
-						throw new Exception("New project update error: " + updateResponse.Message);
+						var updateResponse = recMan.UpdateRecord("wv_project", newProjectPatchObject);
+						if (!updateResponse.Success)
+						{
+							throw new Exception("New project update error: " + updateResponse.Message);
+						}
 					}
-				}
 
-				if (isOldMilestonePatched)
-				{
-					var updateResponse = recMan.UpdateRecord("wv_milestone", oldMilestonePatchObject);
-					if (!updateResponse.Success)
+					if (isOldMilestonePatched)
 					{
-						throw new Exception("Old milestone update error: " + updateResponse.Message);
+						var updateResponse = recMan.UpdateRecord("wv_milestone", oldMilestonePatchObject);
+						if (!updateResponse.Success)
+						{
+							throw new Exception("Old milestone update error: " + updateResponse.Message);
+						}
 					}
-				}
 
-				if (isNewMilestonePatched)
-				{
-					var updateResponse = recMan.UpdateRecord("wv_milestone", newMilestonePatchObject);
-					if (!updateResponse.Success)
+					if (isNewMilestonePatched)
 					{
-						throw new Exception("New milestone update error: " + updateResponse.Message);
+						var updateResponse = recMan.UpdateRecord("wv_milestone", newMilestonePatchObject);
+						if (!updateResponse.Success)
+						{
+							throw new Exception("New milestone update error: " + updateResponse.Message);
+						}
 					}
+					#endregion
+
+					#region << Create update activity >>
+					Utils.CreateActivity(recMan, "updated", "updated a <i class='fa fa-fw fa-tasks go-purple'></i> task #" + oldTaskObject["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + oldTaskObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldTaskObject["subject"]) + "</a>", null, (Guid)oldTaskObject["project_id"], (Guid)oldTaskObject["id"], null);
+					#endregion
 				}
-				#endregion
-
-				#region << Create update activity >>
-				Utils.CreateActivity(recMan,"updated","updated a <i class='fa fa-fw fa-tasks go-purple'></i> task #" + oldTaskObject["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + oldTaskObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldTaskObject["subject"])  +"</a>",null,(Guid)oldTaskObject["project_id"],(Guid)oldTaskObject["id"],null);
-				#endregion
-
 				return data;
 			}
 			catch (Exception ex)
@@ -550,7 +552,7 @@ namespace WebVella.ERP.Project
 				}
 
 				//Regenerate the task Code
-				data.record["code"] = newBugProject["code"] + "-T" + oldBugObject["number"]; 
+				data.record["code"] = newBugProject["code"] + "-T" + oldBugObject["number"];
 			}
 			else
 			{
@@ -582,36 +584,40 @@ namespace WebVella.ERP.Project
 			}
 			#endregion
 
-			#region << Update objects >>
-			if (isOldProjectPatched)
+			using (SecurityContext.OpenSystemScope())
 			{
-				var updateResponse = recMan.UpdateRecord("wv_project", oldProjectPatchObject);
-				if (!updateResponse.Success)
+
+				#region << Update objects >>
+				if (isOldProjectPatched)
 				{
-					throw new Exception("Old project update error: " + updateResponse.Message);
+					var updateResponse = recMan.UpdateRecord("wv_project", oldProjectPatchObject);
+					if (!updateResponse.Success)
+					{
+						throw new Exception("Old project update error: " + updateResponse.Message);
+					}
 				}
-			}
 
-			if (isNewProjectPatched)
-			{
-				var updateResponse = recMan.UpdateRecord("wv_project", newProjectPatchObject);
-				if (!updateResponse.Success)
+				if (isNewProjectPatched)
 				{
-					throw new Exception("New project update error: " + updateResponse.Message);
+					var updateResponse = recMan.UpdateRecord("wv_project", newProjectPatchObject);
+					if (!updateResponse.Success)
+					{
+						throw new Exception("New project update error: " + updateResponse.Message);
+					}
 				}
+
+				#endregion
+
+				#region << Update activity >>
+				Utils.CreateActivity(recMan, "updated", "updated a <i class='fa fa-fw fa-bug go-red'></i> bug #" + oldBugObject["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + oldBugObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldBugObject["subject"]) + "</a>", null, (Guid)oldBugObject["project_id"], null, (Guid)oldBugObject["id"]);
+				#endregion
 			}
-
-			#endregion
-
-			#region << Update activity >>
-			Utils.CreateActivity(recMan,"updated","updated a <i class='fa fa-fw fa-bug go-red'></i> bug #" + oldBugObject["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + oldBugObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldBugObject["subject"])  +"</a>",null,(Guid)oldBugObject["project_id"],null,(Guid)oldBugObject["id"]);
-			#endregion
-
 
 			return data;
 		}
 
-		public static dynamic ManageRelationWithProject(dynamic data, RecordManager recMan,string itemType) {
+		public static dynamic ManageRelationWithProject(dynamic data, RecordManager recMan, string itemType)
+		{
 			var relation = (EntityRelation)data.relation;
 			var attachTargetRecords = (List<EntityRecord>)data.attachTargetRecords;
 			var detachTargetRecords = (List<EntityRecord>)data.detachTargetRecords;
@@ -622,7 +628,8 @@ namespace WebVella.ERP.Project
 			var attachedRecordForeachObject = new EntityRecord();
 			var hookedRelationName = "project_1_n_task";
 			var hookedEntityName = "wv_task";
-			if(itemType == "bug") {
+			if (itemType == "bug")
+			{
 				hookedRelationName = "project_1_n_bug";
 				hookedEntityName = "wv_bug";
 			}
@@ -662,55 +669,24 @@ namespace WebVella.ERP.Project
 					var patchObject = new EntityRecord();
 					patchObject["id"] = attachedRecordForeachObject["id"];
 					patchObject["code"] = newProjectRecord["code"] + "-T" + attachedRecordForeachObject["number"];
-					if(itemType == "bug") {
-					patchObject["code"] = newProjectRecord["code"] + "-B" + attachedRecordForeachObject["number"];
-					}
-					var patchResult = recMan.UpdateRecord(hookedEntityName, patchObject);
-					if (!patchResult.Success)
+					if (itemType == "bug")
 					{
-						//nothing for now
+						patchObject["code"] = newProjectRecord["code"] + "-B" + attachedRecordForeachObject["number"];
+					}
+					using (SecurityContext.OpenSystemScope())
+					{
+						var patchResult = recMan.UpdateRecord(hookedEntityName, patchObject);
+						if (!patchResult.Success)
+						{
+							//nothing for now
+						}
 					}
 				}
 			}
 
 
-			return data;		
-			
-		}
+			return data;
 
-		public static void UpdateBugActivity(dynamic data, RecordManager recMan)
-		{
-
-		//status,project,priority,owner,start_date,end_date,attachment_add,attachment_delete,comment_add,comment_delete,timelog_add,timelog_update,task_created_task_deleted
-			try
-			{
-				
-				var oldBugObject = (EntityRecord)data.record;
-				var newBugUpdateResult = (QueryResponse)data.result;
-				var newBugObject = newBugUpdateResult.Object.Data[0];
-				var recordId = (Guid)data.recordId;
-				var oldStatus = "";
-				var newStatus = "";
-
-				#region << Init >>
-					if(oldBugObject.Properties.ContainsKey("status")){
-						oldStatus = (string)oldBugObject["status"];
-					}
-					newStatus = (string)newBugObject["status"];
-				#endregion
-
-
-				#region << Generate activities >>
-				if(oldStatus != newStatus) {
-					
-				}
-				#endregion
-
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
 		}
 
 		public static EntityRecord UpdateProjectOrMilestoneCounter(EntityRecord targetObject, string status, decimal count)
@@ -740,21 +716,22 @@ namespace WebVella.ERP.Project
 			return targetObject;
 		}
 
-		public static void CreateActivity(RecordManager recMan, string label, string subject, string description, Guid projectId, Guid? taskId, Guid? bugId) {
-				var activityObj = new EntityRecord();
-				activityObj["id"] = Guid.NewGuid();
-				activityObj["project_id"] = projectId;
-				activityObj["task_id"] = taskId;
-				activityObj["bug_id"] = bugId;
-				activityObj["label"] = label;
-				activityObj["subject"] = subject;
-				activityObj["description"] = description;
+		public static void CreateActivity(RecordManager recMan, string label, string subject, string description, Guid projectId, Guid? taskId, Guid? bugId)
+		{
+			var activityObj = new EntityRecord();
+			activityObj["id"] = Guid.NewGuid();
+			activityObj["project_id"] = projectId;
+			activityObj["task_id"] = taskId;
+			activityObj["bug_id"] = bugId;
+			activityObj["label"] = label;
+			activityObj["subject"] = subject;
+			activityObj["description"] = description;
 
-				var createResponse = recMan.CreateRecord("wv_project_activity", activityObj);
-				if (!createResponse.Success)
-				{
-					throw new Exception(createResponse.Message);
-				}			
+			var createResponse = recMan.CreateRecord("wv_project_activity", activityObj);
+			if (!createResponse.Success)
+			{
+				throw new Exception(createResponse.Message);
+			}
 		}
 	}
 }
