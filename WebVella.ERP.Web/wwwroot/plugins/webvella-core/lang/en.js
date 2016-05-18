@@ -528,6 +528,7 @@ var translationsEN = {
 	SYSTEM_FIELD_CHECKBOX_LABEL: 'this is a system field. Deletion is locked',
 	SYSTEM_ITEM_WARNING_TEXT:'This item is marked as system. Application or Plugin updates can overwrite your changes',
 	SYSTEM_RELATATION_CHECKBOX_LABEL: 'this is a system relation. Deletion is locked',
+	SYSTEM_USER_DESCRIPTION:'used by the system for system specific operations',
 	TARGET: 'Target',
 	TEAL: 'Teal',
 	TEMPLATE: 'Template',

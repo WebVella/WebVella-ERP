@@ -32,7 +32,7 @@
             },
             resolve: {
                 pageTitle: function () {
-                    return "Webvella ERP";
+                    return GlobalCompanyName;
                 }
             },
             data: {}

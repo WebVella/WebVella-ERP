@@ -123,7 +123,7 @@
 	function controller($rootScope, $log, $cookies, $localStorage, $timeout, $state, webvellaCoreService,ngToast) {
 		var appData = this;
 		//Set page title
-		appData.pageTitle = 'WebVella ERP';
+		appData.pageTitle = GlobalCompanyName;
 
 		$rootScope.$on("application-pageTitle-update", function (event, newValue) {
 			appData.pageTitle = newValue;

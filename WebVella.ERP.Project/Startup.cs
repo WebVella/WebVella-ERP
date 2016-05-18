@@ -24,7 +24,7 @@ namespace WebVella.ERP.Project
 		//Check out the CodeSnippets.txt file in WebVella.ERP.Web > Docs folder for code pieces on how to create or update some elements
 
 
-		private bool createSampleRecords = true;
+		private bool createSampleRecords = false;
 		//Constants
 		private static Guid WEBVELLA_PROJECT_PLUGIN_ID = new Guid("2a7bc24a-da6a-48f0-a0c7-7156a8ac69bd");
 		private static string WEBVELLA_PROJECT_PLUGIN_NAME = "webvella-project";
@@ -178,7 +178,7 @@ namespace WebVella.ERP.Project
 									area["label"] = "Projects";
 									area["icon_name"] = "product-hunt";
 									area["color"] = "indigo";
-									area["folder"] = "Workplace";
+									area["folder"] = "Projects";
 									area["weight"] = 5;
 									var areaRoles = new List<Guid>();
 									areaRoles.Add(SystemIds.AdministratorRoleId);
@@ -200,7 +200,7 @@ namespace WebVella.ERP.Project
 									area["label"] = "Create task";
 									area["icon_name"] = "tasks";
 									area["color"] = "teal";
-									area["folder"] = "Workplace";
+									area["folder"] = "Projects";
 									area["weight"] = 1;
 									var areaRoles = new List<Guid>();
 									areaRoles.Add(SystemIds.AdministratorRoleId);
@@ -233,7 +233,7 @@ namespace WebVella.ERP.Project
 									area["label"] = "Report bug";
 									area["icon_name"] = "bug";
 									area["color"] = "deep-orange";
-									area["folder"] = "Workplace";
+									area["folder"] = "Projects";
 									area["weight"] = 2;
 									var areaRoles = new List<Guid>();
 									areaRoles.Add(SystemIds.AdministratorRoleId);

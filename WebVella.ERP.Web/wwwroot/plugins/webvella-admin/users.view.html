@@ -32,14 +32,18 @@
 			<tbody>
 				<tr ng-repeat="user in ngCtrl.users | filter: ngCtrl.search">
 					<td>
-						<a ng-click="ngCtrl.openManageUserModal(user)" class="btn btn-default btn-outline">
-							<i class="fa fa-pencil"></i>
+						<a ng-click="ngCtrl.openManageUserModal(user)" class="btn btn-default btn-outline ng-hide" ng-show="user.username != 'system'">
+							<i class="fa fa-pencil fa-fw"></i>
 						</a>
+						<span class="ng-hide btn btn-outline disabled" ng-show="user.username == 'system'">
+							<i class="fa fa-lock fa-fw"></i>
+						</span>
 					</td>
 					<td>{{user.email}}</td>
                     <td>{{user.username}}</td>
 					<td>
-						<span ng-repeat="role in user.$user_role">{{role.name}}<span ng-hide="$last">,</span> </span>
+						<span class="ng-hide" ng-show="user.username != 'system'" ng-repeat="role in user.$user_role">{{role.name}}<span ng-hide="$last">,</span> </span>
+						<span class="ng-hide go-gray" ng-show="user.username == 'system'"  translate="{{::'SYSTEM_USER_DESCRIPTION'}}"></span>
 					</td>
 				</tr>
 			</tbody>
