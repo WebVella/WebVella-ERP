@@ -10,6 +10,7 @@ namespace WebVella.ERP.Api
 
     public static class SecurityContext
     {
+		private static ErpUser systemUser = null;
         private static AsyncLocal<Stack<ErpUser>> userScopeStack;
 
         private static Stack<ErpUser> GetStack()
@@ -23,7 +24,18 @@ namespace WebVella.ERP.Api
             return userScopeStack.Value;
         }
 
-        public static ErpUser CurrentUser
+		public static ErpUser SystemUser
+		{
+			get
+			{
+				if (systemUser == null)
+					systemUser = new SecurityManager().GetUser(SystemIds.SystemUserId);
+		
+				return systemUser;
+			}
+		}
+
+		public static ErpUser CurrentUser
         {
             get
             {
@@ -60,6 +72,10 @@ namespace WebVella.ERP.Api
 
             if (user != null)
             {
+				//system user has unlimited permissions :)
+				if (user.Id == SystemIds.SystemUserId)
+					return true;
+
                 switch (permission)
                 {
                     case EntityPermission.Read:
@@ -99,7 +115,14 @@ namespace WebVella.ERP.Api
             return new Stopper();
         }
 
-        private static void CloseScope()
+		public static IDisposable OpenSystemScope()
+		{
+			Debug.WriteLine("SECURITY: OpenSystemScope");
+			GetStack().Push(SystemUser);
+			return new Stopper();
+		}
+
+		private static void CloseScope()
         {
             var stack = GetStack();
             if (stack.Count > 0)
