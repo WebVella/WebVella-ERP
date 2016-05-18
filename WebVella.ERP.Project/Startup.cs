@@ -3349,7 +3349,7 @@ namespace WebVella.ERP.Project
 										createListInput.Id = new Guid("42da1595-bf3f-49b1-a784-1218b07d668d");
 										createListInput.Type = "general";
 										createListInput.Name = "my_tasks";
-										createListInput.Label = "My Tasks";
+										createListInput.Label = "My Active Tasks";
 										createListInput.Weight = 1;
 										createListInput.Default = false;
 										createListInput.System = true;
@@ -3559,8 +3559,8 @@ namespace WebVella.ERP.Project
 										{
 											var subQuery = new InputRecordListQuery();
 											subQuery.FieldName = "status";
-											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""status"", ""default"": null, ""settings"":{}}";
-											subQuery.QueryType = "EQ";
+											subQuery.FieldValue = "completed";
+											subQuery.QueryType = "NOT";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
 											listQuery.SubQueries.Add(subQuery);
 										}
@@ -5816,7 +5816,7 @@ namespace WebVella.ERP.Project
 										createListInput.Id = new Guid("2ac91f01-0ee5-420e-8981-4f57eaea255e");
 										createListInput.Type = "general";
 										createListInput.Name = "my_bugs";
-										createListInput.Label = "My Bugs";
+										createListInput.Label = "My Open Bugs";
 										createListInput.Weight = 1;
 										createListInput.Default = false;
 										createListInput.System = true;
@@ -6015,8 +6015,8 @@ namespace WebVella.ERP.Project
 										{
 											var subQuery = new InputRecordListQuery();
 											subQuery.FieldName = "status";
-											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""status"", ""default"": null, ""settings"":{}}";
-											subQuery.QueryType = "EQ";
+											subQuery.FieldValue = "closed";
+											subQuery.QueryType = "NOT";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
 											listQuery.SubQueries.Add(subQuery);
 										}

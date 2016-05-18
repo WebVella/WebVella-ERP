@@ -135,7 +135,7 @@
 			nextActivityPage++;
 			ngCtrl.activities = ngCtrl.activities.concat(response.object);
 			ngCtrl.loading.activities = false;
-			if(response.object.length < 15){
+			if(response.object.length < 10){
 				ngCtrl.showMoreActivitiesButton = false;				
 			}
 			else{
@@ -148,7 +148,7 @@
 			nextActivityPage++;
 			ngCtrl.activities = response.object;
 			ngCtrl.loading.activities = false;
-			if(response.object.length < 15){
+			if(response.object.length < 10){
 				ngCtrl.showMoreActivitiesButton = false;				
 			}
 			else{

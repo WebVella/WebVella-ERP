@@ -1036,7 +1036,7 @@ namespace WebVella.ERP.Project
 					rootFilterSection = EntityQuery.QueryAND(projectIdFilterSection, auxFilterSection);
 
 					//Calculate page
-					var pageSize = 15;
+					var pageSize = 10;
 					var skipRecords = (page - 1) * pageSize;
 
 
