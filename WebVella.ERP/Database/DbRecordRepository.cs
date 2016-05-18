@@ -162,10 +162,25 @@ namespace WebVella.ERP.Database
 			string tableName = RECORD_COLLECTION_PREFIX + entityName;
 			using (DbConnection con = DbContext.Current.CreateConnection())
 			{
-				NpgsqlCommand command = con.CreateCommand($"SELECT COUNT(*) FROM {tableName};");
+				string sql = $"SELECT COUNT(*) FROM {tableName} ";
+				string whereSql = string.Empty;
+
+				Entity entity = new EntityManager().ReadEntity(entityName).Object;
+				List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
+				GenerateWhereClause(query, entity, ref whereSql, ref parameters);
+
+				if (whereSql.Length > 0)
+					sql = sql + " WHERE " + whereSql;
+
+				NpgsqlCommand command = con.CreateCommand(sql);
+
+				if (parameters.Count > 0)
+					command.Parameters.AddRange(parameters.ToArray());
+
 				return (long)command.ExecuteScalar();
 			}
 		}
+
 
 		public void CreateRecordField(string entityName, Field field)
 		{
