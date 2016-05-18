@@ -16,7 +16,8 @@ namespace WebVella.ERP.Api
         public static Guid RegularRoleId { get { return new Guid("F16EC6DB-626D-4C27-8DE0-3E7CE542C55F"); } }
         public static Guid GuestRoleId { get { return new Guid("987148B1-AFA8-4B33-8616-55861E5FD065"); } }
 
-        public static Guid FirstUserId { get { return new Guid("EABD66FD-8DE1-4D79-9674-447EE89921C2"); } }
+		public static Guid SystemUserId { get { return new Guid("10000000-0000-0000-0000-000000000000"); } }
+		public static Guid FirstUserId { get { return new Guid("EABD66FD-8DE1-4D79-9674-447EE89921C2"); } }
     }
 
 

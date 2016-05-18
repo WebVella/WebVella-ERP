@@ -41,9 +41,7 @@ namespace WebVella.Crm.Project
 			var storeSystemSettings = DbContext.Current.SettingsRepository.Read();
 			var systemSettings = new SystemSettings(storeSystemSettings);
 
-			//Open scope with a user we will use for the operations further ahead
-			var user = new SecurityManager().GetUser(SystemIds.FirstUserId);
-			using (SecurityContext.OpenScope(user))
+			using (SecurityContext.OpenSystemScope())
 			{
 
 				//Create transaction

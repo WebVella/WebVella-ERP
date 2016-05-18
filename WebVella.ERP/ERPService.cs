@@ -486,14 +486,32 @@ namespace WebVella.ERP
 
 						{
 							EntityRecord user = new EntityRecord();
+							user["id"] = SystemIds.SystemUserId;
+							user["first_name"] = "Local";
+							user["last_name"] = "System";
+							user["password"] = Guid.NewGuid().ToString();
+							user["email"] = "system@webvella.com";
+							user["username"] = "system";
+							user["created_by"] = SystemIds.SystemUserId;
+							user["last_modified_by"] = SystemIds.SystemUserId;
+							user["created_on"] = DateTime.UtcNow;
+							user["enabled"] = true;
+
+							QueryResponse result = recMan.CreateRecord("user", user);
+							if (!result.Success)
+								throw new Exception("CREATE SYSTEM USER RECORD:" + result.Message);
+						}
+
+						{
+							EntityRecord user = new EntityRecord();
 							user["id"] = SystemIds.FirstUserId;
 							user["first_name"] = "WebVella";
 							user["last_name"] = "Erp";
 							user["password"] = "erp";
 							user["email"] = "erp@webvella.com";
 							user["username"] = "administrator";
-							user["created_by"] = SystemIds.FirstUserId;
-							user["last_modified_by"] = SystemIds.FirstUserId;
+							user["created_by"] = SystemIds.SystemUserId;
+							user["last_modified_by"] = SystemIds.SystemUserId;
 							user["created_on"] = DateTime.UtcNow;
 							user["enabled"] = true;
 
@@ -507,8 +525,8 @@ namespace WebVella.ERP
 							adminRole["id"] = SystemIds.AdministratorRoleId;
 							adminRole["name"] = "administrator";
 							adminRole["description"] = "";
-							adminRole["created_by"] = SystemIds.FirstUserId;
-							adminRole["last_modified_by"] = SystemIds.FirstUserId;
+							adminRole["created_by"] = SystemIds.SystemUserId;
+							adminRole["last_modified_by"] = SystemIds.SystemUserId;
 							adminRole["created_on"] = DateTime.UtcNow;
 
 							QueryResponse result = recMan.CreateRecord("role", adminRole);
@@ -521,8 +539,8 @@ namespace WebVella.ERP
 							regularRole["id"] = SystemIds.RegularRoleId;
 							regularRole["name"] = "regular";
 							regularRole["description"] = "";
-							regularRole["created_by"] = SystemIds.FirstUserId;
-							regularRole["last_modified_by"] = SystemIds.FirstUserId;
+							regularRole["created_by"] = SystemIds.SystemUserId;
+							regularRole["last_modified_by"] = SystemIds.SystemUserId;
 							regularRole["created_on"] = DateTime.UtcNow;
 
 							QueryResponse result = recMan.CreateRecord("role", regularRole);
@@ -535,13 +553,20 @@ namespace WebVella.ERP
 							guestRole["id"] = SystemIds.GuestRoleId;
 							guestRole["name"] = "guest";
 							guestRole["description"] = "";
-							guestRole["created_by"] = SystemIds.FirstUserId;
-							guestRole["last_modified_by"] = SystemIds.FirstUserId;
+							guestRole["created_by"] = SystemIds.SystemUserId;
+							guestRole["last_modified_by"] = SystemIds.SystemUserId;
 							guestRole["created_on"] = DateTime.UtcNow;
 
 							QueryResponse result = recMan.CreateRecord("role", guestRole);
 							if (!result.Success)
 								throw new Exception("CREATE GUEST ROLE RECORD:" + result.Message);
+						}
+
+						{
+							QueryResponse result = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, SystemIds.AdministratorRoleId, SystemIds.SystemUserId);
+							if (!result.Success)
+								throw new Exception("CREATE SYSTEM-USER <-> ADMINISTRATOR ROLE RELATION RECORD:" + result.Message);
+
 						}
 
 						{
