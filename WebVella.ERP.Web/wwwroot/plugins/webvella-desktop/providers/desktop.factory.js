@@ -48,7 +48,14 @@
 				}
 
 			};			
-			if(permittedNodes.length > 0){
+
+			//Check if not Admin area as it has no nodes
+			var isAdminAndUserIsAdmin = false;
+			if(item.type == "admin" && currentUser.roles.indexOf("bdc56420-caf0-4030-8a0e-d264938e0cda") != -1){
+				isAdminAndUserIsAdmin = true;
+			}
+
+			if(permittedNodes.length > 0 || isAdminAndUserIsAdmin){
 			item.nodes =  permittedNodes;
 			//check label is not already added
 			var navLabelAlreadyAdded = false;

@@ -102,6 +102,7 @@
 					"label": folderLabel,
 					"stateName": "webvella-desktop-browse",
 					"stateParams": { folder: folderLabel },
+					"type":"general",
 					"parentName": "",
 					"nodes": [],
 					"weight": sitemapAreas[i].weight

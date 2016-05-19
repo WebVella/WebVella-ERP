@@ -73,6 +73,7 @@
 
 					var topNavItem = {
 						"label": translations.ADMINISTRATION_ABBR,
+						"type": "admin",
 						"stateName": "webvella-desktop-browse",
 						"stateParams": { folder: translations.ADMINISTRATION_ABBR },
 						"parentName": "",
