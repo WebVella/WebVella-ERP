@@ -1068,10 +1068,14 @@ namespace WebVella.ERP.Api
 				{
 					if (pair.Value == null)
 						return null;
-					if (pair.Value is string)
-						return decimal.Parse(pair.Value as string);
 
-					return Convert.ToDecimal(pair.Value);
+					decimal decimalValue;
+					if (pair.Value is string)
+						decimalValue = decimal.Parse(pair.Value as string);
+					else
+						decimalValue = Convert.ToDecimal(pair.Value);
+
+					return decimal.Round(decimalValue, ((CurrencyField)field).Currency.DecimalDigits, MidpointRounding.AwayFromZero);
 				}
 				else if (field is DateField)
 				{
