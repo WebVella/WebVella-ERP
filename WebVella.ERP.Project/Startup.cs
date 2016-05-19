@@ -3349,7 +3349,7 @@ namespace WebVella.ERP.Project
 										createListInput.Id = new Guid("42da1595-bf3f-49b1-a784-1218b07d668d");
 										createListInput.Type = "general";
 										createListInput.Name = "my_tasks";
-										createListInput.Label = "My Active Tasks";
+										createListInput.Label = "My Owned Active Tasks";
 										createListInput.Weight = 1;
 										createListInput.Default = false;
 										createListInput.System = true;
@@ -3498,24 +3498,13 @@ namespace WebVella.ERP.Project
 										listQuery = new InputRecordListQuery();
 										listQuery.FieldName = null;
 										listQuery.FieldValue = null;
-										listQuery.QueryType = "OR";
+										listQuery.QueryType = "AND";
 										listQuery.SubQueries = new List<InputRecordListQuery>();
 
 										#region << owner_id >>
 										{
 											var subQuery = new InputRecordListQuery();
 											subQuery.FieldName = "owner_id";
-											subQuery.FieldValue = @"{""name"":""current_user"", ""option"": ""id"", ""default"": null, ""settings"":{}}";
-											subQuery.QueryType = "EQ";
-											subQuery.SubQueries = new List<InputRecordListQuery>();
-											listQuery.SubQueries.Add(subQuery);
-										}
-										#endregion
-
-										#region << created_by >>
-										{
-											var subQuery = new InputRecordListQuery();
-											subQuery.FieldName = "created_by";
 											subQuery.FieldValue = @"{""name"":""current_user"", ""option"": ""id"", ""default"": null, ""settings"":{}}";
 											subQuery.QueryType = "EQ";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
@@ -5816,7 +5805,7 @@ namespace WebVella.ERP.Project
 										createListInput.Id = new Guid("2ac91f01-0ee5-420e-8981-4f57eaea255e");
 										createListInput.Type = "general";
 										createListInput.Name = "my_bugs";
-										createListInput.Label = "My Open Bugs";
+										createListInput.Label = "My Owned Open Bugs";
 										createListInput.Weight = 1;
 										createListInput.Default = false;
 										createListInput.System = true;
@@ -5954,24 +5943,13 @@ namespace WebVella.ERP.Project
 										listQuery = new InputRecordListQuery();
 										listQuery.FieldName = null;
 										listQuery.FieldValue = null;
-										listQuery.QueryType = "OR";
+										listQuery.QueryType = "AND";
 										listQuery.SubQueries = new List<InputRecordListQuery>();
 
 										#region << owner_id >>
 										{
 											var subQuery = new InputRecordListQuery();
 											subQuery.FieldName = "owner_id";
-											subQuery.FieldValue = @"{""name"":""current_user"", ""option"": ""id"", ""default"": null, ""settings"":{}}";
-											subQuery.QueryType = "EQ";
-											subQuery.SubQueries = new List<InputRecordListQuery>();
-											listQuery.SubQueries.Add(subQuery);
-										}
-										#endregion
-
-										#region << created_by >>
-										{
-											var subQuery = new InputRecordListQuery();
-											subQuery.FieldName = "created_by";
 											subQuery.FieldValue = @"{""name"":""current_user"", ""option"": ""id"", ""default"": null, ""settings"":{}}";
 											subQuery.QueryType = "EQ";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
