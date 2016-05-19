@@ -138,7 +138,8 @@ namespace WebVella.ERP.Database
 			if ( transactionStack.Count > 0)
 				throw new Exception("Trying to close connection with pending transaction. The transaction is rolled back.");
 
-			if (DbContext.Current.CloseConnection(this))
+			DbContext.Current.CloseConnection(this);
+			if (transaction == null)
 				connection.Close();
 		}
 
