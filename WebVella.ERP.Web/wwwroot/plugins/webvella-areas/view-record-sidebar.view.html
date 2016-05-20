@@ -13,8 +13,6 @@
 	</ul>
 </div>
 <div class="tabbable tabs-left spilled">
-	<!--<a class="back clearfix" href="javascript:void(0)" ng-click="sidebarData.goBack()"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>-->
-
 	<ul class="nav nav-tabs">
 		<li dynamic-html template="actionItem.template" ng-repeat="actionItem in sidebarData.sidebarTopActions track by actionItem.name" class="dynamic"/>
 		<li role="presentation" ng-class="::{active: sidebarData.isItemActive(item)}" ng-repeat="item in sidebarData.items" ng-switch="item.type">
@@ -22,21 +20,17 @@
 				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
 			</a>
 			<a ng-switch-when="view" ng-if="!item.is_parent" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.parentViewName}}/{{::sidebarData.stateParams.recordId}}/view-general/{{::item.name}}">
-				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
+				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding"  ng-bind="::sidebarData.generateHighlightString(item)" title="{{::sidebarData.generateHighlightString(item)}}"></span>
 			</a>
 			<a ng-switch-when="viewFromRelation" ng-if="!item.is_parent" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.parentViewName}}/{{::sidebarData.stateParams.recordId}}/view-general/{{::item.name}}">
-				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
+				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding"  ng-bind="::sidebarData.generateHighlightString(item)" title="{{::sidebarData.generateHighlightString(item)}}"></span>
 			</a>
 			<a ng-switch-when="list" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.parentViewName}}/{{::sidebarData.stateParams.recordId}}/list-general/{{::item.name}}">
-				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
+				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding"  ng-bind="::sidebarData.generateHighlightString(item)" title="{{::sidebarData.generateHighlightString(item)}}"></span>
 			</a>
 			<a ng-switch-when="listFromRelation" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.parentViewName}}/{{::sidebarData.stateParams.recordId}}/list-general/{{::item.name}}">
-				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
+				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding"  ng-bind="::sidebarData.generateHighlightString(item)" title="{{::sidebarData.generateHighlightString(item)}}"></span>
 			</a>
-			<!--<a ng-switch-when="listFromRelation" ui-sref="webvella-area-list-general-in-view({areaName:sidebarData.stateParams.areaName,entityName:sidebarData.stateParams.entityName,viewType:'view-general',parentViewName:item.parentViewName,listName:item.name,recordId:sidebarData.stateParams.recordId })">
-				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
-			</a>-->
 		</li>
 	</ul>
 </div>
-<!-- -->

@@ -12,11 +12,11 @@
         .service('webvellaCoreService', service);
 
 	service.$inject = ['$cookies', '$q', '$http', '$log', '$location', 'wvAppConstants', '$rootScope', '$anchorScroll', 'ngToast',
-				'$timeout', 'Upload', '$translate', '$filter','$state'];
+				'$timeout', 'Upload', '$translate', '$filter', '$state'];
 
 
 	function service($cookies, $q, $http, $log, $location, wvAppConstants, $rootScope, $anchorScroll, ngToast,
-				$timeout, Upload, $translate, $filter,$state) {
+				$timeout, Upload, $translate, $filter, $state) {
 		var serviceInstance = this;
 
 		//#region << Include functions >> ///////////////////////////////////////////////////////////////////////////////////
@@ -37,7 +37,7 @@
 		//Delete
 		serviceInstance.deleteEntity = deleteEntity;
 		//Helpers
-		serviceInstance.getEntityMetaFromEntityList	 = getEntityMetaFromEntityList;
+		serviceInstance.getEntityMetaFromEntityList = getEntityMetaFromEntityList;
 		//#endregion
 
 		//#region << Field >>
@@ -331,10 +331,10 @@
 			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		/////////////////////
-		function getEntityMetaFromEntityList(entityName, entityMetaList){
+		function getEntityMetaFromEntityList(entityName, entityMetaList) {
 			for (var i = 0; i < entityMetaList.length; i++) {
-				if(entityMetaList[i].name == entityName){
-					return 	entityMetaList[i];
+				if (entityMetaList[i].name == entityName) {
+					return entityMetaList[i];
 				}
 			}
 			return null;
@@ -2067,11 +2067,29 @@
 			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/relation', data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		////////////////////////
-		function generateHighlightString(viewLabel,viewData,stateParams){
-			//default is the selected view in the area
-			var result = viewLabel;
-			var processedString = viewLabel;
+		function generateHighlightString(elementMeta, elementData, stateParams, targetType) {
+			if (targetType == "title") {
+				if (elementMeta.title != null && elementMeta.title != "") {
+					return substituteTagsWithData(elementMeta.title, elementData, stateParams);
+				}
+				else if (elementMeta.label != null && elementMeta.label != "") {
+					return substituteTagsWithData(elementMeta.label, elementData, stateParams);
+				}
+				else {
+					return substituteTagsWithData(elementMeta.name, elementData, stateParams);
+				}
+			}
+			else {
+				if (elementMeta.label != null && elementMeta.label != "") {
+					return substituteTagsWithData(elementMeta.label, elementData, stateParams);
+				}
+				else {
+					return substituteTagsWithData(elementMeta.name, elementData, stateParams);
+				}
+			}
+		}
 
+		function substituteTagsWithData(processedString, elementData, stateParams) {
 			if (processedString.indexOf('{') != -1 && processedString.indexOf('}') != -1) {
 				var arrayOfTemplateKeys = processedString.match(/\{([\$\w]+)\}/g); //Include support for matching also data from relations which include $ symbol
 				var resultStringStorage = processedString;
@@ -2087,47 +2105,49 @@
 								break;
 						}
 					}
-					else {
+					else if (elementData != null) {
 						//Extract the dataName from string by removing the leading and the closing {}
 						var dataName = arrayOfTemplateKeys[i].replace('{', '').replace('}', '');
 						//Check template has corresponding list data value
-						if (viewData[dataName]) {
+						if (elementData[dataName]) {
 							//YES -> check the value of this dataName and substitute with it in the string, even if it is null (toString)
 							//Case 1 - data is not from relation (not starting with $)
-							if(!dataName.startsWith('$')){
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], viewData[dataName].toString());
+							if (!dataName.startsWith('$')) {
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], elementData[dataName].toString());
 							}
 							else {
-							//Case 2 - relation field
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], viewData[dataName][0].toString());
+								//Case 2 - relation field
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], elementData[dataName][0].toString());
 							}
 
 						}
 						else {
 							//Try to look for other views from this entity that may have this value
 							var deepScanMatchFound = false;
-							for (var dataObject in viewData) {
-								  if(dataObject.indexOf('$view$') != -1){
-									if(viewData[dataObject][0][dataName]){
-										resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], viewData[dataObject][0][dataName].toString());
+							for (var dataObject in elementData) {
+								if (dataObject.indexOf('$view$') != -1) {
+									if (elementData[dataObject][0][dataName]) {
+										resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], elementData[dataObject][0][dataName].toString());
 										deepScanMatchFound = true;
 										break;
-									}								  
-								  }
+									}
+								}
 							}
 							//NO -> substitute the template key with the dataName only, as no value could be extracted
-							if(!deepScanMatchFound){
+							if (!deepScanMatchFound) {
 								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], dataName);
 							}
 						}
 					}
 
 				}
-				result = resultStringStorage;
+				return resultStringStorage;
 			}
-
-			return result;			
+			else {
+				return processedString;
+			}
 		}
+
 
 		//#endregion
 
@@ -2647,8 +2667,8 @@
 			return userHasAllPermissions;
 		}
 		///////////////////////
-		function userIsInRole(roleName){
-		
+		function userIsInRole(roleName) {
+
 		}
 		//#endregion
 
@@ -2673,7 +2693,7 @@
 			var targetCreateName = null;
 			var targetCreateExists = false;
 			//#endregion	
-			
+
 
 			//#region << Check if listFromRelation, get the relationName if so >>
 			//Example listFromRelation name: "$list$project_1_n_ticket$general"
@@ -2721,10 +2741,10 @@
 
 
 			//#region << Get relation direction if relation exists >>
-			if(currentRelationName != null && currentParent.meta != null){
+			if (currentRelationName != null && currentParent.meta != null) {
 				for (var i = 0; i < currentParent.meta.sidebar.items.length; i++) {
-					if(currentParent.meta.sidebar.items[i].dataName == currentListDataName){
-						currentRelationDirection = currentParent.meta.sidebar.items[i].relationDirection;						
+					if (currentParent.meta.sidebar.items[i].dataName == currentListDataName) {
+						currentRelationDirection = currentParent.meta.sidebar.items[i].relationDirection;
 						break;
 					}
 				}
@@ -2831,7 +2851,7 @@
 					}
 						//Case 2: - this is a list with relation
 					else {
-						return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + 
+						return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" +
 						currentRelationDirection + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
 					}
 
@@ -2861,7 +2881,7 @@
 						}
 							//Case 2: - this is a list with relation
 						else {
-							return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + 
+							return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" +
 							currentRelationDirection + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
 						}
 					}
@@ -3078,7 +3098,7 @@
 				success: true,
 				message: "successful validation"
 			};
-			if(data != null){
+			if (data != null) {
 				data = data.toString().trim();
 			}
 			switch (item.meta.fieldType) {
@@ -3108,8 +3128,8 @@
 					if (!data && item.meta.required) {
 						return "This is a required field";
 					}
-					if(data != null){
-					//Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
+					if (data != null) {
+						//Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
 						data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toISOString();
 					}
 					break;
@@ -3117,8 +3137,8 @@
 					if (!data && item.meta.required) {
 						return "This is a required field";
 					}
-					if(data != null){
-					data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('minute').utc().toISOString();
+					if (data != null) {
+						data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('minute').utc().toISOString();
 					}
 					break;
 				case 6: //Email
@@ -3216,7 +3236,7 @@
 					content: '<span class="go-red">Error:</span> ' + response.message,
 					timeout: 7000
 				});
-				$state.go($state.current, {}, {reload: true});
+				$state.go($state.current, {}, { reload: true });
 				return "error";
 			}
 

@@ -92,13 +92,45 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="editable-field field">
-										<label class="control-label" translate="{{::'LABEL'}}"></label>
+										<label class="control-label" translate="{{::'MENU_LABEL'}}"></label>
 										<div>
 											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_label.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.label"
 													   value="{{ngCtrl.list.label}}"
 													   onbeforesave="ngCtrl.fieldUpdate('label',$data)" e-form="fieldForm_label">
 												<span class="input-group-addon" ng-click="fieldForm_label.$show()" ng-hide="fieldForm_label.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<div class="editable-field field">
+										<label class="control-label" translate="{{::'PAGE_TITLE'}}"></label>
+										<div>
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_title.$show()">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.title"
+													   value="{{ngCtrl.list.title}}"
+													   onbeforesave="ngCtrl.fieldUpdate('title',$data)" e-form="fieldForm_title">
+												<span class="input-group-addon" ng-click="fieldForm_title.$show()" ng-hide="fieldForm_title.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<div class="editable-field field">
+										<label class="control-label" translate="{{::'WEIGHT'}}"></label>
+										<div>
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_weight.$show()">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.weight"
+													   value="{{ngCtrl.list.weight}}"
+													   onbeforesave="ngCtrl.fieldUpdate('weight',$data)" e-form="fieldForm_weight">
+												<span class="input-group-addon" ng-click="fieldForm_weight.$show()" ng-hide="fieldForm_weight.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 										</div>
 									</div>
@@ -251,19 +283,7 @@
 								</div>
 							</div>
 							<div class="col-sm-6">
-								<div class="form-group">
-									<div class="editable-field field">
-										<label class="control-label" translate="{{::'WEIGHT'}}"></label>
-										<div>
-											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_weight.$show()">
-												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.weight"
-													   value="{{ngCtrl.list.weight}}"
-													   onbeforesave="ngCtrl.fieldUpdate('weight',$data)" e-form="fieldForm_weight">
-												<span class="input-group-addon" ng-click="fieldForm_weight.$show()" ng-hide="fieldForm_weight.$visible"><i class="fa fa-pencil fa-fw"></i></span>
-											</div>
-										</div>
-									</div>
-								</div>
+
 							</div>
 						</div>
 						<div class="row">

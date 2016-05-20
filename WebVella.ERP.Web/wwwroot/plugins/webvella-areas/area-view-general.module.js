@@ -147,7 +147,7 @@
 
 		var parentView = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
 
-		webvellaCoreService.getRecordByViewMeta($stateParams.recordId, parentView, $stateParams.entityName,null, successCallback, errorCallback);
+		webvellaCoreService.getRecordByViewMeta($stateParams.recordId, parentView, $stateParams.entityName, null, successCallback, errorCallback);
 
 		return defer.promise;
 	}
@@ -175,7 +175,7 @@
 			var parentView = {};
 			if (resolvedParentViewData == null) {
 
-				webvellaCoreService.getRecordByViewMeta($stateParams.recordId, getViewMeta, $stateParams.entityName,null, successCallback, errorCallback);
+				webvellaCoreService.getRecordByViewMeta($stateParams.recordId, getViewMeta, $stateParams.entityName, null, successCallback, errorCallback);
 			}
 			else {
 				parentView.data = fastCopy(resolvedParentViewData);
@@ -393,9 +393,9 @@
 		ngCtrl.currentUserHasUpdatePermission = function (item) {
 			var result = false;
 			//Check first if the entity allows it
-			var viewEntity = webvellaCoreService.getEntityMetaFromEntityList(safeViewNameAndEntity.entityName,resolvedEntityList);
+			var viewEntity = webvellaCoreService.getEntityMetaFromEntityList(safeViewNameAndEntity.entityName, resolvedEntityList);
 			var userHasUpdateEntityPermission = webvellaCoreService.userHasRecordPermissions(viewEntity, "canUpdate");
-			
+
 			if (!userHasUpdateEntityPermission) {
 				return false;
 			}
@@ -413,12 +413,12 @@
 		}
 
 		ngCtrl.userHasRecordDeletePermission = function () {
-			var viewEntity = webvellaCoreService.getEntityMetaFromEntityList(safeViewNameAndEntity.entityName,resolvedEntityList);
+			var viewEntity = webvellaCoreService.getEntityMetaFromEntityList(safeViewNameAndEntity.entityName, resolvedEntityList);
 			return webvellaCoreService.userHasRecordPermissions(viewEntity, "canDelete");
 		}
 
 		ngCtrl.userHasRecordPermissions = function (permissionsCsv) {
-			var viewEntity = webvellaCoreService.getEntityMetaFromEntityList(safeViewNameAndEntity.entityName,resolvedEntityList);
+			var viewEntity = webvellaCoreService.getEntityMetaFromEntityList(safeViewNameAndEntity.entityName, resolvedEntityList);
 			return webvellaCoreService.userHasRecordPermissions(viewEntity, permissionsCsv);
 		}
 
@@ -672,10 +672,10 @@
 			if (region.render && region.name != "header") {
 				ngCtrl.renderTabBar = true;
 			}
-			if(region.render && region.name == "header"){
+			if (region.render && region.name == "header") {
 				ngCtrl.headerRegion.push(region);
 			}
-			else if(region.name == ngCtrl.activeTabName){
+			else if (region.name == ngCtrl.activeTabName) {
 				ngCtrl.activeRegion.push(region);
 			}
 		});
@@ -698,7 +698,7 @@
 			}
 		}
 		//Date & DateTime 
-		ngCtrl.getTimeString = function (item,data) {
+		ngCtrl.getTimeString = function (item, data) {
 			if (item && item.dataName && data) {
 				var fieldValue = data;
 				if (!fieldValue) {
@@ -712,19 +712,23 @@
 
 		ngCtrl.showPageTitleAuxLabelSecondary = false;
 
-		ngCtrl.generateHighlightString = function(){
-			if(ngCtrl.parentView && ngCtrl.parentView.data){
-				if(ngCtrl.parentView.meta.label.indexOf("{") != -1 && ngCtrl.parentView.meta.label.indexOf("}") != -1){
-					ngCtrl.showPageTitleAuxLabelSecondary = true;
-					return webvellaCoreService.generateHighlightString(ngCtrl.parentView.meta.label,ngCtrl.parentView.data,ngCtrl.stateParams);
-				}
+		ngCtrl.generateHighlightString = function () {
+			if (ngCtrl.parentView && ngCtrl.parentView.data) {
+				ngCtrl.showPageTitleAuxLabelSecondary = true;
+				return webvellaCoreService.generateHighlightString(ngCtrl.parentView.meta, ngCtrl.parentView.data, ngCtrl.stateParams, "title");
 			}
 			else {
-				if(ngCtrl.view.meta.label.indexOf("{") != -1 && ngCtrl.view.meta.label.indexOf("}") != -1){
-					return webvellaCoreService.generateHighlightString(ngCtrl.view.meta.label,ngCtrl.view.data[0],ngCtrl.stateParams);			
-				}
+				return webvellaCoreService.generateHighlightString(ngCtrl.view.meta, ngCtrl.view.data[0], ngCtrl.stateParams, "title");
 			}
-			return ngCtrl.view.meta.label;
+		}
+
+		ngCtrl.generateAuxHighlightString = function(){
+			if(ngCtrl.parentView && ngCtrl.parentView.data){
+				return webvellaCoreService.generateHighlightString(ngCtrl.view.meta,ngCtrl.parentView.data,ngCtrl.stateParams,"label");
+			}
+			else {
+				return webvellaCoreService.generateHighlightString( ngCtrl.view.meta,null,ngCtrl.stateParams,"label");
+			}
 		}
 		//#endregion
 
@@ -979,7 +983,7 @@
 		// Update field
 		ngCtrl.fieldUpdate = function (item, data, recordId) {
 			//alert("need to pass the recordId too so we can manage and viewFromRelation");
-			return webvellaCoreService.viewAction_fieldUpdate(item,data,recordId,ngCtrl);
+			return webvellaCoreService.viewAction_fieldUpdate(item, data, recordId, ngCtrl);
 		}
 
 		//#region << Remove relation >>
@@ -1382,13 +1386,13 @@
 		//#endregion
 
 		//#region << List actions  bind >>
-		var serviceName =  safeViewNameAndEntity.entityName + "_" + safeViewNameAndEntity.viewName + "_view_service";
-		try{
+		var serviceName = safeViewNameAndEntity.entityName + "_" + safeViewNameAndEntity.viewName + "_view_service";
+		try {
 			ngCtrl.actionService = $injector.get(serviceName);
 		}
-		catch(err){
+		catch (err) {
 			//console.log(err);
-			ngCtrl.actionService = {};		
+			ngCtrl.actionService = {};
 		}
 		ngCtrl.pageTitleActions = [];
 		ngCtrl.pageTitleDropdownActions = [];
@@ -1411,7 +1415,7 @@
 					break;
 			}
 		});
-		ngCtrl.deleteRecord = function() { 
+		ngCtrl.deleteRecord = function () {
 			webvellaCoreService.viewAction_deleteRecord(ngCtrl);
 		}
 
@@ -1422,10 +1426,10 @@
 
 	//Test to unify all modals - Single select, multiple select, click to select
 	ManageRelationFieldModalController.$inject = ['ngCtrl', 'viewData', '$uibModalInstance', '$log', '$q', '$stateParams', 'modalMode', 'resolvedLookupRecords',
-        'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaCoreService', 'ngToast', '$timeout', '$state','$translate'];
+        'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$translate'];
 
 	function ManageRelationFieldModalController(ngCtrl, viewData, $uibModalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
-        selectedDataKind, selectedItem, selectedRelationType, webvellaCoreService, ngToast, $timeout, $state,$translate) {
+        selectedDataKind, selectedItem, selectedRelationType, webvellaCoreService, ngToast, $timeout, $state, $translate) {
 
 		var popupCtrl = this;
 		popupCtrl.currentPage = 1;
@@ -1518,33 +1522,33 @@
 			popupCtrl.filterLoading = true;
 			for (var filter in popupCtrl.filterQuery) {
 				//Check if the field is percent or date
-				if(popupCtrl.filterQuery[filter]){
+				if (popupCtrl.filterQuery[filter]) {
 					for (var i = 0; i < popupCtrl.relationLookupList.meta.columns.length; i++) {
-						if(popupCtrl.relationLookupList.meta.columns[i].meta.name == filter){
+						if (popupCtrl.relationLookupList.meta.columns[i].meta.name == filter) {
 							var selectedField = popupCtrl.relationLookupList.meta.columns[i].meta;
-							switch(selectedField.fieldType){
+							switch (selectedField.fieldType) {
 								case 4: //Date
-									searchParams[filter] = moment(popupCtrl.filterQuery[filter],'D MMM YYYY').toISOString();
+									searchParams[filter] = moment(popupCtrl.filterQuery[filter], 'D MMM YYYY').toISOString();
 									break;
 								case 5: //Datetime
-									searchParams[filter] = moment(popupCtrl.filterQuery[filter],'D MMM YYYY HH:mm').toISOString();
+									searchParams[filter] = moment(popupCtrl.filterQuery[filter], 'D MMM YYYY HH:mm').toISOString();
 									break;
 								case 14: //Percent
 									searchParams[filter] = popupCtrl.filterQuery[filter] / 100;
 									break;
 								default:
-									searchParams[filter] = 	popupCtrl.filterQuery[filter];
+									searchParams[filter] = popupCtrl.filterQuery[filter];
 									break;
 							}
 						}
 					}
 				}
 				else {
-					delete 	searchParams[filter];
-				}				
+					delete searchParams[filter];
+				}
 			}
 			//Find the entity of the list. It could not be the current one as it could be listFromRelation case
-			var listEntityName =popupCtrl.selectedItem.entityName;
+			var listEntityName = popupCtrl.selectedItem.entityName;
 
 			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, listEntityName, 1, $stateParams, searchParams, popupCtrl.ReloadRecordsSuccessCallback, popupCtrl.ReloadRecordsErrorCallback);
 		}
@@ -1552,16 +1556,16 @@
 		popupCtrl.ReloadRecordsSuccessCallback = function (response) {
 			popupCtrl.relationLookupList.data = response.object;
 			//Just a little wait
-			$timeout(function(){
+			$timeout(function () {
 				popupCtrl.filterLoading = false;
-			},300);
+			}, 300);
 		}
 
 		popupCtrl.ReloadRecordsErrorCallback = function (response) {
 			//Just a little wait
-			$timeout(function(){
+			$timeout(function () {
 				popupCtrl.filterLoading = false;
-			},300);
+			}, 300);
 			alert(response.message);
 		}
 

@@ -20,16 +20,19 @@
 	function controller($log, $rootScope, $state, $stateParams, resolvedParentViewData, resolvedCurrentViewData, resolvedCurrentEntityMeta,
 						resolvedAreas, resolvedCurrentUser, $sessionStorage, $timeout, webvellaCoreService, resolvedEntityList,$location,$localStorage) {
 		var sidebarData = this;
+		sidebarData.viewData = null;
 		if (resolvedCurrentViewData == null) {
 			sidebarData.view = null; //list in view page		
 		}
 		else {
 			sidebarData.view = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName, $stateParams.entityName, resolvedEntityList);
+			sidebarData.viewData = resolvedCurrentViewData[0];
 		}
 		if (resolvedParentViewData == null) {
 			sidebarData.parentView = null;
 		}
 		else {
+			sidebarData.viewData = resolvedParentViewData[0];
 			sidebarData.parentView = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
 		}
 		sidebarData.stateParams = $stateParams;
@@ -60,7 +63,7 @@
 				is_parent: true,
 				parentViewName: null,
 				name: sidebarData.view.name,
-				label: sidebarData.view.name,
+				label: webvellaCoreService.generateHighlightString(sidebarData.view,sidebarData.viewData,sidebarData.stateParams,"label"),
 				iconName: sidebarData.view.iconName,
 				type: "view"
 			};
@@ -109,7 +112,7 @@
 				is_parent: true,
 				name: sidebarData.parentView.name,
 				parentViewName: null,
-				label: sidebarData.parentView.name,
+				label: webvellaCoreService.generateHighlightString(sidebarData.parentView,sidebarData.viewData,sidebarData.stateParams,"label"),
 				iconName: sidebarData.parentView.iconName,
 				type: "view"
 			};
@@ -236,6 +239,11 @@
         sidebarData.toggleSideNav = function () {
         	sidebarData.$storage.isMiniSidebar = !sidebarData.$storage.isMiniSidebar;
         }
+
+		sidebarData.generateHighlightString = function(item){
+			  return webvellaCoreService.generateHighlightString(item,sidebarData.viewData,sidebarData.stateParams,"label");
+		}
+
 	}
 
 })();

@@ -700,16 +700,6 @@ namespace WebVella.ERP.Web.Controllers
 
 			try
 			{
-				//DbEntity storageEntity = DbContext.Current.EntityRepository.Read(Name);
-				//if (storageEntity == null)
-				//{
-				//	response.Timestamp = DateTime.UtcNow;
-				//	response.Success = false;
-				//	response.Message = "Entity with such Name does not exist!";
-				//	return DoBadRequestResponse(response);
-				//}
-				//entity = storageEntity.MapTo<Entity>();
-
 				var entResp = new EntityManager().ReadEntity(Name);
 				if (entResp.Object == null)
 				{
@@ -749,6 +739,8 @@ namespace WebVella.ERP.Web.Controllers
 
 					if (prop.Name.ToLower() == "label")
 						list.Label = inputList.Label;
+					if (prop.Name.ToLower() == "title")
+						list.Title = inputList.Title;
 					if (prop.Name.ToLower() == "default")
 						list.Default = inputList.Default;
 					if (prop.Name.ToLower() == "system")
@@ -1106,37 +1098,6 @@ namespace WebVella.ERP.Web.Controllers
 			return File(bytes, "text/javascript");
 		}
 
-		//[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Id}/view/{ViewId}")]
-		//public IActionResult UpdateRecordView(Guid Id, Guid ViewId, [FromBody]JObject submitObj)
-		//{
-		//    RecordViewResponse response = new RecordViewResponse();
-
-		//    InputRecordView view = new InputRecordView();
-
-		//    Type inputViewType = view.GetType();
-
-		//    foreach (var prop in submitObj.Properties())
-		//    {
-		//        int count = inputViewType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
-		//        if (count < 1)
-		//            response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
-		//    }
-
-		//    if (response.Errors.Count > 0)
-		//        return DoBadRequestResponse(response);
-
-		//    try
-		//    {
-		//        view = InputRecordView.Convert(submitObj);
-		//    }
-		//    catch (Exception e)
-		//    {
-		//        return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
-		//    }
-
-		//    return DoResponse(entityManager.UpdateRecordView(Id, view));
-		//}
-
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}")]
 		public IActionResult UpdateRecordViewByName(string Name, string ViewName, [FromBody]JObject submitObj)
 		{
@@ -1168,36 +1129,6 @@ namespace WebVella.ERP.Web.Controllers
 			return DoResponse(entityManager.UpdateRecordView(Name, view));
 		}
 
-		//[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{Id}/view/{ViewId}")]
-		//public IActionResult PatchRecordView(Guid Id, Guid ViewId, [FromBody]JObject submitObj)
-		//{
-		//    RecordViewResponse response = new RecordViewResponse();
-
-		//    InputRecordView view = new InputRecordView();
-
-		//    Type inputViewType = view.GetType();
-
-		//    foreach (var prop in submitObj.Properties())
-		//    {
-		//        int count = inputViewType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
-		//        if (count < 1)
-		//            response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
-		//    }
-
-		//    if (response.Errors.Count > 0)
-		//        return DoBadRequestResponse(response);
-
-		//    try
-		//    {
-		//        view = InputRecordView.Convert(submitObj);
-		//    }
-		//    catch (Exception e)
-		//    {
-		//        return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
-		//    }
-
-		//    return DoResponse(entityManager.PartialUpdateRecordView(Id, ViewId, view));
-		//}
 
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}")]
 		public IActionResult PatchRecordViewByName(string Name, string ViewName, [FromBody]JObject submitObj)
@@ -1247,6 +1178,8 @@ namespace WebVella.ERP.Web.Controllers
 						view.Name = inputView.Name;
 					if (prop.Name.ToLower() == "label")
 						view.Label = inputView.Label;
+					if (prop.Name.ToLower() == "title")
+						view.Title = inputView.Title;
 					if (prop.Name.ToLower() == "default")
 						view.Default = inputView.Default;
 					if (prop.Name.ToLower() == "system")

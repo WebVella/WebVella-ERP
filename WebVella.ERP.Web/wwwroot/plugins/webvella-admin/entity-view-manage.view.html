@@ -77,13 +77,11 @@
 					<div class="col-sm-6">
 						<div class="form-group">
 							<div class="editable-field field">
-								<label class="control-label" translate="{{::'TYPE'}}"></label>
+								<label class="control-label" translate="{{::'ID'}}"></label>
 								<div>
-									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_type.$show()">
-										<input type="text" class="form-control" disabled editable-select="ngCtrl.view.type"
-											   value="{{ngCtrl.showViewType()}}" e-ng-options="s.name as s.label for s in ngCtrl.viewTypes"
-											   onbeforesave="ngCtrl.fieldUpdate('type', $data)" e-form="fieldForm_type">
-										<span class="input-group-addon" ng-click="fieldForm_type.$show()" ng-hide="fieldForm_type.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+									<div class="editable-wrapper input-group editable-readonly">
+										<p class="form-control-static form-control" ng-bind="::ngCtrl.view.id"></p>
+										<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 									</div>
 								</div>
 							</div>
@@ -94,7 +92,7 @@
 					<div class="col-sm-6">
 						<div class="form-group">
 							<div class="editable-field field">
-								<label class="control-label" translate="{{::'LABEL'}}"></label>
+								<label class="control-label" translate="{{::'MENU_LABEL'}}"></label>
 								<div>
 									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_label.$show(); ngCtrl.fieldForm_label = fieldForm_label">
 										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.label"
@@ -110,6 +108,24 @@
 					<div class="col-sm-6">
 						<div class="form-group">
 							<div class="editable-field field">
+								<label class="control-label" translate="{{::'PAGE_TITLE'}}"></label>
+								<div>
+									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_title.$show(); ngCtrl.fieldForm_title = fieldForm_title">
+										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.title"
+											   value="{{ngCtrl.view.title}}"
+											   onbeforesave="ngCtrl.fieldUpdate('title',$data)" e-form="fieldForm_title">
+										<span class="input-group-addon" ng-click="fieldForm_title.$show(); ngCtrl.fieldForm_title = fieldForm_title" ng-hide="fieldForm_title.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+									</div>
+									<div class="form-description" translate="{{::'RECORD_VIEW_TITLE_DESCRIPTION'}}" ng-if="ngCtrl.fieldForm_title.$visible"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<div class="editable-field field">
 								<label class="control-label" translate="{{::'WEIGHT'}}"></label>
 								<div>
 									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_weight.$show()">
@@ -117,6 +133,21 @@
 											   value="{{ngCtrl.view.weight}}"
 											   onbeforesave="ngCtrl.fieldUpdate('weight',$data)" e-form="fieldForm_weight">
 										<span class="input-group-addon" ng-click="fieldForm_weight.$show()" ng-hide="fieldForm_weight.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<div class="editable-field field">
+								<label class="control-label" translate="{{::'TYPE'}}"></label>
+								<div>
+									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_type.$show()">
+										<input type="text" class="form-control" disabled editable-select="ngCtrl.view.type"
+											   value="{{ngCtrl.showViewType()}}" e-ng-options="s.name as s.label for s in ngCtrl.viewTypes"
+											   onbeforesave="ngCtrl.fieldUpdate('type', $data)" e-form="fieldForm_type">
+										<span class="input-group-addon" ng-click="fieldForm_type.$show()" ng-hide="fieldForm_type.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 									</div>
 								</div>
 							</div>

@@ -12,6 +12,7 @@ namespace WebVella.ERP.Database
             Id = Guid.NewGuid();
             Name = "";
             Label = "";
+			Title = "";
             Default = false;
             System = false;
             Weight = 1;
@@ -33,6 +34,9 @@ namespace WebVella.ERP.Database
 
 		[JsonProperty(PropertyName = "label")]
         public string Label { get; set; }
+
+		[JsonProperty(PropertyName = "title")]
+        public string Title { get; set; }
 
 		[JsonProperty(PropertyName = "default")]
         public bool Default { get; set; }

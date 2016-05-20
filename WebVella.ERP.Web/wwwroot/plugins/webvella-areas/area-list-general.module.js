@@ -705,12 +705,21 @@
 
 		ngCtrl.generateHighlightString = function(){
 			if(ngCtrl.parentView && ngCtrl.parentView.data){
-				if(ngCtrl.parentView.meta.label.indexOf("{") != -1 && ngCtrl.parentView.meta.label.indexOf("}") != -1){
-					ngCtrl.showPageTitleAuxLabelSecondary = true;
-					return webvellaCoreService.generateHighlightString(ngCtrl.parentView.meta.label,ngCtrl.parentView.data[0],ngCtrl.stateParams);
-				}
+				ngCtrl.showPageTitleAuxLabelSecondary = true;
+				return webvellaCoreService.generateHighlightString(ngCtrl.parentView.meta,ngCtrl.parentView.data[0],ngCtrl.stateParams,"title");
 			}
-			return ngCtrl.list.meta.label;
+			else {
+				return webvellaCoreService.generateHighlightString( ngCtrl.list.meta,null,ngCtrl.stateParams,"title");
+			}
+		}
+
+		ngCtrl.generateAuxHighlightString = function(){
+			if(ngCtrl.parentView && ngCtrl.parentView.data){
+				return webvellaCoreService.generateHighlightString(ngCtrl.list.meta,ngCtrl.parentView.data[0],ngCtrl.stateParams,"label");
+			}
+			else {
+				return webvellaCoreService.generateHighlightString( ngCtrl.list.meta,null,ngCtrl.stateParams,"label");
+			}
 		}
 
 		//#endregion
