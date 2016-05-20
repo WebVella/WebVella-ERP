@@ -511,7 +511,7 @@ namespace WebVella.ERP.Project
 				using (SecurityContext.OpenSystemScope())
 				{
 					var patchObject = new EntityRecord();
-					patchObject["id"] = (Guid)record["task_id"];
+					patchObject["id"] = new Guid((string)record["task_id"]);
 					patchObject["last_modified_on"] = DateTime.UtcNow;
 					patchObject["last_modified_by"] = SecurityContext.CurrentUser.Id;
 					var updateResponse = recMan.UpdateRecord("wv_task", patchObject);
@@ -524,7 +524,7 @@ namespace WebVella.ERP.Project
 			else if (record["bug_id"] != null)
 			{
 				var patchObject = new EntityRecord();
-				patchObject["id"] = (Guid)record["bug_id"];
+				patchObject["id"] = new Guid((string)record["bug_id"]);
 				patchObject["last_modified_on"] = DateTime.UtcNow;
 				patchObject["last_modified_by"] = SecurityContext.CurrentUser.Id;
 				var updateResponse = recMan.UpdateRecord("wv_bug", patchObject);

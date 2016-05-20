@@ -998,7 +998,7 @@ namespace WebVella.ERP.Project
 
 				#region << Get activities >>
 				{
-					var fields = "id,label,priority,created_on,description,subject," +
+					var fields = "id,label,created_on,description,subject," +
 					"$user_wv_project_activity_created_by.username,$user_wv_project_activity_created_by.image," +
 					"$project_1_n_activity.name";
 
