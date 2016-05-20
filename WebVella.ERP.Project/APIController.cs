@@ -998,7 +998,7 @@ namespace WebVella.ERP.Project
 
 				#region << Get activities >>
 				{
-					var fields = "id,label,created_on,description,subject," +
+					var fields = "id,label,priority,created_on,description,subject," +
 					"$user_wv_project_activity_created_by.username,$user_wv_project_activity_created_by.image," +
 					"$project_1_n_activity.name";
 
@@ -1101,9 +1101,9 @@ namespace WebVella.ERP.Project
 
 				var taskQueryResponse = new QueryResponse();
 
-				#region << Get activities >>
+				#region << Get tasks >>
 				{
-					var fields = "id,number,subject,last_modified_on,$user_wv_task_modified_by.username";
+					var fields = "id,number,subject,priority,last_modified_on,$user_wv_task_modified_by.username";
 
 					//Add default sort by created_on
 					var sortRulesList = new List<QuerySortObject>();
@@ -1180,9 +1180,9 @@ namespace WebVella.ERP.Project
 
 				var bugQueryResponse = new QueryResponse();
 
-				#region << Get activities >>
+				#region << Get bugs >>
 				{
-					var fields = "id,number,subject,last_modified_on,$user_wv_bug_modified_by.username";
+					var fields = "id,number,subject,priority,last_modified_on,$user_wv_bug_modified_by.username";
 
 					//Add default sort by created_on
 					var sortRulesList = new List<QuerySortObject>();

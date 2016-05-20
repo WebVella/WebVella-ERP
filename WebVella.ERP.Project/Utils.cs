@@ -376,7 +376,12 @@ namespace WebVella.ERP.Project
 					#endregion
 				}
 				#region << Create update activity >>
-				Utils.CreateActivity(recMan, "updated", "updated a <i class='fa fa-fw fa-tasks go-purple'></i> task #" + oldTaskObject["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + oldTaskObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldTaskObject["subject"]) + "</a>", null, (Guid)oldTaskObject["project_id"], (Guid)oldTaskObject["id"], null);
+				var priorityString = "";
+				if ((string)oldTaskObject["priority"] == "high")
+				{
+					priorityString = "<span class='go-red'> [high] </span>";
+				}
+				Utils.CreateActivity(recMan, "updated", "updated a <i class='fa fa-fw fa-tasks go-purple'></i> task #" + oldTaskObject["number"] + priorityString + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + oldTaskObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldTaskObject["subject"]) + "</a>", null, (Guid)oldTaskObject["project_id"], (Guid)oldTaskObject["id"], null);
 				#endregion
 				return data;
 			}
@@ -608,7 +613,12 @@ namespace WebVella.ERP.Project
 				#endregion
 			}
 			#region << Update activity >>
-			Utils.CreateActivity(recMan, "updated", "updated a <i class='fa fa-fw fa-bug go-red'></i> bug #" + oldBugObject["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + oldBugObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldBugObject["subject"]) + "</a>", null, (Guid)oldBugObject["project_id"], null, (Guid)oldBugObject["id"]);
+			var priorityString = "";
+			if ((string)oldBugObject["priority"] == "high")
+			{
+				priorityString = "<span class='go-red'> [high] </span>";
+			}
+			Utils.CreateActivity(recMan, "updated", "updated a <i class='fa fa-fw fa-bug go-red'></i> bug #" + oldBugObject["number"] + priorityString + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + oldBugObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldBugObject["subject"]) + "</a>", null, (Guid)oldBugObject["project_id"], null, (Guid)oldBugObject["id"]);
 			#endregion
 			return data;
 		}

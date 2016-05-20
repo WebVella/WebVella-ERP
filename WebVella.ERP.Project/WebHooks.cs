@@ -106,8 +106,11 @@ namespace WebVella.ERP.Project
 			var controller = (Controller)data.controller;
 			var createdRecord = createResult.Object.Data[0];
 			var patchObject = new EntityRecord();
-
-			Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-tasks go-purple'></i> task #" + createdRecord["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], (Guid)createdRecord["id"], null);
+			var priorityString = "";
+			if((string)record["priority"] == "high") {
+				priorityString = "<span class='go-red'> [high] </span>";
+			}
+			Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-tasks go-purple'></i> task #" + createdRecord["number"] + priorityString + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], (Guid)createdRecord["id"], null);
 			using (SecurityContext.OpenSystemScope())
 			{
 				#region << Add creator in watch list >>
@@ -323,8 +326,11 @@ namespace WebVella.ERP.Project
 			var controller = (Controller)data.controller;
 			var createdRecord = createResult.Object.Data[0];
 			var patchObject = new EntityRecord();
-
-			Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-bug go-red'></i> bug #" + createdRecord["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], null, (Guid)createdRecord["id"]);
+			var priorityString = "";
+			if((string)record["priority"] == "high") {
+				priorityString = "<span class='go-red'> [high] </span>";
+			}
+			Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-bug go-red'></i> bug #" + createdRecord["number"] + priorityString + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], null, (Guid)createdRecord["id"]);
 
 			using (SecurityContext.OpenSystemScope())
 			{
