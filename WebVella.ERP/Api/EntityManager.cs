@@ -1809,6 +1809,7 @@ namespace WebVella.ERP.Api
 
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The entity was not updated! An internal error occurred!";
@@ -1818,6 +1819,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Success = false;
 				response.Object = entity;
 				response.Timestamp = DateTime.UtcNow;
@@ -1943,6 +1945,8 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
+
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 #if DEBUG
@@ -2742,6 +2746,8 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
+
 				response.Success = false;
 				response.Object = field;
 				response.Timestamp = DateTime.UtcNow;
@@ -3026,6 +3032,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The field was not updated! An internal error occurred!";
@@ -3035,6 +3042,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Success = false;
 				response.Object = field;
 				response.Timestamp = DateTime.UtcNow;
@@ -3369,6 +3377,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 #if DEBUG
@@ -3636,6 +3645,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The list was not created! An internal error occurred!";
@@ -3645,6 +3655,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Success = false;
 				response.Object = recordList;
 				response.Timestamp = DateTime.UtcNow;
@@ -3746,6 +3757,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The list was not updated! An internal error occurred!";
@@ -3755,6 +3767,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Success = false;
 				response.Object = recordList;
 				response.Timestamp = DateTime.UtcNow;
@@ -3816,6 +3829,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The list was not updated! An internal error occurred!";
@@ -3824,6 +3838,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 #if DEBUG
@@ -3885,6 +3900,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The list was not updated! An internal error occurred!";
@@ -3893,6 +3909,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 #if DEBUG
@@ -4243,6 +4260,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The record view was not created! An internal error occurred!";
@@ -4251,6 +4269,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Success = false;
 				response.Object = recordView;
 				response.Timestamp = DateTime.UtcNow;
@@ -4356,6 +4375,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The record view was not updated! An internal error occurred!";
@@ -4365,6 +4385,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Success = false;
 				response.Object = recordView;
 				response.Timestamp = DateTime.UtcNow;
@@ -4427,6 +4448,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The record view was not updated! An internal error occurred!";
@@ -4435,6 +4457,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 #if DEBUG
@@ -4497,6 +4520,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The record view was not updated! An internal error occurred!";
@@ -4505,6 +4529,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 #if DEBUG
@@ -4853,6 +4878,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The tree was not created! An internal error occurred!";
@@ -4862,6 +4888,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Success = false;
 				response.Object = recordTree;
 				response.Timestamp = DateTime.UtcNow;
@@ -4962,6 +4989,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The tree was not updated! An internal error occurred!";
@@ -4971,6 +4999,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Success = false;
 				response.Object = recordTree;
 				response.Timestamp = DateTime.UtcNow;
@@ -5032,6 +5061,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The tree was not updated! An internal error occurred!";
@@ -5040,6 +5070,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 #if DEBUG
@@ -5101,6 +5132,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The tree was not updated! An internal error occurred!";
@@ -5109,6 +5141,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 #if DEBUG

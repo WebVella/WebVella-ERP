@@ -215,8 +215,9 @@ namespace WebVella.ERP.Database
 		{
 			string tableName = RECORD_COLLECTION_PREFIX + entityName;
 
+			//probably constraint will be removed automatically by postgresql, but to be sure
 			if (field.Unique)
-				DbRepository.DropIndex("idx_u_" + entityName + "_" + field.Name);
+				DbRepository.DropUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName);
 			if (field.Searchable)
 				DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name);
 
