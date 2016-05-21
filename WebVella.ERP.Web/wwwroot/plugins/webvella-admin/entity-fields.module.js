@@ -1121,10 +1121,10 @@
 
 
 	//// Modal Controllers
-	DeleteFieldModalController.$inject = ['parentpopupCtrl', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
+	DeleteFieldModalController.$inject = ['parentpopupCtrl', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state','$translate'];
 
 
-	function DeleteFieldModalController(parentpopupCtrl, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state) {
+	function DeleteFieldModalController(parentpopupCtrl, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state,$translate) {
 
 		var popupCtrl = this;
 		popupCtrl.parentData = parentpopupCtrl;
