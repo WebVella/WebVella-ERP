@@ -1208,8 +1208,8 @@ namespace WebVella.ERP.Api
 
 																if (relEntity != null)
 																{
-																	inputItem.EntityId = entity.Id;
-																	inputItem.EntityName = entity.Name;
+																	inputItem.EntityId = relEntity.Id;
+																	inputItem.EntityName = relEntity.Name;
 
 
 																	Field relField = null;
@@ -1267,8 +1267,8 @@ namespace WebVella.ERP.Api
 
 																if (relEntity != null)
 																{
-																	inputItem.EntityId = entity.Id;
-																	inputItem.EntityName = entity.Name;
+																	inputItem.EntityId = relEntity.Id;
+																	inputItem.EntityName = relEntity.Name;
 
 																	RecordTree tree = null;
 																	if (string.IsNullOrWhiteSpace(inputItem.TreeName))
@@ -1324,8 +1324,8 @@ namespace WebVella.ERP.Api
 
 																if (relEntity != null)
 																{
-																	inputItem.EntityId = entity.Id;
-																	inputItem.EntityName = entity.Name;
+																	inputItem.EntityId = relEntity.Id;
+																	inputItem.EntityName = relEntity.Name;
 
 																	RecordList relList = null;
 																	if (string.IsNullOrWhiteSpace(inputItem.ListName))
@@ -1379,8 +1379,8 @@ namespace WebVella.ERP.Api
 
 																if (relEntity != null)
 																{
-																	inputItem.EntityId = entity.Id;
-																	inputItem.EntityName = entity.Name;
+																	inputItem.EntityId = relEntity.Id;
+																	inputItem.EntityName = relEntity.Name;
 
 
 																	RecordView relView = null;
@@ -1519,11 +1519,11 @@ namespace WebVella.ERP.Api
 									Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
 									Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
 
-									inputItem.EntityId = relEntity.Id;
-									inputItem.EntityName = relEntity.Name;
-
 									if (relEntity != null)
 									{
+										inputItem.EntityId = relEntity.Id;
+										inputItem.EntityName = relEntity.Name;
+
 										RecordList relList = null;
 										if (string.IsNullOrWhiteSpace(inputItem.ListName))
 											relList = relEntity.RecordLists.FirstOrDefault(l => l.Id == inputItem.ListId);
@@ -1583,11 +1583,11 @@ namespace WebVella.ERP.Api
 									Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
 									Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
 
-									inputItem.EntityId = relEntity.Id;
-									inputItem.EntityName = relEntity.Name;
-
 									if (relEntity != null)
 									{
+										inputItem.EntityId = relEntity.Id;
+										inputItem.EntityName = relEntity.Name;
+
 										RecordTree tree = null;
 										if (string.IsNullOrWhiteSpace(inputItem.TreeName))
 											tree = relEntity.RecordTrees.FirstOrDefault(l => l.Id == inputItem.TreeId);
