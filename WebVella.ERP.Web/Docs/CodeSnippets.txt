@@ -1,4 +1,33 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
+CREATE RELATION
+////////////////////////////////////////////////////////////////////////////////
+#region << Relation name: relation_name >>
+{
+	var relation = new EntityRelation();
+	relation.Id = new Guid("guid");
+	relation.Name = "";
+	relation.Label = "";
+	relation.Description = "";
+	relation.System = false;
+	relation.RelationType = EntityRelationType.OneToMany;
+	relation.OriginEntityId = new Guid("guid");
+	relation.OriginFieldId = new Guid("guid");
+	relation.TargetEntityId = new Guid("guid");
+	relation.TargetFieldId = new Guid("guid");
+	relation.OriginEntityName = "";
+	relation.OriginFieldName = "";
+	relation.TargetEntityName = "";
+	relation.TargetFieldName = "";
+	{
+		var response = relMan.Create(relation);
+		if (!response.Success)
+			throw new Exception("System error 10060. Relation: {name} Create. Message:" + response.Message);
+	}
+
+}
+#endregion
+
+////////////////////////////////////////////////////////////////////////////////
 CREATE ENTITY
 ////////////////////////////////////////////////////////////////////////////////
 
