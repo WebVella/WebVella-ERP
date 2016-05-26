@@ -1687,7 +1687,7 @@ namespace WebVella.ERP.Api
 
 		#region << Entity methods >>
 
-		public EntityResponse CreateEntity(InputEntity inputEntity)
+		public EntityResponse CreateEntity(InputEntity inputEntity, bool createDefaultViews = true, bool createDefaultLists = true)
 		{
 			EntityResponse response = new EntityResponse
 			{
@@ -1717,8 +1717,22 @@ namespace WebVella.ERP.Api
 				}
 
 				entity.Fields = CreateEntityDefaultFields(entity);
-				entity.RecordLists = CreateEntityDefaultRecordLists(entity);
-				entity.RecordViews = CreateEntityDefaultRecordViews(entity);
+				if (createDefaultViews)
+				{
+					entity.RecordViews = CreateEntityDefaultRecordViews(entity);
+				}
+				else
+				{
+					entity.RecordViews = new List<RecordView>();
+				}
+				if (createDefaultLists)
+				{
+					entity.RecordLists = CreateEntityDefaultRecordLists(entity);
+				}
+				else
+				{
+					entity.RecordLists = new List<RecordList>();
+				}
 
 				DbEntity storageEntity = entity.MapTo<DbEntity>();
 				bool result = DbContext.Current.EntityRepository.Create(storageEntity);

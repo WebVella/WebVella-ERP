@@ -415,7 +415,7 @@ namespace WebVella.ERP.Project
 					emailContentParameters["taskOrBugUrl"] = emailContentParameters["baseUrl"] + "/#/areas/projects/wv_bug/view-general/sb/general/" + createdRecord["id"];
 					emailContentParameters["taskOrBugDescription"] = (string)createdRecord["description"];
 
-					var content = Regex.Replace(EmailTemplates.NewCommentNotificationContent, @"\{(.+?)\}", m => emailContentParameters[m.Groups[1].Value]);
+					var content = Regex.Replace(EmailTemplates.NewBugOrTaskNotificationContent, @"\{(.+?)\}", m => emailContentParameters[m.Groups[1].Value]);
 
 					var resepients = new List<string>();
 
