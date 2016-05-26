@@ -1687,7 +1687,7 @@ namespace WebVella.ERP.Api
 
 		#region << Entity methods >>
 
-		public EntityResponse CreateEntity(InputEntity inputEntity, bool createDefaultViews = true, bool createDefaultLists = true)
+		public EntityResponse CreateEntity(InputEntity inputEntity, bool createDefaultViews = true, bool createDefaultLists = true, Dictionary<string,Guid> sysFieldIdDictionary = null)
 		{
 			EntityResponse response = new EntityResponse
 			{
@@ -1716,7 +1716,7 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				entity.Fields = CreateEntityDefaultFields(entity);
+				entity.Fields = CreateEntityDefaultFields(entity, sysFieldIdDictionary);
 				if (createDefaultViews)
 				{
 					entity.RecordViews = CreateEntityDefaultRecordViews(entity);
@@ -5571,13 +5571,18 @@ namespace WebVella.ERP.Api
 
 		#region << Help methods >>
 
-		private List<Field> CreateEntityDefaultFields(Entity entity)
+		private List<Field> CreateEntityDefaultFields(Entity entity, Dictionary<string,Guid> sysFieldIdDictionary = null)
 		{
 			List<Field> fields = new List<Field>();
 
 			GuidField primaryKeyField = new GuidField();
 
-			primaryKeyField.Id = Guid.NewGuid();
+			if(sysFieldIdDictionary != null && sysFieldIdDictionary.ContainsKey("id")) {
+				primaryKeyField.Id = sysFieldIdDictionary["id"];
+			}
+			else {
+				primaryKeyField.Id = Guid.NewGuid();
+			}
 			primaryKeyField.Name = "id";
 			primaryKeyField.Label = "Id";
 			primaryKeyField.PlaceholderText = "";
@@ -5595,7 +5600,12 @@ namespace WebVella.ERP.Api
 
 			GuidField createdBy = new GuidField();
 
-			createdBy.Id = Guid.NewGuid();
+			if(sysFieldIdDictionary != null && sysFieldIdDictionary.ContainsKey("created_by")) {
+				createdBy.Id = sysFieldIdDictionary["created_by"];
+			}
+			else {
+				createdBy.Id = Guid.NewGuid();
+			}
 			createdBy.Name = "created_by";
 			createdBy.Label = "Created By";
 			createdBy.PlaceholderText = "";
@@ -5613,7 +5623,12 @@ namespace WebVella.ERP.Api
 
 			GuidField lastModifiedBy = new GuidField();
 
-			lastModifiedBy.Id = Guid.NewGuid();
+			if(sysFieldIdDictionary != null && sysFieldIdDictionary.ContainsKey("last_modified_by")) {
+				lastModifiedBy.Id = sysFieldIdDictionary["last_modified_by"];
+			}
+			else {
+				lastModifiedBy.Id = Guid.NewGuid();
+			}
 			lastModifiedBy.Name = "last_modified_by";
 			lastModifiedBy.Label = "Last Modified By";
 			lastModifiedBy.PlaceholderText = "";
@@ -5631,7 +5646,12 @@ namespace WebVella.ERP.Api
 
 			DateTimeField createdOn = new DateTimeField();
 
-			createdOn.Id = Guid.NewGuid();
+			if(sysFieldIdDictionary != null && sysFieldIdDictionary.ContainsKey("created_on")) {
+				createdOn.Id = sysFieldIdDictionary["created_on"];
+			}
+			else {
+				createdOn.Id = Guid.NewGuid();
+			}
 			createdOn.Name = "created_on";
 			createdOn.Label = "Created On";
 			createdOn.PlaceholderText = "";
@@ -5651,7 +5671,12 @@ namespace WebVella.ERP.Api
 
 			DateTimeField modifiedOn = new DateTimeField();
 
-			modifiedOn.Id = Guid.NewGuid();
+			if(sysFieldIdDictionary != null && sysFieldIdDictionary.ContainsKey("last_modified_on")) {
+				modifiedOn.Id = sysFieldIdDictionary["last_modified_on"];
+			}
+			else {
+				modifiedOn.Id = Guid.NewGuid();
+			}
 			modifiedOn.Name = "last_modified_on";
 			modifiedOn.Label = "Last Modified On";
 			modifiedOn.PlaceholderText = "";
