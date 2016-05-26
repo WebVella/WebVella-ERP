@@ -325,13 +325,13 @@
 				<tbody>
 					<tr ng-repeat="field in ngCtrl.entity.fields track by field.id">
 						<td ng-switch="ngCtrl.fieldSelectedBy(field)">
-							<a ng-switch-when="system" class="btn btn-outline btn-success disabled">
+							<a ng-switch-when="system" class="btn btn-success disabled">
 								<i class="fa fa-fw fa-lock"></i>
 							</a>
-							<a ng-switch-when="user" class="btn btn-outline btn-success" href="javascript:void(0)" ng-click="ngCtrl.toggleFieldSelection(field)">
+							<a ng-switch-when="user" class="btn btn-success" href="javascript:void(0)" ng-click="ngCtrl.toggleFieldSelection(field)">
 								<i class="fa fa-fw fa-check"></i>
 							</a>
-							<a ng-switch-when="none" class="btn btn-outline btn-default" href="javascript:void(0)" ng-click="ngCtrl.toggleFieldSelection(field)">
+							<a ng-switch-when="none" class="btn btn-outline" href="javascript:void(0)" ng-click="ngCtrl.toggleFieldSelection(field)">
 								<i class="fa fa-fw fa-check"></i>
 							</a>
 						</td>
