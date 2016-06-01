@@ -280,19 +280,41 @@ span.divider {
 }
 
 .recursive-view-wrapper {
-	border: none;
+	/*border: none;*/
+	margin-bottom:15px;
 }
 
 	.recursive-view-wrapper .panel {
-		background: #fafafa !important;
+		/*background: #fff !important;*/
 		margin: 0;
+		border:1px solid #ccc;
 	}
 
+	.recursive-view-wrapper .panel-body {
+		position:relative;
+		padding:10px 10px;
+	}
+
+		.recursive-view-wrapper .panel-body .form-group:last-child {
+			margin-bottom:0;
+		}
+
 .panel-body-actions {
-	margin: -20px -5px 10px -5px;
-	padding: 5px;
-	background: #fff;
-	border-bottom: 1px solid #ccc;
+	/*margin: -20px -5px 10px -5px;*/
+	/*padding: 5px;*/
+	/*background: #fff;*/
+	/*border-bottom: 1px solid #ccc;*/
+	position:absolute;
+	right:5px;
+	top:5px;
+	z-index:100;
+}
+
+.recursive-view-wrapper .panel-body .field > .control-label {
+	text-transform: uppercase;
+    font-weight: normal;
+    color: #bdbdbd;
+    font-size: 12px;
 }
 
 .width-2000 {
@@ -2559,13 +2581,14 @@ form .error,
 	.form .image-upload .delete-link,
 	.form-horizontal .image-upload .delete-link {
 		position: absolute;
-		left: 5px;
+		left: 40px;
 		top: 5px;
-		padding: 10px;
-		border-radius: 30px;
+		padding: 7px;
+		border-radius: 20px;
 		background: #000000;
-		background: rgba(0,0,0,0.2);
+		background: rgba(0,0,0,0.4);
 		color: #d9534f;
+		border:1px solid rgba(217,83,79,0.8);
 	}
 
 		.form .image-upload .delete-link:hover,
@@ -2578,13 +2601,14 @@ form .error,
 	.form .image-upload .update-link,
 	.form-horizontal .image-upload .update-link {
 		position: absolute;
-		left: 50px;
+		left: 80px;
 		top: 5px;
-		padding: 10px;
-		border-radius: 30px;
+		padding: 7px;
+		border-radius: 20px;
 		background: #000000;
-		background: rgba(0,0,0,0.2);
+		background: rgba(0,0,0,0.4);
 		color: #FF9800;
+		border:1px solid rgba(255,152,0,0.8);
 	}
 
 		.form .image-upload .update-link:hover,
