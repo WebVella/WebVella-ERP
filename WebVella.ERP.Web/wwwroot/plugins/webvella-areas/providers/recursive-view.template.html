@@ -93,7 +93,7 @@
 				<div class="alert alert-warning">{{::popupCtrl.warningMessage}}</div>
 			</div>
 			<div ng-if="!popupCtrl.hasWarning">
-				<table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="popupCtrl.relationLookupList.data.length == 0">
+				<table class="table table-bordered table-hover table-vertical-align-middle">
 					<thead>
 						<tr>
 							<th class="actions" style="width:80px;"></th>
@@ -286,7 +286,7 @@
 								</form>
 							</td>
 						</tr>
-						<tr ng-repeat="record in popupCtrl.relationLookupList.data track by record.id">
+						<tr ng-repeat="record in popupCtrl.relationLookupList.data track by record.id"  ng-hide="popupCtrl.relationLookupList.data.length == 0">
 							<td>
 								<a ng-click='popupCtrl.instantAttachRecord(record)' href="javascript:void(0)" ng-if="::!popupCtrl.isSelected(record)">
 									select
