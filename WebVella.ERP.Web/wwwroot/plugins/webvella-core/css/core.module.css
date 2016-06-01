@@ -3526,6 +3526,7 @@ table .btn-xs.btn-link {
 		background-color: #fafafa;
 		color: #333;
 		box-shadow: none;
+		min-height: 34px;
 	}
 
 		.editable-wrapper .form-control:focus {

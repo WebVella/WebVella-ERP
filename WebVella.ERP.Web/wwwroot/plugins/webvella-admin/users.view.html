@@ -4,10 +4,10 @@
 			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.users.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
-					<input ng-model="ngCtrl.search.email" type="text" class="form-control" placeholder="{{::'USER_EMAIL' | translate}}">
+					<input ng-model="ngCtrl.search.email" type="text" class="form-control" placeholder="{{::'USER_EMAIL' | translate}}" focus-me="true">
 				</div>
 			</div>
-			<a class="btn btn-default btn-outline" ng-click="ngCtrl.openManageUserModal(null)"><span translate="{{::'ADD_NEW'}}"></span></a>
+			<a class="btn btn-outline" ng-click="ngCtrl.openManageUserModal(null)"><span translate="{{::'ADD_NEW'}}"></span></a>
 		</div>
 		<div class="meta-icon">
 			<i class="fa fa-fw fa-user fa-2x"></i>
