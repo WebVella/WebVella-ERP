@@ -338,6 +338,14 @@ span.divider {
 	width: 4000px;
 }
 
+.table.colorize-values .true-value{
+	color: #4CAF50 !important;
+}
+
+.table.colorize-values .false-value{
+	color: #F44336 !important;
+}
+
 .dropdown-menu > li > a {
 	padding: 7px 20px;
 }

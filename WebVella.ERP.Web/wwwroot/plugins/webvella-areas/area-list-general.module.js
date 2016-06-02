@@ -408,6 +408,7 @@
 			var queryFieldsCount = 0;
 			for (var filter in ngCtrl.filterQuery) {
 				if(ngCtrl.filterQuery[filter]){
+					queryFieldsCount ++;
 					for (var i = 0; i < ngCtrl.list.meta.columns.length; i++) {
 						if(ngCtrl.list.meta.columns[i].meta.name == filter){
 							var selectedField = ngCtrl.list.meta.columns[i].meta;

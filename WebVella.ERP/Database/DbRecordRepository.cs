@@ -146,7 +146,8 @@ namespace WebVella.ERP.Database
 							record[reader.GetName(index)] = reader[index] == DBNull.Value ? null : reader[index];
 
 					}
-					else {
+					else
+					{
 						return null;
 					}
 
@@ -497,7 +498,7 @@ namespace WebVella.ERP.Database
 					}
 
 					sortSql = sortSql.Remove(sortSql.Length - 1, 1);
-					if(sortSql.Trim() != "ORDER BY")
+					if (sortSql.Trim() != "ORDER BY")
 						sql.AppendLine(sortSql);
 				}
 
@@ -820,7 +821,7 @@ namespace WebVella.ERP.Database
 						{
 							//process json
 							dynamic parametrizedSort = ExtractSortFieldJsonValue(s.FieldName, query.OverwriteArgs);
-							if(parametrizedSort != null )
+							if (parametrizedSort != null)
 							{
 								var sortField = parametrizedSort.Field;
 								var sortOrder = parametrizedSort.Order;
@@ -830,7 +831,7 @@ namespace WebVella.ERP.Database
 									continue;
 
 								sortSql = sortSql + " " + GetTableNameForEntity(entity) + "." + sortField;
-								if( sortOrder == null )
+								if (sortOrder == null)
 								{
 									if (s.SortType == QuerySortType.Ascending)
 										sortSql = sortSql + " ASC,";
@@ -839,7 +840,7 @@ namespace WebVella.ERP.Database
 								}
 								else
 								{
-									if (sortOrder == "ascending" )
+									if (sortOrder == "ascending")
 										sortSql = sortSql + " ASC,";
 									else
 										sortSql = sortSql + " DESC,";
@@ -1273,7 +1274,13 @@ namespace WebVella.ERP.Database
 				return Convert.ToDecimal(value);
 			}
 			else if (field is CheckboxField)
+			{
+				if (value == null)
+					return null;
+				if (value is string)
+					return bool.Parse(value as string);
 				return value as bool?;
+			}
 			else if (field is CurrencyField)
 			{
 				if (value == null)

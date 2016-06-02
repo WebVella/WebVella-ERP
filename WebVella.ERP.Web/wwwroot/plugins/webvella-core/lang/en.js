@@ -311,7 +311,7 @@ var translationsEN = {
 	RECORD_LIST_COPY_MODAL_TITLE:'Copy list',
 	RECORD_LIST_CREATE:'Create list',
 	RECORD_LIST_CREATE_MODAL_TITLE:'Create list',
-	RECORD_LIST_CSS_CLASS_DESCRIPTION: 'e.g. "hide-header", "table-noborder", "width-2000", "width-2500","width-3000"',
+	RECORD_LIST_CSS_CLASS_DESCRIPTION: 'e.g. "hide-header", "table-noborder","colorize-values", "width-3000"',
 	RECORD_LIST_DELETE: 'Delete list',
 	RECORD_LIST_DELETE_MODAL_TITLE: 'Delete a list',
 	RECORD_LIST_DELETE_MODAL_QUESTION: 'Are you sure that you need this list deleted?',
