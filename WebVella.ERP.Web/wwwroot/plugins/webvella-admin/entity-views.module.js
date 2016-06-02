@@ -194,6 +194,7 @@
 		popupCtrl.view = webvellaCoreService.initView("general");
 		popupCtrl.currentEntity = fastCopy(ngCtrl.entity);
 		popupCtrl.existingViews = fastCopy(ngCtrl.views);
+		popupCtrl.view.default = true;
         popupCtrl.viewTypes = [
 		{
 			name: "general",

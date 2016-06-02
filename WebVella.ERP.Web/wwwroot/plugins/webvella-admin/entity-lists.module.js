@@ -218,6 +218,24 @@
 				idFieldGuid = popupCtrl.ngCtrl.entity.fields[j].id;
 			}
 		}
+		popupCtrl.list.default = true;
+		popupCtrl.list.type = "general";
+        popupCtrl.listTypes = [
+		{
+			name: "general",
+			label: "general"
+		},
+		{
+			name: "lookup",
+			label: "lookup"
+		}
+        ];
+
+		popupCtrl.regenActionItems = function(){
+			var templateList = webvellaCoreService.initList(popupCtrl.list.type);
+			popupCtrl.list.actionItems = templateList.actionItems;
+		}
+
 		//The Record Id data is automatically injected by the server. If you want the field to be visible to users you need to add it in the view
 
 		popupCtrl.ok = function () {

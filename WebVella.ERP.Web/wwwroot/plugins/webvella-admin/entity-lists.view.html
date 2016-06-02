@@ -1,6 +1,6 @@
 <div id="page-title">
-    <div id="page-meta">
-        <div class="aux-actions">
+	<div id="page-meta">
+		<div class="aux-actions">
 			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.lists.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
@@ -8,18 +8,18 @@
 				</div>
 			</div>
 			<a class="btn btn-default btn-outline" ng-click="ngCtrl.createListModal()"><span translate="{{::'ADD_NEW'}}"></span></a>
-        </div>
+		</div>
 		<div class="meta-icon">
 			<i class="fa fa-fw fa-list fa-2x"></i>
 		</div>
-        <div class="meta-label">
+		<div class="meta-label">
 			<div class="meta-label-aux" translate="{{::'ENTITY_MANAGE_RECORD_LISTS'}}"></div>
-            <h4 ng-bind="::ngCtrl.entity.name"></h4>
-        </div>
-    </div>
+			<h4 ng-bind="::ngCtrl.entity.name"></h4>
+		</div>
+	</div>
 </div>
 <div id="page-body">
-    <div class="tabbable tabs-left spilled">
+	<div class="tabbable tabs-left spilled">
 		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{::'BACK'}}"></span></a>
 		<ul class="nav nav-tabs">
 			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text" translate="{{::'DETAILS'}}"></span></a></li>
@@ -29,43 +29,43 @@
 			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text" translate="{{::'RECORD_TREES'}}"></span></a></li>
 			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text" translate="{{::'RELATIONS'}}"></span></a></li>
 		</ul>
-    </div>
-	
-    <div id="page-text">
-        <table class="table table-bordered table-hover table-vertical-align-middle" ng-show="::ngCtrl.lists.length > 0">
-            <thead>
-                <tr>
-                    <th class="actions"></th>
-                    <th class="name" translate="{{::'NAME'}}"></th>
-                    <th class="type" translate="{{::'TYPE'}}">Type</th>
+	</div>
+
+	<div id="page-text">
+		<table class="table table-bordered table-hover table-vertical-align-middle" ng-show="::ngCtrl.lists.length > 0">
+			<thead>
+				<tr>
+					<th class="actions"></th>
+					<th class="name" translate="{{::'NAME'}}"></th>
+					<th class="type" translate="{{::'TYPE'}}">Type</th>
 					<th class="stats" style="width:100px;" translate="{{::'STATISTICS_ABBR'}}"></th>
-            </thead>
-            <tbody>
-                <tr ng-repeat="list in ngCtrl.lists | filter: {name: searchFilter} track by list.id">
-                    <td class="actions">
-                        <a class="btn btn-default btn-outline" href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::list.name}}">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                        <a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.copyList(list)">
-                            <i class="fa fa-files-o"></i>
-                        </a>
-                    </td>
-                    <td class="name">
-                        {{::list.name}}
-                        <span class="badge badge-danger badge-inverse" ng-show="::list.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
-                        <span class="badge badge-primary badge-inverse" ng-show="::list.default" title="default item" style="margin-left:5px;"><i class="fa fa-fw fa-thumb-tack"></i></span>
+			</thead>
+			<tbody>
+				<tr ng-repeat="list in ngCtrl.lists | filter: {name: searchFilter} track by list.id">
+					<td class="actions">
+						<a class="btn btn-default btn-outline" href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::list.name}}">
+							<i class="fa fa-eye"></i>
+						</a>
+						<a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.copyList(list)">
+							<i class="fa fa-files-o"></i>
+						</a>
+					</td>
+					<td class="name">
+						{{::list.name}}
+						<span class="badge badge-danger badge-inverse" ng-show="::list.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
+						<span class="badge badge-primary badge-inverse" ng-show="::list.default" title="default item" style="margin-left:5px;"><i class="fa fa-fw fa-thumb-tack"></i></span>
 						<div class="go-gray"><small>{{::list.label}}</small></div>
-                    </td>
-                    <td>{{::list.type}}</td>
+					</td>
+					<td>{{::list.type}}</td>
 					<td class="stats">
 						<span ng-if="::list.columns.length > 0"><span class='go-green'>{{list.columns.length}}</span> <span translate="{{::'COLUMNS'}}" style="text-transform:lowercase"></span></span>
 						<span class='go-grey' ng-if="::list.columns.length == 0" translate="{{::'EMPTY'}}" style="text-transform:lowercase"></span>
 					</td>
-                </tr>
-            </tbody>
-        </table>
+				</tr>
+			</tbody>
+		</table>
 		<div class="alert alert-info" ng-show="::ngCtrl.lists.length == 0" translate="{{::'LIST_EMPTY_MESSAGE'}}"></div>
-    </div>
+	</div>
 
 
 </div>
@@ -111,6 +111,24 @@
 					<input ng-model="popupCtrl.list.iconName" type="hidden" value="list">
 				</div>
 			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="required" for="name" translate="{{::'TYPE'}}"></label>
+						<select class="form-control" ng-model="popupCtrl.list.type" ng-options="type.name as type.label for type in popupCtrl.listTypes" ng-change="popupCtrl.regenActionItems()"></select>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="required" for="name" translate="{{::'DEFAULT'}}"></label>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" ng-model="popupCtrl.list.default"> Make this default list?
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
 		</form>
 	</div>
 	<div class="modal-footer">
@@ -129,33 +147,33 @@
 			<tr>
 				<td style="width:200px">
 					<div class="form-group">
-					  <div class="radio checkbox">
-						<label>
-						  <input type="radio" name="alternative" value="new" ng-model="popupCtrl.alternative"> <span translate="{{::'RECORD_LIST_CLONE_AS_NEW_CHECKBOX_LABEL'}}"></span>
-						</label>
-					  </div>
+						<div class="radio checkbox">
+							<label>
+								<input type="radio" name="alternative" value="new" ng-model="popupCtrl.alternative"> <span translate="{{::'RECORD_LIST_CLONE_AS_NEW_CHECKBOX_LABEL'}}"></span>
+							</label>
+						</div>
 					</div>
 				</td>
 				<td>
-					<div class="form-group"  ng-class="{ 'has-error' : popupCtrl.listNameValidationError}">
-					  <input type="text" class="form-control" placeholder="List name" ng-model="popupCtrl.listName">
-					  <div class="error ng-hide" ng-show="popupCtrl.listNameValidationError" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></div>
+					<div class="form-group" ng-class="{ 'has-error' : popupCtrl.listNameValidationError}">
+						<input type="text" class="form-control" placeholder="List name" ng-model="popupCtrl.listName">
+						<div class="error ng-hide" ng-show="popupCtrl.listNameValidationError" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></div>
 					</div>
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<div class="form-group">
-					  <div class="radio checkbox">
-						<label>
-						  <input type="radio" name="alternative" value="copy" ng-model="popupCtrl.alternative"> <span translate="{{::'RECORD_LIST_CLONE_AS_EXISTING_CHECKBOX_LABEL'}}"></span> 
-						</label>
-					  </div>
+						<div class="radio checkbox">
+							<label>
+								<input type="radio" name="alternative" value="copy" ng-model="popupCtrl.alternative"> <span translate="{{::'RECORD_LIST_CLONE_AS_EXISTING_CHECKBOX_LABEL'}}"></span>
+							</label>
+						</div>
 					</div>
 				</td>
 				<td>
 					<div class="form-group">
-					  <select class="form-control" ng-model="popupCtrl.selectedList" ng-options="list as list.name for list in popupCtrl.entityLists"></select>
+						<select class="form-control" ng-model="popupCtrl.selectedList" ng-options="list as list.name for list in popupCtrl.entityLists"></select>
 					</div>
 				</td>
 			</tr>
