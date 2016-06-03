@@ -16,7 +16,7 @@ namespace WebVella.ERP.Database
 	{
 		internal const string RECORD_COLLECTION_PREFIX = "rec_";
 
-		public bool Create(DbEntity entity)
+		public bool Create(DbEntity entity, Dictionary<string, Guid> sysldDictionary = null)
 		{
 			try
 			{
@@ -63,10 +63,16 @@ namespace WebVella.ERP.Database
 
 							DbRelationRepository relRep = new DbRelationRepository();
 
-							Guid createdByRelationId = Guid.NewGuid();
-							Guid modifiedByRelationId = Guid.NewGuid();
 							string createdByRelationName = $"user_{entity.Name}_created_by";
 							string modifiedByRelationName = $"user_{entity.Name}_modified_by";
+
+							Guid createdByRelationId = Guid.NewGuid();
+							if (sysldDictionary != null && sysldDictionary.ContainsKey(createdByRelationName))
+								createdByRelationId = sysldDictionary[createdByRelationName];
+
+							Guid modifiedByRelationId = Guid.NewGuid();
+							if (sysldDictionary != null && sysldDictionary.ContainsKey(modifiedByRelationName))
+								modifiedByRelationId = sysldDictionary[modifiedByRelationName];
 
 							List<DbEntityRelation> relationList = relRep.Read();
 							DbEntityRelation tempRel = relationList.FirstOrDefault(r => r.Name == createdByRelationName);

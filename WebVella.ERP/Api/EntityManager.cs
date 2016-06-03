@@ -1687,7 +1687,7 @@ namespace WebVella.ERP.Api
 
 		#region << Entity methods >>
 
-		public EntityResponse CreateEntity(InputEntity inputEntity, bool createDefaultViews = true, bool createDefaultLists = true, Dictionary<string,Guid> sysFieldIdDictionary = null)
+		public EntityResponse CreateEntity(InputEntity inputEntity, bool createDefaultViews = true, bool createDefaultLists = true, Dictionary<string,Guid> sysIdDictionary = null)
 		{
 			EntityResponse response = new EntityResponse
 			{
@@ -1716,7 +1716,7 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				entity.Fields = CreateEntityDefaultFields(entity, sysFieldIdDictionary);
+				entity.Fields = CreateEntityDefaultFields(entity, sysIdDictionary);
 				if (createDefaultViews)
 				{
 					entity.RecordViews = CreateEntityDefaultRecordViews(entity);
@@ -1735,7 +1735,7 @@ namespace WebVella.ERP.Api
 				}
 
 				DbEntity storageEntity = entity.MapTo<DbEntity>();
-				bool result = DbContext.Current.EntityRepository.Create(storageEntity);
+				bool result = DbContext.Current.EntityRepository.Create(storageEntity, sysIdDictionary );
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
