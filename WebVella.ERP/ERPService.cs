@@ -83,8 +83,13 @@ namespace WebVella.ERP
 							userEntity.RecordPermissions.CanRead.Add(SystemIds.AdministratorRoleId);
 							userEntity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 							userEntity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
-
-							response = entMan.CreateEntity(userEntity);
+							var systemItemIdDictionary = new Dictionary<string, Guid>();
+							systemItemIdDictionary["id"] = new Guid("8e438549-fd30-4766-95a9-061008cee48e");
+							systemItemIdDictionary["created_on"] = new Guid("6fda5e6b-80e6-4d8a-9e2a-d983c3694e96");
+							systemItemIdDictionary["created_by"] = new Guid("825e8367-3be1-4022-ba66-6494859d70d9");
+							systemItemIdDictionary["last_modified_on"] = new Guid("5a975d33-47c6-4ba6-83c8-c24034206879");
+							systemItemIdDictionary["last_modified_by"] = new Guid("cafc8cda-1a1d-43e4-9406-6acf8ba8fa8d");
+							response = entMan.CreateEntity(userEntity, false, false, systemItemIdDictionary);
 
 							InputTextField firstName = new InputTextField();
 
@@ -136,7 +141,7 @@ namespace WebVella.ERP
 							userName.Searchable = true;
 							userName.Auditable = false;
 							userName.System = true;
-							userName.DefaultValue = "";
+							userName.DefaultValue = string.Empty;
 							userName.MaxLength = 200;
 							fieldResponse = entMan.CreateField(userEntity.Id.Value, userName, false);
 
@@ -154,7 +159,7 @@ namespace WebVella.ERP
 							email.Searchable = true;
 							email.Auditable = false;
 							email.System = true;
-							email.DefaultValue = "";
+							email.DefaultValue = string.Empty;
 
 							email.MaxLength = 255;
 
@@ -260,84 +265,84 @@ namespace WebVella.ERP
 
 						#endregion
 
-						#region << user lookup list >>
-						{
-							var updateListEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
-							var updateList = updateListEntity.RecordLists.Single(x => x.Name == "lookup");
-							var updateListInput = new InputRecordList();
-							var listItem = new InputRecordListFieldItem();
-							var listSort = new InputRecordListSort();
-							var listQuery = new InputRecordListQuery();
-					
-							//Convert recordList to recordListInput
-							updateListInput = updateList.DynamicMapTo<InputRecordList>();
-	
-							//General list details
-							//updateListInput.IconName = "";	
-	
-							//Fields
-							#region << username >>
-							listItem = new InputRecordListFieldItem();
-							listItem.EntityId = SystemIds.UserEntityId;
-							listItem.EntityName = "user";
-							listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "username").Id;
-							listItem.FieldName = "username";
-							listItem.Type = "field";
-							updateListInput.Columns.Add(listItem);
-							#endregion
-	
-							#region << email >>
-							listItem = new InputRecordListFieldItem();
-							listItem.EntityId = SystemIds.UserEntityId;
-							listItem.EntityName = "user";
-							listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "email").Id;
-							listItem.FieldName = "email";
-							listItem.Type = "field";
-							updateListInput.Columns.Add(listItem);
-							#endregion
+						//#region << user lookup list >>
+						//{
+						//	var updateListEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+						//	var updateList = updateListEntity.RecordLists.Single(x => x.Name == "lookup");
+						//	var updateListInput = new InputRecordList();
+						//	var listItem = new InputRecordListFieldItem();
+						//	var listSort = new InputRecordListSort();
+						//	var listQuery = new InputRecordListQuery();
 
-							//Query
-							#region << query descr >>
-							updateListInput.Query = new InputRecordListQuery();
-							updateListInput.Query.FieldName = null;
-							updateListInput.Query.FieldValue = null;
-							updateListInput.Query.QueryType = "AND"; //AND,OR,EQ,NOT,LT,LTE,GT,GTE,CONTAINS,STARTSWITH
-							updateListInput.Query.SubQueries = new List<InputRecordListQuery>();
-							
-							var subQuery = new InputRecordListQuery();
-							//Username query
-							{
-								subQuery = new InputRecordListQuery();
-								subQuery.FieldName = "username";
-								subQuery.QueryType = "CONTAINS";
-								subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""username"", ""default"": null, ""settings"":{}}";
-								updateListInput.Query.SubQueries.Add(subQuery);
-							}
-							//Email query
-							{
-								subQuery = new InputRecordListQuery();
-								subQuery.FieldName = "email";
-								subQuery.QueryType = "CONTAINS";
-								subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""email"", ""default"": null, ""settings"":{}}";
-								updateListInput.Query.SubQueries.Add(subQuery);
-							}
-							#endregion
+						//	//Convert recordList to recordListInput
+						//	updateListInput = updateList.DynamicMapTo<InputRecordList>();
+
+						//	//General list details
+						//	//updateListInput.IconName = "";	
+
+						//	//Fields
+						//	#region << username >>
+						//	listItem = new InputRecordListFieldItem();
+						//	listItem.EntityId = SystemIds.UserEntityId;
+						//	listItem.EntityName = "user";
+						//	listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "username").Id;
+						//	listItem.FieldName = "username";
+						//	listItem.Type = "field";
+						//	updateListInput.Columns.Add(listItem);
+						//	#endregion
+
+						//	#region << email >>
+						//	listItem = new InputRecordListFieldItem();
+						//	listItem.EntityId = SystemIds.UserEntityId;
+						//	listItem.EntityName = "user";
+						//	listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "email").Id;
+						//	listItem.FieldName = "email";
+						//	listItem.Type = "field";
+						//	updateListInput.Columns.Add(listItem);
+						//	#endregion
+
+						//	//Query
+						//	#region << query descr >>
+						//	updateListInput.Query = new InputRecordListQuery();
+						//	updateListInput.Query.FieldName = null;
+						//	updateListInput.Query.FieldValue = null;
+						//	updateListInput.Query.QueryType = "AND"; //AND,OR,EQ,NOT,LT,LTE,GT,GTE,CONTAINS,STARTSWITH
+						//	updateListInput.Query.SubQueries = new List<InputRecordListQuery>();
+
+						//	var subQuery = new InputRecordListQuery();
+						//	//Username query
+						//	{
+						//		subQuery = new InputRecordListQuery();
+						//		subQuery.FieldName = "username";
+						//		subQuery.QueryType = "CONTAINS";
+						//		subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""username"", ""default"": null, ""settings"":{}}";
+						//		updateListInput.Query.SubQueries.Add(subQuery);
+						//	}
+						//	//Email query
+						//	{
+						//		subQuery = new InputRecordListQuery();
+						//		subQuery.FieldName = "email";
+						//		subQuery.QueryType = "CONTAINS";
+						//		subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""email"", ""default"": null, ""settings"":{}}";
+						//		updateListInput.Query.SubQueries.Add(subQuery);
+						//	}
+						//	#endregion
 
 
-							//Sort
-							#region << Sort >>
-							listSort = new InputRecordListSort();
-							listSort.FieldName = "username";
-							listSort.SortType = "ascending";
-							updateListInput.Sorts.Add(listSort);
-							#endregion
-							{
-								var responseObject = entMan.UpdateRecordList(SystemIds.UserEntityId, updateListInput);
-								if (!responseObject.Success)
-									throw new Exception("System error 10060. Entity: " + "user" + " Updated List: list_name" + " Message:" + responseObject.Message);
-							}
-						}
-						#endregion
+						//	//Sort
+						//	#region << Sort >>
+						//	listSort = new InputRecordListSort();
+						//	listSort.FieldName = "username";
+						//	listSort.SortType = "ascending";
+						//	updateListInput.Sorts.Add(listSort);
+						//	#endregion
+						//	{
+						//		var responseObject = entMan.UpdateRecordList(SystemIds.UserEntityId, updateListInput);
+						//		if (!responseObject.Success)
+						//			throw new Exception("System error 10060. Entity: " + "user" + " Updated List: list_name" + " Message:" + responseObject.Message);
+						//	}
+						//}
+						//#endregion
 
 						#region << create role entity >>
 
@@ -360,8 +365,15 @@ namespace WebVella.ERP
 							roleEntity.RecordPermissions.CanRead.Add(SystemIds.AdministratorRoleId);
 							roleEntity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 							roleEntity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
-
-							response = entMan.CreateEntity(roleEntity);
+							var systemItemIdDictionary = new Dictionary<string, Guid>();
+							systemItemIdDictionary["id"] = new Guid("37fd9c4f-5413-4f3a-aa2f-d831cc106d03");
+							systemItemIdDictionary["created_on"] = new Guid("64047bab-dc73-4175-a744-e5d565e8adbb");
+							systemItemIdDictionary["created_by"] = new Guid("0ccd806b-715c-42d4-a580-f3f11f55d937");
+							systemItemIdDictionary["last_modified_on"] = new Guid("c4522433-1c67-44f9-b461-e85d4d363b70");
+							systemItemIdDictionary["last_modified_by"] = new Guid("a4489db4-9d76-4d5a-8940-6ef2da562c25");
+							systemItemIdDictionary["user_role_created_by"] = new Guid("c6151e80-9dce-4c0b-ae5f-4798e14cff4c");
+							systemItemIdDictionary["user_role_modified_by"] = new Guid("f3efaefe-32d2-4840-ac06-bc5723e323d0");
+							response = entMan.CreateEntity(roleEntity, false, false, systemItemIdDictionary);
 
 							InputTextField nameRoleField = new InputTextField();
 
@@ -412,52 +424,52 @@ namespace WebVella.ERP
 
 						#endregion
 
-						#region << role lookup list >>
-						{
-							var updateListEntity = entMan.ReadEntity(SystemIds.RoleEntityId).Object;
-							var updateList = updateListEntity.RecordLists.Single(x => x.Name == "lookup");
-							var updateListInput = new InputRecordList();
-							var listItem = new InputRecordListFieldItem();
-							var listSort = new InputRecordListSort();
-							var listQuery = new InputRecordListQuery();
-					
-							//Convert recordList to recordListInput
-							updateListInput = updateList.DynamicMapTo<InputRecordList>();
-	
-							//General list details
-							//updateListInput.IconName = "";	
-	
-							//Fields
-							#region << username >>
-							listItem = new InputRecordListFieldItem();
-							listItem.EntityId = SystemIds.RoleEntityId;
-							listItem.EntityName = "role";
-							listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "name").Id;
-							listItem.FieldName = "name";
-							listItem.Type = "field";
-							updateListInput.Columns.Add(listItem);
-							#endregion
-	
-							//Query
-							#region << query descr >>
-							listQuery = new InputRecordListQuery();
-							#endregion
+						//#region << role lookup list >>
+						//{
+						//	var updateListEntity = entMan.ReadEntity(SystemIds.RoleEntityId).Object;
+						//	var updateList = updateListEntity.RecordLists.Single(x => x.Name == "lookup");
+						//	var updateListInput = new InputRecordList();
+						//	var listItem = new InputRecordListFieldItem();
+						//	var listSort = new InputRecordListSort();
+						//	var listQuery = new InputRecordListQuery();
+
+						//	//Convert recordList to recordListInput
+						//	updateListInput = updateList.DynamicMapTo<InputRecordList>();
+
+						//	//General list details
+						//	//updateListInput.IconName = "";	
+
+						//	//Fields
+						//	#region << username >>
+						//	listItem = new InputRecordListFieldItem();
+						//	listItem.EntityId = SystemIds.RoleEntityId;
+						//	listItem.EntityName = "role";
+						//	listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "name").Id;
+						//	listItem.FieldName = "name";
+						//	listItem.Type = "field";
+						//	updateListInput.Columns.Add(listItem);
+						//	#endregion
+
+						//	//Query
+						//	#region << query descr >>
+						//	listQuery = new InputRecordListQuery();
+						//	#endregion
 
 
-							//Sort
-							#region << Sort >>
-							listSort = new InputRecordListSort();
-							listSort.FieldName = "name";
-							listSort.SortType = "ascending";
-							updateListInput.Sorts.Add(listSort);
-							#endregion
-							{
-								var responseObject = entMan.UpdateRecordList(SystemIds.RoleEntityId, updateListInput);
-								if (!responseObject.Success)
-									throw new Exception("System error 10060. Entity: " + "role" + " Updated List: list_name" + " Message:" + responseObject.Message);
-							}
-						}
-						#endregion
+						//	//Sort
+						//	#region << Sort >>
+						//	listSort = new InputRecordListSort();
+						//	listSort.FieldName = "name";
+						//	listSort.SortType = "ascending";
+						//	updateListInput.Sorts.Add(listSort);
+						//	#endregion
+						//	{
+						//		var responseObject = entMan.UpdateRecordList(SystemIds.RoleEntityId, updateListInput);
+						//		if (!responseObject.Success)
+						//			throw new Exception("System error 10060. Entity: " + "role" + " Updated List: list_name" + " Message:" + responseObject.Message);
+						//	}
+						//}
+						//#endregion
 
 						#region << create user - role relation >>
 						{
@@ -603,8 +615,17 @@ namespace WebVella.ERP
 							areaEntity.RecordPermissions.CanRead.Add(SystemIds.AdministratorRoleId);
 							areaEntity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 							areaEntity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
+
+							var systemItemIdDictionary = new Dictionary<string, Guid>();
+							systemItemIdDictionary["id"] = new Guid("19f16bdb-56e6-46bf-8310-2b42fd78be2a");
+							systemItemIdDictionary["created_on"] = new Guid("3e6be69e-8f25-40e4-9f21-86b0d1404230");
+							systemItemIdDictionary["created_by"] = new Guid("16fbba6c-6282-4828-9873-86b8fef745d4");
+							systemItemIdDictionary["last_modified_on"] = new Guid("5f076d8b-e587-4201-9481-67e19789ff6c");
+							systemItemIdDictionary["last_modified_by"] = new Guid("721b27b3-741d-4414-8783-a0245a4eec58");
+							systemItemIdDictionary["user_area_created_by"] = new Guid("5fe5fdc4-ee10-4661-93e7-25ea2a61e710");
+							systemItemIdDictionary["user_area_modified_by"] = new Guid("bb52122c-a354-4668-9423-71dfdc3d9f36");
 							{
-								var createResponse = entMan.CreateEntity(areaEntity);
+								var createResponse = entMan.CreateEntity(areaEntity, false, false, systemItemIdDictionary);
 								if (!createResponse.Success)
 									throw new Exception("System error 10330. Message:" + createResponse.Message);
 							}
@@ -754,7 +775,7 @@ namespace WebVella.ERP
 							#region << folder >>
 							{
 								InputTextField textboxField = new InputTextField();
-								textboxField.Id = Guid.NewGuid();
+								textboxField.Id = new Guid("6a0fdf14-2d2b-4c6c-b2f1-4d846c7d5ab8");
 								textboxField.Name = "folder";
 								textboxField.Label = "folder";
 								textboxField.PlaceholderText = "";
@@ -819,9 +840,17 @@ namespace WebVella.ERP
 								entity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 								//DELETE
 								entity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
-		
+
+								var systemItemIdDictionary = new Dictionary<string, Guid>();
+								systemItemIdDictionary["id"] = new Guid("bdb47d11-b8ee-42e9-8cd1-56e43246656b");
+								systemItemIdDictionary["created_on"] = new Guid("00f172b1-393b-4674-b6cd-32669dfb0924");
+								systemItemIdDictionary["created_by"] = new Guid("89379dbe-98ea-40b0-a794-a7cbf36201af");
+								systemItemIdDictionary["last_modified_on"] = new Guid("aaee0db8-d131-4273-b06a-a788757e24c3");
+								systemItemIdDictionary["last_modified_by"] = new Guid("eb0d2a71-4172-4293-87d7-d238a2153abf");
+								systemItemIdDictionary["user_plugin_data_created_by"] = new Guid("00e3f673-9dbc-4b57-b6d8-38d75e7d165a");
+								systemItemIdDictionary["user_plugin_data_modified_by"] = new Guid("c228125d-066c-415b-8c2a-a43ba2774411");
 								{
-									var createResponse = entMan.CreateEntity(entity);
+									var createResponse = entMan.CreateEntity(entity, false, false, systemItemIdDictionary);
 									if (!createResponse.Success)
 										throw new Exception("System error 10050. Entity: " + PLUGIN_DATA_NAME + " Field: entity creation" + " Message:" + response.Message);
 								}
@@ -897,7 +926,7 @@ namespace WebVella.ERP
 
 					}
 
-					new DbSystemSettingsRepository().Save( new DbSystemSettings { Id = systemSettings.Id, Version = systemSettings.Version } );
+					new DbSystemSettingsRepository().Save(new DbSystemSettings { Id = systemSettings.Id, Version = systemSettings.Version });
 
 					connection.CommitTransaction();
 				}
@@ -1000,7 +1029,7 @@ namespace WebVella.ERP
 					DbRepository.CreateIndex("idx_filepath", "files", "filepath", true);
 				}
 
-				
+
 
 			}
 		}
