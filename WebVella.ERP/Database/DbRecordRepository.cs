@@ -952,7 +952,7 @@ namespace WebVella.ERP.Database
 						//	sql = sql + " " + paramName + " IN ( " + completeFieldName + " )";
 						//}
 						//else
-						if( query.FieldValue == null )
+						if (query.FieldValue == null || DBNull.Value == query.FieldValue)
 							sql = sql + " " + completeFieldName + " IS NULL";
 						else
 							sql = sql + " " + completeFieldName + "=" + paramName;
@@ -973,7 +973,7 @@ namespace WebVella.ERP.Database
 						//	sql = sql + " " + paramName + " NOT IN ( " + completeFieldName + " )";
 						//}
 						//else
-						if (query.FieldValue == null)
+						if (query.FieldValue == null || DBNull.Value == query.FieldValue)
 							sql = sql + " " + completeFieldName + " IS NOT NULL";
 						else
 							sql = sql + " " + completeFieldName + "<>" + paramName;
