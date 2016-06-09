@@ -45,7 +45,8 @@
 			"/plugins/webvella-admin/areas.module.js",
 			"/plugins/webvella-admin/users.module.js",
 			"/plugins/webvella-admin/roles.module.js",
-			"/plugins/webvella-admin/plugins.module.js"
+			"/plugins/webvella-admin/plugins.module.js",
+			"/plugins/webvella-admin/codegen.module.js"
 		],
 		"wvApp_injects": [ "webvellaAdmin" ]
 	}

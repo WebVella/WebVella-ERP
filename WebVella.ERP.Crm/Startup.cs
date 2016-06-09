@@ -24,7 +24,7 @@ namespace WebVella.Crm.Project
 		//Code snippets
 		//Check out the CodeSnippets.txt file in WebVella.ERP.Web > Docs folder for code pieces on how to create or update some elements		
 
-		private bool createSampleRecords = true;
+		private bool createSampleRecords = false;
 		//Constants
 		private static Guid WEBVELLA_CRM_PLUGIN_ID = new Guid("7b44d010-a856-449f-b415-507efe869ccd");
 		private static string WEBVELLA_CRM_PLUGIN_NAME = "webvella-crm";
@@ -161,9 +161,17 @@ namespace WebVella.Crm.Project
 									//UPDATE
 									entity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 									entity.RecordPermissions.CanUpdate.Add(SystemIds.RegularRoleId);
-
+									//System fields and relations Ids should be hardcoded for the compare/change code generation to work later on correctly
+									var systemItemIdDictionary = new Dictionary<string, Guid>();
+									systemItemIdDictionary["id"] = new Guid("e8564a56-9917-4c45-a264-4c080f2d2b31");
+									systemItemIdDictionary["created_on"] = new Guid("1ca9c660-0042-47b3-91c7-e0f2b817633c");
+									systemItemIdDictionary["created_by"] = new Guid("12c29d6a-b5e5-4293-9e8a-91475d10dac9");
+									systemItemIdDictionary["last_modified_on"] = new Guid("b6a172aa-b50a-403f-a178-f923a0d7576f");
+									systemItemIdDictionary["last_modified_by"] = new Guid("6aab2af3-6909-4f8d-8c54-6a2403d6a25a");
+									systemItemIdDictionary["user_wv_customer_created_by"] = new Guid("2d2045f4-0553-4ffd-bd12-cbef17aea14a");
+									systemItemIdDictionary["user_wv_customer_modified_by"] = new Guid("2ba6c8c5-2550-4f26-8611-f397c529a61c");
 									{
-										var response = entMan.CreateEntity(entity);
+										var response = entMan.CreateEntity(entity, false, false, systemItemIdDictionary);
 										if (!response.Success)
 											throw new Exception("System error 10050. Entity: " + CUSTOMER_ENTITY_NAME + " Field: entity creation" + " Message:" + response.Message);
 									}
@@ -590,28 +598,32 @@ namespace WebVella.Crm.Project
 
 							#region << customer lookup list >>
 							{
-								var updateListEntity = entMan.ReadEntity(CUSTOMER_ENTITY_ID).Object;
-								var updateList = updateListEntity.RecordLists.Single(x => x.Name == "lookup");
-								var updateListInput = new InputRecordList();
+								var createListEntity = entMan.ReadEntity(CUSTOMER_ENTITY_ID).Object;
+								var createListInput = new InputRecordList();
 								var listItem = new InputRecordListFieldItem();
 								var listSort = new InputRecordListSort();
 								var listQuery = new InputRecordListQuery();
 
-								//Convert recordList to recordListInput
-								updateListInput = updateList.DynamicMapTo<InputRecordList>();
-
 								//General list details
-								//updateListInput.IconName = "";	
-
+								createListInput.Id = new Guid("2287d4dc-0e9e-4c00-a1d4-cc2b8bf0f315");	
+								createListInput.Name = "lookup";
+								createListInput.Label = "Lookup";
+								createListInput.Type = "lookup";
+								createListInput.Default = true;
+								createListInput.System = true;
+								createListInput.Weight = 10;
+								createListInput.CssClass = null;
+								createListInput.IconName = "list";
+								createListInput.Columns = new List<InputRecordListItemBase>();
 								//Fields
 								#region << name >>
 								listItem = new InputRecordListFieldItem();
 								listItem.EntityId = CUSTOMER_ENTITY_ID;
 								listItem.EntityName = "customer";
-								listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "name").Id;
+								listItem.FieldId = createListEntity.Fields.Single(x => x.Name == "name").Id;
 								listItem.FieldName = "name";
 								listItem.Type = "field";
-								updateListInput.Columns.Add(listItem);
+								createListInput.Columns.Add(listItem);
 								#endregion
 
 								//Query
@@ -622,13 +634,35 @@ namespace WebVella.Crm.Project
 
 								//Sort
 								#region << Sort >>
+								createListInput.Sorts = new List<InputRecordListSort>();
 								listSort = new InputRecordListSort();
 								listSort.FieldName = "name";
 								listSort.SortType = "ascending";
-								updateListInput.Sorts.Add(listSort);
+								createListInput.Sorts.Add(listSort);
 								#endregion
+
+								var newActionItemList = new List<ActionItem>();
 								{
-									var responseObject = entMan.UpdateRecordList(CUSTOMER_ENTITY_ID, updateListInput);
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_create_record";
+									actionItem.Menu = "page-title";
+									actionItem.Template = "<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate')\" \r\n    ng-href=\"{{::ngCtrl.getRecordCreateUrl()}}\">Add New</a>";
+									actionItem.Weight = 1;
+									newActionItemList.Add(actionItem);
+								}
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_record_details";
+									actionItem.Menu = "record-row";
+									actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-href=\"{{::ngCtrl.getRecordDetailsUrl(record)}}\">\n    <i class=\"fa fa-fw fa-eye\"></i>\n</a>";
+									actionItem.Weight = 1;
+									newActionItemList.Add(actionItem);
+								}
+
+								createListInput.ActionItems = newActionItemList;
+
+								{
+									var responseObject = entMan.CreateRecordList(CUSTOMER_ENTITY_ID, createListInput);
 									if (!responseObject.Success)
 										throw new Exception("System error 10060. Entity: " + "user" + " Updated List: list_name" + " Message:" + responseObject.Message);
 								}

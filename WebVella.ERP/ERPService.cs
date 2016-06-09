@@ -265,85 +265,6 @@ namespace WebVella.ERP
 
 						#endregion
 
-						//#region << user lookup list >>
-						//{
-						//	var updateListEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
-						//	var updateList = updateListEntity.RecordLists.Single(x => x.Name == "lookup");
-						//	var updateListInput = new InputRecordList();
-						//	var listItem = new InputRecordListFieldItem();
-						//	var listSort = new InputRecordListSort();
-						//	var listQuery = new InputRecordListQuery();
-
-						//	//Convert recordList to recordListInput
-						//	updateListInput = updateList.DynamicMapTo<InputRecordList>();
-
-						//	//General list details
-						//	//updateListInput.IconName = "";	
-
-						//	//Fields
-						//	#region << username >>
-						//	listItem = new InputRecordListFieldItem();
-						//	listItem.EntityId = SystemIds.UserEntityId;
-						//	listItem.EntityName = "user";
-						//	listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "username").Id;
-						//	listItem.FieldName = "username";
-						//	listItem.Type = "field";
-						//	updateListInput.Columns.Add(listItem);
-						//	#endregion
-
-						//	#region << email >>
-						//	listItem = new InputRecordListFieldItem();
-						//	listItem.EntityId = SystemIds.UserEntityId;
-						//	listItem.EntityName = "user";
-						//	listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "email").Id;
-						//	listItem.FieldName = "email";
-						//	listItem.Type = "field";
-						//	updateListInput.Columns.Add(listItem);
-						//	#endregion
-
-						//	//Query
-						//	#region << query descr >>
-						//	updateListInput.Query = new InputRecordListQuery();
-						//	updateListInput.Query.FieldName = null;
-						//	updateListInput.Query.FieldValue = null;
-						//	updateListInput.Query.QueryType = "AND"; //AND,OR,EQ,NOT,LT,LTE,GT,GTE,CONTAINS,STARTSWITH
-						//	updateListInput.Query.SubQueries = new List<InputRecordListQuery>();
-
-						//	var subQuery = new InputRecordListQuery();
-						//	//Username query
-						//	{
-						//		subQuery = new InputRecordListQuery();
-						//		subQuery.FieldName = "username";
-						//		subQuery.QueryType = "CONTAINS";
-						//		subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""username"", ""default"": null, ""settings"":{}}";
-						//		updateListInput.Query.SubQueries.Add(subQuery);
-						//	}
-						//	//Email query
-						//	{
-						//		subQuery = new InputRecordListQuery();
-						//		subQuery.FieldName = "email";
-						//		subQuery.QueryType = "CONTAINS";
-						//		subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""email"", ""default"": null, ""settings"":{}}";
-						//		updateListInput.Query.SubQueries.Add(subQuery);
-						//	}
-						//	#endregion
-
-
-						//	//Sort
-						//	#region << Sort >>
-						//	listSort = new InputRecordListSort();
-						//	listSort.FieldName = "username";
-						//	listSort.SortType = "ascending";
-						//	updateListInput.Sorts.Add(listSort);
-						//	#endregion
-						//	{
-						//		var responseObject = entMan.UpdateRecordList(SystemIds.UserEntityId, updateListInput);
-						//		if (!responseObject.Success)
-						//			throw new Exception("System error 10060. Entity: " + "user" + " Updated List: list_name" + " Message:" + responseObject.Message);
-						//	}
-						//}
-						//#endregion
-
 						#region << create role entity >>
 
 						{
@@ -424,52 +345,6 @@ namespace WebVella.ERP
 
 						#endregion
 
-						//#region << role lookup list >>
-						//{
-						//	var updateListEntity = entMan.ReadEntity(SystemIds.RoleEntityId).Object;
-						//	var updateList = updateListEntity.RecordLists.Single(x => x.Name == "lookup");
-						//	var updateListInput = new InputRecordList();
-						//	var listItem = new InputRecordListFieldItem();
-						//	var listSort = new InputRecordListSort();
-						//	var listQuery = new InputRecordListQuery();
-
-						//	//Convert recordList to recordListInput
-						//	updateListInput = updateList.DynamicMapTo<InputRecordList>();
-
-						//	//General list details
-						//	//updateListInput.IconName = "";	
-
-						//	//Fields
-						//	#region << username >>
-						//	listItem = new InputRecordListFieldItem();
-						//	listItem.EntityId = SystemIds.RoleEntityId;
-						//	listItem.EntityName = "role";
-						//	listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "name").Id;
-						//	listItem.FieldName = "name";
-						//	listItem.Type = "field";
-						//	updateListInput.Columns.Add(listItem);
-						//	#endregion
-
-						//	//Query
-						//	#region << query descr >>
-						//	listQuery = new InputRecordListQuery();
-						//	#endregion
-
-
-						//	//Sort
-						//	#region << Sort >>
-						//	listSort = new InputRecordListSort();
-						//	listSort.FieldName = "name";
-						//	listSort.SortType = "ascending";
-						//	updateListInput.Sorts.Add(listSort);
-						//	#endregion
-						//	{
-						//		var responseObject = entMan.UpdateRecordList(SystemIds.RoleEntityId, updateListInput);
-						//		if (!responseObject.Success)
-						//			throw new Exception("System error 10060. Entity: " + "role" + " Updated List: list_name" + " Message:" + responseObject.Message);
-						//	}
-						//}
-						//#endregion
 
 						#region << create user - role relation >>
 						{

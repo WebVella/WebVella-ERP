@@ -143,7 +143,7 @@ namespace WebVella.ERP.Utilities
 				subscriptionToBeAdded["label"] = selectedEntity.Label;
 				subscriptionToBeAdded["labelPlural"] = selectedEntity.LabelPlural;
 				subscriptionToBeAdded["iconName"] = selectedList.IconName;
-				subscriptionToBeAdded["weight"] = selectedEntity.Weight;
+				subscriptionToBeAdded["weight"] = (int)selectedEntity.Weight;
 				subscriptionToBeAdded["url"] = null;
 				//Add details view
 				subscriptionToBeAdded["view"] = new JObject();
@@ -232,7 +232,7 @@ namespace WebVella.ERP.Utilities
 					subscriptionFound = true;
 					subscriptionToBeAdded["label"] = label;
 					subscriptionToBeAdded["iconName"] = iconName;
-					subscriptionToBeAdded["weight"] = weight;
+					subscriptionToBeAdded["weight"] = (int)weight;
 				}
 			}
 			//No - create new subscription and Add it to the list
@@ -242,7 +242,7 @@ namespace WebVella.ERP.Utilities
 				subscriptionToBeAdded["label"] = label;
 				subscriptionToBeAdded["labelPlural"] = null;
 				subscriptionToBeAdded["iconName"] = iconName;
-				subscriptionToBeAdded["weight"] = weight;
+				subscriptionToBeAdded["weight"] = (int)weight;
 				subscriptionToBeAdded["url"] = url;
 				//Add details view
 				subscriptionToBeAdded["view"] = null;

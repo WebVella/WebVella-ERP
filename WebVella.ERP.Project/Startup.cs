@@ -24,7 +24,7 @@ namespace WebVella.ERP.Project
 		//Check out the CodeSnippets.txt file in WebVella.ERP.Web > Docs folder for code pieces on how to create or update some elements
 
 
-		private bool createSampleRecords = true;
+		private bool createSampleRecords = false; //To be enabled requires the CRM sample records
 		//Constants
 		private static Guid WEBVELLA_PROJECT_PLUGIN_ID = new Guid("2a7bc24a-da6a-48f0-a0c7-7156a8ac69bd");
 		private static string WEBVELLA_PROJECT_PLUGIN_NAME = "webvella-project";
@@ -280,9 +280,17 @@ namespace WebVella.ERP.Project
 										entity.RecordPermissions.CanRead.Add(SystemIds.RegularRoleId);
 										//UPDATE
 										entity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
-
+										//System fields and relations Ids should be hardcoded for the compare/change code generation to work later on correctly
+										var systemItemIdDictionary = new Dictionary<string, Guid>();
+										systemItemIdDictionary["id"] = new Guid("979dc238-c8f2-46c9-90e7-6ab65f9652da");
+										systemItemIdDictionary["created_on"] = new Guid("64c613a5-354b-4cc3-8ba7-2ece7be562f0");
+										systemItemIdDictionary["created_by"] = new Guid("5125750c-f82c-4320-905a-804d7c32d3fd");
+										systemItemIdDictionary["last_modified_on"] = new Guid("58cad35e-39b6-4ce7-9e2b-610cd466141e");
+										systemItemIdDictionary["last_modified_by"] = new Guid("292cd102-7915-4a3b-85a7-5ffdc5afe4e2");
+										systemItemIdDictionary["user_wv_project_created_by"] = new Guid("330c72a0-fcce-4c63-979d-8cfad63fa6f5");
+										systemItemIdDictionary["user_wv_project_modified_by"] = new Guid("d99cfe44-68a8-4e66-9e92-1a484fb73bd8");
 										{
-											var response = entMan.CreateEntity(entity);
+											var response = entMan.CreateEntity(entity, false, false, systemItemIdDictionary);
 											if (!response.Success)
 												throw new Exception("System error 10050. Entity: " + PROJECT_ENTITY_NAME + " Field: entity creation" + " Message:" + response.Message);
 										}
@@ -1028,7 +1036,7 @@ namespace WebVella.ERP.Project
 										createViewInput.Name = "admin_details";
 										createViewInput.Label = "Project details";
 										createViewInput.Default = false;
-										createViewInput.System = false;
+										createViewInput.System = true;
 										createViewInput.Weight = 10;
 										createViewInput.CssClass = null;
 										createViewInput.IconName = "product-hunt";
@@ -1324,7 +1332,7 @@ namespace WebVella.ERP.Project
 										createViewInput.Name = "admin_create";
 										createViewInput.Label = "Project create";
 										createViewInput.Default = false;
-										createViewInput.System = false;
+										createViewInput.System = true;
 										createViewInput.Weight = 10;
 										createViewInput.CssClass = null;
 										createViewInput.IconName = "product-hunt";
@@ -1636,7 +1644,7 @@ namespace WebVella.ERP.Project
 										createViewInput.Name = "dashboard";
 										createViewInput.Label = "[{code}] {name}";
 										createViewInput.Default = false;
-										createViewInput.System = false;
+										createViewInput.System = true;
 										createViewInput.Weight = 10;
 										createViewInput.CssClass = null;
 										createViewInput.IconName = "tachometer";
@@ -1783,6 +1791,7 @@ namespace WebVella.ERP.Project
 										#endregion
 
 										#region << Sort >>
+										createListInput.Sorts = new List<InputRecordListSort>();
 										listSort = new InputRecordListSort();
 										#endregion
 										{
@@ -1793,38 +1802,44 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
-									#region << update project general list to my projects >>
+									#region << create project my projects list>>
 									{
-										var updateListEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
-										var updateList = updateListEntity.RecordLists.Single(x => x.Name == "general");
-										var updateListInput = new InputRecordList();
+										var createListEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+										var createListInput = new InputRecordList();
 										var listItem = new InputRecordListFieldItem();
 										var listSort = new InputRecordListSort();
 										var listQuery = new InputRecordListQuery();
 
-										//Convert recordList to recordListInput
-										updateListInput = updateList.DynamicMapTo<InputRecordList>();
-
 										//General list details
-										updateListInput.Name = "my_projects";
-										updateListInput.Label = "My Projects";
-										updateListInput.IconName = "product-hunt";
-										updateListInput.DataSourceUrl = "/plugins/webvella-projects/api/project/list/my-projects";
-										updateListInput.DynamicHtmlTemplate = "/plugins/webvella-projects/templates/my-projects.html";
-										updateListInput.ActionItems = new List<ActionItem>();
+										createListInput.Id = new Guid("86f56bb1-9cf4-4168-8e0e-3e8c4d8dd0e6");
+										createListInput.Name = "my_projects";
+										createListInput.Label = "My Projects";
+										createListInput.Default = true;
+										createListInput.System = true;
+										createListInput.Type = "general";
+										createListInput.IconName = "product-hunt";
+										createListInput.PageSize = 10;
+										createListInput.Weight = 10;
+										createListInput.VisibleColumnsCount = 5;
+										createListInput.ServiceCode = null;
+										createListInput.DataSourceUrl = "/plugins/webvella-projects/api/project/list/my-projects";
+										createListInput.DynamicHtmlTemplate = "/plugins/webvella-projects/templates/my-projects.html";
+										createListInput.ActionItems = new List<ActionItem>();
+										createListInput.Columns = new List<InputRecordListItemBase>();
 										//Fields
+
 										#region << field_name >>
 										listItem = new InputRecordListFieldItem();
 										listItem.EntityId = PROJECT_ENTITY_ID;
 										listItem.EntityName = PROJECT_ENTITY_NAME;
-										listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "name").Id;
+										listItem.FieldId = createListEntity.Fields.Single(x => x.Name == "name").Id;
 										listItem.FieldName = "name";
 										listItem.Type = "field";
-										updateListInput.Columns.Add(listItem);
+										createListInput.Columns.Add(listItem);
 										#endregion
 
 										{
-											var response = entMan.UpdateRecordList(PROJECT_ENTITY_ID, updateListInput);
+											var response = entMan.CreateRecordList(PROJECT_ENTITY_ID, createListInput);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + PROJECT_ENTITY_NAME + " Updated List: general" + " Message:" + response.Message);
 										}
@@ -1842,52 +1857,60 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
-									#region << update project lookup list >>
+									#region << create project lookup list >>
 									{
-										var updateListEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
-										var updateList = updateListEntity.RecordLists.Single(x => x.Name == "lookup");
-										var updateListInput = new InputRecordList();
+										var createListEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+										var createListInput = new InputRecordList();
 										var listItem = new InputRecordListFieldItem();
 										var listSort = new InputRecordListSort();
 										var listQuery = new InputRecordListQuery();
-
-										//Convert recordList to recordListInput
-										updateListInput = updateList.DynamicMapTo<InputRecordList>();
-
 										//General list details
-										updateListInput.DataSourceUrl = "/plugins/webvella-projects/api/project/list/my-projects";
-										updateListInput.ActionItems = new List<ActionItem>();
+										createListInput.Id = new Guid("623c9a45-9472-418c-a293-e508d0b91117");
+										createListInput.Name = "lookup";
+										createListInput.Label = "Lookup";
+										createListInput.Default = true;
+										createListInput.System = false;
+										createListInput.Type = "lookup";
+										createListInput.IconName = "product-hunt";
+										createListInput.PageSize = 10;
+										createListInput.Weight = 10;
+										createListInput.VisibleColumnsCount = 5;
+										createListInput.ServiceCode = null;
+										createListInput.DynamicHtmlTemplate = null;
+										createListInput.DataSourceUrl = "/plugins/webvella-projects/api/project/list/my-projects";
+										createListInput.ActionItems = new List<ActionItem>();
+										createListInput.Columns = new List<InputRecordListItemBase>();
 										//Fields
 										#region << field_name >>
 										listItem = new InputRecordListFieldItem();
 										listItem.EntityId = PROJECT_ENTITY_ID;
 										listItem.EntityName = PROJECT_ENTITY_NAME;
-										listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "name").Id;
+										listItem.FieldId = createListEntity.Fields.Single(x => x.Name == "name").Id;
 										listItem.FieldName = "name";
 										listItem.Type = "field";
-										updateListInput.Columns.Add(listItem);
+										createListInput.Columns.Add(listItem);
 										#endregion
 
 										#region << Queries >>
 										{
-											if (updateListInput.Query == null)
+											if (createListInput.Query == null)
 											{
-												updateListInput.Query = new InputRecordListQuery();
+												createListInput.Query = new InputRecordListQuery();
 											}
-											updateListInput.Query.FieldName = null;
-											updateListInput.Query.FieldValue = null;
-											updateListInput.Query.QueryType = "AND"; //AND,OR,EQ,NOT,LT,LTE,GT,GTE,CONTAINS,STARTSWITH
-											updateListInput.Query.SubQueries = new List<InputRecordListQuery>();
+											createListInput.Query.FieldName = null;
+											createListInput.Query.FieldValue = null;
+											createListInput.Query.QueryType = "AND"; //AND,OR,EQ,NOT,LT,LTE,GT,GTE,CONTAINS,STARTSWITH
+											createListInput.Query.SubQueries = new List<InputRecordListQuery>();
 											var subQuery = new InputRecordListQuery();
 											subQuery.FieldName = "name";
 											subQuery.FieldValue = @"{""name"":""url_query"", ""option"": ""name"", ""default"": null, ""settings"":{}}";
 											subQuery.QueryType = "CONTAINS";
 											subQuery.SubQueries = new List<InputRecordListQuery>();
-											updateListInput.Query.SubQueries.Add(subQuery);
+											createListInput.Query.SubQueries.Add(subQuery);
 										}
 										#endregion
 										{
-											var response = entMan.UpdateRecordList(PROJECT_ENTITY_ID, updateListInput);
+											var response = entMan.CreateRecordList(PROJECT_ENTITY_ID, createListInput);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + PROJECT_ENTITY_NAME + " Updated List: lookup" + " Message:" + response.Message);
 										}
@@ -1923,8 +1946,17 @@ namespace WebVella.ERP.Project
 										//UPDATE
 										entity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 										entity.RecordPermissions.CanUpdate.Add(SystemIds.RegularRoleId);
+										//System fields and relations Ids should be hardcoded for the compare/change code generation to work later on correctly
+										var systemItemIdDictionary = new Dictionary<string, Guid>();
+										systemItemIdDictionary["id"] = new Guid("28c8351b-991d-420f-9a42-57201572571c");
+										systemItemIdDictionary["created_on"] = new Guid("7aa2003e-92d7-4073-ae59-6b9f02d87516");
+										systemItemIdDictionary["created_by"] = new Guid("b31ee492-b9ff-47b7-a79d-938935742e40");
+										systemItemIdDictionary["last_modified_on"] = new Guid("54c925f5-4f2a-4c55-883f-9ac450d807fe");
+										systemItemIdDictionary["last_modified_by"] = new Guid("f78a6530-7bc7-429d-9c38-27370fce19c0");
+										systemItemIdDictionary["user_wv_milestone_created_by"] = new Guid("7a6b7dca-ae20-4af5-a888-b3b6e2adf1aa");
+										systemItemIdDictionary["user_wv_milestone_modified_by"] = new Guid("1f0aa3d9-f50a-496c-bc86-b3e06a7ad8d9");
 										{
-											var response = entMan.CreateEntity(entity);
+											var response = entMan.CreateEntity(entity, false, false, systemItemIdDictionary);
 											if (!response.Success)
 												throw new Exception("System error 10050. Entity: " + MILESTONE_ENTITY_NAME + " Field: entity creation" + " Message:" + response.Message);
 										}
@@ -2342,50 +2374,53 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
-									#region << update general list >>
+									#region << create general list >>
 									{
-										var updateListEntity = entMan.ReadEntity(MILESTONE_ENTITY_ID).Object;
-										var updateList = updateListEntity.RecordLists.Single(x => x.Name == "general");
-										var updateListInput = new InputRecordList();
+										var createListEntity = entMan.ReadEntity(MILESTONE_ENTITY_ID).Object;
+										var createListInput = new InputRecordList();
 										var listItem = new InputRecordListFieldItem();
 										var listSort = new InputRecordListSort();
 										var listQuery = new InputRecordListQuery();
-
-										//Convert recordList to recordListInput
-										updateListInput = updateList.DynamicMapTo<InputRecordList>();
-
 										//General list details
-										updateListInput.Name = "project_milestones";
-										updateListInput.Label = "Milestones";
-										updateListInput.IconName = "map-signs";
-										updateListInput.DynamicHtmlTemplate = "/plugins/webvella-projects/templates/project-milestones.html";
-										updateListInput.DataSourceUrl = "/plugins/webvella-projects/api/project/milestones-list";
+										createListInput.Id = new Guid("92b40989-c3a2-4a06-869a-789fba54e733");
+										createListInput.Name = "project_milestones";
+										createListInput.Label = "Milestones";
+										createListInput.Default = true;
+										createListInput.System = false;
+										createListInput.Type = "general";
+										createListInput.IconName = "map-signs";
+										createListInput.PageSize = 10;
+										createListInput.Weight = 10;
+										createListInput.VisibleColumnsCount = 5;
+										createListInput.ServiceCode = null;
+										createListInput.DynamicHtmlTemplate = "/plugins/webvella-projects/templates/project-milestones.html";
+										createListInput.DataSourceUrl = "/plugins/webvella-projects/api/project/milestones-list";
 
 										//Action items
-										var newActionItems = new List<ActionItem>();
-										foreach (var action in updateListInput.ActionItems)
+										var newActionItemList = new List<ActionItem>();
 										{
-											if (action.Name == "wv_create_record")
-											{
-												newActionItems.Add(action);
-											}
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_record";
+											actionItem.Menu = "page-title";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate')\" \r\n    ng-href=\"{{::ngCtrl.getRecordCreateUrl()}}\">Add New</a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
 										}
-										updateListInput.ActionItems = newActionItems;
+										createListInput.ActionItems = newActionItemList;
 										//Fields
 
 										{
-											var response = entMan.UpdateRecordList(MILESTONE_ENTITY_ID, updateListInput);
+											var response = entMan.CreateRecordList(MILESTONE_ENTITY_ID, createListInput);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + MILESTONE_ENTITY_NAME + " Updated List: general" + " Message:" + response.Message);
 										}
 									}
 									#endregion
 
-									#region << update create >>
+									#region << create create view >>
 									{
-										var updateViewEntity = entMan.ReadEntity(MILESTONE_ENTITY_ID).Object;
-										var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "create");
-										var updateViewInput = new InputRecordView();
+										var createViewEntity = entMan.ReadEntity(MILESTONE_ENTITY_ID).Object;
+										var createViewInput = new InputRecordView();
 										var viewSection = new InputRecordViewSection();
 										var viewRow = new InputRecordViewRow();
 										var viewColumn = new InputRecordViewColumn();
@@ -2393,22 +2428,24 @@ namespace WebVella.ERP.Project
 										var viewItemFromRelation = new InputRecordViewRelationFieldItem();
 										//General view fields
 
-										//Convert recordList to recordListInput
-										updateViewInput = updateView.DynamicMapTo<InputRecordView>();
-
 										#region << Details >>
-										updateViewInput.ServiceCode = null;
+										createViewInput.Id = new Guid("95160359-aa0a-419f-92f4-4102fc692411");
+										createViewInput.Name = "create";
+										createViewInput.Label = "Create";
+										createViewInput.Default = true;
+										createViewInput.System = true;
+										createViewInput.Type = "create";
+										createViewInput.Weight = 10;
+										createViewInput.IconName = "file-text-o";
+										createViewInput.ServiceCode = null;
+										createViewInput.DynamicHtmlTemplate = null;
+										createViewInput.DataSourceUrl = null;
 										#endregion
 
 										#region << Get the header Region >>
 										var headerRegion = new InputRecordViewRegion();
-										foreach (var region in updateViewInput.Regions)
-										{
-											if (region.Name == "header")
-											{
-												headerRegion = region;
-											}
-										}
+										headerRegion.Name = "header";
+										headerRegion.Label = "header";
 										headerRegion.Sections = new List<InputRecordViewSection>();
 										#endregion
 
@@ -2439,9 +2476,9 @@ namespace WebVella.ERP.Project
 										#region << name >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "name").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "name").Id;
 											viewItem.FieldName = "name";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -2451,9 +2488,9 @@ namespace WebVella.ERP.Project
 										#region << start_date >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "start_date").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "start_date").Id;
 											viewItem.FieldName = "start_date";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -2493,9 +2530,9 @@ namespace WebVella.ERP.Project
 										#region << status >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "status").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "status").Id;
 											viewItem.FieldName = "status";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -2505,9 +2542,9 @@ namespace WebVella.ERP.Project
 										#region << end_date >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "end_date").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "end_date").Id;
 											viewItem.FieldName = "end_date";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -2527,12 +2564,51 @@ namespace WebVella.ERP.Project
 
 										#endregion
 
+										createViewInput.Regions = new List<InputRecordViewRegion>();
+										createViewInput.Regions.Add(headerRegion);
+
 										#region << Sidebar >>
 										var sidebarItem = new InputRecordViewSidebarItemBase();
 										#endregion`								
 
+										var newActionItemList = new List<ActionItem>();
 										{
-											var response = entMan.UpdateRecordView(MILESTONE_ENTITY_ID, updateViewInput);
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_back_button";
+											actionItem.Menu = "sidebar-top";
+											actionItem.Template = "<a class=\"back clearfix\" href=\"javascript:void(0)\" ng-click=\"sidebarData.goBack()\"><i class=\"fa fa-fw fa-arrow-left\"></i> <span class=\"text\">Back</span></a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_and_list";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"default\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create</a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_and_details";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-click='ngCtrl.create(\"details\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create & Details</a>";
+											actionItem.Weight = 2;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_cancel";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-click=\"ngCtrl.cancel()\">Cancel</a>";
+											actionItem.Weight = 3;
+											newActionItemList.Add(actionItem);
+										}
+
+										createViewInput.ActionItems = newActionItemList;
+
+										{
+											var response = entMan.CreateRecordView(MILESTONE_ENTITY_ID, createViewInput);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + MILESTONE_ENTITY_NAME + " Updated view: create" + " Message:" + response.Message);
 										}
@@ -2568,9 +2644,18 @@ namespace WebVella.ERP.Project
 										//UPDATE
 										entity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 										entity.RecordPermissions.CanUpdate.Add(SystemIds.RegularRoleId);
+										//System fields and relations Ids should be hardcoded for the compare/change code generation to work later on correctly
+										var systemItemIdDictionary = new Dictionary<string, Guid>();
+										systemItemIdDictionary["id"] = new Guid("916b8d1e-d6b6-45a9-9060-b0717b2b8b73");
+										systemItemIdDictionary["created_on"] = new Guid("6a83a91e-7eb8-4fb4-ab5f-5750cb4015d3");
+										systemItemIdDictionary["created_by"] = new Guid("b6ae3dc9-0c79-478c-89c9-3502f9da319f");
+										systemItemIdDictionary["last_modified_on"] = new Guid("55dcf9a2-79f7-42cc-8b3f-3cfea8f6dee3");
+										systemItemIdDictionary["last_modified_by"] = new Guid("39fc45d5-c472-44ed-b3f3-4687fb4a7501");
+										systemItemIdDictionary["user_wv_task_created_by"] = new Guid("0affc050-2c24-4ae3-bb5e-b08139661d83");
+										systemItemIdDictionary["user_wv_task_modified_by"] = new Guid("5d4730b0-82b7-401e-8eb3-1e4250aa82a1");
 
 										{
-											var response = entMan.CreateEntity(entity);
+											var response = entMan.CreateEntity(entity, false, false, systemItemIdDictionary);
 											if (!response.Success)
 												throw new Exception("System error 10050. Entity: " + TASK_ENTITY_NAME + " Field: entity creation" + " Message:" + response.Message);
 										}
@@ -3175,38 +3260,43 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
-									#region << update general list >>
+									#region << create general list >>
 									{
-										var updateListEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
-										var updateList = updateListEntity.RecordLists.Single(x => x.Name == "general");
-										var updateListInput = new InputRecordList();
+										var createListEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+										var createListInput = new InputRecordList();
 										var listField = new InputRecordListFieldItem();
 										var listFieldFromRelation = new InputRecordListRelationFieldItem();
 										var listSort = new InputRecordListSort();
 										var listQuery = new InputRecordListQuery();
 
-										//Convert recordList to recordListInput
-										updateListInput = updateList.DynamicMapTo<InputRecordList>();
-
 										//General list details
-										updateListInput.Name = "project_tasks";
-										updateListInput.Label = "Project Tasks";
-										updateListInput.IconName = "tasks";
-										updateListInput.Type = "hidden";
-										updateListInput.ColumnWidthsCSV = "auto,30px,120px,120px,120px,120px";
-										updateListInput.CssClass = "task-list";
-										updateListInput.VisibleColumnsCount = 6;
+										createListInput.Id = new Guid("44f8ed83-b7e8-4223-b02e-b5e35ed4bcc1");
+										createListInput.Name = "project_tasks";
+										createListInput.Label = "Project Tasks";
+										createListInput.Default = true;
+										createListInput.System = false;
+										createListInput.IconName = "tasks";
+										createListInput.Type = "hidden";
+										createListInput.PageSize = 10;
+										createListInput.Weight = 10;
+										createListInput.ColumnWidthsCSV = "auto,30px,120px,120px,120px,120px";
+										createListInput.CssClass = "task-list";
+										createListInput.VisibleColumnsCount = 6;
+										createListInput.ServiceCode = null;
+										createListInput.DynamicHtmlTemplate = null;
+										createListInput.DataSourceUrl = null;
+										createListInput.Columns = new List<InputRecordListItemBase>();
 
 										//Fields
 										#region << subject >>
 										{
 											listField = new InputRecordListFieldItem();
-											listField.EntityId = updateListEntity.Id;
-											listField.EntityName = updateListEntity.Name;
-											listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "subject").Id;
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "subject").Id;
 											listField.FieldName = "subject";
 											listField.Type = "field";
-											updateListInput.Columns.Add(listField);
+											createListInput.Columns.Add(listField);
 										}
 										#endregion
 
@@ -3222,55 +3312,55 @@ namespace WebVella.ERP.Project
 											listFieldFromRelation.RelationId = new Guid("7ce76c81-e604-401e-907f-23de982b930e");
 											listFieldFromRelation.RelationName = "user_1_n_task_owner";
 											listFieldFromRelation.Type = "fieldFromRelation";
-											updateListInput.Columns.Add(listFieldFromRelation);
+											createListInput.Columns.Add(listFieldFromRelation);
 										}
 										#endregion
 
 										#region << start_date >>
 										{
 											listField = new InputRecordListFieldItem();
-											listField.EntityId = updateListEntity.Id;
-											listField.EntityName = updateListEntity.Name;
-											listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "start_date").Id;
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "start_date").Id;
 											listField.FieldName = "start_date";
 											listField.Type = "field";
-											updateListInput.Columns.Add(listField);
+											createListInput.Columns.Add(listField);
 										}
 										#endregion
 
 										#region << end_date >>
 										{
 											listField = new InputRecordListFieldItem();
-											listField.EntityId = updateListEntity.Id;
-											listField.EntityName = updateListEntity.Name;
-											listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "end_date").Id;
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "end_date").Id;
 											listField.FieldName = "end_date";
 											listField.Type = "field";
-											updateListInput.Columns.Add(listField);
+											createListInput.Columns.Add(listField);
 										}
 										#endregion
 
 										#region << status >>
 										{
 											listField = new InputRecordListFieldItem();
-											listField.EntityId = updateListEntity.Id;
-											listField.EntityName = updateListEntity.Name;
-											listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "status").Id;
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "status").Id;
 											listField.FieldName = "status";
 											listField.Type = "field";
-											updateListInput.Columns.Add(listField);
+											createListInput.Columns.Add(listField);
 										}
 										#endregion
 
 										#region << priority >>
 										{
 											listField = new InputRecordListFieldItem();
-											listField.EntityId = updateListEntity.Id;
-											listField.EntityName = updateListEntity.Name;
-											listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "priority").Id;
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "priority").Id;
 											listField.FieldName = "priority";
 											listField.Type = "field";
-											updateListInput.Columns.Add(listField);
+											createListInput.Columns.Add(listField);
 										}
 										#endregion
 
@@ -3315,21 +3405,56 @@ namespace WebVella.ERP.Project
 											}
 											#endregion
 
-											updateListInput.Query = listQuery;
+											createListInput.Query = listQuery;
 										}
 										#endregion
 
 										#region << Sort >>
+										createListInput.Sorts = new List<InputRecordListSort>();
 										{
 											listSort = new InputRecordListSort();
 											listSort.FieldName = @"{""name"":""url_sort"", ""option"": ""sortBy"", ""default"": ""end_date"", ""settings"":{""order"":""sortOrder""}}";
 											listSort.SortType = "ascending";
-											updateListInput.Sorts.Add(listSort);
+											createListInput.Sorts.Add(listSort);
 										}
 										#endregion
 
+										var newActionItemList = new List<ActionItem>();
 										{
-											var response = entMan.UpdateRecordList(TASK_ENTITY_ID, updateListInput);
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_record";
+											actionItem.Menu = "page-title";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate')\" \r\n    ng-href=\"{{::ngCtrl.getRecordCreateUrl()}}\">Add New</a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_import_records";
+											actionItem.Menu = "page-title-dropdown";
+											actionItem.Template = "<a ng-click=\"ngCtrl.openImportModal()\" class=\"ng-hide\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\r\n\t<i class=\"fa fa-fw fa-upload\"></i> Import CSV\r\n</a>";
+											actionItem.Weight = 10;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_export_records";
+											actionItem.Menu = "page-title-dropdown";
+											actionItem.Template = "<a ng-click=\"ngCtrl.openExportModal()\" class=\"ng-hide\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\r\n\t<i class=\"fa fa-fw fa-download\"></i> Export CSV\r\n</a>";
+											actionItem.Weight = 11;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_record_details";
+											actionItem.Menu = "record-row";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-href=\"{{::ngCtrl.getRecordDetailsUrl(record)}}\">\n    <i class=\"fa fa-fw fa-eye\"></i>\n</a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+										createListInput.ActionItems = newActionItemList;
+										{
+											var response = entMan.CreateRecordList(TASK_ENTITY_ID, createListInput);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Updated List: general" + " Message:" + response.Message);
 										}
@@ -4308,17 +4433,6 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
-									#region << area add subscription: Project Workplace -> My tasks >>
-									{
-										var updatedAreaId = PROJECT_WORKPLACE_AREA_ID;
-										var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, TASK_ENTITY_NAME, "general", "create", "my_tasks");
-										if (!updateAreaResult.Success)
-										{
-											throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
-										}
-									}
-									#endregion
-
 									#region << List name: admin >>
 									{
 										var createListEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
@@ -4538,22 +4652,10 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
-									#region << area add subscription: Project Admin -> Bugs >>
+									#region << create create >>
 									{
-										var updatedAreaId = PROJECT_ADMIN_AREA_ID;
-										var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, TASK_ENTITY_NAME, "general", "create", "admin");
-										if (!updateAreaResult.Success)
-										{
-											throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
-										}
-									}
-									#endregion
-
-									#region << update create >>
-									{
-										var updateViewEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
-										var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "create");
-										var updateViewInput = new InputRecordView();
+										var createViewEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+										var createViewInput = new InputRecordView();
 										var viewSection = new InputRecordViewSection();
 										var viewRow = new InputRecordViewRow();
 										var viewColumn = new InputRecordViewColumn();
@@ -4561,22 +4663,24 @@ namespace WebVella.ERP.Project
 										var viewItemFromRelation = new InputRecordViewRelationFieldItem();
 										//General view fields
 
-										//Convert recordList to recordListInput
-										updateViewInput = updateView.DynamicMapTo<InputRecordView>();
-
 										#region << Details >>
-										updateViewInput.ServiceCode = null;
+										createViewInput.Id = new Guid("b879c8f8-1738-4f33-94aa-89064f227ed9");
+										createViewInput.Name = "create";
+										createViewInput.Label = "Create";
+										createViewInput.Default = true;
+										createViewInput.System = true;
+										createViewInput.Type = "create";
+										createViewInput.Weight = 10;
+										createViewInput.IconName = "file-text-o";
+										createViewInput.ServiceCode = null;
+										createViewInput.DynamicHtmlTemplate = null;
+										createViewInput.DataSourceUrl = null;
 										#endregion
 
 										#region << Get the header Region >>
 										var headerRegion = new InputRecordViewRegion();
-										foreach (var region in updateViewInput.Regions)
-										{
-											if (region.Name == "header")
-											{
-												headerRegion = region;
-											}
-										}
+										headerRegion.Name = "header";
+										headerRegion.Label = "header";
 										headerRegion.Sections = new List<InputRecordViewSection>();
 										#endregion
 
@@ -4607,9 +4711,9 @@ namespace WebVella.ERP.Project
 										#region << subject >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "subject").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "subject").Id;
 											viewItem.FieldName = "subject";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -4639,9 +4743,9 @@ namespace WebVella.ERP.Project
 										#region << description >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "description").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "description").Id;
 											viewItem.FieldName = "description";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -4670,9 +4774,9 @@ namespace WebVella.ERP.Project
 										#region << status >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "status").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "status").Id;
 											viewItem.FieldName = "status";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -4682,9 +4786,9 @@ namespace WebVella.ERP.Project
 										#region << start_date >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "start_date").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "start_date").Id;
 											viewItem.FieldName = "start_date";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -4704,9 +4808,9 @@ namespace WebVella.ERP.Project
 										#region << priority >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "priority").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "priority").Id;
 											viewItem.FieldName = "priority";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -4716,9 +4820,9 @@ namespace WebVella.ERP.Project
 										#region << end_date >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "end_date").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "end_date").Id;
 											viewItem.FieldName = "end_date";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -4737,13 +4841,50 @@ namespace WebVella.ERP.Project
 										headerRegion.Sections.Add(viewSection);
 
 										#endregion
+										createViewInput.Regions = new List<InputRecordViewRegion>();
+										createViewInput.Regions.Add(headerRegion);
 
 										#region << Sidebar >>
 										var sidebarItem = new InputRecordViewSidebarItemBase();
 										#endregion`								
 
+										var newActionItemList = new List<ActionItem>();
 										{
-											var response = entMan.UpdateRecordView(TASK_ENTITY_ID, updateViewInput);
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_back_button";
+											actionItem.Menu = "sidebar-top";
+											actionItem.Template = "<a class=\"back clearfix\" href=\"javascript:void(0)\" ng-click=\"sidebarData.goBack()\"><i class=\"fa fa-fw fa-arrow-left\"></i> <span class=\"text\">Back</span></a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_and_list";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"default\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create</a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-click='ngCtrl.create(\"details\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create & Details</a>";
+											actionItem.Weight = 2;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-click=\"ngCtrl.cancel()\">Cancel</a>";
+											actionItem.Weight = 3;
+											newActionItemList.Add(actionItem);
+										}
+										createViewInput.ActionItems = newActionItemList;
+
+										{
+											var response = entMan.CreateRecordView(TASK_ENTITY_ID, createViewInput);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Updated view: create" + " Message:" + response.Message);
 										}
@@ -4767,7 +4908,7 @@ namespace WebVella.ERP.Project
 										createViewInput.Name = "project_milestone";
 										createViewInput.Label = "Project & Milestone";
 										createViewInput.Default = false;
-										createViewInput.System = false;
+										createViewInput.System = true;
 										createViewInput.Weight = 10;
 										createViewInput.CssClass = null;
 										createViewInput.IconName = "code";
@@ -4883,11 +5024,10 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
-									#region << update general >>
+									#region << create general >>
 									{
-										var updateViewEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
-										var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "general");
-										var updateViewInput = new InputRecordView();
+										var createViewEntity = entMan.ReadEntity(TASK_ENTITY_ID).Object;
+										var createViewInput = new InputRecordView();
 										var viewSection = new InputRecordViewSection();
 										var viewRow = new InputRecordViewRow();
 										var viewColumn = new InputRecordViewColumn();
@@ -4896,24 +5036,21 @@ namespace WebVella.ERP.Project
 										var viewItemView = new InputRecordViewViewItem();
 										//General view fields
 
-										//Convert recordList to recordListInput
-										updateViewInput = updateView.DynamicMapTo<InputRecordView>();
-
 										#region << Details >>
-										updateViewInput.Label = "[{code}] {subject}";
-										updateViewInput.IconName = "tasks";
-										updateViewInput.ServiceCode = "";
+										createViewInput.Id = new Guid("f3d3a025-ffd5-4eba-86d3-42bde882f597");
+										createViewInput.Name = "general";
+										createViewInput.Label = "[{code}] {subject}";
+										createViewInput.Type = "general";
+										createViewInput.Default = true;
+										createViewInput.System = true;
+										createViewInput.IconName = "tasks";
+										createViewInput.ServiceCode = "";
 										#endregion
 
 										#region << Get the header Region >>
 										var headerRegion = new InputRecordViewRegion();
-										foreach (var region in updateViewInput.Regions)
-										{
-											if (region.Name == "header")
-											{
-												headerRegion = region;
-											}
-										}
+										headerRegion.Name = "header";
+										headerRegion.Label = "header";
 										headerRegion.Sections = new List<InputRecordViewSection>();
 										#endregion
 
@@ -4944,9 +5081,9 @@ namespace WebVella.ERP.Project
 										#region << subject >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "subject").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "subject").Id;
 											viewItem.FieldName = "subject";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -4968,9 +5105,9 @@ namespace WebVella.ERP.Project
 										#region << description >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "description").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "description").Id;
 											viewItem.FieldName = "description";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -4990,9 +5127,9 @@ namespace WebVella.ERP.Project
 										#region << code >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "code").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "code").Id;
 											viewItem.FieldName = "code";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -5002,9 +5139,9 @@ namespace WebVella.ERP.Project
 										#region << status >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "status").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "status").Id;
 											viewItem.FieldName = "status";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -5014,9 +5151,9 @@ namespace WebVella.ERP.Project
 										#region << priority >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "priority").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "priority").Id;
 											viewItem.FieldName = "priority";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -5045,9 +5182,9 @@ namespace WebVella.ERP.Project
 										#region << start_date >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "start_date").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "start_date").Id;
 											viewItem.FieldName = "start_date";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -5057,9 +5194,9 @@ namespace WebVella.ERP.Project
 										#region << end_date >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "end_date").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "end_date").Id;
 											viewItem.FieldName = "end_date";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -5099,42 +5236,62 @@ namespace WebVella.ERP.Project
 
 										#endregion
 
+										createViewInput.Regions = new List<InputRecordViewRegion>();
+										createViewInput.Regions.Add(headerRegion);
+
 										#region << Sidebar >>
 										var sidebarItem = new InputRecordViewSidebarItemBase();
 										#endregion`								
 
 										#region << Action items edit >>
 										var newActionItemList = new List<ActionItem>();
-										foreach (var actionItem in updateViewInput.ActionItems)
 										{
-											switch (actionItem.Name)
-											{
-												case "wv_create_and_list":
-													actionItem.Template = @"<a class=""btn btn-primary"" ng-click=""ngCtrl.actionService.createTask(ngCtrl)"" ng-if=""ngCtrl.createViewRegion != null"">Create Task</a>";
-													newActionItemList.Add(actionItem);
-													break;
-												case "wv_create_and_details":
-													//remove it
-													break;
-												default:
-													newActionItemList.Add(actionItem);
-													break;
-											}
-
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_record_delete";
+											actionItem.Menu = "page-title-dropdown";
+											actionItem.Template = "<a href=\"javascript:void(0)\" confirmed-click=\"::ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"Are you sure?\"\r\n\t\tng-if=\"::ngCtrl.userHasRecordPermissions('canDelete')\">\r\n\t<i class=\"fa fa-trash go-red\"></i> Delete Record\r\n</a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
 										}
-
-										updateViewInput.ActionItems = newActionItemList;
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_back_button";
+											actionItem.Menu = "sidebar-top";
+											actionItem.Template = "<a class=\"back clearfix\" href=\"javascript:void(0)\" ng-click=\"sidebarData.goBack()\"><i class=\"fa fa-fw fa-arrow-left\"></i> <span class=\"text\">Back</span></a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+										createViewInput.ActionItems = newActionItemList;
 										#endregion
 
 										{
-											var response = entMan.UpdateRecordView(TASK_ENTITY_ID, updateViewInput);
+											var response = entMan.CreateRecordView(TASK_ENTITY_ID, createViewInput);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + TASK_ENTITY_NAME + " Updated view: create" + " Message:" + response.Message);
 										}
 									}
 									#endregion
 
-
+									#region << area add subscription: Project Workplace -> My tasks >>
+									{
+										var updatedAreaId = PROJECT_WORKPLACE_AREA_ID;
+										var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, TASK_ENTITY_NAME, "general", "create", "my_tasks");
+										if (!updateAreaResult.Success)
+										{
+											throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
+										}
+									}
+									#endregion
+									#region << area add subscription: Project Admin -> Bugs >>
+									{
+										var updatedAreaId = PROJECT_ADMIN_AREA_ID;
+										var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, TASK_ENTITY_NAME, "general", "create", "admin");
+										if (!updateAreaResult.Success)
+										{
+											throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
+										}
+									}
+									#endregion
 								}
 								#endregion
 
@@ -5164,9 +5321,17 @@ namespace WebVella.ERP.Project
 										//UPDATE
 										entity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 										entity.RecordPermissions.CanUpdate.Add(SystemIds.RegularRoleId);
-
+										//System fields and relations Ids should be hardcoded for the compare/change code generation to work later on correctly
+										var systemItemIdDictionary = new Dictionary<string, Guid>();
+										systemItemIdDictionary["id"] = new Guid("85e92948-ca90-4983-854d-c1fbad0d7e8c");
+										systemItemIdDictionary["created_on"] = new Guid("781cee71-1632-4bf9-83b1-ff122d29eb2a");
+										systemItemIdDictionary["created_by"] = new Guid("72b3a792-7ee8-420c-a48e-86c5beda474b");
+										systemItemIdDictionary["last_modified_on"] = new Guid("ce3c4668-be18-4217-898e-704d126dc8a2");
+										systemItemIdDictionary["last_modified_by"] = new Guid("18fdd103-06ee-449b-9140-098ea171670a");
+										systemItemIdDictionary["user_wv_bug_created_by"] = new Guid("cdc5c5f9-30dc-4e3b-ac0f-4137e54c6c7f");
+										systemItemIdDictionary["user_wv_bug_modified_by"] = new Guid("a09464e2-0383-435a-a1e7-52c6d2a2743c");
 										{
-											var response = entMan.CreateEntity(entity);
+											var response = entMan.CreateEntity(entity, false, false, systemItemIdDictionary);
 											if (!response.Success)
 												throw new Exception("System error 10050. Entity: " + BUG_ENTITY_NAME + " Field: entity creation" + " Message:" + response.Message);
 										}
@@ -5646,37 +5811,35 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
-									#region << update general list >>
+									#region << create project_bugs list >>
 									{
-										var updateListEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
-										var updateList = updateListEntity.RecordLists.Single(x => x.Name == "general");
-										var updateListInput = new InputRecordList();
+										var createListEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
+										var createListInput = new InputRecordList();
 										var listField = new InputRecordListFieldItem();
 										var listFieldFromRelation = new InputRecordListRelationFieldItem();
 										var listSort = new InputRecordListSort();
 										var listQuery = new InputRecordListQuery();
 
-										//Convert recordList to recordListInput
-										updateListInput = updateList.DynamicMapTo<InputRecordList>();
-
 										//General list details
-										updateListInput.Name = "project_bugs";
-										updateListInput.Label = "Bugs";
-										updateListInput.IconName = "bug";
-										updateListInput.ColumnWidthsCSV = "auto,30px,120px,120px,120px";
-										updateListInput.CssClass = "bug-list";
-										updateListInput.Type = "hidden";
+										createListInput.Id = new Guid("3b2ebe34-1d02-448a-9616-5b62538fe2c7");
+										createListInput.Name = "project_bugs";
+										createListInput.Label = "Bugs";
+										createListInput.IconName = "bug";
+										createListInput.ColumnWidthsCSV = "auto,30px,120px,120px,120px";
+										createListInput.CssClass = "bug-list";
+										createListInput.Type = "hidden";
 
 										//Fields
+										createListInput.Columns = new List<InputRecordListItemBase>();
 										#region << subject >>
 										{
 											listField = new InputRecordListFieldItem();
-											listField.EntityId = updateListEntity.Id;
-											listField.EntityName = updateListEntity.Name;
-											listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "subject").Id;
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "subject").Id;
 											listField.FieldName = "subject";
 											listField.Type = "field";
-											updateListInput.Columns.Add(listField);
+											createListInput.Columns.Add(listField);
 										}
 										#endregion
 
@@ -5692,43 +5855,43 @@ namespace WebVella.ERP.Project
 											listFieldFromRelation.RelationId = new Guid("cddc10b6-30ff-4a86-96e4-645b3ea59fd9");
 											listFieldFromRelation.RelationName = "user_1_n_bug_owner";
 											listFieldFromRelation.Type = "fieldFromRelation";
-											updateListInput.Columns.Add(listFieldFromRelation);
+											createListInput.Columns.Add(listFieldFromRelation);
 										}
 										#endregion
 
 										#region << created_on >>
 										{
 											listField = new InputRecordListFieldItem();
-											listField.EntityId = updateListEntity.Id;
-											listField.EntityName = updateListEntity.Name;
-											listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "created_on").Id;
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "created_on").Id;
 											listField.FieldName = "created_on";
 											listField.Type = "field";
-											updateListInput.Columns.Add(listField);
+											createListInput.Columns.Add(listField);
 										}
 										#endregion
 
 										#region << status >>
 										{
 											listField = new InputRecordListFieldItem();
-											listField.EntityId = updateListEntity.Id;
-											listField.EntityName = updateListEntity.Name;
-											listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "status").Id;
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "status").Id;
 											listField.FieldName = "status";
 											listField.Type = "field";
-											updateListInput.Columns.Add(listField);
+											createListInput.Columns.Add(listField);
 										}
 										#endregion
 
 										#region << priority >>
 										{
 											listField = new InputRecordListFieldItem();
-											listField.EntityId = updateListEntity.Id;
-											listField.EntityName = updateListEntity.Name;
-											listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "priority").Id;
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "priority").Id;
 											listField.FieldName = "priority";
 											listField.Type = "field";
-											updateListInput.Columns.Add(listField);
+											createListInput.Columns.Add(listField);
 										}
 										#endregion
 
@@ -5771,21 +5934,57 @@ namespace WebVella.ERP.Project
 											}
 											#endregion
 
-											updateListInput.Query = listQuery;
+											createListInput.Query = listQuery;
 										}
 										#endregion
 
 										#region << Sort >>
+										createListInput.Sorts = new List<InputRecordListSort>();
 										{
 											listSort = new InputRecordListSort();
 											listSort.FieldName = @"{""name"":""url_sort"", ""option"": ""sortBy"", ""default"": ""created_on"", ""settings"":{""order"":""sortOrder""}}";
 											listSort.SortType = "descending";
-											updateListInput.Sorts.Add(listSort);
+											createListInput.Sorts.Add(listSort);
 										}
 										#endregion
 
+										var newActionItemList = new List<ActionItem>();
 										{
-											var response = entMan.UpdateRecordList(BUG_ENTITY_ID, updateListInput);
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_record";
+											actionItem.Menu = "page-title";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate')\" \r\n    ng-href=\"{{::ngCtrl.getRecordCreateUrl()}}\">Add New</a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_import_records";
+											actionItem.Menu = "page-title-dropdown";
+											actionItem.Template = "<a ng-click=\"ngCtrl.openImportModal()\" class=\"ng-hide\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\r\n\t<i class=\"fa fa-fw fa-upload\"></i> Import CSV\r\n</a>";
+											actionItem.Weight = 10;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_export_records";
+											actionItem.Menu = "page-title-dropdown";
+											actionItem.Template = "<a ng-click=\"ngCtrl.openExportModal()\" class=\"ng-hide\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\r\n\t<i class=\"fa fa-fw fa-download\"></i> Export CSV\r\n</a>";
+											actionItem.Weight = 11;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_record_details";
+											actionItem.Menu = "record-row";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-href=\"{{::ngCtrl.getRecordDetailsUrl(record)}}\">\n    <i class=\"fa fa-fw fa-eye\"></i>\n</a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+										createListInput.ActionItems = newActionItemList;
+
+										{
+											var response = entMan.CreateRecordList(BUG_ENTITY_ID, createListInput);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Updated List: general" + " Message:" + response.Message);
 										}
@@ -6629,17 +6828,6 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
-									#region << area add subscription: Project Workplace -> My bugs >>
-									{
-										var updatedAreaId = PROJECT_WORKPLACE_AREA_ID;
-										var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, BUG_ENTITY_NAME, "general", "create", "my_bugs");
-										if (!updateAreaResult.Success)
-										{
-											throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
-										}
-									}
-									#endregion
-
 									#region << List name: admin >>
 									{
 										var createListEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
@@ -6781,22 +6969,10 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
-									#region << area add subscription: Project Admin -> Bugs >>
+									#region << create create >>
 									{
-										var updatedAreaId = PROJECT_ADMIN_AREA_ID;
-										var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, BUG_ENTITY_NAME, "general", "create", "admin");
-										if (!updateAreaResult.Success)
-										{
-											throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
-										}
-									}
-									#endregion
-
-									#region << update create >>
-									{
-										var updateViewEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
-										var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "create");
-										var updateViewInput = new InputRecordView();
+										var createViewEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
+										var createViewInput = new InputRecordView();
 										var viewSection = new InputRecordViewSection();
 										var viewRow = new InputRecordViewRow();
 										var viewColumn = new InputRecordViewColumn();
@@ -6804,22 +6980,24 @@ namespace WebVella.ERP.Project
 										var viewItemFromRelation = new InputRecordViewRelationFieldItem();
 										//General view fields
 
-										//Convert recordList to recordListInput
-										updateViewInput = updateView.DynamicMapTo<InputRecordView>();
-
 										#region << Details >>
-										updateViewInput.ServiceCode = null;
+										createViewInput.Id = new Guid("b369195d-39b2-4b69-abd3-5182477c7783");
+										createViewInput.Name = "create";
+										createViewInput.Label = "Create";
+										createViewInput.Default = true;
+										createViewInput.System = true;
+										createViewInput.Type = "create";
+										createViewInput.Weight = 10;
+										createViewInput.IconName = "file-text-o";
+										createViewInput.ServiceCode = null;
+										createViewInput.DynamicHtmlTemplate = null;
+										createViewInput.DataSourceUrl = null;
 										#endregion
 
 										#region << Get the header Region >>
 										var headerRegion = new InputRecordViewRegion();
-										foreach (var region in updateViewInput.Regions)
-										{
-											if (region.Name == "header")
-											{
-												headerRegion = region;
-											}
-										}
+										headerRegion.Name = "header";
+										headerRegion.Label = "header";
 										headerRegion.Sections = new List<InputRecordViewSection>();
 										#endregion
 
@@ -6850,9 +7028,9 @@ namespace WebVella.ERP.Project
 										#region << subject >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "subject").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "subject").Id;
 											viewItem.FieldName = "subject";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -6883,9 +7061,9 @@ namespace WebVella.ERP.Project
 										#region << description >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "description").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "description").Id;
 											viewItem.FieldName = "description";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -6914,9 +7092,9 @@ namespace WebVella.ERP.Project
 										#region << status >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "status").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "status").Id;
 											viewItem.FieldName = "status";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -6936,9 +7114,9 @@ namespace WebVella.ERP.Project
 										#region << priority >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "priority").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "priority").Id;
 											viewItem.FieldName = "priority";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -6958,14 +7136,148 @@ namespace WebVella.ERP.Project
 
 										#endregion
 
+										createViewInput.Regions = new List<InputRecordViewRegion>();
+										createViewInput.Regions.Add(headerRegion);
+
 										#region << Sidebar >>
 										var sidebarItem = new InputRecordViewSidebarItemBase();
 										#endregion
 
+										var newActionItemList = new List<ActionItem>();
 										{
-											var response = entMan.UpdateRecordView(BUG_ENTITY_ID, updateViewInput);
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_back_button";
+											actionItem.Menu = "sidebar-top";
+											actionItem.Template = "<a class=\"back clearfix\" href=\"javascript:void(0)\" ng-click=\"sidebarData.goBack()\"><i class=\"fa fa-fw fa-arrow-left\"></i> <span class=\"text\">Back</span></a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_and_list";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"default\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create</a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_and_details";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-click='ngCtrl.create(\"details\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create & Details</a>";
+											actionItem.Weight = 2;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_cancel";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-click=\"ngCtrl.cancel()\">Cancel</a>";
+											actionItem.Weight = 3;
+											newActionItemList.Add(actionItem);
+										}
+										createViewInput.ActionItems = newActionItemList;
+
+										{
+											var response = entMan.CreateRecordView(BUG_ENTITY_ID, createViewInput);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Updated view: create" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << create create >>
+									{
+										var createViewEntity = entMan.ReadEntity(BUG_ENTITY_ID).Object;
+										var createViewInput = new InputRecordView();
+										var viewSection = new InputRecordViewSection();
+										var viewRow = new InputRecordViewRow();
+										var viewColumn = new InputRecordViewColumn();
+										var viewItem = new InputRecordViewFieldItem();
+										var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+										//General view fields
+
+										#region << Details >>
+										createViewInput.Id = new Guid("cc8ca474-29d3-4593-864a-166ad9e9a98e");
+										createViewInput.Name = "general";
+										createViewInput.Label = "General";
+										createViewInput.Default = true;
+										createViewInput.System = true;
+										createViewInput.Type = "general";
+										createViewInput.Weight = 10;
+										createViewInput.IconName = "file-text-o";
+										createViewInput.ServiceCode = null;
+										createViewInput.DynamicHtmlTemplate = null;
+										createViewInput.DataSourceUrl = null;
+										#endregion
+
+										createViewInput.Regions = new List<InputRecordViewRegion>();
+
+										#region << Sidebar >>
+										var sidebarItem = new InputRecordViewSidebarItemBase();
+										#endregion
+
+										var newActionItemList = new List<ActionItem>();
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_back_button";
+											actionItem.Menu = "sidebar-top";
+											actionItem.Template = "<a class=\"back clearfix\" href=\"javascript:void(0)\" ng-click=\"sidebarData.goBack()\"><i class=\"fa fa-fw fa-arrow-left\"></i> <span class=\"text\">Back</span></a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_and_list";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"default\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create</a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_and_details";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-click='ngCtrl.create(\"details\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create & Details</a>";
+											actionItem.Weight = 2;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_cancel";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-click=\"ngCtrl.cancel()\">Cancel</a>";
+											actionItem.Weight = 3;
+											newActionItemList.Add(actionItem);
+										}
+										createViewInput.ActionItems = newActionItemList;
+
+										{
+											var response = entMan.CreateRecordView(BUG_ENTITY_ID, createViewInput);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + BUG_ENTITY_NAME + " Updated view: create" + " Message:" + response.Message);
+										}
+									}
+									#endregion
+
+									#region << area add subscription: Project Admin -> Bugs >>
+									{
+										var updatedAreaId = PROJECT_ADMIN_AREA_ID;
+										var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, BUG_ENTITY_NAME, "general", "create", "admin");
+										if (!updateAreaResult.Success)
+										{
+											throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
+										}
+									}
+									#endregion
+
+									#region << area add subscription: Project Workplace -> My bugs >>
+									{
+										var updatedAreaId = PROJECT_WORKPLACE_AREA_ID;
+										var updateAreaResult = Helpers.UpsertEntityAsAreaSubscription(entMan, recMan, updatedAreaId, BUG_ENTITY_NAME, "general", "create", "my_bugs");
+										if (!updateAreaResult.Success)
+										{
+											throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
 										}
 									}
 									#endregion
@@ -6998,9 +7310,17 @@ namespace WebVella.ERP.Project
 										//UPDATE
 										entity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 										entity.RecordPermissions.CanUpdate.Add(SystemIds.RegularRoleId);
-
+										//System fields and relations Ids should be hardcoded for the compare/change code generation to work later on correctly
+										var systemItemIdDictionary = new Dictionary<string, Guid>();
+										systemItemIdDictionary["id"] = new Guid("41a9a85b-894d-40d1-956a-dba950a253c7");
+										systemItemIdDictionary["created_on"] = new Guid("ca1e843f-7f97-49db-bb7f-4b3a2b8f98ef");
+										systemItemIdDictionary["created_by"] = new Guid("1cc75ad8-dd5b-4cdb-8896-32521e0a7a2e");
+										systemItemIdDictionary["last_modified_on"] = new Guid("e91995d3-754e-418f-9a2d-aa2a319c568b");
+										systemItemIdDictionary["last_modified_by"] = new Guid("19b6101a-737e-4dec-96fe-3994b3fb8b65");
+										systemItemIdDictionary["user_wv_timelog_created_by"] = new Guid("393d1da8-0051-4807-8e89-1de933850888");
+										systemItemIdDictionary["user_wv_timelog_modified_by"] = new Guid("2c728372-8dc4-4d18-8897-4716fce3d404");
 										{
-											var response = entMan.CreateEntity(entity);
+											var response = entMan.CreateEntity(entity, false, false, systemItemIdDictionary);
 											if (!response.Success)
 												throw new Exception("System error 10050. Entity: " + TIMELOG_ENTITY_NAME + " Field: entity creation" + " Message:" + response.Message);
 										}
@@ -7077,40 +7397,39 @@ namespace WebVella.ERP.Project
 									#endregion
 
 									#region << description >>
-								{
-									InputMultiLineTextField textareaField = new InputMultiLineTextField();
-									textareaField.Id = new Guid("1a1b646e-93df-4035-ace0-d844f62bad63");
-									textareaField.Name = "description";
-									textareaField.Label = "Description";
-									textareaField.PlaceholderText = "";
-									textareaField.Description = "";
-									textareaField.HelpText = "";
-									textareaField.Required = false;
-									textareaField.Unique = false;
-									textareaField.Searchable = false;
-									textareaField.Auditable = false;
-									textareaField.System = true;
-									textareaField.DefaultValue = string.Empty;
-									textareaField.VisibleLineNumber = 4;
-									textareaField.EnableSecurity = true;
-									textareaField.Permissions = new FieldPermissions();
-									textareaField.Permissions.CanRead = new List<Guid>();
-									textareaField.Permissions.CanUpdate = new List<Guid>();
-	
-									textareaField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
-									textareaField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
-
-									textareaField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
-									textareaField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
-
 									{
-										var response = entMan.CreateField(TIMELOG_ENTITY_ID, textareaField, false);
-										if (!response.Success)
-											throw new Exception("System error 10060. Entity: " + TIMELOG_ENTITY_NAME + " Field: description" + " Message:" + response.Message);
-									}
-								}
-								#endregion
+										InputMultiLineTextField textareaField = new InputMultiLineTextField();
+										textareaField.Id = new Guid("1a1b646e-93df-4035-ace0-d844f62bad63");
+										textareaField.Name = "description";
+										textareaField.Label = "Description";
+										textareaField.PlaceholderText = "";
+										textareaField.Description = "";
+										textareaField.HelpText = "";
+										textareaField.Required = false;
+										textareaField.Unique = false;
+										textareaField.Searchable = false;
+										textareaField.Auditable = false;
+										textareaField.System = true;
+										textareaField.DefaultValue = string.Empty;
+										textareaField.VisibleLineNumber = 4;
+										textareaField.EnableSecurity = true;
+										textareaField.Permissions = new FieldPermissions();
+										textareaField.Permissions.CanRead = new List<Guid>();
+										textareaField.Permissions.CanUpdate = new List<Guid>();
 
+										textareaField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+										textareaField.Permissions.CanRead.Add(SystemIds.RegularRoleId);
+
+										textareaField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+										textareaField.Permissions.CanUpdate.Add(SystemIds.RegularRoleId);
+
+										{
+											var response = entMan.CreateField(TIMELOG_ENTITY_ID, textareaField, false);
+											if (!response.Success)
+												throw new Exception("System error 10060. Entity: " + TIMELOG_ENTITY_NAME + " Field: description" + " Message:" + response.Message);
+										}
+									}
+									#endregion
 
 									#region << log_date >>
 									{
@@ -7515,11 +7834,10 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
-									#region << update create >>
+									#region << create create >>
 									{
-										var updateViewEntity = entMan.ReadEntity(TIMELOG_ENTITY_ID).Object;
-										var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "create");
-										var updateViewInput = new InputRecordView();
+										var createViewEntity = entMan.ReadEntity(TIMELOG_ENTITY_ID).Object;
+										var createViewInput = new InputRecordView();
 										var viewSection = new InputRecordViewSection();
 										var viewRow = new InputRecordViewRow();
 										var viewColumn = new InputRecordViewColumn();
@@ -7527,22 +7845,24 @@ namespace WebVella.ERP.Project
 										var viewItemFromRelation = new InputRecordViewRelationFieldItem();
 										//General view fields
 
-										//Convert recordList to recordListInput
-										updateViewInput = updateView.DynamicMapTo<InputRecordView>();
-
 										#region << Details >>
-										updateViewInput.ServiceCode = null;
+										createViewInput.Id = new Guid("e33d960c-4867-48f2-bfc2-4f532aa2513d");
+										createViewInput.Name = "create";
+										createViewInput.Label = "Create";
+										createViewInput.Default = true;
+										createViewInput.System = true;
+										createViewInput.Type = "create";
+										createViewInput.Weight = 10;
+										createViewInput.IconName = "file-text-o";
+										createViewInput.ServiceCode = null;
+										createViewInput.DynamicHtmlTemplate = null;
+										createViewInput.DataSourceUrl = null;
 										#endregion
 
 										#region << Get the header Region >>
 										var headerRegion = new InputRecordViewRegion();
-										foreach (var region in updateViewInput.Regions)
-										{
-											if (region.Name == "header")
-											{
-												headerRegion = region;
-											}
-										}
+										headerRegion.Name = "header";
+										headerRegion.Label = "header";
 										headerRegion.Sections = new List<InputRecordViewSection>();
 										#endregion
 
@@ -7573,9 +7893,9 @@ namespace WebVella.ERP.Project
 										#region << hours >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "hours").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "hours").Id;
 											viewItem.FieldName = "hours";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -7585,9 +7905,9 @@ namespace WebVella.ERP.Project
 										#region << hours >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "log_date").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "log_date").Id;
 											viewItem.FieldName = "log_date";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -7606,9 +7926,9 @@ namespace WebVella.ERP.Project
 										#region << subject >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "billable").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "billable").Id;
 											viewItem.FieldName = "billable";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -7638,9 +7958,9 @@ namespace WebVella.ERP.Project
 										#region << description >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "description").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "description").Id;
 											viewItem.FieldName = "description";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -7660,24 +7980,45 @@ namespace WebVella.ERP.Project
 
 										#endregion
 
+										createViewInput.Regions = new List<InputRecordViewRegion>();
+										createViewInput.Regions.Add(headerRegion);
+
 										#region << Sidebar >>
 										var sidebarItem = new InputRecordViewSidebarItemBase();
 										#endregion
 
-										#region << Remove Create & Details button>
-										var newActionList = new List<ActionItem>();
-										foreach (var action in updateView.ActionItems)
+										#region << Action items>
+										var newActionItemList = new List<ActionItem>();
 										{
-											if (action.Name != "wv_create_and_details")
-											{
-												newActionList.Add(action);
-											}
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_and_list";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"default\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create</a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
 										}
-										updateViewInput.ActionItems = newActionList;
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_cancel";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-click=\"ngCtrl.cancel()\">Cancel</a>";
+											actionItem.Weight = 2;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_back_button";
+											actionItem.Menu = "sidebar-top";
+											actionItem.Template = "<a class=\"back clearfix\" href=\"javascript:void(0)\" ng-click=\"sidebarData.goBack()\"><i class=\"fa fa-fw fa-arrow-left\"></i> <span class=\"text\">Back</span></a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+
+										createViewInput.ActionItems = newActionItemList;
 										#endregion
 
 										{
-											var response = entMan.UpdateRecordView(TIMELOG_ENTITY_ID, updateViewInput);
+											var response = entMan.CreateRecordView(TIMELOG_ENTITY_ID, createViewInput);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + TIMELOG_ENTITY_NAME + " Updated view: create" + " Message:" + response.Message);
 										}
@@ -7715,9 +8056,17 @@ namespace WebVella.ERP.Project
 										//DELETE
 										entity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
 										entity.RecordPermissions.CanDelete.Add(SystemIds.RegularRoleId);
-
+										//System fields and relations Ids should be hardcoded for the compare/change code generation to work later on correctly
+										var systemItemIdDictionary = new Dictionary<string, Guid>();
+										systemItemIdDictionary["id"] = new Guid("a965c8b6-83fb-43a0-a156-e8b58e4e51a5");
+										systemItemIdDictionary["created_on"] = new Guid("381de04c-fad1-46b6-aa11-59bf7822a9a5");
+										systemItemIdDictionary["created_by"] = new Guid("c8216ce8-5661-4a47-a03f-9cce93e943e1");
+										systemItemIdDictionary["last_modified_on"] = new Guid("7bb58634-82ce-4b29-9a99-9ec1e8ea03dc");
+										systemItemIdDictionary["last_modified_by"] = new Guid("c754a57c-4807-4cc8-9c63-6bcef8d09a7f");
+										systemItemIdDictionary["user_wv_project_attachment_created_by"] = new Guid("97fe4c22-b090-4d8d-b9df-39d3e04a5865");
+										systemItemIdDictionary["user_wv_project_attachment_modified_by"] = new Guid("b3f1f810-dd2d-4e9a-85d1-8e44746fbbdd");
 										{
-											var response = entMan.CreateEntity(entity);
+											var response = entMan.CreateEntity(entity, false, false, systemItemIdDictionary);
 											if (!response.Success)
 												throw new Exception("System error 10050. Entity: " + ATTACHMENT_ENTITY_NAME + " Field: entity creation" + " Message:" + response.Message);
 										}
@@ -7927,42 +8276,40 @@ namespace WebVella.ERP.Project
 
 									#region << general list -> bug_attachments >>
 									{
-										var updateListEntity = entMan.ReadEntity(ATTACHMENT_ENTITY_ID).Object;
-										var updateList = updateListEntity.RecordLists.Single(x => x.Name == "general");
-										var updateListInput = new InputRecordList();
+										var createListEntity = entMan.ReadEntity(ATTACHMENT_ENTITY_ID).Object;
+										var createListInput = new InputRecordList();
 										var listField = new InputRecordListFieldItem();
 										var listFieldFromRelation = new InputRecordListRelationFieldItem();
 										var listSort = new InputRecordListSort();
 										var listQuery = new InputRecordListQuery();
 
-										//Convert recordList to recordListInput
-										updateListInput = updateList.DynamicMapTo<InputRecordList>();
-
 										//General list details
-										updateListInput.Name = "bug_attachments";
-										updateListInput.Label = "Attachments";
-										updateListInput.IconName = "paperclip";
-										updateListInput.Weight = 10;
-										updateListInput.Default = false;
-										updateListInput.System = true;
-										updateListInput.CssClass = null;
-										updateListInput.IconName = "paperclip";
-										updateListInput.VisibleColumnsCount = 5;
-										updateListInput.ColumnWidthsCSV = "160px,160px,auto";
-										updateListInput.PageSize = 10;
-										updateListInput.DynamicHtmlTemplate = null;
-										updateListInput.DataSourceUrl = null;
-										updateListInput.ServiceCode = null;
-
+										createListInput.Id = new Guid("2b83e4e3-6878-4b5b-9391-6e59429c0b5e");
+										createListInput.Name = "bug_attachments";
+										createListInput.Label = "Attachments";
+										createListInput.IconName = "paperclip";
+										createListInput.Type = "general";
+										createListInput.Weight = 10;
+										createListInput.Default = false;
+										createListInput.System = true;
+										createListInput.CssClass = null;
+										createListInput.IconName = "paperclip";
+										createListInput.VisibleColumnsCount = 5;
+										createListInput.ColumnWidthsCSV = "160px,160px,auto";
+										createListInput.PageSize = 10;
+										createListInput.DynamicHtmlTemplate = null;
+										createListInput.DataSourceUrl = null;
+										createListInput.ServiceCode = null;
+										createListInput.Columns = new List<InputRecordListItemBase>();
 										#region << created_on >>
 										{
 											listField = new InputRecordListFieldItem();
-											listField.EntityId = updateListEntity.Id;
-											listField.EntityName = updateListEntity.Name;
-											listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "created_on").Id;
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "created_on").Id;
 											listField.FieldName = "created_on";
 											listField.Type = "field";
-											updateListInput.Columns.Add(listField);
+											createListInput.Columns.Add(listField);
 										}
 										#endregion
 
@@ -7978,19 +8325,19 @@ namespace WebVella.ERP.Project
 											listFieldFromRelation.Type = "field";
 											listFieldFromRelation.RelationId = relation.Id;
 											listFieldFromRelation.RelationName = relation.Name;
-											updateListInput.Columns.Add(listFieldFromRelation);
+											createListInput.Columns.Add(listFieldFromRelation);
 										}
 										#endregion
 
 										#region << file >>
 										{
 											listField = new InputRecordListFieldItem();
-											listField.EntityId = updateListEntity.Id;
-											listField.EntityName = updateListEntity.Name;
-											listField.FieldId = updateListEntity.Fields.Single(x => x.Name == "file").Id;
+											listField.EntityId = createListEntity.Id;
+											listField.EntityName = createListEntity.Name;
+											listField.FieldId = createListEntity.Fields.Single(x => x.Name == "file").Id;
 											listField.FieldName = "file";
 											listField.Type = "field";
-											updateListInput.Columns.Add(listField);
+											createListInput.Columns.Add(listField);
 										}
 										#endregion
 
@@ -8001,27 +8348,29 @@ namespace WebVella.ERP.Project
 										#endregion
 
 										//Action items
-										var newActionItems = new List<ActionItem>();
-										foreach (var action in updateListInput.ActionItems)
+										var newActionItemList = new List<ActionItem>();
 										{
-											if (action.Name == "wv_create_record")
-											{
-												newActionItems.Add(action);
-											}
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_record";
+											actionItem.Menu = "page-title";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate')\" \r\n    ng-href=\"{{::ngCtrl.getRecordCreateUrl()}}\">Add New</a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
 										}
-										updateListInput.ActionItems = newActionItems;
+										createListInput.ActionItems = newActionItemList;
 
 										//Sort
 										#region << Sort >>
+										createListInput.Sorts = new List<InputRecordListSort>();
 										{
 											listSort = new InputRecordListSort();
 											listSort.FieldName = "created_on";
 											listSort.SortType = "ascending";
-											updateListInput.Sorts.Add(listSort);
+											createListInput.Sorts.Add(listSort);
 										}
 										#endregion
 										{
-											var response = entMan.UpdateRecordList(ATTACHMENT_ENTITY_ID, updateListInput);
+											var response = entMan.CreateRecordList(ATTACHMENT_ENTITY_ID, createListInput);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + ATTACHMENT_ENTITY_NAME + " Updated List: general" + " Message:" + response.Message);
 										}
@@ -8138,11 +8487,10 @@ namespace WebVella.ERP.Project
 									}
 									#endregion
 
-									#region << update create >>
+									#region << create create >>
 									{
-										var updateViewEntity = entMan.ReadEntity(ATTACHMENT_ENTITY_ID).Object;
-										var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "create");
-										var updateViewInput = new InputRecordView();
+										var createViewEntity = entMan.ReadEntity(ATTACHMENT_ENTITY_ID).Object;
+										var createViewInput = new InputRecordView();
 										var viewSection = new InputRecordViewSection();
 										var viewRow = new InputRecordViewRow();
 										var viewColumn = new InputRecordViewColumn();
@@ -8150,22 +8498,24 @@ namespace WebVella.ERP.Project
 										var viewItemFromRelation = new InputRecordViewRelationFieldItem();
 										//General view fields
 
-										//Convert recordList to recordListInput
-										updateViewInput = updateView.DynamicMapTo<InputRecordView>();
-
 										#region << Details >>
-										updateViewInput.ServiceCode = null;
+										createViewInput.Id = new Guid("4a049b10-ac21-4402-9984-3b0b8cf015be");
+										createViewInput.Name = "create";
+										createViewInput.Label = "Create";
+										createViewInput.Default = true;
+										createViewInput.System = true;
+										createViewInput.Type = "create";
+										createViewInput.Weight = 10;
+										createViewInput.IconName = "file-text-o";
+										createViewInput.ServiceCode = null;
+										createViewInput.DynamicHtmlTemplate = null;
+										createViewInput.DataSourceUrl = null;
 										#endregion
 
 										#region << Get the header Region >>
 										var headerRegion = new InputRecordViewRegion();
-										foreach (var region in updateViewInput.Regions)
-										{
-											if (region.Name == "header")
-											{
-												headerRegion = region;
-											}
-										}
+										headerRegion.Name = "header";
+										headerRegion.Label = "header";
 										headerRegion.Sections = new List<InputRecordViewSection>();
 										#endregion
 
@@ -8196,9 +8546,9 @@ namespace WebVella.ERP.Project
 										#region << subject >>
 										{
 											viewItem = new InputRecordViewFieldItem();
-											viewItem.EntityId = updateViewEntity.Id;
-											viewItem.EntityName = updateViewEntity.Name;
-											viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "file").Id;
+											viewItem.EntityId = createViewEntity.Id;
+											viewItem.EntityName = createViewEntity.Name;
+											viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "file").Id;
 											viewItem.FieldName = "file";
 											viewItem.Type = "field";
 											viewColumn.Items.Add(viewItem);
@@ -8218,12 +8568,50 @@ namespace WebVella.ERP.Project
 
 										#endregion
 
+										createViewInput.Regions = new List<InputRecordViewRegion>();
+										createViewInput.Regions.Add(headerRegion);
+
 										#region << Sidebar >>
 										var sidebarItem = new InputRecordViewSidebarItemBase();
-										#endregion`								
+										#endregion
+
+										var newActionItemList = new List<ActionItem>();
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_back_button";
+											actionItem.Menu = "sidebar-top";
+											actionItem.Template = "<a class=\"back clearfix\" href=\"javascript:void(0)\" ng-click=\"sidebarData.goBack()\"><i class=\"fa fa-fw fa-arrow-left\"></i> <span class=\"text\">Back</span></a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_and_list";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"default\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create</a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_and_details";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-click='ngCtrl.create(\"details\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create & Details</a>";
+											actionItem.Weight = 2;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_cancel";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-click=\"ngCtrl.cancel()\">Cancel</a>";
+											actionItem.Weight = 3;
+											newActionItemList.Add(actionItem);
+										}
+										createViewInput.ActionItems = newActionItemList;
 
 										{
-											var response = entMan.UpdateRecordView(ATTACHMENT_ENTITY_ID, updateViewInput);
+											var response = entMan.CreateRecordView(ATTACHMENT_ENTITY_ID, createViewInput);
 											if (!response.Success)
 												throw new Exception("System error 10060. Entity: " + ATTACHMENT_ENTITY_NAME + " Updated view: create" + " Message:" + response.Message);
 										}
@@ -8259,8 +8647,18 @@ namespace WebVella.ERP.Project
 										//UPDATE
 										entity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 										entity.RecordPermissions.CanUpdate.Add(SystemIds.RegularRoleId);
+
+										//System fields and relations Ids should be hardcoded for the compare/change code generation to work later on correctly
+										var systemItemIdDictionary = new Dictionary<string, Guid>();
+										systemItemIdDictionary["id"] = new Guid("0aac0f03-4153-47ed-b3a5-95371f46bb1e");
+										systemItemIdDictionary["created_on"] = new Guid("f4d890fd-c3ed-4ea6-9b91-4bd55fe688c7");
+										systemItemIdDictionary["created_by"] = new Guid("1605ec95-ffec-4c66-ba6e-b1e457936306");
+										systemItemIdDictionary["last_modified_on"] = new Guid("540dfdfb-02aa-47d8-8312-0a887ab092e3");
+										systemItemIdDictionary["last_modified_by"] = new Guid("80e7f499-cddd-4498-946a-e3972ee98a15");
+										systemItemIdDictionary["user_wv_project_activity_created_by"] = new Guid("2fd1e3a2-feea-4b2b-a609-d3a5d6694cbb");
+										systemItemIdDictionary["user_wv_project_activity_modified_by"] = new Guid("bc6314f8-fdf1-4b24-b5f5-574b04f45366");
 										{
-											var response = entMan.CreateEntity(entity);
+											var response = entMan.CreateEntity(entity, false, false, systemItemIdDictionary);
 											if (!response.Success)
 												throw new Exception("System error 10050. Entity: " + ACTIVITY_ENTITY_NAME + " Field: entity creation" + " Message:" + response.Message);
 										}
@@ -8852,8 +9250,17 @@ namespace WebVella.ERP.Project
 										//UPDATE
 										entity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
 										entity.RecordPermissions.CanUpdate.Add(SystemIds.RegularRoleId);
+										//System fields and relations Ids should be hardcoded for the compare/change code generation to work later on correctly
+										var systemItemIdDictionary = new Dictionary<string, Guid>();
+										systemItemIdDictionary["id"] = new Guid("4b10e607-b681-4650-a189-aab7c590aa62");
+										systemItemIdDictionary["created_on"] = new Guid("c205c60f-598a-4db7-bd41-a7fd2ae3abd0");
+										systemItemIdDictionary["created_by"] = new Guid("46208807-7bc8-4f54-8618-45134189e763");
+										systemItemIdDictionary["last_modified_on"] = new Guid("5be05bc8-f6ec-4e6d-82d4-4ea3c48cc60e");
+										systemItemIdDictionary["last_modified_by"] = new Guid("32e2a310-6613-4571-9fec-e592e1c4f333");
+										systemItemIdDictionary["user_wv_project_comment_created_by"] = new Guid("2f3635a3-298e-475e-90f4-7d512da6cf95");
+										systemItemIdDictionary["user_wv_project_comment_modified_by"] = new Guid("98ae433b-8b2e-49c5-b10e-8615d92dfab5");
 										{
-											var response = entMan.CreateEntity(entity);
+											var response = entMan.CreateEntity(entity, false, false, systemItemIdDictionary);
 											if (!response.Success)
 												throw new Exception("System error 10050. Entity: " + COMMENT_ENTITY_NAME + " Field: entity creation" + " Message:" + response.Message);
 										}
@@ -9283,11 +9690,10 @@ namespace WebVella.ERP.Project
 								}
 								#endregion
 
-								#region << update project general view >>
+								#region << create project general view >>
 								{
-									var updateViewEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
-									var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "general");
-									var updateViewInput = new InputRecordView();
+									var createViewEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+									var createViewInput = new InputRecordView();
 									var viewSection = new InputRecordViewSection();
 									var viewRow = new InputRecordViewRow();
 									var viewColumn = new InputRecordViewColumn();
@@ -9295,23 +9701,19 @@ namespace WebVella.ERP.Project
 									var viewItemFromRelation = new InputRecordViewRelationFieldItem();
 									//General view fields
 
-									//Convert recordList to recordListInput
-									updateViewInput = updateView.DynamicMapTo<InputRecordView>();
-
 									#region << Details >>
-									updateViewInput.Type = "hidden";
-									updateViewInput.Label = "{name}";
+									createViewInput.Id = new Guid("211f028b-4e8e-418f-9c0e-78109f0839fc");
+									createViewInput.Type = "hidden";
+									createViewInput.Label = "{name}";
+									createViewInput.Name = "general";
+									createViewInput.Default = true;
+									createViewInput.System = true;
 									#endregion
 
 									#region << Get the header Region >>
 									var headerRegion = new InputRecordViewRegion();
-									foreach (var region in updateViewInput.Regions)
-									{
-										if (region.Name == "header")
-										{
-											headerRegion = region;
-										}
-									}
+									headerRegion.Name = "header";
+									headerRegion.Label = "header";
 									headerRegion.Sections = new List<InputRecordViewSection>();
 									#endregion
 
@@ -9343,7 +9745,7 @@ namespace WebVella.ERP.Project
 										viewItem = new InputRecordViewFieldItem();
 										viewItem.EntityId = PROJECT_ENTITY_ID;
 										viewItem.EntityName = PROJECT_ENTITY_NAME;
-										viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "name").Id;
+										viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "name").Id;
 										viewItem.FieldName = "name";
 										viewItem.Type = "field";
 										viewColumn.Items.Add(viewItem);
@@ -9355,7 +9757,7 @@ namespace WebVella.ERP.Project
 										viewItem = new InputRecordViewFieldItem();
 										viewItem.EntityId = PROJECT_ENTITY_ID;
 										viewItem.EntityName = PROJECT_ENTITY_NAME;
-										viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "description").Id;
+										viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "description").Id;
 										viewItem.FieldName = "description";
 										viewItem.Type = "field";
 										viewColumn.Items.Add(viewItem);
@@ -9424,7 +9826,7 @@ namespace WebVella.ERP.Project
 										viewItem = new InputRecordViewFieldItem();
 										viewItem.EntityId = PROJECT_ENTITY_ID;
 										viewItem.EntityName = PROJECT_ENTITY_NAME;
-										viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "start_date").Id;
+										viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "start_date").Id;
 										viewItem.FieldName = "start_date";
 										viewItem.Type = "field";
 										viewColumn.Items.Add(viewItem);
@@ -9483,7 +9885,7 @@ namespace WebVella.ERP.Project
 										viewItem = new InputRecordViewFieldItem();
 										viewItem.EntityId = PROJECT_ENTITY_ID;
 										viewItem.EntityName = PROJECT_ENTITY_NAME;
-										viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "end_date").Id;
+										viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "end_date").Id;
 										viewItem.FieldName = "end_date";
 										viewItem.Type = "field";
 										viewColumn.Items.Add(viewItem);
@@ -9495,7 +9897,7 @@ namespace WebVella.ERP.Project
 										viewItem = new InputRecordViewFieldItem();
 										viewItem.EntityId = PROJECT_ENTITY_ID;
 										viewItem.EntityName = PROJECT_ENTITY_NAME;
-										viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "code").Id;
+										viewItem.FieldId = createViewEntity.Fields.Single(x => x.Name == "code").Id;
 										viewItem.FieldName = "code";
 										viewItem.Type = "field";
 										viewColumn.Items.Add(viewItem);
@@ -9515,14 +9917,94 @@ namespace WebVella.ERP.Project
 
 									#endregion
 
+									createViewInput.Regions = new List<InputRecordViewRegion>();
+									createViewInput.Regions.Add(headerRegion);
+
 									#region << Sidebar >>
 									var sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
 
 									#endregion
 									{
-										var response = entMan.UpdateRecordView(PROJECT_ENTITY_ID, updateViewInput);
+										var response = entMan.CreateRecordView(PROJECT_ENTITY_ID, createViewInput);
 										if (!response.Success)
 											throw new Exception("System error 10060. Entity: " + PROJECT_ENTITY_NAME + " Updated view: general" + " Message:" + response.Message);
+									}
+								}
+								#endregion
+
+								#region << create project create view >>
+								{
+									var createViewEntity = entMan.ReadEntity(PROJECT_ENTITY_ID).Object;
+									var createViewInput = new InputRecordView();
+									var viewSection = new InputRecordViewSection();
+									var viewRow = new InputRecordViewRow();
+									var viewColumn = new InputRecordViewColumn();
+									var viewItem = new InputRecordViewFieldItem();
+									var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+									//General view fields
+
+									#region << Details >>
+									createViewInput.Id = new Guid("43688004-69df-4c2f-9075-a3d4612f4b69");
+									createViewInput.Type = "create";
+									createViewInput.Label = "Create";
+									createViewInput.Name = "create";
+									createViewInput.Default = true;
+									createViewInput.System = true;
+									#endregion
+
+									#region << Get the header Region >>
+									var headerRegion = new InputRecordViewRegion();
+									headerRegion.Name = "header";
+									headerRegion.Label = "header";
+									headerRegion.Sections = new List<InputRecordViewSection>();
+									#endregion
+
+									createViewInput.Regions = new List<InputRecordViewRegion>();
+									createViewInput.Regions.Add(headerRegion);
+
+									#region << Sidebar >>
+									var sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
+
+										var newActionItemList = new List<ActionItem>();
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_back_button";
+											actionItem.Menu = "sidebar-top";
+											actionItem.Template = "<a class=\"back clearfix\" href=\"javascript:void(0)\" ng-click=\"sidebarData.goBack()\"><i class=\"fa fa-fw fa-arrow-left\"></i> <span class=\"text\">Back</span></a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_and_list";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"default\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create</a>";
+											actionItem.Weight = 1;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_and_details";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-click='ngCtrl.create(\"details\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create & Details</a>";
+											actionItem.Weight = 2;
+											newActionItemList.Add(actionItem);
+										}
+										{
+											var actionItem = new ActionItem();
+											actionItem.Name = "wv_create_cancel";
+											actionItem.Menu = "create-bottom";
+											actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-click=\"ngCtrl.cancel()\">Cancel</a>";
+											actionItem.Weight = 3;
+											newActionItemList.Add(actionItem);
+										}
+
+										createViewInput.ActionItems = newActionItemList;
+									#endregion
+									{
+										var response = entMan.CreateRecordView(PROJECT_ENTITY_ID, createViewInput);
+										if (!response.Success)
+											throw new Exception("System error 10060. Entity: " + PROJECT_ENTITY_NAME + " Updated view: create" + " Message:" + response.Message);
 									}
 								}
 								#endregion
@@ -9540,7 +10022,7 @@ namespace WebVella.ERP.Project
 
 									//Convert recordList to recordListInput
 									updateViewInput = updateView.DynamicMapTo<InputRecordView>();
-									updateViewInput.DynamicHtmlTemplate="/plugins/webvella-projects/templates/project-dashboard.html";
+									updateViewInput.DynamicHtmlTemplate = "/plugins/webvella-projects/templates/project-dashboard.html";
 
 									#region << Get the header Region >>
 									var headerRegion = new InputRecordViewRegion();
@@ -9720,6 +10202,8 @@ namespace WebVella.ERP.Project
 										sidebarListFromRelationItem.RelationId = targetRelation.Id;
 										sidebarListFromRelationItem.RelationName = targetRelation.Name;
 										sidebarListFromRelationItem.Type = "listFromRelation";
+										updateViewInput.Sidebar = new InputRecordViewSidebar();
+										updateViewInput.Sidebar.Items = new List<InputRecordViewSidebarItemBase>();
 										updateViewInput.Sidebar.Items.Add(sidebarListFromRelationItem);
 									}
 									#endregion
@@ -10005,7 +10489,9 @@ namespace WebVella.ERP.Project
 									#region << Sidebar >>
 									var sidebarListFromRelationItem = new InputRecordViewSidebarRelationListItem();
 									var sidebarViewItem = new InputRecordViewSidebarViewItem();
-
+									updateViewInput.Sidebar = new InputRecordViewSidebar();
+									updateViewInput.Sidebar.Items = new List<InputRecordViewSidebarItemBase>();
+									
 									#region << Attachments >>
 									{
 										var targetEntity = entMan.ReadEntity(ATTACHMENT_ENTITY_ID).Object;
