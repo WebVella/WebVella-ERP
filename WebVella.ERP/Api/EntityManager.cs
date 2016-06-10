@@ -639,8 +639,8 @@ namespace WebVella.ERP.Api
 
 									if (relEntity != null)
 									{
-										inputColumn.EntityId = entity.Id;
-										inputColumn.EntityName = entity.Name;
+										inputColumn.EntityId = relEntity.Id;
+										inputColumn.EntityName = relEntity.Name;
 
 										Field relField = string.IsNullOrWhiteSpace(inputColumn.FieldName) ?
 											relEntity.Fields.FirstOrDefault(f => f.Id == inputColumn.FieldId) :
@@ -702,8 +702,8 @@ namespace WebVella.ERP.Api
 
 									if (relEntity != null)
 									{
-										inputColumn.EntityId = entity.Id;
-										inputColumn.EntityName = entity.Name;
+										inputColumn.EntityId = relEntity.Id;
+										inputColumn.EntityName = relEntity.Name;
 
 										RecordTree relTree = string.IsNullOrWhiteSpace(inputColumn.TreeName) ?
 											relEntity.RecordTrees.FirstOrDefault(l => l.Id == inputColumn.TreeId) :
@@ -765,8 +765,8 @@ namespace WebVella.ERP.Api
 
 									if (relEntity != null)
 									{
-										inputColumn.EntityId = entity.Id;
-										inputColumn.EntityName = entity.Name;
+										inputColumn.EntityId = relEntity.Id;
+										inputColumn.EntityName = relEntity.Name;
 
 										RecordList relList = string.IsNullOrWhiteSpace(inputColumn.ListName) ?
 											relEntity.RecordLists.FirstOrDefault(l => l.Id == inputColumn.ListId) :
@@ -828,8 +828,8 @@ namespace WebVella.ERP.Api
 
 									if (relEntity != null)
 									{
-										inputColumn.EntityId = entity.Id;
-										inputColumn.EntityName = entity.Name;
+										inputColumn.EntityId = relEntity.Id;
+										inputColumn.EntityName = relEntity.Name;
 
 										RecordView relView = string.IsNullOrWhiteSpace(inputColumn.ViewName) ?
 											relEntity.RecordViews.FirstOrDefault(v => v.Id == inputColumn.ViewId) :
