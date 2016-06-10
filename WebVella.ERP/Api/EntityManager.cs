@@ -2049,6 +2049,7 @@ namespace WebVella.ERP.Api
 										Entity relEntity = GetEntityByFieldId(((RecordListRelationFieldItem)column).FieldId, entities);
 										if (relEntity != null)
 										{
+											((RecordListRelationFieldItem)column).EntityId = relEntity.Id;
 											((RecordListRelationFieldItem)column).EntityName = relEntity.Name;
 											((RecordListRelationFieldItem)column).EntityLabel = relEntity.Label;
 											((RecordListRelationFieldItem)column).EntityLabelPlural = entity.LabelPlural;
@@ -2093,6 +2094,7 @@ namespace WebVella.ERP.Api
 										Entity relEntity = GetEntityByViewId(((RecordListRelationViewItem)column).ViewId, entities);
 										if (relEntity != null)
 										{
+											((RecordListRelationViewItem)column).EntityId = relEntity.Id;
 											((RecordListRelationViewItem)column).EntityName = relEntity.Name;
 											((RecordListRelationViewItem)column).EntityLabel = relEntity.Label;
 											((RecordListRelationViewItem)column).EntityLabelPlural = entity.LabelPlural;
@@ -2138,6 +2140,7 @@ namespace WebVella.ERP.Api
 										Entity relEntity = GetEntityByListId(((RecordListRelationListItem)column).ListId, entities);
 										if (relEntity != null)
 										{
+											((RecordListRelationListItem)column).EntityId = relEntity.Id;
 											((RecordListRelationListItem)column).EntityName = relEntity.Name;
 											((RecordListRelationListItem)column).EntityLabel = relEntity.Label;
 											((RecordListRelationListItem)column).EntityLabelPlural = entity.LabelPlural;
@@ -2168,6 +2171,7 @@ namespace WebVella.ERP.Api
 										Entity relEntity = GetEntityByTreeId(((RecordListRelationTreeItem)column).TreeId, entities);
 										if (relEntity != null)
 										{
+											((RecordListRelationTreeItem)column).EntityId = relEntity.Id;
 											((RecordListRelationTreeItem)column).EntityName = relEntity.Name;
 											((RecordListRelationTreeItem)column).EntityLabel = relEntity.Label;
 											((RecordListRelationTreeItem)column).EntityLabelPlural = entity.LabelPlural;
@@ -2496,6 +2500,7 @@ namespace WebVella.ERP.Api
 										Entity relEntity = GetEntityByTreeId(((RecordViewSidebarRelationTreeItem)item).TreeId, entities);
 										if (relEntity != null)
 										{
+											((RecordViewSidebarRelationTreeItem)item).EntityId = relEntity.Id;
 											((RecordViewSidebarRelationTreeItem)item).EntityName = relEntity.Name;
 											((RecordViewSidebarRelationTreeItem)item).EntityLabel = relEntity.Label;
 											((RecordViewSidebarRelationTreeItem)item).EntityLabelPlural = entity.LabelPlural;
