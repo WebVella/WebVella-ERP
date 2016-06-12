@@ -4212,14 +4212,15 @@ namespace WebVella.ERP.Web.Controllers
 			var includeRoles = (bool)connectionStringObject["includeRoles"];
 
 			var response = new MetaChangeResponseModel();
-			if(string.IsNullOrEmpty(connectionString)){
+			if (string.IsNullOrEmpty(connectionString))
+			{
 				response.Success = false;
 				response.Message = "Connection string is required";
 				return Json(response);
 			}
-			
+
 			string OLD_DB_CONNECTION_STRING = connectionString;
-			
+
 			try
 			{
 
@@ -4279,305 +4280,311 @@ namespace WebVella.ERP.Web.Controllers
 				oldRoleList = ReadOldRoles(OLD_DB_CONNECTION_STRING);
 				#endregion
 
-				if(includeAreas) {
-				#region << Process areas >>
-
-				#region << Init >>
-				foreach (var area in oldAreaList)
+				if (includeAreas)
 				{
-					oldAreasDictionary[(Guid)area["id"]] = area;
-				}
-				#endregion
+					#region << Process areas >>
 
-				#region << Logic >>
-				foreach (var area in currentAreaList)
-				{
-					if (!oldAreasDictionary.ContainsKey((Guid)area["id"]))
+					#region << Init >>
+					foreach (var area in oldAreaList)
 					{
-						//// CREATED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "area";
-						changeRow.Type = "created";
-						changeRow.Name = (string)area["name"];
-						response.Changes.Add(changeRow);
-						response.Code += CreateAreaCode(area);
+						oldAreasDictionary[(Guid)area["id"]] = area;
 					}
-					else
+					#endregion
+
+					#region << Logic >>
+					foreach (var area in currentAreaList)
 					{
-						//// POSSIBLE UPDATE
-						/////////////////////////////////////////////////////
-						var changeCheckResponse = UpdateAreaCode(area, oldAreasDictionary[(Guid)area["id"]]);
-						if (changeCheckResponse.HasUpdate)
+						if (!oldAreasDictionary.ContainsKey((Guid)area["id"]))
 						{
-							//1.1 Updated
+							//// CREATED
+							/////////////////////////////////////////////////////
 							changeRow = new MetaChangeModel();
 							changeRow.Element = "area";
-							changeRow.Type = "updated";
+							changeRow.Type = "created";
 							changeRow.Name = (string)area["name"];
-							changeRow.ChangeList = changeCheckResponse.ChangeList;
 							response.Changes.Add(changeRow);
-							response.Code += changeCheckResponse.Code;
+							response.Code += CreateAreaCode(area);
+						}
+						else
+						{
+							//// POSSIBLE UPDATE
+							/////////////////////////////////////////////////////
+							var changeCheckResponse = UpdateAreaCode(area, oldAreasDictionary[(Guid)area["id"]]);
+							if (changeCheckResponse.HasUpdate)
+							{
+								//1.1 Updated
+								changeRow = new MetaChangeModel();
+								changeRow.Element = "area";
+								changeRow.Type = "updated";
+								changeRow.Name = (string)area["name"];
+								changeRow.ChangeList = changeCheckResponse.ChangeList;
+								response.Changes.Add(changeRow);
+								response.Code += changeCheckResponse.Code;
+							}
+
+							// MARK ID AS PROCESSED
+							/////////////////////////////////////////////////////
+							oldAreasProcessedDictionary[(Guid)area["id"]] = true;
 						}
 
-						// MARK ID AS PROCESSED
-						/////////////////////////////////////////////////////
-						oldAreasProcessedDictionary[(Guid)area["id"]] = true;
 					}
 
-				}
-
-				foreach (var area in oldAreaList)
-				{
-					if (!oldAreasProcessedDictionary.ContainsKey((Guid)area["id"]))
+					foreach (var area in oldAreaList)
 					{
-						//// DELETED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "area";
-						changeRow.Type = "deleted";
-						changeRow.Name = (string)area["name"];
-						response.Changes.Add(changeRow);
-						response.Code += DeleteAreaCode(area);
-					}
-				}
-
-				#endregion
-
-				#endregion
-				}
-				if(includeEntityMeta) {
-				#region << Process entity >>
-
-				#region << Init >>
-				foreach (var entity in oldEntityList)
-				{
-					oldEntityDictionary[entity.Id] = entity;
-					foreach (var field in entity.Fields)
-					{
-						oldEntityFieldsList.Add(field);
-						oldEntityFieldsDictionary[field.Id] = field;
-					}
-					foreach (var view in entity.RecordViews)
-					{
-						oldEntityRecordViewList.Add(view);
-						oldEntityRecordViewDictionary[view.Id] = view;
-					}
-					foreach (var list in entity.RecordLists)
-					{
-						oldEntityRecordListList.Add(list);
-						oldEntityRecordListDictionary[list.Id] = list;
-					}
-					foreach (var tree in entity.RecordTrees)
-					{
-						oldEntityRecordTreeList.Add(tree);
-						oldEntityRecordTreeDictionary[tree.Id] = tree;
-					}
-				}
-				#endregion
-
-				#region << Logic >>
-				foreach (var entity in currentEntityList)
-				{
-					if (!oldEntityDictionary.ContainsKey(entity.Id))
-					{
-						//// CREATED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "entity";
-						changeRow.Type = "created";
-						changeRow.Name = entity.Name;
-						response.Changes.Add(changeRow);
-						response.Code += CreateEntityCode(entity);
-					}
-					else
-					{
-						//// POSSIBLE UPDATE
-						/////////////////////////////////////////////////////
-						var changeCheckResponse = UpdateEntityCode(entity, oldEntityDictionary[entity.Id]);
-						if (changeCheckResponse.HasUpdate)
+						if (!oldAreasProcessedDictionary.ContainsKey((Guid)area["id"]))
 						{
-							//1.1 Updated
+							//// DELETED
+							/////////////////////////////////////////////////////
+							changeRow = new MetaChangeModel();
+							changeRow.Element = "area";
+							changeRow.Type = "deleted";
+							changeRow.Name = (string)area["name"];
+							response.Changes.Add(changeRow);
+							response.Code += DeleteAreaCode(area);
+						}
+					}
+
+					#endregion
+
+					#endregion
+				}
+				if (includeEntityMeta)
+				{
+					#region << Process entity >>
+
+					#region << Init >>
+					foreach (var entity in oldEntityList)
+					{
+						oldEntityDictionary[entity.Id] = entity;
+						foreach (var field in entity.Fields)
+						{
+							oldEntityFieldsList.Add(field);
+							oldEntityFieldsDictionary[field.Id] = field;
+						}
+						foreach (var view in entity.RecordViews)
+						{
+							oldEntityRecordViewList.Add(view);
+							oldEntityRecordViewDictionary[view.Id] = view;
+						}
+						foreach (var list in entity.RecordLists)
+						{
+							oldEntityRecordListList.Add(list);
+							oldEntityRecordListDictionary[list.Id] = list;
+						}
+						foreach (var tree in entity.RecordTrees)
+						{
+							oldEntityRecordTreeList.Add(tree);
+							oldEntityRecordTreeDictionary[tree.Id] = tree;
+						}
+					}
+					#endregion
+
+					#region << Logic >>
+					foreach (var entity in currentEntityList)
+					{
+						if (!oldEntityDictionary.ContainsKey(entity.Id))
+						{
+							//// CREATED
+							/////////////////////////////////////////////////////
 							changeRow = new MetaChangeModel();
 							changeRow.Element = "entity";
-							changeRow.Type = "updated";
+							changeRow.Type = "created";
 							changeRow.Name = entity.Name;
-							changeRow.ChangeList = changeCheckResponse.ChangeList;
 							response.Changes.Add(changeRow);
-							response.Code += changeCheckResponse.Code;
+							response.Code += CreateEntityCode(entity);
+						}
+						else
+						{
+							//// POSSIBLE UPDATE
+							/////////////////////////////////////////////////////
+							var changeCheckResponse = UpdateEntityCode(entity, oldEntityDictionary[entity.Id]);
+							if (changeCheckResponse.HasUpdate)
+							{
+								//1.1 Updated
+								changeRow = new MetaChangeModel();
+								changeRow.Element = "entity";
+								changeRow.Type = "updated";
+								changeRow.Name = entity.Name;
+								changeRow.ChangeList = changeCheckResponse.ChangeList;
+								response.Changes.Add(changeRow);
+								response.Code += changeCheckResponse.Code;
+							}
+
+
+							// MARK ID AS PROCESSED
+							/////////////////////////////////////////////////////
+							oldEntityProcessedDictionary[entity.Id] = true;
 						}
 
-
-						// MARK ID AS PROCESSED
-						/////////////////////////////////////////////////////
-						oldEntityProcessedDictionary[entity.Id] = true;
 					}
 
-				}
-
-				foreach (var entity in oldEntityList)
-				{
-					if (!oldEntityProcessedDictionary.ContainsKey(entity.Id))
+					foreach (var entity in oldEntityList)
 					{
-						//// DELETED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "entity";
-						changeRow.Type = "deleted";
-						changeRow.Name = entity.Name;
-						response.Changes.Add(changeRow);
-						response.Code += DeleteEntityCode(entity);
-					}
-				}
-				#endregion
-
-				#endregion
-				}
-				if(includeEntityRelations) {
-				#region << Process relations >>
-
-				#region << Init >>
-				foreach (var relation in oldRelationsList)
-				{
-					if(relation.Name == "user_role_created_by") {
-						var boz = 0;
-					}
-					oldRelationsDictionary[relation.Id] = relation;
-				}
-				#endregion
-
-				#region << Logic >>
-				foreach (var relation in currentRelationsList)
-				{
-					if(relation.Name == "user_role_created_by") {
-						var boz = 0;
-					}
-					if (!oldRelationsDictionary.ContainsKey(relation.Id))
-					{
-						//// CREATED
-						/////////////////////////////////////////////////////
-						var changeCode = CreateRelationCode(relation);
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "relation";
-						changeRow.Type = "created";
-						changeRow.Name = relation.Name;
-						changeRow.ChangeList = new List<string>();
-						if (changeCode == string.Empty)
+						if (!oldEntityProcessedDictionary.ContainsKey(entity.Id))
 						{
-							changeRow.ChangeList.Add(@"<span class='go-gray'>No code will be generated. It is automatically created, in the entity creation process</span>");
+							//// DELETED
+							/////////////////////////////////////////////////////
+							changeRow = new MetaChangeModel();
+							changeRow.Element = "entity";
+							changeRow.Type = "deleted";
+							changeRow.Name = entity.Name;
+							response.Changes.Add(changeRow);
+							response.Code += DeleteEntityCode(entity);
 						}
-						response.Changes.Add(changeRow);
-						response.Code += changeCode;
 					}
-					else
+					#endregion
+
+					#endregion
+				}
+				if (includeEntityRelations)
+				{
+					#region << Process relations >>
+
+					#region << Init >>
+					foreach (var relation in oldRelationsList)
 					{
-						//// POSSIBLE UPDATE
-						/////////////////////////////////////////////////////
-						var changeCheckResponse = UpdateRelationCode(relation, oldRelationsDictionary[relation.Id]);
-						if (changeCheckResponse.HasUpdate)
+						if (relation.Name == "user_role_created_by")
 						{
-							//1.1 Updated
+							var boz = 0;
+						}
+						oldRelationsDictionary[relation.Id] = relation;
+					}
+					#endregion
+
+					#region << Logic >>
+					foreach (var relation in currentRelationsList)
+					{
+						if (relation.Name == "user_role_created_by")
+						{
+							var boz = 0;
+						}
+						if (!oldRelationsDictionary.ContainsKey(relation.Id))
+						{
+							//// CREATED
+							/////////////////////////////////////////////////////
+							var changeCode = CreateRelationCode(relation);
 							changeRow = new MetaChangeModel();
 							changeRow.Element = "relation";
-							changeRow.Type = "updated";
+							changeRow.Type = "created";
 							changeRow.Name = relation.Name;
-							changeRow.ChangeList = changeCheckResponse.ChangeList;
+							changeRow.ChangeList = new List<string>();
+							if (changeCode == string.Empty)
+							{
+								changeRow.ChangeList.Add(@"<span class='go-gray'>No code will be generated. It is automatically created, in the entity creation process</span>");
+							}
 							response.Changes.Add(changeRow);
-							response.Code += changeCheckResponse.Code;
+							response.Code += changeCode;
+						}
+						else
+						{
+							//// POSSIBLE UPDATE
+							/////////////////////////////////////////////////////
+							var changeCheckResponse = UpdateRelationCode(relation, oldRelationsDictionary[relation.Id]);
+							if (changeCheckResponse.HasUpdate)
+							{
+								//1.1 Updated
+								changeRow = new MetaChangeModel();
+								changeRow.Element = "relation";
+								changeRow.Type = "updated";
+								changeRow.Name = relation.Name;
+								changeRow.ChangeList = changeCheckResponse.ChangeList;
+								response.Changes.Add(changeRow);
+								response.Code += changeCheckResponse.Code;
+							}
+
+							// MARK ID AS PROCESSED
+							/////////////////////////////////////////////////////
+							oldRelationsProcessedDictionary[relation.Id] = true;
 						}
 
-						// MARK ID AS PROCESSED
-						/////////////////////////////////////////////////////
-						oldRelationsProcessedDictionary[relation.Id] = true;
 					}
 
-				}
-
-				foreach (var relation in oldRelationsList)
-				{
-					if (!oldRelationsProcessedDictionary.ContainsKey(relation.Id))
+					foreach (var relation in oldRelationsList)
 					{
-						//// DELETED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "relation";
-						changeRow.Type = "deleted";
-						changeRow.Name = relation.Name;
-						response.Changes.Add(changeRow);
-						response.Code += DeleteRelationCode(relation);
-					}
-				}
-
-				#endregion
-
-				#endregion
-				}
-				if(includeRoles) {
-				#region << Process roles >>
-
-				#region << Init >>
-				foreach (var role in oldRoleList)
-				{
-					oldRolesDictionary[(Guid)role["id"]] = role;
-				}
-				#endregion
-
-				#region << Logic >>
-				foreach (var role in currentRoleList)
-				{
-					if (!oldRolesDictionary.ContainsKey((Guid)role["id"]))
-					{
-						//// CREATED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "role";
-						changeRow.Type = "created";
-						changeRow.Name = (string)role["name"];
-						response.Changes.Add(changeRow);
-						response.Code += CreateRoleCode(role);
-					}
-					else
-					{
-						//// POSSIBLE UPDATE
-						/////////////////////////////////////////////////////
-						var changeCheckResponse = UpdateRoleCode(role, oldRolesDictionary[(Guid)role["id"]]);
-						if (changeCheckResponse.HasUpdate)
+						if (!oldRelationsProcessedDictionary.ContainsKey(relation.Id))
 						{
-							//1.1 Updated
+							//// DELETED
+							/////////////////////////////////////////////////////
+							changeRow = new MetaChangeModel();
+							changeRow.Element = "relation";
+							changeRow.Type = "deleted";
+							changeRow.Name = relation.Name;
+							response.Changes.Add(changeRow);
+							response.Code += DeleteRelationCode(relation);
+						}
+					}
+
+					#endregion
+
+					#endregion
+				}
+				if (includeRoles)
+				{
+					#region << Process roles >>
+
+					#region << Init >>
+					foreach (var role in oldRoleList)
+					{
+						oldRolesDictionary[(Guid)role["id"]] = role;
+					}
+					#endregion
+
+					#region << Logic >>
+					foreach (var role in currentRoleList)
+					{
+						if (!oldRolesDictionary.ContainsKey((Guid)role["id"]))
+						{
+							//// CREATED
+							/////////////////////////////////////////////////////
 							changeRow = new MetaChangeModel();
 							changeRow.Element = "role";
-							changeRow.Type = "updated";
+							changeRow.Type = "created";
 							changeRow.Name = (string)role["name"];
-							changeRow.ChangeList = changeCheckResponse.ChangeList;
 							response.Changes.Add(changeRow);
-							response.Code += changeCheckResponse.Code;
+							response.Code += CreateRoleCode(role);
+						}
+						else
+						{
+							//// POSSIBLE UPDATE
+							/////////////////////////////////////////////////////
+							var changeCheckResponse = UpdateRoleCode(role, oldRolesDictionary[(Guid)role["id"]]);
+							if (changeCheckResponse.HasUpdate)
+							{
+								//1.1 Updated
+								changeRow = new MetaChangeModel();
+								changeRow.Element = "role";
+								changeRow.Type = "updated";
+								changeRow.Name = (string)role["name"];
+								changeRow.ChangeList = changeCheckResponse.ChangeList;
+								response.Changes.Add(changeRow);
+								response.Code += changeCheckResponse.Code;
+							}
+
+							// MARK ID AS PROCESSED
+							/////////////////////////////////////////////////////
+							oldRolesProcessedDictionary[(Guid)role["id"]] = true;
 						}
 
-						// MARK ID AS PROCESSED
-						/////////////////////////////////////////////////////
-						oldRolesProcessedDictionary[(Guid)role["id"]] = true;
 					}
 
-				}
-
-				foreach (var role in oldRoleList)
-				{
-					if (!oldRolesProcessedDictionary.ContainsKey((Guid)role["id"]))
+					foreach (var role in oldRoleList)
 					{
-						//// DELETED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "role";
-						changeRow.Type = "deleted";
-						changeRow.Name = (string)role["name"];
-						response.Changes.Add(changeRow);
-						response.Code += DeleteRoleCode(role);
+						if (!oldRolesProcessedDictionary.ContainsKey((Guid)role["id"]))
+						{
+							//// DELETED
+							/////////////////////////////////////////////////////
+							changeRow = new MetaChangeModel();
+							changeRow.Element = "role";
+							changeRow.Type = "deleted";
+							changeRow.Name = (string)role["name"];
+							response.Changes.Add(changeRow);
+							response.Code += DeleteRoleCode(role);
+						}
 					}
-				}
 
-				#endregion
+					#endregion
 
-				#endregion
+					#endregion
 				}
 				return Json(response);
 
@@ -5239,7 +5246,7 @@ $"#region << Create entity: {entity.Name} >>\n" +
 				hasUpdate = true;
 				response.ChangeList.Add($"<span class='go-green label-block'>Weight</span>  from <span class='go-red'>{oldEntity.Weight}</span> to <span class='go-red'>{currentEntity.Weight}</span>");
 			}
-			code += $"\tupdateObject.Weight = string.IsNullOrEmpty(\"{currentEntity.Weight}\") ? (decimal?)null : Decimal.Parse(\"{currentEntity.Weight}\");\n";
+			code += $"\tupdateObject.Weight = string.IsNullOrEmpty(\"{currentEntity.Weight}\") ? (decimal?)10 : Decimal.Parse(\"{currentEntity.Weight}\");\n";
 
 			//RecordPermissions
 			var recordPermissionsChanged = false;
@@ -5430,9 +5437,9 @@ $"#region << Create Enity: {entityName} field: {field.Name} >>\n" +
 	$"\tautonumberField.Id = new Guid(\"{field.Id}\");\n" +
 	$"\tautonumberField.Name = \"{field.Name}\";\n" +
 	$"\tautonumberField.Label = \"{field.Label}\";\n" +
-	$"\tautonumberField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+	$"\tautonumberField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 	$"\tautonumberField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-	$"\tautonumberField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+	$"\tautonumberField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 	$"\tautonumberField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tautonumberField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tautonumberField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -5478,9 +5485,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 	$"\tcheckboxField.Id = new Guid(\"{field.Id}\");\n" +
 	$"\tcheckboxField.Name = \"{field.Name}\";\n" +
 	$"\tcheckboxField.Label = \"{field.Label}\";\n" +
-	$"\tcheckboxField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+	$"\tcheckboxField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 	$"\tcheckboxField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-	$"\tcheckboxField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+	$"\tcheckboxField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 	$"\tcheckboxField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tcheckboxField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tcheckboxField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -5523,9 +5530,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 	$"\tcurrencyField.Id = new Guid(\"{field.Id}\");\n" +
 	$"\tcurrencyField.Name = \"{field.Name}\";\n" +
 	$"\tcurrencyField.Label =  \"{field.Label}\";\n" +
-	$"\tcurrencyField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+	$"\tcurrencyField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 	$"\tcurrencyField.Description =string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-	$"\tcurrencyField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+	$"\tcurrencyField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 	$"\tcurrencyField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tcurrencyField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tcurrencyField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -5573,16 +5580,16 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 	$"\tdateField.Id =  new Guid(\"{field.Id}\");\n" +
 	$"\tdateField.Name = \"{field.Name}\";\n" +
 	$"\tdateField.Label = \"{field.Label}\";\n" +
-	$"\tdateField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+	$"\tdateField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 	$"\tdateField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-	$"\tdateField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+	$"\tdateField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 	$"\tdateField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tdateField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tdateField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
 	$"\tdateField.Auditable = {(field.Auditable).ToString().ToLowerInvariant()};\n" +
 	$"\tdateField.System = {(field.System).ToString().ToLowerInvariant()};\n" +
 	$"\tdateField.DefaultValue = string.IsNullOrEmpty(\"{field.DefaultValue}\") ? (DateTime?)null : DateTime.Parse(\"{field.DefaultValue}\");\n" +
-	$"\tdateField.Format = string.IsNullOrEmpty(\"{field.Format}\") ? null : \"{field.Format}\";\n" +
+	$"\tdateField.Format = string.IsNullOrEmpty(\"{field.Format}\") ? string.Empty : \"{field.Format}\";\n" +
 	$"\tdateField.UseCurrentTimeAsDefaultValue = {(field.UseCurrentTimeAsDefaultValue).ToString().ToLowerInvariant()};\n" +
 	$"\tdateField.EnableSecurity = {(field.EnableSecurity).ToString().ToLowerInvariant()};\n" +
 	"\tdateField.Permissions = new FieldPermissions();\n" +
@@ -5623,16 +5630,16 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 	$"\tdatetimeField.Id =  new Guid(\"{field.Id}\");\n" +
 	$"\tdatetimeField.Name = \"{field.Name}\";\n" +
 	$"\tdatetimeField.Label = \"{field.Label}\";\n" +
-	$"\tdatetimeField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+	$"\tdatetimeField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 	$"\tdatetimeField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-	$"\tdatetimeField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+	$"\tdatetimeField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 	$"\tdatetimeField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tdatetimeField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tdatetimeField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
 	$"\tdatetimeField.Auditable = {(field.Auditable).ToString().ToLowerInvariant()};\n" +
 	$"\tdatetimeField.System = {(field.System).ToString().ToLowerInvariant()};\n" +
 	$"\tdatetimeField.DefaultValue = string.IsNullOrEmpty(\"{field.DefaultValue}\") ? (DateTime?)null : DateTime.Parse(\"{field.DefaultValue}\");\n" +
-	$"\tdatetimeField.Format = string.IsNullOrEmpty(\"{field.Format}\") ? null : \"{field.Format}\";\n" +
+	$"\tdatetimeField.Format = string.IsNullOrEmpty(\"{field.Format}\") ? string.Empty : \"{field.Format}\";\n" +
 	$"\tdatetimeField.UseCurrentTimeAsDefaultValue = {(field.UseCurrentTimeAsDefaultValue).ToString().ToLowerInvariant()};\n" +
 	$"\tdatetimeField.EnableSecurity = {(field.EnableSecurity).ToString().ToLowerInvariant()};\n" +
 	"\tdatetimeField.Permissions = new FieldPermissions();\n" +
@@ -5673,9 +5680,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 	$"\temailField.Id = new Guid(\"{field.Id}\");\n" +
 	$"\temailField.Name = \"{field.Name}\";\n" +
 	$"\temailField.Label = \"{field.Label}\";\n" +
-	$"\temailField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+	$"\temailField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 	$"\temailField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-	$"\temailField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+	$"\temailField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 	$"\temailField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 	$"\temailField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\temailField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -5721,9 +5728,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 	$"\tfileField.Id = new Guid(\"{field.Id}\");\n" +
 	$"\tfileField.Name = \"{field.Name}\";\n" +
 	$"\tfileField.Label = \"{field.Label}\";\n" +
-	$"\tfileField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+	$"\tfileField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 	$"\tfileField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-	$"\tfileField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+	$"\tfileField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 	$"\tfileField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tfileField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tfileField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -5767,9 +5774,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 	$"\thtmlField.Id = new Guid(\"{field.Id}\");\n" +
 	$"\thtmlField.Name = \"{field.Name}\";\n" +
 	$"\thtmlField.Label = \"{field.Label}\";\n" +
-	$"\thtmlField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+	$"\thtmlField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 	$"\thtmlField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-	$"\thtmlField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+	$"\thtmlField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 	$"\thtmlField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 	$"\thtmlField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\thtmlField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -5811,9 +5818,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 	$"\timageField.Id = new Guid(\"{field.Id}\");\n" +
 	$"\timageField.Name = \"{field.Name}\";\n" +
 	$"\timageField.Label = \"{field.Label}\";\n" +
-	$"\timageField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+	$"\timageField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 	$"\timageField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-	$"\timageField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+	$"\timageField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 	$"\timageField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 	$"\timageField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\timageField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -5855,9 +5862,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 	$"\ttextareaField.Id = new Guid(\"{field.Id}\");\n" +
 	$"\ttextareaField.Name = \"{field.Name}\";\n" +
 	$"\ttextareaField.Label = \"{field.Label}\";\n" +
-	$"\ttextareaField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+	$"\ttextareaField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 	$"\ttextareaField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-	$"\ttextareaField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+	$"\ttextareaField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 	$"\ttextareaField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 	$"\ttextareaField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\ttextareaField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -5902,9 +5909,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 	$"\tmultiSelectField.Id = new Guid(\"{field.Id}\");\n" +
 	$"\tmultiSelectField.Name = \"{field.Name}\";\n" +
 	$"\tmultiSelectField.Label = \"{field.Label}\";\n" +
-	$"\tmultiSelectField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+	$"\tmultiSelectField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 	$"\tmultiSelectField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-	$"\tmultiSelectField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+	$"\tmultiSelectField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 	$"\tmultiSelectField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tmultiSelectField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tmultiSelectField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -5987,9 +5994,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 	$"\tnumberField.Id = new Guid(\"{field.Id}\");\n" +
 	$"\tnumberField.Name = \"{field.Name}\";\n" +
 	$"\tnumberField.Label = \"{field.Label}\";\n" +
-	$"\tnumberField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+	$"\tnumberField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 	$"\tnumberField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-	$"\tnumberField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+	$"\tnumberField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 	$"\tnumberField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tnumberField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tnumberField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -6035,9 +6042,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 	$"\tpasswordField.Id = new Guid(\"{field.Id}\");\n" +
 	$"\tpasswordField.Name = \"{field.Name}\";\n" +
 	$"\tpasswordField.Label = \"{field.Label}\";\n" +
-	$"\tpasswordField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+	$"\tpasswordField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 	$"\tpasswordField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-	$"\tpasswordField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+	$"\tpasswordField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 	$"\tpasswordField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tpasswordField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tpasswordField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -6082,9 +6089,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 	$"\tpercentField.Id = new Guid(\"{field.Id}\");\n" +
 	$"\tpercentField.Name = \"{field.Name}\";\n" +
 	$"\tpercentField.Label = \"{field.Label}\";\n" +
-	$"\tpercentField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+	$"\tpercentField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 	$"\tpercentField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-	$"\tpercentField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+	$"\tpercentField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 	$"\tpercentField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tpercentField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tpercentField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -6131,9 +6138,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 	$"\tphoneField.Id = new Guid(\"{field.Id}\");\n" +
 	$"\tphoneField.Name = \"{field.Name}\";\n" +
 	$"\tphoneField.Label =  \"{field.Label}\";\n" +
-	$"\tphoneField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+	$"\tphoneField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 	$"\tphoneField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-	$"\tphoneField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+	$"\tphoneField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 	$"\tphoneField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tphoneField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tphoneField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -6141,7 +6148,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 	$"\tphoneField.System = {(field.System).ToString().ToLowerInvariant()};\n" +
 	$"\tphoneField.DefaultValue = string.IsNullOrEmpty(\"{field.DefaultValue}\") ? string.Empty : \"{field.DefaultValue}\";\n" +
 	$"\tphoneField.MaxLength = string.IsNullOrEmpty(\"{field.MaxLength}\") ? (int?)null : Int32.Parse(\"{field.MaxLength}\");\n" +
-	$"\tphoneField.Format = string.IsNullOrEmpty(\"{field.Format}\") ? null : \"{field.Format}\";\n" +
+	$"\tphoneField.Format = string.IsNullOrEmpty(\"{field.Format}\") ? string.Empty : \"{field.Format}\";\n" +
 	$"\tphoneField.EnableSecurity = {(field.EnableSecurity).ToString().ToLowerInvariant()};\n" +
 	$"\tphoneField.Permissions = new FieldPermissions();\n" +
 	$"\tphoneField.Permissions.CanRead = new List<Guid>();\n" +
@@ -6178,9 +6185,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 	$"\tguidField.Id = new Guid(\"{field.Id}\");\n" +
 	$"\tguidField.Name = \"{field.Name}\";\n" +
 	$"\tguidField.Label = \"{field.Label}\";\n" +
-	$"\tguidField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+	$"\tguidField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 	$"\tguidField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-	$"\tguidField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+	$"\tguidField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 	$"\tguidField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tguidField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tguidField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -6225,9 +6232,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 	$"\tdropdownField.Id = new Guid(\"{field.Id}\");\n" +
 	$"\tdropdownField.Name = \"{field.Name}\";\n" +
 	$"\tdropdownField.Label = \"{field.Label}\";\n" +
-	$"\tdropdownField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+	$"\tdropdownField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 	$"\tdropdownField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-	$"\tdropdownField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+	$"\tdropdownField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 	$"\tdropdownField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tdropdownField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tdropdownField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -6290,9 +6297,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			$"\ttextboxField.Id = new Guid(\"{field.Id}\");\n" +
 			$"\ttextboxField.Name = \"{field.Name}\";\n" +
 			$"\ttextboxField.Label = \"{field.Label}\";\n" +
-			$"\ttextboxField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+			$"\ttextboxField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 			$"\ttextboxField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-			$"\ttextboxField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+			$"\ttextboxField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 			$"\ttextboxField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 			$"\ttextboxField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 			$"\ttextboxField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -6336,9 +6343,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			$"\turlField.Id = new Guid(\"{field.Id}\");\n" +
 			$"\turlField.Name = \"{field.Name}\";\n" +
 			$"\turlField.Label = \"{field.Label}\";\n" +
-			$"\turlField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? null : \"{field.PlaceholderText}\";\n" +
+			$"\turlField.PlaceholderText = string.IsNullOrEmpty(\"{field.PlaceholderText}\") ? string.Empty : \"{field.PlaceholderText}\";\n" +
 			$"\turlField.Description = string.IsNullOrEmpty(\"{field.Description}\") ? string.Empty : \"{field.Description}\";\n" +
-			$"\turlField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? null : \"{field.HelpText}\";\n" +
+			$"\turlField.HelpText = string.IsNullOrEmpty(\"{field.HelpText}\") ? string.Empty : \"{field.HelpText}\";\n" +
 			$"\turlField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
 			$"\turlField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
 			$"\turlField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -6629,9 +6636,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				$"\tautonumberField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 				$"\tautonumberField.Name = \"{currentField.Name}\";\n" +
 				$"\tautonumberField.Label = \"{currentField.Label}\";\n" +
-				$"\tautonumberField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+				$"\tautonumberField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 				$"\tautonumberField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-				$"\tautonumberField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+				$"\tautonumberField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 				$"\tautonumberField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 				$"\tautonumberField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 				$"\tautonumberField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -6771,9 +6778,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				$"\tcheckboxField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 				$"\tcheckboxField.Name = \"{currentField.Name}\";\n" +
 				$"\tcheckboxField.Label = \"{currentField.Label}\";\n" +
-				$"\tcheckboxField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+				$"\tcheckboxField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 				$"\tcheckboxField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-				$"\tcheckboxField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+				$"\tcheckboxField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 				$"\tcheckboxField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 				$"\tcheckboxField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 				$"\tcheckboxField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -6904,9 +6911,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				$"\tcurrencyField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 				$"\tcurrencyField.Name = \"{currentField.Name}\";\n" +
 				$"\tcurrencyField.Label =  \"{currentField.Label}\";\n" +
-				$"\tcurrencyField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+				$"\tcurrencyField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 				$"\tcurrencyField.Description =string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-				$"\tcurrencyField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+				$"\tcurrencyField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 				$"\tcurrencyField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 				$"\tcurrencyField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 				$"\tcurrencyField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -7054,16 +7061,16 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				$"\tdateField.Id =  currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 				$"\tdateField.Name = \"{currentField.Name}\";\n" +
 				$"\tdateField.Label = \"{currentField.Label}\";\n" +
-				$"\tdateField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+				$"\tdateField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 				$"\tdateField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-				$"\tdateField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+				$"\tdateField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 				$"\tdateField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 				$"\tdateField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 				$"\tdateField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
 				$"\tdateField.Auditable = {(currentField.Auditable).ToString().ToLowerInvariant()};\n" +
 				$"\tdateField.System = {(currentField.System).ToString().ToLowerInvariant()};\n" +
 				$"\tdateField.DefaultValue = string.IsNullOrEmpty(\"{currentField.DefaultValue}\") ? (DateTime?)null : DateTime.Parse(\"{currentField.DefaultValue}\");\n" +
-				$"\tdateField.Format = string.IsNullOrEmpty(\"{currentField.Format}\") ? null : \"{currentField.Format}\";\n" +
+				$"\tdateField.Format = string.IsNullOrEmpty(\"{currentField.Format}\") ? string.Empty : \"{currentField.Format}\";\n" +
 				$"\tdateField.UseCurrentTimeAsDefaultValue = {(currentField.UseCurrentTimeAsDefaultValue).ToString().ToLowerInvariant()};\n" +
 				$"\tdateField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
 				"\tdateField.Permissions = new FieldPermissions();\n" +
@@ -7199,16 +7206,16 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				$"\tdatetimeField.Id =  currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 				$"\tdatetimeField.Name = \"{currentField.Name}\";\n" +
 				$"\tdatetimeField.Label = \"{currentField.Label}\";\n" +
-				$"\tdatetimeField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+				$"\tdatetimeField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 				$"\tdatetimeField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-				$"\tdatetimeField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+				$"\tdatetimeField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 				$"\tdatetimeField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 				$"\tdatetimeField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 				$"\tdatetimeField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
 				$"\tdatetimeField.Auditable = {(currentField.Auditable).ToString().ToLowerInvariant()};\n" +
 				$"\tdatetimeField.System = {(currentField.System).ToString().ToLowerInvariant()};\n" +
 				$"\tdatetimeField.DefaultValue = string.IsNullOrEmpty(\"{currentField.DefaultValue}\") ? (DateTime?)null : DateTime.Parse(\"{currentField.DefaultValue}\");\n" +
-				$"\tdatetimeField.Format = string.IsNullOrEmpty(\"{currentField.Format}\") ? null : \"{currentField.Format}\";\n" +
+				$"\tdatetimeField.Format = string.IsNullOrEmpty(\"{currentField.Format}\") ? string.Empty : \"{currentField.Format}\";\n" +
 				$"\tdatetimeField.UseCurrentTimeAsDefaultValue = {(currentField.UseCurrentTimeAsDefaultValue).ToString().ToLowerInvariant()};\n" +
 				$"\tdatetimeField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
 				"\tdatetimeField.Permissions = new FieldPermissions();\n" +
@@ -7344,9 +7351,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				$"\temailField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 				$"\temailField.Name = \"{currentField.Name}\";\n" +
 				$"\temailField.Label = \"{currentField.Label}\";\n" +
-				$"\temailField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+				$"\temailField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 				$"\temailField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-				$"\temailField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+				$"\temailField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 				$"\temailField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 				$"\temailField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 				$"\temailField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -7481,9 +7488,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				$"\tfileField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 				$"\tfileField.Name = \"{currentField.Name}\";\n" +
 				$"\tfileField.Label = \"{currentField.Label}\";\n" +
-				$"\tfileField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+				$"\tfileField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 				$"\tfileField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-				$"\tfileField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+				$"\tfileField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 				$"\tfileField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 				$"\tfileField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 				$"\tfileField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -7615,9 +7622,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				$"\timageField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 				$"\timageField.Name = \"{currentField.Name}\";\n" +
 				$"\timageField.Label = \"{currentField.Label}\";\n" +
-				$"\timageField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+				$"\timageField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 				$"\timageField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-				$"\timageField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+				$"\timageField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 				$"\timageField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 				$"\timageField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 				$"\timageField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -7747,9 +7754,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				$"\thtmlField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 				$"\thtmlField.Name = \"{currentField.Name}\";\n" +
 				$"\thtmlField.Label = \"{currentField.Label}\";\n" +
-				$"\thtmlField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+				$"\thtmlField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 				$"\thtmlField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-				$"\thtmlField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+				$"\thtmlField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 				$"\thtmlField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 				$"\thtmlField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 				$"\thtmlField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -7882,9 +7889,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				$"\ttextareaField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 				$"\ttextareaField.Name = \"{currentField.Name}\";\n" +
 				$"\ttextareaField.Label = \"{currentField.Label}\";\n" +
-				$"\ttextareaField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+				$"\ttextareaField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 				$"\ttextareaField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-				$"\ttextareaField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+				$"\ttextareaField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 				$"\ttextareaField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 				$"\ttextareaField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 				$"\ttextareaField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -8025,9 +8032,9 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				$"\tmultiSelectField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 				$"\tmultiSelectField.Name = \"{currentField.Name}\";\n" +
 				$"\tmultiSelectField.Label = \"{currentField.Label}\";\n" +
-				$"\tmultiSelectField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+				$"\tmultiSelectField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 				$"\tmultiSelectField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-				$"\tmultiSelectField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+				$"\tmultiSelectField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 				$"\tmultiSelectField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 				$"\tmultiSelectField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 				$"\tmultiSelectField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -8222,9 +8229,9 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 	$"\tnumberField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 	$"\tnumberField.Name = \"{currentField.Name}\";\n" +
 	$"\tnumberField.Label = \"{currentField.Label}\";\n" +
-	$"\tnumberField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+	$"\tnumberField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 	$"\tnumberField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-	$"\tnumberField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+	$"\tnumberField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 	$"\tnumberField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tnumberField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tnumberField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -8371,9 +8378,9 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 	$"\tpasswordField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 	$"\tpasswordField.Name = \"{currentField.Name}\";\n" +
 	$"\tpasswordField.Label = \"{currentField.Label}\";\n" +
-	$"\tpasswordField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+	$"\tpasswordField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 	$"\tpasswordField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-	$"\tpasswordField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+	$"\tpasswordField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 	$"\tpasswordField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tpasswordField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tpasswordField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -8514,9 +8521,9 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 	$"\tpercentField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 	$"\tpercentField.Name = \"{currentField.Name}\";\n" +
 	$"\tpercentField.Label = \"{currentField.Label}\";\n" +
-	$"\tpercentField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+	$"\tpercentField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 	$"\tpercentField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-	$"\tpercentField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+	$"\tpercentField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 	$"\tpercentField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tpercentField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tpercentField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -8664,9 +8671,9 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 	$"\tphoneField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 	$"\tphoneField.Name = \"{currentField.Name}\";\n" +
 	$"\tphoneField.Label =  \"{currentField.Label}\";\n" +
-	$"\tphoneField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+	$"\tphoneField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 	$"\tphoneField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-	$"\tphoneField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+	$"\tphoneField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 	$"\tphoneField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tphoneField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tphoneField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -8674,7 +8681,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 	$"\tphoneField.System = {(currentField.System).ToString().ToLowerInvariant()};\n" +
 	$"\tphoneField.DefaultValue = string.IsNullOrEmpty(\"{currentField.DefaultValue}\") ? string.Empty : \"{currentField.DefaultValue}\";\n" +
 	$"\tphoneField.MaxLength = string.IsNullOrEmpty(\"{currentField.MaxLength}\") ? (int?)null : Int32.Parse(\"{currentField.MaxLength}\");\n" +
-	$"\tphoneField.Format = string.IsNullOrEmpty(\"{currentField.Format}\") ? null : \"{currentField.Format}\";\n" +
+	$"\tphoneField.Format = string.IsNullOrEmpty(\"{currentField.Format}\") ? string.Empty : \"{currentField.Format}\";\n" +
 	$"\tphoneField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
 	$"\tphoneField.Permissions = new FieldPermissions();\n" +
 	$"\tphoneField.Permissions.CanRead = new List<Guid>();\n" +
@@ -8808,9 +8815,9 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 	$"\tguidField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 	$"\tguidField.Name = \"{currentField.Name}\";\n" +
 	$"\tguidField.Label = \"{currentField.Label}\";\n" +
-	$"\tguidField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+	$"\tguidField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 	$"\tguidField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-	$"\tguidField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+	$"\tguidField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 	$"\tguidField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tguidField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tguidField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -8947,9 +8954,9 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 	$"\tdropdownField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 	$"\tdropdownField.Name = \"{currentField.Name}\";\n" +
 	$"\tdropdownField.Label = \"{currentField.Label}\";\n" +
-	$"\tdropdownField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+	$"\tdropdownField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 	$"\tdropdownField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-	$"\tdropdownField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+	$"\tdropdownField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 	$"\tdropdownField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 	$"\tdropdownField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 	$"\tdropdownField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -9118,9 +9125,9 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\ttextboxField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 			$"\ttextboxField.Name = \"{currentField.Name}\";\n" +
 			$"\ttextboxField.Label = \"{currentField.Label}\";\n" +
-			$"\ttextboxField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+			$"\ttextboxField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 			$"\ttextboxField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-			$"\ttextboxField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+			$"\ttextboxField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 			$"\ttextboxField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 			$"\ttextboxField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 			$"\ttextboxField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -9258,9 +9265,9 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\turlField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
 			$"\turlField.Name = \"{currentField.Name}\";\n" +
 			$"\turlField.Label = \"{currentField.Label}\";\n" +
-			$"\turlField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? null : \"{currentField.PlaceholderText}\";\n" +
+			$"\turlField.PlaceholderText = string.IsNullOrEmpty(\"{currentField.PlaceholderText}\") ? string.Empty : \"{currentField.PlaceholderText}\";\n" +
 			$"\turlField.Description = string.IsNullOrEmpty(\"{currentField.Description}\") ? string.Empty : \"{currentField.Description}\";\n" +
-			$"\turlField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? null : \"{currentField.HelpText}\";\n" +
+			$"\turlField.HelpText = string.IsNullOrEmpty(\"{currentField.HelpText}\") ? string.Empty : \"{currentField.HelpText}\";\n" +
 			$"\turlField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
 			$"\turlField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
 			$"\turlField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
@@ -9398,7 +9405,6 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 				view.Label = view.Label.Replace("\"", "\\\"");
 			if (view.Title != null)
 				view.Title = view.Title.Replace("\"", "\\\"");
-
 			response +=
 		   $"#region << View  Enity: {entityName} name: {view.Name} >>\n" +
 		   "{\n" +
@@ -9411,17 +9417,60 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			   $"\tcreateViewInput.Label = \"{view.Label}\";\n" +
 			   $"\tcreateViewInput.Title = \"{view.Title}\";\n" +
 			   $"\tcreateViewInput.Default = {(view.Default).ToString().ToLowerInvariant()};\n" +
-			   $"\tcreateViewInput.System = {(view.System).ToString().ToLowerInvariant()};\n" +
-			   $"\tcreateViewInput.Weight = string.IsNullOrEmpty(\"{view.Weight}\") ? (decimal?)null : Decimal.Parse(\"{view.Weight}\");\n" +
-			   $"\tcreateViewInput.CssClass = string.IsNullOrEmpty(\"{view.CssClass}\") ? null : \"{view.CssClass}\";\n" +
-			   $"\tcreateViewInput.IconName = string.IsNullOrEmpty(\"{view.IconName}\") ? null : \"{view.IconName}\";\n" +
-			   $"\tcreateViewInput.DynamicHtmlTemplate = string.IsNullOrEmpty(\"{view.DynamicHtmlTemplate}\") ? null : \"{view.DynamicHtmlTemplate}\";\n" +
-			   $"\tcreateViewInput.DataSourceUrl = string.IsNullOrEmpty(\"{view.DataSourceUrl}\") ? null : \"{view.DataSourceUrl}\";\n" +
-			   $"\tcreateViewInput.ServiceCode =string.IsNullOrEmpty(\"{view.ServiceCode}\") ? null : \"{view.ServiceCode}\";\n" +
-			   $"\t#endregion\n\n" +
-			   //Region
-			   $"\t#region << regions >>\n" +
-			   $"\tcreateViewInput.Regions = new List<InputRecordViewRegion>();\n\n";
+			   $"\tcreateViewInput.System = {(view.System).ToString().ToLowerInvariant()};\n";
+			if (view.Weight == null)
+			{
+				response += $"\tcreateViewInput.Weight = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateViewInput.Weight = Decimal.Parse(\"{view.Weight}\");\n";
+			}
+			if (view.CssClass == null)
+			{
+				response += $"\tcreateViewInput.CssClass = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateViewInput.CssClass = \"{view.CssClass}\";\n";
+			}
+			if (view.IconName == null)
+			{
+				response += $"\tcreateViewInput.IconName = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateViewInput.IconName = \"{view.IconName}\";\n";
+			}
+			if (view.DynamicHtmlTemplate == null)
+			{
+				response += $"\tcreateViewInput.DynamicHtmlTemplate = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateViewInput.DynamicHtmlTemplate = \"{view.DynamicHtmlTemplate}\";\n";
+			}
+			if (view.DataSourceUrl == null)
+			{
+				response += $"\tcreateViewInput.DataSourceUrl = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateViewInput.DataSourceUrl = \"{view.DataSourceUrl}\";\n";
+			}
+			if (view.ServiceCode == null)
+			{
+				response += $"\tcreateViewInput.ServiceCode = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateViewInput.ServiceCode = \"{view.ServiceCode}\";\n";
+			}
+
+			response += $"\t#endregion\n\n" +
+			//Region
+			$"\t#region << regions >>\n" +
+			$"\tcreateViewInput.Regions = new List<InputRecordViewRegion>();\n\n";
 			foreach (var region in view.Regions)
 			{
 				response += CreateViewRegionCode(region, entityId, entityName);
@@ -9475,9 +9524,26 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\tvar viewRegion = new InputRecordViewRegion();\n" +
 			$"\t\t\tviewRegion.Name = \"{region.Name}\";\n" +
 			$"\t\t\tviewRegion.Label = \"{region.Label}\";\n" +
-			$"\t\t\tviewRegion.Render = {(region.Render).ToString().ToLowerInvariant()};\n" +
-			$"\t\t\tviewRegion.Weight = string.IsNullOrEmpty(\"{region.Weight}\") ? (decimal?)null : Decimal.Parse(\"{region.Weight}\");\n" +
-			$"\t\t\tviewRegion.CssClass = string.IsNullOrEmpty(\"{region.CssClass}\") ? null : \"{region.CssClass}\";\n" +
+			$"\t\t\tviewRegion.Render = {(region.Render).ToString().ToLowerInvariant()};\n";
+			if (region.Weight == null)
+			{
+				response += $"\t\t\tviewRegion.Weight = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tviewRegion.Weight = Decimal.Parse(\"{region.Weight}\");\n";
+			}
+			if (region.CssClass == null)
+			{
+				response += $"\t\t\tviewRegion.CssClass = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tviewRegion.CssClass = \"{region.CssClass}\";\n";
+			}
+
+
+			response +=
 			$"\t\t\tviewRegion.Sections = new List<InputRecordViewSection>();\n\n";
 			foreach (var section in region.Sections)
 			{
@@ -9504,11 +9570,38 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\tviewSection.Id = new Guid(\"{section.Id}\");\n" +
 			$"\t\t\tviewSection.Name = \"{section.Name}\";\n" +
 			$"\t\t\tviewSection.Label = \"{section.Label}\";\n" +
-			$"\t\t\tviewSection.ShowLabel = {(section.ShowLabel).ToString().ToLowerInvariant()};\n" +
-			$"\t\t\tviewSection.CssClass = string.IsNullOrEmpty(\"{section.CssClass}\") ? null : \"{section.CssClass}\";\n" +
-			$"\t\t\tviewSection.Collapsed = {(section.Collapsed).ToString().ToLowerInvariant()};\n" +
-			$"\t\t\tviewSection.TabOrder = string.IsNullOrEmpty(\"{section.TabOrder}\") ? null : \"{section.TabOrder}\";\n" +
-			$"\t\t\tviewSection.Weight = string.IsNullOrEmpty(\"{section.Weight}\") ? (decimal?)null : Decimal.Parse(\"{section.Weight}\");\n" +
+			$"\t\t\tviewSection.ShowLabel = {(section.ShowLabel).ToString().ToLowerInvariant()};\n";
+			if (section.CssClass == null)
+			{
+				response += $"\t\t\tviewSection.CssClass = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tviewSection.CssClass = \"{section.CssClass}\";\n";
+			}
+
+			response +=
+			$"\t\t\tviewSection.Collapsed = {(section.Collapsed).ToString().ToLowerInvariant()};\n";
+
+			if (section.TabOrder == null)
+			{
+				response += $"\t\t\tviewSection.TabOrder = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tviewSection.TabOrder = \"{section.TabOrder}\";\n";
+			}
+			if (section.Weight == null)
+			{
+				response += $"\t\t\tviewSection.Weight = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tviewSection.Weight = Decimal.Parse(\"{section.Weight}\");\n";
+			}
+
+
+			response +=
 			$"\t\t\tviewSection.Rows = new List<InputRecordViewRow>();\n\n";
 			var rowIndex = 1;
 			foreach (var row in section.Rows)
@@ -9533,8 +9626,18 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\t\t#region << Row {rowIndex}>>\n" +
 			"\t\t\t\t{\n" +
 			"\t\t\t\t\tvar viewRow = new InputRecordViewRow();\n" +
-			$"\t\t\t\t\tviewRow.Id = new Guid(\"{row.Id}\");\n" +
-			$"\t\t\t\t\tviewRow.Weight = string.IsNullOrEmpty(\"{row.Weight}\") ? (decimal?)null : Decimal.Parse(\"{row.Weight}\");\n" +
+			$"\t\t\t\t\tviewRow.Id = new Guid(\"{row.Id}\");\n";
+
+			if (row.Weight == null)
+			{
+				response += $"\t\t\t\t\tviewRow.Weight = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\tviewRow.Weight = Decimal.Parse(\"{row.Weight}\");\n";
+			}
+
+			response +=
 			$"\t\t\t\t\tviewRow.Columns = new List<InputRecordViewColumn>();\n\n";
 			var colIndex = 1;
 			foreach (var column in row.Columns)
@@ -9557,8 +9660,17 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			response +=
 			$"\t\t\t\t\t#region << Column {colIndex} >>\n" +
 			"\t\t\t\t\t{\n" +
-			$"\t\t\t\t\tvar viewColumn = new InputRecordViewColumn();\n" +
-			$"\t\t\t\t\tviewColumn.GridColCount = string.IsNullOrEmpty(\"{column.GridColCount}\") ? (int?)null : Int32.Parse(\"{column.GridColCount}\");\n" +
+			$"\t\t\t\t\tvar viewColumn = new InputRecordViewColumn();\n";
+			if (column.GridColCount == null)
+			{
+				response += $"\t\t\t\t\tviewColumn.GridColCount = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\tviewColumn.GridColCount = Int32.Parse(\"{column.GridColCount}\");\n";
+			}
+
+			response +=
 			$"\t\t\t\t\tviewColumn.Items = new List<InputRecordViewItemBase>();\n\n";
 			foreach (var item in column.Items)
 			{
@@ -9643,7 +9755,16 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			var response = string.Empty;
 			var currentRelation = relMan.Read(fieldItem.RelationId).Object;
 			var relatedEntity = entMan.ReadEntity(fieldItem.EntityId).Object;
-			var relatedField = relatedEntity.Fields.Single(x => x.Id == fieldItem.FieldId);
+			var relatedField = relatedEntity.Fields.SingleOrDefault(x => x.Id == fieldItem.FieldId);
+
+			if (relatedField == null)
+			{
+				response += "\t\t\t\t\t/////////////////////////////////////////////////////////////////////////////\n";
+				response += $"\t\t\t\t\t//WARNING: Field not found - fieldId {fieldItem.FieldId} and entity {relatedEntity.Name}\n";
+				response += "\t\t\t\t\t/////////////////////////////////////////////////////////////////////////////\n";
+				return response;
+			}
+
 			response +=
 			$"\t\t\t\t\t#region << field from Relation: {relatedField.Name} >>\n" +
 			"\t\t\t\t\t{\n" +
@@ -9652,10 +9773,32 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 				$"\t\t\t\t\t\tviewItemFromRelation.EntityName = \"{relatedEntity.Name}\";\n" +
 				$"\t\t\t\t\t\tviewItemFromRelation.Type = \"fieldFromRelation\";\n" +
 				$"\t\t\t\t\t\tviewItemFromRelation.FieldId = new Guid(\"{relatedField.Id}\");\n" +
-				$"\t\t\t\t\t\tviewItemFromRelation.FieldName = \"{relatedField.Name}\";\n" +
-				$"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{fieldItem.FieldLabel}\";\n" +
-				$"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{fieldItem.FieldPlaceholder}\";\n" +
-				$"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{fieldItem.FieldHelpText}\";\n" +
+				$"\t\t\t\t\t\tviewItemFromRelation.FieldName = \"{relatedField.Name}\";\n";
+				if(fieldItem.FieldLabel == null)
+				{
+					response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = null;\n";
+				}
+				else
+				{
+					response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{fieldItem.FieldLabel}\";\n";
+				}
+				if(fieldItem.FieldPlaceholder == null)
+				{
+					response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = null;\n";
+				}
+				else
+				{
+					response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{fieldItem.FieldPlaceholder}\";\n";
+				}
+				if(fieldItem.FieldHelpText == null )
+				{
+					response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = null;\n";
+				}
+				else
+				{
+					response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{fieldItem.FieldHelpText}\";\n";
+				}
+				response +=
 				$"\t\t\t\t\t\tviewItemFromRelation.FieldRequired = {(fieldItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
 				$"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = \"{fieldItem.FieldLookupList}\";\n" +
 				$"\t\t\t\t\t\tviewItemFromRelation.RelationId = new Guid(\"{fieldItem.RelationId}\");\n" +
@@ -9699,10 +9842,32 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.EntityId = new Guid(\"{recordViewItem.EntityId}\");\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.EntityName = \"{relatedEntity.Name}\";\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.ViewId = new Guid(\"{recordViewItem.ViewId}\");\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.ViewName = \"{relatedView.Name}\";\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{recordViewItem.FieldLabel}\";\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{recordViewItem.FieldPlaceholder}\";\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{recordViewItem.FieldHelpText}\";\n" +
+			$"\t\t\t\t\t\tviewItemFromRelation.ViewName = \"{relatedView.Name}\";\n";
+			if(recordViewItem.FieldLabel == null)
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{recordViewItem.FieldLabel}\";\n";
+			}
+			if(recordViewItem.FieldPlaceholder == null)
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{recordViewItem.FieldPlaceholder}\";\n";
+			}
+			if(recordViewItem.FieldHelpText == null )
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{recordViewItem.FieldHelpText}\";\n";
+			}
+			response +=
 			$"\t\t\t\t\t\tviewItemFromRelation.FieldRequired = {(recordViewItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = \"{recordViewItem.FieldLookupList}\";\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.RelationId = new Guid(\"{recordViewItem.RelationId}\");\n" +
@@ -9748,10 +9913,32 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.EntityId = new Guid(\"{listItem.EntityId}\");\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.EntityName = \"{relatedEntity.Name}\";\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.ListId = new Guid(\"{listItem.ListId}\");\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.ListName = \"{relatedList.Name}\";\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{listItem.FieldLabel}\";\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{listItem.FieldPlaceholder}\";\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{listItem.FieldHelpText}\";\n" +
+			$"\t\t\t\t\t\tviewItemFromRelation.ListName = \"{relatedList.Name}\";\n";
+			if(listItem.FieldLabel == null)
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{listItem.FieldLabel}\";\n";
+			}
+			if(listItem.FieldPlaceholder == null)
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{listItem.FieldPlaceholder}\";\n";
+			}
+			if(listItem.FieldHelpText == null )
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{listItem.FieldHelpText}\";\n";
+			}
+			response +=
 			$"\t\t\t\t\t\tviewItemFromRelation.FieldRequired = {(listItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = \"{listItem.FieldLookupList}\";\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.RelationId = new Guid(\"{listItem.RelationId}\");\n" +
@@ -9776,10 +9963,32 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.EntityId = new Guid(\"{treeItem.EntityId}\");\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.EntityName = \"{relatedEntity.Name}\";\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.TreeId = new Guid(\"{treeItem.TreeId}\");\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.TreeName = \"{relatedTree.Name}\";\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{treeItem.FieldLabel}\";\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{treeItem.FieldPlaceholder}\";\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{treeItem.FieldHelpText}\";\n" +
+			$"\t\t\t\t\t\tviewItemFromRelation.TreeName = \"{relatedTree.Name}\";\n";
+			if(treeItem.FieldLabel == null)
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{treeItem.FieldLabel}\";\n";
+			}
+			if(treeItem.FieldPlaceholder == null)
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{treeItem.FieldPlaceholder}\";\n";
+			}
+			if(treeItem.FieldHelpText == null )
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{treeItem.FieldHelpText}\";\n";
+			}
+			response +=
 			$"\t\t\t\t\t\tviewItemFromRelation.FieldRequired = {(treeItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.RelationId = new Guid(\"{treeItem.RelationId}\");\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
@@ -9795,18 +10004,29 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 		{
 			var response = string.Empty;
 
-			if(sidebar == null) {
+			if (sidebar == null)
+			{
 				response +=
-				"\t#region << Sidebar >>\n" +	
-				$"\tcreateViewInput.Sidebar.Items = new List<InputRecordViewSidebarItemBase>();\n\n" +		
+				"\t#region << Sidebar >>\n" +
+				$"\tcreateViewInput.Sidebar.CssClass = \"\";\n" +
+				$"\tcreateViewInput.Sidebar.Render = true;\n" +
+				$"\tcreateViewInput.Sidebar.Items = new List<InputRecordViewSidebarItemBase>();\n\n" +
 				"\t#endregion\n";
-				return response;	
+				return response;
 			}
-		
+
 			response +=
 			"\t#region << Sidebar >>\n" +
-			"\tcreateViewInput.Sidebar = new InputRecordViewSidebar();\n" +
-			$"\tcreateViewInput.Sidebar.CssClass = string.IsNullOrEmpty(\"{sidebar.CssClass}\") ? null : \"{sidebar.CssClass}\";\n" +
+			"\tcreateViewInput.Sidebar = new InputRecordViewSidebar();\n";
+			if (sidebar.CssClass == null)
+			{
+				response += $"\tcreateViewInput.Sidebar.CssClass = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateViewInput.Sidebar.CssClass = \"{sidebar.CssClass}\";\n";
+			}
+			response +=
 			$"\tcreateViewInput.Sidebar.Render = {(sidebar.Render).ToString().ToLowerInvariant()};\n" +
 			$"\tcreateViewInput.Sidebar.Items = new List<InputRecordViewSidebarItemBase>();\n\n";
 			foreach (var item in sidebar.Items)
@@ -9880,10 +10100,32 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\tviewItemFromRelation.EntityId = new Guid(\"{entityId}\");\n" +
 			$"\t\t\tviewItemFromRelation.EntityName = \"{entityName}\";\n" +
 			$"\t\t\tviewItemFromRelation.ViewId = new Guid(\"{recordViewItem.ViewId}\");\n" +
-			$"\t\t\tviewItemFromRelation.ViewName =\"{relatedView.Name}\";\n" +
-			$"\t\t\tviewItemFromRelation.FieldLabel = \"{recordViewItem.FieldLabel}\";\n" +
-			$"\t\t\tviewItemFromRelation.FieldPlaceholder = \"{recordViewItem.FieldPlaceholder}\";\n" +
-			$"\t\t\tviewItemFromRelation.FieldHelpText = \"{recordViewItem.FieldHelpText}\";\n" +
+			$"\t\t\tviewItemFromRelation.ViewName =\"{relatedView.Name}\";\n";
+			if(recordViewItem.FieldLabel == null)
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{recordViewItem.FieldLabel}\";\n";
+			}
+			if(recordViewItem.FieldPlaceholder == null)
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{recordViewItem.FieldPlaceholder}\";\n";
+			}
+			if(recordViewItem.FieldHelpText == null )
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{recordViewItem.FieldHelpText}\";\n";
+			}
+			response +=
 			$"\t\t\tviewItemFromRelation.FieldRequired = {(recordViewItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
 			$"\t\t\tviewItemFromRelation.FieldLookupList = \"{recordViewItem.FieldLookupList}\";\n" +
 			$"\t\t\tviewItemFromRelation.RelationId = new Guid(\"{recordViewItem.RelationId}\");\n" +
@@ -9931,10 +10173,32 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\tviewItemFromRelation.EntityId = new Guid(\"{entityId}\");\n" +
 			$"\t\t\tviewItemFromRelation.EntityName = \"{entityName}\";\n" +
 			$"\t\t\tviewItemFromRelation.ListId = new Guid(\"{listItem.ListId}\");\n" +
-			$"\t\t\tviewItemFromRelation.ListName =\"{relatedList.Name}\";\n" +
-			$"\t\t\tviewItemFromRelation.FieldLabel = \"{listItem.FieldLabel}\";\n" +
-			$"\t\t\tviewItemFromRelation.FieldPlaceholder = \"{listItem.FieldPlaceholder}\";\n" +
-			$"\t\t\tviewItemFromRelation.FieldHelpText = \"{listItem.FieldHelpText}\";\n" +
+			$"\t\t\tviewItemFromRelation.ListName =\"{relatedList.Name}\";\n";
+			if(listItem.FieldLabel == null)
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{listItem.FieldLabel}\";\n";
+			}
+			if(listItem.FieldPlaceholder == null)
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{listItem.FieldPlaceholder}\";\n";
+			}
+			if(listItem.FieldHelpText == null )
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{listItem.FieldHelpText}\";\n";
+			}
+			response +=
 			$"\t\t\tviewItemFromRelation.FieldRequired = {(listItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
 			$"\t\t\tviewItemFromRelation.FieldLookupList = \"{listItem.FieldLookupList}\";\n" +
 			$"\t\t\tviewItemFromRelation.RelationId = new Guid(\"{listItem.RelationId}\");\n" +
@@ -9960,10 +10224,32 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\tviewItemFromRelation.EntityId = new Guid(\"{entityId}\");\n" +
 			$"\t\t\tviewItemFromRelation.EntityName = \"{entityName}\";\n" +
 			$"\t\t\tviewItemFromRelation.TreeId = new Guid(\"{treeItem.TreeId}\");\n" +
-			$"\t\t\tviewItemFromRelation.TreeName =\"{relatedTree.Name}\";\n" +
-			$"\t\t\tviewItemFromRelation.FieldLabel = \"{treeItem.FieldLabel}\";\n" +
-			$"\t\t\tviewItemFromRelation.FieldPlaceholder = \"{treeItem.FieldPlaceholder}\";\n" +
-			$"\t\t\tviewItemFromRelation.FieldHelpText = \"{treeItem.FieldHelpText}\";\n" +
+			$"\t\t\tviewItemFromRelation.TreeName =\"{relatedTree.Name}\";\n";
+			if(treeItem.FieldLabel == null)
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{treeItem.FieldLabel}\";\n";
+			}
+			if(treeItem.FieldPlaceholder == null)
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{treeItem.FieldPlaceholder}\";\n";
+			}
+			if(treeItem.FieldHelpText == null )
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{treeItem.FieldHelpText}\";\n";
+			}
+			response +=
 			$"\t\t\tviewItemFromRelation.FieldRequired = {(treeItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
 			$"\t\t\tviewItemFromRelation.RelationId = new Guid(\"{treeItem.RelationId}\");\n" +
 			$"\t\t\tviewItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
@@ -9985,9 +10271,18 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			"\t\t{\n" +
 			"\t\t\tvar actionItem = new ActionItem();\n" +
 			$"\t\t\tactionItem.Name = \"{actionItem.Name}\";\n" +
-			$"\t\t\tactionItem.Menu = \"{actionItem.Menu}\";\n" +
-			$"\t\t\tactionItem.Weight = string.IsNullOrEmpty(\"{actionItem.Weight}\") ? (decimal?)null : Decimal.Parse(\"{actionItem.Weight}\");\n" +
-			$"\t\t\tactionItem.Template =  @\"{actionItem.Template.Replace("\"", "\"\"")}\";\n" +
+			$"\t\t\tactionItem.Menu = \"{actionItem.Menu}\";\n";
+			if (actionItem.Weight == null)
+			{
+				response += $"\t\t\tactionItem.Weight = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tactionItem.Weight = Decimal.Parse(\"{actionItem.Weight}\");\n";
+			}
+
+			response +=
+			$"\t\t\tactionItem.Template = @\"{actionItem.Template.Replace("\"", "\"\"").Replace(System.Environment.NewLine, "\n")}\";\n" +
 			$"\t\t\tcreateViewInput.ActionItems.Add(actionItem);\n" +
 			"\t\t}\n" +
 			"\t\t#endregion\n\n";
@@ -10052,25 +10347,78 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 		   $"#region << Update  Enity: {currentEntity.Name} View: {currentView.Name} >>\n" +
 		   "{\n" +
 			   $"\tvar updateViewEntity = entMan.ReadEntity(new Guid(\"{currentEntity.Id}\")).Object;\n" +
-			   $"\tvar updateViewInput = new InputRecordView();\n\n" +
+			   $"\tvar createViewInput = new InputRecordView();\n\n" +
 			   $"\t#region << details >>\n" +
-			   $"\tupdateViewInput.Id = updateViewEntity.RecordViews.SingleOrDefault(x => x.Name == \"{currentView.Name}\").Id;\n" +
-			   $"\tupdateViewInput.Type = \"{currentView.Type}\";\n" +
-			   $"\tupdateViewInput.Name = \"{currentView.Name}\";\n" +
-			   $"\tupdateViewInput.Label = \"{currentView.Label}\";\n" +
-			   $"\tupdateViewInput.Title = \"{currentView.Title}\";\n" +
-			   $"\tupdateViewInput.Default = {(currentView.Default).ToString().ToLowerInvariant()};\n" +
-			   $"\tupdateViewInput.System = {(currentView.System).ToString().ToLowerInvariant()};\n" +
-			   $"\tupdateViewInput.Weight = string.IsNullOrEmpty(\"{currentView.Weight}\") ? (decimal?)null : Decimal.Parse(\"{currentView.Weight}\");\n" +
-			   $"\tupdateViewInput.CssClass = string.IsNullOrEmpty(\"{currentView.CssClass}\") ? null : \"{currentView.CssClass}\";\n" +
-			   $"\tupdateViewInput.IconName = string.IsNullOrEmpty(\"{currentView.IconName}\") ? null : \"{currentView.IconName}\";\n" +
-			   $"\tupdateViewInput.DynamicHtmlTemplate = string.IsNullOrEmpty(\"{currentView.DynamicHtmlTemplate}\") ? null : \"{currentView.DynamicHtmlTemplate}\";\n" +
-			   $"\tupdateViewInput.DataSourceUrl = string.IsNullOrEmpty(\"{currentView.DataSourceUrl}\") ? null : \"{currentView.DataSourceUrl}\";\n" +
-			   $"\tupdateViewInput.ServiceCode =string.IsNullOrEmpty(\"{currentView.ServiceCode}\") ? null : \"{currentView.ServiceCode}\";\n" +
-			   $"\t#endregion\n\n" +
-			   //Region
-			   $"\t#region << regions >>\n" +
-			   $"\tupdateViewInput.Regions = new List<InputRecordViewRegion>();\n\n";
+			   $"\tcreateViewInput.Id = updateViewEntity.RecordViews.SingleOrDefault(x => x.Name == \"{currentView.Name}\").Id;\n" +
+			   $"\tcreateViewInput.Type = \"{currentView.Type}\";\n" +
+			   $"\tcreateViewInput.Name = \"{currentView.Name}\";\n" +
+			   $"\tcreateViewInput.Label = \"{currentView.Label}\";\n";
+
+			if (currentView.Title == null)
+			{
+				code += $"\tcreateViewInput.Title = null;\n";
+			}
+			else
+			{
+				code += $"\tcreateViewInput.Title = \"{currentView.Title}\";\n";
+			}
+			code +=
+			$"\tcreateViewInput.Default = {(currentView.Default).ToString().ToLowerInvariant()};\n" +
+			$"\tcreateViewInput.System = {(currentView.System).ToString().ToLowerInvariant()};\n";
+			if (currentView.Weight == null)
+			{
+				code += $"\tcreateViewInput.Weight = null;\n";
+			}
+			else
+			{
+				code += $"\tcreateViewInput.Weight = Decimal.Parse(\"{currentView.Weight}\");\n";
+			}
+			if (currentView.CssClass == null)
+			{
+				code += $"\tcreateViewInput.CssClass = null;\n";
+			}
+			else
+			{
+				code += $"\tcreateViewInput.CssClass = \"{currentView.CssClass}\";\n";
+			}
+			if (currentView.IconName == null)
+			{
+				code += $"\tcreateViewInput.IconName = null;\n";
+			}
+			else
+			{
+				code += $"\tcreateViewInput.IconName = \"{currentView.IconName}\";\n";
+			}
+			if (currentView.DynamicHtmlTemplate == null)
+			{
+				code += $"\tcreateViewInput.DynamicHtmlTemplate = null;\n";
+			}
+			else
+			{
+				code += $"\tcreateViewInput.DynamicHtmlTemplate = \"{currentView.DynamicHtmlTemplate}\";\n";
+			}
+			if (currentView.DataSourceUrl == null)
+			{
+				code += $"\tcreateViewInput.DataSourceUrl = null;\n";
+			}
+			else
+			{
+				code += $"\tcreateViewInput.DataSourceUrl = \"{currentView.DataSourceUrl}\";\n";
+			}
+			if (currentView.ServiceCode == null)
+			{
+				code += $"\tcreateViewInput.ServiceCode = null;\n";
+			}
+			else
+			{
+				code += $"\tcreateViewInput.ServiceCode = \"{currentView.ServiceCode}\";\n";
+			}
+
+			code +=
+			$"\t#endregion\n\n" +
+			//Region
+			$"\t#region << regions >>\n" +
+			$"\tcreateViewInput.Regions = new List<InputRecordViewRegion>();\n\n";
 			foreach (var region in currentView.Regions)
 			{
 				code += CreateViewRegionCode(region, currentEntity.Id, currentEntity.Name);
@@ -10081,7 +10429,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			code +=
 			$"\t#region << Relation options >>\n" +
 			"\t{\n" +
-			$"\tupdateViewInput.RelationOptions = new List<EntityRelationOptionsItem>();\n";
+			$"\tcreateViewInput.RelationOptions = new List<EntityRelationOptionsItem>();\n";
 			foreach (var relationOption in currentView.RelationOptions)
 			{
 				code += CreateRelationOptionCode(relationOption, currentEntity.Id, currentEntity.Name);
@@ -10093,7 +10441,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			code +=
 			$"\t#region << Action items >>\n" +
 			"\t{\n" +
-			$"\tupdateViewInput.ActionItems = new List<ActionItem>();\n\n";
+			$"\tcreateViewInput.ActionItems = new List<ActionItem>();\n\n";
 			foreach (var actionItem in currentView.ActionItems)
 			{
 				code += CreateViewActionItemCode(actionItem, currentEntity.Id, currentEntity.Name);
@@ -10104,7 +10452,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			code += CreateViewSidebarCode(currentView.Sidebar, currentEntity.Id, currentEntity.Name);
 			code +=
 			"\t{\n" +
-				$"\t\tvar response = entMan.UpdateRecordView(new Guid(\"{currentEntity.Id}\"), updateViewInput);\n" +
+				$"\t\tvar response = entMan.UpdateRecordView(new Guid(\"{currentEntity.Id}\"), createViewInput);\n" +
 				$"\t\tif (!response.Success)\n" +
 					$"\t\t\tthrow new Exception(\"System error 10060. Entity: {currentEntity.Name} Updated view: {oldView.Name} Message:\" + response.Message);\n" +
 			"\t}\n" +
@@ -10210,21 +10558,99 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\tcreateListInput.Id = new Guid(\"{list.Id}\");\n" +
 			$"\tcreateListInput.Type =  \"{list.Type}\";\n" +
 			$"\tcreateListInput.Name = \"{list.Name}\";\n" +
-			$"\tcreateListInput.Label = \"{list.Label}\";\n" +
-			$"\tcreateListInput.Title = \"{list.Title}\";\n" +
-			$"\tcreateListInput.Weight = string.IsNullOrEmpty(\"{list.Weight}\") ? (decimal?)null : Decimal.Parse(\"{list.Weight}\");\n" +
-			$"\tcreateListInput.Default = {(list.Default).ToString().ToLowerInvariant()};\n" +
-			$"\tcreateListInput.System = {(list.System).ToString().ToLowerInvariant()};\n" +
-			$"\tcreateListInput.CssClass = string.IsNullOrEmpty(\"{list.CssClass}\") ? null : \"{list.CssClass}\";\n" +
-			$"\tcreateListInput.IconName = string.IsNullOrEmpty(\"{list.IconName}\") ? null : \"{list.IconName}\";\n" +
-			$"\tcreateListInput.VisibleColumnsCount = string.IsNullOrEmpty(\"{list.VisibleColumnsCount}\") ? (int?)null : Int32.Parse(\"{list.VisibleColumnsCount}\");\n" +
-			$"\tcreateListInput.ColumnWidthsCSV = string.IsNullOrEmpty(\"{list.ColumnWidthsCSV}\") ? null : \"{list.ColumnWidthsCSV}\";\n" +
-			$"\tcreateListInput.PageSize = string.IsNullOrEmpty(\"{list.PageSize}\") ? (int?)null : Int32.Parse(\"{list.PageSize}\");\n" +
-			$"\tcreateListInput.DynamicHtmlTemplate = string.IsNullOrEmpty(\"{list.DynamicHtmlTemplate}\") ? null : \"{list.DynamicHtmlTemplate}\";\n" +
-			$"\tcreateListInput.DataSourceUrl = string.IsNullOrEmpty(\"{list.DataSourceUrl}\") ? null : \"{list.DataSourceUrl}\";\n" +
-			$"\tcreateListInput.ServiceCode = string.IsNullOrEmpty(\"{list.ServiceCode}\") ? null : \"{list.ServiceCode}\";\n" +
-			$"\t#endregion\n\n";
+			$"\tcreateListInput.Label = \"{list.Label}\";\n";
+			if (list.Title == null)
+			{
+				response += $"\tcreateListInput.Title = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateListInput.Title = \"{list.Title}\";\n";
+			}
 
+			if (list.Weight == null)
+			{
+				response += $"\tcreateListInput.Weight = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateListInput.Weight = Decimal.Parse(\"{list.Weight}\");\n";
+			}
+			response +=
+			$"\tcreateListInput.Default = {(list.Default).ToString().ToLowerInvariant()};\n" +
+			$"\tcreateListInput.System = {(list.System).ToString().ToLowerInvariant()};\n";
+
+			if (list.CssClass == null)
+			{
+				response += $"\tcreateListInput.CssClass = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateListInput.CssClass = \"{list.CssClass}\";\n";
+			}
+
+			if (list.IconName == null)
+			{
+				response += $"\tcreateListInput.IconName = string.IsNullOrEmpty(\"{list.IconName}\") ? string.Empty : \"{list.IconName}\";\n";
+			}
+			else
+			{
+				response += $"\tcreateListInput.IconName = string.IsNullOrEmpty(\"{list.IconName}\") ? string.Empty : \"{list.IconName}\";\n";
+			}
+
+			if (list.VisibleColumnsCount == null)
+			{
+				response += $"\tcreateListInput.VisibleColumnsCount = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateListInput.VisibleColumnsCount = Int32.Parse(\"{list.VisibleColumnsCount}\");\n";
+			}
+
+			if (list.ColumnWidthsCSV == null)
+			{
+				response += $"\tcreateListInput.ColumnWidthsCSV = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateListInput.ColumnWidthsCSV = \"{list.ColumnWidthsCSV}\";\n";
+			}
+
+			if (list.PageSize == null)
+			{
+				response += $"\tcreateListInput.PageSize = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateListInput.PageSize = Int32.Parse(\"{list.PageSize}\");\n";
+			}
+			if (list.DynamicHtmlTemplate == null)
+			{
+				response += $"\tcreateListInput.DynamicHtmlTemplate = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateListInput.DynamicHtmlTemplate = \"{list.DynamicHtmlTemplate}\";\n";
+			}
+			if (list.DataSourceUrl == null)
+			{
+				response += $"\tcreateListInput.DataSourceUrl = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateListInput.DataSourceUrl = \"{list.DataSourceUrl}\";\n";
+			}
+			if (list.ServiceCode == null)
+			{
+				response += $"\tcreateListInput.ServiceCode = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateListInput.ServiceCode = \"{list.ServiceCode}\";\n";
+			}
+
+			response +=
+			$"\t#endregion\n\n";
 
 			//Relation options
 			response +=
@@ -10279,10 +10705,33 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 				$"\tcreateListInput.Query = new InputRecordListQuery();\n" +
 				$"\tvar queryDictionary = new Dictionary<Guid,InputRecordListQuery>();\n" +
 				$"\tvar subQueryDictionary = new Dictionary<Guid,List<InputRecordListQuery>>();\n" +
-				$"\t//Main query rule\n" +
-				$"\tcreateListInput.Query.FieldName = string.IsNullOrEmpty(\"{list.Query.FieldName}\") ? \"\" : \"{list.Query.FieldName}\";\n" +
-				$"\tcreateListInput.Query.FieldValue =  string.IsNullOrEmpty(\"{list.Query.FieldValue}\") ? \"\" : \"{list.Query.FieldValue}\";\n" +
-				$"\tcreateListInput.Query.QueryType = string.IsNullOrEmpty(\"{list.Query.QueryType}\") ? \"\" : \"{list.Query.QueryType}\";\n" +
+				$"\t//Main query rule\n";
+				if (list.Query.FieldName == null)
+				{
+					response += $"\tcreateListInput.Query.FieldName = null;\n";
+				}
+				else
+				{
+					response += $"\tcreateListInput.Query.FieldName = \"{list.Query.FieldName}\";\n";
+				}
+				if (list.Query.FieldValue == null)
+				{
+					response += $"\tcreateListInput.Query.FieldValue =  null;\n";
+				}
+				else
+				{
+					response += $"\tcreateListInput.Query.FieldValue =  \"{list.Query.FieldValue}\";\n";
+				}
+				if (list.Query.QueryType == null)
+				{
+					response += $"\tcreateListInput.Query.QueryType = null;\n";
+				}
+				else
+				{
+					response += $"\tcreateListInput.Query.QueryType = \"{list.Query.QueryType}\";\n";
+				}
+
+				response +=
 				$"\tcreateListInput.Query.SubQueries = new List<InputRecordListQuery>();\n";
 				var nodeId = Guid.NewGuid();
 				foreach (var query in list.Query.SubQueries)
@@ -10332,9 +10781,18 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			"\t\t{\n" +
 			"\t\t\tvar actionItem = new ActionItem();\n" +
 			$"\t\t\tactionItem.Name = \"{actionItem.Name}\";\n" +
-			$"\t\t\tactionItem.Menu = \"{actionItem.Menu}\";\n" +
-			$"\t\t\tactionItem.Weight = string.IsNullOrEmpty(\"{actionItem.Weight}\") ? (decimal?)null : Decimal.Parse(\"{actionItem.Weight}\");\n" +
-			$"\t\t\tactionItem.Template = @\"{actionItem.Template.Replace("\"", "\"\"")}\";\n" +
+			$"\t\t\tactionItem.Menu = \"{actionItem.Menu}\";\n";
+			if (actionItem.Weight == null)
+			{
+				response += $"\t\t\tactionItem.Weight = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tactionItem.Weight = Decimal.Parse(\"{actionItem.Weight}\");\n";
+			}
+
+			response +=
+			$"\t\t\tactionItem.Template = @\"{actionItem.Template.Replace("\"", "\"\"").Replace(System.Environment.NewLine, "\n")}\";\n" +
 			$"\t\t\tcreateListInput.ActionItems.Add(actionItem);\n" +
 			"\t\t}\n" +
 			"\t\t#endregion\n\n";
@@ -10345,6 +10803,10 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 		private string CreateListColumnCode(DbRecordListItemBase item, Guid entityId, string entityName, string ListName)
 		{
 			var response = string.Empty;
+			if (entityName == "wv_project_attachment")
+			{
+				var bb = 0;
+			}
 			if (item is DbRecordListFieldItem)
 			{
 				response += CreateRecordListFieldItemCode(item as DbRecordListFieldItem, entityId, entityName);
@@ -10405,26 +10867,64 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			var currentRelation = relMan.Read(fieldItem.RelationId).Object;
 			var relatedEntity = entMan.ReadEntity(fieldItem.EntityId).Object;
 			var relatedField = relatedEntity.Fields.SingleOrDefault(x => x.Id == fieldItem.FieldId);
-			if(relatedField == null) {
+			if (relatedField == null)
+			{
 				response += "/////////////////////////////////////////////////////////////////////////////\n";
-				response += "//WARNING: Field from relation was not found: fieldId: " + fieldItem.FieldId + " in entity: " + entityName + "\n";
+				response += "//WARNING: Field from relation was not found: fieldId: " + fieldItem.FieldId + " in entity: " + relatedEntity.Name + "\n";
 				response += "/////////////////////////////////////////////////////////////////////////////\n";
+				return response;
 			}
-			else {
-			response +=
-			$"\t\t#region << field from Relation: {relatedField.Name} >>\n" +
-			"\t\t{\n" +
-				"\t\t\tvar listItemFromRelation = new InputRecordListRelationFieldItem();\n" +
-				$"\t\t\tlistItemFromRelation.EntityId = new Guid(\"{fieldItem.EntityId}\");\n" +
-				$"\t\t\tlistItemFromRelation.EntityName = \"{relatedEntity.Name}\";\n" +
-				$"\t\t\tlistItemFromRelation.Type = \"fieldFromRelation\";\n" +
-				$"\t\t\tlistItemFromRelation.FieldId = new Guid(\"{relatedField.Id}\");\n" +
-				$"\t\t\tlistItemFromRelation.FieldName = \"{relatedField.Name}\";\n" +
-				$"\t\t\tlistItemFromRelation.FieldLabel = \"{fieldItem.FieldLabel}\";\n" +
-				$"\t\t\tlistItemFromRelation.FieldPlaceholder = \"{fieldItem.FieldPlaceholder}\";\n" +
-				$"\t\t\tlistItemFromRelation.FieldHelpText = \"{fieldItem.FieldHelpText}\";\n" +
-				$"\t\t\tlistItemFromRelation.FieldRequired = {(fieldItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
-				$"\t\t\tlistItemFromRelation.FieldLookupList = \"{fieldItem.FieldLookupList}\";\n" +
+			else
+			{
+				response +=
+				$"\t\t#region << field from Relation: {relatedField.Name} >>\n" +
+				"\t\t{\n" +
+					"\t\t\tvar listItemFromRelation = new InputRecordListRelationFieldItem();\n" +
+					$"\t\t\tlistItemFromRelation.EntityId = new Guid(\"{fieldItem.EntityId}\");\n" +
+					$"\t\t\tlistItemFromRelation.EntityName = \"{relatedEntity.Name}\";\n" +
+					$"\t\t\tlistItemFromRelation.Type = \"fieldFromRelation\";\n" +
+					$"\t\t\tlistItemFromRelation.FieldId = new Guid(\"{relatedField.Id}\");\n" +
+					$"\t\t\tlistItemFromRelation.FieldName = \"{relatedField.Name}\";\n";
+
+				if (fieldItem.FieldLabel == null)
+				{
+					response += $"\t\t\tlistItemFromRelation.FieldLabel = null;\n";
+				}
+				else
+				{
+					response += $"\t\t\tlistItemFromRelation.FieldLabel = \"{fieldItem.FieldLabel}\";\n";
+				}
+
+				if (fieldItem.FieldPlaceholder == null)
+				{
+					response += $"\t\t\tlistItemFromRelation.FieldPlaceholder = null;\n";
+				}
+				else
+				{
+					response += $"\t\t\tlistItemFromRelation.FieldPlaceholder = \"{fieldItem.FieldPlaceholder}\";\n";
+				}
+
+				if (fieldItem.FieldHelpText == null)
+				{
+					response += $"\t\t\tlistItemFromRelation.FieldHelpText = null;\n";
+				}
+				else
+				{
+					response += $"\t\t\tlistItemFromRelation.FieldHelpText = \"{fieldItem.FieldHelpText}\";\n";
+				}
+
+
+				response +=
+				$"\t\t\tlistItemFromRelation.FieldRequired = {(fieldItem.FieldRequired).ToString().ToLowerInvariant()};\n";
+				if (fieldItem.FieldLookupList == null)
+				{
+					response += $"\t\t\tlistItemFromRelation.FieldLookupList = null;\n";
+				}
+				else
+				{
+					response += $"\t\t\tlistItemFromRelation.FieldLookupList = \"{fieldItem.FieldLookupList}\";\n";
+				}
+				response +=
 				$"\t\t\tlistItemFromRelation.RelationId = new Guid(\"{fieldItem.RelationId}\");\n" +
 				$"\t\t\tlistItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
 				$"\t\t\tcreateListInput.Columns.Add(listItemFromRelation);\n" +
@@ -10469,12 +10969,47 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\tlistItemFromRelation.EntityId = new Guid(\"{recordListItem.EntityId}\");\n" +
 			$"\t\t\tlistItemFromRelation.EntityName = \"{relatedEntity.Name}\";\n" +
 			$"\t\t\tlistItemFromRelation.ViewId = new Guid(\"{recordListItem.ViewId}\");\n" +
-			$"\t\t\tlistItemFromRelation.ViewName = \"{relatedView.Name}\";\n" +
-			$"\t\t\tlistItemFromRelation.FieldLabel = \"{recordListItem.FieldLabel}\";\n" +
-			$"\t\t\tlistItemFromRelation.FieldPlaceholder = \"{recordListItem.FieldPlaceholder}\";\n" +
-			$"\t\t\tlistItemFromRelation.FieldHelpText = \"{recordListItem.FieldHelpText}\";\n" +
-			$"\t\t\tlistItemFromRelation.FieldRequired = {(recordListItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
-			$"\t\t\tlistItemFromRelation.FieldLookupList = \"{recordListItem.FieldLookupList}\";\n" +
+			$"\t\t\tlistItemFromRelation.ViewName = \"{relatedView.Name}\";\n";
+
+			if (recordListItem.FieldLabel == null)
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldLabel = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldLabel = \"{recordListItem.FieldLabel}\";\n";
+			}
+
+			if (recordListItem.FieldPlaceholder == null)
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldPlaceholder = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldPlaceholder = \"{recordListItem.FieldPlaceholder}\";\n";
+			}
+
+			if (recordListItem.FieldHelpText == null)
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldHelpText = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldHelpText = \"{recordListItem.FieldHelpText}\";\n";
+			}
+
+			response +=
+			$"\t\t\tlistItemFromRelation.FieldRequired = {(recordListItem.FieldRequired).ToString().ToLowerInvariant()};\n";
+			if (recordListItem.FieldLookupList == null)
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldLookupList = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldLookupList = \"{recordListItem.FieldLookupList}\";\n";
+			}
+
+			response +=
 			$"\t\t\tlistItemFromRelation.RelationId = new Guid(\"{recordListItem.RelationId}\");\n" +
 			$"\t\t\tlistItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
 			$"\t\t\tlistItemFromRelation.Type = \"viewFromRelation\";\n" +
@@ -10520,12 +11055,44 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\tlistItemFromRelation.EntityId = new Guid(\"{recordListItem.EntityId}\");\n" +
 			$"\t\t\tlistItemFromRelation.EntityName = \"{relatedEntity.Name}\";\n" +
 			$"\t\t\tlistItemFromRelation.ListId = new Guid(\"{recordListItem.ListId}\");\n" +
-			$"\t\t\tlistItemFromRelation.ListName = \"{relatedList.Name}\";\n" +
-			$"\t\t\tlistItemFromRelation.FieldLabel = \"{recordListItem.FieldLabel}\";\n" +
-			$"\t\t\tlistItemFromRelation.FieldPlaceholder = \"{recordListItem.FieldPlaceholder}\";\n" +
-			$"\t\t\tlistItemFromRelation.FieldHelpText = \"{recordListItem.FieldHelpText}\";\n" +
-			$"\t\t\tlistItemFromRelation.FieldRequired = {(recordListItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
-			$"\t\t\tlistItemFromRelation.FieldLookupList = \"{recordListItem.FieldLookupList}\";\n" +
+			$"\t\t\tlistItemFromRelation.ListName = \"{relatedList.Name}\";\n";
+			if (recordListItem.FieldLabel == null)
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldLabel = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldLabel = \"{recordListItem.FieldLabel}\";\n";
+			}
+			if (recordListItem.FieldPlaceholder == null)
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldPlaceholder = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldPlaceholder = \"{recordListItem.FieldPlaceholder}\";\n";
+			}
+
+			if (recordListItem.FieldHelpText == null)
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldHelpText = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldHelpText = \"{recordListItem.FieldHelpText}\";\n";
+			}
+
+			response +=
+			$"\t\t\tlistItemFromRelation.FieldRequired = {(recordListItem.FieldRequired).ToString().ToLowerInvariant()};\n";
+			if (recordListItem.FieldLookupList == null)
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldLookupList = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldLookupList = \"{recordListItem.FieldLookupList}\";\n";
+			}
+			response +=
 			$"\t\t\tlistItemFromRelation.RelationId = new Guid(\"{recordListItem.RelationId}\");\n" +
 			$"\t\t\tlistItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
 			$"\t\t\tlistItemFromRelation.Type = \"listFromRelation\";\n" +
@@ -10549,10 +11116,36 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\tlistItemFromRelation.EntityId = new Guid(\"{treeItem.EntityId}\");\n" +
 			$"\t\t\tlistItemFromRelation.EntityName = \"{relatedEntity.Name}\";\n" +
 			$"\t\t\tlistItemFromRelation.TreeId = new Guid(\"{treeItem.TreeId}\");\n" +
-			$"\t\t\tlistItemFromRelation.TreeName = \"{relatedTree.Name}\";\n" +
-			$"\t\t\tlistItemFromRelation.FieldLabel = \"{treeItem.FieldLabel}\";\n" +
-			$"\t\t\tlistItemFromRelation.FieldPlaceholder = \"{treeItem.FieldPlaceholder}\";\n" +
-			$"\t\t\tlistItemFromRelation.FieldHelpText = \"{treeItem.FieldHelpText}\";\n" +
+			$"\t\t\tlistItemFromRelation.TreeName = \"{relatedTree.Name}\";\n";
+
+			if (treeItem.FieldLabel == null)
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldLabel = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldLabel = \"{treeItem.FieldLabel}\";\n";
+			}
+
+			if (treeItem.FieldPlaceholder == null)
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldPlaceholder = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldPlaceholder = \"{treeItem.FieldPlaceholder}\";\n";
+			}
+
+			if (treeItem.FieldHelpText == null)
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldHelpText = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldHelpText = \"{treeItem.FieldHelpText}\";\n";
+			}
+
+			response +=
 			$"\t\t\tlistItemFromRelation.FieldRequired = {(treeItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
 			$"\t\t\tlistItemFromRelation.RelationId = new Guid(\"{treeItem.RelationId}\");\n" +
 			$"\t\t\tlistItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
@@ -10581,10 +11174,34 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			var newNodeId = Guid.NewGuid();
 			response +=
 			levelTabs + "{\n" +
-			levelTabs + $"queryDictionary[new Guid(\"{newNodeId}\")] = new InputRecordListQuery();\n" +
-			levelTabs + $"queryDictionary[new Guid(\"{newNodeId}\")].FieldName = string.IsNullOrEmpty(\"{query.FieldName}\") ? \"\" : \"{query.FieldName}\";\n" +
-			levelTabs + $"queryDictionary[new Guid(\"{newNodeId}\")].FieldValue =  string.IsNullOrEmpty(\"{encodedFieldValue}\") ? \"\" : \"{encodedFieldValue}\";\n" +
-			levelTabs + $"queryDictionary[new Guid(\"{newNodeId}\")].QueryType = string.IsNullOrEmpty(\"{query.QueryType}\") ? \"\" : \"{query.QueryType}\";\n" +
+			levelTabs + $"queryDictionary[new Guid(\"{newNodeId}\")] = new InputRecordListQuery();\n";
+
+			if (query.FieldName == null)
+			{
+				response += levelTabs + $"queryDictionary[new Guid(\"{newNodeId}\")].FieldName = null;\n";
+			}
+			else
+			{
+				response += levelTabs + $"queryDictionary[new Guid(\"{newNodeId}\")].FieldName = \"{query.FieldName}\";\n";
+			}
+			if (encodedFieldValue == null)
+			{
+				response += levelTabs + $"queryDictionary[new Guid(\"{newNodeId}\")].FieldValue =  null;\n";
+			}
+			else
+			{
+				response += levelTabs + $"queryDictionary[new Guid(\"{newNodeId}\")].FieldValue =  \"{encodedFieldValue}\";\n";
+			}
+			if (query.QueryType == null)
+			{
+				response += levelTabs + $"queryDictionary[new Guid(\"{newNodeId}\")].QueryType = null;\n";
+			}
+			else
+			{
+				response += levelTabs + $"queryDictionary[new Guid(\"{newNodeId}\")].QueryType = \"{query.QueryType}\";\n";
+			}
+
+			response +=
 			levelTabs + $"queryDictionary[new Guid(\"{newNodeId}\")].SubQueries = new List<InputRecordListQuery>();\n";
 			foreach (var subQuery in query.SubQueries)
 			{
@@ -10662,18 +11279,88 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\tcreateListInput.Type =  \"{currentList.Type}\";\n" +
 			$"\tcreateListInput.Name = \"{currentList.Name}\";\n" +
 			$"\tcreateListInput.Label = \"{currentList.Label}\";\n" +
-			$"\tcreateListInput.Title = \"{currentList.Title}\";\n" +
-			$"\tcreateListInput.Weight = string.IsNullOrEmpty(\"{currentList.Weight}\") ? (decimal?)null : Decimal.Parse(\"{currentList.Weight}\");\n" +
+			$"\tcreateListInput.Title = \"{currentList.Title}\";\n";
+
+			if (currentList.Weight == null)
+			{
+				code += $"\tcreateListInput.Weight = null;\n";
+			}
+			else
+			{
+				code += $"\tcreateListInput.Weight = Decimal.Parse(\"{currentList.Weight}\");\n";
+			}
+
+			code +=
 			$"\tcreateListInput.Default = {(currentList.Default).ToString().ToLowerInvariant()};\n" +
-			$"\tcreateListInput.System = {(currentList.System).ToString().ToLowerInvariant()};\n" +
-			$"\tcreateListInput.CssClass = string.IsNullOrEmpty(\"{currentList.CssClass}\") ? null : \"{currentList.CssClass}\";\n" +
-			$"\tcreateListInput.IconName = string.IsNullOrEmpty(\"{currentList.IconName}\") ? null : \"{currentList.IconName}\";\n" +
-			$"\tcreateListInput.VisibleColumnsCount = string.IsNullOrEmpty(\"{currentList.VisibleColumnsCount}\") ? (int?)null : Int32.Parse(\"{currentList.VisibleColumnsCount}\");\n" +
-			$"\tcreateListInput.ColumnWidthsCSV = string.IsNullOrEmpty(\"{currentList.ColumnWidthsCSV}\") ? null : \"{currentList.ColumnWidthsCSV}\";\n" +
-			$"\tcreateListInput.PageSize = string.IsNullOrEmpty(\"{currentList.PageSize}\") ? (int?)null : Int32.Parse(\"{currentList.PageSize}\");\n" +
-			$"\tcreateListInput.DynamicHtmlTemplate = string.IsNullOrEmpty(\"{currentList.DynamicHtmlTemplate}\") ? null : \"{currentList.DynamicHtmlTemplate}\";\n" +
-			$"\tcreateListInput.DataSourceUrl = string.IsNullOrEmpty(\"{currentList.DataSourceUrl}\") ? null : \"{currentList.DataSourceUrl}\";\n" +
-			$"\tcreateListInput.ServiceCode = string.IsNullOrEmpty(\"{currentList.ServiceCode}\") ? null : \"{currentList.ServiceCode}\";\n" +
+			$"\tcreateListInput.System = {(currentList.System).ToString().ToLowerInvariant()};\n";
+
+			if (currentList.CssClass == null)
+			{
+				code += $"\tcreateListInput.CssClass = null;\n";
+			}
+			else
+			{
+				code += $"\tcreateListInput.CssClass = \"{currentList.CssClass}\";\n";
+			}
+			if (currentList.IconName == null)
+			{
+				code += $"\tcreateListInput.IconName = null;\n";
+			}
+			else
+			{
+				code += $"\tcreateListInput.IconName = \"{currentList.IconName}\";\n";
+			}
+			if (currentList.VisibleColumnsCount == null)
+			{
+				code += $"\tcreateListInput.VisibleColumnsCount = null;\n";
+			}
+			else
+			{
+				code += $"\tcreateListInput.VisibleColumnsCount = Int32.Parse(\"{currentList.VisibleColumnsCount}\");\n";
+			}
+			if (currentList.ColumnWidthsCSV == null)
+			{
+				code += $"\tcreateListInput.ColumnWidthsCSV = null;\n";
+			}
+			else
+			{
+				code += $"\tcreateListInput.ColumnWidthsCSV = \"{currentList.ColumnWidthsCSV}\";\n";
+			}
+			if (currentList.PageSize == null)
+			{
+				code += $"\tcreateListInput.PageSize = null;\n";
+			}
+			else
+			{
+				code += $"\tcreateListInput.PageSize = Int32.Parse(\"{currentList.PageSize}\");\n";
+			}
+			if (currentList.DynamicHtmlTemplate == null)
+			{
+				code += $"\tcreateListInput.DynamicHtmlTemplate = null;\n";
+			}
+			else
+			{
+				code += $"\tcreateListInput.DynamicHtmlTemplate = \"{currentList.DynamicHtmlTemplate}\";\n";
+			}
+			if (currentList.DataSourceUrl == null)
+			{
+				code += $"\tcreateListInput.DataSourceUrl = null;\n";
+			}
+			else
+			{
+				code += $"\tcreateListInput.DataSourceUrl = \"{currentList.DataSourceUrl}\";\n";
+			}
+
+			if (currentList.ServiceCode == null)
+			{
+				code += $"\tcreateListInput.ServiceCode = null;\n";
+			}
+			else
+			{
+				code += $"\tcreateListInput.ServiceCode = \"{currentList.ServiceCode}\";\n";
+			}
+
+			code +=
 			$"\t#endregion\n\n";
 
 
@@ -10730,10 +11417,33 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 				$"\tcreateListInput.Query = new InputRecordListQuery();\n" +
 				$"\tvar queryDictionary = new Dictionary<Guid,InputRecordListQuery>();\n" +
 				$"\tvar subQueryDictionary = new Dictionary<Guid,List<InputRecordListQuery>>();\n" +
-				$"\t//Main query rule\n" +
-				$"\tcreateListInput.Query.FieldName = string.IsNullOrEmpty(\"{currentList.Query.FieldName}\") ? \"\" : \"{currentList.Query.FieldName}\";\n" +
-				$"\tcreateListInput.Query.FieldValue =  string.IsNullOrEmpty(\"{currentList.Query.FieldValue}\") ? \"\" : \"{currentList.Query.FieldValue}\";\n" +
-				$"\tcreateListInput.Query.QueryType = string.IsNullOrEmpty(\"{currentList.Query.QueryType}\") ? \"\" : \"{currentList.Query.QueryType}\";\n" +
+				$"\t//Main query rule\n";
+				if (currentList.Query.FieldName == null)
+				{
+					code += $"\tcreateListInput.Query.FieldName = null;\n";
+				}
+				else
+				{
+					code += $"\tcreateListInput.Query.FieldName = \"{currentList.Query.FieldName}\";\n";
+				}
+				if (currentList.Query.FieldValue == null)
+				{
+					code += $"\tcreateListInput.Query.FieldValue =  null;\n";
+				}
+				else
+				{
+					code += $"\tcreateListInput.Query.FieldValue =  \"{currentList.Query.FieldValue}\";\n";
+				}
+				if (currentList.Query.QueryType == null)
+				{
+					code += $"\tcreateListInput.Query.QueryType = null;\n";
+				}
+				else
+				{
+					code += $"\tcreateListInput.Query.QueryType = \"{currentList.Query.QueryType}\";\n";
+				}
+
+				code +=
 				$"\tcreateListInput.Query.SubQueries = new List<InputRecordListQuery>();\n";
 				var nodeId = Guid.NewGuid();
 				foreach (var query in currentList.Query.SubQueries)
@@ -10879,16 +11589,76 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\tcreateTreeInput.Name = \"{tree.Name}\";\n" +
 			$"\tcreateTreeInput.Label = \"{tree.Label}\";\n" +
 			$"\tcreateTreeInput.Default = {(tree.Default).ToString().ToLowerInvariant()};\n" +
-			$"\tcreateTreeInput.System = {(tree.System).ToString().ToLowerInvariant()};\n" +
-			$"\tcreateTreeInput.CssClass = string.IsNullOrEmpty(\"{tree.CssClass}\") ? null : \"{tree.CssClass}\";\n" +
-			$"\tcreateTreeInput.IconName = string.IsNullOrEmpty(\"{tree.IconName}\") ? null : \"{tree.IconName}\";\n" +
-			$"\tcreateTreeInput.RelationId = new Guid(\"{tree.RelationId}\");\n" +
-			$"\tcreateTreeInput.DepthLimit = string.IsNullOrEmpty(\"{tree.DepthLimit}\") ? (int?)null : Int32.Parse(\"{tree.DepthLimit}\");\n" +
-			$"\tcreateTreeInput.NodeIdFieldId = string.IsNullOrEmpty(\"{tree.NodeIdFieldId}\") ? (Guid?)null : Guid.Parse(\"{tree.NodeIdFieldId}\");\n" +
-			$"\tcreateTreeInput.NodeParentIdFieldId = string.IsNullOrEmpty(\"{tree.NodeWeightFieldId}\") ? (Guid?)null : Guid.Parse(\"{tree.NodeWeightFieldId}\");\n" +
-			$"\tcreateTreeInput.NodeNameFieldId = string.IsNullOrEmpty(\"{tree.NodeLabelFieldId}\") ? (Guid?)null : Guid.Parse(\"{tree.NodeLabelFieldId}\");\n" +
-			$"\tcreateTreeInput.NodeLabelFieldId = string.IsNullOrEmpty(\"{tree.NodeLabelFieldId}\") ? (Guid?)null : Guid.Parse(\"{tree.NodeLabelFieldId}\");\n" +
-			$"\tcreateTreeInput.NodeWeightFieldId = string.IsNullOrEmpty(\"{tree.NodeWeightFieldId}\") ? (Guid?)null : Guid.Parse(\"{tree.NodeWeightFieldId}\");\n" +
+			$"\tcreateTreeInput.System = {(tree.System).ToString().ToLowerInvariant()};\n";
+			if (tree.CssClass == null)
+			{
+				response += $"\tcreateTreeInput.CssClass = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateTreeInput.CssClass = \"{tree.CssClass}\";\n";
+			}
+			if (tree.IconName == null)
+			{
+				response += $"\tcreateTreeInput.IconName = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateTreeInput.IconName = \"{tree.IconName}\";\n";
+			}
+
+			response +=
+			$"\tcreateTreeInput.RelationId = new Guid(\"{tree.RelationId}\");\n";
+			if (tree.DepthLimit == null)
+			{
+				response += $"\tcreateTreeInput.DepthLimit = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateTreeInput.DepthLimit = Int32.Parse(\"{tree.DepthLimit}\");\n";
+			}
+			if (tree.NodeParentIdFieldId == null)
+			{
+				response += $"\tcreateTreeInput.NodeIdFieldId = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateTreeInput.NodeIdFieldId = Guid.Parse(\"{tree.NodeParentIdFieldId}\");\n";
+			}
+			if (tree.NodeIdFieldId == null)
+			{
+				response += $"\tcreateTreeInput.NodeParentIdFieldId = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateTreeInput.NodeParentIdFieldId = Guid.Parse(\"{tree.NodeIdFieldId}\");\n";
+			}
+			if (tree.NodeNameFieldId == null)
+			{
+				response += $"\tcreateTreeInput.NodeNameFieldId = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateTreeInput.NodeNameFieldId = Guid.Parse(\"{tree.NodeNameFieldId}\");\n";
+			}
+			if (tree.NodeLabelFieldId == null)
+			{
+				response += $"\tcreateTreeInput.NodeLabelFieldId = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateTreeInput.NodeLabelFieldId = Guid.Parse(\"{tree.NodeLabelFieldId}\");\n";
+			}
+			if (tree.NodeWeightFieldId == null)
+			{
+				response += $"\tcreateTreeInput.NodeWeightFieldId = null;\n";
+			}
+			else
+			{
+				response += $"\tcreateTreeInput.NodeWeightFieldId = Guid.Parse(\"{tree.NodeWeightFieldId}\");\n";
+			}
+
+			response +=
 			$"\tcreateTreeInput.RootNodes = new List<RecordTreeNode>();\n";
 			foreach (var recordId in tree.RootNodes)
 			{
@@ -10991,16 +11761,79 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\tupdateTreeInput.Name = \"{currentTree.Name}\";\n" +
 			$"\tupdateTreeInput.Label = \"{currentTree.Label}\";\n" +
 			$"\tupdateTreeInput.Default = {(currentTree.Default).ToString().ToLowerInvariant()};\n" +
-			$"\tupdateTreeInput.System = {(currentTree.System).ToString().ToLowerInvariant()};\n" +
-			$"\tupdateTreeInput.CssClass = string.IsNullOrEmpty(\"{currentTree.CssClass}\") ? null : \"{currentTree.CssClass}\";\n" +
-			$"\tupdateTreeInput.IconName = string.IsNullOrEmpty(\"{currentTree.IconName}\") ? null : \"{currentTree.IconName}\";\n" +
-			$"\tupdateTreeInput.RelationId = new Guid(\"{currentTree.RelationId}\");\n" +
-			$"\tupdateTreeInput.DepthLimit = string.IsNullOrEmpty(\"{currentTree.DepthLimit}\") ? (int?)null : Int32.Parse(\"{currentTree.DepthLimit}\");\n" +
-			$"\tupdateTreeInput.NodeIdFieldId = string.IsNullOrEmpty(\"{currentTree.NodeIdFieldId}\") ? (Guid?)null : Guid.Parse(\"{currentTree.NodeIdFieldId}\");\n" +
-			$"\tupdateTreeInput.NodeParentIdFieldId = string.IsNullOrEmpty(\"{currentTree.NodeWeightFieldId}\") ? (Guid?)null : Guid.Parse(\"{currentTree.NodeWeightFieldId}\");\n" +
-			$"\tupdateTreeInput.NodeNameFieldId = string.IsNullOrEmpty(\"{currentTree.NodeLabelFieldId}\") ? (Guid?)null : Guid.Parse(\"{currentTree.NodeLabelFieldId}\");\n" +
-			$"\tupdateTreeInput.NodeLabelFieldId = string.IsNullOrEmpty(\"{currentTree.NodeLabelFieldId}\") ? (Guid?)null : Guid.Parse(\"{currentTree.NodeLabelFieldId}\");\n" +
-			$"\tupdateTreeInput.NodeWeightFieldId = string.IsNullOrEmpty(\"{currentTree.NodeWeightFieldId}\") ? (Guid?)null : Guid.Parse(\"{currentTree.NodeWeightFieldId}\");\n" +
+			$"\tupdateTreeInput.System = {(currentTree.System).ToString().ToLowerInvariant()};\n";
+			if (currentTree.CssClass == null)
+			{
+				code += $"\tupdateTreeInput.CssClass = null;\n";
+			}
+			else
+			{
+				code += $"\tupdateTreeInput.CssClass = \"{currentTree.CssClass}\";\n";
+			}
+
+			if (currentTree.IconName == null)
+			{
+				code += $"\tupdateTreeInput.IconName = null;\n";
+			}
+			else
+			{
+				code += $"\tupdateTreeInput.IconName = \"{currentTree.IconName}\";\n";
+			}
+
+			code +=
+			$"\tupdateTreeInput.RelationId = new Guid(\"{currentTree.RelationId}\");\n";
+
+			if (currentTree.DepthLimit == null)
+			{
+				code += $"\tupdateTreeInput.DepthLimit = null;\n";
+			}
+			else
+			{
+				code += $"\tupdateTreeInput.DepthLimit = Int32.Parse(\"{currentTree.DepthLimit}\");\n";
+			}
+			if (currentTree.NodeParentIdFieldId == null)
+			{
+				code += $"\tupdateTreeInput.NodeIdFieldId = null;\n";
+			}
+			else
+			{
+				code += $"\tupdateTreeInput.NodeIdFieldId = Guid.Parse(\"{currentTree.NodeParentIdFieldId}\");\n";
+			}
+			if (currentTree.NodeIdFieldId == null)
+			{
+				code += $"\tupdateTreeInput.NodeParentIdFieldId = null;\n";
+			}
+			else
+			{
+				code += $"\tupdateTreeInput.NodeParentIdFieldId = Guid.Parse(\"{currentTree.NodeIdFieldId}\");\n";
+			}
+			if (currentTree.NodeNameFieldId == null)
+			{
+				code += $"\tupdateTreeInput.NodeNameFieldId = null;\n";
+			}
+			else
+			{
+				code += $"\tupdateTreeInput.NodeNameFieldId = Guid.Parse(\"{currentTree.NodeNameFieldId}\");\n";
+			}
+			if (currentTree.NodeLabelFieldId == null)
+			{
+				code += $"\tupdateTreeInput.NodeLabelFieldId = null;\n";
+			}
+			else
+			{
+				code += $"\tupdateTreeInput.NodeLabelFieldId = Guid.Parse(\"{currentTree.NodeLabelFieldId}\");\n";
+			}
+			if (currentTree.NodeWeightFieldId == null)
+			{
+				code += $"\tupdateTreeInput.NodeWeightFieldId = null;\n";
+			}
+			else
+			{
+				code += $"\tupdateTreeInput.NodeWeightFieldId = Guid.Parse(\"{currentTree.NodeWeightFieldId}\");\n";
+			}
+
+
+			code +=
 			$"\tupdateTreeInput.RootNodes = new List<RecordTreeNode>();\n";
 			foreach (var recordId in currentTree.RootNodes)
 			{

@@ -21,8 +21,11 @@ namespace WebVella.ERP.Database
             Type = RecordViewType.General;
             Regions = new List<DbRecordViewRegion>();
             Sidebar = new DbRecordViewSidebar();
+			RelationOptions = new List<DbEntityRelationOptions>();
+			ActionItems = new List<ActionItem>();
 			DynamicHtmlTemplate = "";
 			DataSourceUrl = "";
+			ServiceCode = "";
 
 		}
 
@@ -120,6 +123,8 @@ namespace WebVella.ERP.Database
 
 	public class DbRecordViewSidebarRelationViewItem : DbRecordViewSidebarItemBase
 	{
+		
+	
 		[JsonProperty(PropertyName = "view_id")]
 		public Guid ViewId { get; set; }
 
@@ -147,6 +152,15 @@ namespace WebVella.ERP.Database
 
 	public class DbRecordViewSidebarRelationListItem : DbRecordViewSidebarItemBase
 	{
+		public DbRecordViewSidebarRelationListItem() {
+			FieldLabel = "";
+			FieldPlaceholder = "";
+			FieldHelpText = "";
+			FieldRequired = false;
+			FieldLookupList = "";
+			FieldManageView = "";
+		}
+		
 		[JsonProperty(PropertyName = "list_id")]
 		public Guid ListId { get; set; }
 
@@ -174,6 +188,13 @@ namespace WebVella.ERP.Database
 
 	public class DbRecordViewSidebarRelationTreeItem : DbRecordViewSidebarItemBase
 	{
+		public DbRecordViewSidebarRelationTreeItem() {
+			FieldLabel = "";
+			FieldPlaceholder = "";
+			FieldHelpText = "";
+			FieldRequired = false;
+		}
+
 		[JsonProperty(PropertyName = "tree_id")]
 		public Guid TreeId { get; set; }
 

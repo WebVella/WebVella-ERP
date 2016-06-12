@@ -7,6 +7,25 @@ namespace WebVella.ERP.Database
 {
 	public class DbRecordList
 	{
+		public DbRecordList() {
+			Id = Guid.NewGuid();
+			Name = "";
+			Label = "";
+			Title = "";
+			Default = false;
+			System = false;
+			Weight = 10;
+			CssClass= "";
+			IconName = "";
+			VisibleColumnsCount = 5;
+			PageSize = 10;
+			DynamicHtmlTemplate = "";
+			DataSourceUrl = "";
+			ServiceCode = "";
+			ColumnWidthsCSV = "";
+		}
+
+
 		[JsonProperty(PropertyName = "id")]
 		public Guid Id { get; set; }
 

@@ -61,6 +61,7 @@ var translationsEN = {
 	CHECKBOX_TRUE_LABEL: 'set as TRUE',
 	CLICK_HERE:'Click here',
 	CODE_GENERATION: 'Code generation',
+	CODE_GENERATION_DESCRIPTION_TEXT: 'This screen generates c# code based on the comparison between two databases. The code than can be used to generate an update script to apply changes in a plugin version automatically. In this way, if you manually create a new field for an entity from the interface, upon comparison, the system will generate the needed code for creating the field automatically.',
 	COLOR: 'Color',
 	COLUMNS: 'Columns',
 	COMPANY:'Company',
