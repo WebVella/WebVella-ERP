@@ -219,7 +219,7 @@ namespace WebVella.ERP.Project
 				var isNewProjectPatched = false;
 				var isOldMilestonePatched = false;
 				var isNewMilestonePatched = false;
-				var isTaskPatched = false;
+				//var isTaskPatched = false;
 				#region << init patch objects >>
 				if (oldTaskProject.Properties.Count > 0)
 				{

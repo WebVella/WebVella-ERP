@@ -19,7 +19,7 @@ namespace WebVella.ERP
 		{
 			EntityResponse response = null;
 			FieldResponse fieldResponse = null;
-			EntityManager entityManager = new EntityManager();
+			EntityManager entMan = new EntityManager();
 			EntityRelationManager rm = new EntityRelationManager();
 			RecordManager recMan = new RecordManager(true);
 
@@ -346,8 +346,8 @@ namespace WebVella.ERP
 
 						#region << create user - role relation >>
 						{
-							var userEntity = entityManager.ReadEntity(SystemIds.UserEntityId).Object;
-							var roleEntity = entityManager.ReadEntity(SystemIds.RoleEntityId).Object;
+							var userEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+							var roleEntity = entMan.ReadEntity(SystemIds.RoleEntityId).Object;
 
 							EntityRelation userRoleRelation = new EntityRelation();
 							userRoleRelation.Id = SystemIds.UserRoleRelationId;

@@ -122,7 +122,7 @@ namespace WebVella.ERP.Database
 
 						return result;
 					}
-					catch (Exception e)
+					catch (Exception)
 					{
 						con.RollbackTransaction();
 					}

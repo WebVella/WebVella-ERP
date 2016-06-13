@@ -3722,7 +3722,7 @@ namespace WebVella.ERP.Web.Controllers
 			response.Success = true;
 			response.Object = null;
 
-			EntityListResponse entitiesResponse = entityManager.ReadEntities();
+			EntityListResponse entitiesResponse = entMan.ReadEntities();
 			List<Entity> entities = entitiesResponse.Object.Entities;
 			Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
 
@@ -3918,8 +3918,8 @@ namespace WebVella.ERP.Web.Controllers
 
 			using (DbConnection connection = DbContext.Current.CreateConnection())
 			{
-				List<EntityRelation> relations = entityRelationManager.Read().Object;
-				EntityListResponse entitiesResponse = entityManager.ReadEntities();
+				List<EntityRelation> relations = relMan.Read().Object;
+				EntityListResponse entitiesResponse = entMan.ReadEntities();
 				List<Entity> entities = entitiesResponse.Object.Entities;
 				Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
 
@@ -4470,10 +4470,10 @@ namespace WebVella.ERP.Web.Controllers
 					#region << Init >>
 					foreach (var relation in oldRelationsList)
 					{
-						if (relation.Name == "user_role_created_by")
-						{
-							var boz = 0;
-						}
+						//if (relation.Name == "user_role_created_by")
+						//{
+						//	var boz = 0;
+						//}
 						oldRelationsDictionary[relation.Id] = relation;
 					}
 					#endregion
@@ -4481,10 +4481,10 @@ namespace WebVella.ERP.Web.Controllers
 					#region << Logic >>
 					foreach (var relation in currentRelationsList)
 					{
-						if (relation.Name == "user_role_created_by")
-						{
-							var boz = 0;
-						}
+						//if (relation.Name == "user_role_created_by")
+						//{
+						//	var boz = 0;
+						//}
 						if (!oldRelationsDictionary.ContainsKey(relation.Id))
 						{
 							//// CREATED
@@ -10868,10 +10868,10 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 		private string CreateListColumnCode(DbRecordListItemBase item, Guid entityId, string entityName, string ListName)
 		{
 			var response = string.Empty;
-			if (entityName == "wv_project_attachment")
-			{
-				var bb = 0;
-			}
+			//if (entityName == "wv_project_attachment")
+			//{
+			//	var bb = 0;
+			//}
 			if (item is DbRecordListFieldItem)
 			{
 				response += CreateRecordListFieldItemCode(item as DbRecordListFieldItem, entityId, entityName);
