@@ -19,7 +19,7 @@ namespace WebVella.ERP
 		{
 			EntityResponse response = null;
 			FieldResponse fieldResponse = null;
-			EntityManager em = new EntityManager();
+			EntityManager entMan = new EntityManager();
 			EntityRelationManager rm = new EntityRelationManager();
 			RecordManager recMan = new RecordManager(true);
 
@@ -47,11 +47,9 @@ namespace WebVella.ERP
 						currentVersion = systemSettings.Version;
 					}
 
-					EntityManager entMan = new EntityManager();
-
 					//tmp code - during debug only
-					//em.DeleteEntity(SystemIds.UserEntityId);
-					//em.DeleteEntity(SystemIds.RoleEntityId);
+					//entityManager.DeleteEntity(SystemIds.UserEntityId);
+					//entityManager.DeleteEntity(SystemIds.RoleEntityId);
 					//rm.Delete(SystemIds.UserRoleRelationId);
 					//currentVersion = 0; 
 
@@ -348,8 +346,8 @@ namespace WebVella.ERP
 
 						#region << create user - role relation >>
 						{
-							var userEntity = em.ReadEntity(SystemIds.UserEntityId).Object;
-							var roleEntity = em.ReadEntity(SystemIds.RoleEntityId).Object;
+							var userEntity = entMan.ReadEntity(SystemIds.UserEntityId).Object;
+							var roleEntity = entMan.ReadEntity(SystemIds.RoleEntityId).Object;
 
 							EntityRelation userRoleRelation = new EntityRelation();
 							userRoleRelation.Id = SystemIds.UserRoleRelationId;
