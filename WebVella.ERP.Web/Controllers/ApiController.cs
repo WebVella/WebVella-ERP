@@ -10103,31 +10103,49 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\tviewItemFromRelation.ViewName =\"{relatedView.Name}\";\n";
 			if(recordViewItem.FieldLabel == null)
 			{
-				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = null;\n";
+				response += $"\t\t\tviewItemFromRelation.FieldLabel = null;\n";
 			}
 			else
 			{
-				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{recordViewItem.FieldLabel}\";\n";
+				response += $"\t\t\tviewItemFromRelation.FieldLabel = \"{recordViewItem.FieldLabel}\";\n";
 			}
 			if(recordViewItem.FieldPlaceholder == null)
 			{
-				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = null;\n";
+				response += $"\t\t\tviewItemFromRelation.FieldPlaceholder = null;\n";
 			}
 			else
 			{
-				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{recordViewItem.FieldPlaceholder}\";\n";
+				response += $"\t\t\tviewItemFromRelation.FieldPlaceholder = \"{recordViewItem.FieldPlaceholder}\";\n";
 			}
 			if(recordViewItem.FieldHelpText == null )
 			{
-				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = null;\n";
+				response += $"\t\t\tviewItemFromRelation.FieldHelpText = null;\n";
 			}
 			else
 			{
-				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{recordViewItem.FieldHelpText}\";\n";
+				response += $"\t\t\tviewItemFromRelation.FieldHelpText = \"{recordViewItem.FieldHelpText}\";\n";
 			}
 			response +=
-			$"\t\t\tviewItemFromRelation.FieldRequired = {(recordViewItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
-			$"\t\t\tviewItemFromRelation.FieldLookupList = \"{recordViewItem.FieldLookupList}\";\n" +
+			$"\t\t\tviewItemFromRelation.FieldRequired = {(recordViewItem.FieldRequired).ToString().ToLowerInvariant()};\n";
+
+			if(recordViewItem.FieldManageView == null )
+			{
+				response += $"\t\t\tviewItemFromRelation.FieldManageView = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tviewItemFromRelation.FieldManageView = \"{recordViewItem.FieldManageView}\";\n";
+			}
+
+			if(recordViewItem.FieldLookupList == null )
+			{
+				response += $"\t\t\tviewItemFromRelation.FieldLookupList = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tviewItemFromRelation.FieldLookupList = \"{recordViewItem.FieldLookupList}\";\n";
+			}
+			response +=
 			$"\t\t\tviewItemFromRelation.RelationId = new Guid(\"{recordViewItem.RelationId}\");\n" +
 			$"\t\t\tviewItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
 			$"\t\t\tviewItemFromRelation.Type = \"viewFromRelation\";\n" +
@@ -10198,9 +10216,29 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{listItem.FieldHelpText}\";\n";
 			}
+
 			response +=
-			$"\t\t\tviewItemFromRelation.FieldRequired = {(listItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
-			$"\t\t\tviewItemFromRelation.FieldLookupList = \"{listItem.FieldLookupList}\";\n" +
+			$"\t\t\tviewItemFromRelation.FieldRequired = {(listItem.FieldRequired).ToString().ToLowerInvariant()};\n";
+
+			if(listItem.FieldManageView == null )
+			{
+				response += $"\t\t\tviewItemFromRelation.FieldManageView = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tviewItemFromRelation.FieldManageView = \"{listItem.FieldManageView}\";\n";
+			}
+
+			if(listItem.FieldLookupList == null )
+			{
+				response += $"\t\t\tviewItemFromRelation.FieldLookupList = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tviewItemFromRelation.FieldLookupList = \"{listItem.FieldLookupList}\";\n";
+			}
+
+			response +=
 			$"\t\t\tviewItemFromRelation.RelationId = new Guid(\"{listItem.RelationId}\");\n" +
 			$"\t\t\tviewItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
 			$"\t\t\tviewItemFromRelation.Type = \"listFromRelation\";\n" +
@@ -11278,8 +11316,16 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\tcreateListInput.Id = createListEntity.RecordLists.SingleOrDefault(x => x.Name == \"{currentList.Name}\").Id;\n" +
 			$"\tcreateListInput.Type =  \"{currentList.Type}\";\n" +
 			$"\tcreateListInput.Name = \"{currentList.Name}\";\n" +
-			$"\tcreateListInput.Label = \"{currentList.Label}\";\n" +
-			$"\tcreateListInput.Title = \"{currentList.Title}\";\n";
+			$"\tcreateListInput.Label = \"{currentList.Label}\";\n";
+			if(currentList.Title == null)
+			{
+				code +=	$"\tcreateListInput.Title = null;\n";
+			}
+			else 
+			{
+				code += $"\tcreateListInput.Title = \"{currentList.Title}\";\n";
+			}
+
 
 			if (currentList.Weight == null)
 			{

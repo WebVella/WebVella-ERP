@@ -435,10 +435,6 @@ namespace WebVella.ERP.Api
 				recordlist.System = false;
 			if (!recordlist.Weight.HasValue)
 				recordlist.Weight = 10;
-			if (recordlist.Title == null)
-				recordlist.Title = "";
-			else
-				recordlist.Title = recordlist.Title.Trim();
 			if (!recordlist.PageSize.HasValue)
 				recordlist.PageSize = 10;
 			if (recordlist.CssClass != null)
