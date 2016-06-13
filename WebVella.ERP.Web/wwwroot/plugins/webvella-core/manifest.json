@@ -70,6 +70,6 @@
 			"/plugins/webvella-core/providers/core.service.js",
 			"/plugins/webvella-core/providers/core.directive.js"
 		],
-		"wvApp_injects": [ "webvellaCore" ]
+		"wvApp_injects": [ "webvellaCore", "ngLoadScript" ]
 	}
 }

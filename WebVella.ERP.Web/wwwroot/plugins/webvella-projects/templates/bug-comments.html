@@ -1,5 +1,7 @@
-﻿<div ng-if="ngCtrl.list.data.length > 0">
-	<div class="panel panel-white post" ng-repeat="record in ngCtrl.list.data" >
+﻿<div ng-controller="BugDetailsCommentListController as pluginCtrl">
+
+<div ng-if="ngCtrl.view.data[0].$list$bug_1_n_comment$bug_comments.length > 0">
+	<div class="panel panel-white post" ng-repeat="record in ngCtrl.view.data[0].$list$bug_1_n_comment$bug_comments" >
 		<div class="post-heading">
 			<div class="pull-left image">
 				<img ng-src="{{record.$field$user_wv_project_comment_created_by$image[0] || '/plugins/webvella-core/assets/avatar.png'}}" class="img-circle avatar" alt="user profile image">
@@ -18,13 +20,13 @@
 		<div class="post-description" ng-bind-html="record.content"></div>
 	</div>
 </div>
-<div class="alert alert-info" ng-if="ngCtrl.list.data.length == 0">
+<div class="alert alert-info" ng-if="ngCtrl.view.data[0].$list$bug_1_n_comment$bug_comments.length == 0">
 	<strong>You do not participate in any record yet</strong>
 	<p>Currently you are not involved in any records or there are none created yet</p>
 </div>
 <p>
 <a class="btn btn-default btn-outline hidden-xs" ng-show="::ngCtrl.userHasRecordPermissions('canCreate')" 
-    ng-click="ngCtrl.actionService.manageComment(null,ngCtrl)">
+    ng-click="pluginCtrl.manageComment(null,ngCtrl)">
 	<i class="fa fa-fw fa-plus"></i> Add Comment
 </a>
 </p>
@@ -54,3 +56,5 @@
 		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
 	</div>
 </script>
+
+</div>

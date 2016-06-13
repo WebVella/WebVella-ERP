@@ -26,7 +26,9 @@
 			"/plugins/webvella-projects/base.module.js",
 			"/plugins/webvella-projects/user-dashboard.module.js",
 			"/plugins/webvella-projects/providers/projects.service.js",
-			"/plugins/webvella-projects/template-controllers.js"
+			"/plugins/webvella-projects/template-controllers.js",
+			"/plugins/webvella-projects/providers/task-comments.controller.js",
+			"/plugins/webvella-projects/providers/bug-comments.controller.js"
 		],
 		"wvApp_injects": [ "webvellaProjects" ]
 	}
