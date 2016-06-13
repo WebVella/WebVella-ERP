@@ -53,11 +53,7 @@ namespace WebVella.ERP.Api
 
 		public static List<Entity> GetEntities()
 		{
-			var entities = GetObjectFromCache(KEY_ENTITIES) as List<Entity>;
-			if (entities != null)
-				entities = DeepClone<List<Entity>>(entities);
-
-			return entities;
+			return GetObjectFromCache(KEY_ENTITIES) as List<Entity>;
 		}
 
 		#endregion
@@ -71,11 +67,7 @@ namespace WebVella.ERP.Api
 
 		public static List<EntityRelation> GetRelations()
 		{
-			var relations = GetObjectFromCache(KEY_RELATIONS) as List<EntityRelation>;
-			if (relations != null)
-				relations = DeepClone<List<EntityRelation>>(relations);
-
-			return relations;
+			return GetObjectFromCache(KEY_RELATIONS) as List<EntityRelation>;
 		}
 
 		#endregion
@@ -91,16 +83,6 @@ namespace WebVella.ERP.Api
 			RemoveObjectFromCache(KEY_ENTITIES);
 		}
 
-		private static T DeepClone<T>(T obj)
-		{
-			using (var ms = new MemoryStream())
-			{
-				var formatter = new BinaryFormatter();
-				formatter.Serialize(ms, obj);
-				ms.Position = 0;
-
-				return (T)formatter.Deserialize(ms);
-			}
-		}
+		
 	}
 }

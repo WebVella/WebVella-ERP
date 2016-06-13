@@ -27,7 +27,7 @@
 			},
 			resolve: {
 				pageTitle: function () {
-					return "Webvella ERP";
+					return GlobalCompanyName;
 				},
 				resolvedCurrentUser: resolveCurrentUser
 			},
@@ -57,8 +57,9 @@
 	function controller($scope, $log, $rootScope, $state, $stateParams, webvellaDesktopTopnavFactory, $timeout, webvellaCoreService, resolvedCurrentUser) {
 		var baseCtrl = this;
 		baseCtrl.topnav = [];
-		baseCtrl.user = fastCopy(resolvedCurrentUser);
-
+		baseCtrl.user = resolvedCurrentUser;
+		baseCtrl.companyName = GlobalCompanyName;
+		baseCtrl.companyLogo = GlobalCompanyLogo;
 		//Making topnav pluggable
 		////1. CONSTRUCTOR initialize the factory
 		webvellaDesktopTopnavFactory.initTopnav();

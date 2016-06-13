@@ -841,6 +841,20 @@ function multiplyDecimals(val1, val2, decimalPlaces) {
 	return (temp1 * temp2) / (helpNumber * helpNumber);
 }
 
+function htmlToPlaintext(text) {
+  return text ? String(text).replace(/<[^>]+>/gm, '') : '';
+}
+
+function escapeHtml(unsafe){
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+}
+
+
 //Sort by multiple fields
 // Example: homes.sort(sort_by('city', {name:'price', primer: parseInt, reverse: true}));
 // Thanks to http://stackoverflow.com/questions/6913512/how-to-sort-an-array-of-objects-by-multiple-fields

@@ -27,7 +27,7 @@
 			},
 			resolve: {
 				pageTitle: function () {
-					return "Webvella ERP";
+					return GlobalCompanyName;
 				},
 				resolvedEntityList: resolveEntityList,
 				resolvedAreas: resolveAreas,
@@ -51,7 +51,7 @@
 		function errorCallback(response) {
 			defer.reject(response.message);
 		}
-		webvellaCoreService.getRecordsWithoutList(null,null,"area", successCallback, errorCallback);
+		webvellaCoreService.getRecordsWithoutList(null,null,null,"area", successCallback, errorCallback);
 		return defer.promise;
 	}
 

@@ -24,7 +24,7 @@
 			parent: 'webvella-admin-base',
 			url: '/entities/:entityName/views/:viewName/form/:regionName',
 			params: {
-				regionName: { value: "default", squash: true }
+				regionName: { value: "header", squash: true }
 			},
 			views: {
 				"topnavView": {
@@ -67,7 +67,7 @@
 		function successCallback(response) {
 			if (response.object === null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -78,7 +78,7 @@
 		function errorCallback(response) {
 			if (response.object === null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -101,7 +101,7 @@
 		function successCallback(response) {
 			if (response.object === null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -123,7 +123,7 @@
 		function errorCallback(response) {
 			if (response.object === null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -145,7 +145,7 @@
 		function successCallback(response) {
 			if (response.object === null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -156,7 +156,7 @@
 		function errorCallback(response) {
 			if (response.object === null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -180,7 +180,7 @@
 
 		var ngCtrl = this;
 		//#region << General init >>
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.entity = resolvedCurrentEntityMeta;
 		ngCtrl.stateParams = $stateParams;
 		//#endregion
 
@@ -226,9 +226,9 @@
 			}
 		}
 		ngCtrl.generateAlreadyUsed();
-		ngCtrl.relationsList = fastCopy(resolvedEntityRelationsList);
+		ngCtrl.relationsList = resolvedEntityRelationsList;
 		ngCtrl.fullLibrary = {};
-		ngCtrl.fullLibrary.items = fastCopy(resolvedViewLibrary);
+		ngCtrl.fullLibrary.items = resolvedViewLibrary;
 		ngCtrl.library = {};
 		ngCtrl.library.relations = [];
 		ngCtrl.library.items = [];
@@ -965,7 +965,7 @@
 
 		popupCtrl.delete = function () {
 			popupCtrl.view = fastCopy(parentData.view);
-			if (popupCtrl.isUpdate && popupCtrl.region.name != "default") {
+			if (popupCtrl.isUpdate && popupCtrl.region.name != "header") {
 				var deletedRegionIndex = -1;
 				for (var i = 0; i < popupCtrl.view.regions.length; i++) {
 					if (popupCtrl.view.regions[i].name === popupCtrl.region.name) {

@@ -18,7 +18,10 @@
 	function config($stateProvider) {
 		$stateProvider.state('webvella-area-view-create', {
 			parent: 'webvella-area-base',
-			url: '/view-create/:viewName?returnUrl',
+			url: '/view-create/:viewName/:regionName?returnUrl',
+			params: {
+				regionName: { value: "header", squash: true }
+			},
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -26,8 +29,8 @@
 					controllerAs: 'topnavData'
 				},
 				"sidebarView": {
-					controller: 'WebVellaAreasRecordCreateSidebarController',
-					templateUrl: '/plugins/webvella-areas/create-record-sidebar.view.html',
+					controller: 'WebVellaAreasSidebarController',
+					templateUrl: '/plugins/webvella-areas/sidebar.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
@@ -37,16 +40,17 @@
 				}
 			},
 			resolve: {
-				loadDependency: loadDependency,
-				loadPreloadScript: loadPreloadScript,
-				resolvedCurrentView: resolveCurrentView
+				loadDependency: loadDependency
 			},
 			data: {
 
 			}
 		}).state('webvella-area-view-create-with-relation', {
 			parent: 'webvella-area-base',
-			url: '/view-create/:viewName/relation/:relationName/:targetRecordId?returnUrl',
+			url: '/view-create/:viewName/relation/:relationName/:direction/:targetRecordId/:regionName?returnUrl',
+			params: {
+				regionName: { value: "header", squash: true }
+			},
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -65,9 +69,7 @@
 				}
 			},
 			resolve: {
-				loadDependency: loadDependency,
-				loadPreloadScript: loadPreloadScript,
-				resolvedCurrentView: resolveCurrentView
+				loadDependency: loadDependency
 			},
 			data: {
 
@@ -79,79 +81,38 @@
 	//#region << Resolve Function >>
 
 	////////////////////////
- 	loadDependency.$inject = ['$ocLazyLoad','$q','$http','$stateParams','resolvedCurrentEntityMeta','wvAppConstants'];
-	function loadDependency($ocLazyLoad, $q, $http,$stateParams,resolvedCurrentEntityMeta,wvAppConstants){
-        var lazyDeferred = $q.defer();
+	loadDependency.$inject = ['$ocLazyLoad', '$q', '$http', '$stateParams', 'resolvedCurrentEntityMeta', 'wvAppConstants'];
+	function loadDependency($ocLazyLoad, $q, $http, $stateParams, resolvedCurrentEntityMeta, wvAppConstants) {
+		var lazyDeferred = $q.defer();
 
-		var listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' +  $stateParams.entityName + '/view/' + $stateParams.viewName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
+		var listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' + $stateParams.entityName + '/view/' + $stateParams.viewName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
 
 		var loadFilesArray = [];
 		loadFilesArray.push(listServiceJavascriptPath);
 
-        return $ocLazyLoad.load ({
-          cache: false,
-          files: loadFilesArray
-        }).then(function() {
-           return lazyDeferred.resolve("ready");
-        });	
-	
-	}
-	////////////////////////
- 	loadPreloadScript.$inject = ['loadDependency','webvellaViewActionService','$q','$http','$state'];
-	function loadPreloadScript(loadDependency,webvellaViewActionService, $q, $http,$state){
-        var defer = $q.defer();
+		return $ocLazyLoad.load({
+			cache: false,
+			files: loadFilesArray
+		}).then(function () {
+			return lazyDeferred.resolve("ready");
+		});
 
-		if (webvellaViewActionService.preload === undefined || typeof (webvellaViewActionService.preload) != "function") {
-			console.log("No webvellaViewActionService.preload function. Skipping");
-			defer.resolve();
-			return defer.promise;
-		}
-		else {
-			webvellaViewActionService.preload(defer,$state);
-		}
-	}
-
-	resolveCurrentView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta'];
-
-	function resolveCurrentView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta) {
-
-		// Initialize
-		var defer = $q.defer();
-
-		var userHasUpdateEntityPermission = webvellaCoreService.userHasRecordPermissions(resolvedCurrentEntityMeta, "canCreate");
-		if (!userHasUpdateEntityPermission) {
-			alert("you do not have permissions to create records from this entity!");
-			defer.reject("you do not have permissions to create records from this entity");
-		}
-
-		var view = {};
-		view.data = null;
-		view.meta = null;
-
-		for (var i = 0; i < resolvedCurrentEntityMeta.recordViews.length; i++) {
-		   if(resolvedCurrentEntityMeta.recordViews[i].name == $stateParams.viewName){
-			view.meta = resolvedCurrentEntityMeta.recordViews[i];
-		   }
-		}
-
-		defer.resolve(view);
-
-		return defer.promise;
 	}
 
 	//#endregion
 
 	//#region << Controller  >> ///////////////////////////////
-	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaCoreService','webvellaViewActionService',
-        'resolvedAreas', '$timeout', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', '$anchorScroll', '$location','$sessionStorage',
-		'resolvedCurrentUser'];
-	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, pageTitle, webvellaCoreService,webvellaViewActionService,
-        resolvedAreas, $timeout, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, $anchorScroll, $location,$sessionStorage,
-		resolvedCurrentUser) {
-		
+	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaCoreService',
+        'resolvedAreas', '$timeout', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', '$anchorScroll', '$location', '$sessionStorage',
+		'resolvedCurrentUser', 'resolvedEntityList','$injector'];
+	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, pageTitle, webvellaCoreService,
+        resolvedAreas, $timeout, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, $anchorScroll, $location, $sessionStorage,
+		resolvedCurrentUser, resolvedEntityList,$injector) {
+
 		//#region << ngCtrl initialization >>
 		var ngCtrl = this;
 		ngCtrl.validation = {};
+		ngCtrl.currentState = $state.current;
 		//#endregion
 
 		//#region <<Set Page meta>>
@@ -161,41 +122,25 @@
 		webvellaCoreService.setBodyColorClass(ngCtrl.currentArea.color);
 		//#endregion
 
+
+		var safeViewNameAndEntity = webvellaCoreService.getSafeViewNameAndEntityName($stateParams.viewName, $stateParams.entityName, resolvedEntityRelationsList);			
 		//#region << Initialize main objects >>
 		ngCtrl.view = {};
 		ngCtrl.view.data = {}; //Initially now, will be later filled in by the user
-		ngCtrl.view.meta = {}; //will be initialized in the following function
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
-		ngCtrl.entityRelations = fastCopy(resolvedEntityRelationsList);
-		ngCtrl.areas = fastCopy(resolvedAreas.data);
-		ngCtrl.currentUser = fastCopy(resolvedCurrentUser);
+		ngCtrl.view.meta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName, $stateParams.entityName, resolvedEntityList);
+		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.entityRelations = resolvedEntityRelationsList;
+		ngCtrl.areas = resolvedAreas.data;
+		ngCtrl.currentUser = resolvedCurrentUser;
 		ngCtrl.$sessionStorage = $sessionStorage;
 		ngCtrl.stateParams = $stateParams;
 		//#endregion
 
 		//#region << Set environment >> /////////////////////
- 		ngCtrl.createViewRegion = null;
-		for (var i = 0; i < ngCtrl.entity.recordViews.length; i++) {
-			if (ngCtrl.entity.recordViews[i].name === $stateParams.viewName) {
-				ngCtrl.view.meta = ngCtrl.entity.recordViews[i];
-				for (var j = 0; j < ngCtrl.entity.recordViews[i].regions.length; j++) {
-					if (ngCtrl.entity.recordViews[i].regions[j].name === "default") {
-						ngCtrl.createViewRegion = ngCtrl.entity.recordViews[i].regions[j];
-					}
-				}
-			}
-		}
-		//#endregion
-
-		//#region << Run  webvellaViewActionService.onload >>
-		if (webvellaViewActionService.onload === undefined || typeof (webvellaViewActionService.onload) != "function") {
-			$log.warn("No webvellaViewActionService.onload function. Skipping");
-		}
-		else {
-			var actionsOnLoadResult = webvellaViewActionService.onload(ngCtrl,$rootScope,$state);
-			if(actionsOnLoadResult != true){
-				ngCtrl.validation.hasError = true;
-				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);				
+		ngCtrl.createViewRegion = null;
+		for (var j = 0; j < ngCtrl.view.meta.regions.length; j++) {
+			if (ngCtrl.view.meta.regions[j].name === "header") {
+				ngCtrl.createViewRegion = ngCtrl.view.meta.regions[j];
 			}
 		}
 		//#endregion
@@ -323,7 +268,7 @@
 				}
 			}
 		}
- 
+
 		// << File >>
 		ngCtrl.uploadedFileName = "";
 		ngCtrl.upload = function (file, item) {
@@ -378,7 +323,7 @@
 			webvellaCoreService.deleteFileFromFS(filePath, deleteSuccessCallback, deleteFailedCallback);
 
 		}
- 
+
 		// << Html >>
 		//Should use scope as it is not working with ngCtrl
 		$scope.editorOptions = {
@@ -414,7 +359,7 @@
 		//#endregion
 
 		//#region << Entity relations functions >>
- 
+
 		ngCtrl.getRelation = function (relationName) {
 			for (var i = 0; i < ngCtrl.entityRelations.length; i++) {
 				if (ngCtrl.entityRelations[i].name == relationName) {
@@ -458,11 +403,80 @@
 
 		//#endregion
 
+		//#region << If this is a create with relation init the related id >>
+		if(ngCtrl.stateParams.relationName){
+			//get relation
+			var currentRelation = webvellaCoreService.getRelationFromRelationsList(ngCtrl.stateParams.relationName,ngCtrl.entityRelations)
+			var relationFieldDataName = "$"+currentRelation.name + ".id";
+			//Lock the field if present as it should not be edited by the user
+			ngCtrl.isRelationFieldLocked = function(item){
+				var checkstring = "$field$" + currentRelation.name;
+				if(item.dataName.indexOf(checkstring) == -1){
+					return false;
+				}
+				else {
+					return true;
+				}
+			}
+		
+			//generate the relation field dataName for this record and include it in the data
+			switch(currentRelation.relationType){
+				case 1:  //1:1
+					ngCtrl.view.data[relationFieldDataName] = ngCtrl.stateParams.targetRecordId;
+					break;
+				case 2:  //1:N
+					if( ngCtrl.stateParams.direction == "origin-target"){
+						//field expects 1 value - of the origin
+						ngCtrl.view.data[relationFieldDataName] = ngCtrl.stateParams.targetRecordId;
+					}
+					else {
+						//field expects Array of values - of the targets
+						ngCtrl.view.data[relationFieldDataName].push(ngCtrl.stateParams.targetRecordId);
+					}
+					break;
+				case 3:  //N:N
+					if( ngCtrl.stateParams.direction == "origin-target"){
+						//field expects Array value - of the origins
+						ngCtrl.view.data[relationFieldDataName].push(ngCtrl.stateParams.targetRecordId);
+					}
+					else {
+						//field expects Array values - of the targets
+						ngCtrl.view.data[relationFieldDataName].push(ngCtrl.stateParams.targetRecordId);
+					}
+					break;
+			}
+		}
+
+
+		//#endregion
+
 		//#region << Render >>
+		ngCtrl.activeTabName = ngCtrl.stateParams.regionName;
+		ngCtrl.view.meta.regions.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+		if (ngCtrl.activeTabName == "header") {
+			//Set the first tab as active
+			if (ngCtrl.view.meta.regions[0].name != "header") {
+				ngCtrl.activeTabName = ngCtrl.view.meta.regions[0].name;
+			}
+			else if (ngCtrl.view.meta.regions.length > 1) {
+				ngCtrl.activeTabName = ngCtrl.view.meta.regions[1].name;
+			}
+			else {
+				ngCtrl.activeTabName = null;
+			}
+
+		}
+		ngCtrl.renderTabBar = false;
+		ngCtrl.view.meta.regions.forEach(function (region) {
+			if (region.render && region.name != "header") {
+				ngCtrl.renderTabBar = true;
+			}
+		});
+
 		ngCtrl.userHasRecordPermissions = function (permissionsCsv) {
 			return webvellaCoreService.userHasRecordPermissions(ngCtrl.entity, permissionsCsv);
 		}
- 		ngCtrl.getRelationLabel = function (item) {
+		ngCtrl.getRelationLabel = function (item) {
 			if (item.fieldLabel) {
 				return item.fieldLabel
 			}
@@ -477,18 +491,50 @@
 				}
 			}
 		}
- 		//#endregion
+		//#endregion
 
 		//#region << Save >>
 		ngCtrl.create = function (redirectTarget) {
 			//Validate 
 			ngCtrl.validation = {};
+			ngCtrl.validation.hasError = false;
+			ngCtrl.validation.errorMessage = "";
 			for (var k = 0; k < availableViewFields.length; k++) {
 				if (availableViewFields[k].type === "field" && availableViewFields[k].meta.required) {
 					if (ngCtrl.view.data[availableViewFields[k].dataName] == null || ngCtrl.view.data[availableViewFields[k].dataName] == "") {
 						ngCtrl.validation[availableViewFields[k].dataName] = true;
 						ngCtrl.validation.hasError = true;
 						ngCtrl.validation.errorMessage = "A required data is missing!";
+					}
+					else {
+						ngCtrl.validation[availableViewFields[k].dataName] = false;
+					}
+				}
+				if (availableViewFields[k].type === "fieldFromRelation" && availableViewFields[k].fieldRequired) {
+					//The field requested to be visualized is "$field$role_n_n_project_team$name", but we store in the data and submit the "$role_n_n_project_team.id" 
+					//as the record Id is always unique which we cannot be sure for the selected visualization field
+					//Here the trick is to check and validate the visualized field based on the submitted data. This can be done based on how the data names are generated
+					//which is always " '$' + elementType + '$' + relation_name + '$' + elementName".
+					//The format to create relation automatically on record creation is " '$' + relation_name + '.id'"
+					//So we can check based on the relation name
+					var relationNameFoundInData = false;
+					var dataNameArray = availableViewFields[k].dataName.split('$');
+					for (var propertyName in ngCtrl.view.data) {
+						if (propertyName.indexOf(dataNameArray[2]) != -1) {
+							if (ngCtrl.view.data[propertyName] != null && ngCtrl.view.data[propertyName] != "") {
+								relationNameFoundInData = true;
+							}
+							break;
+						}
+					}
+
+					if (!relationNameFoundInData) {
+						ngCtrl.validation[availableViewFields[k].dataName] = true;
+						ngCtrl.validation.hasError = true;
+						ngCtrl.validation.errorMessage = "A required data is missing!";
+					}
+					else {
+						ngCtrl.validation[availableViewFields[k].dataName] = false;
 					}
 				}
 			}
@@ -521,24 +567,53 @@
 						//Currently no need to remove field from relations that are not id, as they are not attached to the entityData anyway
 					}
 				}
-				ngCtrl.view.data["created_on"] = moment().utc().toISOString();
-				//popupCtrl.entityData["created_by"] = ""; //TODO: put the current user id after the users are implemented
 
-				if($stateParams.returnUrl){
-					var returnUrl = decodeURI($stateParams.returnUrl);
-					$location.search("returnUrl",null);
-					$location.path(returnUrl);
-				}				
-				else{				
-					switch (redirectTarget) {
-						case "details":
-							webvellaCoreService.createRecord(ngCtrl.entity.name, ngCtrl.view.data, successCallback, errorCallback);
-							break;
-						case "list":
-							webvellaCoreService.createRecord(ngCtrl.entity.name, ngCtrl.view.data, successCallbackList, errorCallback);
-							break;
+				/// Aux
+				ngCtrl.successCallback = function (response) {
+					ngToast.create({
+						className: 'success',
+						content: '<span class="go-green">Success:</span> ' + response.message
+					});
+					if ($stateParams.returnUrl && redirectTarget != "details") {
+						var returnUrl = decodeURI($stateParams.returnUrl);
+						$location.search("returnUrl", null);
+						$location.path(returnUrl);
+					}
+					else {
+						switch (redirectTarget) {
+							case "details":
+								var defaultViewName = webvellaCoreService.getDefaultViewNameForAreaEntity(ngCtrl.currentArea,ngCtrl.entity);
+								if(defaultViewName != null){
+									$state.go("webvella-areas-view-general", {
+										areaName: ngCtrl.currentArea.name,
+										entityName: ngCtrl.entity.name,
+										recordId: response.object.data[0].id,
+										viewName: defaultViewName
+									}, { reload: true });
+								}
+								else{
+									ngToast.create({
+        								className: 'error',
+        								content: '<span class="go-red">Error:</span> This entity does not have default general view',
+        								timeout: 7000
+        							});
+								}
+								break;
+
+							default:
+								$state.go("webvella-area-list-general", {
+									areaName: $stateParams.areaName,
+									entityName: $stateParams.entityName,
+									listName: $stateParams.listName,
+									page: $stateParams.page
+
+								}, { reload: true });
+								break;
+						}
 					}
 				}
+
+				webvellaCoreService.createRecord(ngCtrl.entity.name, ngCtrl.view.data, ngCtrl.successCallback, errorCallback);
 			}
 			else {
 				//Scroll top
@@ -553,9 +628,9 @@
 		};
 
 		ngCtrl.cancel = function () {
-			if($stateParams.returnUrl){
+			if ($stateParams.returnUrl) {
 				var returnUrl = decodeURI($stateParams.returnUrl);
-				$location.search("returnUrl",null);
+				$location.search("returnUrl", null);
 				$location.path(returnUrl);
 			}
 			else {
@@ -572,43 +647,6 @@
 		};
 
 		/// Aux
-		function successCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + response.message
-			});
-			$timeout(function () {
-				
-				alert("the details view name should be generated")
-
-				//$state.go("webvella-areas-record-view", {
-				//	areaName: $stateParams.areaName,
-				//	entityName: $stateParams.entityName,
-				//	recordId: response.object.data[0].id,
-				//	viewName: detailsViewName,
-				//	auxPageName: "*",
-				//	page: $stateParams.page
-
-				//}, { reload: true });
-			}, 0);
-		}
-
-		function successCallbackList(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + response.message
-			});
-			$timeout(function () {
-				$state.go("webvella-area-list-general", {
-					areaName: $stateParams.areaName,
-					entityName: $stateParams.entityName,
-					listName: $stateParams.listName,
-					page: $stateParams.page
-
-				}, { reload: true });
-			}, 0);
-		}
-
 		function errorCallback(response) {
 			alert(response.message);
 		}
@@ -744,7 +782,7 @@
 					else {
 						var recordIdCSV = returnObject.selectedRecordIdArray.join(',');
 						var fieldCSV = fieldsArray.join(',');
-						webvellaCoreService.getRecordsWithoutList(recordIdCSV, fieldCSV, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
+						webvellaCoreService.getRecordsWithoutList(recordIdCSV, fieldCSV, null, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
 					}
 				});
 			}
@@ -757,6 +795,7 @@
 		var resolveLookupRecords = function (item, relationType, dataKind) {
 			// Initialize
 			var defer = $q.defer();
+			var defaultLookupList = null;
 			ngCtrl.modalSelectedItem = fastCopy(item);
 			ngCtrl.modalRelationType = fastCopy(relationType);
 			ngCtrl.modalDataKind = fastCopy(dataKind);
@@ -770,12 +809,16 @@
 				defer.reject();
 			}
 			function getListRecordsSuccessCallback(response) {
-				defer.resolve(response); //Submitting the whole response to manage the error states
+				var responseObj = {};
+				responseObj.success = true;
+				responseObj.object = {};
+				responseObj.object.meta = defaultLookupList;
+				responseObj.object.data = response.object;
+				defer.resolve(responseObj); //Submitting the whole response to manage the error states
 			}
 
 			function getEntityMetaSuccessCallback(response) {
 				var entityMeta = response.object;
-				var defaultLookupList = null;
 				var selectedLookupListName = ngCtrl.modalSelectedItem.fieldLookupList;
 				var selectedLookupList = null;
 				//Find the default lookup field if none return null.
@@ -824,12 +867,12 @@
 							getListRecordsSuccessCallback(lockedChangeResponse);
 						}
 						else {
-							webvellaCoreService.getRecordsByListName(defaultLookupList.name, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
+							webvellaCoreService.getRecordsByListMeta(defaultLookupList, entityMeta.name, 1, null, null, getListRecordsSuccessCallback, errorCallback);
 						}
 					}
 					else if (ngCtrl.modalDataKind == "target") {
 						//Current records is Target
-						webvellaCoreService.getRecordsByListName(defaultLookupList.name, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
+						webvellaCoreService.getRecordsByListMeta(defaultLookupList, entityMeta.name, 1, null, null, getListRecordsSuccessCallback, errorCallback);
 					}
 				}
 			}
@@ -844,15 +887,22 @@
 
 		//#endregion
 
-		//#region << List actions and webvellaViewActionService bind >>
-		ngCtrl.actionService = webvellaViewActionService;
+		//#region << List actions >>
+		var serviceName =  safeViewNameAndEntity.entityName + "_" + safeViewNameAndEntity.viewName + "_view_service";
+		try{
+			ngCtrl.actionService = $injector.get(serviceName);
+		}
+		catch(err){
+			//console.log(err);
+			ngCtrl.actionService = {};		
+		}
 		ngCtrl.pageTitleActions = [];
 		ngCtrl.pageTitleDropdownActions = [];
 		ngCtrl.createBottomActions = [];
 		ngCtrl.pageBottomActions = [];
-		ngCtrl.view.meta.actionItems.sort(sort_by('menu', {name:'weight', primer: parseInt, reverse: false}));
-		ngCtrl.view.meta.actionItems.forEach(function(actionItem){
-			switch(actionItem.menu){
+		ngCtrl.view.meta.actionItems.sort(sort_by('menu', { name: 'weight', primer: parseInt, reverse: false }));
+		ngCtrl.view.meta.actionItems.forEach(function (actionItem) {
+			switch (actionItem.menu) {
 				case "page-title":
 					ngCtrl.pageTitleActions.push(actionItem);
 					break;
@@ -866,31 +916,18 @@
 					ngCtrl.pageBottomActions.push(actionItem);
 					break;
 			}
-		});		
-		//#endregion
-
-		//#region << Run  webvellaViewActionService.postload >>
-		if (webvellaViewActionService.postload === undefined || typeof (webvellaViewActionService.postload) != "function") {
-			$log.warn("No webvellaViewActionService.postload function. Skipping");
-		}
-		else {
-			var actionsOnLoadResult = webvellaViewActionService.postload(ngCtrl,$rootScope,$state);
-			if(actionsOnLoadResult != true){
-				ngCtrl.validation.hasError = true;
-				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);				
-			}
-		}
+		});
 		//#endregion
 	}
 	//#endregion
 
 	//#region < Modal Controllers >
 	CreateRelationFieldModalController.$inject = ['ngCtrl', '$uibModalInstance', '$log', '$q', '$stateParams', 'modalMode', 'resolvedLookupRecords',
-        'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
+        'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaCoreService', 'ngToast', '$timeout', '$state','$location','$translate'];
 	function CreateRelationFieldModalController(ngCtrl, $uibModalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
-        selectedDataKind, selectedItem, selectedRelationType, webvellaCoreService, ngToast, $timeout, $state) {
+        selectedDataKind, selectedItem, selectedRelationType, webvellaCoreService, ngToast, $timeout, $state,$location,$translate) {
 
-		
+
 		var popupCtrl = this;
 		popupCtrl.currentPage = 1;
 		popupCtrl.parentData = fastCopy(ngCtrl);
@@ -903,8 +940,21 @@
 		var dummyFieldName = selectedItem.dataName.slice(index, selectedItem.dataName.length);
 		var idFieldPrefix = selectedItem.dataName.slice(0, index);
 		popupCtrl.currentlyAttachedIds = [];
-		popupCtrl.getRelationLabel = popupCtrl.parentData.getRelationLabel;
-
+		popupCtrl.getRelationLabel = function (item) {
+			if (item.fieldLabel) {
+				return item.fieldLabel
+			}
+			else {
+				var relationName = item.relationName;
+				var relation = findInArray(ngCtrl.entityRelations, "name", relationName);
+				if (relation) {
+					return relation.label;
+				}
+				else {
+					return "";
+				}
+			}
+		}
 
 		//Get the default lookup list for the entity
 		if (resolvedLookupRecords.success) {
@@ -915,25 +965,216 @@
 			popupCtrl.warningMessage = resolvedLookupRecords.message;
 		}
 
-		//#region << Search >>
-		popupCtrl.checkForSearchEnter = function (e) {
-			var code = (e.keyCode ? e.keyCode : e.which);
-			if (code == 13) { //Enter keycode
-				popupCtrl.submitSearchQuery();
+		//#region << Column widths from CSV >>
+		popupCtrl.columnWidths = [];
+		var columnWidthsArray = [];
+		if (popupCtrl.relationLookupList.meta.columnWidthsCSV) {
+			columnWidthsArray = popupCtrl.relationLookupList.meta.columnWidthsCSV.split(',');
+		}
+		var visibleColumns = popupCtrl.relationLookupList.meta.visibleColumnsCount;
+		if (columnWidthsArray.length > 0) {
+			for (var i = 0; i < visibleColumns; i++) {
+				if (columnWidthsArray.length >= i + 1) {
+					popupCtrl.columnWidths.push(columnWidthsArray[i]);
+				}
+				else {
+					popupCtrl.columnWidths.push("auto");
+				}
 			}
 		}
-		popupCtrl.submitSearchQuery = function () {
-			function successCallback(response) {
-				popupCtrl.relationLookupList = fastCopy(response.object);
+		else {
+			//set all to auto
+			for (var i = 0; i < visibleColumns; i++) {
+				popupCtrl.columnWidths.push("auto");
 			}
-			function errorCallback(response) { }
+		}
 
-			if (popupCtrl.searchQuery) {
-				popupCtrl.searchQuery = popupCtrl.searchQuery.trim();
+		//#endregion
+
+		//#region << List filter row >>
+		popupCtrl.filterQuery = {};
+		popupCtrl.listIsFiltered = false;
+		popupCtrl.columnDictionary = {};
+		popupCtrl.columnDataNamesArray = [];
+		popupCtrl.queryParametersArray = [];
+		//Extract the available columns
+		popupCtrl.relationLookupList.meta.columns.forEach(function (column) {
+			if (popupCtrl.columnDataNamesArray.indexOf(column.dataName) == -1) {
+				popupCtrl.columnDataNamesArray.push(column.dataName);
 			}
-			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.selectedItem.entityName, 1, null,successCallback, errorCallback);
+			popupCtrl.columnDictionary[column.dataName] = column;
+		});
+		popupCtrl.filterLoading = false;
+		popupCtrl.columnDataNamesArray.forEach(function (dataName) {
+			if (popupCtrl.queryParametersArray.indexOf(dataName) > -1) {
+				popupCtrl.listIsFiltered = true;
+				var columnObj = popupCtrl.columnDictionary[dataName];
+				//some data validations and conversions	
+				switch (columnObj.meta.fieldType) {
+					//TODO if percent convert to > 1 %
+					case 14:
+						if (checkDecimal(queryObject[dataName])) {
+							popupCtrl.filterQuery[dataName] = queryObject[dataName] * 100;
+						}
+						break;
+					default:
+						popupCtrl.filterQuery[dataName] = queryObject[dataName];
+						break;
+
+				}
+			}
+		});
+
+		popupCtrl.applyQueryFilter = function () {
+			var searchParams = {};
+			popupCtrl.filterLoading = true;
+			for (var filter in popupCtrl.filterQuery) {
+				//Check if the field is percent or date
+				if(popupCtrl.filterQuery[filter]){
+					for (var i = 0; i < popupCtrl.relationLookupList.meta.columns.length; i++) {
+						if(popupCtrl.relationLookupList.meta.columns[i].meta.name == filter){
+							var selectedField = popupCtrl.relationLookupList.meta.columns[i].meta;
+							switch(selectedField.fieldType){
+								case 4: //Date
+									searchParams[filter] = moment(popupCtrl.filterQuery[filter],'D MMM YYYY').toISOString();
+									break;
+								case 5: //Datetime
+									searchParams[filter] = moment(popupCtrl.filterQuery[filter],'D MMM YYYY HH:mm').toISOString();
+									break;
+								case 14: //Percent
+									searchParams[filter] = popupCtrl.filterQuery[filter] / 100;
+									break;
+								default:
+									searchParams[filter] = 	popupCtrl.filterQuery[filter];
+									break;
+							}
+						}
+					}
+				}
+				else {
+					delete 	searchParams[filter];
+				}				
+			}
+			//Find the entity of the list. It could not be the current one as it could be listFromRelation case
+			var listEntityName =popupCtrl.selectedItem.entityName;
+
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, listEntityName, 1, $stateParams, searchParams, popupCtrl.ReloadRecordsSuccessCallback, popupCtrl.ReloadRecordsErrorCallback);
+		}
+
+		popupCtrl.ReloadRecordsSuccessCallback = function (response) {
+			popupCtrl.relationLookupList.data = response.object;
+			//Just a little wait
+			$timeout(function(){
+				popupCtrl.filterLoading = false;
+			},300);
+		}
+
+		popupCtrl.ReloadRecordsErrorCallback = function (response) {
+			//Just a little wait
+			$timeout(function(){
+				popupCtrl.filterLoading = false;
+			},300);
+			alert(response.message);
+		}
+
+
+		popupCtrl.getAutoIncrementString = function (column) {
+			var returnObject = {};
+			returnObject.prefix = null;
+			returnObject.suffix = null;
+			var keyIndex = column.meta.displayFormat.indexOf('{0}');
+			if (keyIndex == 0) {
+				return null;
+			}
+			else {
+				returnObject.prefix = column.meta.displayFormat.slice(0, keyIndex);
+				if (keyIndex + 3 < column.meta.displayFormat.length) {
+					returnObject.suffix = column.meta.displayFormat.slice(keyIndex + 3, column.meta.displayFormat.length);
+				}
+				return returnObject;
+			}
+		}
+
+		//#endregion
+
+		//#region << Extract fields that are supported in the query to be filters>>
+		popupCtrl.fieldsInQueryArray = webvellaCoreService.extractSupportedFilterFields(popupCtrl.relationLookupList);
+		popupCtrl.checkIfFieldSetInQuery = function (dataName) {
+			if (popupCtrl.fieldsInQueryArray.fieldNames.indexOf(dataName) != -1) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+
+		popupCtrl.allQueryComparisonList = [];
+		//#region << Query Dictionary >>
+		$translate(['QUERY_RULE_EQ_LABEL', 'QUERY_RULE_NOT_LABEL', 'QUERY_RULE_LT_LABEL', 'QUERY_RULE_LTE_LABEL',
+					'QUERY_RULE_GT_LABEL', 'QUERY_RULE_GTE_LABEL', 'QUERY_RULE_CONTAINS_LABEL', 'QUERY_RULE_NOT_CONTAINS_LABEL',
+					'QUERY_RULE_STARTSWITH_LABEL', 'QUERY_RULE_NOT_STARTSWITH_LABEL']).then(function (translations) {
+						popupCtrl.allQueryComparisonList = [
+							{
+								key: "EQ",
+								value: translations.QUERY_RULE_EQ_LABEL
+							},
+							{
+								key: "NOT",
+								value: translations.QUERY_RULE_NOT_LABEL
+							},
+							{
+								key: "LT",
+								value: translations.QUERY_RULE_LT_LABEL
+							},
+							{
+								key: "LTE",
+								value: translations.QUERY_RULE_LTE_LABEL
+							},
+							{
+								key: "GT",
+								value: translations.QUERY_RULE_GT_LABEL
+							},
+							{
+								key: "GTE",
+								value: translations.QUERY_RULE_GTE_LABEL
+							},
+							{
+								key: "CONTAINS",
+								value: translations.QUERY_RULE_CONTAINS_LABEL
+							},
+							{
+								key: "NOTCONTAINS",
+								value: translations.QUERY_RULE_NOT_CONTAINS_LABEL
+							},
+							{
+								key: "STARTSWITH",
+								value: translations.QUERY_RULE_STARTSWITH_LABEL
+							},
+							{
+								key: "NOTSTARTSWITH",
+								value: translations.QUERY_RULE_NOT_STARTSWITH_LABEL
+							}
+						];
+
+					});
+		//#endregion
+		popupCtrl.getFilterInputPlaceholder = function (dataName) {
+			var fieldIndex = popupCtrl.fieldsInQueryArray.fieldNames.indexOf(dataName);
+			if (fieldIndex == -1) {
+				return "";
+			}
+			else {
+				var fieldQueryType = popupCtrl.fieldsInQueryArray.queryTypes[fieldIndex];
+				for (var i = 0; i < popupCtrl.allQueryComparisonList.length; i++) {
+					if (popupCtrl.allQueryComparisonList[i].key == fieldQueryType) {
+						return popupCtrl.allQueryComparisonList[i].value;
+					}
+				}
+				return "";
+			}
 		}
 		//#endregion
+
 
 		//#region << Paging >>
 		popupCtrl.selectPage = function (page) {
@@ -947,7 +1188,7 @@
 
 			}
 
-			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.selectedItem.entityName, page, null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.selectedItem.entityName, page, null, null, successCallback, errorCallback);
 		}
 
 		//#endregion
@@ -985,7 +1226,7 @@
 				popupCtrl.currentlyAttachedIds.push(record.id);
 			}
 			else {
-				//if it is already in the highligted list there is probably some miscalculation from previous operation, but for now we will do nothing
+				//if it is already in the highlighted list there is probably some miscalculation from previous operation, but for now we will do nothing
 			}
 
 		}
@@ -997,7 +1238,7 @@
 				popupCtrl.currentlyAttachedIds.splice(elementIndex, 1);
 			}
 			else {
-				//if it is already not in the highligted list there is probably some miscalculation from previous operation, but for now we will do nothing
+				//if it is already not in the highlighted list there is probably some miscalculation from previous operation, but for now we will do nothing
 			}
 		}
 		popupCtrl.saveRelationChanges = function () {

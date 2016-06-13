@@ -13,10 +13,10 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$state', '$stateParams','resolvedCurrentView','webvellaCoreService','resolvedCurrentUser','resolvedAreas','$location'];
+    controller.$inject = ['$state', '$stateParams','webvellaCoreService','resolvedCurrentUser','resolvedAreas','$location','resolvedEntityList','$localStorage'];
 
     
-    function controller($state, $stateParams,resolvedCurrentView,webvellaCoreService,resolvedCurrentUser,resolvedAreas,$location) {
+    function controller($state, $stateParams,webvellaCoreService,resolvedCurrentUser,resolvedAreas,$location,resolvedEntityList,$localStorage) {
         var sidebarData = this;
 		sidebarData.currentArea = webvellaCoreService.getCurrentAreaFromAreaList($stateParams.areaName, resolvedAreas.data);
 		sidebarData.currentUser = angular.copy(resolvedCurrentUser);
@@ -25,7 +25,8 @@
 		sidebarData.stateParams = $stateParams;
 		sidebarData.sidebarTopActions = [];
 		sidebarData.onlyBackButton = true;
-		resolvedCurrentView.meta.actionItems.forEach(function (actionItem) {
+		var currentView	= webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName, $stateParams.entityName, resolvedEntityList);
+		currentView.actionItems.forEach(function (actionItem) {
 			switch (actionItem.menu) {
 				case "sidebar-top":
 					sidebarData.sidebarTopActions.push(actionItem);
@@ -41,6 +42,11 @@
 			$location.search("returnUrl",null);
 			$location.path(returnUrl);
 		}
+
+        sidebarData.$storage = $localStorage;
+        sidebarData.toggleSideNav = function () {
+        	sidebarData.$storage.isMiniSidebar = !sidebarData.$storage.isMiniSidebar;
+        }
     }
 
 })();

@@ -40,6 +40,9 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "label")]
 		public string Label { get; set; }
 
+		[JsonProperty(PropertyName = "title")]
+		public string Title { get; set; }
+
 		[JsonProperty(PropertyName = "default")]
 		public bool? Default { get; set; }
 
@@ -58,6 +61,15 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "type")]
 		public string Type { get; set; }
 
+		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
+		public string DynamicHtmlTemplate { get; set; }
+
+		[JsonProperty(PropertyName = "dataSourceUrl")]
+		public string DataSourceUrl { get; set; }
+
+		[JsonProperty(PropertyName = "serviceCode")]
+		public string ServiceCode { get; set; }
+
 		[JsonProperty(PropertyName = "regions")]
 		public List<InputRecordViewRegion> Regions { get; set; }
 
@@ -67,14 +79,8 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "sidebar")]
 		public InputRecordViewSidebar Sidebar { get; set; }
 
-		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
-		public string DynamicHtmlTemplate { get; set; }
-
 		[JsonProperty(PropertyName = "actionItems")]
 		public List<ActionItem> ActionItems { get; set; }
-
-		[JsonProperty(PropertyName = "serviceCode")]
-		public string ServiceCode { get; set; }
 
 		public static InputRecordView Convert(JObject inputField)
 		{
@@ -89,6 +95,11 @@ namespace WebVella.ERP.Api.Models
     ////////////////////////
     public class InputRecordViewSidebar
 	{
+		public InputRecordViewSidebar() {
+			Render = true;
+			CssClass = "";
+		}
+	
 		[JsonProperty(PropertyName = "render")]
 		public bool? Render { get; set; }
 
@@ -487,6 +498,7 @@ namespace WebVella.ERP.Api.Models
 			Id = Guid.NewGuid();
 			Name = "";
 			Label = "";
+			Title = "";
 			Default = false;
 			System = false;
 			Weight = 1;
@@ -497,6 +509,7 @@ namespace WebVella.ERP.Api.Models
 			Sidebar = new RecordViewSidebar();
             RelationOptions = new List<EntityRelationOptions>();
 			DynamicHtmlTemplate = "";
+			DataSourceUrl = "";
 			ActionItems = new List<ActionItem>();
 		}
 
@@ -508,6 +521,9 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "label")]
 		public string Label { get; set; }
+
+		[JsonProperty(PropertyName = "title")]
+		public string Title { get; set; }
 
 		[JsonProperty(PropertyName = "default")]
 		public bool? Default { get; set; }
@@ -527,6 +543,15 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "type")]
 		public string Type { get; set; }
 
+		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
+		public string DynamicHtmlTemplate { get; set; }
+
+		[JsonProperty(PropertyName = "dataSourceUrl")]
+		public string DataSourceUrl { get; set; }
+
+		[JsonProperty(PropertyName = "serviceCode")]
+		public string ServiceCode { get; set; }
+
 		[JsonProperty(PropertyName = "regions")]
 		public List<RecordViewRegion> Regions { get; set; }
 
@@ -536,14 +561,9 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "sidebar")]
 		public RecordViewSidebar Sidebar { get; set; }
 
-		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
-		public string DynamicHtmlTemplate { get; set; }
-
 		[JsonProperty(PropertyName = "actionItems")]
 		public List<ActionItem> ActionItems { get; set; }
 
-		[JsonProperty(PropertyName = "serviceCode")]
-		public string ServiceCode { get; set; }
 	}
 
 	////////////////////////
@@ -1123,17 +1143,17 @@ namespace WebVella.ERP.Api.Models
 	public class RecordViewRecordResponse : BaseResponseModel
 	{
 		[JsonProperty(PropertyName = "object")]
-		public RecordViewRecord Object { get; set; }
+		public object Object { get; set; }
 	}
 
-	public class RecordViewRecord
-	{
-		[JsonProperty(PropertyName = "data")]
-		public object Data { get; set; }
+	//public class RecordViewRecord
+	//{
+	//	[JsonProperty(PropertyName = "data")]
+	//	public object Data { get; set; }
 
-		[JsonProperty(PropertyName = "meta")]
-		public RecordView Meta { get; set; }
-	}
+	//	[JsonProperty(PropertyName = "meta")]
+	//	public RecordView Meta { get; set; }
+	//}
 
 	public class RecordViewItemConverter : JsonCreationConverter<InputRecordViewItemBase>
 	{

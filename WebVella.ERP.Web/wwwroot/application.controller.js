@@ -14,11 +14,11 @@
 
 
 	//#region << Configuration  >> ///////////////////////////////////
-	config.$inject = ['$httpProvider', 'wvAppConstants', '$translateProvider'];
-	function config($httpProvider, wvAppConstants, $translateProvider) {
+	config.$inject = ['$httpProvider', 'wvAppConstants', '$translateProvider','$sceDelegateProvider'];
+	function config($httpProvider, wvAppConstants, $translateProvider,$sceDelegateProvider) {
 
 		//#region << Request interceptors >>
-		$httpProvider.interceptors.push(function ($q, $location, ngToast, $cookies, $rootScope) {
+		$httpProvider.interceptors.push(function ($q, $location, ngToast, $cookies, $rootScope, $timeout) {
 			return {
 				'request': function (request) {
 					if (request.url.indexOf(wvAppConstants.apiBaseUrl) > -1) {
@@ -50,11 +50,15 @@
 						ngToast.create({
 							className: 'error',
 							content: '<span class="go-red">Error code ' + errorResponse.status + '</span> ' + errorResponse.statusText,
-							timeout: 7000
+							timeout: 3000
 						});
 						var cookieValue = $cookies.remove("erp-auth");
-						$location.path("/login");//.search({ returnUrl: angular.toJson(document.URL) });
-						return $q.reject(errorResponse);
+						//we need to wait for this operation to finish before redirect
+						$location.search("returnUrl",encodeURI($location.path()))
+						$timeout(function () {
+							$location.path("/login");
+							return $q.reject(errorResponse);
+						}, 100);
 					}
 					else if (errorResponse.status === 403) {
 						ngToast.create({
@@ -89,25 +93,37 @@
 
 		//#region << Translation >>
 		$translateProvider.preferredLanguage(GlobalLanguage);
-		switch(GlobalLanguage){
+		switch (GlobalLanguage) {
+			case "bg":
+				$translateProvider.translations(GlobalLanguage, translationsBG);
+				break;
 			case "en":
 				$translateProvider.translations(GlobalLanguage, translationsEN);
 				break;
 			case "es":
 				$translateProvider.translations(GlobalLanguage, translationsES);
 				break;
+			case "ru":
+				$translateProvider.translations(GlobalLanguage, translationsRU);
+				break;
 		}
 		$translateProvider.useSanitizeValueStrategy(null);
+		//#endregion
+
+		//#region << Dynamic template providers
+			//$sceDelegateProvider.resourceUrlWhitelist([
+			//	'http://www.refsnesdata.no/**'
+			//]);
 		//#endregion
 	}
 	//#endregion
 
 	//#region << Controller >> ///////////////////////////////
-	controller.$inject = ['$rootScope', '$log', '$cookies', '$localStorage', '$timeout', '$state', 'webvellaCoreService'];
-	function controller($rootScope, $log, $cookies, $localStorage, $timeout, $state, webvellaCoreService) {
+	controller.$inject = ['$rootScope', '$log', '$cookies', '$localStorage', '$timeout', '$state', 'webvellaCoreService','ngToast'];
+	function controller($rootScope, $log, $cookies, $localStorage, $timeout, $state, webvellaCoreService,ngToast) {
 		var appData = this;
 		//Set page title
-		appData.pageTitle = 'WebVella ERP';
+		appData.pageTitle = GlobalCompanyName;
 
 		$rootScope.$on("application-pageTitle-update", function (event, newValue) {
 			appData.pageTitle = newValue;
@@ -128,13 +144,23 @@
 			event.preventDefault();
 			$timeout(function () {
 				$state.go(redirectObject.stateName, redirectObject.params, { reload: true });
-			}, 1);
+			}, 0);
 		});
 
 		$rootScope.$on("$stateChangeSuccess", function () {
 			$rootScope.adminSectionName = null;
 			$rootScope.adminSubSectionName = null;
 		});
+
+		$rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + error,
+					timeout: 7000
+				});
+		 });
+		//Set up object for the view and list Action services
+		$rootScope.actionService = {};
 	}
 	//#endregion
 

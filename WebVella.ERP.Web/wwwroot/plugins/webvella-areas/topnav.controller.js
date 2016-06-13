@@ -13,19 +13,15 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$localStorage', '$log', '$rootScope', '$state', '$stateParams', 'resolvedAreas', '$timeout','webvellaCoreService', 'resolvedCurrentEntityMeta'];
+    controller.$inject = ['$rootScope', '$state', '$stateParams', 'resolvedAreas', '$timeout','webvellaCoreService', 'resolvedCurrentEntityMeta','resolvedCurrentUser'];
 
     
-    function controller($localStorage, $log, $rootScope, $state, $stateParams, resolvedAreas, $timeout,webvellaCoreService, resolvedCurrentEntityMeta) {
+    function controller($rootScope, $state, $stateParams, resolvedAreas, $timeout,webvellaCoreService, resolvedCurrentEntityMeta,resolvedCurrentUser) {
         
         var topnavData = this;
         topnavData.currentArea = webvellaCoreService.getCurrentAreaFromAreaList($stateParams.areaName, resolvedAreas.data);
-		topnavData.currentEntity = fastCopy(resolvedCurrentEntityMeta);
-        topnavData.$storage = $localStorage;
-        topnavData.toggleSideNav = function () {
-        	topnavData.$storage.isMiniSidebar = !topnavData.$storage.isMiniSidebar;
-        }
-
+		topnavData.currentEntity = resolvedCurrentEntityMeta;
+		topnavData.currentUser = angular.copy(resolvedCurrentUser);
         topnavData.logout = function () {
         	webvellaCoreService.logout(
                     function (response) {

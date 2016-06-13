@@ -1,38 +1,41 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<span class="btn btn-default btn-outline go-grey disabled" title="{{'ENTITY_DELETE_LOCKED_MESSAGE' | translate}}" ng-show="ngCtrl.entity.system"><i class="fa fa-lock"></i> <span translate="{{'DELETE_LOCKED'}}"></span></span>
-			<a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.openDeleteEntityModal()" ng-show="!ngCtrl.entity.system"><i class="fa fa-trash go-red"></i> <span translate="{{'ENTITY_DELETE'}}"></span></a>
+			<a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.openDeleteEntityModal()" ng-show="!ngCtrl.entity.system"><i class="fa fa-trash go-red"></i> <span translate="{{::'ENTITY_DELETE'}}"></span></a>
 		</div>
-		<div class="meta-label">
-			<h4 translate="{{'DETAILS'}}"></h4>
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-info-circle fa-2x"></i>
 		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux" translate="{{::'ENTITY_MANAGE_DETAILS'}}"></div>
+            <h4 ng-bind="::ngCtrl.entity.name"></h4>
+        </div>
 	</div>
 </div>
 <div id="page-body">
 	<div class="tabbable tabs-left spilled">
-		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{'BACK'}}"></span></a>
+		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{::'BACK'}}"></span></a>
 		<ul class="nav nav-tabs">
-			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text" translate="{{'DETAILS'}}"></span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text" translate="{{'FIELDS'}}"></span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text" translate="{{'RECORD_VIEWS'}}"></span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text" translate="{{'RECORD_LISTS'}}"></span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text" translate="{{'RECORD_TREES'}}"></span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text" translate="{{'RELATIONS'}}"></span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text" translate="{{::'DETAILS'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text" translate="{{::'FIELDS'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text" translate="{{::'RECORD_VIEWS'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text" translate="{{::'RECORD_LISTS'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text" translate="{{::'RECORD_TREES'}}"></span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text" translate="{{::'RELATIONS'}}"></span></a></li>
 		</ul>
 
 	</div>
 	<div id="page-text">
-		<div class="form-horizontal" style="margin-top: 15px;">
+		<div class="form" style="margin-top: 15px;">
 
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="row editable-field field">
-							<label class="control-label col-lg-2" translate="{{'NAME'}}"></label>
-							<div class="col-lg-10">
+						<div class="editable-field field">
+							<label class="control-label" translate="{{::'NAME'}}"></label>
+							<div>
 								<div class="editable-wrapper input-group editable-readonly">
-									<input type="text" class="form-control" disabled value="{{::ngCtrl.entity.name}}"></input>
+									<p class="form-control-static form-control" ng-bind="::ngCtrl.entity.name"></p>
 									<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 								</div>
 							</div>
@@ -41,20 +44,12 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="row editable-field field">
-							<label class="control-label col-lg-2" translate="{{'SYSTEM'}}"></label>
-							<div class="col-lg-10">
-								<div class="editable-wrapper input-group first-background-transparent editable-updatable"  ng-dblclick="fieldForm_system.$show()">
-									<span class="input-group-addon" ng-if="ngCtrl.entity.system && !fieldForm_system.$visible">
-										<i class="fa fa-check fa-fw go-green"></i>
-									</span>
-									<span class="input-group-addon" ng-if="!ngCtrl.entity.system && !fieldForm_system.$visible">
-										<i class="fa fa-times fa-fw go-red"></i>
-									</span>
-									<input type="text" class="form-control" disabled editable-checkbox="ngCtrl.entity.system"
-											e-title="{{'CHECKBOX_TRUE_LABEL' | translate}}" value="{{ngCtrl.renderFieldValue(ngCtrl.entity.system,{fieldType:2})}}"
-											onbeforesave="ngCtrl.fieldUpdate('system',$data)" e-form="fieldForm_system">
-									<span class="input-group-addon" ng-click="fieldForm_system.$show()" ng-hide="fieldForm_system.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+						<div class="editable-field field">
+							<label class="control-label" translate="{{::'ID'}}"></label>
+							<div>
+								<div class="editable-wrapper input-group editable-readonly">
+									<p class="form-control-static form-control" ng-bind="::ngCtrl.entity.id"></p>
+									<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 								</div>
 							</div>
 						</div>
@@ -65,9 +60,9 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="row editable-field field">
-							<label class="control-label col-lg-2" translate="{{'LABEL'}}"></label>
-							<div class="col-lg-10">
+						<div class="editable-field field">
+							<label class="control-label" translate="{{::'LABEL'}}"></label>
+							<div>
 								<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_label.$show()">
 									<input type="text" class="form-control" disabled editable-text="ngCtrl.entity.label"
 										   value="{{ngCtrl.entity.label}}"
@@ -80,9 +75,9 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="row editable-field field">
-							<label class="control-label col-lg-2" translate="{{'LABEL_PLURAL'}}"></label>
-							<div class="col-lg-10">
+						<div class="editable-field field">
+							<label class="control-label" translate="{{::'LABEL_PLURAL'}}"></label>
+							<div>
 								<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_labelPlural.$show()">
 									<input type="text" class="form-control" disabled editable-text="ngCtrl.entity.labelPlural"
 										   value="{{ngCtrl.entity.labelPlural}}"
@@ -98,26 +93,30 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="row editable-field field">
-							<label class="control-label col-lg-2" translate="{{'ICON_NAME'}}"></label>
-							<div class="col-lg-10">
-								<div class="editable-wrapper input-group first-background-transparent editable-updatable" ng-dblclick="fieldForm_iconName.$show()">
-									<span class="input-group-addon" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-{{ngCtrl.entity.iconName}} fa-fw"></i></span>
-									<input type="text" class="form-control" disabled editable-text="ngCtrl.entity.iconName"
-										   value="{{ngCtrl.entity.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName',$data)" e-form="fieldForm_iconName"  autocomplete="off"
-										   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in ngCtrl.icons | filter:$viewValue | limitTo:8">
-									<span class="input-group-addon" ng-click="fieldForm_iconName.$show()" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+						<div class="editable-field field">
+							<label class="control-label" translate="{{::'SYSTEM'}}"></label>
+							<div>
+								<div class="editable-wrapper input-group first-background-transparent editable-updatable"  ng-dblclick="fieldForm_system.$show()">
+									<span class="input-group-addon" ng-if="ngCtrl.entity.system && !fieldForm_system.$visible">
+										<i class="fa fa-check fa-fw go-green"></i>
+									</span>
+									<span class="input-group-addon" ng-if="!ngCtrl.entity.system && !fieldForm_system.$visible">
+										<i class="fa fa-times fa-fw go-red"></i>
+									</span>
+									<input type="text" class="form-control" disabled editable-checkbox="ngCtrl.entity.system"
+											e-title="{{::'CHECKBOX_TRUE_LABEL' | translate}}" value="{{ngCtrl.renderFieldValue(ngCtrl.entity.system,{fieldType:2})}}"
+											onbeforesave="ngCtrl.fieldUpdate('system',$data)" e-form="fieldForm_system">
+									<span class="input-group-addon" ng-click="fieldForm_system.$show()" ng-hide="fieldForm_system.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 								</div>
-								<div class="form-description"  translate="{{'ICON_NAME_DESCRIPTION'}}"></div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="row editable-field field">
-							<label class="control-label col-lg-2" translate="{{'WEIGHT'}}"></label>
-							<div class="col-lg-10">
+						<div class="editable-field field">
+							<label class="control-label" translate="{{::'WEIGHT'}}"></label>
+							<div>
 								<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_weight.$show()">
 									<input type="text" class="form-control" disabled editable-text="ngCtrl.entity.weight"
 										   value="{{ngCtrl.entity.weight}}"
@@ -129,21 +128,40 @@
 					</div>
 				</div>
 			</div>
-
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<div class="editable-field field">
+							<label class="control-label" translate="{{::'ICON_NAME'}}"></label>
+							<div>
+								<div class="editable-wrapper input-group first-background-transparent editable-updatable" 
+									ng-dblclick="fieldForm_iconName.$show(); ngCtrl[fieldForm_iconName] = fieldForm_iconName;">
+									<span class="input-group-addon" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-{{ngCtrl.entity.iconName}} fa-fw"></i></span>
+									<input type="text" class="form-control" disabled editable-text="ngCtrl.entity.iconName"
+										   value="{{ngCtrl.entity.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName',$data)" e-form="fieldForm_iconName"  autocomplete="off"
+										   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in ngCtrl.icons | filter:$viewValue | limitTo:8">
+									<span class="input-group-addon" ng-click="fieldForm_iconName.$show();ngCtrl[fieldForm_iconName] = fieldForm_iconName;" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+								</div>
+								<div class="form-description"  translate="{{::'ICON_NAME_DESCRIPTION'}}" ng-if="ngCtrl[fieldForm_iconName].$visible"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="form-group">
-						<div class="row editable-field field">
-							<label class="control-label col-lg-1" translate="{{'RECORD_PERMISSIONS'}}"></label>
-							<div class="col-lg-11">
+						<div class="editable-field field">
+							<label class="control-label" translate="{{::'RECORD_PERMISSIONS'}}"></label>
+							<div>
 								<table class="table table-bordered table-permissions">
 									<thead>
 										<tr>
-											<th style="width:20%" translate="{{'ROLE_NAME'}}"></th>
-											<th style="width:20%" translate="{{'CREATE'}}"></th>
-											<th style="width:20%" translate="{{'READ'}}"></th>
-											<th style="width:20%" translate="{{'UPDATE'}}"></th>
-											<th style="width:20%" translate="{{'DELETE'}}"></th>
+											<th style="width:20%" translate="{{::'ROLE_NAME'}}"></th>
+											<th style="width:20%" translate="{{::'CREATE'}}"></th>
+											<th style="width:20%" translate="{{::'READ'}}"></th>
+											<th style="width:20%" translate="{{::'UPDATE'}}"></th>
+											<th style="width:20%" translate="{{::'DELETE'}}"></th>
 
 										</tr>
 									</thead>
@@ -159,7 +177,7 @@
 														<i class="fa fa-times fa-fw go-red"></i>
 													</span>
 													<input type="text" class="form-control" disabled editable-checkbox="role.canCreate"
-														   e-title="{{'GRANTED' | translate}}" value="{{role.canCreate}}"
+														   e-title="{{::'GRANTED' | translate}}" value="{{role.canCreate}}"
 														   onbeforesave="ngCtrl.permissionPatch(role.id, 'canCreate', $data)" e-form="{{'fieldFormCreate_' + role.name}}">
 													<span class="input-group-addon" ng-click="this['fieldFormCreate_' + role.name].$show()" ng-hide="this['fieldFormCreate_' + role.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 												</div>
@@ -173,7 +191,7 @@
 														<i class="fa fa-times fa-fw go-red"></i>
 													</span>
 													<input type="text" class="form-control" disabled editable-checkbox="role.canRead"
-														   e-title="{{'GRANTED' | translate}}" value="{{role.canRead}}"
+														   e-title="{{::'GRANTED' | translate}}" value="{{role.canRead}}"
 														   onbeforesave="ngCtrl.permissionPatch(role.id, 'canRead', $data)" e-form="{{'fieldFormRead_' + role.name}}">
 													<span class="input-group-addon" ng-click="this['fieldFormRead_' + role.name].$show()" ng-hide="this['fieldFormRead_' + role.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 												</div>
@@ -187,7 +205,7 @@
 														<i class="fa fa-times fa-fw go-red"></i>
 													</span>
 													<input type="text" class="form-control" disabled editable-checkbox="role.canUpdate"
-														   e-title="{{'GRANTED' | translate}}" value="{{role.canUpdate}}"
+														   e-title="{{::'GRANTED' | translate}}" value="{{role.canUpdate}}"
 														   onbeforesave="ngCtrl.permissionPatch(role.id, 'canUpdate', $data)" e-form="{{'fieldFormUpdate_' + role.name}}">
 													<span class="input-group-addon" ng-click="this['fieldFormUpdate_' + role.name].$show()" ng-hide="this['fieldFormUpdate_' + role.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 												</div>
@@ -201,7 +219,7 @@
 														<i class="fa fa-times fa-fw go-red"></i>
 													</span>
 													<input type="text" class="form-control" disabled editable-checkbox="role.canDelete"
-														   e-title="{{'GRANTED' | translate}}" value="{{role.canDelete}}"
+														   e-title="{{::'GRANTED' | translate}}" value="{{role.canDelete}}"
 														   onbeforesave="ngCtrl.permissionPatch(role.id, 'canDelete', $data)" e-form="{{'fieldFormDelete_' + role.name}}">
 													<span class="input-group-addon" ng-click="this['fieldFormDelete_' + role.name].$show()" ng-hide="this['fieldFormDelete_' + role.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 												</div>
@@ -228,17 +246,17 @@
 <script type="text/ng-template" id="deleteEntityModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title" translate="{{'ENTITY_DELETE_MODAL_TITLE'}}"></h3>
+		<h3 class="modal-title" translate="{{::'ENTITY_DELETE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
 		<div ng-hide="popupCtrl.hasError">
-			<h4 translate="{{'ENTITY_DELETE_MODAL_QUESTION'}}"></h4>
-			<div class="alert alert-warning"  translate="{{'ENTITY_DELETE_MODAL_DESCRIPTION'}}" translate-value-name="{{popupCtrl.entity.name}}"></div>
+			<h4 translate="{{::'ENTITY_DELETE_MODAL_QUESTION'}}"></h4>
+			<div class="alert alert-warning"  translate="{{::'ENTITY_DELETE_MODAL_DESCRIPTION'}}" translate-value-name="{{popupCtrl.entity.name}}"></div>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" translate="{{'ENTITY_DELETE'}}"></button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
+		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" translate="{{::'ENTITY_DELETE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
 	</div>
 </script>

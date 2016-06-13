@@ -12,6 +12,7 @@ namespace WebVella.ERP.Database
             Id = Guid.NewGuid();
             Name = "";
             Label = "";
+			Title = "";
             Default = false;
             System = false;
             Weight = 1;
@@ -20,7 +21,11 @@ namespace WebVella.ERP.Database
             Type = RecordViewType.General;
             Regions = new List<DbRecordViewRegion>();
             Sidebar = new DbRecordViewSidebar();
+			RelationOptions = new List<DbEntityRelationOptions>();
+			ActionItems = new List<ActionItem>();
 			DynamicHtmlTemplate = "";
+			DataSourceUrl = "";
+			ServiceCode = "";
 
 		}
 
@@ -32,6 +37,9 @@ namespace WebVella.ERP.Database
 
 		[JsonProperty(PropertyName = "label")]
         public string Label { get; set; }
+
+		[JsonProperty(PropertyName = "title")]
+        public string Title { get; set; }
 
 		[JsonProperty(PropertyName = "default")]
         public bool Default { get; set; }
@@ -62,6 +70,9 @@ namespace WebVella.ERP.Database
 
 		[JsonProperty(PropertyName = "dynamic_html_template")]
 		public string DynamicHtmlTemplate { get; set; }
+
+		[JsonProperty(PropertyName = "data_source_url")]
+		public string DataSourceUrl { get; set; }
 
 		[JsonProperty(PropertyName = "action_items")]
 		public List<ActionItem> ActionItems { get; set; }
@@ -112,6 +123,8 @@ namespace WebVella.ERP.Database
 
 	public class DbRecordViewSidebarRelationViewItem : DbRecordViewSidebarItemBase
 	{
+		
+	
 		[JsonProperty(PropertyName = "view_id")]
 		public Guid ViewId { get; set; }
 
@@ -139,6 +152,15 @@ namespace WebVella.ERP.Database
 
 	public class DbRecordViewSidebarRelationListItem : DbRecordViewSidebarItemBase
 	{
+		public DbRecordViewSidebarRelationListItem() {
+			FieldLabel = "";
+			FieldPlaceholder = "";
+			FieldHelpText = "";
+			FieldRequired = false;
+			FieldLookupList = "";
+			FieldManageView = "";
+		}
+		
 		[JsonProperty(PropertyName = "list_id")]
 		public Guid ListId { get; set; }
 
@@ -166,6 +188,13 @@ namespace WebVella.ERP.Database
 
 	public class DbRecordViewSidebarRelationTreeItem : DbRecordViewSidebarItemBase
 	{
+		public DbRecordViewSidebarRelationTreeItem() {
+			FieldLabel = "";
+			FieldPlaceholder = "";
+			FieldHelpText = "";
+			FieldRequired = false;
+		}
+
 		[JsonProperty(PropertyName = "tree_id")]
 		public Guid TreeId { get; set; }
 

@@ -86,7 +86,7 @@
 		function successCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -97,7 +97,7 @@
 		function errorCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -142,10 +142,10 @@
 		
 		var ngCtrl = this;
 		ngCtrl.search = {};
-		ngCtrl.allRelations = fastCopy(resolvedRelationsList);
+		ngCtrl.allRelations = resolvedRelationsList;
 		ngCtrl.currentEntityRelations = [];
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
-		ngCtrl.entityList = fastCopy(resolvedEntityList.entities);
+		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.entityList = resolvedEntityList.entities;
 
 		//Initialize relations in the scope of this entity
 		for (var i = 0; i < ngCtrl.allRelations.length; i++) {
@@ -467,12 +467,13 @@
 		//////
 		popupCtrl.ok = function () {
 			popupCtrl.validation = {};
-			if(!popupCtrl.selectedOriginEntity.id || !popupCtrl.selectedOriginField.id || !popupCtrl.selectedTargetEntity.id || !popupCtrl.selectedTargetField.id){
-				popupCtrl.validation.hasError = true;			
-				popupCtrl.validation.message = "Missing required information";
-				return;
+			if(managedRelation == null){
+				if(!popupCtrl.selectedOriginEntity.id || !popupCtrl.selectedOriginField.id || !popupCtrl.selectedTargetEntity.id || !popupCtrl.selectedTargetField.id){
+					popupCtrl.validation.hasError = true;			
+					popupCtrl.validation.message = "Missing required information";
+					return;
+				}
 			}
-
 			popupCtrl.relation.originEntityId = popupCtrl.selectedOriginEntity.id;
 			popupCtrl.relation.originFieldId = popupCtrl.selectedOriginField.id;
 			popupCtrl.relation.targetEntityId = popupCtrl.selectedTargetEntity.id;

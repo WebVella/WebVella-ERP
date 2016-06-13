@@ -5,16 +5,19 @@
 	"version": 20160427,
 	"company": "WebVella",
 	"company_url": "http://webvella.com",
+	"plugin_page_url": "http://webvella.com",
 	"author": "Iglika Raykova,Bozhidar Zashev,George Raykov,Rumen Yankov,Todor Uzunov",
 	"repository": "",
 	"license": "Apache License 2.0",
+	"settings_url": "",
+	"icon_url": "",
 	"load_priority": 13,
 	"libraries": {
-		"css": [],
-		"js": []
+		"css": [ ],
+		"js": [ ]
 	},
 	"module": {
-		"css": [],
+		"css": [ ],
 		"js": [
 			"/plugins/webvella-admin/base.module.js",
 			"/plugins/webvella-admin/entities.module.js",
@@ -27,6 +30,7 @@
 			"/plugins/webvella-admin/entity-view-manage-form.module.js",
 			"/plugins/webvella-admin/entity-view-manage-actions.module.js",
 			"/plugins/webvella-admin/entity-view-manage-sidebar.module.js",
+			"/plugins/webvella-admin/entity-view-manage-data.module.js",
 			"/plugins/webvella-admin/entity-fields.module.js",
 			"/plugins/webvella-admin/entity-views.module.js",
 			"/plugins/webvella-admin/entity-lists.module.js",
@@ -34,12 +38,15 @@
 			"/plugins/webvella-admin/entity-list-manage-columns.module.js",
 			"/plugins/webvella-admin/entity-list-manage-query-sort.module.js",
 			"/plugins/webvella-admin/entity-list-manage-actions.module.js",
+			"/plugins/webvella-admin/entity-list-manage-data.module.js",
 			"/plugins/webvella-admin/entity-trees.module.js",
 			"/plugins/webvella-admin/entity-tree-manage.module.js",
 			"/plugins/webvella-admin/entity-tree-nodes-manage.module.js",
 			"/plugins/webvella-admin/areas.module.js",
 			"/plugins/webvella-admin/users.module.js",
-			"/plugins/webvella-admin/roles.module.js"
+			"/plugins/webvella-admin/roles.module.js",
+			"/plugins/webvella-admin/plugins.module.js",
+			"/plugins/webvella-admin/codegen.module.js"
 		],
 		"wvApp_injects": [ "webvellaAdmin" ]
 	}

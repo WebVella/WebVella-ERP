@@ -124,6 +124,34 @@
 		//#endregion
 
 		//#region << Render >>
+
+		//#region << Column widths from CSV >>
+		$scope.columnWidths = [];
+		var columnWidthsArray = [];
+		if ($scope.listMeta.meta.columnWidthsCSV) {
+			columnWidthsArray = $scope.listMeta.meta.columnWidthsCSV.split(',');
+		}
+		var visibleColumns = $scope.listMeta.meta.visibleColumnsCount;
+		if (columnWidthsArray.length > 0) {
+			for (var i = 0; i < visibleColumns; i++) {
+				if (columnWidthsArray.length >= i + 1) {
+					$scope.columnWidths.push(columnWidthsArray[i]);
+				}
+				else {
+					$scope.columnWidths.push("auto");
+				}
+			}
+		}
+		else {
+			//set all to auto
+			for (var i = 0; i < visibleColumns; i++) {
+				$scope.columnWidths.push("auto");
+			}
+		}
+
+		//#endregion
+
+
 		$scope.renderFieldValue = webvellaCoreService.renderFieldValue;
 		
 		$scope.getRelationLabel = function (item) {
@@ -242,12 +270,19 @@
 				defer.reject();
 			}
 			function getListRecordsSuccessCallback(response) {
-				defer.resolve(response); //Submitting the whole response to manage the error states
+				var responseObj = {};
+				responseObj.object = {};
+				responseObj.success = response.success;
+				responseObj.message = response.message;
+				responseObj.object.data = response.object
+				responseObj.object.meta = defaultLookupList;
+
+				defer.resolve(responseObj); //Submitting the whole response to manage the error states
 			}
 
+			var defaultLookupList = null;
 			function getEntityMetaSuccessCallback(response) {
 				var entityMeta = response.object;
-				var defaultLookupList = null;
 				var selectedLookupListName = $scope.listMeta.fieldLookupList;
 				var selectedLookupList = null;
 				//Find the default lookup field if none return null.
@@ -270,7 +305,7 @@
 					if (selectedLookupList != null) {
 						defaultLookupList = selectedLookupList;
 					}
-					webvellaCoreService.getRecordsByListName(defaultLookupList.name, $scope.entity.name, 1, null, getListRecordsSuccessCallback, errorCallback);
+					webvellaCoreService.getRecordsByListMeta(defaultLookupList, $scope.entity.name, 1, null, null, getListRecordsSuccessCallback, errorCallback);
 				}
 			}
 
@@ -303,7 +338,7 @@
 		var resolveManagedRecordQuickCreateView = function (managedRecord) {
 			// Initialize
 			var defer = $q.defer();
-
+			var defaultQuickCreateView = null;
 			// Process
 			function errorCallback(response) {
 				ngToast.create({
@@ -314,7 +349,10 @@
 				defer.reject();
 			}
 			function getViewRecordSuccessCallback(response) {
-				defer.resolve(response.object); //Submitting the whole response to manage the error states
+				var responseObj = {};
+				responseObj.meta = defaultQuickCreateView;
+				responseObj.data = response.object;
+				defer.resolve(responseObj); //Submitting the whole response to manage the error states
 			}
 
 			function getViewMetaSuccessCallback(response) {
@@ -326,7 +364,6 @@
 
 			function getEntityMetaSuccessCallback(response) {
 				var entityMeta = response.object;
-				var defaultQuickCreateView = null;
 				var selectedQuickCreateViewName = $scope.listMeta.fieldManageView;
 				var selectedQuickCreateView = null;
 				//Find the default lookup field if none return null.
@@ -354,7 +391,7 @@
 						webvellaCoreService.getEntityView(defaultQuickCreateView.name, $scope.entity.name, getViewMetaSuccessCallback, errorCallback);
 					}
 					else {
-						webvellaCoreService.getRecordByViewName(managedRecord.id, defaultQuickCreateView.name, $scope.entity.name, getViewRecordSuccessCallback, errorCallback);
+						webvellaCoreService.getRecordByViewMeta(managedRecord.id, defaultQuickCreateView, $scope.entity.name,null, getViewRecordSuccessCallback, errorCallback);
 					}
 				}
 			}
@@ -389,7 +426,7 @@
 		var resolveQuickViewRecord = function (record) {
 			// Initialize
 			var defer = $q.defer();
-
+			var defaultQuickViewView = null;
 			// Process
 			function errorCallback(response) {
 				ngToast.create({
@@ -400,7 +437,10 @@
 				defer.reject();
 			}
 			function getViewRecordSuccessCallback(response) {
-				defer.resolve(response.object); //Submitting the whole response to manage the error states
+				var responseObj = {};
+				responseObj.meta = defaultQuickViewView;
+				responseObj.data =response.object; 
+				defer.resolve(responseObj); //Submitting the whole response to manage the error states
 			}
 
 			function getViewMetaSuccessCallback(response) {
@@ -412,7 +452,6 @@
 
 			function getEntityMetaSuccessCallback(response) {
 				var entityMeta = response.object;
-				var defaultQuickViewView = null;
 				//Find the default lookup field if none return null.
 				for (var i = 0; i < entityMeta.recordViews.length; i++) {
 					if (entityMeta.recordViews[i].default && entityMeta.recordViews[i].type == "quick_view") {
@@ -426,7 +465,7 @@
 					errorCallback(response);
 				}
 				else {
-					webvellaCoreService.getRecordByViewName(record.id, defaultQuickViewView.name, $scope.entity.name, getViewRecordSuccessCallback, errorCallback);
+					webvellaCoreService.getRecordByViewMeta(record.id, defaultQuickViewView, $scope.entity.name,null, getViewRecordSuccessCallback, errorCallback);
 				}
 			}
 
@@ -444,10 +483,10 @@
 	//#region < Modal Controllers >
 
 	RLAddExistingModalController.$inject = ['ngCtrl', '$uibModalInstance', '$log', '$q', '$stateParams', 'resolvedLookupRecords',
-        'ngToast', '$timeout', '$state', 'webvellaCoreService'];
+        'ngToast', '$timeout', '$state', 'webvellaCoreService','$translate'];
 	
 	function RLAddExistingModalController(ngCtrl, $uibModalInstance, $log, $q, $stateParams, resolvedLookupRecords,
-        ngToast, $timeout, $state, webvellaCoreService) {
+        ngToast, $timeout, $state, webvellaCoreService,$translate) {
 
 		//#region << Init >>
 		
@@ -475,7 +514,7 @@
 		popupCtrl.selectPage = function (page) {
 			// Process
 			function successCallback(response) {
-				popupCtrl.relationLookupList = fastCopy(response.object);
+				popupCtrl.relationLookupList.data = fastCopy(response.object);
 				popupCtrl.currentPage = page;
 			}
 
@@ -483,32 +522,192 @@
 
 			}
 
-			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.parentEntity.name, page, null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.parentEntity.name, page, null, null, successCallback, errorCallback);
 		}
 
 		//#endregion
 
-		//#region << Search >>
-		popupCtrl.checkForSearchEnter = function (e) {
-			var code = (e.keyCode ? e.keyCode : e.which);
-			if (code == 13) { //Enter keycode
-				popupCtrl.submitSearchQuery();
+		//#region << List filter row >>
+		popupCtrl.filterQuery = {};
+		popupCtrl.listIsFiltered = false;
+		popupCtrl.columnDictionary = {};
+		popupCtrl.columnDataNamesArray = [];
+		popupCtrl.queryParametersArray = [];
+		//Extract the available columns
+		popupCtrl.relationLookupList.meta.columns.forEach(function (column) {
+			if (popupCtrl.columnDataNamesArray.indexOf(column.dataName) == -1) {
+				popupCtrl.columnDataNamesArray.push(column.dataName);
+			}
+			popupCtrl.columnDictionary[column.dataName] = column;
+		});
+		popupCtrl.filterLoading = false;
+		popupCtrl.columnDataNamesArray.forEach(function (dataName) {
+			if (popupCtrl.queryParametersArray.indexOf(dataName) > -1) {
+				popupCtrl.listIsFiltered = true;
+				var columnObj = popupCtrl.columnDictionary[dataName];
+				//some data validations and conversions	
+				switch (columnObj.meta.fieldType) {
+					//TODO if percent convert to > 1 %
+					case 14:
+						if (checkDecimal(queryObject[dataName])) {
+							popupCtrl.filterQuery[dataName] = queryObject[dataName] * 100;
+						}
+						break;
+					default:
+						popupCtrl.filterQuery[dataName] = queryObject[dataName];
+						break;
+
+				}
+			}
+		});
+
+		popupCtrl.applyQueryFilter = function () {
+			var searchParams = {};
+			popupCtrl.filterLoading = true;
+			for (var filter in popupCtrl.filterQuery) {
+				//Check if the field is percent or date
+				if(popupCtrl.filterQuery[filter]){
+					for (var i = 0; i < popupCtrl.relationLookupList.meta.columns.length; i++) {
+						if(popupCtrl.relationLookupList.meta.columns[i].meta.name == filter){
+							var selectedField = popupCtrl.relationLookupList.meta.columns[i].meta;
+							switch(selectedField.fieldType){
+								case 4: //Date
+									searchParams[filter] = moment(popupCtrl.filterQuery[filter],'D MMM YYYY').toISOString();
+									break;
+								case 5: //Datetime
+									searchParams[filter] = moment(popupCtrl.filterQuery[filter],'D MMM YYYY HH:mm').toISOString();
+									break;
+								case 14: //Percent
+									searchParams[filter] = popupCtrl.filterQuery[filter] / 100;
+									break;
+								default:
+									searchParams[filter] = 	popupCtrl.filterQuery[filter];
+									break;
+							}
+						}
+					}
+				}
+				else {
+					delete 	searchParams[filter];
+				}				
+			}
+			//Find the entity of the list. It could not be the current one as it could be listFromRelation case
+			var listEntityName =popupCtrl.parentEntity.name;
+
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, listEntityName, 1, $stateParams, searchParams, popupCtrl.ReloadRecordsSuccessCallback, popupCtrl.ReloadRecordsErrorCallback);
+		}
+
+		popupCtrl.ReloadRecordsSuccessCallback = function (response) {
+			popupCtrl.relationLookupList.data = response.object;
+			//Just a little wait
+			$timeout(function(){
+				popupCtrl.filterLoading = false;
+			},300);
+		}
+
+		popupCtrl.ReloadRecordsErrorCallback = function (response) {
+			//Just a little wait
+			$timeout(function(){
+				popupCtrl.filterLoading = false;
+			},300);
+			alert(response.message);
+		}
+
+
+		popupCtrl.getAutoIncrementString = function (column) {
+			var returnObject = {};
+			returnObject.prefix = null;
+			returnObject.suffix = null;
+			var keyIndex = column.meta.displayFormat.indexOf('{0}');
+			if (keyIndex == 0) {
+				return null;
+			}
+			else {
+				returnObject.prefix = column.meta.displayFormat.slice(0, keyIndex);
+				if (keyIndex + 3 < column.meta.displayFormat.length) {
+					returnObject.suffix = column.meta.displayFormat.slice(keyIndex + 3, column.meta.displayFormat.length);
+				}
+				return returnObject;
 			}
 		}
-		popupCtrl.submitSearchQuery = function () {
-			function successCallback(response) {
-				popupCtrl.relationLookupList = fastCopy(response.object);
-			}
 
-			function errorCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-green">Error:</span> ' + response.message,
-					timeout: 7000
-				});
-			}
-			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.parentEntity.name, popupCtrl.currentPage,null, successCallback, errorCallback);
+		//#endregion
 
+		//#region << Extract fields that are supported in the query to be filters>>
+		popupCtrl.fieldsInQueryArray = webvellaCoreService.extractSupportedFilterFields(popupCtrl.relationLookupList);
+		popupCtrl.checkIfFieldSetInQuery = function (dataName) {
+			if (popupCtrl.fieldsInQueryArray.fieldNames.indexOf(dataName) != -1) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+
+		popupCtrl.allQueryComparisonList = [];
+		//#region << Query Dictionary >>
+		$translate(['QUERY_RULE_EQ_LABEL', 'QUERY_RULE_NOT_LABEL', 'QUERY_RULE_LT_LABEL', 'QUERY_RULE_LTE_LABEL',
+					'QUERY_RULE_GT_LABEL', 'QUERY_RULE_GTE_LABEL', 'QUERY_RULE_CONTAINS_LABEL', 'QUERY_RULE_NOT_CONTAINS_LABEL',
+					'QUERY_RULE_STARTSWITH_LABEL', 'QUERY_RULE_NOT_STARTSWITH_LABEL']).then(function (translations) {
+						popupCtrl.allQueryComparisonList = [
+							{
+								key: "EQ",
+								value: translations.QUERY_RULE_EQ_LABEL
+							},
+							{
+								key: "NOT",
+								value: translations.QUERY_RULE_NOT_LABEL
+							},
+							{
+								key: "LT",
+								value: translations.QUERY_RULE_LT_LABEL
+							},
+							{
+								key: "LTE",
+								value: translations.QUERY_RULE_LTE_LABEL
+							},
+							{
+								key: "GT",
+								value: translations.QUERY_RULE_GT_LABEL
+							},
+							{
+								key: "GTE",
+								value: translations.QUERY_RULE_GTE_LABEL
+							},
+							{
+								key: "CONTAINS",
+								value: translations.QUERY_RULE_CONTAINS_LABEL
+							},
+							{
+								key: "NOTCONTAINS",
+								value: translations.QUERY_RULE_NOT_CONTAINS_LABEL
+							},
+							{
+								key: "STARTSWITH",
+								value: translations.QUERY_RULE_STARTSWITH_LABEL
+							},
+							{
+								key: "NOTSTARTSWITH",
+								value: translations.QUERY_RULE_NOT_STARTSWITH_LABEL
+							}
+						];
+
+					});
+		//#endregion
+		popupCtrl.getFilterInputPlaceholder = function (dataName) {
+			var fieldIndex = popupCtrl.fieldsInQueryArray.fieldNames.indexOf(dataName);
+			if (fieldIndex == -1) {
+				return "";
+			}
+			else {
+				var fieldQueryType = popupCtrl.fieldsInQueryArray.queryTypes[fieldIndex];
+				for (var i = 0; i < popupCtrl.allQueryComparisonList.length; i++) {
+					if (popupCtrl.allQueryComparisonList[i].key == fieldQueryType) {
+						return popupCtrl.allQueryComparisonList[i].value;
+					}
+				}
+				return "";
+			}
 		}
 		//#endregion
 
@@ -578,7 +777,7 @@
 		popupCtrl.viewMeta = fastCopy(resolvedManagedRecordQuickCreateView.meta);
 		popupCtrl.contentRegion = {};
 		for (var j = 0; j < popupCtrl.viewMeta.regions.length; j++) {
-			if (popupCtrl.viewMeta.regions[j].name === "default") {
+			if (popupCtrl.viewMeta.regions[j].name === "header") {
 				popupCtrl.contentRegion = popupCtrl.viewMeta.regions[j];
 			}
 		}
@@ -879,7 +1078,7 @@
 		
 		popupCtrl.contentRegion = {};
 		for (var j = 0; j < popupCtrl.viewMeta.regions.length; j++) {
-			if (popupCtrl.viewMeta.regions[j].name === "default") {
+			if (popupCtrl.viewMeta.regions[j].name === "header") {
 				popupCtrl.contentRegion = popupCtrl.viewMeta.regions[j];
 			}
 		}

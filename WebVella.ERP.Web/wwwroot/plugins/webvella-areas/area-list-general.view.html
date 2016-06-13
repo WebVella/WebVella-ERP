@@ -6,33 +6,28 @@
 				<a class="btn btn-default btn-outline" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
 				<ul class="dropdown-menu  dropdown-menu-right" uib-dropdown-menu style="margin-top:10px;">
 					<li dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageTitleDropdownActions track by actionItem.name" />
-					<li class="divider"></li>
-					<li>
-						<a href="/#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.stateParams.listName}}">
-							<i class="fa fa-fw fa-wrench"></i> Manage List
-						</a>
-					</li>
 				</ul>
 			</span>
 		</div>
-		<div class="meta-label">
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-{{::ngCtrl.entity.iconName}} fa-2x"></i>
+		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux">{{::ngCtrl.entity.label}} <span class="ng-hide" ng-show="ngCtrl.showPageTitleAuxLabelSecondary"><span class="divider"><i class="fa fa-caret-right"></i></span> <span ng-bind="::ngCtrl.generateAuxHighlightString()" title="{{::ngCtrl.generateAuxHighlightString()}}"></span></span></div>
 			<h4>
-				{{::ngCtrl.list.meta.label}}
-				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalLists.length > 1">
-					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-default btn-outline"><i class="fa fa-fw fa-caret-down"></i></a>
+				<span ng-bind="::ngCtrl.generateHighlightString()" title="{{::ngCtrl.generateHighlightString()}}"></span>
+				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalLists.length > 1" dropdown-append-to-body="true">
+					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-default btn-outline" style="padding:0 10px;"><i class="fa fa-fw fa-caret-down"></i></a>
 					<ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
-						<!--<li><a href="javascript:void(0)"><i class="fa fa-fw fa-thumb-tack go-red"></i> set current as default</a></li>
-						<li class="ng-hide"><a href="javascript:void(0)"><span class="go-grey">This is your default list</span></a></li>
-						<li class="divider"></li>-->
 						<li ng-repeat="list in ngCtrl.generalLists track by $index">
-							<a href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/{{::list.name}}/1">
-								<i class="fa fa-fw fa-{{list.iconName}}"></i> {{::list.label}}
+							<a href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/list-general/{{::list.name}}/1">
+								<i class="fa fa-fw fa-{{::list.iconName}}"></i> {{::list.label}}
 							</a>
 						</li>
 					</ul>
 				</span>
 			</h4>
-		</div>
+        </div>
 	</div>
 </div>
 <div id="page-body">
@@ -43,23 +38,23 @@
 				<thead>
 					<tr>
 						<th class="actions text-center position-relative" style="padding:0;vertical-align:middle;padding-top:5px;">
-							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#ccc;margin-top:0;" href="javascript:void(0)" ng-show="!ngCtrl.show_filter && !ngCtrl.listIsFiltered && ngCtrl.fieldsInQueryArray.length > 0" ng-click="ngCtrl.show_filter = !ngCtrl.show_filter">
+							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#555;margin-top:0;" href="javascript:void(0)" ng-show="!ngCtrl.show_filter && !ngCtrl.listIsFiltered && ngCtrl.fieldsInQueryArray.fieldNames.length > 0" ng-click="ngCtrl.show_filter = !ngCtrl.show_filter">
 								<i class="fa fa-fw fa-filter"></i>
 								<em></em>
 							</a>
-							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#999;margin-top:0;" href="javascript:void(0)" ng-show="ngCtrl.listIsFiltered && ngCtrl.fieldsInQueryArray.length > 0" ng-click="ngCtrl.clearQueryFilter()">
+							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#999;margin-top:0;" href="javascript:void(0)" ng-show="ngCtrl.listIsFiltered && ngCtrl.fieldsInQueryArray.fieldNames.length > 0" ng-click="ngCtrl.clearQueryFilter()">
 								<i class="fa fa-fw fa-times go-red"></i>
 								<em></em>
 							</a>
-							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#ccc;margin-top:0;" href="javascript:void(0)" ng-show="ngCtrl.show_filter && !ngCtrl.listIsFiltered && ngCtrl.fieldsInQueryArray.length > 0" ng-click="ngCtrl.show_filter = !ngCtrl.show_filter">
-								<i class="fa fa-fw fa-times"></i>
+							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#ccc;margin-top:0;" href="javascript:void(0)" ng-show="ngCtrl.show_filter && !ngCtrl.listIsFiltered && ngCtrl.fieldsInQueryArray.fieldNames.length > 0" ng-click="ngCtrl.show_filter = !ngCtrl.show_filter">
+								<i class="fa fa-fw fa-caret-up"></i>
 								<em></em>
 							</a>
 						</th>
-						<th ng-style="{'width': ngCtrl.columnWidths[$index]}" class="wv-{{::column.meta.name}} position-relative" ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount"
+						<th ng-style="::{'width': ngCtrl.columnWidths[$index]}" class="wv-{{::column.meta.name}} position-relative" ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount"
 							ng-switch="::column.type">
 							<span ng-switch-when="field">
-								<a class="sort-link ng-hide" ng-click="ngCtrl.toggleSort(column)" ng-if="::column.meta.searchable"  ng-show="ngCtrl.canSortList">
+								<a class="sort-link ng-hide" ng-click="ngCtrl.toggleSort(column)" ng-if="::column.meta.searchable"  ng-show="::ngCtrl.canSortList">
 									<span class="sort-marker {{ngCtrl.sortObject[column.dataName]}}">
 										<i class="fa fa-caret-up"></i>
 										<i class="fa fa-caret-down"></i>
@@ -79,20 +74,21 @@
 				<tbody>
 					<tr style="background:#ddd" class="query-filter-row ng-hide" ng-show="ngCtrl.show_filter || ngCtrl.listIsFiltered">
 						<td>
-							<a class="btn btn-default btn-sm btn-block" ng-click="ngCtrl.applyQueryFilter()">
-								<i class="fa fa-fw fa-filter"></i>
+							<a class="btn btn-outline btn-sm btn-block" ng-click="ngCtrl.applyQueryFilter()">
+								<i class="fa fa-fw" ng-class="{'fa-filter':!ngCtrl.filterLoading, 'fa-spin fa-spinner': ngCtrl.filterLoading}"></i>
 							</a>
 						</td>
 						<td ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">
-							<form ng-switch="column.type" ng-submit="ngCtrl.applyQueryFilter()" novalidate ng-if="ngCtrl.checkIfFieldSetInQuery(column.dataName)">
-								<div ng-switch-when="field" ng-switch="column.meta.fieldType">
+							<form ng-switch="column.type" ng-submit="ngCtrl.applyQueryFilter()" novalidate ng-if="::ngCtrl.checkIfFieldSetInQuery(column.dataName)">
+								<div ng-switch-when="field" ng-switch="::column.meta.fieldType">
 									<div ng-switch="column.meta.fieldType" ng-if="::column.meta.searchable">
 										<div ng-switch-when="1">
 											<!--AutoNumber field-->
 											<div class="form-group form-group-sm">
 												<div class="input-group">
-													<span class="input-group-addon" ng-bind="ngCtrl.getAutoIncrementPrefix(column)"></span>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<span class="input-group-addon" ng-bind="ngCtrl.getAutoIncrementString(column).prefix" ng-if="ngCtrl.getAutoIncrementString(column).prefix != null"></span>
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
+													<span class="input-group-addon" ng-bind="ngCtrl.getAutoIncrementString(column).suffix" ng-if="ngCtrl.getAutoIncrementString(column).suffix != null"></span>
 												</div>
 											</div>
 										</div>
@@ -111,7 +107,7 @@
 											<div class="form-group form-group-sm">
 												<div class="input-group">
 													<span class="input-group-addon" ng-bind="::column.meta.currency.symbol" ng-if="::column.meta.currency.symbolPlacement == 1"></span>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 													<span class="input-group-addon" ng-bind="::column.meta.currency.symbol" ng-if="::column.meta.currency.symbolPlacement == 2"></span>
 												</div>
 											</div>
@@ -121,7 +117,7 @@
 											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-calendar"></i>
-													<input type="date" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}} e.g.'15 Feb 2015'">
 												</div>
 											</div>
 										</div>
@@ -131,13 +127,13 @@
 												<div class="col-sm-6" style="padding:0">
 													<div class="left-inner-addon">
 														<i class="fa fa-fw fa-calendar"></i>
-														<input type="date" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+														<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}} e.g.'15 Feb 2015 14:35'">
 													</div>
 												</div>
 												<div class="col-sm-6" style="padding: 0 0 0 5px">
 													<div class="left-inner-addon">
 														<i class="fa fa-fw fa-clock-o"></i>
-														<input type="time" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+														<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="e.g.'14:35'">
 													</div>
 												</div>
 											</div>
@@ -147,7 +143,7 @@
 											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-envelope-o"></i>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 												</div>
 											</div>
 										</div>
@@ -156,14 +152,14 @@
 											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-link"></i>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 												</div>
 											</div>
 										</div>
 										<div ng-switch-when="8">
 											<!--html field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 											</div>
 										</div>
 										<div ng-switch-when="9">
@@ -171,14 +167,14 @@
 											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-link"></i>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 												</div>
 											</div>
 										</div>
 										<div ng-switch-when="10">
 											<!--textarea field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 											</div>
 										</div>
 										<div ng-switch-when="11">
@@ -186,14 +182,14 @@
 											<div class="form-group form-group-sm">
 												<select class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 														<option value=""></option>
-														<option value="{{option.key}}" ng-repeat="option in column.meta.options">{{option.value}}</option>
+														<option value="{{::option.key}}" ng-repeat="option in column.meta.options">{{::option.value}}</option>
 												</select>
 											</div>
 										</div>
 										<div ng-switch-when="12">
 											<!--number field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 											</div>
 										</div>
 										<div ng-switch-when="13">
@@ -207,20 +203,20 @@
 											<div class="form-group form-group-sm">
 												<div class="right-inner-addon">
 													<i class="fa fa-fw fa-percent"></i>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 												</div>
 											</div>
 										</div>
 										<div ng-switch-when="15">
 											<!--phone field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 											</div>
 										</div>
 										<div ng-switch-when="16">
 											<!--GUID field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 											</div>
 										</div>
 										<div ng-switch-when="17">
@@ -228,14 +224,14 @@
 											<div class="form-group form-group-sm">
 												<select class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 														<option value=""></option>
-														<option value="{{option.key}}" ng-repeat="option in column.meta.options">{{option.value}}</option>
+														<option value="{{::option.key}}" ng-repeat="option in column.meta.options">{{::option.value}}</option>
 												</select>
 											</div>
 										</div>
 										<div ng-switch-when="18">
 											<!--text field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 											</div>
 										</div>
 										<div ng-switch-when="19">
@@ -243,7 +239,7 @@
 											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-globe"></i>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}}">
 												</div>
 											</div>
 										</div>
@@ -263,7 +259,7 @@
 					</tr>
 					<tr ng-repeat="record in ngCtrl.list.data" ng-if="ngCtrl.list.data.length > 0">
 						<td class="actions">
-							<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.recordRowActions track by actionItem.name"></span>
+							<span dynamic-html template="::actionItem.template" ng-repeat="actionItem in ngCtrl.recordRowActions track by actionItem.name"></span>
 							<span uib-dropdown class="dropdown" ng-if="::ngCtrl.recordRowDropdownActions.length > 0">
 								<a class="btn btn-default btn-outline" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
 								<ul class="dropdown-menu" uib-dropdown-menu style="margin-top:10px;">
@@ -297,7 +293,7 @@
 							</div>
 						</td>
 					</tr>
-					<tr class="ng-hide" ng-show='::ngCtrl.list.data.length == 0'>
+					<tr class="ng-hide" ng-show='ngCtrl.list.data.length == 0'>
 						<td colspan="{{ngCtrl.list.meta.columns.length + 1}}">
 							<div class="alert alert-info" style="margin:0;">
 								There are no records matching your query
@@ -307,14 +303,14 @@
 				</tbody>
 			</table>
 			<div ng-if="ngCtrl.list.meta.dynamicHtmlTemplate">
-				<dynamic-list template-url="ngCtrl.list.meta.dynamicHtmlTemplate" template-data="ngCtrl.list.data" template-meta="ngCtrl.list.meta"></dynamic-list>
+				<div ng-include="ngCtrl.list.meta.dynamicHtmlTemplate"></div>
 			</div>
 			<!--</div>-->
 
 
-			<ul class="pager ng-hide" ng-hide="::ngCtrl.currentPage == 1 && ngCtrl.list.meta.pageSize > ngCtrl.list.data.length" ng-if="::ngCtrl.list.meta.pageSize != 0">
-				<li ng-if="::ngCtrl.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
-				<li ng-if="::ngCtrl.list.meta.pageSize <= ngCtrl.list.data.length" class="next"><a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
+			<ul class="pager ng-hide" ng-hide="ngCtrl.currentPage == 1 && ngCtrl.list.meta.pageSize > ngCtrl.list.data.length" ng-if="::ngCtrl.list.meta.pageSize != 0">
+				<li ng-if="ngCtrl.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
+				<li ng-if="ngCtrl.list.meta.pageSize <= ngCtrl.list.data.length" class="next"><a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
 			</ul>
 		</div>
 		<div class="alert alert-danger" ng-if="ngCtrl.validation.hasError" ng-bind-html="ngCtrl.validation.errorMessage"></div>
@@ -356,7 +352,7 @@
 	</div>
 	<div class="modal-footer">
 		<a href="javascript:void(0)" ng-click="popupCtrl.ok()" class="btn btn-primary ng-hide" ng-show="!popupCtrl.downloadFilePath"><i class="fa fa-fw" ng-class="{'fa-download': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Export</a>
-		<a href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{'CANCEL'}}"></a>
+		<a href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CANCEL'}}"></a>
 	</div>
 </script>
 
@@ -376,17 +372,17 @@
 				<label class="control-label">Uploaded CSV file</label>
 				<div>
 					<a ng-show='!popupCtrl.uploadedFilePath && popupCtrl.uploadProgress == 0' href='javascript:void(0)' class='btn btn-default btn-outline ng-hide' ngf-select="popupCtrl.upload(popupCtrl.uploadedFile)" ngf-max-size="20MB"
-					   ng-model='popupCtrl.uploadedFile' ngf-multiple='false'>Browse</a>
+					   ng-model='popupCtrl.uploadedFile' ngf-multiple='false' translate="{{::'BROWSE'}}"></a>
 					<div class="progress ng-hide" ng-show="!popupCtrl.uploadedFilePath && popupCtrl.uploadProgress > 0 && popupCtrl.uploadProgress <= 100">
 						<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupCtrl.uploadProgress}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': popupCtrl.uploadProgress+'%'}">
 							<span ng-show="popupCtrl.uploadProgress < 100">{{popupCtrl.uploadProgress || '0'}}%</span>
-							<span ng-show="popupCtrl.uploadProgress == 100">almost done...</span>
+							<span ng-show="popupCtrl.uploadProgress == 100"  translate="{{::'FILE_UPLOAD_ALMOST_DONE'}}"></span>
 						</div>
 					</div>
 					<div class="input-group file-upload ng-hide" ng-show='popupCtrl.uploadedFilePath'>
 						<span class="form-control"><a href="{{popupCtrl.uploadedFilePath}}"><i class="fa fa-file"></i> {{popupCtrl.uploadedFile.name}}</a></span>
 						<a class="input-group-addon update" href='javascript:void(0)' ngf-select="popupCtrl.upload(popupCtrl.uploadedFile)" ngf-max-size="20MB" ng-model='popupCtrl.uploadedFile' ngf-multiple='false'><i class="fa fa-fw fa-refresh"></i></a>
-						<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFileUpload()" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+						<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFileUpload()" ng-confirm-click="{{::'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 					</div>
 				</div>
 			</div>
@@ -394,6 +390,6 @@
 	</div>
 	<div class="modal-footer">
 		<a href="javascript:void(0)" ng-click="popupCtrl.ok()" class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Import</a>
-		<a href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{'CANCEL'}}"></a>
+		<a href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CANCEL'}}"></a>
 	</div>
 </script>

@@ -37,6 +37,9 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "label")]
 		public string Label { get; set; }
 
+		[JsonProperty(PropertyName = "title")]
+		public string Title { get; set; }
+
 		[JsonProperty(PropertyName = "default")]
 		public bool? Default { get; set; }
 
@@ -64,6 +67,15 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "columnWidthsCSV")]
 		public string ColumnWidthsCSV { get; set; }
 
+		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
+		public string DynamicHtmlTemplate { get; set; }
+
+		[JsonProperty(PropertyName = "dataSourceUrl")]
+		public string DataSourceUrl { get; set; }
+
+		[JsonProperty(PropertyName = "serviceCode")]
+		public string ServiceCode { get; set; }
+
 		[JsonProperty(PropertyName = "columns")]
 		public List<InputRecordListItemBase> Columns { get; set; }
 
@@ -76,14 +88,8 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "relationOptions")]
         public List<EntityRelationOptionsItem> RelationOptions { get; set; }
 
-		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
-		public string DynamicHtmlTemplate { get; set; }
-
 		[JsonProperty(PropertyName = "actionItems")]
 		public List<ActionItem> ActionItems { get; set; }
-
-		[JsonProperty(PropertyName = "serviceCode")]
-		public string ServiceCode { get; set; }
 
 		public static InputRecordList Convert(JObject inputList)
 		{
@@ -295,6 +301,9 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "label")]
 		public string Label { get; set; }
 
+		[JsonProperty(PropertyName = "title")]
+		public string Title { get; set; }
+
 		[JsonProperty(PropertyName = "default")]
 		public bool? Default { get; set; }
 
@@ -322,6 +331,15 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "columnWidthsCSV")]
 		public string ColumnWidthsCSV { get; set; }
 
+		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
+		public string DynamicHtmlTemplate { get; set; }
+		
+		[JsonProperty(PropertyName = "dataSourceUrl")]
+		public string DataSourceUrl { get; set; }
+
+		[JsonProperty(PropertyName = "serviceCode")]
+		public string ServiceCode { get; set; }
+
 		[JsonProperty(PropertyName = "columns")]
 		public List<RecordListItemBase> Columns { get; set; }
 
@@ -334,14 +352,8 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "relationOptions")]
         public List<EntityRelationOptions> RelationOptions { get; set; }
 
-		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
-		public string DynamicHtmlTemplate { get; set; }
-
 		[JsonProperty(PropertyName = "actionItems")]
 		public List<ActionItem> ActionItems { get; set; }
-
-		[JsonProperty(PropertyName = "serviceCode")]
-		public string ServiceCode { get; set; }
 	}
 
 	[Serializable]
@@ -654,17 +666,17 @@ namespace WebVella.ERP.Api.Models
 	public class RecordListRecordResponse : BaseResponseModel
 	{
 		[JsonProperty(PropertyName = "object")]
-		public RecordListRecord Object { get; set; }
+		public object Object { get; set; }
 	}
 
-	public class RecordListRecord
-	{
-		[JsonProperty(PropertyName = "data")]
-		public object Data { get; set; }
+	//public class RecordListRecord
+	//{
+	//	[JsonProperty(PropertyName = "data")]
+	//	public object Data { get; set; }
 
-		[JsonProperty(PropertyName = "meta")]
-		public RecordList Meta { get; set; }
-	}
+	//	[JsonProperty(PropertyName = "meta")]
+	//	public RecordList Meta { get; set; }
+	//}
 
 	public class RecordListItemConverter : JsonCreationConverter<InputRecordListItemBase>
 	{

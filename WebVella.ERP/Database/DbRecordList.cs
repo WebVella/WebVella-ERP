@@ -7,6 +7,25 @@ namespace WebVella.ERP.Database
 {
 	public class DbRecordList
 	{
+		public DbRecordList() {
+			Id = Guid.NewGuid();
+			Name = "";
+			Label = "";
+			Title = "";
+			Default = false;
+			System = false;
+			Weight = 10;
+			CssClass= "";
+			IconName = "";
+			VisibleColumnsCount = 5;
+			PageSize = 10;
+			DynamicHtmlTemplate = "";
+			DataSourceUrl = "";
+			ServiceCode = "";
+			ColumnWidthsCSV = "";
+		}
+
+
 		[JsonProperty(PropertyName = "id")]
 		public Guid Id { get; set; }
 
@@ -15,6 +34,9 @@ namespace WebVella.ERP.Database
 
 		[JsonProperty(PropertyName = "label")]
 		public string Label { get; set; }
+
+		[JsonProperty(PropertyName = "title")]
+		public string Title { get; set; }
 
 		[JsonProperty(PropertyName = "default")]
 		public bool? Default { get; set; }
@@ -54,6 +76,9 @@ namespace WebVella.ERP.Database
 
 		[JsonProperty(PropertyName = "dynamic_html_template")]
 		public string DynamicHtmlTemplate { get; set; }
+
+		[JsonProperty(PropertyName = "data_source_url")]
+		public string DataSourceUrl { get; set; }
 
 		[JsonProperty(PropertyName = "action_items")]
 		public List<ActionItem> ActionItems { get; set; }

@@ -66,7 +66,7 @@
 		function successCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -77,7 +77,7 @@
 		function errorCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -101,7 +101,7 @@
 		function successCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -112,7 +112,7 @@
 		function errorCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -120,7 +120,7 @@
 			}
 		}
 
-		webvellaCoreService.getEntityList($stateParams.listName, $stateParams.entityName, successCallback, errorCallback);
+		webvellaCoreService.getEntityRecordList($stateParams.listName, $stateParams.entityName, successCallback, errorCallback);
 
 		return defer.promise;
 	}
@@ -135,7 +135,7 @@
 		function successCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -146,7 +146,7 @@
 		function errorCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -169,7 +169,7 @@
 		function successCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -180,7 +180,7 @@
 		function errorCallback(response) {
 			if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
 			}
 			else {
@@ -220,59 +220,60 @@
 		$translate(['QUERY_RULE_EQ_LABEL','QUERY_RULE_NOT_LABEL','QUERY_RULE_LT_LABEL','QUERY_RULE_LTE_LABEL',
 					'QUERY_RULE_GT_LABEL','QUERY_RULE_GTE_LABEL','QUERY_RULE_CONTAINS_LABEL','QUERY_RULE_NOT_CONTAINS_LABEL',
 					'QUERY_RULE_STARTSWITH_LABEL','QUERY_RULE_NOT_STARTSWITH_LABEL']).then(function (translations) {
-		ngCtrl.allQueryComparisonList = [
-			{
-				key: "EQ",
-				value: translations.QUERY_RULE_EQ_LABEL
-			},
-			{
-				key: "NOT",
-				value: translations.QUERY_RULE_NOT_LABEL
-			},
-			{
-				key: "LT",
-				value: translations.QUERY_RULE_LT_LABEL
-			},
-			{
-				key: "LTE",
-				value: translations.QUERY_RULE_LTE_LABEL
-			},
-			{
-				key: "GT",
-				value: translations.QUERY_RULE_GT_LABEL
-			},
-			{
-				key: "GTE",
-				value: translations.QUERY_RULE_GTE_LABEL
-			},
-			{
-				key: "CONTAINS",
-				value: translations.QUERY_RULE_CONTAINS_LABEL
-			},
-			{
-				key: "NOTCONTAINS",
-				value: translations.QUERY_RULE_NOT_CONTAINS_LABEL
-			},
-			{
-				key: "STARTSWITH",
-				value: translations.QUERY_RULE_STARTSWITH_LABEL
-			},
-			{
-				key: "NOTSTARTSWITH",
-				value: translations.QUERY_RULE_NOT_STARTSWITH_LABEL
-			}
-		];
+				ngCtrl.allQueryComparisonList = [
+					{
+						key: "EQ",
+						value: translations.QUERY_RULE_EQ_LABEL
+					},
+					{
+						key: "NOT",
+						value: translations.QUERY_RULE_NOT_LABEL
+					},
+					{
+						key: "LT",
+						value: translations.QUERY_RULE_LT_LABEL
+					},
+					{
+						key: "LTE",
+						value: translations.QUERY_RULE_LTE_LABEL
+					},
+					{
+						key: "GT",
+						value: translations.QUERY_RULE_GT_LABEL
+					},
+					{
+						key: "GTE",
+						value: translations.QUERY_RULE_GTE_LABEL
+					},
+					{
+						key: "CONTAINS",
+						value: translations.QUERY_RULE_CONTAINS_LABEL
+					},
+					{
+						key: "NOTCONTAINS",
+						value: translations.QUERY_RULE_NOT_CONTAINS_LABEL
+					},
+					{
+						key: "STARTSWITH",
+						value: translations.QUERY_RULE_STARTSWITH_LABEL
+					},
+					{
+						key: "NOTSTARTSWITH",
+						value: translations.QUERY_RULE_NOT_STARTSWITH_LABEL
+					}
+				];
 
-		ngCtrl.basicQueryComparisonList = [
-			{
-				key: "EQ",
-				value: translations.QUERY_RULE_EQ_LABEL
-			},
-			{
-				key: "NOT",
-				value: translations.QUERY_RULE_NOT_LABEL
-			}
-		];
+				ngCtrl.basicQueryComparisonList = [
+					{
+						key: "EQ",
+						value: translations.QUERY_RULE_EQ_LABEL
+					},
+					{
+						key: "NOT",
+						value: translations.QUERY_RULE_NOT_LABEL
+					}
+				];
+
 		});
 
 		ngCtrl.getQueryComparisonOptionsList = function (query) {
@@ -300,8 +301,8 @@
 		//#endregion
 
  		//#region << Initialize the list >>
-		ngCtrl.list = fastCopy(resolvedCurrentEntityList);
-		ngCtrl.relationsList = fastCopy(resolvedEntityRelationsList);
+		ngCtrl.list = resolvedCurrentEntityList;
+		ngCtrl.relationsList = resolvedEntityRelationsList;
 
 		ngCtrl.defaultFieldName = null;
 		function calculateDefaultSearchFieldName() {
@@ -350,14 +351,14 @@
 			$timeout(function () {
 				var postObj = {};
 				postObj.query = fastCopy(ngCtrl.list.query);
-				webvellaCoreService.patchEntityList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
+				webvellaCoreService.patchEntityRecordList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
 			}, 1);
 		}
 
 		ngCtrl.updateSorts = function () {
 			var postObj = {};
 			postObj.sorts = ngCtrl.list.sorts;
-			webvellaCoreService.patchEntityList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
+			webvellaCoreService.patchEntityRecordList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
 		}
 
 		//#endregion
@@ -376,7 +377,7 @@
 		}
 		ngCtrl.generateAlreadyUsed();
 		ngCtrl.fullLibrary = {};
-		ngCtrl.fullLibrary.items = fastCopy(resolvedViewLibrary);
+		ngCtrl.fullLibrary.items = resolvedViewLibrary;
 		//Fields list eligable to be options in the sort and query dropdowns
 		ngCtrl.onlyFieldsLibrary = {};
 		ngCtrl.onlyFieldsLibrary.items = [];
@@ -601,11 +602,22 @@
 					}
 				]
 			};
+			var subrule = {
+				"queryType": "EQ",
+				"fieldName": "id",
+				"fieldValue": "",
+				"subQueries": []
+			};
 			if (query != null) {
 				query.subQueries.push(subquery);
 			}
 			else {
-				ngCtrl.list.query = subquery;
+				ngCtrl.list.query = {};
+				ngCtrl.list.query.queryType = "AND";
+				ngCtrl.list.query.fieldName = null;
+				ngCtrl.list.query.fieldValue = null;
+				ngCtrl.list.query.subQueries = [];
+				ngCtrl.list.query.subQueries.push(subrule);
 			}
 			ngCtrl.updateQuery();
 		}

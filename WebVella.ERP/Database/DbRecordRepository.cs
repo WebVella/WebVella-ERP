@@ -146,7 +146,8 @@ namespace WebVella.ERP.Database
 							record[reader.GetName(index)] = reader[index] == DBNull.Value ? null : reader[index];
 
 					}
-					else {
+					else
+					{
 						return null;
 					}
 
@@ -162,10 +163,25 @@ namespace WebVella.ERP.Database
 			string tableName = RECORD_COLLECTION_PREFIX + entityName;
 			using (DbConnection con = DbContext.Current.CreateConnection())
 			{
-				NpgsqlCommand command = con.CreateCommand($"SELECT COUNT(*) FROM {tableName};");
+				string sql = $"SELECT COUNT(*) FROM {tableName} ";
+				string whereSql = string.Empty;
+
+				Entity entity = new EntityManager().ReadEntity(entityName).Object;
+				List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
+				GenerateWhereClause(query, entity, ref whereSql, ref parameters);
+
+				if (whereSql.Length > 0)
+					sql = sql + " WHERE " + whereSql;
+
+				NpgsqlCommand command = con.CreateCommand(sql);
+
+				if (parameters.Count > 0)
+					command.Parameters.AddRange(parameters.ToArray());
+
 				return (long)command.ExecuteScalar();
 			}
 		}
+
 
 		public void CreateRecordField(string entityName, Field field)
 		{
@@ -200,8 +216,9 @@ namespace WebVella.ERP.Database
 		{
 			string tableName = RECORD_COLLECTION_PREFIX + entityName;
 
+			//probably constraint will be removed automatically by postgresql, but to be sure
 			if (field.Unique)
-				DbRepository.DropIndex("idx_u_" + entityName + "_" + field.Name);
+				DbRepository.DropUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName);
 			if (field.Searchable)
 				DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name);
 
@@ -481,7 +498,7 @@ namespace WebVella.ERP.Database
 					}
 
 					sortSql = sortSql.Remove(sortSql.Length - 1, 1);
-					if(sortSql.Trim() != "ORDER BY")
+					if (sortSql.Trim() != "ORDER BY")
 						sql.AppendLine(sortSql);
 				}
 
@@ -804,7 +821,7 @@ namespace WebVella.ERP.Database
 						{
 							//process json
 							dynamic parametrizedSort = ExtractSortFieldJsonValue(s.FieldName, query.OverwriteArgs);
-							if(parametrizedSort != null )
+							if (parametrizedSort != null)
 							{
 								var sortField = parametrizedSort.Field;
 								var sortOrder = parametrizedSort.Order;
@@ -814,7 +831,7 @@ namespace WebVella.ERP.Database
 									continue;
 
 								sortSql = sortSql + " " + GetTableNameForEntity(entity) + "." + sortField;
-								if( sortOrder == null )
+								if (sortOrder == null)
 								{
 									if (s.SortType == QuerySortType.Ascending)
 										sortSql = sortSql + " ASC,";
@@ -823,7 +840,7 @@ namespace WebVella.ERP.Database
 								}
 								else
 								{
-									if (sortOrder == "ascending" )
+									if (sortOrder == "ascending")
 										sortSql = sortSql + " ASC,";
 									else
 										sortSql = sortSql + " DESC,";
@@ -935,7 +952,10 @@ namespace WebVella.ERP.Database
 						//	sql = sql + " " + paramName + " IN ( " + completeFieldName + " )";
 						//}
 						//else
-						sql = sql + " " + completeFieldName + "=" + paramName;
+						if (query.FieldValue == null || DBNull.Value == query.FieldValue)
+							sql = sql + " " + completeFieldName + " IS NULL";
+						else
+							sql = sql + " " + completeFieldName + "=" + paramName;
 						return;
 					}
 				case QueryType.NOT:
@@ -953,7 +973,10 @@ namespace WebVella.ERP.Database
 						//	sql = sql + " " + paramName + " NOT IN ( " + completeFieldName + " )";
 						//}
 						//else
-						sql = sql + " " + completeFieldName + "<>" + paramName;
+						if (query.FieldValue == null || DBNull.Value == query.FieldValue)
+							sql = sql + " " + completeFieldName + " IS NOT NULL";
+						else
+							sql = sql + " " + completeFieldName + "<>" + paramName;
 
 						return;
 					}
@@ -1257,7 +1280,13 @@ namespace WebVella.ERP.Database
 				return Convert.ToDecimal(value);
 			}
 			else if (field is CheckboxField)
+			{
+				if (value == null)
+					return null;
+				if (value is string)
+					return bool.Parse(value as string);
 				return value as bool?;
+			}
 			else if (field is CurrencyField)
 			{
 				if (value == null)

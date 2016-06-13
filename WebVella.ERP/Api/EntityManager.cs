@@ -434,7 +434,7 @@ namespace WebVella.ERP.Api
 			if (!recordlist.System.HasValue)
 				recordlist.System = false;
 			if (!recordlist.Weight.HasValue)
-				recordlist.Weight = 1;
+				recordlist.Weight = 10;
 			if (!recordlist.PageSize.HasValue)
 				recordlist.PageSize = 10;
 			if (recordlist.CssClass != null)
@@ -639,8 +639,8 @@ namespace WebVella.ERP.Api
 
 									if (relEntity != null)
 									{
-										inputColumn.EntityId = entity.Id;
-										inputColumn.EntityName = entity.Name;
+										inputColumn.EntityId = relEntity.Id;
+										inputColumn.EntityName = relEntity.Name;
 
 										Field relField = string.IsNullOrWhiteSpace(inputColumn.FieldName) ?
 											relEntity.Fields.FirstOrDefault(f => f.Id == inputColumn.FieldId) :
@@ -702,8 +702,8 @@ namespace WebVella.ERP.Api
 
 									if (relEntity != null)
 									{
-										inputColumn.EntityId = entity.Id;
-										inputColumn.EntityName = entity.Name;
+										inputColumn.EntityId = relEntity.Id;
+										inputColumn.EntityName = relEntity.Name;
 
 										RecordTree relTree = string.IsNullOrWhiteSpace(inputColumn.TreeName) ?
 											relEntity.RecordTrees.FirstOrDefault(l => l.Id == inputColumn.TreeId) :
@@ -765,8 +765,8 @@ namespace WebVella.ERP.Api
 
 									if (relEntity != null)
 									{
-										inputColumn.EntityId = entity.Id;
-										inputColumn.EntityName = entity.Name;
+										inputColumn.EntityId = relEntity.Id;
+										inputColumn.EntityName = relEntity.Name;
 
 										RecordList relList = string.IsNullOrWhiteSpace(inputColumn.ListName) ?
 											relEntity.RecordLists.FirstOrDefault(l => l.Id == inputColumn.ListId) :
@@ -828,8 +828,8 @@ namespace WebVella.ERP.Api
 
 									if (relEntity != null)
 									{
-										inputColumn.EntityId = entity.Id;
-										inputColumn.EntityName = entity.Name;
+										inputColumn.EntityId = relEntity.Id;
+										inputColumn.EntityName = relEntity.Name;
 
 										RecordView relView = string.IsNullOrWhiteSpace(inputColumn.ViewName) ?
 											relEntity.RecordViews.FirstOrDefault(v => v.Id == inputColumn.ViewId) :
@@ -1208,8 +1208,8 @@ namespace WebVella.ERP.Api
 
 																if (relEntity != null)
 																{
-																	inputItem.EntityId = entity.Id;
-																	inputItem.EntityName = entity.Name;
+																	inputItem.EntityId = relEntity.Id;
+																	inputItem.EntityName = relEntity.Name;
 
 
 																	Field relField = null;
@@ -1267,8 +1267,8 @@ namespace WebVella.ERP.Api
 
 																if (relEntity != null)
 																{
-																	inputItem.EntityId = entity.Id;
-																	inputItem.EntityName = entity.Name;
+																	inputItem.EntityId = relEntity.Id;
+																	inputItem.EntityName = relEntity.Name;
 
 																	RecordTree tree = null;
 																	if (string.IsNullOrWhiteSpace(inputItem.TreeName))
@@ -1324,8 +1324,8 @@ namespace WebVella.ERP.Api
 
 																if (relEntity != null)
 																{
-																	inputItem.EntityId = entity.Id;
-																	inputItem.EntityName = entity.Name;
+																	inputItem.EntityId = relEntity.Id;
+																	inputItem.EntityName = relEntity.Name;
 
 																	RecordList relList = null;
 																	if (string.IsNullOrWhiteSpace(inputItem.ListName))
@@ -1379,8 +1379,8 @@ namespace WebVella.ERP.Api
 
 																if (relEntity != null)
 																{
-																	inputItem.EntityId = entity.Id;
-																	inputItem.EntityName = entity.Name;
+																	inputItem.EntityId = relEntity.Id;
+																	inputItem.EntityName = relEntity.Name;
 
 
 																	RecordView relView = null;
@@ -1519,11 +1519,11 @@ namespace WebVella.ERP.Api
 									Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
 									Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
 
-									inputItem.EntityId = relEntity.Id;
-									inputItem.EntityName = relEntity.Name;
-
 									if (relEntity != null)
 									{
+										inputItem.EntityId = relEntity.Id;
+										inputItem.EntityName = relEntity.Name;
+
 										RecordList relList = null;
 										if (string.IsNullOrWhiteSpace(inputItem.ListName))
 											relList = relEntity.RecordLists.FirstOrDefault(l => l.Id == inputItem.ListId);
@@ -1583,11 +1583,11 @@ namespace WebVella.ERP.Api
 									Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
 									Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
 
-									inputItem.EntityId = relEntity.Id;
-									inputItem.EntityName = relEntity.Name;
-
 									if (relEntity != null)
 									{
+										inputItem.EntityId = relEntity.Id;
+										inputItem.EntityName = relEntity.Name;
+
 										RecordTree tree = null;
 										if (string.IsNullOrWhiteSpace(inputItem.TreeName))
 											tree = relEntity.RecordTrees.FirstOrDefault(l => l.Id == inputItem.TreeId);
@@ -1687,7 +1687,7 @@ namespace WebVella.ERP.Api
 
 		#region << Entity methods >>
 
-		public EntityResponse CreateEntity(InputEntity inputEntity)
+		public EntityResponse CreateEntity(InputEntity inputEntity, bool createDefaultViews = true, bool createDefaultLists = true, Dictionary<string,Guid> sysIdDictionary = null)
 		{
 			EntityResponse response = new EntityResponse
 			{
@@ -1716,12 +1716,26 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				entity.Fields = CreateEntityDefaultFields(entity);
-				entity.RecordLists = CreateEntityDefaultRecordLists(entity);
-				entity.RecordViews = CreateEntityDefaultRecordViews(entity);
+				entity.Fields = CreateEntityDefaultFields(entity, sysIdDictionary);
+				if (createDefaultViews)
+				{
+					entity.RecordViews = CreateEntityDefaultRecordViews(entity);
+				}
+				else
+				{
+					entity.RecordViews = new List<RecordView>();
+				}
+				if (createDefaultLists)
+				{
+					entity.RecordLists = CreateEntityDefaultRecordLists(entity);
+				}
+				else
+				{
+					entity.RecordLists = new List<RecordList>();
+				}
 
 				DbEntity storageEntity = entity.MapTo<DbEntity>();
-				bool result = DbContext.Current.EntityRepository.Create(storageEntity);
+				bool result = DbContext.Current.EntityRepository.Create(storageEntity, sysIdDictionary );
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -1809,6 +1823,7 @@ namespace WebVella.ERP.Api
 
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The entity was not updated! An internal error occurred!";
@@ -1818,6 +1833,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Success = false;
 				response.Object = entity;
 				response.Timestamp = DateTime.UtcNow;
@@ -1943,6 +1959,8 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
+
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 #if DEBUG
@@ -2031,6 +2049,7 @@ namespace WebVella.ERP.Api
 										Entity relEntity = GetEntityByFieldId(((RecordListRelationFieldItem)column).FieldId, entities);
 										if (relEntity != null)
 										{
+											((RecordListRelationFieldItem)column).EntityId = relEntity.Id;
 											((RecordListRelationFieldItem)column).EntityName = relEntity.Name;
 											((RecordListRelationFieldItem)column).EntityLabel = relEntity.Label;
 											((RecordListRelationFieldItem)column).EntityLabelPlural = entity.LabelPlural;
@@ -2075,6 +2094,7 @@ namespace WebVella.ERP.Api
 										Entity relEntity = GetEntityByViewId(((RecordListRelationViewItem)column).ViewId, entities);
 										if (relEntity != null)
 										{
+											((RecordListRelationViewItem)column).EntityId = relEntity.Id;
 											((RecordListRelationViewItem)column).EntityName = relEntity.Name;
 											((RecordListRelationViewItem)column).EntityLabel = relEntity.Label;
 											((RecordListRelationViewItem)column).EntityLabelPlural = entity.LabelPlural;
@@ -2120,6 +2140,7 @@ namespace WebVella.ERP.Api
 										Entity relEntity = GetEntityByListId(((RecordListRelationListItem)column).ListId, entities);
 										if (relEntity != null)
 										{
+											((RecordListRelationListItem)column).EntityId = relEntity.Id;
 											((RecordListRelationListItem)column).EntityName = relEntity.Name;
 											((RecordListRelationListItem)column).EntityLabel = relEntity.Label;
 											((RecordListRelationListItem)column).EntityLabelPlural = entity.LabelPlural;
@@ -2150,6 +2171,7 @@ namespace WebVella.ERP.Api
 										Entity relEntity = GetEntityByTreeId(((RecordListRelationTreeItem)column).TreeId, entities);
 										if (relEntity != null)
 										{
+											((RecordListRelationTreeItem)column).EntityId = relEntity.Id;
 											((RecordListRelationTreeItem)column).EntityName = relEntity.Name;
 											((RecordListRelationTreeItem)column).EntityLabel = relEntity.Label;
 											((RecordListRelationTreeItem)column).EntityLabelPlural = entity.LabelPlural;
@@ -2478,6 +2500,7 @@ namespace WebVella.ERP.Api
 										Entity relEntity = GetEntityByTreeId(((RecordViewSidebarRelationTreeItem)item).TreeId, entities);
 										if (relEntity != null)
 										{
+											((RecordViewSidebarRelationTreeItem)item).EntityId = relEntity.Id;
 											((RecordViewSidebarRelationTreeItem)item).EntityName = relEntity.Name;
 											((RecordViewSidebarRelationTreeItem)item).EntityLabel = relEntity.Label;
 											((RecordViewSidebarRelationTreeItem)item).EntityLabelPlural = entity.LabelPlural;
@@ -2742,6 +2765,8 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
+
 				response.Success = false;
 				response.Object = field;
 				response.Timestamp = DateTime.UtcNow;
@@ -3026,6 +3051,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The field was not updated! An internal error occurred!";
@@ -3035,6 +3061,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Success = false;
 				response.Object = field;
 				response.Timestamp = DateTime.UtcNow;
@@ -3369,6 +3396,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 #if DEBUG
@@ -3636,6 +3664,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The list was not created! An internal error occurred!";
@@ -3645,6 +3674,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Success = false;
 				response.Object = recordList;
 				response.Timestamp = DateTime.UtcNow;
@@ -3746,6 +3776,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The list was not updated! An internal error occurred!";
@@ -3755,6 +3786,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Success = false;
 				response.Object = recordList;
 				response.Timestamp = DateTime.UtcNow;
@@ -3770,133 +3802,6 @@ namespace WebVella.ERP.Api
 
 			return ReadRecordList(entity.Id, recordList.Id);
 		}
-
-		//public RecordListResponse PartialUpdateRecordList(Guid entityId, Guid id, InputRecordList inputRecordList)
-		//{
-		//	RecordListResponse response = new RecordListResponse();
-
-		//	IStorageEntity storageEntity = EntityRepository.Read(entityId);
-
-		//	if (storageEntity == null)
-		//	{
-		//		response.Timestamp = DateTime.UtcNow;
-		//		response.Success = false;
-		//		response.Message = "Entity with such Id does not exist!";
-		//		return response;
-		//	}
-
-		//	Entity entity = storageEntity.MapTo<Entity>();
-
-		//	RecordList updatedList = entity.RecordLists.FirstOrDefault(l => l.Id == id);
-
-		//	if (updatedList == null)
-		//	{
-		//		response.Timestamp = DateTime.UtcNow;
-		//		response.Success = false;
-		//		response.Message = "List with such Id does not exist!";
-		//		return response;
-		//	}
-
-		//	return PartialUpdateRecordList(entity, updatedList, inputRecordList);
-		//}
-
-		//public RecordListResponse PartialUpdateRecordList(string entityName, string name, InputRecordList inputRecordList)
-		//{
-		//	RecordListResponse response = new RecordListResponse();
-
-		//	IStorageEntity storageEntity = EntityRepository.Read(entityName);
-
-		//	if (storageEntity == null)
-		//	{
-		//		response.Timestamp = DateTime.UtcNow;
-		//		response.Success = false;
-		//		response.Message = "Entity with such Name does not exist!";
-		//		return response;
-		//	}
-
-		//	Entity entity = storageEntity.MapTo<Entity>();
-
-		//	RecordList updatedList = entity.RecordLists.FirstOrDefault(l => l.Name == name);
-
-		//	if (updatedList == null)
-		//	{
-		//		response.Timestamp = DateTime.UtcNow;
-		//		response.Success = false;
-		//		response.Message = "List with such Name does not exist!";
-		//		return response;
-		//	}
-
-		//	return PartialUpdateRecordList(entity, updatedList, inputRecordList);
-		//}
-
-		//private RecordListResponse PartialUpdateRecordList(Entity entity, RecordList updatedList, InputRecordList inputRecordList)
-		//		{
-		//			RecordListResponse response = new RecordListResponse
-		//			{
-		//				Success = true,
-		//				Message = "The list was successfully updated!",
-		//			};
-
-		//			try
-		//			{
-		//				if (inputRecordList.Label != null)
-		//					updatedList.Label = inputRecordList.Label;
-		//				if (inputRecordList.Default.HasValue)
-		//					updatedList.Default = inputRecordList.Default;
-		//				if (inputRecordList.System.HasValue)
-		//					updatedList.System = inputRecordList.System;
-		//				if (inputRecordList.Weight.HasValue)
-		//					updatedList.Weight = inputRecordList.Weight;
-		//				if (inputRecordList.CssClass != null)
-		//					updatedList.CssClass = inputRecordList.CssClass;
-		//				if (inputRecordList.Type != null)
-		//					updatedList.Type = inputRecordList.Type;
-		//				if (inputRecordList.PageSize.HasValue)
-		//					updatedList.PageSize = inputRecordList.PageSize.Value;
-		//				if (inputRecordList.Columns != null)
-		//					updatedList.Columns = inputRecordList.Columns.MapTo<RecordListItemBase>();
-		//				if (inputRecordList.Query != null)
-		//					updatedList.Query = inputRecordList.Query.MapTo<RecordListQuery>();
-		//				if (inputRecordList.Sorts != null)
-		//					updatedList.Sorts = inputRecordList.Sorts.MapTo<RecordListSort>();
-
-		//				response.Object = inputRecordList.MapTo<RecordList>();
-		//				response.Errors = ValidateRecordList(entity, updatedList.MapTo<InputRecordList>(), true);
-
-		//				if (response.Errors.Count > 0)
-		//				{
-		//					response.Timestamp = DateTime.UtcNow;
-		//					response.Success = false;
-		//					response.Message = "The list was not updated. Validation error occurred!";
-		//					return response;
-		//				}
-
-		//				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-		//				bool result = EntityRepository.Update(updatedEntity);
-		//				if (!result)
-		//				{
-		//					response.Timestamp = DateTime.UtcNow;
-		//					response.Success = false;
-		//					response.Message = "The list was not updated! An internal error occurred!";
-		//					return response;
-		//				}
-
-		//			}
-		//			catch (Exception e)
-		//			{
-		//				response.Success = false;
-		//				response.Object = inputRecordList.MapTo<RecordList>();
-		//				response.Timestamp = DateTime.UtcNow;
-		//#if DEBUG
-		//				response.Message = e.Message + e.StackTrace;
-		//#else
-		//                response.Message = "The list was not updated. An internal error occurred!";
-		//#endif
-		//				return response;
-		//			}
-
-		//			return ReadRecordList(entity.Id, updatedList.Id);
-		//		}
 
 		public RecordListResponse DeleteRecordList(Guid entityId, Guid id)
 		{
@@ -3943,6 +3848,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The list was not updated! An internal error occurred!";
@@ -3951,6 +3857,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 #if DEBUG
@@ -4012,6 +3919,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The list was not updated! An internal error occurred!";
@@ -4020,6 +3928,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 #if DEBUG
@@ -4370,6 +4279,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The record view was not created! An internal error occurred!";
@@ -4378,6 +4288,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Success = false;
 				response.Object = recordView;
 				response.Timestamp = DateTime.UtcNow;
@@ -4483,6 +4394,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The record view was not updated! An internal error occurred!";
@@ -4492,6 +4404,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Success = false;
 				response.Object = recordView;
 				response.Timestamp = DateTime.UtcNow;
@@ -4507,131 +4420,6 @@ namespace WebVella.ERP.Api
 
 			return ReadRecordView(entity.Id, recordView.Id);
 		}
-
-		//public RecordViewResponse PartialUpdateRecordView(Guid entityId, Guid id, InputRecordView inputRecordView)
-		//{
-		//	RecordViewResponse response = new RecordViewResponse();
-
-		//	IStorageEntity storageEntity = EntityRepository.Read(entityId);
-
-		//	if (storageEntity == null)
-		//	{
-		//		response.Timestamp = DateTime.UtcNow;
-		//		response.Success = false;
-		//		response.Message = "Entity with such Id does not exist!";
-		//		return response;
-		//	}
-
-		//	Entity entity = storageEntity.MapTo<Entity>();
-
-		//	RecordView updatedView = entity.RecordViews.FirstOrDefault(v => v.Id == id);
-
-		//	if (updatedView == null)
-		//	{
-		//		response.Timestamp = DateTime.UtcNow;
-		//		response.Success = false;
-		//		response.Message = "View with such Id does not exist!";
-		//		return response;
-		//	}
-
-		//	return PartialUpdateRecordView(entity, updatedView, inputRecordView);
-		//}
-
-		//public RecordViewResponse PartialUpdateRecordView(string entityName, string name, InputRecordView inputRecordView)
-		//{
-		//	RecordViewResponse response = new RecordViewResponse();
-
-		//	IStorageEntity storageEntity = EntityRepository.Read(entityName);
-
-		//	if (storageEntity == null)
-		//	{
-		//		response.Timestamp = DateTime.UtcNow;
-		//		response.Success = false;
-		//		response.Message = "Entity with such Name does not exist!";
-		//		return response;
-		//	}
-
-		//	Entity entity = storageEntity.MapTo<Entity>();
-
-		//	RecordView updatedView = entity.RecordViews.FirstOrDefault(v => v.Name == name);
-
-		//	if (updatedView == null)
-		//	{
-		//		response.Timestamp = DateTime.UtcNow;
-		//		response.Success = false;
-		//		response.Message = "View with such Name does not exist!";
-		//		return response;
-		//	}
-
-		//	return PartialUpdateRecordView(entity, updatedView, inputRecordView);
-		//}
-
-		//private RecordViewResponse PartialUpdateRecordView(Entity entity, RecordView updatedView, InputRecordView inputRecordView)
-		//		{
-		//			RecordViewResponse response = new RecordViewResponse
-		//			{
-		//				Success = true,
-		//				Message = "The record view was successfully updated!",
-		//			};
-
-		//			RecordView recordView = inputRecordView.MapTo<RecordView>();
-
-		//			try
-		//			{
-		//				if (inputRecordView.Label != null)
-		//					updatedView.Label = inputRecordView.Label;
-		//				if (inputRecordView.Default.HasValue)
-		//					updatedView.Default = inputRecordView.Default;
-		//				if (inputRecordView.System.HasValue)
-		//					updatedView.System = inputRecordView.System;
-		//				if (inputRecordView.Weight.HasValue)
-		//					updatedView.Weight = inputRecordView.Weight;
-		//				if (inputRecordView.CssClass != null)
-		//					updatedView.CssClass = inputRecordView.CssClass;
-		//				if (!string.IsNullOrEmpty(inputRecordView.Type))
-		//					updatedView.Type = inputRecordView.Type;
-		//				if (inputRecordView.Regions != null)
-		//					updatedView.Regions = inputRecordView.Regions.MapTo<RecordViewRegion>();
-		//				if (inputRecordView.Sidebar != null)
-		//					updatedView.Sidebar = inputRecordView.Sidebar.MapTo<RecordViewSidebar>();
-
-		//				response.Object = recordView;
-		//				response.Errors = ValidateRecordView(entity, updatedView.MapTo<InputRecordView>(), true);
-
-		//				if (response.Errors.Count > 0)
-		//				{
-		//					response.Timestamp = DateTime.UtcNow;
-		//					response.Success = false;
-		//					response.Message = "The record view was not updated. Validation error occurred!";
-		//					return response;
-		//				}
-
-		//				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-		//				bool result = EntityRepository.Update(updatedEntity);
-		//				if (!result)
-		//				{
-		//					response.Timestamp = DateTime.UtcNow;
-		//					response.Success = false;
-		//					response.Message = "The record view was not updated! An internal error occurred!";
-		//					return response;
-		//				}
-
-		//			}
-		//			catch (Exception e)
-		//			{
-		//				response.Success = false;
-		//				response.Object = recordView;
-		//				response.Timestamp = DateTime.UtcNow;
-		//#if DEBUG
-		//				response.Message = e.Message + e.StackTrace;
-		//#else
-		//                response.Message = "The record view was not updated. An internal error occurred!";
-		//#endif
-		//				return response;
-		//			}
-
-		//			return ReadRecordView(entity.Id, recordView.Id);
-		//		}
 
 		public RecordViewResponse DeleteRecordView(Guid entityId, Guid id)
 		{
@@ -4679,6 +4467,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The record view was not updated! An internal error occurred!";
@@ -4687,6 +4476,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 #if DEBUG
@@ -4749,6 +4539,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The record view was not updated! An internal error occurred!";
@@ -4757,6 +4548,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 #if DEBUG
@@ -5105,6 +4897,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The tree was not created! An internal error occurred!";
@@ -5114,6 +4907,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Success = false;
 				response.Object = recordTree;
 				response.Timestamp = DateTime.UtcNow;
@@ -5214,6 +5008,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The tree was not updated! An internal error occurred!";
@@ -5223,6 +5018,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Success = false;
 				response.Object = recordTree;
 				response.Timestamp = DateTime.UtcNow;
@@ -5284,6 +5080,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The tree was not updated! An internal error occurred!";
@@ -5292,6 +5089,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 #if DEBUG
@@ -5353,6 +5151,7 @@ namespace WebVella.ERP.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
+					Cache.ClearEntities();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The tree was not updated! An internal error occurred!";
@@ -5361,6 +5160,7 @@ namespace WebVella.ERP.Api
 			}
 			catch (Exception e)
 			{
+				Cache.ClearEntities();
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 #if DEBUG
@@ -5776,13 +5576,18 @@ namespace WebVella.ERP.Api
 
 		#region << Help methods >>
 
-		private List<Field> CreateEntityDefaultFields(Entity entity)
+		private List<Field> CreateEntityDefaultFields(Entity entity, Dictionary<string,Guid> sysFieldIdDictionary = null)
 		{
 			List<Field> fields = new List<Field>();
 
 			GuidField primaryKeyField = new GuidField();
 
-			primaryKeyField.Id = Guid.NewGuid();
+			if(sysFieldIdDictionary != null && sysFieldIdDictionary.ContainsKey("id")) {
+				primaryKeyField.Id = sysFieldIdDictionary["id"];
+			}
+			else {
+				primaryKeyField.Id = Guid.NewGuid();
+			}
 			primaryKeyField.Name = "id";
 			primaryKeyField.Label = "Id";
 			primaryKeyField.PlaceholderText = "";
@@ -5800,7 +5605,12 @@ namespace WebVella.ERP.Api
 
 			GuidField createdBy = new GuidField();
 
-			createdBy.Id = Guid.NewGuid();
+			if(sysFieldIdDictionary != null && sysFieldIdDictionary.ContainsKey("created_by")) {
+				createdBy.Id = sysFieldIdDictionary["created_by"];
+			}
+			else {
+				createdBy.Id = Guid.NewGuid();
+			}
 			createdBy.Name = "created_by";
 			createdBy.Label = "Created By";
 			createdBy.PlaceholderText = "";
@@ -5818,7 +5628,12 @@ namespace WebVella.ERP.Api
 
 			GuidField lastModifiedBy = new GuidField();
 
-			lastModifiedBy.Id = Guid.NewGuid();
+			if(sysFieldIdDictionary != null && sysFieldIdDictionary.ContainsKey("last_modified_by")) {
+				lastModifiedBy.Id = sysFieldIdDictionary["last_modified_by"];
+			}
+			else {
+				lastModifiedBy.Id = Guid.NewGuid();
+			}
 			lastModifiedBy.Name = "last_modified_by";
 			lastModifiedBy.Label = "Last Modified By";
 			lastModifiedBy.PlaceholderText = "";
@@ -5836,7 +5651,12 @@ namespace WebVella.ERP.Api
 
 			DateTimeField createdOn = new DateTimeField();
 
-			createdOn.Id = Guid.NewGuid();
+			if(sysFieldIdDictionary != null && sysFieldIdDictionary.ContainsKey("created_on")) {
+				createdOn.Id = sysFieldIdDictionary["created_on"];
+			}
+			else {
+				createdOn.Id = Guid.NewGuid();
+			}
 			createdOn.Name = "created_on";
 			createdOn.Label = "Created On";
 			createdOn.PlaceholderText = "";
@@ -5856,7 +5676,12 @@ namespace WebVella.ERP.Api
 
 			DateTimeField modifiedOn = new DateTimeField();
 
-			modifiedOn.Id = Guid.NewGuid();
+			if(sysFieldIdDictionary != null && sysFieldIdDictionary.ContainsKey("last_modified_on")) {
+				modifiedOn.Id = sysFieldIdDictionary["last_modified_on"];
+			}
+			else {
+				modifiedOn.Id = Guid.NewGuid();
+			}
 			modifiedOn.Name = "last_modified_on";
 			modifiedOn.Label = "Last Modified On";
 			modifiedOn.PlaceholderText = "";
@@ -5886,38 +5711,25 @@ namespace WebVella.ERP.Api
 					actionItem.Name = "wv_create_record";
 					actionItem.Menu = "page-title";
 					actionItem.Weight = 1;
-					actionItem.Template = "" +
-@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
-    ng-href=""{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}"">
-	<i class=""fa fa-fw fa-plus""></i> Add New
-</a>";
+					actionItem.Template = "<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate')\" ng-href=\"{{::ngCtrl.getRecordCreateUrl()}}\">Add New</a>";
 					break;
 				case "wv_import_records":
 					actionItem.Name = "wv_import_records";
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 10;
-					actionItem.Template = "" +
-@"<a ng-click=""ngCtrl.openImportModal()"" class=""ng-hide"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate,canUpdate')"">
-	<i class=""fa fa-fw fa-upload""></i> Import CSV
-</a>";
+					actionItem.Template = "<a ng-click=\"ngCtrl.openImportModal()\" class=\"ng-hide\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\"><i class=\"fa fa-fw fa-upload\"></i> Import CSV</a>";
 					break;
 				case "wv_export_records":
 					actionItem.Name = "wv_export_records";
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 11;
-					actionItem.Template = "" +
-@"<a ng-click=""ngCtrl.openExportModal()"" class=""ng-hide"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate,canUpdate')"">
-	<i class=""fa fa-fw fa-download""></i> Export CSV
-</a>";
+					actionItem.Template = "<a ng-click=\"ngCtrl.openExportModal()\" class=\"ng-hide\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\"><i class=\"fa fa-fw fa-download\"></i> Export CSV</a>";
 					break;
 				case "wv_record_details":
 					actionItem.Name = "wv_record_details";
 					actionItem.Menu = "record-row";
 					actionItem.Weight = 1;
-					actionItem.Template = "" +
-@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}"">
-    <i class=""fa fa-fw fa-eye""></i>
-</a>";
+					actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-href=\"{{::ngCtrl.getRecordDetailsUrl(record)}}\"><i class=\"fa fa-fw fa-eye\"></i></a>";
 					break;
 				default:
 					throw new Exception("no such action type");
@@ -5933,14 +5745,17 @@ namespace WebVella.ERP.Api
 			create.Id = Guid.NewGuid();
 			create.Name = "general";
 			create.Label = "General";
+			create.Title = "General";
 			create.Default = true;
-			create.System = true;
+			create.System = false;
 			create.Type = "general";
 			create.IconName = "list";
 			create.PageSize = 10;
 			create.Weight = 10;
 			create.VisibleColumnsCount = 5;
 			create.ServiceCode = null;
+			create.DynamicHtmlTemplate = null;
+			create.DataSourceUrl = null;
 			create.ActionItems = new List<ActionItem>();
 			create.ActionItems.Add(GenerateListActionItem("wv_create_record"));
 			create.ActionItems.Add(GenerateListActionItem("wv_import_records"));
@@ -5952,14 +5767,17 @@ namespace WebVella.ERP.Api
 			lookup.Id = Guid.NewGuid();
 			lookup.Name = "lookup";
 			lookup.Label = "Lookup";
+			lookup.Title = "Lookup";
 			lookup.Default = true;
-			lookup.System = true;
+			lookup.System = false;
 			lookup.Type = "lookup";
 			lookup.IconName = "list";
 			lookup.PageSize = 10;
 			lookup.Weight = 10;
 			lookup.VisibleColumnsCount = 5;
 			lookup.ServiceCode = null;
+			lookup.DynamicHtmlTemplate = null;
+			lookup.DataSourceUrl = null;
 			lookup.ActionItems = new List<ActionItem>();
 			lookup.ActionItems.Add(GenerateListActionItem("wv_create_record"));
 			lookup.ActionItems.Add(GenerateListActionItem("wv_import_records"));
@@ -5979,39 +5797,31 @@ namespace WebVella.ERP.Api
 					actionItem.Name = "wv_record_delete";
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 1;
-					actionItem.Template = "" +
-@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.actionService.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
-		ng-if=""ngCtrl.userHasRecordPermissions('canDelete')"">
-	<i class=""fa fa-trash go-red""></i> Delete Record
-</a>";
+					actionItem.Template = "<a href=\"javascript:void(0)\" confirmed-click=\"::ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"Are you sure?\" ng-if=\"::ngCtrl.userHasRecordPermissions('canDelete')\"><i class=\"fa fa-trash go-red\"></i> Delete Record</a>";
 					break;
 				case "wv_create_and_list":
 					actionItem.Name = "wv_create_and_list";
 					actionItem.Menu = "create-bottom";
 					actionItem.Weight = 1;
-					actionItem.Template = "" +
-@"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""list"")' ng-if=""ngCtrl.createViewRegion != null"">Create & List</a>";
+					actionItem.Template = "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"default\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create</a>";
 					break;
 				case "wv_create_and_details":
 					actionItem.Name = "wv_create_and_details";
 					actionItem.Menu = "create-bottom";
 					actionItem.Weight = 2;
-					actionItem.Template = "" +
-@"<a class=""btn btn-default btn-outline"" ng-click='ngCtrl.create(""details"")' ng-if=""ngCtrl.createViewRegion != null"">Create & Details</a>";
+					actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-click='ngCtrl.create(\"details\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create & Details</a>";
 					break;
 				case "wv_create_cancel":
 					actionItem.Name = "wv_create_cancel";
 					actionItem.Menu = "create-bottom";
 					actionItem.Weight = 3;
-					actionItem.Template = "" +
-@"<a class=""btn btn-default btn-outline"" ng-click=""ngCtrl.cancel()"">Cancel</a>";
+					actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-click=\"ngCtrl.cancel()\">Cancel</a>";
 					break;
 				case "wv_back_button":
 					actionItem.Name = "wv_back_button";
 					actionItem.Menu = "sidebar-top";
 					actionItem.Weight = 1;
-					actionItem.Template = "" +
-@"<a class=""back clearfix"" href=""javascript:void(0)"" ng-click=""sidebarData.goBack()""><i class=""fa fa-fw fa-arrow-left""></i> <span class=""text"">Back</span></a>";
+					actionItem.Template = "<a class=\"back clearfix\" href=\"javascript:void(0)\" ng-click=\"sidebarData.goBack()\"><i class=\"fa fa-fw fa-arrow-left\"></i> <span class=\"text\">Back</span></a>";
 					break;
 				default:
 					throw new Exception("no such action type");
@@ -6023,23 +5833,26 @@ namespace WebVella.ERP.Api
 		{
 			List<RecordView> recordViewList = new List<RecordView>();
 
-			var contentRegion = new RecordViewRegion();
-			contentRegion.Name = "default";
-			contentRegion.Label = "Default";
-			contentRegion.Sections = new List<RecordViewSection>();
+			var headerRegion = new RecordViewRegion();
+			headerRegion.Name = "header";
+			headerRegion.Label = "Header";
+			headerRegion.Sections = new List<RecordViewSection>();
 
 			var create = new RecordView();
 			create.Id = Guid.NewGuid();
 			create.Name = "create";
 			create.Label = "Create";
+			create.Title = "Create";
 			create.Default = true;
-			create.System = true;
+			create.System = false;
 			create.Type = "create";
 			create.Weight = 10;
 			create.IconName = "file-text-o";
 			create.Regions = new List<RecordViewRegion>();
-			create.Regions.Add(contentRegion);
+			create.Regions.Add(headerRegion);
 			create.ServiceCode = null;
+			create.DynamicHtmlTemplate = null;
+			create.DataSourceUrl = null;
 			create.ActionItems = new List<ActionItem>();
 			create.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
 			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
@@ -6051,14 +5864,17 @@ namespace WebVella.ERP.Api
 			quickCreate.Id = Guid.NewGuid();
 			quickCreate.Name = "quick_create";
 			quickCreate.Label = "Quick create";
+			quickCreate.Title = "Quick create";
 			quickCreate.Default = true;
-			quickCreate.System = true;
+			quickCreate.System = false;
 			quickCreate.Type = "quick_create";
 			quickCreate.IconName = "file-text-o";
 			quickCreate.Weight = 10;
 			quickCreate.Regions = new List<RecordViewRegion>();
-			quickCreate.Regions.Add(contentRegion);
+			quickCreate.Regions.Add(headerRegion);
 			quickCreate.ServiceCode = null;
+			quickCreate.DynamicHtmlTemplate = null;
+			quickCreate.DataSourceUrl = null;
 			quickCreate.ActionItems = new List<ActionItem>();
 			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
 			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
@@ -6070,14 +5886,17 @@ namespace WebVella.ERP.Api
 			quickView.Id = Guid.NewGuid();
 			quickView.Name = "quick_view";
 			quickView.Label = "Quick view";
+			quickView.Title = "Quick view";
 			quickView.Default = true;
-			quickView.System = true;
+			quickView.System = false;
 			quickView.Type = "quick_view";
 			quickView.IconName = "file-text-o";
 			quickView.Weight = 10;
 			quickView.Regions = new List<RecordViewRegion>();
-			quickView.Regions.Add(contentRegion);
+			quickView.Regions.Add(headerRegion);
 			quickView.ServiceCode = null;
+			quickView.DynamicHtmlTemplate = null;
+			quickView.DataSourceUrl = null;
 			quickView.ActionItems = new List<ActionItem>();
 			quickView.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
 			quickView.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
@@ -6087,14 +5906,17 @@ namespace WebVella.ERP.Api
 			general.Id = Guid.NewGuid();
 			general.Name = "general";
 			general.Label = "General";
+			general.Title = "General";
 			general.Default = true;
-			general.System = true;
+			general.System = false;
 			general.Type = "general";
 			general.Weight = 10;
 			general.IconName = "file-text-o";
 			general.Regions = new List<RecordViewRegion>();
-			general.Regions.Add(contentRegion);
+			general.Regions.Add(headerRegion);
 			general.ServiceCode = null;
+			general.DynamicHtmlTemplate = null;
+			general.DataSourceUrl = null;
 			general.ActionItems = new List<ActionItem>();
 			general.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
 			general.ActionItems.Add(GenerateViewActionItem("wv_back_button"));

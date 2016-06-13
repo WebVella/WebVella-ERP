@@ -13,10 +13,9 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', 'resolvedCurrentUser'];
-
-    
-    function controller($log, $rootScope, $state, resolvedCurrentUser) {
+    controller.$inject = ['$log', '$rootScope', '$state', 'resolvedCurrentUser','$localStorage'];
+     
+    function controller($log, $rootScope, $state, resolvedCurrentUser, $localStorage) {
         
         var sidebarData = this;
         sidebarData.isMiniSidebar = $rootScope.isMiniSidebar;
@@ -25,6 +24,11 @@
         	sidebarData.isMiniSidebar = $rootScope.isMiniSidebar;
         });
         sidebarData.currentUser = angular.copy(resolvedCurrentUser);
+
+        sidebarData.$storage = $localStorage;
+        sidebarData.toggleSideNav = function () {
+        	sidebarData.$storage.isMiniSidebar = !sidebarData.$storage.isMiniSidebar;
+        }
     }
 
 })();

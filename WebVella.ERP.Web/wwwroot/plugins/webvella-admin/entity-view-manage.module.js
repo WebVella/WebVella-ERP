@@ -58,7 +58,7 @@
         function successCallback(response) {
             if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
             }
             else {
@@ -69,7 +69,7 @@
         function errorCallback(response) {
             if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
             }
             else {
@@ -94,7 +94,7 @@
         
         var ngCtrl = this;
         //#region << Initialize Current Entity >>
-        ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+        ngCtrl.entity = resolvedCurrentEntityMeta;
         //#endregion
 
 		//#region << Update page title & hide the side menu >>
@@ -127,6 +127,13 @@
 		
 
         ngCtrl.fieldUpdate = function (key, data) {
+			if(key == "dataSourceUrl" && data == ""){
+				data = null;
+			}
+			if(key == "dynamicHtmlTemplate" && data == ""){
+				data = null;
+			}
+
         	ngCtrl.nameIsChanged = false;
         	ngCtrl.patchObject = {};
         	ngCtrl.patchObject[key] = data;

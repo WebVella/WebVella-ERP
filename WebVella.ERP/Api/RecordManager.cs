@@ -335,6 +335,8 @@ namespace WebVella.ERP.Api
 									List<string> values = new List<string>();
 									if (pair.Value is JArray)
 										values = ((JArray)pair.Value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
+									else if (pair.Value is List<Guid>)
+										values = ((List<Guid>)pair.Value).Select(x => ((Guid)x).ToString()).ToList<string>();
 									else if (pair.Value is List<object>)
 										values = ((List<object>)pair.Value).Select(x => ((object)x).ToString()).ToList<string>();
 									else if (pair.Value != null)
@@ -1238,10 +1240,14 @@ namespace WebVella.ERP.Api
 				{
 					if (pair.Value == null)
 						return null;
-					if (pair.Value is string)
-						return decimal.Parse(pair.Value as string);
 
-					return Convert.ToDecimal(pair.Value);
+					decimal decimalValue;
+					if (pair.Value is string)
+						decimalValue = decimal.Parse(pair.Value as string);
+					else
+						decimalValue = Convert.ToDecimal(pair.Value);
+
+					return decimal.Round(decimalValue, ((CurrencyField)field).Currency.DecimalDigits, MidpointRounding.AwayFromZero);
 				}
 				else if (field is DateField)
 				{

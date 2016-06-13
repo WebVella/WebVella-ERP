@@ -62,7 +62,7 @@
         function successCallback(response) {
             if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert("error in response!")
+					alert(translations.ERROR_IN_RESPONSE);
 				});
             }
             else {
@@ -73,7 +73,7 @@
         function errorCallback(response) {
             if (response.object == null) {
 				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-	                alert("error in response!")
+	                alert(translations.ERROR_IN_RESPONSE);
 				});
             }
             else {
@@ -102,7 +102,7 @@
     		defer.reject(response.message);
     	}
 
-    	webvellaCoreService.getRecordsWithoutList(null,null,"role", successCallback, errorCallback);
+    	webvellaCoreService.getRecordsWithoutList(null,null,null,"role", successCallback, errorCallback);
 
     	return defer.promise;
     }
@@ -125,7 +125,7 @@
         	defer.reject(response.message);
         }
 
-        webvellaCoreService.getRecordsWithoutList(null,null,"area", successCallback, errorCallback);
+        webvellaCoreService.getRecordsWithoutList(null,null,null,"area", successCallback, errorCallback);
 
         return defer.promise;
     }
@@ -166,7 +166,7 @@
         ngCtrl.icons = getFontAwesomeIconNames();
 
         //Get Areas list and selected areas for the entity
-        ngCtrl.areas = fastCopy(resolvedAreasList.data);
+        ngCtrl.areas = resolvedAreasList.data;
         ngCtrl.areas = ngCtrl.areas.sort(function (a, b) {
             if (a.label < b.label) return -1;
             if (a.label > b.label) return 1;
@@ -285,7 +285,7 @@
             $uibModalInstance.close('success');
             $timeout(function() {
                 $state.go("webvella-admin-entities");
-            }, 10);
+            }, 0);
         }
 
         function errorCallback(response) {
