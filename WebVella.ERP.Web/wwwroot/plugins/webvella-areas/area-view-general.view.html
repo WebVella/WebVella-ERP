@@ -675,7 +675,7 @@
 									<span class="not-editable not-readable">hidden</span>
 								</div>
 								<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{ngCtrl.calculatefieldWidths('field',column.gridColCount)}}">
-									<dynamic-list template-url="item.meta.dynamicHtmlTemplate" template-data="viewData[item.dataName]" template-meta="item.meta"></dynamic-list>
+									<div ng-include="item.meta.dynamicHtmlTemplate"></div>
 								</div>
 							</div>
 
@@ -701,7 +701,7 @@
 									<span class="not-editable not-readable">hidden</span>
 								</div>
 								<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{ngCtrl.calculatefieldWidths('field',column.gridColCount)}}">
-									<dynamic-list template-url="item.meta.dynamicHtmlTemplate" template-data="viewData[item.dataName]" template-meta="item.meta"></dynamic-list>
+									<div ng-include="item.meta.dynamicHtmlTemplate"></div>
 								</div>
 							</div>
 

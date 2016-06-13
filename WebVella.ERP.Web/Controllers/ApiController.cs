@@ -31,7 +31,7 @@ using Microsoft.AspNet.Hosting;
 
 namespace WebVella.ERP.Web.Controllers
 {
-	public class ApiController : ApiControllerBase
+	public partial class ApiController : ApiControllerBase
 	{
 		private const char RELATION_SEPARATOR = '.';
 		private const char RELATION_NAME_RESULT_SEPARATOR = '$';
@@ -9808,38 +9808,38 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 				$"\t\t\t\t\t\tviewItemFromRelation.Type = \"fieldFromRelation\";\n" +
 				$"\t\t\t\t\t\tviewItemFromRelation.FieldId = new Guid(\"{relatedField.Id}\");\n" +
 				$"\t\t\t\t\t\tviewItemFromRelation.FieldName = \"{relatedField.Name}\";\n";
-			if (fieldItem.FieldLabel == null)
-			{
-				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = null;\n";
-			}
-			else
-			{
-				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{fieldItem.FieldLabel}\";\n";
-			}
-			if (fieldItem.FieldPlaceholder == null)
-			{
-				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = null;\n";
-			}
-			else
-			{
-				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{fieldItem.FieldPlaceholder}\";\n";
-			}
-			if (fieldItem.FieldHelpText == null)
-			{
-				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = null;\n";
-			}
-			else
-			{
-				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{fieldItem.FieldHelpText}\";\n";
-			}
-			response +=
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldRequired = {(fieldItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = \"{fieldItem.FieldLookupList}\";\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.RelationId = new Guid(\"{fieldItem.RelationId}\");\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
-			$"\t\t\t\t\t\tviewColumn.Items.Add(viewItemFromRelation);\n" +
-		"\t\t\t\t\t}\n" +
-		"\t\t\t\t\t#endregion\n";
+				if(fieldItem.FieldLabel == null)
+				{
+					response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = null;\n";
+				}
+				else
+				{
+					response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{fieldItem.FieldLabel}\";\n";
+				}
+				if(fieldItem.FieldPlaceholder == null)
+				{
+					response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = null;\n";
+				}
+				else
+				{
+					response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{fieldItem.FieldPlaceholder}\";\n";
+				}
+				if(fieldItem.FieldHelpText == null )
+				{
+					response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = null;\n";
+				}
+				else
+				{
+					response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{fieldItem.FieldHelpText}\";\n";
+				}
+				response +=
+				$"\t\t\t\t\t\tviewItemFromRelation.FieldRequired = {(fieldItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
+				$"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = \"{fieldItem.FieldLookupList}\";\n" +
+				$"\t\t\t\t\t\tviewItemFromRelation.RelationId = new Guid(\"{fieldItem.RelationId}\");\n" +
+				$"\t\t\t\t\t\tviewItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
+				$"\t\t\t\t\t\tviewColumn.Items.Add(viewItemFromRelation);\n" +
+			"\t\t\t\t\t}\n" +
+			"\t\t\t\t\t#endregion\n";
 			return response;
 		}
 		//view
@@ -9877,7 +9877,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.EntityName = \"{relatedEntity.Name}\";\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.ViewId = new Guid(\"{recordViewItem.ViewId}\");\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.ViewName = \"{relatedView.Name}\";\n";
-			if (recordViewItem.FieldLabel == null)
+			if(recordViewItem.FieldLabel == null)
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = null;\n";
 			}
@@ -9885,7 +9885,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{recordViewItem.FieldLabel}\";\n";
 			}
-			if (recordViewItem.FieldPlaceholder == null)
+			if(recordViewItem.FieldPlaceholder == null)
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = null;\n";
 			}
@@ -9893,7 +9893,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{recordViewItem.FieldPlaceholder}\";\n";
 			}
-			if (recordViewItem.FieldHelpText == null)
+			if(recordViewItem.FieldHelpText == null )
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = null;\n";
 			}
@@ -9948,7 +9948,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.EntityName = \"{relatedEntity.Name}\";\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.ListId = new Guid(\"{listItem.ListId}\");\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.ListName = \"{relatedList.Name}\";\n";
-			if (listItem.FieldLabel == null)
+			if(listItem.FieldLabel == null)
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = null;\n";
 			}
@@ -9956,7 +9956,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{listItem.FieldLabel}\";\n";
 			}
-			if (listItem.FieldPlaceholder == null)
+			if(listItem.FieldPlaceholder == null)
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = null;\n";
 			}
@@ -9964,7 +9964,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{listItem.FieldPlaceholder}\";\n";
 			}
-			if (listItem.FieldHelpText == null)
+			if(listItem.FieldHelpText == null )
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = null;\n";
 			}
@@ -9998,7 +9998,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.EntityName = \"{relatedEntity.Name}\";\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.TreeId = new Guid(\"{treeItem.TreeId}\");\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.TreeName = \"{relatedTree.Name}\";\n";
-			if (treeItem.FieldLabel == null)
+			if(treeItem.FieldLabel == null)
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = null;\n";
 			}
@@ -10006,7 +10006,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{treeItem.FieldLabel}\";\n";
 			}
-			if (treeItem.FieldPlaceholder == null)
+			if(treeItem.FieldPlaceholder == null)
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = null;\n";
 			}
@@ -10014,7 +10014,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{treeItem.FieldPlaceholder}\";\n";
 			}
-			if (treeItem.FieldHelpText == null)
+			if(treeItem.FieldHelpText == null )
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = null;\n";
 			}
@@ -10135,7 +10135,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\tviewItemFromRelation.EntityName = \"{entityName}\";\n" +
 			$"\t\t\tviewItemFromRelation.ViewId = new Guid(\"{recordViewItem.ViewId}\");\n" +
 			$"\t\t\tviewItemFromRelation.ViewName =\"{relatedView.Name}\";\n";
-			if (recordViewItem.FieldLabel == null)
+			if(recordViewItem.FieldLabel == null)
 			{
 				response += $"\t\t\tviewItemFromRelation.FieldLabel = null;\n";
 			}
@@ -10143,7 +10143,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			{
 				response += $"\t\t\tviewItemFromRelation.FieldLabel = \"{recordViewItem.FieldLabel}\";\n";
 			}
-			if (recordViewItem.FieldPlaceholder == null)
+			if(recordViewItem.FieldPlaceholder == null)
 			{
 				response += $"\t\t\tviewItemFromRelation.FieldPlaceholder = null;\n";
 			}
@@ -10151,7 +10151,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			{
 				response += $"\t\t\tviewItemFromRelation.FieldPlaceholder = \"{recordViewItem.FieldPlaceholder}\";\n";
 			}
-			if (recordViewItem.FieldHelpText == null)
+			if(recordViewItem.FieldHelpText == null )
 			{
 				response += $"\t\t\tviewItemFromRelation.FieldHelpText = null;\n";
 			}
@@ -10162,7 +10162,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			response +=
 			$"\t\t\tviewItemFromRelation.FieldRequired = {(recordViewItem.FieldRequired).ToString().ToLowerInvariant()};\n";
 
-			if (recordViewItem.FieldManageView == null)
+			if(recordViewItem.FieldManageView == null )
 			{
 				response += $"\t\t\tviewItemFromRelation.FieldManageView = null;\n";
 			}
@@ -10171,7 +10171,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 				response += $"\t\t\tviewItemFromRelation.FieldManageView = \"{recordViewItem.FieldManageView}\";\n";
 			}
 
-			if (recordViewItem.FieldLookupList == null)
+			if(recordViewItem.FieldLookupList == null )
 			{
 				response += $"\t\t\tviewItemFromRelation.FieldLookupList = null;\n";
 			}
@@ -10226,7 +10226,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\tviewItemFromRelation.EntityName = \"{entityName}\";\n" +
 			$"\t\t\tviewItemFromRelation.ListId = new Guid(\"{listItem.ListId}\");\n" +
 			$"\t\t\tviewItemFromRelation.ListName =\"{relatedList.Name}\";\n";
-			if (listItem.FieldLabel == null)
+			if(listItem.FieldLabel == null)
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = null;\n";
 			}
@@ -10234,7 +10234,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{listItem.FieldLabel}\";\n";
 			}
-			if (listItem.FieldPlaceholder == null)
+			if(listItem.FieldPlaceholder == null)
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = null;\n";
 			}
@@ -10242,7 +10242,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{listItem.FieldPlaceholder}\";\n";
 			}
-			if (listItem.FieldHelpText == null)
+			if(listItem.FieldHelpText == null )
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = null;\n";
 			}
@@ -10254,7 +10254,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			response +=
 			$"\t\t\tviewItemFromRelation.FieldRequired = {(listItem.FieldRequired).ToString().ToLowerInvariant()};\n";
 
-			if (listItem.FieldManageView == null)
+			if(listItem.FieldManageView == null )
 			{
 				response += $"\t\t\tviewItemFromRelation.FieldManageView = null;\n";
 			}
@@ -10263,7 +10263,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 				response += $"\t\t\tviewItemFromRelation.FieldManageView = \"{listItem.FieldManageView}\";\n";
 			}
 
-			if (listItem.FieldLookupList == null)
+			if(listItem.FieldLookupList == null )
 			{
 				response += $"\t\t\tviewItemFromRelation.FieldLookupList = null;\n";
 			}
@@ -10297,7 +10297,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\tviewItemFromRelation.EntityName = \"{entityName}\";\n" +
 			$"\t\t\tviewItemFromRelation.TreeId = new Guid(\"{treeItem.TreeId}\");\n" +
 			$"\t\t\tviewItemFromRelation.TreeName =\"{relatedTree.Name}\";\n";
-			if (treeItem.FieldLabel == null)
+			if(treeItem.FieldLabel == null)
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = null;\n";
 			}
@@ -10305,7 +10305,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLabel = \"{treeItem.FieldLabel}\";\n";
 			}
-			if (treeItem.FieldPlaceholder == null)
+			if(treeItem.FieldPlaceholder == null)
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = null;\n";
 			}
@@ -10313,7 +10313,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldPlaceholder = \"{treeItem.FieldPlaceholder}\";\n";
 			}
-			if (treeItem.FieldHelpText == null)
+			if(treeItem.FieldHelpText == null )
 			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = null;\n";
 			}
@@ -11351,11 +11351,11 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\tcreateListInput.Type =  \"{currentList.Type}\";\n" +
 			$"\tcreateListInput.Name = \"{currentList.Name}\";\n" +
 			$"\tcreateListInput.Label = \"{currentList.Label}\";\n";
-			if (currentList.Title == null)
+			if(currentList.Title == null)
 			{
-				code += $"\tcreateListInput.Title = null;\n";
+				code +=	$"\tcreateListInput.Title = null;\n";
 			}
-			else
+			else 
 			{
 				code += $"\tcreateListInput.Title = \"{currentList.Title}\";\n";
 			}

@@ -21,16 +21,16 @@
 	'use strict';
 	angular
     .module('webvellaAreas')
-	.controller('ManageCommentModalController', ManageCommentModalController)
-	.service('wv_project_comment_bug_comments_list_service', service);
-	service.$inject = ['$log', '$http', 'wvAppConstants', '$timeout', 'ngToast', '$filter', 'webvellaCoreService', '$uibModal','$rootScope'];
-	function service($log, $http, wvAppConstants, $timeout, ngToast, $filter, webvellaCoreService, $uibModal,$rootScope) {
+	.controller('ManageBugCommentModalController', ManageBugCommentModalController)
+	.controller('BugDetailsCommentListController', BugDetailsCommentListController);
+	BugDetailsCommentListController.$inject = ['$log', '$http', 'wvAppConstants', '$timeout', 'ngToast', '$filter', 'webvellaCoreService', '$uibModal','$rootScope'];
+	function BugDetailsCommentListController($log, $http, wvAppConstants, $timeout, ngToast, $filter, webvellaCoreService, $uibModal,$rootScope) {
 
-		var serviceInstance = this;
+		var pluginCtrl = this;
 
 		// CUSTOM
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		serviceInstance.isCurrentUserAuthor = isCurrentUserAuthor;
+		pluginCtrl.isCurrentUserAuthor = isCurrentUserAuthor;
 		function isCurrentUserAuthor(authorId) {
 			var currentUser = webvellaCoreService.getCurrentUser();
 			if (authorId == currentUser.id) {
@@ -41,12 +41,12 @@
 			}
 		}
 
-		serviceInstance.manageComment = manageComment;
+		pluginCtrl.manageComment = manageComment;
 		function manageComment(record,ngCtrl) {
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'manageCommentModal.html',
-				controller: 'ManageCommentModalController',
+				controller: 'ManageBugCommentModalController',
 				controllerAs: "popupCtrl",
 				size: "lg",
 				resolve: {
@@ -62,9 +62,9 @@
 
 	}
 
-	ManageCommentModalController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaCoreService', 'ngToast', '$timeout',
+	ManageBugCommentModalController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaCoreService', 'ngToast', '$timeout',
 									'$state', '$location', 'ngCtrl', '$translate','record','$scope'];
-	function ManageCommentModalController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaCoreService, ngToast, $timeout,
+	function ManageBugCommentModalController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaCoreService, ngToast, $timeout,
 									$state, $location, ngCtrl, $translate,record,$scope) {
 		var popupCtrl = this;
 		popupCtrl.isUpdate = false;
