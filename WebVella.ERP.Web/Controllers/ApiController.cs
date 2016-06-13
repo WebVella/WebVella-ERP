@@ -20,6 +20,7 @@ using Microsoft.AspNet.StaticFiles;
 using WebVella.ERP.Utilities;
 using System.Dynamic;
 using WebVella.ERP.Plugins;
+using Microsoft.AspNet.Hosting;
 
 
 
@@ -2284,10 +2285,16 @@ namespace WebVella.ERP.Web.Controllers
 						}
 						else if (column is RecordListListItem)
 						{
+							if (export)
+								continue;
+
 							dataRecord[column.DataName] = GetListRecords(entities, entity, ((RecordListListItem)column).ListName);
 						}
 						else if (column is RecordListRelationListItem)
 						{
+							if (export)
+								continue;
+
 							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationListItem)column).RelationId);
 							string relName = string.Format("${0}", relation.Name);
 
@@ -2314,10 +2321,16 @@ namespace WebVella.ERP.Web.Controllers
 						}
 						else if (column is RecordListViewItem)
 						{
+							if (export)
+								continue;
+
 							dataRecord[column.DataName] = GetViewRecords(entities, entity, ((RecordListViewItem)column).ViewName, "id", record["id"]);
 						}
 						else if (column is RecordListRelationTreeItem)
 						{
+							if (export)
+								continue;
+
 							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationTreeItem)column).RelationId);
 							string relName = string.Format("${0}", relation.Name);
 
@@ -2333,6 +2346,9 @@ namespace WebVella.ERP.Web.Controllers
 						}
 						else if (column is RecordListRelationViewItem)
 						{
+							if (export)
+								continue;
+
 							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationViewItem)column).RelationId);
 							string relName = string.Format("${0}", relation.Name);
 
@@ -3163,383 +3179,395 @@ namespace WebVella.ERP.Web.Controllers
 
 		// Export list records to csv
 		// POST: api/v1/en_US/record/{entityName}/list/{listName}/export
-		//[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/export")]
-		//public IActionResult ExportListRecordsToCsv(string entityName, string listName, int count = 10)
-		//{
-		//	ResponseModel response = new ResponseModel();
-		//	response.Message = "Records successfully exported";
-		//	response.Timestamp = DateTime.UtcNow;
-		//	response.Success = true;
-		//	response.Object = null;
+		[AcceptVerbs(new[] { "GET", "POST" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/export")]
+		public IActionResult ExportListRecordsToCsv(string entityName, string listName, int count = 10)
+		{
+			ResponseModel response = new ResponseModel();
+			response.Message = "Records successfully exported";
+			response.Timestamp = DateTime.UtcNow;
+			response.Success = true;
+			response.Object = null;
 
-		//	EntityListResponse entitiesResponse = entityManager.ReadEntities();
-		//	List<Entity> entities = entitiesResponse.Object.Entities;
-		//	Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
+			EntityListResponse entitiesResponse = entityManager.ReadEntities();
+			List<Entity> entities = entitiesResponse.Object.Entities;
+			Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
 
-		//	if (entity == null)
-		//	{
-		//		response.Timestamp = DateTime.UtcNow;
-		//		response.Success = false;
-		//		response.Message = "Export failed! Entity with such name does not exist!";
-		//		response.Errors.Add(new ErrorModel("entityName", entityName, "Entity with such name does not exist!"));
-		//		return DoResponse(response);
-		//	}
+			if (entity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Export failed! Entity with such name does not exist!";
+				response.Errors.Add(new ErrorModel("entityName", entityName, "Entity with such name does not exist!"));
+				return DoResponse(response);
+			}
 
-		//	bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Read, entity);
-		//	if (!hasPermisstion)
-		//	{
-		//		response.Success = false;
-		//		response.Message = "Export failed! Trying to read records from entity '" + entity.Name + "' with no read access.";
-		//		response.Errors.Add(new ErrorModel { Message = "Access denied." });
-		//		return DoResponse(response);
-		//	}
+			bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Read, entity);
+			if (!hasPermisstion)
+			{
+				response.Success = false;
+				response.Message = "Export failed! Trying to read records from entity '" + entity.Name + "' with no read access.";
+				response.Errors.Add(new ErrorModel { Message = "Access denied." });
+				return DoResponse(response);
+			}
 
-		//	var random = new Random().Next(10, 99);
-		//	DateTime dt = DateTime.Now;
-		//	string time = dt.Year.ToString() + dt.Month.ToString() + dt.Day.ToString() + dt.Hour.ToString() + dt.Minute.ToString() + dt.Second.ToString() + dt.Millisecond.ToString();
-		//	string fileName = $"{entity.Label.Replace(' ', '-').Trim().ToLowerInvariant()}-{time}{random}.csv"; //"goro-test-report.csv";
+			try
+			{
+				var random = new Random().Next(10, 99);
+				DateTime dt = DateTime.Now;
+				string time = dt.Year.ToString() + dt.Month.ToString() + dt.Day.ToString() + dt.Hour.ToString() + dt.Minute.ToString() + dt.Second.ToString() + dt.Millisecond.ToString();
+				string fileName = $"{entity.Label.Replace(' ', '-').Trim().ToLowerInvariant()}-{time}{random}.csv"; //"goro-test-report.csv";
 
-		//	return new FileGeneratingResult(fileName, "text/csv",
-		//		stream => this.GenerateExport(entities, entity, listName, stream, count));
-		//}
+				Response.ContentType = "application/octet-stream;charset=utf-8";
+				Response.Headers.Add("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+				//Response.Headers.Add("Content-Length", fileResp.ContentLength.ToString());
 
-		//public void GenerateExport(List<Entity> entities, Entity entity, string listName, Stream stream, int count = 10)
-		//{
-		//	try
-		//	{
-		//		//var random = new Random().Next(10, 99);
-		//		//DateTime dt = DateTime.Now;
-		//		//string time = dt.Year.ToString() + dt.Month.ToString() + dt.Day.ToString() + dt.Hour.ToString() + dt.Minute.ToString() + dt.Second.ToString() + dt.Millisecond.ToString();
-		//		//string fileName = $"{entity.Label.Replace(' ', '-').Trim().ToLowerInvariant()}-{time}{random}.csv"; //"goro-test-report.csv";
+				int page = 1;
+				int pageSize = 100;
+				int offset = 0;
 
-		//		Response.ContentType = "application/octet-stream;charset=utf-8";
-		//		//Response.Headers.Add("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-		//		//Response.Headers.Add("Content-Length", fileResp.ContentLength.ToString());
+				while (true)
+				{
+					var stream = new MemoryStream();
 
-		//		int page = 1;
-		//		int pageSize = 100;
-		//		int offset = 0;
+					if (count > 0 && count < (pageSize * page))
+					{
+						pageSize = count < pageSize ? count : (count - (pageSize * (page - 1)));
+					}
 
-		//		while (true)
-		//		{
-		//			//var stream = new MemoryStream();
-		//			List<EntityRecord> records = new List<EntityRecord>();
+					List<EntityRecord> records = GetListRecords(entities, entity, listName, page, null, pageSize, true);
 
-		//			if (count > 0 && count < (pageSize * page))
-		//			{
-		//				pageSize = count < pageSize ? count : (count - (pageSize * (page - 1)));
-		//			}
+					if (records.Count > 0)
+					{
+						RecordList listMeta = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
 
-		//			records = GetListRecords(entities, entity, listName, page, null, null, null, pageSize, export: true);
+						var textWriter = new StreamWriter(stream);
+						var csv = new CsvWriter(textWriter);
 
-		//			if (records.Count > 0)
-		//			{
-		//				RecordList listMeta = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
+						if (page == 1)
+						{
+							foreach (var prop in records[0].Properties)
+							{
+								string name = prop.Key;
+								if (prop.Key.StartsWith("$field$"))
+								{
+									name = prop.Key.Remove(0, 7);
+									name = "$" + name.Replace('$', '.');
+								}
+								csv.WriteField(name);
+							}
+							csv.NextRecord();
+						}
 
-		//				var textWriter = new StreamWriter(stream);
-		//				var csv = new CsvWriter(textWriter);
+						foreach (var record in records)
+						{
+							foreach (var prop in record.Properties)
+							{
+								if (prop.Value != null)
+								{
+									if (prop.Value is List<object>)
+									{
+										var listItem = (RecordListRelationFieldItem)listMeta.Columns.FirstOrDefault(c => c.DataName == prop.Key);
+										var type = listItem != null ? listItem.Meta.GetFieldType() : FieldType.GuidField;
+										if (type != FieldType.MultiSelectField && type != FieldType.TreeSelectField)
+										{
+											csv.WriteField(((List<object>)prop.Value)[0]);
+										}
+										else
+										{
+											csv.WriteField(JsonConvert.SerializeObject(prop.Value).ToString());
+										}
+									}
+									else if (prop.Value is string)
+									{
+										csv.WriteField((string)prop.Value, true);
+									}
+									else
+									{
+										csv.WriteField(prop.Value);
+									}
+								}
+								else
+									csv.WriteField("");
+							}
+							csv.NextRecord();
 
-		//				if (page == 1)
-		//				{
-		//					foreach (var prop in records[0].Properties)
-		//					{
-		//						string name = prop.Key;
-		//						if (prop.Key.StartsWith("$field$"))
-		//						{
-		//							name = prop.Key.Remove(0, 7);
-		//							name = "$" + name.Replace('$', '.');
-		//						}
-		//						csv.WriteField(name);
-		//					}
-		//					csv.NextRecord();
-		//				}
+							textWriter.Flush();
+						}
 
-		//				foreach (var record in records)
-		//				{
-		//					foreach (var prop in record.Properties)
-		//					{
-		//						if (prop.Value != null)
-		//						{
-		//							if (prop.Value is List<object>)
-		//							{
-		//								csv.WriteField(JsonConvert.SerializeObject(prop.Value).ToString());
-		//							}
-		//							else if (prop.Value is string)
-		//							{
-		//								csv.WriteField((string)prop.Value, true);
-		//							}
-		//							else
-		//							{
-		//								csv.WriteField(prop.Value);
-		//							}
-		//						}
-		//						else
-		//							csv.WriteField("");
-		//					}
-		//					csv.NextRecord();
+						textWriter.Close();
+					}
 
-		//					textWriter.Flush();
-		//				}
+					byte[] buffer = stream.ToArray();
+					Response.Body.Write(buffer, offset, buffer.Length);
+					offset += buffer.Length;
+					Response.Body.Flush();
 
-		//				textWriter.Close();
-		//			}
+					if (records.Count <= pageSize)
+						break;
 
-		//			//byte[] buffer = stream.GetBuffer();
-		//			//Response.Body.Write(buffer, offset, buffer.Length);
-		//			//offset += buffer.Length;
-		//			//Response.Body.Flush();
+					page++;
+				}
+			}
+			catch (Exception ex)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = ex.Message;
+				return DoResponse(response);
+			}
 
-		//			if (records.Count <= pageSize)
-		//				break;
+			//var random = new Random().Next(10, 99);
+			//DateTime dt = DateTime.Now;
+			//string time = dt.Year.ToString() + dt.Month.ToString() + dt.Day.ToString() + dt.Hour.ToString() + dt.Minute.ToString() + dt.Second.ToString() + dt.Millisecond.ToString();
+			//string fileName = $"{entity.Label.Replace(' ', '-').Trim().ToLowerInvariant()}-{time}{random}.csv"; //"test-report.csv";
 
-		//			page++;
-		//		}
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		//response.Timestamp = DateTime.UtcNow;
-		//		//response.Success = false;
-		//		//response.Message = ex.Message;
-		//		//return DoResponse(response);
-		//	}
+			//DbFileRepository fs = new DbFileRepository();
+			//var createdFile = fs.CreateTempFile(fileName, stream.ToArray());
 
-		//	//var random = new Random().Next(10, 99);
-		//	//DateTime dt = DateTime.Now;
-		//	//string time = dt.Year.ToString() + dt.Month.ToString() + dt.Day.ToString() + dt.Hour.ToString() + dt.Minute.ToString() + dt.Second.ToString() + dt.Millisecond.ToString();
-		//	//string fileName = $"{entity.Label.Replace(' ', '-').Trim().ToLowerInvariant()}-{time}{random}.csv"; //"goro-test-report.csv";
+			//response.Object = "/fs" + createdFile.FilePath;
+			//return DoResponse(response);
 
-		//	//DbFileRepository fs = new DbFileRepository();
-		//	//var createdFile = fs.CreateTempFile(fileName, stream.ToArray());
+			//return File(stream.GetBuffer(), System.Net.Mime.MediaTypeNames.Application.Octet);
 
-		//	//response.Object = "/fs" + createdFile.FilePath;
-		//	//return DoResponse(response);
+			//FileStreamResult result = new FileStreamResult(stream, "text/csv");
+			//result.FileDownloadName = "testfile.csv";
+			//return result;
 
-		//	//return File(stream.GetBuffer(), System.Net.Mime.MediaTypeNames.Application.Octet);
+			Response.Body.Close();
 
-		//	//FileStreamResult result = new FileStreamResult(stream, "text/csv");
-		//	//result.FileDownloadName = "testfile.csv";
-		//	//return result;
-
-		//	//Response.Body.Close();
-
-		//	//return new EmptyResult();
-		//}
+			return new EmptyResult();
+		}
 
 		// Import list records to csv
 		// POST: api/v1/en_US/record/{entityName}/list/{listName}/import
-//		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/import")]
-//		public IActionResult ImportEntityRecordsFromCsv(string entityName, [FromBody]JObject postObject)
-//		{
-//			//The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated. 
-//			//If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones.
+		[AcceptVerbs(new[] { "GET", "POST" }, Route = "api/v1/en_US/record/{entityName}/import")]
+		public IActionResult ImportEntityRecordsFromCsv(string entityName, [FromBody]JObject postObject)
+		{
+			//The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated. 
+			//If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones.
 
-//			ResponseModel response = new ResponseModel();
-//			response.Message = "Records successfully imported";
-//			response.Timestamp = DateTime.UtcNow;
-//			response.Success = true;
-//			response.Object = null;
+			ResponseModel response = new ResponseModel();
+			response.Message = "Records successfully imported";
+			response.Timestamp = DateTime.UtcNow;
+			response.Success = true;
+			response.Object = null;
 
-//			string fileTempPath = "/fs/tmp/02cf04fc81f747938929b81c55559a04/import_1.csv";
-//			//if (!postObject.IsNullOrEmpty() && postObject.Properties().Any(p => p.Name == "fileTempPath"))
-//			//{
-//			//	fileTempPath = postObject["fileTempPath"].ToString();
-//			//}
+			//string fileTempPath = @"D:\csv\test.csv";
+			//FileInfo fileInfo = new FileInfo(fileTempPath);
 
-//			//if (string.IsNullOrWhiteSpace(fileTempPath))
-//			//{
-//			//	response.Timestamp = DateTime.UtcNow;
-//			//	response.Success = false;
-//			//	response.Message = "Import failed! fileTempPath parameter cannot be empty or null!";
-//			//	response.Errors.Add(new ErrorModel("fileTempPath", fileTempPath, "Import failed! File does not exist!"));
-//			//	return DoItemNotFoundResponse(response);
-//			//}
+			//if (!fileInfo.Exists)
+			//	throw new Exception("FILE_NOT_EXIST");
 
-//			if (!fileTempPath.StartsWith("/"))
-//				fileTempPath = "/" + fileTempPath;
+			//FileStream fileStream = fileInfo.OpenRead();
+			//TextReader reader = new StreamReader(fileStream);
 
-//			fileTempPath = fileTempPath.ToLowerInvariant();
+			string fileTempPath = "";
 
-//			using (DbConnection connection = DbContext.Current.CreateConnection())
-//			{
-//				List<EntityRelation> relations = entityRelationManager.Read().Object;
-//				EntityListResponse entitiesResponse = entityManager.ReadEntities();
-//				List<Entity> entities = entitiesResponse.Object.Entities;
-//				Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
+			if (!postObject.IsNullOrEmpty() && postObject.Properties().Any(p => p.Name == "fileTempPath"))
+			{
+				fileTempPath = postObject["fileTempPath"].ToString();
+			}
 
-//				if (entity == null)
-//				{
-//					response.Timestamp = DateTime.UtcNow;
-//					response.Success = false;
-//					response.Message = "Import failed! Entity with such name does not exist!";
-//					response.Errors.Add(new ErrorModel("entityName", entityName, "Entity with such name does not exist!"));
-//					return DoResponse(response);
-//				}
+			if (string.IsNullOrWhiteSpace(fileTempPath))
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Import failed! fileTempPath parameter cannot be empty or null!";
+				response.Errors.Add(new ErrorModel("fileTempPath", fileTempPath, "Import failed! File does not exist!"));
+				return DoItemNotFoundResponse(response);
+			}
 
-//				DbFileRepository fs = new DbFileRepository();
-//				DbFile file = fs.Find(fileTempPath);
+			if (!fileTempPath.StartsWith("/"))
+				fileTempPath = "/" + fileTempPath;
 
-//				if (file == null)
-//				{
-//					response.Timestamp = DateTime.UtcNow;
-//					response.Success = false;
-//					response.Message = "Import failed! File does not exist!";
-//					response.Errors.Add(new ErrorModel("fileTempPath", fileTempPath, "Import failed! File does not exist!"));
-//					return DoItemNotFoundResponse(response);
-//				}
+			fileTempPath = fileTempPath.ToLowerInvariant();
 
-//				byte[] fileBytes = file.GetBytes();
-//				Stream fileStream = new MemoryStream();
-//				fileStream.Write(fileBytes, 0, fileBytes.Length);
-//				TextReader reader = new StreamReader(fileStream);
+			using (DbConnection connection = DbContext.Current.CreateConnection())
+			{
+				List<EntityRelation> relations = entityRelationManager.Read().Object;
+				EntityListResponse entitiesResponse = entityManager.ReadEntities();
+				List<Entity> entities = entitiesResponse.Object.Entities;
+				Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
 
-//				CsvReader csvReader = new CsvReader(reader);
-//				csvReader.Configuration.HasHeaderRecord = false;
-//				csvReader.Configuration.IsHeaderCaseSensitive = false;
+				if (entity == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "Import failed! Entity with such name does not exist!";
+					response.Errors.Add(new ErrorModel("entityName", entityName, "Entity with such name does not exist!"));
+					return DoResponse(response);
+				}
 
-//				csvReader.Read();
-//				List<string> columns = csvReader.FieldHeaders.ToList();
-//				List<dynamic> fieldMetaList = new List<dynamic>();
+				DbFileRepository fs = new DbFileRepository();
+				DbFile file = fs.Find(fileTempPath);
 
-//				foreach (var column in columns)
-//				{
-//					Field field;
-//					if (column.Contains(RELATION_SEPARATOR))
-//					{
-//						var relationData = column.Split(RELATION_SEPARATOR).Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
-//						if (relationData.Count > 2)
-//							throw new Exception(string.Format("The specified field name '{0}' is incorrect. Only first level relation can be specified.", column));
+				if (file == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "Import failed! File does not exist!";
+					response.Errors.Add(new ErrorModel("fileTempPath", fileTempPath, "Import failed! File does not exist!"));
+					return DoItemNotFoundResponse(response);
+				}
 
-//						string relationName = relationData[0];
-//						string relationFieldName = relationData[1];
+				byte[] fileBytes = file.GetBytes();
+				Stream fileStream = new MemoryStream();
+				fileStream.Write(fileBytes, 0, fileBytes.Length);
+				TextReader reader = new StreamReader(fileStream);
 
-//						if (string.IsNullOrWhiteSpace(relationName) || relationName == "$" || relationName == "$$")
-//							throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not specified.", column));
-//						else if (!relationName.StartsWith("$"))
-//							throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not correct.", column));
-//						else
-//							relationName = relationName.Substring(1);
+				CsvReader csvReader = new CsvReader(reader);
+				csvReader.Configuration.HasHeaderRecord = true;
+				csvReader.Configuration.IsHeaderCaseSensitive = false;
 
-//						//check for target priority mark $$
-//						if (relationName.StartsWith("$"))
-//						{
-//							relationName = relationName.Substring(1);
-//						}
+				csvReader.Read();
+				List<string> columns = csvReader.FieldHeaders.ToList();
+				List<dynamic> fieldMetaList = new List<dynamic>();
 
-//						if (string.IsNullOrWhiteSpace(relationFieldName))
-//							throw new Exception(string.Format("Invalid relation '{0}'. The relation field name is not specified.", column));
+				foreach (var column in columns)
+				{
+					Field field;
+					if (column.Contains(RELATION_SEPARATOR))
+					{
+						var relationData = column.Split(RELATION_SEPARATOR).Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+						if (relationData.Count > 2)
+							throw new Exception(string.Format("The specified field name '{0}' is incorrect. Only first level relation can be specified.", column));
 
-//						var relation = relations.SingleOrDefault(x => x.Name == relationName);
-//						if (relation == null)
-//							throw new Exception(string.Format("Invalid relation '{0}'. The relation does not exist.", column));
+						string relationName = relationData[0];
+						string relationFieldName = relationData[1];
 
-//						if (relation.TargetEntityId != entity.Id && relation.OriginEntityId != entity.Id)
-//							throw new Exception(string.Format("Invalid relation '{0}'. The relation field belongs to entity that does not relate to current entity.", column));
+						if (string.IsNullOrWhiteSpace(relationName) || relationName == "$" || relationName == "$$")
+							throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not specified.", column));
+						else if (!relationName.StartsWith("$"))
+							throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not correct.", column));
+						else
+							relationName = relationName.Substring(1);
 
-//						Entity relationEntity = null;
+						//check for target priority mark $$
+						if (relationName.StartsWith("$"))
+						{
+							relationName = relationName.Substring(1);
+						}
 
-//						if (relation.OriginEntityId == entity.Id)
-//						{
-//							relationEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
-//							field = relationEntity.Fields.FirstOrDefault(f => f.Name == relationFieldName);
-//						}
-//						else
-//						{
-//							relationEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
-//							field = relationEntity.Fields.FirstOrDefault(f => f.Name == relationFieldName);
-//						}
-//					}
-//					else
-//					{
-//						field = entity.Fields.FirstOrDefault(f => f.Name == column);
-//					}
+						if (string.IsNullOrWhiteSpace(relationFieldName))
+							throw new Exception(string.Format("Invalid relation '{0}'. The relation field name is not specified.", column));
 
-//					dynamic fieldMeta = new ExpandoObject();
-//					fieldMeta.ColumnName = column;
-//					fieldMeta.FieldType = field.GetFieldType();
+						var relation = relations.SingleOrDefault(x => x.Name == relationName);
+						if (relation == null)
+							throw new Exception(string.Format("Invalid relation '{0}'. The relation does not exist.", column));
 
-//					fieldMetaList.Add(fieldMeta);
-//				}
+						if (relation.TargetEntityId != entity.Id && relation.OriginEntityId != entity.Id)
+							throw new Exception(string.Format("Invalid relation '{0}'. The relation field belongs to entity that does not relate to current entity.", column));
 
-//				connection.BeginTransaction();
+						Entity relationEntity = null;
 
-//				try
-//				{
-//					while (csvReader.Read())
-//					{
-//						EntityRecord newRecord = new EntityRecord();
-//						foreach (var fieldMeta in fieldMetaList)
-//						{
-//							switch ((FieldType)fieldMeta.FieldType)
-//							{
-//								case FieldType.AutoNumberField:
-//								case FieldType.CurrencyField:
-//								case FieldType.NumberField:
-//								case FieldType.PercentField:
-//									{
-//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<decimal>(fieldMeta.ColumnName);
-//									}
-//									break;
-//								case FieldType.CheckboxField:
-//									{
-//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<bool>(fieldMeta.ColumnName);
-//									}
-//									break;
-//								case FieldType.DateField:
-//								case FieldType.DateTimeField:
-//									{
-//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<DateTime>(fieldMeta.ColumnName);
-//									}
-//									break;
-//								case FieldType.MultiSelectField:
-//									{
-//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<string[]>(fieldMeta.ColumnName);
-//									}
-//									break;
-//								case FieldType.TreeSelectField:
-//									{
-//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<Guid[]>(fieldMeta.ColumnName);
-//									}
-//									break;
-//								default:
-//									{
-//										newRecord[fieldMeta.ColumnName] = csvReader.GetField<string>(fieldMeta.ColumnName);
-//									}
-//									break;
-//							}
-//						}
-//						if (!newRecord.GetProperties().Any(x => x.Key == "id") || string.IsNullOrEmpty(newRecord["id"] as string))
-//						{
-//							newRecord["id"] = Guid.NewGuid();
-//							QueryResponse result = recMan.CreateRecord(entityName, newRecord);
-//						}
-//						else
-//						{
-//							QueryResponse result = recMan.UpdateRecord(entityName, newRecord);
-//						}
-//					}
+						if (relation.OriginEntityId == entity.Id)
+						{
+							relationEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
+							field = relationEntity.Fields.FirstOrDefault(f => f.Name == relationFieldName);
+						}
+						else
+						{
+							relationEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
+							field = relationEntity.Fields.FirstOrDefault(f => f.Name == relationFieldName);
+						}
+					}
+					else
+					{
+						field = entity.Fields.FirstOrDefault(f => f.Name == column);
+					}
 
-//					reader.Close();
-//					fileStream.Close();
+					dynamic fieldMeta = new ExpandoObject();
+					fieldMeta.ColumnName = column;
+					fieldMeta.FieldType = field.GetFieldType();
 
-//					connection.CommitTransaction();
-//				}
-//				catch (Exception e)
-//				{
-//					connection.RollbackTransaction();
+					fieldMetaList.Add(fieldMeta);
+				}
 
-//					response.Success = false;
-//					response.Object = null;
-//					response.Timestamp = DateTime.UtcNow;
-//#if DEBUG
-//					response.Message = e.Message + e.StackTrace;
-//#else
-//					response.Message = "Import failed! An internal error occurred!";
-//#endif
-//				}
+				connection.BeginTransaction();
 
-//				return DoResponse(response);
-//			}
-//		}
+				try
+				{
+					while (csvReader.Read())
+					{
+						EntityRecord newRecord = new EntityRecord();
+						foreach (var fieldMeta in fieldMetaList)
+						{
+							switch ((FieldType)fieldMeta.FieldType)
+							{
+								case FieldType.AutoNumberField:
+								case FieldType.CurrencyField:
+								case FieldType.NumberField:
+								case FieldType.PercentField:
+									{
+										newRecord[fieldMeta.ColumnName] = csvReader.GetField<decimal>(fieldMeta.ColumnName);
+									}
+									break;
+								case FieldType.CheckboxField:
+									{
+										newRecord[fieldMeta.ColumnName] = csvReader.GetField<bool>(fieldMeta.ColumnName);
+									}
+									break;
+								case FieldType.DateField:
+								case FieldType.DateTimeField:
+									{
+										newRecord[fieldMeta.ColumnName] = csvReader.GetField<DateTime>(fieldMeta.ColumnName);
+									}
+									break;
+								case FieldType.MultiSelectField:
+									{
+										newRecord[fieldMeta.ColumnName] = csvReader.GetField<string[]>(fieldMeta.ColumnName);
+									}
+									break;
+								case FieldType.TreeSelectField:
+									{
+										newRecord[fieldMeta.ColumnName] = csvReader.GetField<Guid[]>(fieldMeta.ColumnName);
+									}
+									break;
+								case FieldType.GuidField:
+									{
+										newRecord[fieldMeta.ColumnName] = csvReader.GetField<Guid>(fieldMeta.ColumnName);
+									}
+									break;
+								default:
+									{
+										newRecord[fieldMeta.ColumnName] = csvReader.GetField<string>(fieldMeta.ColumnName);
+									}
+									break;
+							}
+						}
+						if (!newRecord.GetProperties().Any(x => x.Key == "id") || string.IsNullOrEmpty(newRecord["id"].ToString()))
+						{
+							newRecord["id"] = Guid.NewGuid();
+							QueryResponse result = recMan.CreateRecord(entityName, newRecord);
+						}
+						else
+						{
+							QueryResponse result = recMan.UpdateRecord(entityName, newRecord);
+						}
+					}
+
+					reader.Close();
+					fileStream.Close();
+
+					connection.CommitTransaction();
+				}
+				catch (Exception e)
+				{
+					connection.RollbackTransaction();
+
+					response.Success = false;
+					response.Object = null;
+					response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+					response.Message = e.Message + e.StackTrace;
+#else
+							response.Message = "Import failed! An internal error occurred!";
+#endif
+				}
+
+				return DoResponse(response);
+			}
+		}
 
 		#endregion
 

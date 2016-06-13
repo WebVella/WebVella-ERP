@@ -19,7 +19,7 @@ namespace WebVella.ERP
 		{
 			EntityResponse response = null;
 			FieldResponse fieldResponse = null;
-			EntityManager em = new EntityManager();
+			EntityManager entityManager = new EntityManager();
 			EntityRelationManager rm = new EntityRelationManager();
 			RecordManager recMan = new RecordManager(true);
 
@@ -47,11 +47,9 @@ namespace WebVella.ERP
 						currentVersion = systemSettings.Version;
 					}
 
-					EntityManager entityManager = new EntityManager();
-
 					//tmp code - during debug only
-					//em.DeleteEntity(SystemIds.UserEntityId);
-					//em.DeleteEntity(SystemIds.RoleEntityId);
+					//entityManager.DeleteEntity(SystemIds.UserEntityId);
+					//entityManager.DeleteEntity(SystemIds.RoleEntityId);
 					//rm.Delete(SystemIds.UserRoleRelationId);
 					//currentVersion = 0; 
 
@@ -302,12 +300,12 @@ namespace WebVella.ERP
 
 						#endregion
 
-					
+
 
 						#region << create user - role relation >>
 						{
-							var userEntity = em.ReadEntity(SystemIds.UserEntityId).Object;
-							var roleEntity = em.ReadEntity(SystemIds.RoleEntityId).Object;
+							var userEntity = entityManager.ReadEntity(SystemIds.UserEntityId).Object;
+							var roleEntity = entityManager.ReadEntity(SystemIds.RoleEntityId).Object;
 
 							EntityRelation userRoleRelation = new EntityRelation();
 							userRoleRelation.Id = SystemIds.UserRoleRelationId;
@@ -644,7 +642,238 @@ namespace WebVella.ERP
 						#endregion
 					}
 
-					new DbSystemSettingsRepository().Save( new DbSystemSettings { Id = systemSettings.Id, Version = systemSettings.Version } );
+					//var userEntityResponse = entityManager.ReadEntity(SystemIds.UserEntityId);
+					//if (userEntityResponse.Success && !(userEntityResponse.Object.Fields.Any(f => f.Name == "username")))
+					//{
+					//	InputTextField userName = new InputTextField();
+					//	userName.Id = new Guid("263c0b21-88c1-4c2b-80b4-db7402b0d2e2");
+					//	userName.Name = "username";
+					//	userName.Label = "User Name";
+					//	userName.PlaceholderText = "";
+					//	userName.Description = "screen name for the user";
+					//	userName.HelpText = "";
+					//	userName.Required = true;
+					//	userName.Unique = false;
+					//	userName.Searchable = false;
+					//	userName.Auditable = false;
+					//	userName.System = true;
+					//	userName.DefaultValue = "";
+					//	userName.MaxLength = 200;
+					//	fieldResponse = entityManager.CreateField(SystemIds.UserEntityId, userName, false);
+
+					//	var userDataResponse = recMan.Find(new EntityQuery("user", "*"));
+
+					//	if (userDataResponse.Success && userDataResponse.Object.Data.Any())
+					//	{
+					//		foreach (var user in userDataResponse.Object.Data)
+					//		{
+					//			string email = (string)user["email"];
+					//			string[] emailParts = email.Split('@');
+					//			user["username"] = emailParts[0];
+					//			var uResp = recMan.UpdateRecord("user", user);
+					//		}
+					//	}
+
+					//	userName.Unique = true;
+					//	fieldResponse = entityManager.UpdateField(SystemIds.UserEntityId, userName);
+					//}
+
+					//entityManager.DeleteEntity(SystemIds.AreaEntityId);
+					//#region << create Area entity >>
+					//{
+					//	InputEntity areaEntity = new InputEntity();
+					//	areaEntity.Id = SystemIds.AreaEntityId;
+					//	areaEntity.Name = "area";
+					//	areaEntity.Label = "Area";
+					//	areaEntity.LabelPlural = "areas";
+					//	areaEntity.System = true;
+					//	areaEntity.IconName = "folder";
+					//	areaEntity.Weight = 10;
+					//	areaEntity.RecordPermissions = new RecordPermissions();
+					//	areaEntity.RecordPermissions.CanCreate = new List<Guid>();
+					//	areaEntity.RecordPermissions.CanRead = new List<Guid>();
+					//	areaEntity.RecordPermissions.CanUpdate = new List<Guid>();
+					//	areaEntity.RecordPermissions.CanDelete = new List<Guid>();
+					//	areaEntity.RecordPermissions.CanCreate.Add(SystemIds.AdministratorRoleId);
+					//	areaEntity.RecordPermissions.CanRead.Add(SystemIds.RegularRoleId);
+					//	areaEntity.RecordPermissions.CanRead.Add(SystemIds.AdministratorRoleId);
+					//	areaEntity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+					//	areaEntity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
+					//	{
+					//		var createResponse = entityManager.CreateEntity(areaEntity);
+					//		if (!createResponse.Success)
+					//			throw new Exception("System error 10330. Message:" + createResponse.Message);
+					//	}
+
+					//	InputTextField color = new InputTextField();
+					//	color.Id = new Guid("2B4AACD9-3C34-4C44-B3A3-8AFF1520CFF6");
+					//	color.Name = "color";
+					//	color.Label = "Color";
+					//	color.PlaceholderText = "";
+					//	color.Description = "";
+					//	color.HelpText = "";
+					//	color.Required = true;
+					//	color.Unique = false;
+					//	color.Searchable = false;
+					//	color.Auditable = false;
+					//	color.System = true;
+					//	color.DefaultValue = "teal";
+					//	color.MaxLength = null;
+					//	{
+					//		var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, color, false);
+					//		if (!createResponse.Success)
+					//			throw new Exception("System error 10340. Message:" + createResponse.Message);
+					//	}
+
+
+					//	InputTextField label = new InputTextField();
+					//	label.Id = new Guid("F050E7A1-AFB7-4346-B57B-1F12B2BD5AE5");
+					//	label.Name = "label";
+					//	label.Label = "Label";
+					//	label.PlaceholderText = "";
+					//	label.Description = "";
+					//	label.HelpText = "";
+					//	label.Required = true;
+					//	label.Unique = false;
+					//	label.Searchable = false;
+					//	label.Auditable = false;
+					//	label.System = true;
+					//	label.DefaultValue = "Default";
+					//	label.MaxLength = null;
+					//	{
+					//		var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, label, false);
+					//		if (!createResponse.Success)
+					//			throw new Exception("System error 10340. Message:" + createResponse.Message);
+					//	}
+
+					//	InputTextField iconName = new InputTextField();
+					//	iconName.Id = new Guid("5EA0C872-D219-4D94-9EFA-C5DA978D316B");
+					//	iconName.Name = "icon_name";
+					//	iconName.Label = "Icon Name";
+					//	iconName.PlaceholderText = "";
+					//	iconName.Description = "";
+					//	iconName.HelpText = "";
+					//	iconName.Required = true;
+					//	iconName.Unique = false;
+					//	iconName.Searchable = false;
+					//	iconName.Auditable = false;
+					//	iconName.System = true;
+					//	iconName.DefaultValue = "database";
+					//	iconName.MaxLength = null;
+					//	{
+					//		var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, iconName, false);
+					//		if (!createResponse.Success)
+					//			throw new Exception("System error 10340. Message:" + createResponse.Message);
+					//	}
+
+					//	InputNumberField weight = new InputNumberField();
+					//	weight.Id = new Guid("9B169431-6C31-4141-80EB-5844B8333E63");
+					//	weight.Name = "weight";
+					//	weight.Label = "Weight";
+					//	weight.PlaceholderText = "";
+					//	weight.Description = "";
+					//	weight.HelpText = "";
+					//	weight.Required = true;
+					//	weight.Unique = false;
+					//	weight.Searchable = false;
+					//	weight.Auditable = false;
+					//	weight.System = true;
+					//	weight.DefaultValue = 10;
+					//	weight.MinValue = 0;
+					//	weight.DecimalPlaces = 2;
+					//	{
+					//		var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, weight, false);
+					//		if (!createResponse.Success)
+					//			throw new Exception("System error 10340. Message:" + createResponse.Message);
+					//	}
+
+					//	InputTextField attachments = new InputTextField();
+					//	attachments.Id = new Guid("288EA657-C12C-4AC1-B701-81D6F9F39363");
+					//	attachments.Name = "attachments";
+					//	attachments.Label = "Attachments JSON String";
+					//	attachments.PlaceholderText = "";
+					//	attachments.Description = "Stringified Array of attached objects";
+					//	attachments.HelpText = "";
+					//	attachments.Required = false;
+					//	attachments.Unique = false;
+					//	attachments.Searchable = false;
+					//	attachments.Auditable = false;
+					//	attachments.System = true;
+					//	attachments.DefaultValue = null;
+					//	attachments.MaxLength = null;
+					//	{
+					//		var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, attachments, false);
+					//		if (!createResponse.Success)
+					//			throw new Exception("System error 10340. Message:" + createResponse.Message);
+					//	}
+
+					//	InputTextField name = new InputTextField();
+					//	name.Id = new Guid("F297577B-073E-4D18-81F3-675C1AFB466D");
+					//	name.Name = "name";
+					//	name.Label = "Name";
+					//	name.PlaceholderText = "";
+					//	name.Description = "";
+					//	name.HelpText = "";
+					//	name.Required = true;
+					//	name.Unique = false;
+					//	name.Searchable = false;
+					//	name.Auditable = false;
+					//	name.System = true;
+					//	name.DefaultValue = "default";
+					//	name.MaxLength = null;
+					//	{
+					//		var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, name, false);
+					//		if (!createResponse.Success)
+					//			throw new Exception("System error 10340. Message:" + createResponse.Message);
+					//	}
+
+					//	InputTextField roles = new InputTextField();
+					//	roles.Id = new Guid("8E486F76-D0C1-4D0E-8617-9EF868BF1C55");
+					//	roles.Name = "roles";
+					//	roles.Label = "Roles JSON String";
+					//	roles.PlaceholderText = "";
+					//	roles.Description = "Stringified Array of roles that have access to this area";
+					//	roles.HelpText = "";
+					//	roles.Required = false;
+					//	roles.Unique = false;
+					//	roles.Searchable = false;
+					//	roles.Auditable = false;
+					//	roles.System = true;
+					//	roles.DefaultValue = null;
+					//	roles.MaxLength = null;
+					//	{
+					//		var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, roles, false);
+					//		if (!createResponse.Success)
+					//			throw new Exception("System error 10340. Message:" + createResponse.Message);
+					//	}
+
+					//}
+					//#endregion
+
+					//var relationResponse = rm.Read();
+
+					//if (relationResponse.Success && relationResponse.Object.Any())
+					//{
+					//	List<DbEntity> entities = DbContext.Current.EntityRepository.Read();
+					//	foreach (var relation in relationResponse.Object)
+					//	{
+					//		if (relation.RelationType == EntityRelationType.ManyToMany)
+					//		{
+					//			DbEntity originEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
+					//			DbEntity targetEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
+
+					//			DbBaseField originField = originEntity.Fields.FirstOrDefault(f => f.Id == relation.OriginFieldId);
+					//			DbBaseField targetField = targetEntity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
+
+					//			string originTableName = $"rec_{originEntity.Name}";
+					//			string targetTableName = $"rec_{targetEntity.Name}";
+
+					//			DbRepository.CreateNtoNRelation(relation.Name, originTableName, originField.Name, targetTableName, targetField.Name);
+					//		}
+					//	}
+					//}
+
+					new DbSystemSettingsRepository().Save(new DbSystemSettings { Id = systemSettings.Id, Version = systemSettings.Version });
 
 					connection.CommitTransaction();
 				}
@@ -747,7 +976,7 @@ namespace WebVella.ERP
 					DbRepository.CreateIndex("idx_filepath", "files", "filepath", true);
 				}
 
-				
+
 
 			}
 		}
