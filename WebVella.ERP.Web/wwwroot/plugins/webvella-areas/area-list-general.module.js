@@ -793,7 +793,8 @@
 				className: 'success',
 				content: '<span class="go-green">Success </span> Records successfully exported!'
 			});
-			popupCtrl.downloadFilePath = response.object;
+			//popupCtrl.downloadFilePath = response.object;
+			$uibModalInstance.dismiss('cancel');
 
 		}
 		popupCtrl.exportErrorCallback = function (response) {

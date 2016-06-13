@@ -13,7 +13,7 @@
 			"apiBaseUrl": "/api/v1/en_US/",
 			"locale": "en_US",
 			"authTokenKey": "erp-auth",
-			"htmlCacheBreaker": 20150920
+			"htmlCacheBreaker": 20160613
 		});
 })();
 

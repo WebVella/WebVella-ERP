@@ -1912,7 +1912,13 @@
 		}
 		///////////////////////
 		function exportListRecords(entityName, listName, count, successCallback, errorCallback) {
-			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + "/export?count=" + count }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			window.location =  wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + "/export?count=" + count;
+			//$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + "/export?count=" + count }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			var response = {};
+			response.data = {};
+			response.data.success = true;
+			response.status = 200;
+			handleSuccessResult(response.data, response.status, successCallback, errorCallback);
 		}
 		///////////////////////
 		function getRecord(recordId, fields, entityName, successCallback, errorCallback) {

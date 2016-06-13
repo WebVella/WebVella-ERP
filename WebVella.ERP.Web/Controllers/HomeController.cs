@@ -51,7 +51,7 @@ namespace WebVella.ERP.Web.Controllers
 			#endregion
 
 
-			ViewBag.CacheBreaker = 20160518;
+			ViewBag.CacheBreaker = 20160613;
 			ViewBag.Lang = Settings.Lang;
 			ViewBag.CompanyName = Settings.CompanyName;
 			ViewBag.CompanyLogo = Settings.CompanyLogo;
