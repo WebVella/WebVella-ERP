@@ -158,7 +158,16 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity")]
 		public IActionResult CreateEntity([FromBody]InputEntity submitObj)
 		{
-			return DoResponse(entMan.CreateEntity(submitObj));
+			var entity = new InputEntity();
+			entity.Name = submitObj.Name;
+			entity.Label = submitObj.Label;
+			entity.LabelPlural = submitObj.LabelPlural;
+			entity.System = submitObj.System;
+			entity.IconName = submitObj.IconName;
+			entity.Weight = submitObj.Weight;
+			entity.RecordPermissions = submitObj.RecordPermissions;
+
+			return DoResponse(entMan.CreateEntity(entity,submitObj.CreateViews,submitObj.CreateLists));
 		}
 
 		// Create an entity

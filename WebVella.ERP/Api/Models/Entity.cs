@@ -6,6 +6,12 @@ namespace WebVella.ERP.Api.Models
 {
 	public class InputEntity
 	{
+
+		public InputEntity() {
+			CreateViews = true;
+			CreateLists = true;
+		}
+
 		[JsonProperty(PropertyName = "id")]
 		public Guid? Id { get; set; }
 
@@ -29,6 +35,12 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "recordPermissions")]
 		public RecordPermissions RecordPermissions { get; set; }
+
+		[JsonProperty(PropertyName = "create_views")]
+		public bool CreateViews { get; set; }
+
+		[JsonProperty(PropertyName = "create_lists")]
+		public bool CreateLists { get; set; }
 	}
 
 	[Serializable]
