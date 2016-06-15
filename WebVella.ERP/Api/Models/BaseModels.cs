@@ -16,7 +16,10 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "message")]
         public string Message { get; set; }
 
-        [JsonProperty(PropertyName = "errors")]
+		[JsonProperty(PropertyName = "hash")]
+		public string Hash { get; set; }
+
+		[JsonProperty(PropertyName = "errors")]
         public List<ErrorModel> Errors { get; set; }
 
         [JsonProperty(PropertyName = "accessWarnings")]
@@ -27,6 +30,7 @@ namespace WebVella.ERP.Api.Models
 
         public BaseResponseModel()
         {
+			Hash = null;
             Errors = new List<ErrorModel>();
             AccessWarnings = new List<AccessWarningModel>();
             StatusCode = HttpStatusCode.OK;

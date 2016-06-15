@@ -130,9 +130,15 @@ namespace WebVella.ERP.Web.Controllers
 		// Get all entity definitions
 		// GET: api/v1/en_US/meta/entity/list/
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/list")]
-		public IActionResult GetEntityMetaList()
+		public IActionResult GetEntityMetaList(string hash = null)
 		{
 			var bo = entMan.ReadEntities();
+			if (bo.Success && bo.Object != null)
+			{
+				bo.Hash = CryptoUtility.ComputeOddMD5Hash(JsonConvert.SerializeObject(bo.Object));
+				if (!string.IsNullOrWhiteSpace(hash) && bo.Hash == hash)
+					bo.Object = null;
+			}
 			return DoResponse(bo);
 		}
 
@@ -3753,6 +3759,12 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(response);
 			}
 
+			List<EntityRelation> relations = new List<EntityRelation>();
+			EntityRelationManager rerMan = new EntityRelationManager();
+			var relationResponse = relMan.Read();
+			if (relationResponse.Success)
+				relations = relationResponse.Object;
+
 			try
 			{
 				var random = new Random().Next(10, 99);
@@ -3809,27 +3821,26 @@ namespace WebVella.ERP.Web.Controllers
 								{
 									if (prop.Value is List<object>)
 									{
-										if (((List<object>)prop.Value).Count < 1)
+										var listItem = (RecordListRelationFieldItem)listMeta.Columns.FirstOrDefault(c => c.DataName == prop.Key);
+										var type = listItem != null ? listItem.Meta.GetFieldType() : FieldType.GuidField;
+										if (prop.Key.StartsWith("$field"))
 										{
-											csv.WriteField(null, true);
+											var relationData = prop.Key.Split('$').Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+											var relation = relations.FirstOrDefault(r => r.Name == relationData[1]);
+											if (relation.RelationType == EntityRelationType.ManyToMany ||
+												(relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == entity.Id))
+												csv.WriteField(JsonConvert.SerializeObject(prop.Value).ToString());
+											else
+												csv.WriteField(((List<object>)prop.Value)[0]);
+										}
+										else if (type != FieldType.MultiSelectField && type != FieldType.TreeSelectField)
+										{
+											csv.WriteField(((List<object>)prop.Value)[0]);
 										}
 										else
 										{
-											var listItem = (RecordListRelationFieldItem)listMeta.Columns.FirstOrDefault(c => c.DataName == prop.Key);
-											var type = listItem != null ? listItem.Meta.GetFieldType() : FieldType.GuidField;
-											if (type != FieldType.MultiSelectField && type != FieldType.TreeSelectField)
-											{
-												csv.WriteField(((List<object>)prop.Value)[0]);
-											}
-											else
-											{
-												csv.WriteField(JsonConvert.SerializeObject(prop.Value).ToString());
-											}
+											csv.WriteField(JsonConvert.SerializeObject(prop.Value).ToString());
 										}
-									}
-									else if (prop.Value is string)
-									{
-										csv.WriteField((string)prop.Value, true);
 									}
 									else
 									{
@@ -3927,6 +3938,9 @@ namespace WebVella.ERP.Web.Controllers
 				return DoItemNotFoundResponse(response);
 			}
 
+			if (fileTempPath.StartsWith("/fs"))
+				fileTempPath = fileTempPath.Remove(0, 3);
+
 			if (!fileTempPath.StartsWith("/"))
 				fileTempPath = "/" + fileTempPath;
 
@@ -3961,8 +3975,9 @@ namespace WebVella.ERP.Web.Controllers
 				}
 
 				byte[] fileBytes = file.GetBytes();
-				Stream fileStream = new MemoryStream();
-				fileStream.Write(fileBytes, 0, fileBytes.Length);
+				MemoryStream fileStream = new MemoryStream(fileBytes);
+				//fileStream.Write(fileBytes, 0, fileBytes.Length);
+				//fileStream.Flush();
 				TextReader reader = new StreamReader(fileStream);
 
 				CsvReader csvReader = new CsvReader(reader);
@@ -3970,6 +3985,7 @@ namespace WebVella.ERP.Web.Controllers
 				csvReader.Configuration.IsHeaderCaseSensitive = false;
 
 				csvReader.Read();
+
 				List<string> columns = csvReader.FieldHeaders.ToList();
 				List<dynamic> fieldMetaList = new List<dynamic>();
 
@@ -4042,62 +4058,103 @@ namespace WebVella.ERP.Web.Controllers
 						EntityRecord newRecord = new EntityRecord();
 						foreach (var fieldMeta in fieldMetaList)
 						{
-							switch ((FieldType)fieldMeta.FieldType)
+							string value = csvReader.GetField<string>(fieldMeta.ColumnName);
+
+							if (value.StartsWith("[") && value.EndsWith("]"))
 							{
-								case FieldType.AutoNumberField:
-								case FieldType.CurrencyField:
-								case FieldType.NumberField:
-								case FieldType.PercentField:
-									{
-										newRecord[fieldMeta.ColumnName] = csvReader.GetField<decimal>(fieldMeta.ColumnName);
-									}
-									break;
-								case FieldType.CheckboxField:
-									{
-										newRecord[fieldMeta.ColumnName] = csvReader.GetField<bool>(fieldMeta.ColumnName);
-									}
-									break;
-								case FieldType.DateField:
-								case FieldType.DateTimeField:
-									{
-										newRecord[fieldMeta.ColumnName] = csvReader.GetField<DateTime>(fieldMeta.ColumnName);
-									}
-									break;
-								case FieldType.MultiSelectField:
-									{
-										newRecord[fieldMeta.ColumnName] = csvReader.GetField<string[]>(fieldMeta.ColumnName);
-									}
-									break;
-								case FieldType.TreeSelectField:
-									{
-										newRecord[fieldMeta.ColumnName] = csvReader.GetField<Guid[]>(fieldMeta.ColumnName);
-									}
-									break;
-								case FieldType.GuidField:
-									{
-										newRecord[fieldMeta.ColumnName] = csvReader.GetField<Guid>(fieldMeta.ColumnName);
-									}
-									break;
-								default:
-									{
-										newRecord[fieldMeta.ColumnName] = csvReader.GetField<string>(fieldMeta.ColumnName);
-									}
-									break;
+								newRecord[fieldMeta.ColumnName] = JsonConvert.DeserializeObject<List<string>>(value);
+							}
+							else
+							{
+								switch ((FieldType)fieldMeta.FieldType)
+								{
+									case FieldType.AutoNumberField:
+									case FieldType.CurrencyField:
+									case FieldType.NumberField:
+									case FieldType.PercentField:
+										{
+											decimal decValue;
+											if (decimal.TryParse(value, out decValue))
+												newRecord[fieldMeta.ColumnName] = decValue;
+											else
+												newRecord[fieldMeta.ColumnName] = null;
+										}
+										break;
+									case FieldType.CheckboxField:
+										{
+											bool bValue;
+											if (bool.TryParse(value, out bValue))
+												newRecord[fieldMeta.ColumnName] = bValue;
+											else
+												newRecord[fieldMeta.ColumnName] = null;
+										}
+										break;
+									case FieldType.DateField:
+									case FieldType.DateTimeField:
+										{
+											DateTime dtValue;
+											if (DateTime.TryParse(value, out dtValue))
+												newRecord[fieldMeta.ColumnName] = dtValue;
+											else
+												newRecord[fieldMeta.ColumnName] = null;
+										}
+										break;
+									case FieldType.MultiSelectField:
+										{
+											if (!string.IsNullOrWhiteSpace(value))
+												newRecord[fieldMeta.ColumnName] = new List<string>(new string[] { value });
+											else
+												newRecord[fieldMeta.ColumnName] = null;
+										}
+										break;
+									case FieldType.TreeSelectField:
+										{
+											if (!string.IsNullOrWhiteSpace(value))
+												newRecord[fieldMeta.ColumnName] = new List<string>(new string[] { value });
+											else
+												newRecord[fieldMeta.ColumnName] = null;
+										}
+										break;
+									case FieldType.GuidField:
+										{
+											Guid gValue;
+											if (Guid.TryParse(value, out gValue))
+												newRecord[fieldMeta.ColumnName] = gValue;
+											else
+												newRecord[fieldMeta.ColumnName] = null;
+										}
+										break;
+									default:
+										{
+											newRecord[fieldMeta.ColumnName] = value;
+										}
+										break;
+								}
 							}
 						}
+
+						QueryResponse result;
 						if (!newRecord.GetProperties().Any(x => x.Key == "id") || string.IsNullOrEmpty(newRecord["id"].ToString()))
 						{
 							newRecord["id"] = Guid.NewGuid();
-							QueryResponse result = recMan.CreateRecord(entityName, newRecord);
+							result = recMan.CreateRecord(entityName, newRecord);
 						}
 						else
 						{
-							QueryResponse result = recMan.UpdateRecord(entityName, newRecord);
+							result = recMan.UpdateRecord(entityName, newRecord);
+
+							if (!result.Success)
+							{
+								string message = result.Message;
+								if (result.Errors.Count > 0)
+								{
+									foreach (ErrorModel error in result.Errors)
+										message += " " + error.Message;
+								}
+								throw new Exception(message);
+							}
 						}
 					}
-
-					reader.Close();
-					fileStream.Close();
 
 					connection.CommitTransaction();
 				}
@@ -4113,6 +4170,11 @@ namespace WebVella.ERP.Web.Controllers
 #else
 							response.Message = "Import failed! An internal error occurred!";
 #endif
+				}
+				finally
+				{
+					reader.Close();
+					fileStream.Close();
 				}
 
 				return DoResponse(response);

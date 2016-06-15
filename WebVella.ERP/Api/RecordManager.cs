@@ -339,6 +339,8 @@ namespace WebVella.ERP.Api
 										values = ((List<Guid>)pair.Value).Select(x => ((Guid)x).ToString()).ToList<string>();
 									else if (pair.Value is List<object>)
 										values = ((List<object>)pair.Value).Select(x => ((object)x).ToString()).ToList<string>();
+									else if (pair.Value is List<string>)
+										values = (List<string>)pair.Value;
 									else if (pair.Value != null)
 										values.Add(pair.Value.ToString());
 
@@ -444,7 +446,8 @@ namespace WebVella.ERP.Api
 										mmRelationData.OriginFieldValue = originFieldValue;
 										mmRelationData.TargetFieldValue = targetFieldValue;
 
-										manyToManyRecordData.Add(mmRelationData);
+										if (!manyToManyRecordData.Any(r => r.RelationId == mmRelationData.RelationId && r.OriginFieldValue == mmRelationData.OriginFieldValue && r.TargetFieldValue == mmRelationData.TargetFieldValue))
+											manyToManyRecordData.Add(mmRelationData);
 									}
 								}
 								else
@@ -766,6 +769,10 @@ namespace WebVella.ERP.Api
 										values = ((JArray)pair.Value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
 									else if (pair.Value is List<object>)
 										values = ((List<object>)pair.Value).Select(x => ((object)x).ToString()).ToList<string>();
+									else if (pair.Value is List<Guid>)
+										values = ((List<Guid>)pair.Value).Select(x => ((Guid)x).ToString()).ToList<string>();
+									else if (pair.Value is List<string>)
+										values = (List<string>)pair.Value;
 									else if (pair.Value != null)
 										values.Add(pair.Value.ToString());
 
@@ -887,7 +894,8 @@ namespace WebVella.ERP.Api
 										mmRelationData.OriginFieldValue = originFieldValue;
 										mmRelationData.TargetFieldValue = targetFieldValue;
 
-										manyToManyRecordData.Add(mmRelationData);
+										if (!manyToManyRecordData.Any(r => r.RelationId == mmRelationData.RelationId && r.OriginFieldValue == mmRelationData.OriginFieldValue && r.TargetFieldValue == mmRelationData.TargetFieldValue))
+											manyToManyRecordData.Add(mmRelationData);
 									}
 								}
 								else
