@@ -130,9 +130,15 @@ namespace WebVella.ERP.Web.Controllers
 		// Get all entity definitions
 		// GET: api/v1/en_US/meta/entity/list/
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/list")]
-		public IActionResult GetEntityMetaList()
+		public IActionResult GetEntityMetaList(string hash = null)
 		{
 			var bo = entMan.ReadEntities();
+			if (bo.Success && bo.Object != null)
+			{
+				bo.Hash = CryptoUtility.ComputeOddMD5Hash(JsonConvert.SerializeObject(bo.Object));
+				if (!string.IsNullOrWhiteSpace(hash) && bo.Hash == hash)
+					bo.Object = null;
+			}
 			return DoResponse(bo);
 		}
 
