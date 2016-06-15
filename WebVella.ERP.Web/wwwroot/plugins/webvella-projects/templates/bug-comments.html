@@ -13,7 +13,7 @@
 				</div>
 				<h6 class="text-muted time">
 					<span ng-bind="record.created_on | date: 'dd MMM yyyy HH:mm'"></span>
-					<span ng-if="ngCtrl.actionService.isCurrentUserAuthor(record.created_by)"><span class="divider">|</span> <a href="" ng-click="ngCtrl.actionService.manageComment(record,ngCtrl)" class="go-grey">Edit</a></span>
+					<span ng-if="pluginCtrl.isCurrentUserAuthor(record.created_by)"><span class="divider">|</span> <a href="" ng-click="pluginCtrl.manageComment(record,ngCtrl)" class="go-grey">Edit</a></span>
 				</h6>
 			</div>
 		</div>
