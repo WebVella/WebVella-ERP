@@ -327,6 +327,7 @@ namespace WebVella.ERP.Api
 				if (relations != null)
 				{
 					response.Object = relations;
+					response.Hash = Cache.GetRelationsHash();
 					response.Success = true;
 					response.Message = null;
 					return response;
@@ -349,6 +350,7 @@ namespace WebVella.ERP.Api
 
 				//we use instance from cache as return value, because in cache we deepcopy collection
 				response.Object = Cache.GetRelations();
+				response.Hash = Cache.GetRelationsHash();
 				response.Success = true;
                 response.Message = null;
                 return response;
@@ -357,6 +359,7 @@ namespace WebVella.ERP.Api
             {
                 response.Success = false;
                 response.Object = null;
+				response.Hash = null;
                 response.Timestamp = DateTime.UtcNow;
 #if DEBUG
                 response.Message = e.Message + e.StackTrace;

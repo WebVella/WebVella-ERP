@@ -1992,6 +1992,7 @@ namespace WebVella.ERP.Api
 				EntityList entityList = new EntityList();
 				entityList.Entities = entities;
 				response.Object = entityList;
+				response.Hash = Cache.GetEntitiesHash();
 				return response;
 			}
 
@@ -2586,6 +2587,7 @@ namespace WebVella.ERP.Api
 				entityList.Entities = entities;
 				Cache.AddEntities(entities);
 				response.Object = entityList;
+				response.Hash = Cache.GetEntitiesHash();
 			}
 			catch (Exception e)
 			{

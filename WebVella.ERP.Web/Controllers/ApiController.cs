@@ -133,12 +133,11 @@ namespace WebVella.ERP.Web.Controllers
 		public IActionResult GetEntityMetaList(string hash = null)
 		{
 			var bo = entMan.ReadEntities();
-			if (bo.Success && bo.Object != null)
-			{
-				bo.Hash = CryptoUtility.ComputeOddMD5Hash(JsonConvert.SerializeObject(bo.Object));
-				if (!string.IsNullOrWhiteSpace(hash) && bo.Hash == hash)
-					bo.Object = null;
-			}
+			
+			//check hash and clear data if hash match
+			if (bo.Success && bo.Object != null && !string.IsNullOrWhiteSpace(hash) && bo.Hash == hash )
+				bo.Object = null;
+
 			return DoResponse(bo);
 		}
 
@@ -1415,9 +1414,15 @@ namespace WebVella.ERP.Web.Controllers
 		// Get all entity relation definitions
 		// GET: api/v1/en_US/meta/relation/list/
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/relation/list")]
-		public IActionResult GetEntityRelationMetaList()
+		public IActionResult GetEntityRelationMetaList(string hash = null)
 		{
-			return DoResponse(new EntityRelationManager().Read());
+			var response = new EntityRelationManager().Read();
+
+			//check hash and clear data if hash match
+			if (response.Success && response.Object != null && !string.IsNullOrWhiteSpace(hash) && response.Hash == hash)
+				response.Object = null;
+
+			return DoResponse(response);
 		}
 
 		// Get entity relation meta
