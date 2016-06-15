@@ -39,9 +39,7 @@
 					controllerAs: 'ngCtrl'
 				}
 			},
-			resolve: {
-				resolvedCurrentEntityMeta: resolveCurrentEntityMeta
-			},
+			resolve: { },
 			data: {
 
 			}
@@ -51,49 +49,15 @@
 
 	// Resolve Function /////////////////////////
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
-	
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
-		// Initialize
-		var defer = $q.defer();
-
-		// Process
-		function successCallback(response) {
-			if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.resolve(response.object);
-			}
-		}
-
-		function errorCallback(response) {
-			if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.reject(response.message);
-			}
-		}
-
-		webvellaCoreService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
-
-		return defer.promise;
-	}
-
 	// Controller ///////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', '$timeout','$translate'];
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityList', '$uibModal', '$timeout','$translate','$stateParams','webvellaCoreService'];
 
 	
-	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $uibModal, $timeout,$translate) {
+	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedEntityList, $uibModal, $timeout,$translate,$stateParams, webvellaCoreService) {
 		
 		var ngCtrl = this;
-		ngCtrl.entity = resolvedCurrentEntityMeta;
-		ngCtrl.views = resolvedCurrentEntityMeta.recordViews;
+		ngCtrl.entity = webvellaCoreService.getEntityMetaFromEntityList($stateParams.entityName,resolvedEntityList);
+		ngCtrl.views = ngCtrl.entity.recordViews;
 		if (ngCtrl.views === null) {
 			ngCtrl.views = [];
 		}

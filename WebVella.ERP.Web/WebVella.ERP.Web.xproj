@@ -15,6 +15,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <DevelopmentServerPort>2202</DevelopmentServerPort>
     <GruntGulpQueried>True</GruntGulpQueried>
+    <TypeScriptCompileBlocked>True</TypeScriptCompileBlocked>
   </PropertyGroup>
   <ItemGroup>
     <DnxInvisibleFolder Include="wwwroot\plugins\webvella-root\lib\ace-builds\" />

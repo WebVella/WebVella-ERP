@@ -39,7 +39,6 @@
 				}
 			},
 			resolve: {
-				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
 				resolvedViewLibrary: resolveViewLibrary,
 				resolvedCurrentEntityList: resolveCurrentEntityList,
 				resolvedEntityRelationsList: resolveEntityRelationsList,
@@ -52,40 +51,6 @@
 
 
 	//#region << Resolve Functions >>/////////////////////////
-
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
-	
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
-		// Initialize
-		var defer = $q.defer();
-
-		// Process
-		function successCallback(response) {
-			if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.resolve(response.object);
-			}
-		}
-
-		function errorCallback(response) {
-			if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.reject(response.message);
-			}
-		}
-
-		webvellaCoreService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
-
-		return defer.promise;
-	}
 
 	resolveCurrentEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
 	
@@ -193,15 +158,15 @@
 	//#endregion
 
 	//#region << Controller >> ///////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$timeout', 'ngToast', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedCurrentEntityList',
-						'resolvedViewLibrary', 'webvellaCoreService', 'resolvedEntityRelationsList','$translate'];
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$timeout', 'ngToast', 'pageTitle', 'resolvedEntityList', '$uibModal', 'resolvedCurrentEntityList',
+						'resolvedViewLibrary', 'webvellaCoreService', 'resolvedEntityRelationsList','$translate','$stateParams'];
 	
-	function controller($scope, $log, $rootScope, $state, $timeout, ngToast, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedCurrentEntityList,
-						resolvedViewLibrary, webvellaCoreService, resolvedEntityRelationsList,$translate) {
+	function controller($scope, $log, $rootScope, $state, $timeout, ngToast, pageTitle, resolvedEntityList, $uibModal, resolvedCurrentEntityList,
+						resolvedViewLibrary, webvellaCoreService, resolvedEntityRelationsList,$translate,$stateParams) {
 
 		
 		var ngCtrl = this;
-		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.entity = webvellaCoreService.getEntityMetaFromEntityList($stateParams.entityName,resolvedEntityList);
 		//Awesome font icon names array 
 		ngCtrl.icons = getFontAwesomeIconNames();
 

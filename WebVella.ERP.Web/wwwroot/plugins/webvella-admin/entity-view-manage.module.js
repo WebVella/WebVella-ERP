@@ -37,9 +37,7 @@
                     controllerAs: 'ngCtrl'
                 }
             },
-            resolve: {
-                resolvedCurrentEntityMeta: resolveCurrentEntityMeta
-            },
+            resolve: {},
             data: {
 
             }
@@ -48,53 +46,19 @@
     //#endregion
 
 	//#region << Resolve >> ///////////////////////////////
-    resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
-    
-    function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
-        // Initialize
-        var defer = $q.defer();
-
-        // Process
-        function successCallback(response) {
-            if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-            }
-            else {
-                defer.resolve(response.object);
-            }
-        }
-
-        function errorCallback(response) {
-            if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-            }
-            else {
-            	defer.reject(response.message);
-            }
-        }
-
-        webvellaCoreService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
-
-        return defer.promise;
-    }
-
     //#endregion
 
     //#region << Controller >> ////////////////////////////
     controller.$inject = ['$filter', '$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$uibModal', '$timeout',
-                            'resolvedCurrentEntityMeta', 'webvellaCoreService', 'ngToast','$translate'];
+                            'webvellaCoreService', 'ngToast','$translate', 'resolvedEntityList'];
     
     function controller($filter, $scope, $log, $rootScope, $state, $stateParams, pageTitle, $uibModal, $timeout,
-                        resolvedCurrentEntityMeta, webvellaCoreService, ngToast,$translate) {
+                        webvellaCoreService, ngToast,$translate, resolvedEntityList) {
 
         
         var ngCtrl = this;
         //#region << Initialize Current Entity >>
-        ngCtrl.entity = resolvedCurrentEntityMeta;
+        ngCtrl.entity = webvellaCoreService.getEntityMetaFromEntityList($stateParams.entityName,resolvedEntityList);
         //#endregion
 
 		//#region << Update page title & hide the side menu >>

@@ -40,9 +40,7 @@
 				}
 			},
 			resolve: {
-				resolvedRelationsList: resolveRelationsList,
-				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
-				resolvedEntityList: resolveEntityList
+				resolvedRelationsList: resolveRelationsList
 			},
 			data: {
 
@@ -75,77 +73,18 @@
 		return defer.promise;
 	}
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
-	
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
-
-		// Initialize
-		var defer = $q.defer();
-
-		// Process
-		function successCallback(response) {
-			if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.resolve(response.object);
-			}
-		}
-
-		function errorCallback(response) {
-			if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.reject(response.message);
-			}
-		}
-
-		webvellaCoreService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
-
-		// Return
-		return defer.promise;
-	}
-
-	resolveEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$timeout'];
-	
-	function resolveEntityList($q, $log, webvellaCoreService, $state, $timeout) {
-
-		// Initialize
-		var defer = $q.defer();
-
-		// Process
-		function successCallback(response) {
-			defer.resolve(response.object);
-		}
-
-		function errorCallback(response) {
-			defer.reject(response.message);
-		}
-
-		webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
-
-		// Return
-		return defer.promise;
-	}
-
-
 	// Controller ///////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedRelationsList', 'resolvedCurrentEntityMeta', 'resolvedEntityList', '$uibModal','$timeout','$translate'];
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', 'resolvedRelationsList', 'webvellaCoreService', 'resolvedEntityList', '$uibModal','$timeout','$translate'];
 
 	
-	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedRelationsList, resolvedCurrentEntityMeta, resolvedEntityList, $uibModal,$timeout,$translate) {
+	function controller($scope, $log, $rootScope, $state,$stateParams, pageTitle, resolvedRelationsList, webvellaCoreService, resolvedEntityList, $uibModal,$timeout,$translate) {
 		
 		var ngCtrl = this;
 		ngCtrl.search = {};
 		ngCtrl.allRelations = resolvedRelationsList;
 		ngCtrl.currentEntityRelations = [];
-		ngCtrl.entity = resolvedCurrentEntityMeta;
-		ngCtrl.entityList = resolvedEntityList.entities;
+		ngCtrl.entity = webvellaCoreService.getEntityMetaFromEntityList($stateParams.entityName,resolvedEntityList);
+		ngCtrl.entityList = resolvedEntityList;
 
 		//Initialize relations in the scope of this entity
 		for (var i = 0; i < ngCtrl.allRelations.length; i++) {
@@ -154,6 +93,9 @@
 			}
 		}
 
+		//Sort
+		ngCtrl.currentEntityRelations.sort(sort_by("name"));		
+		
 		//#region << Update page title & hide the side menu >>
 		$translate(['ENTITY_RELATIONS','ENTITIES']).then(function (translations) {
 			ngCtrl.pageTitle = translations.ENTITY_RELATIONS + " | " + pageTitle;
