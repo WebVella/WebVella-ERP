@@ -39,7 +39,6 @@
                 }
             },
             resolve: {
-                resolvedEntityMetaList: resolveEntityMetaList,
                 resolvedRolesList:resolveRolesList
             },
             data: {
@@ -49,28 +48,6 @@
     };
 
 	//#region << Resolve >>
-
-    // Resolve EntityMetaList /////////////////////////
-    resolveEntityMetaList.$inject = ['$rootScope','$q', '$log', 'webvellaCoreService','$timeout'];
-
-    
-    function resolveEntityMetaList($rootScope,$q, $log, webvellaCoreService,$timeout) {
-        // Initialize
-        var defer = $q.defer();
-        // Process
-        function successCallback(response) {
-            defer.resolve(response.object);
-        }
-
-        function errorCallback(response) {
-        	defer.reject(response.message);
-        }
-
-        webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
-
-        return defer.promise;
-    }
-
 
 	// Resolve Roles list /////////////////////////
     resolveRolesList.$inject = ['$q', '$log', 'webvellaCoreService'];
@@ -96,11 +73,11 @@
 	//#endregion
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityMetaList', '$uibModal', 'resolvedRolesList', 'webvellaCoreService',
+    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityList', '$uibModal', 'resolvedRolesList', 'webvellaCoreService',
 						'$timeout','$translate'];
 
     
-    function controller($log, $rootScope, $state, pageTitle, resolvedEntityMetaList, $uibModal, resolvedRolesList, webvellaCoreService,
+    function controller($log, $rootScope, $state, pageTitle, resolvedEntityList, $uibModal, resolvedRolesList, webvellaCoreService,
 						$timeout,$translate) {
         
         var ngCtrl = this;
@@ -109,7 +86,7 @@
 			ngCtrl.pageTitle = translations.ENTITIES + " | " + pageTitle;
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 		});
-        ngCtrl.entities = resolvedEntityMetaList.entities;
+        ngCtrl.entities = resolvedEntityList;
         ngCtrl.entities = ngCtrl.entities.sort(function (a, b) { 
             if(a.name < b.name) return -1;
             if(a.name > b.name) return 1;

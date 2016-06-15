@@ -54,7 +54,7 @@ namespace WebVella.ERP.Project
 		private static Guid PROJECT_RELATION_ROLE_N_N_PROJECT_CUSTOMER_ID = new Guid("e6d75feb-3c8f-410b-9ff4-54ef8489dc2f");
 		//webvella-crm plugin constants
 		private static Guid CUSTOMER_ENTITY_ID = new Guid("90bcdb47-2cde-4137-a412-0198348fecc0");
-		private static string CUSTOMER_ENTITY_NAME = "wv_customer";
+		//private static string CUSTOMER_ENTITY_NAME = "wv_customer";
 		private static Guid CUSTOMER_RECORD_ID = new Guid("fb06213f-7632-495b-bb8d-ed5ff07dc515");
 		private static Guid CUSTOMER_USER_ID = new Guid("307fe376-a1c6-495e-a7c0-2a78797565f2");
 		private static Guid CUSTOMER_ROLE_ID = new Guid("27745245-09bd-4adb-8831-3870bcae46fe");

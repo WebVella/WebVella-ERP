@@ -40,7 +40,6 @@
 			},
 			resolve: {
 				resolvedRelationsList: resolveRelationsList,
-				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
 				resolvedCurrentEntityRecordTree: resolveCurrentEntityRecordTree
 			},
 			data: {
@@ -72,39 +71,6 @@
 		return defer.promise;
 	}
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', '$translate'];
-
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout, $translate) {
-		// Initialize
-		var defer = $q.defer();
-
-		// Process
-		function successCallback(response) {
-			if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.resolve(response.object);
-			}
-		}
-
-		function errorCallback(response) {
-			if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.reject(response.message);
-			}
-		}
-
-		webvellaCoreService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
-		return defer.promise;
-	}
-
 	resolveCurrentEntityRecordTree.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$timeout', '$stateParams'];
 
 	function resolveCurrentEntityRecordTree($q, $log, webvellaCoreService, $state, $timeout, $stateParams) {
@@ -127,11 +93,11 @@
 	//#endregion
 
 	// Controller ///////////////////////////////
-	controller.$inject = ['$scope', '$sce', '$log', '$q', '$rootScope', '$state', '$timeout', '$stateParams', 'pageTitle', 'resolvedRelationsList', 'resolvedCurrentEntityMeta',
-					'$uibModal', 'resolvedCurrentEntityRecordTree', 'webvellaCoreService', 'ngToast', '$translate'];
+	controller.$inject = ['$scope', '$sce', '$log', '$q', '$rootScope', '$state', '$timeout', '$stateParams', 'pageTitle', 'resolvedRelationsList', 
+					'$uibModal', 'resolvedCurrentEntityRecordTree', 'webvellaCoreService', 'ngToast', '$translate','resolvedEntityList'];
 
-	function controller($scope, $sce, $log, $q, $rootScope, $state, $timeout, $stateParams, pageTitle, resolvedRelationsList, resolvedCurrentEntityMeta,
-					$uibModal, resolvedCurrentEntityRecordTree, webvellaCoreService, ngToast, $translate) {
+	function controller($scope, $sce, $log, $q, $rootScope, $state, $timeout, $stateParams, pageTitle, resolvedRelationsList, 
+					$uibModal, resolvedCurrentEntityRecordTree, webvellaCoreService, ngToast, $translate,resolvedEntityList) {
 
 		var ngCtrl = this;
 
@@ -139,7 +105,7 @@
 		ngCtrl.search = {};
 		ngCtrl.allRelations = resolvedRelationsList;
 		ngCtrl.currentEntityRelation = [];
-		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.entity = webvellaCoreService.getEntityMetaFromEntityList($stateParams.entityName,resolvedEntityList);
 		ngCtrl.tree = resolvedCurrentEntityRecordTree;
 		//Awesome font icon names array 
 		ngCtrl.icons = getFontAwesomeIconNames();

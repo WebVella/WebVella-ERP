@@ -12,11 +12,11 @@
         .service('webvellaCoreService', service);
 
 	service.$inject = ['$cookies', '$q', '$http', '$log', '$location', 'wvAppConstants', '$rootScope', '$anchorScroll', 'ngToast',
-				'$timeout', 'Upload', '$translate', '$filter', '$state'];
+				'$timeout', 'Upload', '$translate', '$filter', '$state','$localStorage'];
 
 
 	function service($cookies, $q, $http, $log, $location, wvAppConstants, $rootScope, $anchorScroll, ngToast,
-				$timeout, Upload, $translate, $filter, $state) {
+				$timeout, Upload, $translate, $filter, $state, $localStorage) {
 		var serviceInstance = this;
 
 		//#region << Include functions >> ///////////////////////////////////////////////////////////////////////////////////
@@ -320,7 +320,32 @@
 		}
 		///////////////////////
 		function getEntityMetaList(successCallback, errorCallback) {
-			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/list' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			var $storage = $localStorage;
+			if($storage.entityMetaList && $storage.entityMetaList.hash){
+				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/list?hash='+ $storage.entityMetaList.hash })
+					.then(function getSuccessCallback(response) { 
+						if(response.data.object != null){
+							var localStorageEntityMeta = {};
+							localStorageEntityMeta.hash = response.data.hash;
+							localStorageEntityMeta.list = response.data.object;
+							$storage.entityMetaList = localStorageEntityMeta;	
+						}
+						else {
+							response.data.object = $storage.entityMetaList.list;
+						}
+						handleSuccessResult(response.data, response.status, successCallback, errorCallback); 
+					}, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
+			else {
+				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/list' })
+					.then(function getSuccessCallback(response) { 
+						var localStorageEntityMeta = {};
+						localStorageEntityMeta.hash = response.data.hash;
+						localStorageEntityMeta.list = response.data.object;
+						$storage.entityMetaList = localStorageEntityMeta;						
+						handleSuccessResult(response.data, response.status, successCallback, errorCallback); 
+					}, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
 		}
 		///////////////////////
 		function patchEntity(entityId, patchObject, successCallback, errorCallback) {
@@ -1870,7 +1895,32 @@
 		}
 		///////////////////////
 		function getRelationsList(successCallback, errorCallback) {
-			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/relation/list' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			var $storage = $localStorage;
+			if($storage.entityRelationsList && $storage.entityRelationsList.hash){
+				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/relation/list?hash='+ $storage.entityRelationsList.hash })
+					.then(function getSuccessCallback(response) { 
+						if(response.data.object != null){
+							var localStorageEntityRelations = {};
+							localStorageEntityRelations.hash = response.data.hash;
+							localStorageEntityRelations.list = response.data.object;
+							$storage.entityRelationsList = localStorageEntityRelations;	
+						}
+						else {
+							response.data.object = $storage.entityRelationsList.list;
+						}
+						handleSuccessResult(response.data, response.status, successCallback, errorCallback); 
+					}, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
+			else{
+				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/relation/list' })
+					.then(function getSuccessCallback(response) {
+						var localStorageEntityRelations = {};
+						localStorageEntityRelations.hash = response.data.hash;
+						localStorageEntityRelations.list = response.data.object;
+						$storage.entityRelationsList = localStorageEntityRelations;						
+						handleSuccessResult(response.data, response.status, successCallback, errorCallback); 
+					}, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
 		}
 		///////////////////////
 		function createRelation(postObject, successCallback, errorCallback) {

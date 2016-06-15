@@ -1094,15 +1094,7 @@ $"#region << Create entity: {entity.Name} >>\n" +
 				hasUpdate = true;
 				response.ChangeList.Add($"<span class='go-green label-block'>Weight</span>  from <span class='go-red'>{oldEntity.Weight}</span> to <span class='go-red'>{currentEntity.Weight}</span>");
 			}
-			if (currentEntity.Weight == null)
-			{
-				code += $"\tupdateObject.Weight = null;\n";
-			}
-			else
-			{
-				code += $"\tupdateObject.Weight = Decimal.Parse(\"{currentEntity.Weight}\");\n";
-			}
-
+			code += $"\tupdateObject.Weight = Decimal.Parse(\"{currentEntity.Weight}\");\n";
 
 			//RecordPermissions
 			var recordPermissionsChanged = false;
@@ -2292,14 +2284,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			{
 				response += $"\tnumberField.MaxValue = Decimal.Parse(\"{field.MaxValue}\");\n";
 			}
-			if (field.DecimalPlaces == null)
-			{
-				response += $"\tnumberField.DecimalPlaces = null;\n";
-			}
-			else
-			{
-				response += $"\tnumberField.DecimalPlaces = byte.Parse(\"{field.DecimalPlaces}\");\n";
-			}
+			response += $"\tnumberField.DecimalPlaces = byte.Parse(\"{field.DecimalPlaces}\");\n";
 			response +=
 
 			$"\tnumberField.EnableSecurity = {(field.EnableSecurity).ToString().ToLowerInvariant()};\n" +
@@ -2478,14 +2463,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			{
 				response += $"\tpercentField.MaxValue = Decimal.Parse(\"{field.MaxValue}\");\n";
 			}
-			if (field.DecimalPlaces == null)
-			{
-				response += $"\tpercentField.DecimalPlaces = null;\n";
-			}
-			else
-			{
-				response += $"\tpercentField.DecimalPlaces = byte.Parse(\"{field.DecimalPlaces}\");\n";
-			}
+			response += $"\tpercentField.DecimalPlaces = byte.Parse(\"{field.DecimalPlaces}\");\n";
 			response +=
 			$"\tpercentField.EnableSecurity = {(field.EnableSecurity).ToString().ToLowerInvariant()};\n" +
 			$"\tpercentField.Permissions = new FieldPermissions();\n" +
@@ -5248,14 +5226,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			{
 				response += $"\tnumberField.MaxValue = Decimal.Parse(\"{currentField.MaxValue}\");\n";
 			}
-			if (currentField.DecimalPlaces == null)
-			{
-				response += $"\tnumberField.DecimalPlaces = null;\n";
-			}
-			else
-			{
-				response += $"\tnumberField.DecimalPlaces = byte.Parse(\"{currentField.DecimalPlaces}\");\n";
-			}
+			response += $"\tnumberField.DecimalPlaces = byte.Parse(\"{currentField.DecimalPlaces}\");\n";
 			response +=
 			$"\tnumberField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
 			$"\tnumberField.Permissions = new FieldPermissions();\n" +
@@ -5632,14 +5603,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			{
 				response += $"\tpercentField.MaxValue = Decimal.Parse(\"{currentField.MaxValue}\");\n";
 			}
-			if (currentField.DecimalPlaces == null)
-			{
-				response += $"\tpercentField.DecimalPlaces = null;\n";
-			}
-			else
-			{
-				response += $"\tpercentField.DecimalPlaces = byte.Parse(\"{currentField.DecimalPlaces}\");\n";
-			}
+			response += $"\tpercentField.DecimalPlaces = byte.Parse(\"{currentField.DecimalPlaces}\");\n";
 			response +=
 			$"\tpercentField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
 			$"\tpercentField.Permissions = new FieldPermissions();\n" +
@@ -6953,15 +6917,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\t\t\t#region << Column {colIndex} >>\n" +
 			"\t\t\t\t\t{\n" +
 			$"\t\t\t\t\tvar viewColumn = new InputRecordViewColumn();\n";
-			if (column.GridColCount == null)
-			{
-				response += $"\t\t\t\t\tviewColumn.GridColCount = null;\n";
-			}
-			else
-			{
-				response += $"\t\t\t\t\tviewColumn.GridColCount = Int32.Parse(\"{column.GridColCount}\");\n";
-			}
-
+			response += $"\t\t\t\t\tviewColumn.GridColCount = Int32.Parse(\"{column.GridColCount}\");\n";
 			response +=
 			$"\t\t\t\t\tviewColumn.Items = new List<InputRecordViewItemBase>();\n\n";
 			foreach (var item in column.Items)
@@ -7928,14 +7884,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 				response += $"\tcreateListInput.IconName = string.IsNullOrEmpty(\"{list.IconName}\") ? string.Empty : \"{list.IconName}\";\n";
 			}
 
-			if (list.VisibleColumnsCount == null)
-			{
-				response += $"\tcreateListInput.VisibleColumnsCount = null;\n";
-			}
-			else
-			{
-				response += $"\tcreateListInput.VisibleColumnsCount = Int32.Parse(\"{list.VisibleColumnsCount}\");\n";
-			}
+			response += $"\tcreateListInput.VisibleColumnsCount = Int32.Parse(\"{list.VisibleColumnsCount}\");\n";
 
 			if (list.ColumnWidthsCSV == null)
 			{
@@ -7946,14 +7895,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 				response += $"\tcreateListInput.ColumnWidthsCSV = \"{list.ColumnWidthsCSV}\";\n";
 			}
 
-			if (list.PageSize == null)
-			{
-				response += $"\tcreateListInput.PageSize = null;\n";
-			}
-			else
-			{
-				response += $"\tcreateListInput.PageSize = Int32.Parse(\"{list.PageSize}\");\n";
-			}
+			response += $"\tcreateListInput.PageSize = Int32.Parse(\"{list.PageSize}\");\n";
 			if (list.DynamicHtmlTemplate == null)
 			{
 				response += $"\tcreateListInput.DynamicHtmlTemplate = null;\n";
@@ -8052,15 +7994,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 				{
 					response += $"\tcreateListInput.Query.FieldValue =  \"{list.Query.FieldValue}\";\n";
 				}
-				if (list.Query.QueryType == null)
-				{
-					response += $"\tcreateListInput.Query.QueryType = null;\n";
-				}
-				else
-				{
-					response += $"\tcreateListInput.Query.QueryType = \"{list.Query.QueryType}\";\n";
-				}
-
+				response += $"\tcreateListInput.Query.QueryType = \"{list.Query.QueryType}\";\n";
 				response +=
 				$"\tcreateListInput.Query.SubQueries = new List<InputRecordListQuery>();\n";
 				var nodeId = Guid.NewGuid();
@@ -8133,10 +8067,6 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 		private string CreateListColumnCode(DbRecordListItemBase item, Guid entityId, string entityName, string ListName)
 		{
 			var response = string.Empty;
-			if (entityName == "wv_project_attachment")
-			{
-				var bb = 0;
-			}
 			if (item is DbRecordListFieldItem)
 			{
 				response += CreateRecordListFieldItemCode(item as DbRecordListFieldItem, entityId, entityName);
@@ -8522,15 +8452,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			{
 				response += levelTabs + $"queryDictionary[new Guid(\"{newNodeId}\")].FieldValue =  \"{encodedFieldValue}\";\n";
 			}
-			if (query.QueryType == null)
-			{
-				response += levelTabs + $"queryDictionary[new Guid(\"{newNodeId}\")].QueryType = null;\n";
-			}
-			else
-			{
-				response += levelTabs + $"queryDictionary[new Guid(\"{newNodeId}\")].QueryType = \"{query.QueryType}\";\n";
-			}
-
+			response += levelTabs + $"queryDictionary[new Guid(\"{newNodeId}\")].QueryType = \"{query.QueryType}\";\n";
 			response +=
 			levelTabs + $"queryDictionary[new Guid(\"{newNodeId}\")].SubQueries = new List<InputRecordListQuery>();\n";
 			foreach (var subQuery in query.SubQueries)
@@ -8648,14 +8570,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			{
 				code += $"\tcreateListInput.IconName = \"{currentList.IconName}\";\n";
 			}
-			if (currentList.VisibleColumnsCount == null)
-			{
-				code += $"\tcreateListInput.VisibleColumnsCount = null;\n";
-			}
-			else
-			{
-				code += $"\tcreateListInput.VisibleColumnsCount = Int32.Parse(\"{currentList.VisibleColumnsCount}\");\n";
-			}
+			code += $"\tcreateListInput.VisibleColumnsCount = Int32.Parse(\"{currentList.VisibleColumnsCount}\");\n";
 			if (currentList.ColumnWidthsCSV == null)
 			{
 				code += $"\tcreateListInput.ColumnWidthsCSV = null;\n";
@@ -8664,14 +8579,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			{
 				code += $"\tcreateListInput.ColumnWidthsCSV = \"{currentList.ColumnWidthsCSV}\";\n";
 			}
-			if (currentList.PageSize == null)
-			{
-				code += $"\tcreateListInput.PageSize = null;\n";
-			}
-			else
-			{
-				code += $"\tcreateListInput.PageSize = Int32.Parse(\"{currentList.PageSize}\");\n";
-			}
+			code += $"\tcreateListInput.PageSize = Int32.Parse(\"{currentList.PageSize}\");\n";
 			if (currentList.DynamicHtmlTemplate == null)
 			{
 				code += $"\tcreateListInput.DynamicHtmlTemplate = null;\n";
@@ -8772,15 +8680,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 				{
 					code += $"\tcreateListInput.Query.FieldValue =  \"{currentList.Query.FieldValue}\";\n";
 				}
-				if (currentList.Query.QueryType == null)
-				{
-					code += $"\tcreateListInput.Query.QueryType = null;\n";
-				}
-				else
-				{
-					code += $"\tcreateListInput.Query.QueryType = \"{currentList.Query.QueryType}\";\n";
-				}
-
+				code += $"\tcreateListInput.Query.QueryType = \"{currentList.Query.QueryType}\";\n";
 				code +=
 				$"\tcreateListInput.Query.SubQueries = new List<InputRecordListQuery>();\n";
 				var nodeId = Guid.NewGuid();
@@ -8947,14 +8847,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 
 			response +=
 			$"\tcreateTreeInput.RelationId = new Guid(\"{tree.RelationId}\");\n";
-			if (tree.DepthLimit == null)
-			{
-				response += $"\tcreateTreeInput.DepthLimit = null;\n";
-			}
-			else
-			{
-				response += $"\tcreateTreeInput.DepthLimit = Int32.Parse(\"{tree.DepthLimit}\");\n";
-			}
+			response += $"\tcreateTreeInput.DepthLimit = Int32.Parse(\"{tree.DepthLimit}\");\n";
 			if (tree.NodeParentIdFieldId == null)
 			{
 				response += $"\tcreateTreeInput.NodeIdFieldId = null;\n";
@@ -9121,14 +9014,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			code +=
 			$"\tupdateTreeInput.RelationId = new Guid(\"{currentTree.RelationId}\");\n";
 
-			if (currentTree.DepthLimit == null)
-			{
-				code += $"\tupdateTreeInput.DepthLimit = null;\n";
-			}
-			else
-			{
-				code += $"\tupdateTreeInput.DepthLimit = Int32.Parse(\"{currentTree.DepthLimit}\");\n";
-			}
+			code += $"\tupdateTreeInput.DepthLimit = Int32.Parse(\"{currentTree.DepthLimit}\");\n";
 			if (currentTree.NodeParentIdFieldId == null)
 			{
 				code += $"\tupdateTreeInput.NodeIdFieldId = null;\n";

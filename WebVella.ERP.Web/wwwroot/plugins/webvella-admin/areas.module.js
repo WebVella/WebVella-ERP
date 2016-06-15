@@ -44,8 +44,7 @@
 			},
 			resolve: {
 				resolvedAreaRecordsList: resolveAreaRecordsList,
-				resolvedRolesList: resolveRolesList,
-				resolvedEntityMetaList: resolveEntityMetaList
+				resolvedRolesList: resolveRolesList
 			},
 			data: {
 
@@ -109,37 +108,13 @@
 		return defer.promise;
 	}
 
-	// Resolve EntityMetaList /////////////////////////
-	resolveEntityMetaList.$inject = ['$q', '$log', 'webvellaCoreService'];
-
-
-	function resolveEntityMetaList($q, $log, webvellaCoreService) {
-		// Initialize
-		var defer = $q.defer();
-
-		// Process
-		function successCallback(response) {
-			defer.resolve(response.object);
-		}
-
-		function errorCallback(response) {
-			defer.reject(response.message);
-		}
-
-		webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
-
-		return defer.promise;
-	}
-
-	//#endregion
-
 	//#region << Controller >> ///////////////////////////////
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedAreaRecordsList',
-							'resolvedRolesList', 'resolvedEntityMetaList', '$uibModal',
+							'resolvedRolesList', 'resolvedEntityList', '$uibModal',
 							'webvellaCoreService', '$timeout', '$translate'];
 
 	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedAreaRecordsList,
-						resolvedRolesList, resolvedEntityMetaList, $uibModal,
+						resolvedRolesList, resolvedEntityList, $uibModal,
 						webvellaCoreService, $timeout, $translate) {
 
 		var ngCtrl = this;
@@ -161,7 +136,7 @@
 			return 0;
 		});
 
-		ngCtrl.entities = resolvedEntityMetaList.entities;
+		ngCtrl.entities = resolvedEntityList;
 		ngCtrl.entities = ngCtrl.entities.sort(function (a, b) {
 			if (a.label < b.label) return -1;
 			if (a.label > b.label) return 1;
