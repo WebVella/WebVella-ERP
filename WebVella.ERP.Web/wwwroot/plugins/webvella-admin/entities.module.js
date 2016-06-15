@@ -147,8 +147,8 @@
         
         var popupCtrl = this;
         popupCtrl.entity = webvellaCoreService.initEntity();
-		popupCtrl.entity.create_views = true;
-		popupCtrl.entity.create_lists = true;
+		popupCtrl.entity.create_views = false;
+		popupCtrl.entity.create_lists = false;
         popupCtrl.roles = ngCtrl.roles;
         
         //Processing the roles for generation the checkbox values

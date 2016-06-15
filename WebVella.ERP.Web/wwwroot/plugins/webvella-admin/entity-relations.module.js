@@ -154,6 +154,9 @@
 			}
 		}
 
+		//Sort
+		ngCtrl.currentEntityRelations.sort(sort_by("name"));		
+		
 		//#region << Update page title & hide the side menu >>
 		$translate(['ENTITY_RELATIONS','ENTITIES']).then(function (translations) {
 			ngCtrl.pageTitle = translations.ENTITY_RELATIONS + " | " + pageTitle;

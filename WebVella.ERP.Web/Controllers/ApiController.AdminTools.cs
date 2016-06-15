@@ -82,7 +82,7 @@ namespace WebVella.ERP.Web.Controllers
 				var oldRelationsList = new List<DbEntityRelation>();
 				var oldRelationsDictionary = new Dictionary<Guid, DbEntityRelation>();
 				var oldRelationsProcessedDictionary = new Dictionary<Guid, bool>();
-
+				var relationsNameDictionary = new Dictionary<string,DbEntityRelation>();
 				//Area
 				var currentAreaList = new List<EntityRecord>();
 				var oldAreaList = new List<EntityRecord>();
@@ -108,6 +108,14 @@ namespace WebVella.ERP.Web.Controllers
 				oldAreaList = ReadOldAreas(OLD_DB_CONNECTION_STRING);
 				oldRelationsList = ReadOldRelations(OLD_DB_CONNECTION_STRING);
 				oldRoleList = ReadOldRoles(OLD_DB_CONNECTION_STRING);
+				#endregion
+
+				#region << Generate relations list >>
+				foreach (var relation in currentRelationsList)
+				{
+					relationsNameDictionary[relation.Name] = relation;
+				}
+
 				#endregion
 
 				if (includeAreas)
@@ -221,7 +229,7 @@ namespace WebVella.ERP.Web.Controllers
 							changeRow.Type = "created";
 							changeRow.Name = entity.Name;
 							response.Changes.Add(changeRow);
-							response.Code += CreateEntityCode(entity);
+							response.Code += CreateEntityCode(entity,relationsNameDictionary);
 						}
 						else
 						{
@@ -273,10 +281,6 @@ namespace WebVella.ERP.Web.Controllers
 					#region << Init >>
 					foreach (var relation in oldRelationsList)
 					{
-						if (relation.Name == "user_role_created_by")
-						{
-							var boz = 0;
-						}
 						oldRelationsDictionary[relation.Id] = relation;
 					}
 					#endregion
@@ -284,26 +288,26 @@ namespace WebVella.ERP.Web.Controllers
 					#region << Logic >>
 					foreach (var relation in currentRelationsList)
 					{
-						if (relation.Name == "user_role_created_by")
-						{
-							var boz = 0;
-						}
 						if (!oldRelationsDictionary.ContainsKey(relation.Id))
 						{
 							//// CREATED
 							/////////////////////////////////////////////////////
-							var changeCode = CreateRelationCode(relation);
-							changeRow = new MetaChangeModel();
-							changeRow.Element = "relation";
-							changeRow.Type = "created";
-							changeRow.Name = relation.Name;
-							changeRow.ChangeList = new List<string>();
-							if (changeCode == string.Empty)
+							if (!relation.Name.EndsWith("created_by") && !relation.Name.EndsWith("modified_by"))
 							{
-								changeRow.ChangeList.Add(@"<span class='go-gray'>No code will be generated. It is automatically created, in the entity creation process</span>");
+								//the creation of system fields and relations is handled in the create entity script
+								var changeCode = CreateRelationCode(relation);
+								changeRow = new MetaChangeModel();
+								changeRow.Element = "relation";
+								changeRow.Type = "created";
+								changeRow.Name = relation.Name;
+								changeRow.ChangeList = new List<string>();
+								if (changeCode == string.Empty)
+								{
+									changeRow.ChangeList.Add(@"<span class='go-gray'>No code will be generated. It is automatically created, in the entity creation process</span>");
+								}
+								response.Changes.Add(changeRow);
+								response.Code += changeCode;
 							}
-							response.Changes.Add(changeRow);
-							response.Code += changeCode;
 						}
 						else
 						{
@@ -669,7 +673,7 @@ $"#region << Update area: {(string)currentArea["name"]} >>\n" +
 		#region << Entity >>
 
 
-		private string CreateEntityCode(DbEntity entity)
+		private string CreateEntityCode(DbEntity entity, Dictionary<string,DbEntityRelation> relationsNameDictionary)
 		{
 
 			//escape some possible quotes
@@ -683,11 +687,19 @@ $"#region << Create entity: {entity.Name} >>\n" +
 	"\t{\n" +
 		"\t\tvar entity = new InputEntity();\n" +
 		"\t\tvar systemFieldIdDictionary = new Dictionary<string,Guid>();\n" +
+		//Generate system fields
 		$"\t\tsystemFieldIdDictionary[\"id\"] = new Guid(\"{entity.Fields.Single(x => x.Name == "id").Id}\");\n" +
 		$"\t\tsystemFieldIdDictionary[\"created_on\"] = new Guid(\"{entity.Fields.Single(x => x.Name == "created_on").Id}\");\n" +
 		$"\t\tsystemFieldIdDictionary[\"created_by\"] = new Guid(\"{entity.Fields.Single(x => x.Name == "created_by").Id}\");\n" +
 		$"\t\tsystemFieldIdDictionary[\"last_modified_on\"] = new Guid(\"{entity.Fields.Single(x => x.Name == "last_modified_on").Id}\");\n" +
-		$"\t\tsystemFieldIdDictionary[\"last_modified_by\"] = new Guid(\"{entity.Fields.Single(x => x.Name == "last_modified_by").Id}\");\n" +
+		$"\t\tsystemFieldIdDictionary[\"last_modified_by\"] = new Guid(\"{entity.Fields.Single(x => x.Name == "last_modified_by").Id}\");\n";
+		//Generating system relations
+		var createdBySystemRelationName = "user_" + entity.Name + "_created_by";
+		var modifiedBySystemRelationName = "user_" + entity.Name + "_modified_by";
+		response +=
+		$"\t\tsystemFieldIdDictionary[\"{createdBySystemRelationName}\"] = new Guid(\"{relationsNameDictionary[createdBySystemRelationName].Id}\");\n" +
+		$"\t\tsystemFieldIdDictionary[\"{modifiedBySystemRelationName}\"] = new Guid(\"{relationsNameDictionary[modifiedBySystemRelationName].Id}\");\n" +
+
 		$"\t\tentity.Id = new Guid(\"{entity.Id}\");\n" +
 		$"\t\tentity.Name = \"{entity.Name}\";\n" +
 		$"\t\tentity.Label = \"{entity.Label}\";\n" +
@@ -735,7 +747,10 @@ $"#region << Create entity: {entity.Name} >>\n" +
 
 			foreach (var field in entity.Fields)
 			{
-				response += CreateFieldCode(field, entity.Id, entity.Name);
+				if(field.Name != "id" && field.Name != "created_on" && field.Name != "created_by" && field.Name != "last_modified_on" && field.Name != "last_modified_by") {
+					//System field and relations will be created on entity creation
+					response += CreateFieldCode(field, entity.Id, entity.Name);					
+				}
 			}
 
 			//foreach view generate createview and add
@@ -792,9 +807,12 @@ $"#region << Create entity: {entity.Name} >>\n" +
 				{
 					//// CREATED
 					/////////////////////////////////////////////////////
-					response.HasUpdate = true;
-					response.ChangeList.Add($"<span class='go-green label-block'>field</span>  new field <span class='go-red'>{field.Name}</span> was created.</span>");
-					response.Code += CreateFieldCode(field, currentEntity.Id, currentEntity.Name);
+					if(field.Name != "id" && field.Name != "created_by" && field.Name != "created_on" && field.Name != "last_modified_by" && field.Name != "last_modified_on") {
+						//the creation of system fields and relations is managed during the entity creation process
+						response.HasUpdate = true;
+						response.ChangeList.Add($"<span class='go-green label-block'>field</span>  new field <span class='go-red'>{field.Name}</span> was created.</span>");
+						response.Code += CreateFieldCode(field, currentEntity.Id, currentEntity.Name);
+					}
 				}
 				else
 				{
@@ -1187,11 +1205,6 @@ $"#region << Create entity: {entity.Name} >>\n" +
 		private string CreateFieldCode(DbBaseField field, Guid entityId, string entityName)
 		{
 			var response = "";
-			//Skip system generated fields
-			if (field.Name == "id" || field.Name == "created_on" || field.Name == "created_by" || field.Name == "last_modified_on" || field.Name == "last_modified_by")
-			{
-				return string.Empty;
-			}
 			//escape quotes where they can possible be
 			if (field.HelpText != null)
 				field.HelpText = field.HelpText.Replace("\"", "\\\"");
@@ -1331,7 +1344,7 @@ $"#region << Create entity: {entity.Name} >>\n" +
 				response += $"\tautonumberField.StartingNumber = Decimal.Parse(\"{field.StartingNumber}\");\n";
 			}
 
-			response += 
+			response +=
 			$"\tautonumberField.EnableSecurity = {(field.EnableSecurity).ToString().ToLowerInvariant()};\n" +
 			"\tautonumberField.Permissions = new FieldPermissions();\n" +
 			"\tautonumberField.Permissions.CanRead = new List<Guid>();\n" +
@@ -1492,7 +1505,7 @@ $"#region << Create entity: {entity.Name} >>\n" +
 			{
 				response += $"\tcurrencyField.MaxValue = Decimal.Parse(\"{field.MaxValue}\");\n";
 			}
-			
+
 			response +=
 			$"\tcurrencyField.Currency = WebVella.ERP.Utilities.Helpers.GetCurrencyTypeObject(\"{field.Currency.Code}\");\n" +
 			$"\tcurrencyField.EnableSecurity = {(field.EnableSecurity).ToString().ToLowerInvariant()};\n" +
@@ -1564,7 +1577,7 @@ $"#region << Create entity: {entity.Name} >>\n" +
 			$"\tdateField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
 			$"\tdateField.Auditable = {(field.Auditable).ToString().ToLowerInvariant()};\n" +
 			$"\tdateField.System = {(field.System).ToString().ToLowerInvariant()};\n";
-			if(field.DefaultValue == null)
+			if (field.DefaultValue == null)
 			{
 				response += $"\tdateField.DefaultValue = null;\n";
 			}
@@ -1572,7 +1585,7 @@ $"#region << Create entity: {entity.Name} >>\n" +
 			{
 				response += $"\tdateField.DefaultValue = DateTime.Parse(\"{field.DefaultValue}\");\n";
 			}
-			if(field.Format == null)
+			if (field.Format == null)
 			{
 				response += $"\tdateField.Format = null;\n";
 			}
@@ -1580,7 +1593,7 @@ $"#region << Create entity: {entity.Name} >>\n" +
 			{
 				response += $"\tdateField.Format = \"{field.Format}\";\n";
 			}
-			
+
 			response +=
 			$"\tdateField.UseCurrentTimeAsDefaultValue = {(field.UseCurrentTimeAsDefaultValue).ToString().ToLowerInvariant()};\n" +
 			$"\tdateField.EnableSecurity = {(field.EnableSecurity).ToString().ToLowerInvariant()};\n" +
@@ -1653,7 +1666,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			$"\tdatetimeField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
 			$"\tdatetimeField.Auditable = {(field.Auditable).ToString().ToLowerInvariant()};\n" +
 			$"\tdatetimeField.System = {(field.System).ToString().ToLowerInvariant()};\n";
-			if(field.DefaultValue == null)
+			if (field.DefaultValue == null)
 			{
 				response += $"\tdatetimeField.DefaultValue = null;\n";
 			}
@@ -1661,7 +1674,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			{
 				response += $"\tdatetimeField.DefaultValue = DateTime.Parse(\"{field.DefaultValue}\");\n";
 			}
-			if(field.Format == null)
+			if (field.Format == null)
 			{
 				response += $"\tdatetimeField.Format = null;\n";
 			}
@@ -1669,7 +1682,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			{
 				response += $"\tdatetimeField.Format = \"{field.Format}\";\n";
 			}
-			
+
 			response +=
 			$"\tdatetimeField.UseCurrentTimeAsDefaultValue = {(field.UseCurrentTimeAsDefaultValue).ToString().ToLowerInvariant()};\n" +
 			$"\tdatetimeField.EnableSecurity = {(field.EnableSecurity).ToString().ToLowerInvariant()};\n" +
@@ -1828,7 +1841,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			$"\tfileField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
 			$"\tfileField.Auditable = {(field.Auditable).ToString().ToLowerInvariant()};\n" +
 			$"\tfileField.System = {(field.System).ToString().ToLowerInvariant()};\n";
-			if(field.DefaultValue == null)
+			if (field.DefaultValue == null)
 			{
 				response += $"\tfileField.DefaultValue = null;\n";
 			}
@@ -1905,7 +1918,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			$"\thtmlField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
 			$"\thtmlField.Auditable = {(field.Auditable).ToString().ToLowerInvariant()};\n" +
 			$"\thtmlField.System = {(field.System).ToString().ToLowerInvariant()};\n";
-			if(field.DefaultValue == null)
+			if (field.DefaultValue == null)
 			{
 				response += $"\thtmlField.DefaultValue = null;\n";
 			}
@@ -1980,7 +1993,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			$"\timageField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
 			$"\timageField.Auditable =  {(field.Auditable).ToString().ToLowerInvariant()};\n" +
 			$"\timageField.System = {(field.System).ToString().ToLowerInvariant()};\n";
-			if(field.DefaultValue == null)
+			if (field.DefaultValue == null)
 			{
 				response += $"\timageField.DefaultValue = null;\n";
 			}
@@ -2288,7 +2301,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				response += $"\tnumberField.DecimalPlaces = byte.Parse(\"{field.DecimalPlaces}\");\n";
 			}
 			response +=
-			
+
 			$"\tnumberField.EnableSecurity = {(field.EnableSecurity).ToString().ToLowerInvariant()};\n" +
 			$"\tnumberField.Permissions = new FieldPermissions();\n" +
 			$"\tnumberField.Permissions.CanRead = new List<Guid>();\n" +
@@ -2644,7 +2657,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			}
 
 			response +=
-	
+
 			$"\tguidField.GenerateNewId = {(field.GenerateNewId).ToString().ToLowerInvariant()};\n" +
 			$"\tguidField.EnableSecurity = {(field.EnableSecurity).ToString().ToLowerInvariant()};\n" +
 			$"\tguidField.Permissions = new FieldPermissions();\n" +
@@ -2827,7 +2840,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				response += $"\ttextboxField.MaxLength = Int32.Parse(\"{field.MaxLength}\");\n";
 			}
 			response +=
-			
+
 			$"\ttextboxField.EnableSecurity = {(field.EnableSecurity).ToString().ToLowerInvariant()};\n" +
 			$"\ttextboxField.Permissions = new FieldPermissions();\n" +
 			$"\ttextboxField.Permissions.CanRead = new List<Guid>();\n" +
@@ -3593,7 +3606,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			{
 				response += $"\tcurrencyField.MaxValue = Decimal.Parse(\"{currentField.MaxValue}\");\n";
 			}
-			
+
 			response +=
 			$"\tcurrencyField.Currency = WebVella.ERP.Utilities.Helpers.GetCurrencyTypeObject(\"{currentField.Currency.Code}\");\n" +
 			$"\tcurrencyField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
@@ -3765,30 +3778,30 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				$"\tdateField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
 				$"\tdateField.Auditable = {(currentField.Auditable).ToString().ToLowerInvariant()};\n" +
 				$"\tdateField.System = {(currentField.System).ToString().ToLowerInvariant()};\n";
-				if(currentField.DefaultValue == null)
-				{
-					response += $"\tdateField.DefaultValue = null;\n";
-				}
-				else
-				{
-					response += $"\tdateField.DefaultValue = DateTime.Parse(\"{currentField.DefaultValue}\");\n";
-				}
-				if(currentField.Format == null)
-				{
-					response += $"\tdateField.Format = null;\n";
-				}
-				else
-				{
-					response += $"\tdateField.Format = \"{currentField.Format}\";\n";
-				}
-			
-				response +=
-				$"\tdateField.UseCurrentTimeAsDefaultValue = {(currentField.UseCurrentTimeAsDefaultValue).ToString().ToLowerInvariant()};\n" +
-				$"\tdateField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
-				"\tdateField.Permissions = new FieldPermissions();\n" +
-				"\tdateField.Permissions.CanRead = new List<Guid>();\n" +
-				"\tdateField.Permissions.CanUpdate = new List<Guid>();\n" +
-				"\t//READ\n";
+			if (currentField.DefaultValue == null)
+			{
+				response += $"\tdateField.DefaultValue = null;\n";
+			}
+			else
+			{
+				response += $"\tdateField.DefaultValue = DateTime.Parse(\"{currentField.DefaultValue}\");\n";
+			}
+			if (currentField.Format == null)
+			{
+				response += $"\tdateField.Format = null;\n";
+			}
+			else
+			{
+				response += $"\tdateField.Format = \"{currentField.Format}\";\n";
+			}
+
+			response +=
+			$"\tdateField.UseCurrentTimeAsDefaultValue = {(currentField.UseCurrentTimeAsDefaultValue).ToString().ToLowerInvariant()};\n" +
+			$"\tdateField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
+			"\tdateField.Permissions = new FieldPermissions();\n" +
+			"\tdateField.Permissions.CanRead = new List<Guid>();\n" +
+			"\tdateField.Permissions.CanUpdate = new List<Guid>();\n" +
+			"\t//READ\n";
 
 			foreach (var permId in currentField.Permissions.CanRead)
 			{
@@ -3949,30 +3962,30 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				$"\tdatetimeField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
 				$"\tdatetimeField.Auditable = {(currentField.Auditable).ToString().ToLowerInvariant()};\n" +
 				$"\tdatetimeField.System = {(currentField.System).ToString().ToLowerInvariant()};\n";
-				if(currentField.DefaultValue == null)
-				{
-					response += $"\tdatetimeField.DefaultValue = null;\n";
-				}
-				else
-				{
-					response += $"\tdatetimeField.DefaultValue = DateTime.Parse(\"{currentField.DefaultValue}\");\n";
-				}
-				if(currentField.Format == null)
-				{
-					response += $"\tdatetimeField.Format = null;\n";
-				}
-				else
-				{
-					response += $"\tdatetimeField.Format = \"{currentField.Format}\";\n";
-				}
-			
-				response +=
-				$"\tdatetimeField.UseCurrentTimeAsDefaultValue = {(currentField.UseCurrentTimeAsDefaultValue).ToString().ToLowerInvariant()};\n" +
-				$"\tdatetimeField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
-				"\tdatetimeField.Permissions = new FieldPermissions();\n" +
-				"\tdatetimeField.Permissions.CanRead = new List<Guid>();\n" +
-				"\tdatetimeField.Permissions.CanUpdate = new List<Guid>();\n" +
-				"\t//READ\n";
+			if (currentField.DefaultValue == null)
+			{
+				response += $"\tdatetimeField.DefaultValue = null;\n";
+			}
+			else
+			{
+				response += $"\tdatetimeField.DefaultValue = DateTime.Parse(\"{currentField.DefaultValue}\");\n";
+			}
+			if (currentField.Format == null)
+			{
+				response += $"\tdatetimeField.Format = null;\n";
+			}
+			else
+			{
+				response += $"\tdatetimeField.Format = \"{currentField.Format}\";\n";
+			}
+
+			response +=
+			$"\tdatetimeField.UseCurrentTimeAsDefaultValue = {(currentField.UseCurrentTimeAsDefaultValue).ToString().ToLowerInvariant()};\n" +
+			$"\tdatetimeField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
+			"\tdatetimeField.Permissions = new FieldPermissions();\n" +
+			"\tdatetimeField.Permissions.CanRead = new List<Guid>();\n" +
+			"\tdatetimeField.Permissions.CanUpdate = new List<Guid>();\n" +
+			"\t//READ\n";
 
 			foreach (var permId in currentField.Permissions.CanRead)
 			{
@@ -4133,28 +4146,28 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				$"\temailField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
 				$"\temailField.Auditable = {(currentField.Auditable).ToString().ToLowerInvariant()};\n" +
 				$"\temailField.System = {(currentField.System).ToString().ToLowerInvariant()};\n";
-				if (currentField.DefaultValue == null)
-				{
-					response += $"\temailField.DefaultValue = null;\n";
-				}
-				else
-				{
-					response += $"\temailField.DefaultValue = \"{currentField.DefaultValue}\";\n";
-				}
-				if (currentField.MaxLength == null)
-				{
-					response += $"\temailField.MaxLength = null;\n";
-				}
-				else
-				{
-					response += $"\temailField.MaxLength = Int32.Parse(\"{currentField.MaxLength}\");\n";
-				}
-				response +=
-				$"\temailField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
-				$"\temailField.Permissions = new FieldPermissions();\n" +
-				$"\temailField.Permissions.CanRead = new List<Guid>();\n" +
-				$"\temailField.Permissions.CanUpdate = new List<Guid>();\n" +
-				"\t//READ\n";
+			if (currentField.DefaultValue == null)
+			{
+				response += $"\temailField.DefaultValue = null;\n";
+			}
+			else
+			{
+				response += $"\temailField.DefaultValue = \"{currentField.DefaultValue}\";\n";
+			}
+			if (currentField.MaxLength == null)
+			{
+				response += $"\temailField.MaxLength = null;\n";
+			}
+			else
+			{
+				response += $"\temailField.MaxLength = Int32.Parse(\"{currentField.MaxLength}\");\n";
+			}
+			response +=
+			$"\temailField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
+			$"\temailField.Permissions = new FieldPermissions();\n" +
+			$"\temailField.Permissions.CanRead = new List<Guid>();\n" +
+			$"\temailField.Permissions.CanUpdate = new List<Guid>();\n" +
+			"\t//READ\n";
 			foreach (var permId in currentField.Permissions.CanRead)
 			{
 				response += $"\temailField.Permissions.CanRead.Add(new Guid(\"{permId}\"));\n";
@@ -4308,20 +4321,20 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				$"\tfileField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
 				$"\tfileField.Auditable = {(currentField.Auditable).ToString().ToLowerInvariant()};\n" +
 				$"\tfileField.System = {(currentField.System).ToString().ToLowerInvariant()};\n";
-				if(currentField.DefaultValue == null)
-				{
-					response += $"\tfileField.DefaultValue = null;\n";
-				}
-				else
-				{
-					response += $"\tfileField.DefaultValue = \"{currentField.DefaultValue}\";\n";
-				}
-				response +=
-				$"\tfileField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
-				$"\tfileField.Permissions = new FieldPermissions();\n" +
-				$"\tfileField.Permissions.CanRead = new List<Guid>();\n" +
-				$"\tfileField.Permissions.CanUpdate = new List<Guid>();\n" +
-				"\t//READ\n";
+			if (currentField.DefaultValue == null)
+			{
+				response += $"\tfileField.DefaultValue = null;\n";
+			}
+			else
+			{
+				response += $"\tfileField.DefaultValue = \"{currentField.DefaultValue}\";\n";
+			}
+			response +=
+			$"\tfileField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
+			$"\tfileField.Permissions = new FieldPermissions();\n" +
+			$"\tfileField.Permissions.CanRead = new List<Guid>();\n" +
+			$"\tfileField.Permissions.CanUpdate = new List<Guid>();\n" +
+			"\t//READ\n";
 			foreach (var permId in currentField.Permissions.CanRead)
 			{
 				response += $"\tfileField.Permissions.CanRead.Add(new Guid(\"{permId}\"));\n";
@@ -4473,7 +4486,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			$"\timageField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
 			$"\timageField.Auditable =  {(currentField.Auditable).ToString().ToLowerInvariant()};\n" +
 			$"\timageField.System = {(currentField.System).ToString().ToLowerInvariant()};\n";
-			if(currentField.DefaultValue == null)
+			if (currentField.DefaultValue == null)
 			{
 				response += $"\timageField.DefaultValue = null;\n";
 			}
@@ -4636,20 +4649,20 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 				$"\thtmlField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
 				$"\thtmlField.Auditable = {(currentField.Auditable).ToString().ToLowerInvariant()};\n" +
 				$"\thtmlField.System = {(currentField.System).ToString().ToLowerInvariant()};\n";
-				if(currentField.DefaultValue == null)
-				{
-					response += $"\thtmlField.DefaultValue = null;\n";
-				}
-				else
-				{
-					response += $"\thtmlField.DefaultValue = \"{currentField.DefaultValue}\";\n";
-				}
-				response +=
-				$"\thtmlField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
-				$"\thtmlField.Permissions = new FieldPermissions();\n" +
-				$"\thtmlField.Permissions.CanRead = new List<Guid>();\n" +
-				$"\thtmlField.Permissions.CanUpdate = new List<Guid>();\n" +
-				"\t//READ\n";
+			if (currentField.DefaultValue == null)
+			{
+				response += $"\thtmlField.DefaultValue = null;\n";
+			}
+			else
+			{
+				response += $"\thtmlField.DefaultValue = \"{currentField.DefaultValue}\";\n";
+			}
+			response +=
+			$"\thtmlField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
+			$"\thtmlField.Permissions = new FieldPermissions();\n" +
+			$"\thtmlField.Permissions.CanRead = new List<Guid>();\n" +
+			$"\thtmlField.Permissions.CanUpdate = new List<Guid>();\n" +
+			"\t//READ\n";
 			foreach (var permId in currentField.Permissions.CanRead)
 			{
 				response += $"\thtmlField.Permissions.CanRead.Add(new Guid(\"{permId}\"));\n";
@@ -9271,9 +9284,9 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			"{\n" +
 				"\tvar relation = new EntityRelation();\n" +
 				$"\tvar originEntity = entMan.ReadEntity(new Guid(\"{originEntity.Id}\")).Object;\n" +
-				$"\tvar originField = originEntity.Fields.SingleOrDefault(x => x.Name == \"originField.Name\");\n" +
+				$"\tvar originField = originEntity.Fields.SingleOrDefault(x => x.Name == \"{originField.Name}\");\n" +
 				$"\tvar targetEntity = entMan.ReadEntity(new Guid(\"{targetEntity.Id}\")).Object;\n" +
-				$"\tvar targetField = targetEntity.Fields.SingleOrDefault(x => x.Name == \"targetField.Name\");\n" +
+				$"\tvar targetField = targetEntity.Fields.SingleOrDefault(x => x.Name == \"{targetField.Name}\");\n" +
 				$"\trelation.Id = new Guid(\"{relationRecord.Id}\");\n" +
 				$"\trelation.Name =  \"{relationRecord.Name}\";\n" +
 				$"\trelation.Label = \"{relationRecord.Label}\";\n" +
@@ -9308,11 +9321,6 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 
 		"}\n" +
 		"#endregion\n\n";
-
-			if (targetField.Name == "created_by" || targetField.Name == "last_modified_by")
-			{
-				return string.Empty;
-			}
 
 			return response;
 		}
@@ -9386,7 +9394,14 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 				hasUpdate = true;
 				response.ChangeList.Add($"<span class='go-green label-block'>description</span>  from <span class='go-red'>{oldRelation.Description}</span> to <span class='go-red'>{currentRelation.Description}</span>");
 			}
-			code += $"\trelation.Description = \"{currentRelation.Description}\";\n";
+			if (currentRelation.Description == null)
+			{
+				code += $"\trelation.Description = null;\n";
+			}
+			else
+			{
+				code += $"\trelation.Description = \"{currentRelation.Description}\";\n";
+			}
 
 			//system
 			if (currentRelation.System != oldRelation.System)
