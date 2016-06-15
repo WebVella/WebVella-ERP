@@ -147,6 +147,30 @@
                     </div>
                 </div>
             </div>
+			<div class="row">
+				<div class="col-sm-6">
+                    <div class="form-group">
+                        <label translate="{{::'CREATE_DEFAULT_VIEWS'}}"></label>
+                        <div class="checkbox">
+                            <label>
+                                <input ng-model="popupCtrl.entity.create_views" type="checkbox" value="true">
+								<span translate="{{::'CREATE_DEFAULT_VIEWS_CHECKBOX'}}"></span>
+							</label>
+                        </div>
+                    </div>
+				</div>
+				<div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="entitySystemStatus" translate="{{::'CREATE_DEFAULT_LISTS'}}"></label>
+                        <div class="checkbox">
+                            <label>
+                                <input ng-model="popupCtrl.entity.create_lists" type="checkbox" value="true">
+								<span translate="{{::'CREATE_DEFAULT_LISTS_CHECKBOX'}}"></span>
+							</label>
+                        </div>
+                    </div>
+				</div>
+			</div>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group" ng-class="{ 'has-error' : popupCtrl.permissionsError }">

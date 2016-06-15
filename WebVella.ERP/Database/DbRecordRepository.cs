@@ -1040,13 +1040,11 @@ namespace WebVella.ERP.Database
 					{
 						//TODO
 						throw new NotImplementedException();
-						return;
 					}
 				case QueryType.NOTRELATED:
 					{
 						//TODO
 						throw new NotImplementedException();
-						return;
 					}
 				case QueryType.AND:
 					{

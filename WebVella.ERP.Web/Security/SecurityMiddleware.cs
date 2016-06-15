@@ -21,7 +21,7 @@ namespace WebVella.ERP.Web.Security
 
     public class SecurityMiddleware
     {
-        IErpService service;
+        //IErpService service;
         RequestDelegate next;
 
         public SecurityMiddleware(RequestDelegate next)

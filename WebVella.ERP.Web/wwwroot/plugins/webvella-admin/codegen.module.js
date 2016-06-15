@@ -105,7 +105,12 @@
 				}
 				else {
 					ngCtrl.hasError = true;
-					ngCtrl.errorMessage = "System error: " + response.data.message;
+					if(response.data != null){
+						ngCtrl.errorMessage = "System error: " + response.data.message;
+					}
+					else {
+						ngCtrl.errorMessage = "System error!";
+					}
 				}
 			}, function errorCallback(response) {
 				ngCtrl.hasError = true;

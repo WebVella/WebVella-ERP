@@ -95,6 +95,11 @@ namespace WebVella.ERP.Api.Models
     ////////////////////////
     public class InputRecordViewSidebar
 	{
+		public InputRecordViewSidebar() {
+			Render = true;
+			CssClass = "";
+		}
+	
 		[JsonProperty(PropertyName = "render")]
 		public bool? Render { get; set; }
 

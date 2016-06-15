@@ -506,7 +506,7 @@ namespace WebVella.ERP.Project
 		{
 			EntityRecord record = (EntityRecord)data.record;
 
-			if (record["task_id"] != null)
+			if (record.Properties.ContainsKey("task_id") && record["task_id"] != null)
 			{
 				using (SecurityContext.OpenSystemScope())
 				{
@@ -521,7 +521,7 @@ namespace WebVella.ERP.Project
 					}
 				}
 			}
-			else if (record["bug_id"] != null)
+			else if (record.Properties.ContainsKey("bug_id") && record["bug_id"] != null)
 			{
 				var patchObject = new EntityRecord();
 				patchObject["id"] = new Guid((string)record["bug_id"]);
@@ -585,7 +585,7 @@ namespace WebVella.ERP.Project
 			{
 				#region << Add the comment creator to the watch list if he is not there, Generate recipients list >>
 				{
-					if (createdRecord["task_id"] != null)
+					if (createdRecord.Properties.ContainsKey("task_id") &&  createdRecord["task_id"] != null)
 					{
 						var isCommentatorInWatchList = false;
 						#region << Check if is in watch list already >>
@@ -604,14 +604,14 @@ namespace WebVella.ERP.Project
 						if (!isCommentatorInWatchList)
 						{
 							var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
-							var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], (Guid)record["id"]);
+							var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], new Guid((string)record["task_id"]));
 							if (!createRelationNtoNResponse.Success)
 							{
 								throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
 							}
 						}
 					}
-					else if (createdRecord["bug_id"] != null)
+					else if (createdRecord.Properties.ContainsKey("bug_id") &&  createdRecord["bug_id"] != null)
 					{
 						var isCommentatorInWatchList = false;
 						#region << Check if is in watch list already >>
@@ -630,7 +630,7 @@ namespace WebVella.ERP.Project
 						if (!isCommentatorInWatchList)
 						{
 							var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
-							var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], (Guid)record["id"]);
+							var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], new Guid((string)record["bug_id"]));
 							if (!createRelationNtoNResponse.Success)
 							{
 								throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);

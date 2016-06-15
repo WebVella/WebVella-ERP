@@ -434,7 +434,7 @@ namespace WebVella.ERP.Api
 			if (!recordlist.System.HasValue)
 				recordlist.System = false;
 			if (!recordlist.Weight.HasValue)
-				recordlist.Weight = 1;
+				recordlist.Weight = 10;
 			if (!recordlist.PageSize.HasValue)
 				recordlist.PageSize = 10;
 			if (recordlist.CssClass != null)
@@ -5711,36 +5711,25 @@ namespace WebVella.ERP.Api
 					actionItem.Name = "wv_create_record";
 					actionItem.Menu = "page-title";
 					actionItem.Weight = 1;
-					actionItem.Template = "" +
-@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" 
-    ng-href=""{{::ngCtrl.getRecordCreateUrl()}}"">Add New</a>";
+					actionItem.Template = "<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate')\" ng-href=\"{{::ngCtrl.getRecordCreateUrl()}}\">Add New</a>";
 					break;
 				case "wv_import_records":
 					actionItem.Name = "wv_import_records";
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 10;
-					actionItem.Template = "" +
-@"<a ng-click=""ngCtrl.openImportModal()"" class=""ng-hide"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')"">
-	<i class=""fa fa-fw fa-upload""></i> Import CSV
-</a>";
+					actionItem.Template = "<a ng-click=\"ngCtrl.openImportModal()\" class=\"ng-hide\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\"><i class=\"fa fa-fw fa-upload\"></i> Import CSV</a>";
 					break;
 				case "wv_export_records":
 					actionItem.Name = "wv_export_records";
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 11;
-					actionItem.Template = "" +
-@"<a ng-click=""ngCtrl.openExportModal()"" class=""ng-hide"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')"">
-	<i class=""fa fa-fw fa-download""></i> Export CSV
-</a>";
+					actionItem.Template = "<a ng-click=\"ngCtrl.openExportModal()\" class=\"ng-hide\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\"><i class=\"fa fa-fw fa-download\"></i> Export CSV</a>";
 					break;
 				case "wv_record_details":
 					actionItem.Name = "wv_record_details";
 					actionItem.Menu = "record-row";
 					actionItem.Weight = 1;
-					actionItem.Template = "" +
-@"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record)}}"">
-    <i class=""fa fa-fw fa-eye""></i>
-</a>";
+					actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-href=\"{{::ngCtrl.getRecordDetailsUrl(record)}}\"><i class=\"fa fa-fw fa-eye\"></i></a>";
 					break;
 				default:
 					throw new Exception("no such action type");
@@ -5756,6 +5745,7 @@ namespace WebVella.ERP.Api
 			create.Id = Guid.NewGuid();
 			create.Name = "general";
 			create.Label = "General";
+			create.Title = "General";
 			create.Default = true;
 			create.System = false;
 			create.Type = "general";
@@ -5777,6 +5767,7 @@ namespace WebVella.ERP.Api
 			lookup.Id = Guid.NewGuid();
 			lookup.Name = "lookup";
 			lookup.Label = "Lookup";
+			lookup.Title = "Lookup";
 			lookup.Default = true;
 			lookup.System = false;
 			lookup.Type = "lookup";
@@ -5806,39 +5797,31 @@ namespace WebVella.ERP.Api
 					actionItem.Name = "wv_record_delete";
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 1;
-					actionItem.Template = "" +
-@"<a href=""javascript:void(0)"" confirmed-click=""::ngCtrl.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
-		ng-if=""::ngCtrl.userHasRecordPermissions('canDelete')"">
-	<i class=""fa fa-trash go-red""></i> Delete Record
-</a>";
+					actionItem.Template = "<a href=\"javascript:void(0)\" confirmed-click=\"::ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"Are you sure?\" ng-if=\"::ngCtrl.userHasRecordPermissions('canDelete')\"><i class=\"fa fa-trash go-red\"></i> Delete Record</a>";
 					break;
 				case "wv_create_and_list":
 					actionItem.Name = "wv_create_and_list";
 					actionItem.Menu = "create-bottom";
 					actionItem.Weight = 1;
-					actionItem.Template = "" +
-@"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""default"")' ng-if=""::ngCtrl.createViewRegion != null"">Create</a>";
+					actionItem.Template = "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"default\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create</a>";
 					break;
 				case "wv_create_and_details":
 					actionItem.Name = "wv_create_and_details";
 					actionItem.Menu = "create-bottom";
 					actionItem.Weight = 2;
-					actionItem.Template = "" +
-@"<a class=""btn btn-default btn-outline"" ng-click='ngCtrl.create(""details"")' ng-if=""::ngCtrl.createViewRegion != null"">Create & Details</a>";
+					actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-click='ngCtrl.create(\"details\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create & Details</a>";
 					break;
 				case "wv_create_cancel":
 					actionItem.Name = "wv_create_cancel";
 					actionItem.Menu = "create-bottom";
 					actionItem.Weight = 3;
-					actionItem.Template = "" +
-@"<a class=""btn btn-default btn-outline"" ng-click=""ngCtrl.cancel()"">Cancel</a>";
+					actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-click=\"ngCtrl.cancel()\">Cancel</a>";
 					break;
 				case "wv_back_button":
 					actionItem.Name = "wv_back_button";
 					actionItem.Menu = "sidebar-top";
 					actionItem.Weight = 1;
-					actionItem.Template = "" +
-@"<a class=""back clearfix"" href=""javascript:void(0)"" ng-click=""sidebarData.goBack()""><i class=""fa fa-fw fa-arrow-left""></i> <span class=""text"">Back</span></a>";
+					actionItem.Template = "<a class=\"back clearfix\" href=\"javascript:void(0)\" ng-click=\"sidebarData.goBack()\"><i class=\"fa fa-fw fa-arrow-left\"></i> <span class=\"text\">Back</span></a>";
 					break;
 				default:
 					throw new Exception("no such action type");
@@ -5859,6 +5842,7 @@ namespace WebVella.ERP.Api
 			create.Id = Guid.NewGuid();
 			create.Name = "create";
 			create.Label = "Create";
+			create.Title = "Create";
 			create.Default = true;
 			create.System = false;
 			create.Type = "create";
@@ -5880,6 +5864,7 @@ namespace WebVella.ERP.Api
 			quickCreate.Id = Guid.NewGuid();
 			quickCreate.Name = "quick_create";
 			quickCreate.Label = "Quick create";
+			quickCreate.Title = "Quick create";
 			quickCreate.Default = true;
 			quickCreate.System = false;
 			quickCreate.Type = "quick_create";
@@ -5901,6 +5886,7 @@ namespace WebVella.ERP.Api
 			quickView.Id = Guid.NewGuid();
 			quickView.Name = "quick_view";
 			quickView.Label = "Quick view";
+			quickView.Title = "Quick view";
 			quickView.Default = true;
 			quickView.System = false;
 			quickView.Type = "quick_view";
@@ -5920,6 +5906,7 @@ namespace WebVella.ERP.Api
 			general.Id = Guid.NewGuid();
 			general.Name = "general";
 			general.Label = "General";
+			general.Title = "General";
 			general.Default = true;
 			general.System = false;
 			general.Type = "general";
