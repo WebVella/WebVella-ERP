@@ -499,12 +499,12 @@
 					return htmlString;
 				}
 			}
-			else if (fieldMeta.currency != null && fieldMeta.currency !== {} && fieldMeta.currency.symbol) {
+			else if (fieldMeta.currency != null && fieldMeta.currency !== {} && fieldMeta.currency.symbol_native) {
 				if (fieldMeta.currency.symbolPlacement === 1) {
-					return escapeHtml(fieldMeta.currency.symbol + " " + $filter('number')(data,fieldMeta.currency.decimal_digits));
+					return escapeHtml(fieldMeta.currency.symbol_native + " " + $filter('number')(data,fieldMeta.currency.decimal_digits));
 				}
 				else {
-					return escapeHtml($filter('number')(data,fieldMeta.currency.decimal_digits) + " " + fieldMeta.currency.symbol);
+					return escapeHtml($filter('number')(data,fieldMeta.currency.decimal_digits) + " " + fieldMeta.currency.symbol_native);
 				}
 			}
 			else {
@@ -664,7 +664,7 @@
 				}
 			}
 			else {
-				return "<a target='_blank' href='" + data + "'><img src='" + escapeHtml(data) + "' class='table-image'/></a>";
+				return "<a target='_blank' href='" + data + "'><img src='" + escapeHtml(data) + "?width=36' class='table-image'/></a>";
 			}
 		}
 		//10. Textarea

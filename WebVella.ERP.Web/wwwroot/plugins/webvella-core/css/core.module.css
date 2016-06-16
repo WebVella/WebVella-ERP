@@ -276,7 +276,7 @@ span.divider {
 
 .table-image {
 	max-height: 5em;
-	height: 5em;
+	width: 36px;
 }
 
 .recursive-view-wrapper {
@@ -1362,7 +1362,7 @@ body.hidden-sidebar #page-topnav {
 
 	#page-meta .meta-label h4 {
 		margin: 0;
-		line-height: 20px;
+		line-height: 1.2em;
 		font-size: 20px;
 		position: relative;
 		top: -3px;
