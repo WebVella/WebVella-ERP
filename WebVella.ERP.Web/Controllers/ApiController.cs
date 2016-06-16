@@ -4213,6 +4213,24 @@ namespace WebVella.ERP.Web.Controllers
 			if (file == null)
 				return DoPageNotFoundResponse();
 
+			//check for modification
+			string headerModifiedSince = Request.Headers["If-Modified-Since"];
+			if (headerModifiedSince != null)
+			{
+				DateTime isModifiedSince;
+				if (DateTime.TryParse(headerModifiedSince, out isModifiedSince))
+				{
+					if (isModifiedSince <= file.LastModificationDate)
+					{
+						Response.StatusCode = 304;
+						return new EmptyResult();
+					}
+				}
+			}
+
+			HttpContext.Response.Headers.Add("last-modified", file.LastModificationDate.ToString());
+
+
 			string mimeType;
 			var extension = Path.GetExtension(filepath).ToLowerInvariant();
 			new FileExtensionContentTypeProvider().Mappings.TryGetValue(extension, out mimeType);
@@ -4220,8 +4238,11 @@ namespace WebVella.ERP.Web.Controllers
 			
 			IDictionary<string, StringValues> queryCollection = Microsoft.AspNet.WebUtilities.QueryHelpers.ParseQuery(HttpContext.Request.QueryString.ToString());
 			string action = queryCollection.Keys.Any(x => x == "action") ? ((string)queryCollection["action"]).ToLowerInvariant() : "";
+			string requestedMode = queryCollection.Keys.Any(x => x == "mode") ? ((string)queryCollection["mode"]).ToLowerInvariant() : "";
+			string width = queryCollection.Keys.Any(x => x == "width") ? ((string)queryCollection["width"]).ToLowerInvariant() : "";
+			string height = queryCollection.Keys.Any(x => x == "height") ? ((string)queryCollection["height"]).ToLowerInvariant() : "";
 			bool isImage = extension == ".jpg" || extension == ".jpeg" || extension == ".png" || extension == ".gif";
-			if (isImage && !string.IsNullOrWhiteSpace(action))
+			if (isImage && (!string.IsNullOrWhiteSpace(action) || !string.IsNullOrWhiteSpace(requestedMode) || !string.IsNullOrWhiteSpace(width) || !string.IsNullOrWhiteSpace(height)))
 			{
 				var fileContent = file.GetBytes();
 				using (ImageFactory imageFactory = new ImageFactory())
@@ -4249,7 +4270,6 @@ namespace WebVella.ERP.Web.Controllers
 							default:
 							case "resize":
 								{
-									string requestedMode = queryCollection.Keys.Any(x => x == "mode") ? ((string)queryCollection["mode"]).ToLowerInvariant() : "";
 									ResizeMode mode;
 									switch (requestedMode)
 									{
