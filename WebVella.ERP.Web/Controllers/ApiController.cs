@@ -25,6 +25,10 @@ using System.Diagnostics;
 using Npgsql;
 using System.Data;
 using Microsoft.AspNet.Hosting;
+using ImageProcessor;
+using Microsoft.Extensions.Primitives;
+using ImageProcessor.Imaging;
+using System.Drawing;
 
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -4210,10 +4214,120 @@ namespace WebVella.ERP.Web.Controllers
 				return DoPageNotFoundResponse();
 
 			string mimeType;
-			var extension = Path.GetExtension(filepath);
+			var extension = Path.GetExtension(filepath).ToLowerInvariant();
 			new FileExtensionContentTypeProvider().Mappings.TryGetValue(extension, out mimeType);
 
+			
+			IDictionary<string, StringValues> queryCollection = Microsoft.AspNet.WebUtilities.QueryHelpers.ParseQuery(HttpContext.Request.QueryString.ToString());
+			string action = queryCollection.Keys.Any(x => x == "action") ? ((string)queryCollection["action"]).ToLowerInvariant() : "";
+			bool isImage = extension == ".jpg" || extension == ".jpeg" || extension == ".png" || extension == ".gif";
+			if (isImage && !string.IsNullOrWhiteSpace(action))
+			{
+				var fileContent = file.GetBytes();
+				using (ImageFactory imageFactory = new ImageFactory())
+				{
+					using (Stream inStream = new MemoryStream(fileContent))
+					{
+						
+						MemoryStream outStream = new MemoryStream();
+						imageFactory.Load(inStream);
+
+						//sets background
+						System.Drawing.Color backgroundColor = System.Drawing.Color.White;
+						switch (imageFactory.CurrentImageFormat.MimeType)
+						{
+							case "image/gif":
+							case "image/png":
+								backgroundColor = System.Drawing.Color.Transparent;
+								break;
+							default:
+								break;
+						}
+
+						switch (action)
+						{
+							default:
+							case "resize":
+								{
+									string requestedMode = queryCollection.Keys.Any(x => x == "mode") ? ((string)queryCollection["mode"]).ToLowerInvariant() : "";
+									ResizeMode mode;
+									switch (requestedMode)
+									{
+										case "boxpad":
+											mode = ResizeMode.BoxPad;
+											break;
+										case "crop":
+											mode = ResizeMode.Crop;
+											break;
+										case "min":
+											mode = ResizeMode.Min;
+											break;
+										case "max":
+											mode = ResizeMode.Max;
+											break;
+										case "stretch":
+											mode = ResizeMode.Stretch;
+											break;
+										default:
+											mode = ResizeMode.Pad;
+											break;
+									}
+
+									Size size = ParseSize(queryCollection);
+									ResizeLayer rl = new ResizeLayer(size, mode);
+									imageFactory.Resize(rl).BackgroundColor(backgroundColor).Save(outStream);
+								}
+								break;
+						}
+
+						outStream.Seek(0, SeekOrigin.Begin);
+						return File(outStream, mimeType);
+					}
+				}
+			}
+		
 			return File(file.GetBytes(), mimeType);
+		}
+
+		/// <summary>
+		/// Parse width and height parameters from query string
+		/// </summary>
+		/// <param name="queryCollection"></param>
+		/// <returns></returns>
+		private Size ParseSize(IDictionary<string, StringValues> queryCollection)
+		{
+			string width = queryCollection.Keys.Any(x => x == "width") ? (string)queryCollection["width"] : "";
+			string height = queryCollection.Keys.Any(x => x == "height") ? (string)queryCollection["height"] : "";
+			Size size = new Size();
+
+			// We round up so that single pixel lines are not produced.
+			const MidpointRounding Rounding = MidpointRounding.AwayFromZero;
+
+			// First cater for single dimensions.
+			if (width != null && height == null)
+			{
+
+				width = width.Replace("px", string.Empty);
+				size = new Size((int)Math.Round(ImageProcessor.Web.Helpers.QueryParamParser.Instance.ParseValue<float>(width), Rounding), 0);
+			}
+
+			if (width == null && height != null)
+			{
+				height = height.Replace("px", string.Empty);
+				size = new Size(0, (int)Math.Round(ImageProcessor.Web.Helpers.QueryParamParser.Instance.ParseValue<float>(height), Rounding));
+			}
+
+			// Both supplied
+			if (width != null && height != null)
+			{
+				width = width.Replace("px", string.Empty);
+				height = height.Replace("px", string.Empty);
+				size = new Size(
+					(int)Math.Round(ImageProcessor.Web.Helpers.QueryParamParser.Instance.ParseValue<float>(width), Rounding),
+					(int)Math.Round(ImageProcessor.Web.Helpers.QueryParamParser.Instance.ParseValue<float>(height), Rounding));
+			}
+
+			return size;
 		}
 
 		[AcceptVerbs(new[] { "POST" }, Route = "/fs/upload/")]
