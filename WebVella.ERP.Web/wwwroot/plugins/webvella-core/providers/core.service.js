@@ -501,14 +501,14 @@
 			}
 			else if (fieldMeta.currency != null && fieldMeta.currency !== {} && fieldMeta.currency.symbol) {
 				if (fieldMeta.currency.symbolPlacement === 1) {
-					return escapeHtml(fieldMeta.currency.symbol + " " + data);
+					return escapeHtml(fieldMeta.currency.symbol + " " + $filter('number')(data,fieldMeta.currency.decimal_digits));
 				}
 				else {
-					return escapeHtml(data + " " + fieldMeta.currency.symbol);
+					return escapeHtml($filter('number')(data,fieldMeta.currency.decimal_digits) + " " + fieldMeta.currency.symbol);
 				}
 			}
 			else {
-				return escapeHtml(data);
+				return escapeHtml($filter('number')(data,fieldMeta.currency.decimal_digits));
 			}
 		}
 		//4.Date
