@@ -558,6 +558,12 @@
 				ngCtrl.filterLoading = false;
 			},300);
 			ngCtrl.list.data = response.object;
+			if(ngCtrl.currentPage != 1){
+				$location.search("page", ngCtrl.currentPage);
+			}
+			else {
+				$location.search("page", null);
+			}			
 			$window.scrollTo(0, 0);
 		}
 		ngCtrl.selectPage = function (page) {
