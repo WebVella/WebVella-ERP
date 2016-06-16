@@ -86,6 +86,27 @@
           "lib/net451/EntityFramework.Relational.dll": {}
         }
       },
+      "ImageProcessor/2.4.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/ImageProcessor.dll": {}
+        },
+        "runtime": {
+          "lib/net45/ImageProcessor.dll": {}
+        }
+      },
+      "ImageProcessor.Web/4.6.1": {
+        "type": "package",
+        "dependencies": {
+          "ImageProcessor": "2.4.0"
+        },
+        "compile": {
+          "lib/net45/ImageProcessor.Web.dll": {}
+        },
+        "runtime": {
+          "lib/net45/ImageProcessor.Web.dll": {}
+        }
+      },
       "iTextSharp/5.5.6": {
         "type": "package",
         "compile": {
@@ -2124,6 +2145,27 @@
         },
         "runtime": {
           "lib/net451/EntityFramework.Relational.dll": {}
+        }
+      },
+      "ImageProcessor/2.4.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/ImageProcessor.dll": {}
+        },
+        "runtime": {
+          "lib/net45/ImageProcessor.dll": {}
+        }
+      },
+      "ImageProcessor.Web/4.6.1": {
+        "type": "package",
+        "dependencies": {
+          "ImageProcessor": "2.4.0"
+        },
+        "compile": {
+          "lib/net45/ImageProcessor.Web.dll": {}
+        },
+        "runtime": {
+          "lib/net45/ImageProcessor.Web.dll": {}
         }
       },
       "iTextSharp/5.5.6": {
@@ -4173,6 +4215,27 @@
         },
         "runtime": {
           "lib/net451/EntityFramework.Relational.dll": {}
+        }
+      },
+      "ImageProcessor/2.4.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/ImageProcessor.dll": {}
+        },
+        "runtime": {
+          "lib/net45/ImageProcessor.dll": {}
+        }
+      },
+      "ImageProcessor.Web/4.6.1": {
+        "type": "package",
+        "dependencies": {
+          "ImageProcessor": "2.4.0"
+        },
+        "compile": {
+          "lib/net45/ImageProcessor.Web.dll": {}
+        },
+        "runtime": {
+          "lib/net45/ImageProcessor.Web.dll": {}
         }
       },
       "iTextSharp/5.5.6": {
@@ -6272,6 +6335,28 @@
         "lib/net451/EntityFramework.Relational.xml",
         "lib/netcore50/EntityFramework.Relational.dll",
         "lib/netcore50/EntityFramework.Relational.xml"
+      ]
+    },
+    "ImageProcessor/2.4.1": {
+      "type": "package",
+      "sha512": "7PKgGWtSQy2bOim3/2uL2FOSY7duzrjCGnqC/Ahv/euANRFaDB0/ArmIOWEo2du2iBcKSMevSK8N6kq0UQmzuQ==",
+      "files": [
+        "ImageProcessor.2.4.1.nupkg",
+        "ImageProcessor.2.4.1.nupkg.sha512",
+        "ImageProcessor.nuspec",
+        "lib/net40/ImageProcessor.dll",
+        "lib/net45/ImageProcessor.dll"
+      ]
+    },
+    "ImageProcessor.Web/4.6.1": {
+      "type": "package",
+      "sha512": "GCfQ/MOrEhZD+JGw0dtKSLZjcRgCv3Mm3lC7wCGRpI2kBkd84N1Yh+JggJnbPcjBMHt4RmXyo1s0qWWx5fkhNw==",
+      "files": [
+        "content/web.config.transform",
+        "ImageProcessor.Web.4.6.1.nupkg",
+        "ImageProcessor.Web.4.6.1.nupkg.sha512",
+        "ImageProcessor.Web.nuspec",
+        "lib/net45/ImageProcessor.Web.dll"
       ]
     },
     "iTextSharp/5.5.6": {
@@ -8534,6 +8619,8 @@
       "Newtonsoft.Json >= 8.0.1-beta3",
       "System.Linq >= 4.0.1-beta-23516",
       "System.Threading >= 4.0.11-beta-23516",
+      "ImageProcessor >= 2.4.1",
+      "ImageProcessor.Web >= 4.6.1",
       "WebVella.ERP >= 1.0.0-*",
       "WebVella.ERP.Project >= 1.0.0-*",
       "WebVella.ERP.Crm >= 1.0.0-*"
