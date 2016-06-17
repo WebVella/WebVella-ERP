@@ -151,7 +151,6 @@
 
 		//#endregion
 
-
 		$scope.renderFieldValue = webvellaCoreService.renderFieldValue;
 		
 		$scope.getRelationLabel = function (item) {
@@ -169,6 +168,22 @@
 				}
 			}
 		}
+
+		//#region << Action items >>
+		$scope.listTitleActionItems = [];
+		$scope.listRecordActionItems = [];
+		$scope.listMeta.meta.actionItems.forEach(function(actionItem){
+			if(actionItem.menu == "recursive-list-title"){
+				$scope.listTitleActionItems.push(actionItem);
+			}
+			else if(actionItem.menu == "recursive-list-record-row"){
+				$scope.listRecordActionItems.push(actionItem);
+			}
+		});
+
+		 $scope.listTitleActionItems.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+		 $scope.listRecordActionItems.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+		//#endregion
 
 		//#endregion
 

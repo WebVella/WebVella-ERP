@@ -252,17 +252,18 @@
 			});
 		}
 
-		ngCtrl.addManageActionItemModal = function (actionItem) {
+		ngCtrl.addManageActionItemModal = function (actionItem,selectTemplateFirst) {
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'addManageActionItemModal.html',
 				controller: 'AddManageListActionItemModalController',
 				controllerAs: "popupCtrl",
-				size: "width-100p",
+				size: "width-75p",
 				backdrop:"static",
 				resolve: {
 					parentData: function () { return ngCtrl; },
-					actionItem: function () { return actionItem; }
+					actionItem: function () { return actionItem; } ,
+					selectTemplateFirst: function(){ return selectTemplateFirst;}
 				}
 			});
 		}
@@ -347,9 +348,9 @@
 		}
 	};
 
-	AddManageListActionItemModalController.$inject = ['parentData','actionItem', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state','$translate'];
+	AddManageListActionItemModalController.$inject = ['parentData','actionItem', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state','$translate','selectTemplateFirst'];
 	
-	function AddManageListActionItemModalController(parentData,actionItem, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state,$translate) {
+	function AddManageListActionItemModalController(parentData,actionItem, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state,$translate,selectTemplateFirst) {
 
 		
 		var popupCtrl = this;
@@ -357,6 +358,7 @@
 		popupCtrl.originalActionItems = fastCopy(parentData.list.actionItems);
 		popupCtrl.actionItem = {};
 		popupCtrl.isEdit = false;
+		popupCtrl.selectTemplateFirst = fastCopy(selectTemplateFirst);
 		if(actionItem != null){
 			popupCtrl.isEdit = true;
 			popupCtrl.actionItem = fastCopy(actionItem);
@@ -477,9 +479,30 @@
 		function errorCallback(response) {
 			popupCtrl.hasError = true;
 			popupCtrl.errorMessage = response.message;
-
-
 		}
+
+		popupCtrl.selectTemplate = function(templateName){
+			popupCtrl.actionItem = webvellaCoreService.initListActionItemTemplate(templateName);
+			popupCtrl.selectTemplateFirst = false;
+		}
+
+		popupCtrl.getTemplateCurrentMenu = function(templateName){
+			var selectedMenus = "";
+			popupCtrl.originalActionItems.forEach(function(actionItem){
+				if(actionItem.name == templateName){
+					selectedMenus += "<div class='go-green'>"+actionItem.menu + "</div>";
+				}							
+			});
+			if(selectedMenus == ""){
+				selectedMenus = "<div class='go-grey'>not used</div>";
+			}
+			else {
+				selectedMenus += "<small class='go-grey'>(use with new name)</small>";
+			}
+
+			return selectedMenus;		
+		}
+
 	};	
 	
 	//#endregion

@@ -5733,6 +5733,36 @@ namespace WebVella.ERP.Api
 					actionItem.Weight = 1;
 					actionItem.Template = "<a class=\"btn btn-default btn-outline\" ng-href=\"{{::ngCtrl.getRecordDetailsUrl(record)}}\"><i class=\"fa fa-fw fa-eye\"></i></a>";
 					break;
+				case "wv_recursive_list_add_existing":
+					actionItem.Name = "wv_recursive_list_add_existing";
+					actionItem.Menu = "recursive-list-title";
+					actionItem.Weight = 1;
+					actionItem.Template = "<a href=\"javascript:void(0)\" class=\"btn btn-outline btn-sm\" ng-if=\"::canAddExisting\" ng-click=\"addExistingItem()\"><i class=\"fa fa-download\"></i> Add existing</a>";
+					break;
+				case "wv_recursive_list_add_new":
+					actionItem.Name = "wv_recursive_list_add_new";
+					actionItem.Menu = "recursive-list-title";
+					actionItem.Weight = 2;
+					actionItem.Template = "<a href=\"javascript:void(0)\" class=\"btn btn-outline btn-sm\" ng-if=\"::canCreate\" ng-click=\"manageRelatedRecordItem(null)\"><i class=\"fa fa-plus\"></i> Create & Add</a>";
+					break;
+				case "wv_recursive_list_view":
+					actionItem.Name = "wv_recursive_list_view";
+					actionItem.Menu = "recursive-list-record-row";
+					actionItem.Weight = 1;
+					actionItem.Template = "<a href=\"javascript:void(0)\" title=\"quick view this record\" class=\"btn btn-sm btn-outline\" ng-click=\"viewRelatedRecordItem(record)\"><i class=\"fa fa-eye\"></i></a>";
+					break;
+				case "wv_recursive_list_edit":
+					actionItem.Name = "wv_recursive_list_edit";
+					actionItem.Menu = "recursive-list-record-row";
+					actionItem.Weight = 2;
+					actionItem.Template = "<a href=\"javascript:void(0)\" title=\"quick edit this record\" class=\"btn btn-sm btn-outline\" ng-click=\"manageRelatedRecordItem(record)\" ng-if=\"::canUpdate\"><i class=\"fa fa-pencil\"></i></a>";
+					break;
+				case "wv_recursive_list_unrelate":
+					actionItem.Name = "wv_recursive_list_unrelate";
+					actionItem.Menu = "recursive-list-record-row";
+					actionItem.Weight = 3;
+					actionItem.Template = "<a href=\"javascript:void(0)\" title=\"Detach records relation\" class=\"btn btn-sm btn-outline\" confirmed-click=\"instantDetachRecord(record)\" ng-confirm-click=\"Are you sure that you need this relation broken?\" ng-if=\"::canRemove\"><i class=\"fa fa-times go-red\"></i></a>";
+					break;
 				default:
 					throw new Exception("no such action type");
 			}
@@ -5763,6 +5793,11 @@ namespace WebVella.ERP.Api
 			create.ActionItems.Add(GenerateListActionItem("wv_import_records"));
 			create.ActionItems.Add(GenerateListActionItem("wv_export_records"));
 			create.ActionItems.Add(GenerateListActionItem("wv_record_details"));
+			create.ActionItems.Add(GenerateListActionItem("wv_recursive_list_add_existing"));
+			create.ActionItems.Add(GenerateListActionItem("wv_recursive_list_add_new"));
+			create.ActionItems.Add(GenerateListActionItem("wv_recursive_list_view"));
+			create.ActionItems.Add(GenerateListActionItem("wv_recursive_list_edit"));
+			create.ActionItems.Add(GenerateListActionItem("wv_recursive_list_unrelate"));
 			recordLists.Add(create);
 
 			var lookup = new RecordList();
@@ -5785,6 +5820,11 @@ namespace WebVella.ERP.Api
 			lookup.ActionItems.Add(GenerateListActionItem("wv_import_records"));
 			lookup.ActionItems.Add(GenerateListActionItem("wv_export_records"));
 			lookup.ActionItems.Add(GenerateListActionItem("wv_record_details"));
+			lookup.ActionItems.Add(GenerateListActionItem("wv_recursive_list_add_existing"));
+			lookup.ActionItems.Add(GenerateListActionItem("wv_recursive_list_add_new"));
+			lookup.ActionItems.Add(GenerateListActionItem("wv_recursive_list_view"));
+			lookup.ActionItems.Add(GenerateListActionItem("wv_recursive_list_edit"));
+			lookup.ActionItems.Add(GenerateListActionItem("wv_recursive_list_unrelate"));
 			recordLists.Add(lookup);
 
 			return recordLists;
@@ -5825,6 +5865,30 @@ namespace WebVella.ERP.Api
 					actionItem.Weight = 1;
 					actionItem.Template = "<a class=\"back clearfix\" href=\"javascript:void(0)\" ng-click=\"sidebarData.goBack()\"><i class=\"fa fa-fw fa-arrow-left\"></i> <span class=\"text\">Back</span></a>";
 					break;
+				case "wv_recursive_view_add_existing":
+					actionItem.Name = "wv_recursive_view_add_existing";
+					actionItem.Menu = "recursive-view-title";
+					actionItem.Weight = 1;
+					actionItem.Template = "<a href=\"javascript:void(0)\" class=\"btn btn-sm btn-outline\" ng-if=\"::canAddExisting\" ng-click=\"addExistingItem()\"><i class=\"fa fa-download\"></i> Add existing</a>";
+					break;
+				case "wv_recursive_view_add_new":
+					actionItem.Name = "wv_recursive_view_add_new";
+					actionItem.Menu = "recursive-view-title";
+					actionItem.Weight = 2;
+					actionItem.Template = "<a href=\"javascript:void(0)\" class=\"btn btn-sm btn-outline\" ng-if=\"::canCreate\" ng-click=\"manageRelatedRecordItem(null)\"><i class=\"fa fa-plus\"></i> Create & Add</a>";
+					break;
+				case "wv_recursive_view_edit":
+					actionItem.Name = "wv_recursive_view_edit";
+					actionItem.Menu = "recursive-list-record-row";
+					actionItem.Weight = 1;
+					actionItem.Template = "<a href=\"javascript:void(0)\" title=\"quick edit\" class=\"btn btn-sm btn-outline\" ng-click=\"manageRelatedRecordItem(recordData)\" ng-if=\"::canUpdate\"><i class=\"fa fa-pencil\"></i></a>";
+					break;
+				case "wv_recursive_view_unrelate":
+					actionItem.Name = "wv_recursive_view_unrelate";
+					actionItem.Menu = "recursive-list-record-row";
+					actionItem.Weight = 2;
+					actionItem.Template = "<a href=\"javascript:void(0)\" title=\"remove relation\" class=\"btn btn-sm btn-outline\" confirmed-click=\"instantDetachRecord(recordData)\" ng-confirm-click=\"Are you sure that you need this relation broken?\" ng-if=\"::canRemove\"><i class=\"fa fa-times go-red\"></i></a>";
+					break;
 				default:
 					throw new Exception("no such action type");
 			}
@@ -5860,6 +5924,10 @@ namespace WebVella.ERP.Api
 			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
 			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_details"));
 			create.ActionItems.Add(GenerateViewActionItem("wv_create_cancel"));
+			create.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_add_existing"));
+			create.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_add_new"));
+			create.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_edit"));
+			create.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_unrelate"));
 			recordViewList.Add(create);
 
 			var quickCreate = new RecordView();
@@ -5882,6 +5950,10 @@ namespace WebVella.ERP.Api
 			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
 			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_create_and_details"));
 			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_create_cancel"));
+			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_add_existing"));
+			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_add_new"));
+			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_edit"));
+			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_unrelate"));
 			recordViewList.Add(quickCreate);
 
 			var quickView = new RecordView();
@@ -5902,6 +5974,10 @@ namespace WebVella.ERP.Api
 			quickView.ActionItems = new List<ActionItem>();
 			quickView.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
 			quickView.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
+			quickView.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_add_existing"));
+			quickView.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_add_new"));
+			quickView.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_edit"));
+			quickView.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_unrelate"));
 			recordViewList.Add(quickView);
 
 			var general = new RecordView();
@@ -5922,6 +5998,10 @@ namespace WebVella.ERP.Api
 			general.ActionItems = new List<ActionItem>();
 			general.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
 			general.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
+			general.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_add_existing"));
+			general.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_add_new"));
+			general.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_edit"));
+			general.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_unrelate"));
 			recordViewList.Add(general);
 
 

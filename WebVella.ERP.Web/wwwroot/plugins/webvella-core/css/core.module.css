@@ -2454,6 +2454,11 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 		width: 98%;
 	}
 }
+@media (min-width: 992px) {
+	.modal-width-75p {
+		width: 75%;
+	}
+}
 /*#endregion */
 
 /*#region << Forms >> */

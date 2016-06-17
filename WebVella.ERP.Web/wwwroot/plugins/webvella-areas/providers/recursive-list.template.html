@@ -3,13 +3,7 @@
 </div>
 <div ng-if='::!listMeta.meta.dynamicHtmlTemplate'>
 	<p ng-if="::(canAddExisting || canCreate) && !hasError">
-		<a href='javascript:void(0)' class="btn btn-outline btn-sm" ng-if="::canAddExisting" ng-click="addExistingItem()">
-			<i class="fa fa-download"></i> Add existing
-		</a>
-		<a href='javascript:void(0)' class="btn btn-outline btn-sm" ng-if="::canCreate" ng-click="manageRelatedRecordItem(null)">
-			<i class="fa fa-plus"></i> Create & Add
-		</a>
-
+		<span dynamic-html template="::actionItem.template" ng-repeat="actionItem in listTitleActionItems track by actionItem.name" style="margin-right:5px;"></span>
 	</p>
 
 	<table class="table table-vertical-align-middle table-bordered table-hover {{::listMeta.meta.cssClass}} ng-hide" ng-show="::listData.length > 0" ng-if="::!hasError">
@@ -22,15 +16,7 @@
 		<tbody>
 			<tr ng-repeat="record in listData track by record.id">
 				<td style="width:1%;white-space:nowrap;">
-					<a href='javascript:void(0)' title="quick view this record" class="btn btn-sm btn-outline" ng-click="viewRelatedRecordItem(record)">
-						<i class="fa fa-eye"></i>
-					</a>
-					<a href='javascript:void(0)' title="quick edit this record" class="btn btn-sm btn-outline" ng-click="manageRelatedRecordItem(record)" ng-if="::canUpdate">
-						<i class="fa fa-pencil"></i>
-					</a>
-					<a href='javascript:void(0)' title="Detach records relation" class="btn btn-sm btn-outline" confirmed-click="instantDetachRecord(record)" ng-confirm-click="Are you sure that you need this relation broken?" ng-if="::canRemove">
-						<i class="fa fa-times go-red"></i>
-					</a>
+					<span dynamic-html template="::actionItem.template" ng-repeat="actionItem in listRecordActionItems track by actionItem.name" style="margin-right:5px;"></span>
 				</td>
 				<td class="wv-{{::column.meta.name}}" ng-repeat="column in listMeta.meta.columns  | limitTo: listMeta.meta.visibleColumnsCount" ng-switch="::column.type">
 					<div ng-switch-when="field">

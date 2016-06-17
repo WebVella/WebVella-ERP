@@ -155,6 +155,22 @@
 		//Columns render 
 		$scope.renderFieldValue = webvellaCoreService.renderFieldValue;
 
+		//#region << Action items >>
+		$scope.viewTitleActionItems = [];
+		$scope.viewRecordActionItems = [];
+		$scope.viewMeta.meta.actionItems.forEach(function(actionItem){
+			if(actionItem.menu == "recursive-view-title"){
+				$scope.viewTitleActionItems.push(actionItem);
+			}
+			else if(actionItem.menu == "recursive-view-record-row"){
+				$scope.viewRecordActionItems.push(actionItem);
+			}
+		});
+
+		 $scope.viewTitleActionItems.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+		 $scope.viewRecordActionItems.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+		//#endregion
+
 		//#region << Logic >>
 		$scope.instantDetachRecord = function (record) {
 			var returnObject = {
