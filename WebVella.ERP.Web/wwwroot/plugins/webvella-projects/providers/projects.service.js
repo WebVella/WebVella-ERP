@@ -25,6 +25,7 @@
 		serviceInstance.getActivitiesList = getActivitiesList;
 		serviceInstance.getOwnerLastModifiedTasks = getOwnerLastModifiedTasks;
 		serviceInstance.getOwnerLastModifiedBugs = getOwnerLastModifiedBugs;
+		serviceInstance.getProjectTimelogReport = getProjectTimelogReport;
 		//#endregion
 
 
@@ -50,6 +51,10 @@
 		///////////////////
 		function getOwnerLastModifiedBugs(page,successCallback, errorCallback) {
 			$http({ method: 'GET', url: "/plugins/webvella-projects/api/bug/list/last-updated-for-owner?page="+page }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
+		function getProjectTimelogReport(month,year,successCallback, errorCallback) {
+			$http({ method: 'GET', url: "/plugins/webvella-projects/api/report/project-timelog?year="+year + "&month=" + month }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 

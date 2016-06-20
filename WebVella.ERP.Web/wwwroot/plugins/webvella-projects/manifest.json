@@ -28,7 +28,8 @@
 			"/plugins/webvella-projects/providers/projects.service.js",
 			"/plugins/webvella-projects/template-controllers.js",
 			"/plugins/webvella-projects/providers/task-comments.controller.js",
-			"/plugins/webvella-projects/providers/bug-comments.controller.js"
+			"/plugins/webvella-projects/providers/bug-comments.controller.js",
+			"/plugins/webvella-projects/providers/project-timelog-report.controller.js"
 		],
 		"wvApp_injects": [ "webvellaProjects" ]
 	}
