@@ -4,7 +4,7 @@
 			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.lists.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
-					<input ng-model="searchFilter" type="text" class="form-control" placeholder="{{::'RECORD_LIST_NAME' | translate}}">
+					<input ng-model="searchFilter" type="text" class="form-control" placeholder="{{::'RECORD_LIST_NAME' | translate}}"  focus-me="true">
 				</div>
 			</div>
 			<a class="btn btn-default btn-outline" ng-click="ngCtrl.createListModal()"><span translate="{{::'ADD_NEW'}}"></span></a>
