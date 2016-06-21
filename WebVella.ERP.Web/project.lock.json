@@ -1887,12 +1887,12 @@
           "System.Numerics"
         ],
         "compile": {
-          "ref/net46/_._": {},
-          "ref/net46/System.Numerics.Vectors.dll": {}
+          "ref/net46/System.Numerics.Vectors.dll": {},
+          "ref/net46/_._": {}
         },
         "runtime": {
-          "lib/net46/_._": {},
-          "lib/net46/System.Numerics.Vectors.dll": {}
+          "lib/net46/System.Numerics.Vectors.dll": {},
+          "lib/net46/_._": {}
         }
       },
       "System.Reflection/4.0.0": {
@@ -3957,12 +3957,12 @@
           "System.Numerics"
         ],
         "compile": {
-          "ref/net46/_._": {},
-          "ref/net46/System.Numerics.Vectors.dll": {}
+          "ref/net46/System.Numerics.Vectors.dll": {},
+          "ref/net46/_._": {}
         },
         "runtime": {
-          "lib/net46/_._": {},
-          "lib/net46/System.Numerics.Vectors.dll": {}
+          "lib/net46/System.Numerics.Vectors.dll": {},
+          "lib/net46/_._": {}
         }
       },
       "System.Reflection/4.0.0": {
@@ -6027,12 +6027,12 @@
           "System.Numerics"
         ],
         "compile": {
-          "ref/net46/_._": {},
-          "ref/net46/System.Numerics.Vectors.dll": {}
+          "ref/net46/System.Numerics.Vectors.dll": {},
+          "ref/net46/_._": {}
         },
         "runtime": {
-          "lib/net46/_._": {},
-          "lib/net46/System.Numerics.Vectors.dll": {}
+          "lib/net46/System.Numerics.Vectors.dll": {},
+          "lib/net46/_._": {}
         }
       },
       "System.Reflection/4.0.0": {
@@ -6284,7 +6284,7 @@
     },
     "CsvHelper/2.13.0": {
       "type": "package",
-      "sha512": "89T0wPCsnQroUSkdsnCGsohInXaqx4J3lEQJ5Ed+6B6hGSKTYtbww4JAFaumDPa2p2Iyb29as5yahV5dATi0RA==",
+      "sha512": "08adiITHpWyIm9RR9EtMlS05iIuesDZuN1px6pw7Dlc/7c5cz9vCoAQdksP+JyTgmfZVhN57y+ii7sUCFr+mDQ==",
       "files": [
         "CsvHelper.2.13.0.nupkg",
         "CsvHelper.2.13.0.nupkg.sha512",
@@ -6339,7 +6339,7 @@
     },
     "ImageProcessor/2.4.1": {
       "type": "package",
-      "sha512": "7PKgGWtSQy2bOim3/2uL2FOSY7duzrjCGnqC/Ahv/euANRFaDB0/ArmIOWEo2du2iBcKSMevSK8N6kq0UQmzuQ==",
+      "sha512": "75ekq7Ynj2PpbzynlRy7+FrurG/kzh8w1xeBk75bU78uhnBFE/+uTrrfLo2FpbBEaX+bPj4UsFeiGKpGj3qFTw==",
       "files": [
         "ImageProcessor.2.4.1.nupkg",
         "ImageProcessor.2.4.1.nupkg.sha512",
@@ -6350,7 +6350,7 @@
     },
     "ImageProcessor.Web/4.6.1": {
       "type": "package",
-      "sha512": "GCfQ/MOrEhZD+JGw0dtKSLZjcRgCv3Mm3lC7wCGRpI2kBkd84N1Yh+JggJnbPcjBMHt4RmXyo1s0qWWx5fkhNw==",
+      "sha512": "jdBNWOaOOFb3NYtr1iYU/HcdAxdK4x3IVFMHncZGkEtvJe1YMJT/JDoPZr6Ih7E/DQienGrtzqJ8OGQLMjaIFg==",
       "files": [
         "content/web.config.transform",
         "ImageProcessor.Web.4.6.1.nupkg",
