@@ -1989,9 +1989,7 @@ namespace WebVella.ERP.Api
 			var entities = Cache.GetEntities();
 			if (entities != null)
 			{
-				EntityList entityList = new EntityList();
-				entityList.Entities = entities;
-				response.Object = entityList;
+				response.Object = entities;
 				response.Hash = Cache.GetEntitiesHash();
 				return response;
 			}
@@ -2581,12 +2579,8 @@ namespace WebVella.ERP.Api
 					entity.Hash = CryptoUtility.ComputeOddMD5Hash(JsonConvert.SerializeObject(entity));
 				}
 
-
-
-				EntityList entityList = new EntityList();
-				entityList.Entities = entities;
 				Cache.AddEntities(entities);
-				response.Object = entityList;
+				response.Object = entities;
 				response.Hash = Cache.GetEntitiesHash();
 			}
 			catch (Exception e)
@@ -2621,7 +2615,7 @@ namespace WebVella.ERP.Api
 
 				if (entityListResponse != null && entityListResponse.Object != null)
 				{
-					List<Entity> entities = entityListResponse.Object.Entities;
+					List<Entity> entities = entityListResponse.Object;
 
 					Entity entity = entities.FirstOrDefault(e => e.Id == id);
 					if (entity != null)
@@ -2660,7 +2654,7 @@ namespace WebVella.ERP.Api
 
 				if (entityListResponse != null && entityListResponse.Object != null)
 				{
-					List<Entity> entities = entityListResponse.Object.Entities;
+					List<Entity> entities = entityListResponse.Object;
 
 					Entity entity = entities.FirstOrDefault(e => e.Name == name);
 					if (entity != null)
@@ -3490,7 +3484,7 @@ namespace WebVella.ERP.Api
 					response.Message = "There is no entities into database!";
 					return response;
 				}
-				List<Entity> entities = entitiesResponse.Object.Entities;
+				List<Entity> entities = entitiesResponse.Object;
 
 				FieldList fieldList = new FieldList();
 
@@ -4160,7 +4154,7 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				List<Entity> entities = entitiesResponse.Object.Entities;
+				List<Entity> entities = entitiesResponse.Object;
 
 
 				RecordListCollection recordListCollection = new RecordListCollection();
@@ -4781,7 +4775,7 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				List<Entity> entities = entitiesResponse.Object.Entities;
+				List<Entity> entities = entitiesResponse.Object;
 
 				RecordViewCollection recordViewList = new RecordViewCollection();
 				recordViewList.RecordViews = new List<RecordView>();
@@ -5390,7 +5384,7 @@ namespace WebVella.ERP.Api
 					response.Message = "There is no entities into database!";
 					return response;
 				}
-				List<Entity> entities = entityResponse.Object.Entities;
+				List<Entity> entities = entityResponse.Object;
 
 				RecordTreeCollection recordTreeCollection = new RecordTreeCollection();
 				recordTreeCollection.RecordTrees = new List<RecordTree>();
@@ -6031,7 +6025,7 @@ namespace WebVella.ERP.Api
 			if (!entityResponse.Success || entityResponse.Object == null)
 				return null;
 
-			List<Entity> entities = entityResponse.Object.Entities;
+			List<Entity> entities = entityResponse.Object;
 
 			return GetEntityByListId(listId, entities);
 		}
@@ -6067,7 +6061,7 @@ namespace WebVella.ERP.Api
 			if (!entityResponse.Success || entityResponse.Object == null)
 				return null;
 
-			List<Entity> entities = entityResponse.Object.Entities;
+			List<Entity> entities = entityResponse.Object;
 
 			return GetEntityByViewId(viewId, entities);
 		}
@@ -6089,7 +6083,7 @@ namespace WebVella.ERP.Api
 			if (!entityResponse.Success || entityResponse.Object == null)
 				return null;
 
-			List<Entity> entities = entityResponse.Object.Entities;
+			List<Entity> entities = entityResponse.Object;
 
 			return GetEntityByFieldId(fieldId, entities);
 		}

@@ -2357,7 +2357,7 @@ namespace WebVella.ERP.Web.Controllers
 		{
 
 			EntityListResponse entitiesResponse = entMan.ReadEntities();
-			List<Entity> entities = entitiesResponse.Object.Entities;
+			List<Entity> entities = entitiesResponse.Object;
 
 			var response = new RecordListRecordResponse();
 			response.Message = "Success";
@@ -2944,7 +2944,7 @@ namespace WebVella.ERP.Web.Controllers
 		public IActionResult GetViewRecords(string entityName, string viewName, Guid id)
 		{
 			EntityListResponse entitiesResponse = entMan.ReadEntities();
-			List<Entity> entities = entitiesResponse.Object.Entities;
+			List<Entity> entities = entitiesResponse.Object;
 
 			RecordViewRecordResponse response = new RecordViewRecordResponse();
 			response.Message = "Success";
@@ -3480,7 +3480,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/tree/{treeName}")]
 		public IActionResult GetTreeRecords(string entityName, string treeName)
 		{
-			List<Entity> entities = entMan.ReadEntities().Object.Entities;
+			List<Entity> entities = entMan.ReadEntities().Object;
 
 			RecordTreeRecordResponse response = new RecordTreeRecordResponse();
 			response.Message = "Success";
@@ -3747,7 +3747,7 @@ namespace WebVella.ERP.Web.Controllers
 			response.Object = null;
 
 			EntityListResponse entitiesResponse = entMan.ReadEntities();
-			List<Entity> entities = entitiesResponse.Object.Entities;
+			List<Entity> entities = entitiesResponse.Object;
 			Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
 
 			if (entity == null)
@@ -3959,7 +3959,7 @@ namespace WebVella.ERP.Web.Controllers
 			{
 				List<EntityRelation> relations = relMan.Read().Object;
 				EntityListResponse entitiesResponse = entMan.ReadEntities();
-				List<Entity> entities = entitiesResponse.Object.Entities;
+				List<Entity> entities = entitiesResponse.Object;
 				Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
 
 				if (entity == null)
