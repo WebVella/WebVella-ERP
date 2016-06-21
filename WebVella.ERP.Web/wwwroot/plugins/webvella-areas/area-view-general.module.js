@@ -1329,7 +1329,7 @@
 						return item;
 					},
 					selectedItemData: function () {
-						return ngCtrl.view.data[item.dataName];
+						return viewData[item.dataName];
 					},
 					resolvedTree: resolveTree(item),
 					resolvedTreeRelation: resolveTreeRelation(item),

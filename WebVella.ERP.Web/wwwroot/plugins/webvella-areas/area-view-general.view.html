@@ -708,18 +708,40 @@
 							<!--If item is tree WITH relation-->
 							<div class="field" ng-switch-when="treeFromRelation">
 								<label class="control-label">{{::item.fieldLabel}}</label>
-								<div ng-if="::ngCtrl.currentUserHasReadPermission(item)" class="position-relative>
-									<span class="editable editable-click tree" ng-click="ngCtrl.openSelectTreeNodesModal(item,viewData)">
-										<span ng-repeat="treeDataRow in viewData[item.dataName]">{{treeDataRow.label}}<span ng-if="!$last">,</span> </span>
-									</span>
-									<div ng-if="::item.meta.helpText" class="form-description">
-										{{item.meta.helpText}}
+								<div class="position-relative">
+									<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermissionRelation(item) && ngCtrl.currentUserHasReadPermission(item)">
+										<table class="table table-bordered editable origin lookup" ng-dblclick="ngCtrl.openSelectTreeNodesModal(item,viewData)">
+											<tr ng-repeat="treeDataRow in viewData[item.dataName]">
+												<td>{{treeDataRow.label}}</td>
+											</tr>
+											<tr ng-if="viewData[item.dataName].length == 0">
+												<td style="padding: 16px"></td>
+											</tr>
+										</table>
+										<span class="input-group-addon" ng-click="ngCtrl.openSelectTreeNodesModal(item,viewData)"><i class="fa fa-sitemap fa-fw"></i></span>
+									</div>
+									<div class="editable-wrapper input-group editable-updatable" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item) && ngCtrl.currentUserHasReadPermission(item)">
+										<table class="table table-bordered editable origin lookup">
+											<tr ng-repeat="treeDataRow in viewData[item.dataName]">
+												<td>{{treeDataRow.label}}</td>
+											</tr>
+											<tr ng-if="viewData[item.dataName].length == 0">
+												<td style="padding: 16px"></td>
+											</tr>
+										</table>
+										<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 									</div>
 								</div>
 								<div ng-if="::!ngCtrl.currentUserHasReadPermission(item)">
-									<span class="not-editable not-readable">hidden</span>
+									<div class="editable-wrapper input-group editable-readonly">
+										<div class="form-control">
+											hidden
+										</div>
+									</div>
 								</div>
-
+									<div ng-if="::item.meta.helpText" class="form-description">
+										{{item.meta.helpText}}
+									</div>
 							</div>
 
 						</div>
@@ -1001,7 +1023,7 @@
 
 <script type="text/ng-template" id="selectTreeNodesModal.html">
 	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<button type="button" class="close" ng-click="popupCtrl.close()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		<h3 class="modal-title">Select <span class="go-green">{{popupCtrl.itemMeta.entityLabel}}</span></h3>
 	</div>
 	<div class="modal-body">

@@ -1670,6 +1670,11 @@ body.hidden-sidebar #page-topnav {
 	margin-top: 1em;
 }
 
+.title-label {
+	color: rgba(0,0,0,0.3);
+    text-transform: uppercase;
+    font-size: 16px;
+}
 
 /*#endregion */
 
@@ -5084,9 +5089,6 @@ a.link-icon.link[href]:before {
 .angular-ui-tree li.parent_li.hovered .angular-ui-tree-handle {
 	border-color: #03A9F4;
 }
-
-
-
 
 /*#endregion*/
 
