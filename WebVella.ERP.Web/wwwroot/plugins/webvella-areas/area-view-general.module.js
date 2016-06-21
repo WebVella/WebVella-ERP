@@ -1329,7 +1329,7 @@
 						return item;
 					},
 					selectedItemData: function () {
-						return ngCtrl.view.data[item.dataName];
+						return viewData[item.dataName];
 					},
 					resolvedTree: resolveTree(item),
 					resolvedTreeRelation: resolveTreeRelation(item),
@@ -1380,6 +1380,29 @@
 
 			return response;
 
+		}
+		
+		var treeLabelFieldNameDict = {};
+
+		ngCtrl.generateTreeRowData = function(treeMeta,rowData){
+			//Get the label field name
+			var treeLabelFieldName = "id";
+			if(treeLabelFieldNameDict[treeMeta.entityName]){
+				treeLabelFieldName = treeLabelFieldNameDict[treeMeta.entityName];
+			}
+			else {
+				var treeEntityMeta = webvellaCoreService.getEntityMetaFromEntityList(treeMeta.entityName,resolvedEntityList);
+				for (var i = 0; i < treeEntityMeta.fields.length; i++) {
+					 var fieldMeta =  treeEntityMeta.fields[i];
+					 if(fieldMeta.id == treeMeta.meta.nodeLabelFieldId){
+						 treeLabelFieldName = fieldMeta.name;
+						 treeLabelFieldNameDict[treeMeta.entityName] = fieldMeta.name;
+						 break;
+					 }
+				}
+			}
+
+			return 	rowData[treeLabelFieldName];
 		}
 		//#endregion
 

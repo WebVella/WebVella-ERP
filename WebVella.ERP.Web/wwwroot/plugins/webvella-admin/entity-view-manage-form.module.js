@@ -611,6 +611,14 @@
 										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
 										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
 									}
+									else if (fieldObject.type === "treeFromRelation" && ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
+									}
 								}
 							}
 						}
@@ -709,7 +717,7 @@
 				moveFailure();
 			}
 
-			if ((eventObj.source.itemScope.item.type === "fieldFromRelation" || eventObj.source.itemScope.item.type === "viewFromRelation" || eventObj.source.itemScope.item.type === "listFromRelation") && !orderChangedOnly) {
+			if ((eventObj.source.itemScope.item.type === "fieldFromRelation" || eventObj.source.itemScope.item.type === "viewFromRelation" || eventObj.source.itemScope.item.type === "listFromRelation" || eventObj.source.itemScope.item.type === "treeFromRelation") && !orderChangedOnly) {
 				$timeout(function () {
 					openFromRelationSettingsModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
 				}, 0);
