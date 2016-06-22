@@ -1,34 +1,39 @@
 {
-  "version": "1.0.0-*",
-  "description": "WebVella.ERP Class Library",
-  "authors": [ "Administrator" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
+  "buildOptions": {
+    "emitEntryPoint": false
+  },
 
-	"dependencies": {
-		"AutoMapper": "3.3.1",
-		"Npgsql": "3.0.5",
-		"Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
-		"Microsoft.CSharp": "4.0.1-beta-23516",
-		"Microsoft.Extensions.Caching.Memory": "1.0.0-rc1-final",
-		"Microsoft.Extensions.Configuration": "1.0.0-rc1-final",
-		"Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
-		"Newtonsoft.Json": "8.0.1-beta3",
-		"System.Linq": "4.0.1-beta-23516",
-		"System.Threading": "4.0.11-beta-23516",
-		"Microsoft.AspNet.Mvc.Core": "6.0.0-rc1-final",
-		"Microsoft.Extensions.Logging": "1.0.0-rc1-final",
-		"Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
-		"Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final"
-	},
-
+  "dependencies": {
+    "Microsoft.ApplicationInsights.AspNetCore": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Diagnostics": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
+    "Microsoft.EntityFrameworkCore.Tools": {
+      "version": "1.0.0-preview1-final",
+      "type": "build"
+    },
+    "Microsoft.VisualStudio.Web.CodeGeneration.Utils": "1.0.0-preview1-final",
+    "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc2-final",
+    "Microsoft.Extensions.DependencyModel": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Configuration.Json": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Logging": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Logging.Console": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Logging.Debug": "1.0.0-rc2-final",
+    "AutoMapper": "3.3.1",
+    "Newtonsoft.Json": "8.0.3",
+    "Npgsql": "3.1.4"
+  },
+  
   "frameworks": {
-    "dnx46": {
+    "net46": {
       "frameworkAssemblies": {
-        "System.XML": "4.0.0.0",
-        "System.Data": "4.0.0.0"
+        "System.Data": "4.0.0.0",
+        "System.Xml": "4.0.0.0"
       }
     }
   }
+
 }

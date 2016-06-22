@@ -1,10 +1,10 @@
 ﻿
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace WebVella.ERP.Web.Security
 {
-    public class HttpForbiddenResult : HttpStatusCodeResult
+    public class HttpForbiddenResult : StatusCodeResult
     {
         public HttpForbiddenResult()
             : this(null)

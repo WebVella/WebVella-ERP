@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNet.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
-using Microsoft.AspNet.Authentication.Cookies;
 
 namespace WebVella.ERP.Web.Security
 {
@@ -68,7 +66,7 @@ namespace WebVella.ERP.Web.Security
 			if (String.IsNullOrEmpty(tokenString)) 
 			{
 				var cookie = context.Request.Cookies.FirstOrDefault(c => c.Key == AUTH_TOKEN_KEY); 
-				tokenString = cookie.Value.FirstOrDefault();
+				tokenString = cookie.Value;
 			}
 
 			if (tokenString != null)

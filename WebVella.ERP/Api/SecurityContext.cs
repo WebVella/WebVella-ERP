@@ -110,14 +110,12 @@ namespace WebVella.ERP.Api
 
         public static IDisposable OpenScope(ErpUser user)
         {
-            Debug.WriteLine("SECURITY: OpenScope -> " + ( user != null ? user.Id.ToString() : "none" ) );
             GetStack().Push(user);
             return new Stopper();
         }
 
 		public static IDisposable OpenSystemScope()
 		{
-			Debug.WriteLine("SECURITY: OpenSystemScope");
 			GetStack().Push(SystemUser);
 			return new Stopper();
 		}

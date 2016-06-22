@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{
 		internal.PNG = internal.PNG
 		LIBRARIES.md = LIBRARIES.md
 		LICENSE.txt = LICENSE.txt
-		..\..\Users\rumen.yankov\Desktop\postgresql.conf = ..\..\Users\rumen.yankov\Desktop\postgresql.conf
+		..\Users\rumen.yankov\Desktop\postgresql.conf = ..\Users\rumen.yankov\Desktop\postgresql.conf
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -18,7 +18,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WebVella.ERP", "WebVella.ER
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ECE0CA21-685B-414D-9438-7E7C9B9B9870}"
 	ProjectSection(SolutionItems) = preProject
-		WebVella.ERP.TestPlugin\global.json = WebVella.ERP.TestPlugin\global.json
+		global.json = global.json
 	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WebVella.ERP.Web", "WebVella.ERP.Web\WebVella.ERP.Web.xproj", "{104E6B3A-A927-49F0-916B-87404E2CA749}"

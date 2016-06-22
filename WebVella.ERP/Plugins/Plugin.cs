@@ -84,4 +84,11 @@ namespace WebVella.ERP.Plugins
 			return Name;
 		}
 	}
+
+	public class PluginStartArguments
+	{
+		public Plugin Plugin { get; set; }
+
+		public IServiceProvider ServiceProvider { get; set; }
+	}
 }

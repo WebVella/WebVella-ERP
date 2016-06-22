@@ -181,7 +181,6 @@ namespace WebVella.ERP.Database
 
 		public List<DbEntity> Read()
 		{
-			Debug.WriteLine("READ ENTITIIES:" + Thread.CurrentThread.ManagedThreadId);
 			using (DbConnection con = DbContext.Current.CreateConnection())
 			{
 				NpgsqlCommand command = con.CreateCommand("SELECT json FROM entities;");

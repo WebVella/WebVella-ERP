@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Http;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Diagnostics;
-using Microsoft.AspNet.Http.Features;
+using Microsoft.AspNetCore.Http.Features;
 using System.Threading;
 
 namespace WebVella.ERP.Web.Security
@@ -32,9 +32,7 @@ namespace WebVella.ERP.Web.Security
 			try
 			{
 				//var httpFeature = context.GetFeature<IHttpConnectionFeature>();
-				Debug.WriteLine("BEGIN REQUEST:" + Thread.CurrentThread.ManagedThreadId);
 				await next(context);
-				Debug.WriteLine("END REQUEST:" + Thread.CurrentThread.ManagedThreadId);
 			}
 			catch (Exception ex)
 			{

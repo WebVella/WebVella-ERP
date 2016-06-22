@@ -1,26 +1,21 @@
 {
-  "version": "1.0.0-*",
-  "description": "WebVella.ERP.SamplePlugin Class Library",
-  "authors": [ "rumen.yankov" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
+  "buildOptions": {
+    "emitEntryPoint": false
+  },
 
   "frameworks": {
-    "dnx46": {
+    "net46": {
       "frameworkAssemblies": {
-        "System.XML": "4.0.0.0",
-        "System.Data": "4.0.0.0"
+        "System.Data": "4.0.0.0",
+        "System.Xml": "4.0.0.0"
       }
     }
   },
 
   "dependencies": {
-    "Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
-    "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
-    "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0-rc1-final",
-    "Microsoft.Extensions.Configuration.Json": "1.0.0-rc1-final",
+    "Microsoft.AspNetCore.Hosting": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Mvc.Abstractions": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0-rc2-final",
     "WebVella.ERP": "1.0.0-*"
   }
-
 }

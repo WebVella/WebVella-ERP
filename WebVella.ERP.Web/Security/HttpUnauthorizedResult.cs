@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNet.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace WebVella.ERP.Web.Security
 {
-    public class HttpUnauthorizedResult : HttpStatusCodeResult
+    public class HttpUnauthorizedResult : StatusCodeResult
     {
         public HttpUnauthorizedResult()
             : this(null)

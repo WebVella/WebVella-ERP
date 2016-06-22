@@ -32,7 +32,7 @@ namespace WebVella.ERP.Crm
 		private static string CUSTOMER_ENTITY_NAME = "wv_customer";
 		private static Guid CRM_ADMIN_AREA_ID = new Guid("0e3a02c4-64df-4b61-bae5-8b3cc847f129");
 
-		public void Start()
+		public void Start(PluginStartArguments pluginStartArgs)
 		{
 
 			var entMan = new EntityManager();

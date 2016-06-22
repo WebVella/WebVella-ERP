@@ -10,7 +10,7 @@ namespace WebVella.ERP.Diagnostics
 		{
 
 			var factory = new LoggerFactory();
-			factory.AddConsole(minLevel: LogLevel.Verbose);
+			factory.AddConsole(minLevel: LogLevel.Information);
 			logger = factory.CreateLogger("diagnostics");
 		}
 

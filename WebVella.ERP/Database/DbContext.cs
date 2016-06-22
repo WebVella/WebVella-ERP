@@ -90,7 +90,6 @@ namespace WebVella.ERP.Database
 		/// <param name="connString"></param>
 		public static DbContext CreateContext(string connString)
 		{
-			Debug.WriteLine("CREATE CONTEXT:" + Thread.CurrentThread.GetHashCode());
 			connectionString = connString;
 
 			if (current.Value == null)
@@ -115,7 +114,6 @@ namespace WebVella.ERP.Database
 
 			}
 
-			Debug.WriteLine("DISPOSE CONTEXT:" + Thread.CurrentThread.GetHashCode());
 			current.Value = null;
 		}
 

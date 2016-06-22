@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json;
 using System;
@@ -7,6 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using WebVella.ERP.Utilities.Dynamic;
+using Microsoft.DotNet.ProjectModel;
+using Microsoft.VisualStudio.Web.CodeGeneration.DotNet;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 
 namespace WebVella.ERP.Plugins
 {
@@ -15,8 +18,9 @@ namespace WebVella.ERP.Plugins
 		static List<Plugin> plugins = new List<Plugin>();
 		public List<Plugin> Plugins { get { return plugins; } }
 
-		public void Initialize(IHostingEnvironment hostingEnvironment)
+		public void Initialize(IServiceProvider serviceProvider)
 		{
+			IHostingEnvironment hostingEnvironment = (IHostingEnvironment)serviceProvider.GetService(typeof(IHostingEnvironment));
 			var content = hostingEnvironment.WebRootFileProvider.GetDirectoryContents("/plugins");
 			if (!content.Exists)
 				return;
@@ -50,10 +54,10 @@ namespace WebVella.ERP.Plugins
 			}
 
 			plugins = plugins.OrderBy(x => x.LoadPriority).ToList();
-			ExecutePluginStart();
+			ExecutePluginStart(serviceProvider);
 		}
 
-		private void ExecutePluginStart()
+		private void ExecutePluginStart(IServiceProvider serviceProvider)
 		{
 			//search and execute Start method for each plugin
 			//if there are multiple types, marked by PluginStartupAttribute, with Start method, they all will be executed
@@ -71,7 +75,10 @@ namespace WebVella.ERP.Plugins
 								{
 									var method = type.GetMethod("Start");
 									if (method != null)
-										method.Invoke(new DynamicObjectCreater(type).CreateInstance(), null);
+									{
+										PluginStartArguments args = new PluginStartArguments { Plugin = plugin, ServiceProvider= serviceProvider };
+										method.Invoke(new DynamicObjectCreater(type).CreateInstance(), new object[] { args });
+									}
 								}
 								catch (Exception ex)
 								{
@@ -87,32 +94,14 @@ namespace WebVella.ERP.Plugins
 
 		private IEnumerable<Assembly> GetAssembliesInFolder(DirectoryInfo binPath)
 		{
-			List<Assembly> assemblies = new List<Assembly>();
-			var loadContext = PlatformServices.Default.AssemblyLoadContextAccessor.Default;
-
+            List<Assembly> assemblies = new List<Assembly>();
 			foreach (var fileSystemInfo in binPath.GetFileSystemInfos("*.dll"))
 			{
+				//assemblies are already loaded from correct destination (depending on referencing) 
+				//during the process of plugins registration as application parts
 				var assemblyName = AssemblyName.GetAssemblyName(fileSystemInfo.FullName);
-
-				//first try to load assembly from refered libraries instead of plugin 'binaries' folder
-				Assembly assembly = null;
-				foreach (var lib in PlatformServices.Default.LibraryManager.GetLibraries())
-				{
-					var referencedAssemblyName = lib.Assemblies.SingleOrDefault(x => x.FullName == assemblyName.Name);
-					if (referencedAssemblyName != null)
-					{
-						assembly = loadContext.Load(referencedAssemblyName);
-						break;
-					}
-				}
-
-				//if not found in referenced libraries, load from plugin binaries location
-				if (assembly == null)
-					assembly = loadContext.Load(assemblyName);
-
-				assemblies.Add(assembly);
+				assemblies.Add(Assembly.Load(assemblyName));
 			}
-
 			return assemblies;
 		}
 	}

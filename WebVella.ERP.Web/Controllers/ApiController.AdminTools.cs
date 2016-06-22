@@ -1,27 +1,12 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using WebVella.ERP.Api.Models;
-using System.Net;
 using Newtonsoft.Json.Linq;
-using WebVella.ERP.Api;
 using WebVella.ERP.Database;
 using System.Collections.Generic;
-using Microsoft.AspNet.Http;
-using Microsoft.Net.Http.Headers;
-using System.IO;
-using WebVella.ERP.Api.Models.AutoMapper;
-using WebVella.ERP.Web.Security;
 using Newtonsoft.Json;
-using System.Text.RegularExpressions;
-using Microsoft.AspNet.Authorization;
-using CsvHelper;
-using Microsoft.AspNet.StaticFiles;
-using WebVella.ERP.Utilities;
-using System.Dynamic;
-using WebVella.ERP.Plugins;
-using WebVella.ERP.WebHooks;
-using System.Diagnostics;
+
 using Npgsql;
 using System.Data;
 
