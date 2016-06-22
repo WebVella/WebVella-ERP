@@ -141,7 +141,7 @@
 	function resolveEntityList($q, $log, webvellaCoreService, $state, $stateParams) {
 		var defer = $q.defer();
 		function successCallback(response) {
-			defer.resolve(response.object.entities);
+			defer.resolve(response.object);
 		}
 		function errorCallback(response) {
 			defer.reject(response.message);
