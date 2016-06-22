@@ -501,7 +501,7 @@
 			ngCtrl.validation.errorMessage = "";
 			for (var k = 0; k < availableViewFields.length; k++) {
 				if (availableViewFields[k].type === "field" && availableViewFields[k].meta.required) {
-					if (ngCtrl.view.data[availableViewFields[k].dataName] == null || ngCtrl.view.data[availableViewFields[k].dataName] == "") {
+					if (ngCtrl.view.data[availableViewFields[k].dataName] == null || (ngCtrl.view.data[availableViewFields[k].dataName] == "" && ngCtrl.view.data[availableViewFields[k].dataName] != false) ) {
 						ngCtrl.validation[availableViewFields[k].dataName] = true;
 						ngCtrl.validation.hasError = true;
 						ngCtrl.validation.errorMessage = "A required data is missing!";

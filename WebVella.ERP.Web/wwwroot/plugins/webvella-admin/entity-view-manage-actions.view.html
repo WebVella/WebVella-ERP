@@ -66,7 +66,8 @@
 
 				<h4 style="margin-bottom:1em;margin-top:2em;" translate="{{::'RECORD_VIEW_TAB_ACTIONS_TEMPLATES_HEADING'}}"></h4>
 				<p translate="{{::'RECORD_VIEW_TAB_ACTIONS_TEMPLATES_HEADING_DESCRIPTION'}}"></p>
-				<a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.addManageActionItemModal(null)" translate="{{::'ADD_NEW'}}"></a>
+				<a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.addManageActionItemModal(null,false)" translate="{{::'ADD_NEW'}}"></a>
+				<a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.addManageActionItemModal(null,true)" translate="{{::'ADD_FROM_TEMPLATE'}}"></a>
 				<table class="table table-bordered table-hover table-vertical-align-middle ng-hide" style="margin-top:1em;" ng-show="ngCtrl.view.actionItems.length > 0">
 					<thead>
 						<tr>
@@ -109,11 +110,98 @@
 <script type="text/ng-template" id="addManageActionItemModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title" ng-if="popupCtrl.isEdit" translate="{{::'MANAGE_ACTION'}}"></h3>
-		<h3 class="modal-title" ng-if="!popupCtrl.isEdit" translate="{{::'ADD_ACTION'}}"></h3>
+		<h3 class="modal-title" ng-if="popupCtrl.isEdit && !popupCtrl.selectTemplateFirs" translate="{{::'MANAGE_ACTION'}}"></h3>
+		<h3 class="modal-title" ng-if="!popupCtrl.isEdit && !popupCtrl.selectTemplateFirs" translate="{{::'ADD_ACTION'}}"></h3>
+		<h3 class="modal-title" ng-if="popupCtrl.selectTemplateFirst" translate="{{::'SELECT_TEMPLATE'}}"></h3>
 	</div>
 	<div class="modal-body">
-		<form class="form form-horizontal" name="formName">
+		<div ng-if="popupCtrl.selectTemplateFirst">
+			<table class="table-bordered table">
+				<thead>
+					<tr>
+						<th style="width:250px;">action name</th>
+						<th>description</th>
+						<th style="width:180px;">currently added to</th>
+						<th style="width:80px;"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td style="font-weight:bold">wv_record_delete</td>
+						<td>deletes the current record after confirmation</td>
+						<td ng-bind-html="::popupCtrl.getTemplateCurrentMenu('wv_record_delete')"></td>
+						<td>
+							<a href="javascript:void(0)" class="btn btn-outline" ng-click="popupCtrl.selectTemplate('wv_record_delete')">select</a>
+						</td>
+					</tr>
+					<tr>
+						<td style="font-weight:bold">wv_create_and_list</td>
+						<td>Displayed when creating record. After the creation attempts to go back to the returnUrl or the default list in this area</td>
+						<td ng-bind-html="::popupCtrl.getTemplateCurrentMenu('wv_create_and_list')"></td>
+						<td>
+							<a href="javascript:void(0)" class="btn btn-outline" ng-click="popupCtrl.selectTemplate('wv_create_and_list')">select</a>
+						</td>
+					</tr>
+					<tr>
+						<td style="font-weight:bold">wv_create_and_details</td>
+						<td>Displayed when creating record. After the creation redirects to the newly created record details</td>
+						<td ng-bind-html="::popupCtrl.getTemplateCurrentMenu('wv_create_and_details')"></td>
+						<td>
+							<a href="javascript:void(0)" class="btn btn-outline" ng-click="popupCtrl.selectTemplate('wv_create_and_details')">select</a>
+						</td>
+					</tr>
+					<tr>
+						<td style="font-weight:bold">wv_create_cancel</td>
+						<td>Displayed when creating record. Redirects back to the returnUrl or the default list in this area</td>
+						<td ng-bind-html="::popupCtrl.getTemplateCurrentMenu('wv_record_delete')"></td>
+						<td>
+							<a href="javascript:void(0)" class="btn btn-outline" ng-click="popupCtrl.selectTemplate('wv_record_delete')">select</a>
+						</td>
+					</tr>
+					<tr>
+						<td style="font-weight:bold">wv_back_button</td>
+						<td>Displayed white creating or viewing a record. Redirects back to the returnUrl or the default list in this area</td>
+						<td ng-bind-html="::popupCtrl.getTemplateCurrentMenu('wv_back_button')"></td>
+						<td>
+							<a href="javascript:void(0)" class="btn btn-outline" ng-click="popupCtrl.selectTemplate('wv_back_button')">select</a>
+						</td>
+					</tr>
+					<tr>
+						<td style="font-weight:bold">wv_recursive_view_add_existing</td>
+						<td>Displayed when the view is embedded in another view or list. Allows creating of a relation between the parent record and existing record</td>
+						<td ng-bind-html="::popupCtrl.getTemplateCurrentMenu('wv_recursive_view_add_existing')"></td>
+						<td>
+							<a href="javascript:void(0)" class="btn btn-outline" ng-click="popupCtrl.selectTemplate('wv_recursive_view_add_existing')">select</a>
+						</td>
+					</tr>
+					<tr>
+						<td style="font-weight:bold">wv_recursive_view_add_new</td>
+						<td>Displayed when the view is embedded in another view or list. Allows creating of a relation between the parent record and newly created one</td>
+						<td ng-bind-html="::popupCtrl.getTemplateCurrentMenu('wv_recursive_view_add_new')"></td>
+						<td>
+							<a href="javascript:void(0)" class="btn btn-outline" ng-click="popupCtrl.selectTemplate('wv_recursive_view_add_new')">select</a>
+						</td>
+					</tr>
+					<tr>
+						<td style="font-weight:bold">wv_recursive_view_edit</td>
+						<td>Displayed when the view is embedded in another view or list. Inline edit with the selected "quick_create" view</td>
+						<td ng-bind-html="::popupCtrl.getTemplateCurrentMenu('wv_recursive_view_edit')"></td>
+						<td>
+							<a href="javascript:void(0)" class="btn btn-outline" ng-click="popupCtrl.selectTemplate('wv_recursive_view_edit')">select</a>
+						</td>
+					</tr>
+					<tr>
+						<td style="font-weight:bold">wv_recursive_view_unrelate</td>
+						<td>Displayed when the view is embedded in another view or list. Removes the relation between the parent record and a selected one</td>
+						<td ng-bind-html="::popupCtrl.getTemplateCurrentMenu('wv_recursive_view_unrelate')"></td>
+						<td>
+							<a href="javascript:void(0)" class="btn btn-outline" ng-click="popupCtrl.selectTemplate('wv_recursive_view_unrelate')">select</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<form class="form form-horizontal" name="formName" ng-if="!popupCtrl.selectTemplateFirst">
 			<div class="form-group">
 				<div class="row">
 					<label class="control-label col-sm-2 required" translate="{{::'NAME'}}"></label>
@@ -164,9 +252,14 @@
 		</form>
 	</div>
 	<div class="modal-footer">
+		<div ng-if="!popupCtrl.selectTemplateFirst">
 		<button ng-if="popupCtrl.isEdit" class="btn btn-link pull-left go-red" ng-click="popupCtrl.delete()" translate="{{::'DELETE'}}"></button>
 		<button class="btn btn-primary" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.isEdit" translate="{{::'SAVE'}}"></button>
 		<button class="btn btn-success" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" ng-if="!popupCtrl.isEdit" translate="{{::'ADD'}}"></button>
 		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
+		</div>
+		<div ng-if="popupCtrl.selectTemplateFirst">
+			<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
+		</div>
 	</div>
 </script>

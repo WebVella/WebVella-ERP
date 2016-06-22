@@ -116,17 +116,6 @@ namespace WebVella.ERP.Api.Models
 		}
 	}
 
-	public class EntityList
-	{
-		[JsonProperty(PropertyName = "entities")]
-		public List<Entity> Entities { get; set; }
-
-		public EntityList()
-		{
-			Entities = new List<Entity>();
-		}
-	}
-
 	public class EntityResponse : BaseResponseModel
 	{
 		[JsonProperty(PropertyName = "object")]
@@ -136,7 +125,7 @@ namespace WebVella.ERP.Api.Models
 	public class EntityListResponse : BaseResponseModel
 	{
 		[JsonProperty(PropertyName = "object")]
-		public EntityList Object { get; set; }
+		public List<Entity> Object { get; set; }
 	}
 
 	public class EntityLibraryItemsResponse : BaseResponseModel

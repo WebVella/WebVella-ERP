@@ -62,6 +62,7 @@
 		serviceInstance.initViewRow = initViewRow;
 		serviceInstance.initViewRowColumn = initViewRowColumn;
 		serviceInstance.initViewActionItem = initViewActionItem;
+		serviceInstance.initViewActionItemTemplate = initViewActionItemTemplate;
 		//Create
 		serviceInstance.createEntityView = createEntityView;
 		//Read
@@ -91,6 +92,7 @@
 		//Init
 		serviceInstance.initList = initList;
 		serviceInstance.initListActionItem = initListActionItem;
+		serviceInstance.initListActionItemTemplate = initListActionItemTemplate;
 		//Create
 		serviceInstance.createEntityRecordList = createEntityRecordList;
 		//Read
@@ -499,16 +501,16 @@
 					return htmlString;
 				}
 			}
-			else if (fieldMeta.currency != null && fieldMeta.currency !== {} && fieldMeta.currency.symbol) {
+			else if (fieldMeta.currency != null && fieldMeta.currency !== {} && fieldMeta.currency.symbol_native) {
 				if (fieldMeta.currency.symbolPlacement === 1) {
-					return escapeHtml(fieldMeta.currency.symbol + " " + data);
+					return escapeHtml(fieldMeta.currency.symbol_native + " " + $filter('number')(data,fieldMeta.currency.decimal_digits));
 				}
 				else {
-					return escapeHtml(data + " " + fieldMeta.currency.symbol);
+					return escapeHtml($filter('number')(data,fieldMeta.currency.decimal_digits) + " " + fieldMeta.currency.symbol_native);
 				}
 			}
 			else {
-				return escapeHtml(data);
+				return escapeHtml($filter('number')(data,fieldMeta.currency.decimal_digits));
 			}
 		}
 		//4.Date
@@ -664,7 +666,7 @@
 				}
 			}
 			else {
-				return "<a target='_blank' href='" + data + "'><img src='" + escapeHtml(data) + "' class='table-image'/></a>";
+				return "<a target='_blank' href='" + data + "'><img src='" + escapeHtml(data) + "?width=36' class='table-image'/></a>";
 			}
 		}
 		//10. Textarea
@@ -1257,7 +1259,18 @@
 					key: "sidebar-top",
 					value: "sidebar-top",
 					description: ""
+				},
+				{
+					key: "recursive-view-title",
+					value: "recursive-view-title",
+					description: ""
+				},
+				{
+					key: "recursive-view-record-row",
+					value: "recursive-view-record-row",
+					description: ""
 				}
+
 			];
 
 			return menuOptions;
@@ -1272,6 +1285,69 @@
 			}
 			return actionItem;
 		}
+
+		function initViewActionItemTemplate(actionName) {
+			var actionItem = initViewActionItem();
+			switch(actionName){
+				case "wv_record_delete":
+					actionItem.name = "wv_record_delete";
+					actionItem.menu = "page-title-dropdown";
+					actionItem.weight = 1;
+					actionItem.template =  "<a href=\"javascript:void(0)\" confirmed-click=\"::ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"Are you sure?\" ng-if=\"::ngCtrl.userHasRecordPermissions('canDelete')\"><i class=\"fa fa-trash go-red\"></i> Delete Record</a>";
+					break;
+				case "wv_create_and_list":
+					actionItem.name = "wv_create_and_list";
+					actionItem.menu = "create-bottom";
+					actionItem.weight = 1;
+					actionItem.template =  "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"default\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create</a>";
+					break;
+				case "wv_create_and_details":
+					actionItem.name = "wv_create_and_details";
+					actionItem.menu = "create-bottom";
+					actionItem.weight = 2;
+					actionItem.template =  "<a class=\"btn btn-default btn-outline\" ng-click='ngCtrl.create(\"details\")' ng-if=\"::ngCtrl.createViewRegion != null\">Create & Details</a>";
+					break;
+				case "wv_create_cancel":
+					actionItem.name = "wv_create_cancel";
+					actionItem.menu = "create-bottom";
+					actionItem.weight = 3;
+					actionItem.template =  "<a class=\"btn btn-default btn-outline\" ng-click=\"ngCtrl.cancel()\">Cancel</a>";
+					break;
+				case "wv_back_button":
+					actionItem.name = "wv_back_button";
+					actionItem.menu = "sidebar-top";
+					actionItem.weight = 1;
+					actionItem.template =  "<a class=\"back clearfix\" href=\"javascript:void(0)\" ng-click=\"sidebarData.goBack()\"><i class=\"fa fa-fw fa-arrow-left\"></i> <span class=\"text\">Back</span></a>";
+					break;
+				case "wv_recursive_view_add_existing":
+					actionItem.name = "wv_recursive_view_add_existing";
+					actionItem.menu = "recursive-view-title";
+					actionItem.weight = 1;
+					actionItem.template =  "<a href=\"javascript:void(0)\" class=\"btn btn-sm btn-outline\" ng-if=\"::canAddExisting\" ng-click=\"addExistingItem()\"><i class=\"fa fa-download\"></i> Add existing</a>";
+					break;
+				case "wv_recursive_view_add_new":
+					actionItem.name = "wv_recursive_view_add_new";
+					actionItem.menu = "recursive-view-title";
+					actionItem.weight = 2;
+					actionItem.template =  "<a href=\"javascript:void(0)\" class=\"btn btn-sm btn-outline\" ng-if=\"::canCreate\" ng-click=\"manageRelatedRecordItem(null)\"><i class=\"fa fa-plus\"></i> Create & Add</a>";
+					break;
+				case "wv_recursive_view_edit":
+					actionItem.name = "wv_recursive_view_edit";
+					actionItem.menu = "recursive-view-record-row";
+					actionItem.weight = 2;
+					actionItem.template =  "<a href=\"javascript:void(0)\" title=\"quick edit\" class=\"btn btn-sm btn-outline\" ng-click=\"manageRelatedRecordItem(recordData)\" ng-if=\"::canUpdate\"><i class=\"fa fa-pencil\"></i></a>";
+					break;
+				case "wv_recursive_view_unrelate":
+					actionItem.name = "wv_recursive_view_unrelate";
+					actionItem.menu = "recursive-view-record-row";
+					actionItem.weight = 3;
+					actionItem.template =  "<a href=\"javascript:void(0)\" title=\"remove relation\" class=\"btn btn-sm btn-outline\" confirmed-click=\"instantDetachRecord(recordData)\" ng-confirm-click=\"Are you sure that you need this relation broken?\" ng-if=\"::canRemove\"><i class=\"fa fa-times go-red\"></i></a>";
+					break;
+			}
+
+			return actionItem;
+		}
+
 		//////////////////////
 		function getEntityViewLibrary(entityName, successCallback, errorCallback) {
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/getEntityViewLibrary' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
@@ -1696,6 +1772,16 @@
 					key: "record-row-dropdown",
 					value: "record-row-dropdown",
 					description: ""
+				},
+				{
+					key: "recursive-list-title",
+					value: "recursive-list-title",
+					description: ""
+				},
+				{
+					key: "recursive-list-record-row",
+					value: "recursive-list-record-row",
+					description: ""
 				}
 			];
 
@@ -1709,6 +1795,68 @@
 				menu: "hidden",
 				template: ""
 			}
+			return actionItem;
+		}
+
+		function initListActionItemTemplate(actionName) {
+			var actionItem = initListActionItem();
+			switch(actionName){
+				case "wv_create_record":
+					actionItem.name = "wv_create_record";
+					actionItem.menu = "page-title";
+					actionItem.weight = 1;
+					actionItem.template =  "<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate')\"\n ng-href=\"{{ngCtrl.getRecordCreateUrl(ngCtrl)}}\">Add New</a>";
+					break;
+				case "wv_import_records":
+					actionItem.name = "wv_import_records";
+					actionItem.menu = "page-title-dropdown";
+					actionItem.weight = 10;
+					actionItem.template =  "<a ng-click=\"ngCtrl.openImportModal()\" class=\"ng-hide\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-upload\"></i> Import CSV\n</a>";
+					break;
+				case "wv_export_records":
+					actionItem.name = "wv_export_records";
+					actionItem.menu = "page-title-dropdown";
+					actionItem.weight = 11;
+					actionItem.template =  "<a ng-click=\"ngCtrl.openExportModal()\" class=\"ng-hide\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-download\"></i> Export CSV\n</a>";
+					break;
+				case "wv_record_details":
+					actionItem.name = "wv_record_details";
+					actionItem.menu = "record-row";
+					actionItem.weight = 1;
+					actionItem.template =  "<a class=\"btn btn-default btn-outline\" ng-href=\"{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-eye\"></i>\n</a>";
+					break;
+				case "wv_recursive_list_add_existing":
+					actionItem.name = "wv_recursive_list_add_existing";
+					actionItem.menu = "recursive-list-title";
+					actionItem.weight = 1;
+					actionItem.template =  "<a href=\"javascript:void(0)\" class=\"btn btn-outline btn-sm\" ng-if=\"::canAddExisting\" ng-click=\"addExistingItem()\"><i class=\"fa fa-download\"></i> Add existing</a>";
+					break;
+				case "wv_recursive_list_add_new":
+					actionItem.name = "wv_recursive_list_add_new";
+					actionItem.menu = "recursive-list-title";
+					actionItem.weight = 2;
+					actionItem.template =  "<a href=\"javascript:void(0)\" class=\"btn btn-outline btn-sm\" ng-if=\"::canCreate\" ng-click=\"manageRelatedRecordItem(null)\"><i class=\"fa fa-plus\"></i> Create & Add</a>";
+					break;
+				case "wv_recursive_list_view":
+					actionItem.name = "wv_recursive_list_view";
+					actionItem.menu = "recursive-list-record-row";
+					actionItem.weight = 1;
+					actionItem.template =  "<a href=\"javascript:void(0)\" title=\"quick view this record\" class=\"btn btn-sm btn-outline\" ng-click=\"viewRelatedRecordItem(record)\"><i class=\"fa fa-eye\"></i></a>";
+					break;
+				case "wv_recursive_list_edit":
+					actionItem.name = "wv_recursive_list_edit";
+					actionItem.menu = "recursive-list-record-row";
+					actionItem.weight = 2;
+					actionItem.template =  "<a href=\"javascript:void(0)\" title=\"quick edit this record\" class=\"btn btn-sm btn-outline\" ng-click=\"manageRelatedRecordItem(record)\" ng-if=\"::canUpdate\"><i class=\"fa fa-pencil\"></i></a>";
+					break;
+				case "wv_recursive_list_unrelate":
+					actionItem.name = "wv_recursive_list_unrelate";
+					actionItem.menu = "recursive-list-record-row";
+					actionItem.weight = 3;
+					actionItem.template =  "<a href=\"javascript:void(0)\" title=\"Detach records relation\" class=\"btn btn-sm btn-outline\" confirmed-click=\"instantDetachRecord(record)\" ng-confirm-click=\"Are you sure that you need this relation broken?\" ng-if=\"::canRemove\"><i class=\"fa fa-times go-red\"></i></a>";
+					break;
+			}
+
 			return actionItem;
 		}
 		///////////////////////

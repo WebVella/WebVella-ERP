@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
@@ -1229,6 +1230,305 @@ namespace WebVella.ERP.Project
 				return Json(response);
 			}
 		}
+
+		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/report/project-timelog")]
+		public IActionResult ProjectTimelogReport(int year = 0, int month = 0)
+		{
+			var response = new ResponseModel();
+			if (year == 0 || month == 0)
+			{
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = "Month or year parameter is missing";
+				response.Object = null;
+				return Json(response);
+			}
+			try
+			{
+				var timelogs = new List<EntityRecord>();
+				var projects = new List<EntityRecord>();
+				var projectsWithTimelogs = new List<EntityRecord>();
+				var projectTaskBugsDict = new Dictionary<Guid, List<EntityRecord>>();
+				var workedTaskIds = new List<Guid>();
+				var workedBugIds = new List<Guid>();
+				var workedTasks = new List<EntityRecord>();
+				var workedBugs = new List<EntityRecord>();
+				var taskTimelogs = new Dictionary<Guid, List<EntityRecord>>();
+				var bugTimelogs = new Dictionary<Guid, List<EntityRecord>>();
+
+				#region << Get timelogs from the period >>
+				var startDate = new DateTime(year, month, 1);
+				var endDate = startDate.AddMonths(1);
+				{
+					var requestedFields = "billable,hours," +
+					"$$bug_1_n_time_log.id,$$task_1_n_time_log.id";
+					var filterObj = EntityQuery.QueryAND(EntityQuery.QueryGTE("log_date", startDate), EntityQuery.QueryLT("log_date", endDate));
+					EntityQuery resultQuery = new EntityQuery("wv_timelog", requestedFields, filterObj);
+					QueryResponse result = recMan.Find(resultQuery);
+					if (!result.Success)
+					{
+						response.Success = false;
+						response.Timestamp = DateTime.UtcNow;
+						response.Message = result.Message;
+						response.Object = null;
+						return Json(response);
+					}
+
+					timelogs = result.Object.Data;
+					var addedTasks = new Dictionary<Guid, bool>();
+					var addedBugs = new Dictionary<Guid, bool>();
+					foreach (var timelog in timelogs)
+					{
+
+						if (((List<EntityRecord>)timelog["$task_1_n_time_log"]).Any())
+						{
+							var task = ((List<EntityRecord>)timelog["$task_1_n_time_log"])[0];
+							var taskId = (Guid)task["id"];
+							if (!addedTasks.ContainsKey(taskId))
+							{
+								addedTasks[taskId] = true;
+								workedTaskIds.Add(taskId);
+							}
+							var timelogList = new List<EntityRecord>();
+							if (taskTimelogs.ContainsKey(taskId))
+							{
+								timelogList = taskTimelogs[taskId];
+								timelogList.Add(timelog);
+							}
+							else
+							{
+								timelogList.Add(timelog);
+							}
+							taskTimelogs[taskId] = timelogList;
+						}
+
+						if (((List<EntityRecord>)timelog["$bug_1_n_time_log"]).Any())
+						{
+							var bug = ((List<EntityRecord>)timelog["$bug_1_n_time_log"])[0];
+							var bugId = (Guid)bug["id"];
+							if (!addedBugs.ContainsKey(bugId))
+							{
+								addedBugs[bugId] = true;
+								workedBugIds.Add(bugId);
+							}
+							var timelogList = new List<EntityRecord>();
+							if (bugTimelogs.ContainsKey(bugId))
+							{
+								timelogList = bugTimelogs[bugId];
+								timelogList.Add(timelog);
+							}
+							else
+							{
+								timelogList.Add(timelog);
+							}
+							bugTimelogs[bugId] = timelogList;
+						}
+					}
+
+				}
+				#endregion
+
+				#region << Get tasks >>
+				{
+					if (workedTaskIds.Count() > 0)
+					{
+						var requestedFields = "id,subject,project_id";
+						var queryList = new List<QueryObject>();
+						foreach (var taskId in workedTaskIds)
+						{
+							var query = EntityQuery.QueryEQ("id", taskId);
+							queryList.Add(query);
+						}
+
+						var filterObj = EntityQuery.QueryOR(queryList.ToArray());
+						var sortRulesList = new List<QuerySortObject>();
+						var sortRule = new QuerySortObject("created_on", QuerySortType.Ascending);
+						sortRulesList.Add(sortRule);
+						EntityQuery resultQuery = new EntityQuery("wv_task", requestedFields, filterObj, sortRulesList.ToArray());
+						QueryResponse result = recMan.Find(resultQuery);
+						if (!result.Success)
+						{
+							response.Success = false;
+							response.Timestamp = DateTime.UtcNow;
+							response.Message = result.Message;
+							response.Object = null;
+							return Json(response);
+						}
+
+						workedTasks = result.Object.Data;
+					}
+				}
+				#endregion
+
+				#region << Get bugs >>
+				{
+					if (workedBugIds.Count() > 0)
+					{
+						var requestedFields = "id,subject,project_id";
+						var queryList = new List<QueryObject>();
+						foreach (var bugId in workedBugIds)
+						{
+							var query = EntityQuery.QueryEQ("id", bugId);
+							queryList.Add(query);
+						}
+						var filterObj = EntityQuery.QueryOR(queryList.ToArray());
+						var sortRulesList = new List<QuerySortObject>();
+						var sortRule = new QuerySortObject("created_on", QuerySortType.Ascending);
+						sortRulesList.Add(sortRule);
+						EntityQuery resultQuery = new EntityQuery("wv_bug", requestedFields, filterObj, sortRulesList.ToArray());
+						QueryResponse result = recMan.Find(resultQuery);
+						if (!result.Success)
+						{
+							response.Success = false;
+							response.Timestamp = DateTime.UtcNow;
+							response.Message = result.Message;
+							response.Object = null;
+							return Json(response);
+						}
+
+						workedBugs = result.Object.Data;
+					}
+				}
+				#endregion
+
+				#region << Generate project task & bugs dict >>
+				foreach (var task in workedTasks)
+				{
+					var taskId = (Guid)task["id"];
+					var taskProjectId = (Guid)task["project_id"];
+					var taskBillable = (decimal)0;
+					var taskNotBillable = (decimal)0;
+					var taskTimeLogList = taskTimelogs[taskId];
+					foreach (var timelog in taskTimeLogList)
+					{
+						if ((bool)timelog["billable"])
+						{
+							taskBillable += (decimal)timelog["hours"];
+						}
+						else
+						{
+							taskNotBillable += (decimal)timelog["hours"];
+						}
+					}
+					task["billable"] = taskBillable;
+					task["not_billable"] = taskNotBillable;
+					task["type"] = "task";
+					var projectBugAndTasks = new List<EntityRecord>();
+					if (projectTaskBugsDict.ContainsKey(taskProjectId))
+					{
+						projectBugAndTasks = projectTaskBugsDict[taskProjectId];
+					}
+					projectBugAndTasks.Add(task);
+					projectTaskBugsDict[taskProjectId] = projectBugAndTasks;
+				}
+				foreach (var bug in workedBugs)
+				{
+					var bugId = (Guid)bug["id"];
+					var bugProjectId = (Guid)bug["project_id"];
+					var bugBillable = (decimal)0;
+					var bugNotBillable = (decimal)0;
+					var bugTimeLogList = bugTimelogs[bugId];
+					foreach (var timelog in bugTimeLogList)
+					{
+						if ((bool)timelog["billable"])
+						{
+							bugBillable += (decimal)timelog["hours"];
+						}
+						else
+						{
+							bugNotBillable += (decimal)timelog["hours"];
+						}
+					}
+					bug["billable"] = bugBillable;
+					bug["not_billable"] = bugNotBillable;
+					bug["type"] = "bug";
+					var projectBugAndTasks = new List<EntityRecord>();
+					if (projectTaskBugsDict.ContainsKey(bugProjectId))
+					{
+						projectBugAndTasks = projectTaskBugsDict[bugProjectId];
+					}
+					projectBugAndTasks.Add(bug);
+					projectTaskBugsDict[bugProjectId] = projectBugAndTasks;
+				}
+				#endregion
+
+				#region << Get all projects >>
+				{
+					var requestedFields = "id,name";
+					var queryList = new List<QueryObject>();
+					foreach (var taskId in workedTaskIds)
+					{
+						var query = EntityQuery.QueryEQ("id", taskId);
+						queryList.Add(query);
+					}
+
+					QueryObject filterObj = null;
+					var sortRulesList = new List<QuerySortObject>();
+					var sortRule = new QuerySortObject("created_on", QuerySortType.Ascending);
+					sortRulesList.Add(sortRule);
+					EntityQuery resultQuery = new EntityQuery("wv_project", requestedFields, filterObj, sortRulesList.ToArray());
+					QueryResponse result = recMan.Find(resultQuery);
+					if (!result.Success)
+					{
+						response.Success = false;
+						response.Timestamp = DateTime.UtcNow;
+						response.Message = result.Message;
+						response.Object = null;
+						return Json(response);
+					}
+
+					projects = result.Object.Data;
+
+				}
+				#endregion
+
+				#region << Generate project with logs >>
+				var totalBillable = (decimal)0;
+				var totalNotBillable = (decimal)0;
+				foreach(var project in projects) {
+					if(projectTaskBugsDict.ContainsKey((Guid)project["id"])) {
+						var projectEntries = (List<EntityRecord>)projectTaskBugsDict[(Guid)project["id"]];
+						project["entries"] = projectEntries;
+						project["billable"] = (decimal)0;
+						project["not_billable"] = (decimal)0;
+						foreach(var entry in projectEntries) {
+							project["billable"] = (decimal)project["billable"] + (decimal)entry["billable"];
+							project["not_billable"] = (decimal)project["not_billable"] + (decimal)entry["not_billable"];
+						}
+						totalBillable += (decimal)project["billable"];
+						totalNotBillable += (decimal)project["not_billable"];
+						projectsWithTimelogs.Add(project);
+					}
+				}
+
+				#endregion
+
+
+				#region
+				var responseObject = new EntityRecord();
+				responseObject["projects"] = projectsWithTimelogs;
+				responseObject["billable"] = totalBillable;
+				responseObject["not_billable"] = totalNotBillable;
+				response.Success = true;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = "Report successfully generated";
+				response.Object = responseObject;
+
+				return Json(response);
+
+				#endregion
+
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = "Error: " + ex.Message;
+				response.Object = null;
+				return Json(response);
+			}
+		}
+
 
 	}
 }

@@ -276,7 +276,7 @@ span.divider {
 
 .table-image {
 	max-height: 5em;
-	height: 5em;
+	width: 36px;
 }
 
 .recursive-view-wrapper {
@@ -1362,7 +1362,7 @@ body.hidden-sidebar #page-topnav {
 
 	#page-meta .meta-label h4 {
 		margin: 0;
-		line-height: 20px;
+		line-height: 1.2em;
 		font-size: 20px;
 		position: relative;
 		top: -3px;
@@ -1670,6 +1670,11 @@ body.hidden-sidebar #page-topnav {
 	margin-top: 1em;
 }
 
+.title-label {
+	color: #aaa;
+    text-transform: uppercase;
+    font-size: 16px;
+}
 
 /*#endregion */
 
@@ -2452,6 +2457,11 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 @media (min-width: 992px) {
 	.modal-width-100p {
 		width: 98%;
+	}
+}
+@media (min-width: 992px) {
+	.modal-width-75p {
+		width: 75%;
 	}
 }
 /*#endregion */
@@ -5079,9 +5089,6 @@ a.link-icon.link[href]:before {
 .angular-ui-tree li.parent_li.hovered .angular-ui-tree-handle {
 	border-color: #03A9F4;
 }
-
-
-
 
 /*#endregion*/
 

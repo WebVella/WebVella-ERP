@@ -186,7 +186,7 @@ namespace WebVella.ERP.Web.Security
             }
 
             EntityManager entMan = new EntityManager();
-            var entities = entMan.ReadEntities().Object.Entities;
+            var entities = entMan.ReadEntities().Object;
 
             List<object> permissions = new List<object>();
             foreach (var entity in entities)

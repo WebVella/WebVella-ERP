@@ -17,9 +17,7 @@ namespace WebVella.ERP.Web.Controllers
             //TODO - Test data
             var response = new EntityListResponse();
             response.Success = true;
-            var responseObj = new EntityList();
-            responseObj.Entities = new List<Entity>();
-            response.Object = responseObj;
+            response.Object = new List<Entity>();
             switch (entityName)
             {
                 case "role":
@@ -52,7 +50,7 @@ namespace WebVella.ERP.Web.Controllers
                     role.Label = "Guest";
                     role.LabelPlural = "Guests";
                     roles.Add(role);
-                    responseObj.Entities = roles;
+					response.Object = roles;
                 break;
                 #endregion
 
@@ -69,7 +67,7 @@ namespace WebVella.ERP.Web.Controllers
                     area.Weight = 4;
                     area.IconName = "cloud";
                     areas.Add(area);
-                    responseObj.Entities = areas;
+					response.Object = areas;
                     break;
 
             }
