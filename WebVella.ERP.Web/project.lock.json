@@ -1077,18 +1077,6 @@
           "lib/net451/Microsoft.EntityFrameworkCore.Relational.dll": {}
         }
       },
-      "Microsoft.EntityFrameworkCore.Relational.Design/1.0.0-rc2-final": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore.Relational": "1.0.0-rc2-final"
-        },
-        "compile": {
-          "lib/net451/Microsoft.EntityFrameworkCore.Relational.Design.dll": {}
-        },
-        "runtime": {
-          "lib/net451/Microsoft.EntityFrameworkCore.Relational.Design.dll": {}
-        }
-      },
       "Microsoft.EntityFrameworkCore.SqlServer/1.0.0-rc2-final": {
         "type": "package",
         "dependencies": {
@@ -1099,49 +1087,6 @@
         },
         "runtime": {
           "lib/net451/Microsoft.EntityFrameworkCore.SqlServer.dll": {}
-        }
-      },
-      "Microsoft.EntityFrameworkCore.Tools/1.0.0-preview1-final": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore.Tools.Cli": "1.0.0-preview1-final",
-          "Microsoft.EntityFrameworkCore.Tools.Core": "1.0.0-rc2-final",
-          "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc2-final"
-        },
-        "compile": {
-          "lib/net451/Microsoft.EntityFrameworkCore.Tools.dll": {}
-        },
-        "runtime": {
-          "lib/net451/Microsoft.EntityFrameworkCore.Tools.dll": {}
-        }
-      },
-      "Microsoft.EntityFrameworkCore.Tools.Cli/1.0.0-preview1-final": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.DotNet.Cli.Utils": "1.0.0-preview1-002702",
-          "Microsoft.DotNet.ProjectModel": "1.0.0-rc2-002702",
-          "Microsoft.EntityFrameworkCore.Tools.Core": "1.0.0-rc2-final",
-          "Microsoft.Extensions.CommandLineUtils": "1.0.0-rc2-final",
-          "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc2-final"
-        },
-        "compile": {
-          "lib/net451/Microsoft.EntityFrameworkCore.Tools.Cli.exe": {}
-        },
-        "runtime": {
-          "lib/net451/Microsoft.EntityFrameworkCore.Tools.Cli.exe": {}
-        }
-      },
-      "Microsoft.EntityFrameworkCore.Tools.Core/1.0.0-rc2-final": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0-rc2-final",
-          "Microsoft.EntityFrameworkCore.Relational.Design": "1.0.0-rc2-final"
-        },
-        "compile": {
-          "lib/net451/Microsoft.EntityFrameworkCore.Tools.Core.dll": {}
-        },
-        "runtime": {
-          "lib/net451/Microsoft.EntityFrameworkCore.Tools.Core.dll": {}
         }
       },
       "Microsoft.Extensions.Caching.Abstractions/1.0.0-rc2-final": {
@@ -3597,20 +3542,6 @@
         "lib/netstandard1.3/Microsoft.EntityFrameworkCore.Relational.xml"
       ]
     },
-    "Microsoft.EntityFrameworkCore.Relational.Design/1.0.0-rc2-final": {
-      "sha512": "3AcZmXbF7vIQc+l1UQ/6oiP/xTJGEZkyc8CURSXx2JLtUh5AhTnuzy/zqf5s6AgisOpkc0gDdsPiqqk+94cXhQ==",
-      "type": "package",
-      "files": [
-        "Microsoft.EntityFrameworkCore.Relational.Design.1.0.0-rc2-final.nupkg.sha512",
-        "Microsoft.EntityFrameworkCore.Relational.Design.nuspec",
-        "lib/net451/Microsoft.EntityFrameworkCore.Relational.Design.dll",
-        "lib/net451/Microsoft.EntityFrameworkCore.Relational.Design.xml",
-        "lib/netcore50/Microsoft.EntityFrameworkCore.Relational.Design.dll",
-        "lib/netcore50/Microsoft.EntityFrameworkCore.Relational.Design.xml",
-        "lib/netstandard1.3/Microsoft.EntityFrameworkCore.Relational.Design.dll",
-        "lib/netstandard1.3/Microsoft.EntityFrameworkCore.Relational.Design.xml"
-      ]
-    },
     "Microsoft.EntityFrameworkCore.SqlServer/1.0.0-rc2-final": {
       "sha512": "5BJ9VrgVbP/OqIuRow8nZkwbtr5CKjCyQGaXsBLZbzL8LZRkY1rb8kWYBusTJeZ2LjnnV0liQeNPRs3C15pIPQ==",
       "type": "package",
@@ -3621,56 +3552,6 @@
         "lib/net451/Microsoft.EntityFrameworkCore.SqlServer.xml",
         "lib/netstandard1.3/Microsoft.EntityFrameworkCore.SqlServer.dll",
         "lib/netstandard1.3/Microsoft.EntityFrameworkCore.SqlServer.xml"
-      ]
-    },
-    "Microsoft.EntityFrameworkCore.Tools/1.0.0-preview1-final": {
-      "sha512": "lRQALPgYcf8c6U2xRhgCwbQ1bdcDVe4Xl6a8s1Lo8HDYBn4GVLiKJUbGdJ0hySwX+br1irOoKAG+GdL453Q2mQ==",
-      "type": "package",
-      "files": [
-        "Microsoft.EntityFrameworkCore.Tools.1.0.0-preview1-final.nupkg.sha512",
-        "Microsoft.EntityFrameworkCore.Tools.nuspec",
-        "build/netcore50/Microsoft.EntityFrameworkCore.Tools.props",
-        "build/netcore50/Microsoft.EntityFrameworkCore.Tools.targets",
-        "lib/net451/Microsoft.EntityFrameworkCore.Tools.dll",
-        "lib/net451/Microsoft.EntityFrameworkCore.Tools.xml",
-        "lib/netcore50/Microsoft.EntityFrameworkCore.Tools.dll",
-        "lib/netcore50/Microsoft.EntityFrameworkCore.Tools.xml",
-        "lib/netcoreapp1.0/dotnet-ef.dll",
-        "lib/netcoreapp1.0/dotnet-ef.runtimeconfig.json",
-        "lib/netcoreapp1.0/dotnet-ef.xml",
-        "tools/EntityFramework.psd1",
-        "tools/EntityFramework.psm1",
-        "tools/OperationHandlers.cs",
-        "tools/about_EntityFramework.help.txt",
-        "tools/init.ps1",
-        "tools/install.ps1"
-      ]
-    },
-    "Microsoft.EntityFrameworkCore.Tools.Cli/1.0.0-preview1-final": {
-      "sha512": "rB+lVCt2vZ7ASHweT2ltuNMPR2xLA45WL2CGmQtrR+ZUoVB++WJLGIDQxisKRcViDA5huwpZkcXW0R0kPSlE9g==",
-      "type": "package",
-      "files": [
-        "Microsoft.EntityFrameworkCore.Tools.Cli.1.0.0-preview1-final.nupkg.sha512",
-        "Microsoft.EntityFrameworkCore.Tools.Cli.nuspec",
-        "lib/net451/Microsoft.EntityFrameworkCore.Tools.Cli.exe",
-        "lib/net451/Microsoft.EntityFrameworkCore.Tools.Cli.xml",
-        "lib/netcoreapp1.0/Microsoft.EntityFrameworkCore.Tools.Cli.dll",
-        "lib/netcoreapp1.0/Microsoft.EntityFrameworkCore.Tools.Cli.runtimeconfig.json",
-        "lib/netcoreapp1.0/Microsoft.EntityFrameworkCore.Tools.Cli.xml"
-      ]
-    },
-    "Microsoft.EntityFrameworkCore.Tools.Core/1.0.0-rc2-final": {
-      "sha512": "0L30NEnJaFdbc8a+B9nLb2kkMfnz94RFvJ8JWlO1u73wRChEafB7wLozyhCJFZziEEp8IbFYTzF3omR6gDfsmA==",
-      "type": "package",
-      "files": [
-        "Microsoft.EntityFrameworkCore.Tools.Core.1.0.0-rc2-final.nupkg.sha512",
-        "Microsoft.EntityFrameworkCore.Tools.Core.nuspec",
-        "lib/net451/Microsoft.EntityFrameworkCore.Tools.Core.dll",
-        "lib/net451/Microsoft.EntityFrameworkCore.Tools.Core.xml",
-        "lib/netcore50/Microsoft.EntityFrameworkCore.Tools.Core.dll",
-        "lib/netcore50/Microsoft.EntityFrameworkCore.Tools.Core.xml",
-        "lib/netstandard1.3/Microsoft.EntityFrameworkCore.Tools.Core.dll",
-        "lib/netstandard1.3/Microsoft.EntityFrameworkCore.Tools.Core.xml"
       ]
     },
     "Microsoft.Extensions.Caching.Abstractions/1.0.0-rc2-final": {
@@ -6970,7 +6851,6 @@
       "Microsoft.AspNetCore.Server.IISIntegration >= 1.0.0-rc2-final",
       "Microsoft.AspNetCore.Server.Kestrel >= 1.0.0-rc2-final",
       "Microsoft.AspNetCore.StaticFiles >= 1.0.0-rc2-final",
-      "Microsoft.EntityFrameworkCore.Tools >= 1.0.0-preview1-final",
       "Microsoft.Extensions.Configuration.EnvironmentVariables >= 1.0.0-rc2-final",
       "Microsoft.Extensions.Configuration.Json >= 1.0.0-rc2-final",
       "Microsoft.Extensions.Configuration.UserSecrets >= 1.0.0-rc2-final",
