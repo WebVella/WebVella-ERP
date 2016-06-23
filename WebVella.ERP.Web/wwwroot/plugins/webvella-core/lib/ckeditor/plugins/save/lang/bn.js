@@ -1,1 +1,1 @@
-﻿CKEDITOR.plugins.setLang("save","bn",{toolbar:"সংরক্ষন কর"});
+﻿CKEDITOR.plugins.setLang("save","bn",{toolbar:"সংরক্ষন করি"});

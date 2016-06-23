@@ -1,9 +1,9 @@
 /**
- * @license AngularJS v1.5.3
+ * @license AngularJS v1.5.7
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
-(function(window, angular, undefined) {'use strict';
+(function(window, angular) {'use strict';
 
 /* global ngTouchClickDirectiveFactory: false,
  */

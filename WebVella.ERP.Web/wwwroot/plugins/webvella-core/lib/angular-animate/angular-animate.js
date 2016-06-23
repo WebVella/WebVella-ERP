@@ -1,9 +1,9 @@
 /**
- * @license AngularJS v1.5.3
+ * @license AngularJS v1.5.7
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
-(function(window, angular, undefined) {'use strict';
+(function(window, angular) {'use strict';
 
 /* jshint ignore:start */
 var noop        = angular.noop;
@@ -132,7 +132,7 @@ function stripCommentsFromElement(element) {
   if (element instanceof jqLite) {
     switch (element.length) {
       case 0:
-        return [];
+        return element;
         break;
 
       case 1:
@@ -2317,7 +2317,7 @@ var $$AnimateQueueProvider = ['$animateProvider', function($animateProvider) {
     }
 
     // IE9-11 has no method "contains" in SVG element and in Node.prototype. Bug #10259.
-    var contains = Node.prototype.contains || function(arg) {
+    var contains = window.Node.prototype.contains || function(arg) {
       // jshint bitwise: false
       return this === arg || !!(this.compareDocumentPosition(arg) & 16);
       // jshint bitwise: true
@@ -2342,6 +2342,23 @@ var $$AnimateQueueProvider = ['$animateProvider', function($animateProvider) {
       return matches;
     }
 
+    function filterFromRegistry(list, matchContainer, matchCallback) {
+      var containerNode = extractElementNode(matchContainer);
+      return list.filter(function(entry) {
+        var isMatch = entry.node === containerNode &&
+                        (!matchCallback || entry.callback === matchCallback);
+        return !isMatch;
+      });
+    }
+
+    function cleanupEventListeners(phase, element) {
+      if (phase === 'close' && !element[0].parentNode) {
+        // If the element is not attached to a parentNode, it has been removed by
+        // the domOperation, and we can safely remove the event callbacks
+        $animate.off(element);
+      }
+    }
+
     var $animate = {
       on: function(event, container, callback) {
         var node = extractElementNode(container);
@@ -2353,26 +2370,33 @@ var $$AnimateQueueProvider = ['$animateProvider', function($animateProvider) {
 
         // Remove the callback when the element is removed from the DOM
         jqLite(container).on('$destroy', function() {
-          $animate.off(event, container, callback);
+          var animationDetails = activeAnimationsLookup.get(node);
+
+          if (!animationDetails) {
+            // If there's an animation ongoing, the callback calling code will remove
+            // the event listeners. If we'd remove here, the callbacks would be removed
+            // before the animation ends
+            $animate.off(event, container, callback);
+          }
         });
       },
 
       off: function(event, container, callback) {
+        if (arguments.length === 1 && !angular.isString(arguments[0])) {
+          container = arguments[0];
+          for (var eventType in callbackRegistry) {
+            callbackRegistry[eventType] = filterFromRegistry(callbackRegistry[eventType], container);
+          }
+
+          return;
+        }
+
         var entries = callbackRegistry[event];
         if (!entries) return;
 
         callbackRegistry[event] = arguments.length === 1
             ? null
             : filterFromRegistry(entries, container, callback);
-
-        function filterFromRegistry(list, matchContainer, matchCallback) {
-          var containerNode = extractElementNode(matchContainer);
-          return list.filter(function(entry) {
-            var isMatch = entry.node === containerNode &&
-                            (!matchCallback || entry.callback === matchCallback);
-            return !isMatch;
-          });
-        }
       },
 
       pin: function(element, parentElement) {
@@ -2486,12 +2510,14 @@ var $$AnimateQueueProvider = ['$animateProvider', function($animateProvider) {
 
       var isStructural = ['enter', 'move', 'leave'].indexOf(event) >= 0;
 
+      var documentHidden = $document[0].hidden;
+
       // this is a hard disable of all animations for the application or on
       // the element itself, therefore  there is no need to continue further
       // past this point if not enabled
       // Animations are also disabled if the document is currently hidden (page is not visible
       // to the user), because browsers slow down or do not flush calls to requestAnimationFrame
-      var skipAnimations = !animationsEnabled || $document[0].hidden || disabledElementsLookup.get(node);
+      var skipAnimations = !animationsEnabled || documentHidden || disabledElementsLookup.get(node);
       var existingAnimation = (!skipAnimations && activeAnimationsLookup.get(node)) || {};
       var hasExistingAnimation = !!existingAnimation.state;
 
@@ -2502,7 +2528,10 @@ var $$AnimateQueueProvider = ['$animateProvider', function($animateProvider) {
       }
 
       if (skipAnimations) {
+        // Callbacks should fire even if the document is hidden (regression fix for issue #14120)
+        if (documentHidden) notifyProgress(runner, event, 'start');
         close();
+        if (documentHidden) notifyProgress(runner, event, 'close');
         return runner;
       }
 
@@ -2652,6 +2681,11 @@ var $$AnimateQueueProvider = ['$animateProvider', function($animateProvider) {
         markElementAnimationState(element, RUNNING_STATE);
         var realRunner = $$animation(element, event, animationDetails.options);
 
+        // this will update the runner's flow-control events based on
+        // the `realRunner` object.
+        runner.setHost(realRunner);
+        notifyProgress(runner, event, 'start', {});
+
         realRunner.done(function(status) {
           close(!status);
           var animationDetails = activeAnimationsLookup.get(node);
@@ -2660,11 +2694,6 @@ var $$AnimateQueueProvider = ['$animateProvider', function($animateProvider) {
           }
           notifyProgress(runner, event, 'close', {});
         });
-
-        // this will update the runner's flow-control events based on
-        // the `realRunner` object.
-        runner.setHost(realRunner);
-        notifyProgress(runner, event, 'start', {});
       });
 
       return runner;
@@ -2681,7 +2710,10 @@ var $$AnimateQueueProvider = ['$animateProvider', function($animateProvider) {
               forEach(callbacks, function(callback) {
                 callback(element, phase, data);
               });
+              cleanupEventListeners(phase, element);
             });
+          } else {
+            cleanupEventListeners(phase, element);
           }
         });
         runner.progress(event, phase, data);
@@ -3181,8 +3213,6 @@ var $$AnimationProvider = ['$animateProvider', function($animateProvider) {
         // may attempt more elements, but custom drivers are more particular
         for (var i = drivers.length - 1; i >= 0; i--) {
           var driverName = drivers[i];
-          if (!$injector.has(driverName)) continue; // TODO(matsko): remove this check
-
           var factory = $injector.get(driverName);
           var driver = factory(animationDetails);
           if (driver) {
@@ -3211,7 +3241,8 @@ var $$AnimationProvider = ['$animateProvider', function($animateProvider) {
         }
 
         function update(element) {
-          getRunner(element).setHost(newRunner);
+          var runner = getRunner(element);
+          if (runner) runner.setHost(newRunner);
         }
       }
 
@@ -3486,7 +3517,7 @@ var ngAnimateSwapDirective = ['$animate', '$rootScope', function($animate, $root
  * <div ng-show="bool" class="fade">
  *   Show and hide me
  * </div>
- * <button ng-click="bool=true">Toggle</button>
+ * <button ng-click="bool=!bool">Toggle</button>
  *
  * <style>
  * .fade.ng-hide {
