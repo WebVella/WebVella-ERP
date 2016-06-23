@@ -84,8 +84,7 @@
   },
    
   "commands": {
-    "web": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.Kestrel",
-    "temp-web": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.Kestrel --server.urls http://erp.com"
+    "web": "Microsoft.AspNet.Server.Kestrel"
   },
 
   "tools": {
