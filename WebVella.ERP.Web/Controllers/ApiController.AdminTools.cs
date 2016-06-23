@@ -738,7 +738,7 @@ $"#region << Create entity: {entity.Name} >>\n" +
 				}
 			}
 
-			//foreach view generate createview and add
+			//foreach view generate create view and add
 			foreach (var view in entity.RecordViews)
 			{
 				response += CreateViewCode(view, entity.Id, entity.Name);
@@ -1259,7 +1259,7 @@ $"#region << Create entity: {entity.Name} >>\n" +
 		{
 			var response = string.Empty;
 			response =
-			$"#region << Create Enity: {entityName} field: {field.Name} >>\n" +
+			$"#region << Create Entity: {entityName} field: {field.Name} >>\n" +
 			"{\n" +
 			"\tInputAutoNumberField autonumberField = new InputAutoNumberField();\n" +
 			$"\tautonumberField.Id = new Guid(\"{field.Id}\");\n" +
@@ -1353,7 +1353,7 @@ $"#region << Create entity: {entity.Name} >>\n" +
 		{
 			var response = string.Empty;
 			response =
-			$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+			$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			"{\n" +
 				"\tInputCheckboxField checkboxField = new InputCheckboxField();\n" +
 				$"\tcheckboxField.Id = new Guid(\"{field.Id}\");\n" +
@@ -1421,7 +1421,7 @@ $"#region << Create entity: {entity.Name} >>\n" +
 		{
 			var response = string.Empty;
 			response =
-			$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+			$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			"{\n" +
 			"\tInputCurrencyField currencyField = new InputCurrencyField();\n" +
 			$"\tcurrencyField.Id = new Guid(\"{field.Id}\");\n" +
@@ -1517,7 +1517,7 @@ $"#region << Create entity: {entity.Name} >>\n" +
 			var response = string.Empty;
 			response =
 
-		$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+		$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 		"{\n" +
 			"\tInputDateField dateField = new InputDateField();\n" +
 			$"\tdateField.Id =  new Guid(\"{field.Id}\");\n" +
@@ -1606,7 +1606,7 @@ $"#region << Create entity: {entity.Name} >>\n" +
 			var response = string.Empty;
 			response =
 
-$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 "{\n" +
 	"\tInputDateTimeField datetimeField = new InputDateTimeField();\n" +
 	$"\tdatetimeField.Id =  new Guid(\"{field.Id}\");\n" +
@@ -1695,7 +1695,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			var response = string.Empty;
 			response =
 
-$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 "{\n" +
 	"\tInputEmailField emailField = new InputEmailField();\n" +
 	$"\temailField.Id = new Guid(\"{field.Id}\");\n" +
@@ -1781,7 +1781,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			var response = "";
 
 			response =
-$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 "{\n" +
 	$"\tInputFileField fileField = new InputFileField();\n" +
 	$"\tfileField.Id = new Guid(\"{field.Id}\");\n" +
@@ -1858,7 +1858,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			var response = "";
 
 			response =
-$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 "{\n" +
 	$"\tInputHtmlField htmlField = new InputHtmlField();\n" +
 	$"\thtmlField.Id = new Guid(\"{field.Id}\");\n" +
@@ -1933,7 +1933,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 		{
 			var response = "";
 			response =
-			$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+			$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			"{\n" +
 			$"\tInputImageField imageField = new InputImageField();\n" +
 			$"\timageField.Id = new Guid(\"{field.Id}\");\n" +
@@ -2008,7 +2008,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 		{
 			var response = "";
 			response =
-$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 "{\n" +
 	$"\tInputMultiLineTextField textareaField = new InputMultiLineTextField();\n" +
 	$"\ttextareaField.Id = new Guid(\"{field.Id}\");\n" +
@@ -2100,7 +2100,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 		{
 			var response = "";
 			response =
-$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 "{\n" +
 	$"\tInputMultiSelectField multiSelectField = new InputMultiSelectField();\n" +
 	$"\tmultiSelectField.Id = new Guid(\"{field.Id}\");\n" +
@@ -2208,7 +2208,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 		{
 			var response = string.Empty;
 			response =
-			$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+			$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			"{\n" +
 				$"\tInputNumberField numberField = new InputNumberField();\n" +
 				$"\tnumberField.Id = new Guid(\"{field.Id}\");\n" +
@@ -2302,7 +2302,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 		{
 			var response = string.Empty;
 			response =
-			$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+			$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			"{\n" +
 				$"\tInputPasswordField passwordField = new InputPasswordField();\n" +
 				$"\tpasswordField.Id = new Guid(\"{field.Id}\");\n" +
@@ -2387,7 +2387,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 		{
 			var response = string.Empty;
 			response =
-$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 "{\n" +
 	$"\tInputPercentField percentField = new InputPercentField();\n" +
 	$"\tpercentField.Id = new Guid(\"{field.Id}\");\n" +
@@ -2481,7 +2481,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 		{
 			var response = string.Empty;
 			response =
-		$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+		$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 		"{\n" +
 			$"\tInputPhoneField phoneField = new InputPhoneField();\n" +
 			$"\tphoneField.Id = new Guid(\"{field.Id}\");\n" +
@@ -2573,7 +2573,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 		{
 			var response = string.Empty;
 			response =
-$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 "{\n" +
 	$"\tInputGuidField guidField = new InputGuidField();\n" +
 	$"\tguidField.Id = new Guid(\"{field.Id}\");\n" +
@@ -2653,7 +2653,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			var response = string.Empty;
 			response =
 
-$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 "{\n" +
 	$"\tInputSelectField dropdownField = new InputSelectField();\n" +
 	$"\tdropdownField.Id = new Guid(\"{field.Id}\");\n" +
@@ -2749,7 +2749,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 		{
 			var response = string.Empty;
 			response =
-			$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+			$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			"{\n" +
 				$"\tInputTextField textboxField = new InputTextField();\n" +
 			$"\ttextboxField.Id = new Guid(\"{field.Id}\");\n" +
@@ -2834,7 +2834,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			var response = string.Empty;
 			response =
 
-		$"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
+		$"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 		"{\n" +
 			$"\tInputUrlField urlField = new InputUrlField();\n" +
 			$"\turlField.Id = new Guid(\"{field.Id}\");\n" +
@@ -3164,7 +3164,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			var hasUpdate = false;
 			#region << Code >>
 			response =
-			$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+			$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			"{\n" +
 			$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 			"\tInputAutoNumberField autonumberField = new InputAutoNumberField();\n" +
@@ -3351,7 +3351,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			var hasUpdate = false;
 			#region << Code >>
 			response =
-			$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+			$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			"{\n" +
 			$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 			"\tInputCheckboxField checkboxField = new InputCheckboxField();\n" +
@@ -3507,7 +3507,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			var hasUpdate = false;
 			#region << Code >>
 			response =
-			$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+			$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			"{\n" +
 				$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 				"\tInputCurrencyField currencyField = new InputCurrencyField();\n" +
@@ -3703,7 +3703,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 
 			#region << Code >>
 			response =
-			$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+			$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			"{\n" +
 				$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 				"\tInputDateField dateField = new InputDateField();\n" +
@@ -3887,7 +3887,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			#region << Code >>
 			response =
 
-			$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+			$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			"{\n" +
 				$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 				"\tInputDateTimeField datetimeField = new InputDateTimeField();\n" +
@@ -4071,7 +4071,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			response =
 
 			#region << Code >>
-			$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+			$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			"{\n" +
 				$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 				"\tInputEmailField emailField = new InputEmailField();\n" +
@@ -4246,7 +4246,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			var hasUpdate = false;
 			#region << Code >>
 			response =
-			$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+			$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			"{\n" +
 				$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 				$"\tInputFileField fileField = new InputFileField();\n" +
@@ -4411,7 +4411,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 
 			#region << Code >>
 			response =
-			$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+			$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			"{\n" +
 				$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 				$"\tInputImageField imageField = new InputImageField();\n" +
@@ -4574,7 +4574,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			var hasUpdate = false;
 			#region << Code >>
 			response =
-			$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+			$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			"{\n" +
 				$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 				$"\tInputHtmlField htmlField = new InputHtmlField();\n" +
@@ -4740,7 +4740,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 
 			#region << Code >>
 			response =
-			$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+			$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			"{\n" +
 				$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 				$"\tInputMultiLineTextField textareaField = new InputMultiLineTextField();\n" +
@@ -4929,7 +4929,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			var hasUpdate = false;
 			#region << Code >>
 			response =
-			$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+			$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			"{\n" +
 				$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 				$"\tInputMultiSelectField multiSelectField = new InputMultiSelectField();\n" +
@@ -5149,7 +5149,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 			var hasUpdate = false;
 			#region << Code >>
 			response =
-			$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+			$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			"{\n" +
 				$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 				$"\tInputNumberField numberField = new InputNumberField();\n" +
@@ -5343,7 +5343,7 @@ $"#region << Create  Enity: {entityName} field: {field.Name} >>\n" +
 
 			#region << Code >>
 			response =
-$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 "{\n" +
 	$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 	$"\tInputPasswordField passwordField = new InputPasswordField();\n" +
@@ -5526,7 +5526,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 
 			#region << Code >>
 			response =
-			$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+			$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			"{\n" +
 				$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 				$"\tInputPercentField percentField = new InputPercentField();\n" +
@@ -5721,7 +5721,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 
 			#region << Code >>
 			response =
-		$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+		$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 		"{\n" +
 			$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 			$"\tInputPhoneField phoneField = new InputPhoneField();\n" +
@@ -5910,7 +5910,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 
 			#region << Code >>
 			response =
-$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 "{\n" +
 	$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 	$"\tInputGuidField guidField = new InputGuidField();\n" +
@@ -6081,7 +6081,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			#region << Code >>
 			response =
 
-$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 "{\n" +
 	$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 	$"\tInputSelectField dropdownField = new InputSelectField();\n" +
@@ -6283,7 +6283,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			#region << Code >>
 
 			response =
-$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 "{\n" +
 		$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 	$"\tInputTextField textboxField = new InputTextField();\n" +
@@ -6461,7 +6461,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			#region << Code >>
 			response =
 
-		$"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
+		$"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 		"{\n" +
 			$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 			$"\tInputUrlField urlField = new InputUrlField();\n" +
@@ -6647,7 +6647,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 			if (view.Title != null)
 				view.Title = view.Title.Replace("\"", "\\\"");
 			response +=
-		   $"#region << View  Enity: {entityName} name: {view.Name} >>\n" +
+		   $"#region << View  Entity: {entityName} name: {view.Name} >>\n" +
 		   "{\n" +
 			   $"\tvar createViewEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 			   $"\tvar createViewInput = new InputRecordView();\n\n" +
@@ -7581,7 +7581,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 		private string DeleteViewCode(DbRecordView view, Guid entityId, string entityName)
 		{
 			var response =
-		$"#region << Delete  Enity: {entityName} view: {view.Name} >>\n" +
+		$"#region << Delete  Entity: {entityName} view: {view.Name} >>\n" +
 		"{\n" +
 			"\t{\n" +
 				$"\t\tvar response = entMan.DeleteRecordView(new Guid(\"{entityId}\"),new Guid(\"{view.Id}\"));\n" +
@@ -7615,7 +7615,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 
 			#region << Code >>
 			code +=
-		   $"#region << Update  Enity: {currentEntity.Name} View: {currentView.Name} >>\n" +
+		   $"#region << Update  Entity: {currentEntity.Name} View: {currentView.Name} >>\n" +
 		   "{\n" +
 			   $"\tvar updateViewEntity = entMan.ReadEntity(new Guid(\"{currentEntity.Id}\")).Object;\n" +
 			   $"\tvar createViewInput = new InputRecordView();\n\n" +
@@ -7821,7 +7821,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 				list.Label = list.Label.Replace("\"", "\\\"");
 
 			response +=
-			$"#region << List  Enity: {entityName} name: {list.Name} >>\n" +
+			$"#region << List  Entity: {entityName} name: {list.Name} >>\n" +
 			"{\n" +
 			$"\tvar createListEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
 			$"\tvar createListInput = new InputRecordList();\n\n" +
@@ -8478,7 +8478,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 		private string DeleteListCode(DbRecordList list, Guid entityId, string entityName)
 		{
 			var response =
-		$"#region << Delete  Enity: {entityName} list: {list.Name} >>\n" +
+		$"#region << Delete  Entity: {entityName} list: {list.Name} >>\n" +
 		"{\n" +
 			"\t{\n" +
 				$"\t\tvar response = entMan.DeleteRecordList(new Guid(\"{entityId}\"),new Guid(\"{list.Id}\"));\n" +
@@ -8507,7 +8507,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 
 			#region << Code >>
 			code +=
-			$"#region << Update  Enity: {currentEntity.Name} name: {currentList.Name} >>\n" +
+			$"#region << Update  Entity: {currentEntity.Name} name: {currentList.Name} >>\n" +
 			"{\n" +
 			$"\tvar createListEntity = entMan.ReadEntity(new Guid(\"{currentEntity.Id}\")).Object;\n" +
 			$"\tvar createListInput = new InputRecordList();\n\n" +
@@ -8805,7 +8805,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 				tree.Label = tree.Label.Replace("\"", "\\\"");
 
 			response +=
-		   $"#region << Tree  Enity: {entityName} name: {tree.Name} >>\n" +
+		   $"#region << Tree  Entity: {entityName} name: {tree.Name} >>\n" +
 		   "{\n" +
 			"\tvar createTreeInput = new InputRecordTree();\n" +
 			$"\tcreateTreeInput.Id = new Guid(\"{tree.Id}\");\n" +
@@ -8941,7 +8941,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 		private string DeleteTreeCode(DbRecordTree tree, Guid entityId, string entityName)
 		{
 			var response =
-		$"#region << Delete  Enity: {entityName} tree: {tree.Name} >>\n" +
+		$"#region << Delete  Entity: {entityName} tree: {tree.Name} >>\n" +
 		"{\n" +
 			"\t{\n" +
 				$"\t\tvar response = entMan.DeleteRecordTree(new Guid(\"{entityId}\"),new Guid(\"{tree.Id}\"));\n" +
@@ -8969,7 +8969,7 @@ $"#region << Update  Enity: {entityName} field: {currentField.Name} >>\n" +
 				oldTree.Label = oldTree.Label.Replace("\"", "\\\"");
 			#region << Code >>
 			code +=
-		   $"#region << Tree  Enity: {currentEntity.Name} name: {currentTree.Name} >>\n" +
+		   $"#region << Tree  Entity: {currentEntity.Name} name: {currentTree.Name} >>\n" +
 		   "{\n" +
 			$"\tvar createTreeEntity = entMan.ReadEntity(new Guid(\"{currentEntity.Id}\")).Object;\n" +
 			"\tvar updateTreeInput = new InputRecordTree();\n" +

@@ -1,5 +1,5 @@
 /*
- ng-sortable v1.3.4
+ ng-sortable v1.3.5
  The MIT License (MIT)
 
  Copyright (c) 2014 Muhammed Ashik
@@ -681,7 +681,7 @@
            * @param event - the event object.
            */
           dragListen = function (event) {
-            event.preventDefault();
+
             var unbindMoveListen = function () {
               angular.element($document).unbind('mousemove', moveListen);
               angular.element($document).unbind('touchmove', moveListen);
@@ -900,8 +900,8 @@
               targetY = eventObj.pageY - ($window.pageYOffset || $document[0].documentElement.scrollTop);
 
               //IE fixes: hide show element, call element from point twice to return pick correct element.
-              targetElement = angular.element($document[0].elementFromPoint(targetX, targetY));
               dragElement.addClass(sortableConfig.hiddenClass);
+              targetElement = angular.element($document[0].elementFromPoint(targetX, targetY));
               dragElement.removeClass(sortableConfig.hiddenClass);
 
               $helper.movePosition(eventObj, dragElement, itemPosition, containment, containerPositioning, scrollableContainer);

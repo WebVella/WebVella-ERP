@@ -17,8 +17,8 @@
     "tag": "v1.0.6",
     "commit": "2ac7258407619398005ca720596f0d36ce66a6c8"
   },
-  "_source": "git://github.com/ftlabs/fastclick.git",
-  "_target": "~1.0.6",
+  "_source": "https://github.com/ftlabs/fastclick.git",
+  "_target": "^1.0.6",
   "_originalSource": "fastclick",
   "_direct": true
 }

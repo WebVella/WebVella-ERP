@@ -1,6 +1,6 @@
 {
   "name": "bootstrap-ui-datetime-picker",
-  "version": "2.2.3",
+  "version": "2.4.0",
   "homepage": "https://github.com/Gillardo/bootstrap-ui-datetime-picker",
   "authors": [
     "Gillardo <darren.gillard81@gmail.com>"
@@ -29,6 +29,6 @@
     "tests"
   ],
   "dependencies": {
-    "angular-bootstrap": "~1.1.0"
+    "angular-bootstrap": "^1.2.0"
   }
 }

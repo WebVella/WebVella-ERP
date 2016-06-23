@@ -1,6 +1,5 @@
 {
   "name": "offline",
-  "version": "0.7.15",
   "homepage": "http://github.hubspot.com/offline/docs/welcome",
   "authors": [
     "Zack Bloom <zackbloom@gmail.com>",
@@ -34,14 +33,15 @@
     "bower.json",
     "package.json"
   ],
-  "_release": "0.7.15",
+  "version": "0.7.17",
+  "_release": "0.7.17",
   "_resolution": {
     "type": "version",
-    "tag": "v0.7.15",
-    "commit": "e135ea7ec6b5b042495f212f632d6a6fd6926be0"
+    "tag": "v0.7.17",
+    "commit": "1462b8f569aa7f8e443b8a557b42246e188937de"
   },
-  "_source": "git://github.com/HubSpot/offline.git",
-  "_target": "~0.7.15",
+  "_source": "https://github.com/HubSpot/offline.git",
+  "_target": "^0.7.17",
   "_originalSource": "offline",
   "_direct": true
 }
