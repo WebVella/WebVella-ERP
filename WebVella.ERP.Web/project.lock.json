@@ -2678,7 +2678,7 @@
       ]
     },
     "CsvHelper/2.13.0": {
-      "sha512": "89T0wPCsnQroUSkdsnCGsohInXaqx4J3lEQJ5Ed+6B6hGSKTYtbww4JAFaumDPa2p2Iyb29as5yahV5dATi0RA==",
+      "sha512": "08adiITHpWyIm9RR9EtMlS05iIuesDZuN1px6pw7Dlc/7c5cz9vCoAQdksP+JyTgmfZVhN57y+ii7sUCFr+mDQ==",
       "type": "package",
       "files": [
         "CsvHelper.2.13.0.nupkg.sha512",

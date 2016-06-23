@@ -113,32 +113,6 @@ namespace WebVella.ERP.Web.Security
             }
         }
 
-        internal static void OpenScope(HttpContext context)
-        {
-            if (context == null)
-                throw new NullReferenceException("context");
-
-            if (context.User != null && context.User is ErpPrincipal)
-            {
-                var identity = (context.User as ErpPrincipal).Identity as ErpIdentity;
-                if (identity != null)
-                {
-                    var scopeMarker = SecurityContext.OpenScope(identity.User);
-                    context.Items.Add("erp_security_scope_marker", scopeMarker);
-                }
-            }
-        }
-
-        internal static void CloseScope(HttpContext context)
-        {
-            if (context == null)
-                throw new NullReferenceException("context");
-
-            IDisposable scopeMarker = context.Items["erp_security_scope_marker"] as IDisposable;
-            if (scopeMarker != null)
-                scopeMarker.Dispose();
-        }
-
         internal static ErpIdentity CreateIdentity(Guid? userId)
         {
             SecurityManager secMan = new SecurityManager();

@@ -14,6 +14,7 @@ using WebVella.ERP.Plugins;
 using WebVella.ERP.WebHooks;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Internal;
+using WebVella.ERP.Web.Services;
 
 namespace WebVella.ERP.Web
 {
@@ -36,6 +37,7 @@ namespace WebVella.ERP.Web
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddMvc().AddCrmPlugins(hostingEnviroment);
+			services.AddScoped<IRequestService, RequestService>();
 			services.AddSingleton<IErpService, ErpService>();
 			services.AddSingleton<IPluginService, PluginService>();
 			services.AddSingleton<IWebHookService, WebHookService>();
@@ -56,9 +58,7 @@ namespace WebVella.ERP.Web
 				AutoMapperConfiguration.Configure();
 				service.InitializeSystemEntities();
 
-				//app.UseDebugLogMiddleware();
-				app.UseSecurityMiddleware();
-				app.UseDatabaseContextMiddleware();
+				app.UseErpMiddleware();
 
 				IPluginService pluginService = app.ApplicationServices.GetService<IPluginService>();
 				IHostingEnvironment hostingEnvironment = app.ApplicationServices.GetRequiredService<IHostingEnvironment>();
