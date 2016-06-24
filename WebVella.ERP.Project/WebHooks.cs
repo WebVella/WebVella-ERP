@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
-using WebVella.ERP.Projects;
 using WebVella.ERP.WebHooks;
 
 namespace WebVella.ERP.Project
