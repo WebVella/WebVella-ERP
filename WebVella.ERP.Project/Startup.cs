@@ -62,6 +62,8 @@ namespace WebVella.ERP.Project
 
 		public void Start(PluginStartArguments pluginStartArgs)
 		{
+			//initialize static context
+			StaticContext.Initialize(pluginStartArgs.Plugin, pluginStartArgs.ServiceProvider);
 
 			var entMan = new EntityManager();
 			var relMan = new EntityRelationManager();
