@@ -1749,44 +1749,102 @@ namespace WebVella.ERP.Project
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/sprint/{sprintId}/available-tasks")]
-		public IActionResult GetSprintTasksList(Guid sprintId, string scope = "user", int page = 1, int pageSize = 1)
+		public IActionResult GetSprintTasksList(Guid sprintId, string status = "not started", string scope = "user", int page = 1, int pageSize = 1)
 		{
 			var response = new ResponseModel();
-			var sprintList = new List<EntityRecord>();
+			var taskList = new List<EntityRecord>();
+			var processedTaskList = new List<EntityRecord>();
+			var userDictionary = new Dictionary<Guid, EntityRecord>();
 			var skipPages = (page - 1) * pageSize;
 			try
 			{
-				QueryObject queryFilter = null;
-				var sortRulesList = new List<QuerySortObject>();
-				var sortRule = new QuerySortObject("start_date", QuerySortType.Descending);
-				sortRulesList.Add(sortRule);
-				var query = new EntityQuery("wv_sprint", "*", queryFilter, sortRulesList.ToArray(), skipPages, pageSize);
-				var queryResponse = recMan.Find(query);
-				if (!queryResponse.Success)
+
+				#region << Get all users >>
 				{
-					response.Success = false;
-					response.Timestamp = DateTime.UtcNow;
-					response.Message = "Error: " + queryResponse.Message;
-					response.Object = null;
-					return Json(response);
+					var query = new EntityQuery("user");
+					var queryResponse = recMan.Find(query);
+					if (!queryResponse.Success)
+					{
+						response.Success = false;
+						response.Timestamp = DateTime.UtcNow;
+						response.Message = "Error: " + queryResponse.Message;
+						response.Object = null;
+						return Json(response);
+					}
+					foreach (var user in queryResponse.Object.Data)
+					{
+						userDictionary[(Guid)user["id"]] = user;
+					}
 				}
-				if (queryResponse.Object.Data.Any())
+
+				#endregion
+
+				#region << Get tasks >>
 				{
-					sprintList = queryResponse.Object.Data;
+					QueryObject queryFilter = null;
+					var queryRulesList = new List<QueryObject>();
+					//Only not completed tasks
+					queryRulesList.Add(EntityQuery.QueryNOT("status", "completed"));
+					if (scope == "user")
+					{
+						queryRulesList.Add(EntityQuery.QueryEQ("owner_id", SecurityContext.CurrentUser.Id));
+					}
+					queryRulesList.Add(EntityQuery.QueryEQ("status", status));
+
+					queryFilter = EntityQuery.QueryAND(queryRulesList.ToArray());
+
+					var sortRulesList = new List<QuerySortObject>();
+					var sortRule = new QuerySortObject("created_on", QuerySortType.Descending);
+					sortRulesList.Add(sortRule);
+					var queryFields = "id,code,owner_id, priority,status,subject," +
+						"x_billable_hours,x_nonbillable_hours,estimation";
+
+					var query = new EntityQuery("wv_task", queryFields, queryFilter, sortRulesList.ToArray(), skipPages, pageSize);
+					var queryResponse = recMan.Find(query);
+					if (!queryResponse.Success)
+					{
+						response.Success = false;
+						response.Timestamp = DateTime.UtcNow;
+						response.Message = "Error: " + queryResponse.Message;
+						response.Object = null;
+						return Json(response);
+					}
+					if (queryResponse.Object.Data.Any())
+					{
+						taskList = queryResponse.Object.Data;
+					}
+					else
+					{
+						response.Success = true;
+						response.Timestamp = DateTime.UtcNow;
+						response.Message = "No tasks found!";
+						response.Object = new List<EntityRecord>();
+						return Json(response);
+					}
 				}
-				else
+				#endregion
+
+				#region << process Tasks >>
+				foreach (var task in taskList)
 				{
-					response.Success = true;
-					response.Timestamp = DateTime.UtcNow;
-					response.Message = "No sprints found!";
-					response.Object = null;
-					return Json(response);
+					var proccessedTask = new EntityRecord();
+					proccessedTask["id"] = (Guid)task["id"];
+					proccessedTask["code"] = (string)task["code"];
+					proccessedTask["priority"] = (string)task["priority"];
+					proccessedTask["status"] = (string)task["status"];
+					proccessedTask["subject"] = (string)task["subject"];
+					proccessedTask["estimation"] = (decimal)task["estimation"];
+					proccessedTask["logged"] = (decimal)task["x_nonbillable_hours"] + (decimal)task["x_billable_hours"];
+					proccessedTask["owner_username"] = (string)userDictionary[(Guid)task["owner_id"]]["username"];
+					proccessedTask["owner_image"] = (string)userDictionary[(Guid)task["owner_id"]]["image"];
+					processedTaskList.Add(proccessedTask);
 				}
+				#endregion
 
 				response.Success = true;
 				response.Timestamp = DateTime.UtcNow;
-				response.Message = "Sprints successfully read";
-				response.Object = sprintList;
+				response.Message = "Tasks successfully read";
+				response.Object = processedTaskList;
 
 				return Json(response);
 			}

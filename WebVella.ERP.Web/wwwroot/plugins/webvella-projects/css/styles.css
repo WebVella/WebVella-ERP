@@ -533,4 +533,14 @@
 		margin-left: 5px;
 	}
 
+	.as-sortable-dragging .sprint-item .media{
+		display:none;
+	}
+
+	.as-sortable-dragging .sprint-item .drag-box{
+		display: block !important;
+		min-height: 20px;
+		line-height: 20px;
+	}
+
 /*#endregion*/

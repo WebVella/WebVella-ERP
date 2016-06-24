@@ -28,6 +28,7 @@
 		serviceInstance.getProjectTimelogReport = getProjectTimelogReport;
 		serviceInstance.getAllSprints = getAllSprints;
 		serviceInstance.getProjectSprintDetails = getProjectSprintDetails;
+		serviceInstance.getProjectSprintAllTasks = getProjectSprintAllTasks;
 		//#endregion
 
 		///
@@ -73,8 +74,8 @@
 		}
 
 		////////////////
-		function getProjectSprintAllTasks(sprintId, scope,page, pageSize, successCallback, errorCallback) {
-			$http({ method: 'GET', url: "/plugins/webvella-projects/api/sprint/" + sprintId + "/available-tasks?scope=" + scope + "&page=" + page + "&pageSize=" + pageSize }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		function getProjectSprintAllTasks(sprintId, scope, status, page, pageSize, successCallback, errorCallback) {
+			$http({ method: 'GET', url: "/plugins/webvella-projects/api/sprint/" + sprintId + "/available-tasks?scope=" + scope + "&page=" + page + "&pageSize=" + pageSize  + "&status=" + status}).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 

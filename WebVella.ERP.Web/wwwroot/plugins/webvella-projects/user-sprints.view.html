@@ -53,36 +53,45 @@
 		</table>
 		<div class="row">
 			<div class="col-md-4">
-				<div class="panel sprint-wrapper panel-white">
+				<div class="panel sprint-wrapper panel-white" id="not-started">
 					<div class="panel-heading">
-						<a class="btn btn-outline btn-xs pull-right" ng-click="ngCtrl.attachTaskModal()"><i class="fa fa-plus"></i></a>
+						<a class="btn btn-outline btn-xs pull-right" ng-click="ngCtrl.attachTaskModal('not started')"><i class="fa fa-plus"></i></a>
 						<span class="badge">{{ngCtrl.sprint.tasks_not_started.length}}</span> not started
 					</div>
-					<div class="panel-body">
-						<div class="sprint-item" ng-repeat="task in ngCtrl.sprint.tasks_not_started track by task.id" ng-include="'sprintItemTemplate.html'">
+					<div class="panel-body" as-sortable="ngCtrl.dragControlListeners" ng-model="ngCtrl.sprint.tasks_not_started">
+						<div class="sprint-item" ng-repeat="task in ngCtrl.sprint.tasks_not_started track by task.id" 
+							ng-include="'sprintItemTemplate.html'" as-sortable-item  as-sortable-item-handle>
 
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="col-md-4">
-				<div class="panel sprint-wrapper panel-white">
+				<div class="panel sprint-wrapper panel-white" id="in-progress">
 					<div class="panel-heading">
+						<a class="btn btn-outline btn-xs pull-right" ng-click="ngCtrl.attachTaskModal('in progress')"><i class="fa fa-plus"></i></a>
 						<span class="badge">{{ngCtrl.sprint.tasks_in_progress.length}}</span> in progress
 					</div>
-					<div class="panel-body"></div>
+					<div class="panel-body" as-sortable="ngCtrl.dragControlListeners" ng-model="ngCtrl.sprint.tasks_in_progress">
+						<div class="sprint-item" ng-repeat="task in ngCtrl.sprint.tasks_in_progress track by task.id" 
+							ng-include="'sprintItemTemplate.html'" as-sortable-item  as-sortable-item-handle>
+
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="col-md-4">
-				<div class="panel sprint-wrapper panel-white">
+				<div class="panel sprint-wrapper panel-white" id="completed">
 					<div class="panel-heading"><span class="badge">{{ngCtrl.sprint.tasks_completed.length}}</span> completed</div>
-					<div class="panel-body"></div>
+					<div class="panel-body" as-sortable="ngCtrl.dragControlListeners" ng-model="ngCtrl.sprint.tasks_completed">
+						<div class="sprint-item" ng-repeat="task in ngCtrl.sprint.tasks_completed track by task.id" 
+							ng-include="'sprintItemTemplate.html'" data-as-sortable-item  as-sortable-item-handle>
+
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-
-
-		<pre>{{ngCtrl.sprint | json}}</pre>
 	</div>
 </div>
 
@@ -208,38 +217,48 @@
 	</div>
 </script>
 
-<script type="text/ng-template" id="detachTaskModal.html">
-	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Remove task from sprint</h3>
-	</div>
-	<div class="modal-body">
-		<div class="alert alert-danger" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
-		<div ng-hide="popupCtrl.hasError">
-
-
-		</div>
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupCtrl.ok()" translate="{{::'CREATE'}}"></button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
-	</div>
-</script>
-
 <script type="text/ng-template" id="attachTaskModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Add task to sprint</h3>
+		<h3 class="modal-title">Add <span class="go-green">{{popupCtrl.status}}</span> task</h3>
 	</div>
 	<div class="modal-body">
-		<div class="alert alert-danger" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
-		<div ng-hide="popupCtrl.hasError">
-
-
+		<div class="alert alert-danger ng-hide" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
+		<div class="alert alert-info ng-hide" ng-show="!popupCtrl.hasError && popupCtrl.tasks.length == 0">No tasks eligible for adding are found</div>
+		<div class="ng-hide" ng-show="!popupCtrl.hasError && popupCtrl.tasks.length > 0">
+			<table class="table table-bordered table-vertical-align-middle">
+				<thead>
+					<tr>
+						<th width="80"></th>
+						<th width="100">status</th>
+						<th width="100">code</th>
+						<th>subject</th>
+						<th>owner</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="task in popupCtrl.tasks track by task.id">
+						<td>
+							<a class="btn btn-outline btn-sm" ng-if="!popupCtrl.isAttached(task) && !popupCtrl.loading[task.id]" style="width:60px;" ng-click="popupCtrl.attachTask(task)">
+								add
+							</a>
+							<a class="btn btn-outline btn-sm go-red" ng-if="popupCtrl.isAttached(task) && !popupCtrl.loading[task.id]" style="width:60px;" ng-click="popupCtrl.detachTask(task)">
+								remove
+							</a>
+							<span class="btn btn-outline btn-sm" ng-if="popupCtrl.loading[task.id]">
+								<i class="fa fa-spin fa-spinner"></i>
+							</span>
+						</td>
+						<td>{{task.status}}</td>
+						<td>{{task.code}}</td>
+						<td>{{task.subject}}</td>
+						<td>{{task.owner_username}}</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupCtrl.ok()" translate="{{::'CREATE'}}"></button>
 		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
 	</div>
 </script>
@@ -261,11 +280,14 @@
 			<div class="col-md-7 col-md-12 text-right">
 				<a target="_blank" ng-href="/#/areas/project_admin/wv_task/view-general/sb/general/{{::task.id}}" class="btn btn-outline btn-xs" title="go to task">{{::task.code}}</a>
 				<span class="hidden-md hidden-sm hidden-xs">
-					<a class="btn btn-outline btn-xs" title="remove task from sprint" ng-click="ngCtrl.detachTaskModal(task)"><i class="fa fa-minus"></i></a>
+					<a class="btn btn-outline btn-xs" title="remove task from sprint" confirmed-click="ngCtrl.detachTaskModal(task)" ng-confirm-click="Are you sure?"><i class="fa fa-minus"></i></a>
 					<a class="btn btn-outline btn-xs" title="create comment" ng-click="ngCtrl.newCommentModal(task)"><i class="fa fa-comment-o"></i></a>
 					<a class="btn btn-outline btn-xs" title="log time" ng-click="ngCtrl.logTimeModal(task)"><i class="fa fa-clock-o"></i></a>
 				</span>
 			</div>
 		</div>
+	</div>
+	<div style="display:none" class="drag-box">
+		<i class="fa fa-arrows fa-fw"></i> {{::task.code}}
 	</div>
 </script>

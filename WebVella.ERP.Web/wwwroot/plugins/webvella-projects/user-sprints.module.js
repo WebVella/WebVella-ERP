@@ -8,7 +8,6 @@
 		.controller('ShowSprintsListModalController', ShowSprintsListModalController)
 		.controller('NewCommentModalController', NewCommentModalController)
 		.controller('LogTimeModalController', LogTimeModalController)
-		.controller('DetachTaskModalController', DetachTaskModalController)
 		.controller('AttachTaskModalController', AttachTaskModalController);
 
 	//#region << Configuration /////////////////////////////////// >>
@@ -77,10 +76,10 @@
 
 	//#region << Controller /////////////////////////////// >>
 	controller.$inject = ['$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaCoreService', 'webvellaProjectsService',
-        '$timeout', 'resolvedCurrentUser', '$sessionStorage', '$location', '$window', '$sce', 'resolvedAreas', 'ngToast', 'resolvedSprintData', '$q'];
+        '$timeout', 'resolvedCurrentUser', '$sessionStorage', '$location', '$window', '$sce', 'resolvedAreas', 'ngToast', 'resolvedSprintData', '$q', '$translate'];
 
 	function controller($log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaCoreService, webvellaProjectsService,
-        $timeout, resolvedCurrentUser, $sessionStorage, $location, $window, $sce, resolvedAreas, ngToast, resolvedSprintData, $q) {
+        $timeout, resolvedCurrentUser, $sessionStorage, $location, $window, $sce, resolvedAreas, ngToast, resolvedSprintData, $q, $translate) {
 
 		//#region << ngCtrl initialization >>
 		var ngCtrl = this;
@@ -274,35 +273,61 @@
 		}
 
 		ngCtrl.detachTaskModal = function (task) {
-			var modalInstance = $uibModal.open({
-				animation: false,
-				templateUrl: 'detachTaskModal.html',
-				controller: 'DetachTaskModalController',
-				controllerAs: "popupCtrl",
-				size: "lg",
-				resolve: {
-					parentCtrl: function () { return ngCtrl; },
-					resolvedTask: function () { return task; }
+			var relationName = "wv_sprint_n_n_wv_task";
+			var originFieldRecordId = $stateParams.sprintId;
+			var attachTargetFieldRecordIds = [];
+			var detachTargetFieldRecordIds = []
+			detachTargetFieldRecordIds.push(task.id);
+			webvellaCoreService.updateRecordRelation(relationName, originFieldRecordId, attachTargetFieldRecordIds, detachTargetFieldRecordIds, detachSuccess, errorCallback);
+
+			function detachSuccess(response) {
+				var index = -1;
+				if (task.status == "not started") {
+					for (var i = 0; i < ngCtrl.sprint.tasks_not_started.length; i++) {
+						if (ngCtrl.sprint.tasks_not_started[i].id == task.id) {
+							ngCtrl.sprint.tasks_not_started.splice(i, 1);
+						}
+					}
 				}
-			});
+				else {
+					for (var i = 0; i < ngCtrl.sprint.tasks_in_progress.length; i++) {
+						if (ngCtrl.sprint.tasks_in_progress[i].id == task.id) {
+							ngCtrl.sprint.tasks_in_progress.splice(i, 1);
+						}
+					}
+				}
+
+				ngCtrl.sprint.estimation = ngCtrl.sprint.estimation - task.estimation;
+				ngCtrl.sprint.logged = ngCtrl.sprint.logged - task.logged;
+			}
+			function errorCallback(response) {
+				$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+					ngToast.create({
+						className: 'error',
+						content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+						timeout: 7000
+					});
+				});
+			}
 		}
 
-		ngCtrl.attachTaskModal = function () {
+		ngCtrl.attachTaskModal = function (status) {
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'attachTaskModal.html',
 				controller: 'AttachTaskModalController',
 				controllerAs: "popupCtrl",
-				size: "lg",
+				size: "width-75p",
 				resolve: {
 					parentCtrl: function () { return ngCtrl; },
-					resolvedSprintAvailableTasks: resolveSprintAvailableTasks
+					resolvedSprintAvailableTasks: function () { return resolveSprintAvailableTasks(status); },
+					status: function () { return status; },
 				}
 			});
 		}
 
 		//Resolve function tree
-		var resolveSprintAvailableTasks = function () {
+		var resolveSprintAvailableTasks = function (status) {
 			// Initialize
 			var defer = $q.defer();
 
@@ -319,11 +344,62 @@
 				defer.resolve(response.object);
 			}
 
-			webvellaProjectsService.getProjectSprintAllTasks($stateParams.sprintId,$stateParams.scope, 1, 10, successCallback, errorCallback);
+			webvellaProjectsService.getProjectSprintAllTasks($stateParams.sprintId, $stateParams.scope, status, 1, 10, successCallback, errorCallback);
 
 			return defer.promise;
 		}
 
+		//#endregion
+
+		//#region << Sortable >>
+		ngCtrl.dragControlListeners = {
+			accept: function (sourceItemHandleScope, destSortableScope) {
+				return true
+			},
+			itemMoved: function (eventObj) {
+				ngCtrl.taskMoved(eventObj);
+			},
+			orderChanged: function (eventObj) {
+			}
+		};
+
+		ngCtrl.taskMoved = function (eventObj) {
+			var newStatusCode = eventObj.dest.sortableScope.element[0].parentElement.id;
+			var movedTask = eventObj.source.itemScope.modelValue;
+			var newTaskObj = {};
+			newTaskObj.id = movedTask.id;
+			switch (newStatusCode) {
+				case "not-started":
+					newTaskObj.status = "not started";
+					break;
+				case "in-progress":
+					newTaskObj.status = "in progress";
+					break;
+				case "completed":
+					newTaskObj.status = "completed";
+					break;
+			}
+			webvellaCoreService.patchRecord(movedTask.id, "wv_task", newTaskObj, moveSuccessCallback, moveErrorCallback)
+		}
+
+		function moveSuccessCallback() {
+			$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + " " + "Task status changed"
+				});
+			});
+		}
+		function moveErrorCallback() {
+			$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'error',
+					content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+					timeout: 7000
+				});
+			});
+			$state.reload();
+		}
 		//#endregion
 
 	}
@@ -362,7 +438,7 @@
 		};
 	};
 
-	
+
 	NewCommentModalController.$inject = ['parentCtrl', 'resolvedTask', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$translate'];
 	function NewCommentModalController(parentCtrl, resolvedTask, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state, $translate) {
 
@@ -373,7 +449,7 @@
 		popupCtrl.record.task_id = fastCopy(resolvedTask.id);
 
 		popupCtrl.ok = function () {
-			webvellaCoreService.createRecord("wv_project_comment",  popupCtrl.record, successCallback, errorCallback);			
+			webvellaCoreService.createRecord("wv_project_comment", popupCtrl.record, successCallback, errorCallback);
 		};
 
 		popupCtrl.cancel = function () {
@@ -414,7 +490,7 @@
 		popupCtrl.record.task_id = fastCopy(resolvedTask.id);
 
 		popupCtrl.ok = function () {
-			webvellaCoreService.createRecord("wv_timelog",  popupCtrl.record, successCallback, errorCallback);			
+			webvellaCoreService.createRecord("wv_timelog", popupCtrl.record, successCallback, errorCallback);
 		};
 
 		popupCtrl.cancel = function () {
@@ -444,23 +520,104 @@
 		}
 	};
 
-	DetachTaskModalController.$inject = ['parentCtrl', 'resolvedTask', '$uibModalInstance', '$log', 'webvellaProjectsService', 'ngToast', '$timeout', '$state', '$translate'];
-	function DetachTaskModalController(parentCtrl, resolvedTask, $uibModalInstance, $log, webvellaProjectsService, ngToast, $timeout, $state, $translate) {
+	AttachTaskModalController.$inject = ['parentCtrl', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$translate', 'resolvedSprintAvailableTasks', 'status', '$stateParams'];
+	function AttachTaskModalController(parentCtrl, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state, $translate, resolvedSprintAvailableTasks, status, $stateParams) {
 
 		var popupCtrl = this;
+		popupCtrl.hasError = false;
+		popupCtrl.status = status;
+		popupCtrl.tasks = resolvedSprintAvailableTasks;
+		popupCtrl.sprint = parentCtrl.sprint;
+		popupCtrl.attachedTasksIds = [];
+		popupCtrl.loading = {};
+		if (popupCtrl.status == "not started") {
+			popupCtrl.sprint.tasks_not_started.forEach(function (task) {
+				popupCtrl.attachedTasksIds.push(task.id);
+			});
+		}
+		else {
+			popupCtrl.sprint.tasks_in_progress.forEach(function (task) {
+				popupCtrl.attachedTasksIds.push(task.id);
+			});
+		}
 
+		popupCtrl.isAttached = function (task) {
+			if (popupCtrl.attachedTasksIds.indexOf(task.id) > -1) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
 
-		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
-		};
-	};
+		popupCtrl.attachTask = function (task) {
+			var relationName = "wv_sprint_n_n_wv_task";
+			var originFieldRecordId = $stateParams.sprintId;
+			var attachTargetFieldRecordIds = [];
+			attachTargetFieldRecordIds.push(task.id);
+			var detachTargetFieldRecordIds = []
+			popupCtrl.loading[task.id] = true;
+			webvellaCoreService.updateRecordRelation(relationName, originFieldRecordId, attachTargetFieldRecordIds, detachTargetFieldRecordIds, attachSuccess, errorCallback);
 
+			function attachSuccess(response) {
+				if (popupCtrl.status == "not started") {
+					popupCtrl.sprint.tasks_not_started.push(task);
+				}
+				else {
+					popupCtrl.sprint.tasks_in_progress.push(task);
+				}
+				popupCtrl.attachedTasksIds.push(task.id);
+				popupCtrl.sprint.estimation = popupCtrl.sprint.estimation + task.estimation;
+				popupCtrl.sprint.logged = popupCtrl.sprint.logged + task.logged;
+				popupCtrl.loading[task.id] = false;
 
-	AttachTaskModalController.$inject = ['parentCtrl', '$uibModalInstance', '$log', 'webvellaProjectsService', 'ngToast', '$timeout', '$state', '$translate','resolvedSprintAvailableTasks'];
-	function AttachTaskModalController(parentCtrl, $uibModalInstance, $log, webvellaProjectsService, ngToast, $timeout, $state, $translate, resolvedSprintAvailableTasks) {
+			}
+		}
 
-		var popupCtrl = this;
+		popupCtrl.detachTask = function (task) {
+			var relationName = "wv_sprint_n_n_wv_task";
+			var originFieldRecordId = $stateParams.sprintId;
+			var attachTargetFieldRecordIds = [];
+			var detachTargetFieldRecordIds = []
+			detachTargetFieldRecordIds.push(task.id);
+			popupCtrl.loading[task.id] = true;
+			webvellaCoreService.updateRecordRelation(relationName, originFieldRecordId, attachTargetFieldRecordIds, detachTargetFieldRecordIds, detachSuccess, errorCallback);
 
+			function detachSuccess(response) {
+				var index = -1;
+				if (popupCtrl.status == "not started") {
+					for (var i = 0; i < popupCtrl.sprint.tasks_not_started.length; i++) {
+						if (popupCtrl.sprint.tasks_not_started[i].id == task.id) {
+							popupCtrl.sprint.tasks_not_started.splice(i, 1);
+						}
+					}
+				}
+				else {
+					for (var i = 0; i < popupCtrl.sprint.tasks_in_progress.length; i++) {
+						if (popupCtrl.sprint.tasks_in_progress[i].id == task.id) {
+							popupCtrl.sprint.tasks_in_progress.splice(i, 1);
+						}
+					}
+				}
+
+				index = popupCtrl.attachedTasksIds.indexOf(task.id);
+				popupCtrl.attachedTasksIds.splice(index, 1);
+
+				popupCtrl.sprint.estimation = popupCtrl.sprint.estimation - task.estimation;
+				popupCtrl.sprint.logged = popupCtrl.sprint.logged - task.logged;
+				popupCtrl.loading[task.id] = false;
+			}
+		}
+
+		function errorCallback(response) {
+			$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'error',
+					content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+					timeout: 7000
+				});
+			});
+		}
 
 		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
