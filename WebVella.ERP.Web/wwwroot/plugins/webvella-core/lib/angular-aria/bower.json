@@ -1,10 +1,10 @@
 {
   "name": "angular-aria",
-  "version": "1.5.3",
+  "version": "1.5.7",
   "license": "MIT",
   "main": "./angular-aria.js",
   "ignore": [],
   "dependencies": {
-    "angular": "1.5.3"
+    "angular": "1.5.7"
   }
 }

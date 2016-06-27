@@ -1,6 +1,6 @@
 ﻿// Test API Controller, will be later substitute by the real data API controller
 
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using WebVella.ERP.Api.Models;
 using System;
 using System.Threading;

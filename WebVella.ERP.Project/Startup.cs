@@ -60,8 +60,10 @@ namespace WebVella.ERP.Project
 		private static Guid CUSTOMER_ROLE_ID = new Guid("27745245-09bd-4adb-8831-3870bcae46fe");
 
 
-		public void Start()
+		public void Start(PluginStartArguments pluginStartArgs)
 		{
+			//initialize static context
+			StaticContext.Initialize(pluginStartArgs.Plugin, pluginStartArgs.ServiceProvider);
 
 			var entMan = new EntityManager();
 			var relMan = new EntityRelationManager();

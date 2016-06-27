@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -739,6 +739,111 @@ namespace WebVella.ERP.Project
 			{
 				throw new Exception(createResponse.Message);
 			}
+		}
+
+
+		public static dynamic UpdateTimelog(dynamic data, RecordManager recMan)
+		{
+			var newObject = (EntityRecord)data.record;
+			var recordId = (Guid)data.recordId;
+			EntityRecord oldObject = null;
+			#region << Get the old bug object >>
+			{
+				var filterObj = EntityQuery.QueryEQ("id", recordId);
+				var query = new EntityQuery("wv_timelog", "*", filterObj, null, null, null);
+				var result = recMan.Find(query);
+				if (!result.Success)
+				{
+
+					throw new Exception("Error getting the old wv_timelog: " + result.Message);
+				}
+				else if (result.Object == null || result.Object.Data == null || !result.Object.Data.Any())
+				{
+					throw new Exception("Task not found");
+				}
+				oldObject = result.Object.Data[0];
+			}
+			#endregion
+
+			var oldBillableString = "not billable";
+			if ((bool)oldObject["billable"])
+			{
+				oldBillableString = "billable";
+			}
+
+			var newBillableString = "not billable";
+			if ((bool)newObject["billable"])
+			{
+				newBillableString = "billable";
+			}
+
+			if (newObject["task_id"] != null)
+			{
+				var filterObj = EntityQuery.QueryEQ("id", (Guid)newObject["task_id"]);
+				var query = new EntityQuery("wv_task", "*", filterObj, null, null, null);
+				var result = recMan.Find(query);
+				if (result.Success)
+				{
+					var task = result.Object.Data[0];
+					//Update the x_billable_hours and x_nonbillable_hours fields
+					var updatedRecord = new EntityRecord();
+					updatedRecord["id"] = (Guid)task["id"];
+
+					if(oldBillableString == "billable") {
+						updatedRecord["x_billable_hours"] = (decimal)task["x_billable_hours"] - (decimal)oldObject["hours"];
+					}
+					else {
+						updatedRecord["x_nonbillable_hours"] = (decimal)task["x_nonbillable_hours"] - (decimal)oldObject["hours"];
+					}
+
+					if(newBillableString == "billable") {
+						updatedRecord["x_billable_hours"] = (decimal)task["x_billable_hours"] + (decimal)newObject["hours"];
+					}
+					else {
+						updatedRecord["x_nonbillable_hours"] = (decimal)task["x_nonbillable_hours"] + (decimal)newObject["hours"];
+					}					
+
+					var updateRecordResult = recMan.UpdateRecord("wv_task",updatedRecord);
+					if(!updateRecordResult.Success) {
+						throw new Exception("Cannot update the x_billable_hours or x_nonbillable_hours fields in the related task");
+					}
+				}
+			}
+			else if (newObject["bug_id"] != null)
+			{
+				var filterObj = EntityQuery.QueryEQ("id", (Guid)newObject["bug_id"]);
+				var query = new EntityQuery("wv_bug", "*", filterObj, null, null, null);
+				var result = recMan.Find(query);
+				if (result.Success)
+				{
+					var bug = result.Object.Data[0];
+					//Update the x_billable_hours and x_nonbillable_hours fields
+					var updatedRecord = new EntityRecord();
+					updatedRecord["id"] = (Guid)bug["id"];
+
+					if(oldBillableString == "billable") {
+						updatedRecord["x_billable_hours"] = (decimal)bug["x_billable_hours"] - (decimal)oldObject["hours"];
+					}
+					else {
+						updatedRecord["x_nonbillable_hours"] = (decimal)bug["x_nonbillable_hours"] - (decimal)oldObject["hours"];
+					}
+
+					if(newBillableString == "billable") {
+						updatedRecord["x_billable_hours"] = (decimal)bug["x_billable_hours"] + (decimal)newObject["hours"];
+					}
+					else {
+						updatedRecord["x_nonbillable_hours"] = (decimal)bug["x_nonbillable_hours"] + (decimal)newObject["hours"];
+					}					
+
+					var updateRecordResult = recMan.UpdateRecord("wv_bug",updatedRecord);
+					if(!updateRecordResult.Success) {
+						throw new Exception("Cannot update the x_billable_hours or x_nonbillable_hours fields in the related task");
+					}
+				}
+			}
+
+
+			return data;
 		}
 	}
 }

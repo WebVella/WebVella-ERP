@@ -1,50 +1,109 @@
 {
   "webroot": "wwwroot",
   "version": "1.0.0-*",
-  "compilationOptions": {
-    "emitEntryPoint": true
+
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "preserveCompilationContext": true,
+    "compile": {
+      "exclude": [
+        "wwwroot",
+        "node_modules",
+        "bower_components"
+      ]
+    }
   },
 
-	"dependencies": {
-		"AutoMapper": "3.3.1",
-		"CsvHelper": "2.13.0",
-		"iTextSharp": "5.5.6",
-		"Microsoft.AspNet.Authentication.Cookies": "1.0.0-rc1-final",
-		"Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
-		"Microsoft.AspNet.Diagnostics.Entity": "7.0.0-rc1-final",
-		"Microsoft.AspNet.IISPlatformHandler": "1.0.0-rc1-final",
-		"Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
-		"Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
-		"Microsoft.AspNet.Mvc.TagHelpers": "6.0.0-rc1-final",
-		"Microsoft.AspNet.Server.IIS": "1.0.0-*",
-		"Microsoft.AspNet.Server.WebListener": "1.0.0-rc1-final",
-		"Microsoft.AspNet.StaticFiles": "1.0.0-rc1-final",
-		"Microsoft.AspNet.Tooling.Razor": "1.0.0-rc1-final",
-		"Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
-		"Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
-		"Microsoft.AspNet.Mvc.Core": "6.0.0-rc1-final",
-		"Microsoft.CSharp": "4.0.1-beta-23516",
-		"Microsoft.Extensions.Caching.Memory": "1.0.0-rc1-final",
-		"Microsoft.Extensions.Configuration": "1.0.0-rc1-final",
-		"Microsoft.Extensions.Configuration.Json": "1.0.0-rc1-final",
-		"Microsoft.Extensions.Logging": "1.0.0-rc1-final",
-		"Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
-		"Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
-		"morelinq": "2.0.0-alpha01",
-		"Newtonsoft.Json": "8.0.1-beta3",
-		"System.Linq": "4.0.1-beta-23516",
-		"System.Threading": "4.0.11-beta-23516",
-		"ImageProcessor": "2.4.1",
-		"ImageProcessor.Web": "4.6.1",
-		"WebVella.ERP": "1.0.0-*",
-		"WebVella.ERP.Project": "1.0.0-*",
-		"WebVella.ERP.Crm": "1.0.0-*"
-	},
+  "publishOptions": {
+    "include": [
+      "wwwroot",
+      "Views",
+      "web.config",
+      "config.json"
+    ],
+    "exclude": [
+      "**.xproj",
+      "**.user",
+      "**.vspscc"
+    ]
+  },
 
-	"commands": {
-		"web": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.Kestrel",
-		"temp-web": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.Kestrel --server.urls http://erp.com"
-	},
+  "scripts": {
+    "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
+  },
+
+  "runtimeOptions": {
+    "gcServer": true
+  },
+
+  "dependencies": {
+    "Microsoft.AspNetCore.Mvc.Abstractions": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0-rc2-final",
+    "Microsoft.ApplicationInsights.AspNetCore": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Diagnostics": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Razor.Tools": {
+      "version": "1.0.0-preview1-final",
+      "type": "build"
+    },
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.StaticFiles": "1.0.0-rc2-final",
+    "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Configuration.Json": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Logging": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Logging.Console": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Logging.Debug": "1.0.0-rc2-final",
+    "Microsoft.VisualStudio.Web.CodeGeneration.Tools": {
+      "version": "1.0.0-preview1-final",
+      "type": "build"
+    },
+    "Microsoft.VisualStudio.Web.CodeGenerators.Mvc": {
+      "version": "1.0.0-preview1-final",
+      "type": "build"
+    },
+    "AutoMapper": "3.3.1",
+    "CsvHelper": "2.13.0",
+    "iTextSharp": "5.5.6",
+    "morelinq": "2.0.0-alpha01",
+    "Newtonsoft.Json": "8.0.3",
+    "System.Linq": "4.0.0.0",
+    "System.Threading": "4.0.10.0",
+    "WebVella.ERP": "1.0.0-*",
+    "ImageProcessor": "2.4.1",
+			"ImageProcessor.Web": "4.6.1",
+			"WebVella.ERP.Project": "1.0.0-*",
+			"WebVella.ERP.Crm": "1.0.0-*"
+  },
+   
+  "commands": {
+    "web": "Microsoft.AspNet.Server.Kestrel"
+  },
+
+  "tools": {
+    "Microsoft.AspNetCore.Razor.Tools": {
+      "version": "1.0.0-preview1-final",
+      "imports": "portable-net45+win8+dnxcore50"
+    },
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": {
+      "version": "1.0.0-preview1-final",
+      "imports": "portable-net45+win8+dnxcore50"
+    },
+    "Microsoft.Extensions.SecretManager.Tools": {
+      "version": "1.0.0-preview1-final",
+      "imports": "portable-net45+win8+dnxcore50"
+    },
+    "Microsoft.VisualStudio.Web.CodeGeneration.Tools": {
+      "version": "1.0.0-preview1-final",
+      "imports": [
+        "portable-net45+win8+dnxcore50",
+        "portable-net45+win8"
+      ]
+    }
+  },
 
   "frameworks": {
     "dnx46": {
@@ -52,16 +111,5 @@
         "System.Drawing": "4.0.0.0"
       }
     }
-  },
-
-  "exclude": [
-    "wwwroot",
-    "node_modules",
-    "bower_components"
-  ],
-  "publishExclude": [
-    "**.xproj",
-    "**.user",
-    "**.vspscc"
-  ]
+  }
 }

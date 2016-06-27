@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNet.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
-using Microsoft.AspNet.Authentication.Cookies;
 
 namespace WebVella.ERP.Web.Security
 {
@@ -68,7 +66,7 @@ namespace WebVella.ERP.Web.Security
 			if (String.IsNullOrEmpty(tokenString)) 
 			{
 				var cookie = context.Request.Cookies.FirstOrDefault(c => c.Key == AUTH_TOKEN_KEY); 
-				tokenString = cookie.Value.FirstOrDefault();
+				tokenString = cookie.Value;
 			}
 
 			if (tokenString != null)
@@ -113,32 +111,6 @@ namespace WebVella.ERP.Web.Security
                     context.User = new ErpPrincipal(identity);
                 }
             }
-        }
-
-        internal static void OpenScope(HttpContext context)
-        {
-            if (context == null)
-                throw new NullReferenceException("context");
-
-            if (context.User != null && context.User is ErpPrincipal)
-            {
-                var identity = (context.User as ErpPrincipal).Identity as ErpIdentity;
-                if (identity != null)
-                {
-                    var scopeMarker = SecurityContext.OpenScope(identity.User);
-                    context.Items.Add("erp_security_scope_marker", scopeMarker);
-                }
-            }
-        }
-
-        internal static void CloseScope(HttpContext context)
-        {
-            if (context == null)
-                throw new NullReferenceException("context");
-
-            IDisposable scopeMarker = context.Items["erp_security_scope_marker"] as IDisposable;
-            if (scopeMarker != null)
-                scopeMarker.Dispose();
         }
 
         internal static ErpIdentity CreateIdentity(Guid? userId)

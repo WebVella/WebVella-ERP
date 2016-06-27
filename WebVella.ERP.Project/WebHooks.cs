@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
-using WebVella.ERP.Projects;
 using WebVella.ERP.WebHooks;
 
 namespace WebVella.ERP.Project
@@ -460,6 +457,7 @@ namespace WebVella.ERP.Project
 
 		#region << Time log >>
 
+		#region << Create >>
 		[WebHook("create_record_success_action", "wv_timelog")]
 		public void TimelogCreateRecordAction(dynamic data)
 		{
@@ -481,6 +479,19 @@ namespace WebVella.ERP.Project
 				{
 					var task = result.Object.Data[0];
 					Utils.CreateActivity(recMan, "timelog", "created a <i class='fa fa-fw fa-clock-o go-blue'></i> time log of <b>" + ((decimal)createdRecord["hours"]).ToString("N2") + " " + billableString + "</b> hours for task #" + task["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", null, (Guid)task["project_id"], (Guid)task["id"], null);
+					//Update the x_billable_hours and x_nonbillable_hours fields
+					var updatedRecord = new EntityRecord();
+					updatedRecord["id"] = (Guid)task["id"];
+					if(billableString == "billable") {
+						updatedRecord["x_billable_hours"] = (decimal)task["x_billable_hours"] + Convert.ToDecimal(record["hours"]);
+					}
+					else {
+						updatedRecord["x_nonbillable_hours"] = (decimal)task["x_nonbillable_hours"] + Convert.ToDecimal(record["hours"]);
+					}
+					var updateRecordResult = recMan.UpdateRecord("wv_task",updatedRecord);
+					if(!updateRecordResult.Success) {
+						throw new Exception("Cannot update the x_billable_hours or x_nonbillable_hours fields in the related task");
+					}
 				}
 			}
 			else if (createdRecord["bug_id"] != null)
@@ -492,10 +503,42 @@ namespace WebVella.ERP.Project
 				{
 					var bug = result.Object.Data[0];
 					Utils.CreateActivity(recMan, "timelog", "created a <i class='fa fa-fw fa-clock-o go-blue'></i> time log of <b>" + ((decimal)createdRecord["hours"]).ToString("N2") + " " + billableString + "</b> hours  for bug #" + bug["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", null, (Guid)bug["project_id"], null, (Guid)bug["id"]);
+					//Update the x_billable_hours and x_nonbillable_hours fields
+					var updatedRecord = new EntityRecord();
+					updatedRecord["id"] = (Guid)bug["id"];
+					if(billableString == "billable") {
+						updatedRecord["x_billable_hours"] = (decimal)bug["x_billable_hours"] + (decimal)record["hours"];
+					}
+					else {
+						updatedRecord["x_nonbillable_hours"] = (decimal)bug["x_nonbillable_hours"] + (decimal)record["hours"];
+					}
+					var updateRecordResult = recMan.UpdateRecord("wv_bug",updatedRecord);
+					if(!updateRecordResult.Success) {
+						throw new Exception("Cannot update the x_billable_hours or x_nonbillable_hours fields in the related bug");
+					}
 				}
 			}
 
 		}
+		#endregion
+		
+		#region << Update >>
+		[WebHook("update_record_pre_save_filter", "wv_timelog")]
+		public dynamic TimelogUpdateRecordPreSave(dynamic data)
+		{
+			data = Utils.UpdateTimelog(data, recMan);
+			return data;
+		}
+		#endregion
+
+		#region << Patch >>
+		[WebHook("patch_record_pre_save_filter", "wv_timelog")]
+		public dynamic TimelogPatchRecordPreSave(dynamic data)
+		{
+			data = Utils.UpdateTimelog(data, recMan);
+			return data;
+		}
+		#endregion
 
 		#endregion
 

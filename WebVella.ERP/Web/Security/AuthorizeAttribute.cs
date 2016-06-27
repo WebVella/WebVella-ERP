@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNet.Authorization;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace WebVella.ERP.Web.Security
             bool authenticated = IsAuthenticated(context);
             if (!authenticated)
             {
-                context.Result = new HttpUnauthorizedResult();
+                context.Result = new UnauthorizedResult();
             }
 
             base.OnActionExecuting(context);

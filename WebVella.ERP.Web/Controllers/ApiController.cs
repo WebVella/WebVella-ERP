@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using WebVella.ERP.Api.Models;
 using System.Net;
 using Newtonsoft.Json.Linq;
 using WebVella.ERP.Api;
 using WebVella.ERP.Database;
 using System.Collections.Generic;
-using Microsoft.AspNet.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
 using System.IO;
 using WebVella.ERP.Api.Models.AutoMapper;
 using WebVella.ERP.Web.Security;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
-using Microsoft.AspNet.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using CsvHelper;
-using Microsoft.AspNet.StaticFiles;
+using Microsoft.AspNetCore.StaticFiles;
 using WebVella.ERP.Utilities;
 using System.Dynamic;
 using WebVella.ERP.Plugins;
@@ -24,7 +24,7 @@ using WebVella.ERP.WebHooks;
 using System.Diagnostics;
 using Npgsql;
 using System.Data;
-using Microsoft.AspNet.Hosting;
+using Microsoft.AspNetCore.Hosting;
 using ImageProcessor;
 using Microsoft.Extensions.Primitives;
 using ImageProcessor.Imaging;
@@ -4236,7 +4236,7 @@ namespace WebVella.ERP.Web.Controllers
 			new FileExtensionContentTypeProvider().Mappings.TryGetValue(extension, out mimeType);
 
 			
-			IDictionary<string, StringValues> queryCollection = Microsoft.AspNet.WebUtilities.QueryHelpers.ParseQuery(HttpContext.Request.QueryString.ToString());
+			IDictionary<string, StringValues> queryCollection = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(HttpContext.Request.QueryString.ToString());
 			string action = queryCollection.Keys.Any(x => x == "action") ? ((string)queryCollection["action"]).ToLowerInvariant() : "";
 			string requestedMode = queryCollection.Keys.Any(x => x == "mode") ? ((string)queryCollection["mode"]).ToLowerInvariant() : "";
 			string width = queryCollection.Keys.Any(x => x == "width") ? ((string)queryCollection["width"]).ToLowerInvariant() : "";

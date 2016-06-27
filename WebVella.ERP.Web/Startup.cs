@@ -1,7 +1,7 @@
 ﻿using System;
-using Microsoft.AspNet.Diagnostics;
-using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Hosting;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebVella.ERP.Api.Models.AutoMapper;
@@ -9,20 +9,26 @@ using System.Globalization;
 using Microsoft.Extensions.PlatformAbstractions;
 using WebVella.ERP.Web.Security;
 using WebVella.ERP.Database;
-using Microsoft.AspNet.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using WebVella.ERP.Plugins;
 using WebVella.ERP.WebHooks;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Internal;
+using WebVella.ERP.Web.Services;
 
 namespace WebVella.ERP.Web
 {
 	public class Startup
 	{
+		private IHostingEnvironment hostingEnviroment;
+
 		public IConfiguration Configuration { get; set; }
 
-		public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
+		public Startup(IHostingEnvironment env)
 		{
+			hostingEnviroment = env;
 			var configurationBuilder = new ConfigurationBuilder()
-			   .SetBasePath(appEnv.ApplicationBasePath)
+			   .SetBasePath(env.ContentRootPath)
 			   .AddJsonFile("config.json")
 			   .AddEnvironmentVariables();
 			Configuration = configurationBuilder.Build();
@@ -30,23 +36,14 @@ namespace WebVella.ERP.Web
 
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddMvc();
+			services.AddMvc().AddCrmPlugins(hostingEnviroment);
+			services.AddScoped<IRequestService, RequestService>();
 			services.AddSingleton<IErpService, ErpService>();
 			services.AddSingleton<IPluginService, PluginService>();
 			services.AddSingleton<IWebHookService, WebHookService>();
-
-			services.AddSingleton<IAssemblyProvider, PluginAssemblyProvider>(provider =>
-			{
-				var pluginAssemblyProvider = new PluginDirectoryAssemblyProvider(
-					provider.GetRequiredService<IHostingEnvironment>(), 
-					PlatformServices.Default.AssemblyLoadContextAccessor,
-					PlatformServices.Default.AssemblyLoaderContainer);
-
-				return new PluginAssemblyProvider(provider.GetRequiredService<ILibraryManager>(),new IAssemblyProvider[] { pluginAssemblyProvider });
-			});
 		}
 
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+		public void Configure(IApplicationBuilder app, IServiceProvider serviceProvider)
 		{
 			//TODO Create db context
 			CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("en-US");
@@ -61,13 +58,15 @@ namespace WebVella.ERP.Web
 				AutoMapperConfiguration.Configure();
 				service.InitializeSystemEntities();
 
-				//app.UseDebugLogMiddleware();
-				app.UseSecurityMiddleware();
-				app.UseDatabaseContextMiddleware();
+				app.UseErpMiddleware();
 
+				//IHostingEnvironment env = app.ApplicationServices.GetService<IHostingEnvironment>();
+				//if (env.IsDevelopment())
+				app.UseDeveloperExceptionPage();
+				
 				IPluginService pluginService = app.ApplicationServices.GetService<IPluginService>();
 				IHostingEnvironment hostingEnvironment = app.ApplicationServices.GetRequiredService<IHostingEnvironment>();
-				pluginService.Initialize(hostingEnvironment);
+				pluginService.Initialize(serviceProvider);
 
 				IWebHookService webHookService = app.ApplicationServices.GetService<IWebHookService>();
 				webHookService.Initialize(pluginService);
@@ -99,7 +98,7 @@ namespace WebVella.ERP.Web
 			//});
 
 			// Add the following to the request pipeline only in development environment.
-			if (string.Equals(env.EnvironmentName, "Development", StringComparison.OrdinalIgnoreCase))
+			if (string.Equals(hostingEnviroment.EnvironmentName, "Development", StringComparison.OrdinalIgnoreCase))
 			{
 				app.UseDeveloperExceptionPage();
 			}
@@ -110,7 +109,8 @@ namespace WebVella.ERP.Web
 				app.UseExceptionHandler("/Home/Error");
 			}
 
-			app.UseIISPlatformHandler(options => options.AutomaticAuthentication = false);
+            //TODO Check what was done here in RC1
+			//app.UseIISPlatformHandler(options => options.AutomaticAuthentication = false);
 
 			// Add static files to the request pipeline.
 			app.UseStaticFiles();
@@ -128,7 +128,8 @@ namespace WebVella.ERP.Web
 			});
 		}
 
-		// Entry point for the application.
-		public static void Main(string[] args) => WebApplication.Run<Startup>(args);
-	}
+        // Entry point for the application.
+        //public static void Main(string[] args) => WebApplication.Run<Startup>(args);
+     
+    }
 }

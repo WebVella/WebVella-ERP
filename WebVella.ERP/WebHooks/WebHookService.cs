@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNet.Http;
-using Microsoft.Extensions.PlatformAbstractions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -76,37 +74,6 @@ namespace WebVella.ERP.WebHooks
 					}
 				}
 			}
-		}
-
-		private IEnumerable<Assembly> GetAssembliesInFolder(DirectoryInfo binPath)
-		{
-			List<Assembly> assemblies = new List<Assembly>();
-			var loadContext = PlatformServices.Default.AssemblyLoadContextAccessor.Default;
-
-			foreach (var fileSystemInfo in binPath.GetFileSystemInfos("*.dll"))
-			{
-				var assemblyName = AssemblyName.GetAssemblyName(fileSystemInfo.FullName);
-
-				//first try to load assembly from refered libraries instead of plugin 'binaries' folder
-				Assembly assembly = null;
-				foreach (var lib in PlatformServices.Default.LibraryManager.GetLibraries())
-				{
-					var referencedAssemblyName = lib.Assemblies.SingleOrDefault(x => x.FullName == assemblyName.Name);
-					if (referencedAssemblyName != null)
-					{
-						assembly = loadContext.Load(referencedAssemblyName);
-						break;
-					}
-				}
-
-				//if not found in referenced libraries, load from plugin binaries location
-				if (assembly == null)
-					assembly = loadContext.Load(assemblyName);
-
-				assemblies.Add(assembly);
-			}
-
-			return assemblies;
 		}
 
 		private struct WebHookInfo

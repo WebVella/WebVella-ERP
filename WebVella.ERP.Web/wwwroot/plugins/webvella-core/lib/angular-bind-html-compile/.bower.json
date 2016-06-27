@@ -24,8 +24,8 @@
     "tag": "1.2.1",
     "commit": "b0ba42b3a962b08250f1d20751a7f1032381722a"
   },
-  "_source": "git://github.com/incuna/angular-bind-html-compile.git",
-  "_target": "~1.2.1",
+  "_source": "https://github.com/incuna/angular-bind-html-compile.git",
+  "_target": "^1.2.1",
   "_originalSource": "angular-bind-html-compile",
   "_direct": true
 }

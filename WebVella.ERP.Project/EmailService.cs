@@ -1,13 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.PlatformAbstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Net.Mail;
-using System.Threading.Tasks;
 using WebVella.ERP.Projects.Models;
 
-namespace WebVella.ERP.Projects
+namespace WebVella.ERP.Project
 {
 	public class EmailService
 	{
@@ -15,11 +10,7 @@ namespace WebVella.ERP.Projects
 
 		public EmailService()
 		{
-			var configurationBuilder = new ConfigurationBuilder()
-				.SetBasePath(PlatformServices.Default.Application.ApplicationBasePath)
-				.AddJsonFile("webvella-projects.config.json");
-			var configuration = configurationBuilder.Build();
-
+			var configuration = StaticContext.Configuration;
 
 			_settings = new EmailSettings()
 			{

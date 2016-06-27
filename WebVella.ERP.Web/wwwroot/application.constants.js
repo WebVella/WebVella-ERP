@@ -847,11 +847,21 @@ function htmlToPlaintext(text) {
 
 function escapeHtml(unsafe){
     return unsafe
-         .replace(/&/g, "&amp;")
-         .replace(/</g, "&lt;")
-         .replace(/>/g, "&gt;")
-         .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
+         //.replace(/&/g, "&amp;")
+         .replace(/<div/g, "&lt;div")
+		 .replace(/<span/g, "&lt;span")
+		 .replace(/<a/g, "&lt;a")
+		 .replace(/<em/g, "&lt;em")
+		 .replace(/<i/g, "&lt;i")
+		 .replace(/<form/g, "&lt;form")
+		 .replace(/<img/g, "&lt;img")
+		 .replace(/<li/g, "&lt;li")
+		 .replace(/<ul/g, "&lt;ul")
+		 .replace(/<p/g, "&lt;p")
+		 .replace(/<table/g, "&lt;table")
+         //.replace(/>/g, "&gt;")
+         //.replace(/"/g, "&quot;")
+         //.replace(/'/g, "&#039;");
 }
 
 

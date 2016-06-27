@@ -58,7 +58,6 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Resolvers
                 if (!(Whitelist.IsMatch(tagname) || WhitelistA.IsMatch(tagname) || WhitelistImg.IsMatch(tagname)))
                 {
                     html = html.Remove(tag.Index, tag.Length);
-                    Debug.WriteLine("tag sanitized: " + tagname);
                 }
             }
             return html;

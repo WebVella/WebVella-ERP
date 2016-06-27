@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
+using System;
 using System.Collections.Generic;
 
 namespace WebVella.ERP.Plugins
@@ -6,6 +7,6 @@ namespace WebVella.ERP.Plugins
     public interface IPluginService
 	{
 		List<Plugin> Plugins { get; }
-		void Initialize(IHostingEnvironment hostingEnvironment);
+		void Initialize(IServiceProvider serviceProvider);
 	}
 }
