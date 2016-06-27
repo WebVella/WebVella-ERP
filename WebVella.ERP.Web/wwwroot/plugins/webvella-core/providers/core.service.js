@@ -2463,7 +2463,7 @@
 			}
 
 			function rasGetEntityMetaListSuccessCallback(data, status) {
-				entities = data.object.entities;
+				entities = data.object;
 				//Get all areas
 				getRecordsWithoutList(null, null, null, "area", rasGetAreasListSuccessCallback, rasErrorCallback);
 			}

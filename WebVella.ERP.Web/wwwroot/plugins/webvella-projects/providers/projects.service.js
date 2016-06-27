@@ -26,9 +26,12 @@
 		serviceInstance.getOwnerLastModifiedTasks = getOwnerLastModifiedTasks;
 		serviceInstance.getOwnerLastModifiedBugs = getOwnerLastModifiedBugs;
 		serviceInstance.getProjectTimelogReport = getProjectTimelogReport;
+		serviceInstance.getAllSprints = getAllSprints;
+		serviceInstance.getProjectSprintDetails = getProjectSprintDetails;
+		serviceInstance.getProjectSprintAllTasks = getProjectSprintAllTasks;
 		//#endregion
 
-
+		///
 		//#region << Functions >> ///////////////////////////////////////////////////////////////////////////////////
 		function getMyProjectsList(successCallback, errorCallback) {
 			$http({ method: 'GET', url: "/plugins/webvella-projects/api/project/list/my-projects" }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
@@ -39,22 +42,40 @@
 		}
 
 		///////////////////
-		function getActivitiesList(page,label,successCallback, errorCallback) {
-			$http({ method: 'GET', url: "/plugins/webvella-projects/api/activity/list/all?page="+page+"&label="+label }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		function getActivitiesList(page, label, successCallback, errorCallback) {
+			$http({ method: 'GET', url: "/plugins/webvella-projects/api/activity/list/all?page=" + page + "&label=" + label }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 		///////////////////
-		function getOwnerLastModifiedTasks(page,successCallback, errorCallback) {
-			$http({ method: 'GET', url: "/plugins/webvella-projects/api/task/list/last-updated-for-owner?page="+page }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		function getOwnerLastModifiedTasks(page, successCallback, errorCallback) {
+			$http({ method: 'GET', url: "/plugins/webvella-projects/api/task/list/last-updated-for-owner?page=" + page }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 		///////////////////
-		function getOwnerLastModifiedBugs(page,successCallback, errorCallback) {
-			$http({ method: 'GET', url: "/plugins/webvella-projects/api/bug/list/last-updated-for-owner?page="+page }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		function getOwnerLastModifiedBugs(page, successCallback, errorCallback) {
+			$http({ method: 'GET', url: "/plugins/webvella-projects/api/bug/list/last-updated-for-owner?page=" + page }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+		//////////////////
+		function getProjectTimelogReport(month, year, successCallback, errorCallback) {
+			$http({ method: 'GET', url: "/plugins/webvella-projects/api/report/project-timelog?year=" + year + "&month=" + month }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+		/////////////////
+		function getAllSprints(page, pageSize, successCallback, errorCallback) {
+			$http({ method: 'GET', url: "/plugins/webvella-projects/api/sprint/list?page=" + page + "&pageSize=" + pageSize }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+		////////////////
+		function getProjectSprintDetails(sprintId, scope, successCallback, errorCallback) {
+			if (sprintId == "current") {
+				$http({ method: 'GET', url: "/plugins/webvella-projects/api/sprint/" + "?scope=" + scope }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
+			else {
+				$http({ method: 'GET', url: "/plugins/webvella-projects/api/sprint/" + sprintId + "?scope=" + scope }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
 		}
 
-		function getProjectTimelogReport(month,year,successCallback, errorCallback) {
-			$http({ method: 'GET', url: "/plugins/webvella-projects/api/report/project-timelog?year="+year + "&month=" + month }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		////////////////
+		function getProjectSprintAllTasks(sprintId, scope, status, page, pageSize, successCallback, errorCallback) {
+			$http({ method: 'GET', url: "/plugins/webvella-projects/api/sprint/" + sprintId + "/available-tasks?scope=" + scope + "&page=" + page + "&pageSize=" + pageSize  + "&status=" + status}).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 
