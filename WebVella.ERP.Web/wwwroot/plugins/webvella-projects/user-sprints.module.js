@@ -552,7 +552,7 @@
 
 		popupCtrl.attachTask = function (task) {
 			var relationName = "wv_sprint_n_n_wv_task";
-			var originFieldRecordId = $stateParams.sprintId;
+			var originFieldRecordId = popupCtrl.sprint.id;
 			var attachTargetFieldRecordIds = [];
 			attachTargetFieldRecordIds.push(task.id);
 			var detachTargetFieldRecordIds = []

@@ -1701,7 +1701,7 @@ namespace WebVella.ERP.Project
 				processedSprintObject["tasks_completed"] = new List<EntityRecord>();
 				foreach (var task in (List<EntityRecord>)currentSprint["$wv_sprint_n_n_wv_task"])
 				{
-					if ((scope == "user" && (Guid)task["owner_id"] != SecurityContext.CurrentUser.Id) || scope != "user")
+					if ((scope == "user" && (Guid)task["owner_id"] == SecurityContext.CurrentUser.Id) || scope != "user")
 					{
 						var proccessedTask = new EntityRecord();
 						proccessedTask["id"] = (Guid)task["id"];

@@ -85,7 +85,7 @@
 			skin: 'moono',
 			height: '300',
 			contentsCss: '/plugins/webvella-core/css/editor.css',
-			extraPlugins: "sourcedialog",
+			extraPlugins: "sourcedialog,colorbutton",
 			allowedContent: true,
 			toolbarLocation: 'top',
 			toolbar: 'full',
@@ -97,6 +97,7 @@
 				{ name: 'tools', items: ['SpellChecker', 'Maximize'] },
 				{ name: 'clipboard', items: ['Undo', 'Redo'] },
 				{ name: 'styles', items: ['Format', 'FontSize', 'TextColor', 'PasteText', 'PasteFromWord', 'RemoveFormat'] },
+				{ name: 'colors' },
 				{ name: 'insert', items: ['Image', 'Table', 'SpecialChar', 'Sourcedialog'] }, '/',
 			]
 		};
