@@ -60,6 +60,10 @@ namespace WebVella.ERP.Web
 
 				app.UseErpMiddleware();
 
+				//IHostingEnvironment env = app.ApplicationServices.GetService<IHostingEnvironment>();
+				//if (env.IsDevelopment())
+				app.UseDeveloperExceptionPage();
+				
 				IPluginService pluginService = app.ApplicationServices.GetService<IPluginService>();
 				IHostingEnvironment hostingEnvironment = app.ApplicationServices.GetRequiredService<IHostingEnvironment>();
 				pluginService.Initialize(serviceProvider);
