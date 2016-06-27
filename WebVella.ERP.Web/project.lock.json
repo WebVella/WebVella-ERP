@@ -2514,46 +2514,6 @@
         "runtime": {
           "net46/WebVella.ERP.dll": {}
         }
-      },
-      "WebVella.ERP.Crm/1.0.0": {
-        "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
-        "dependencies": {
-          "Microsoft.AspNetCore.Mvc.Abstractions": "1.0.0-rc2-final",
-          "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0-rc2-final",
-          "WebVella.ERP": "1.0.0"
-        },
-        "frameworkAssemblies": [
-          "System.Data",
-          "System.Xml"
-        ],
-        "compile": {
-          "net46/WebVella.ERP.Crm.dll": {}
-        },
-        "runtime": {
-          "net46/WebVella.ERP.Crm.dll": {}
-        }
-      },
-      "WebVella.ERP.Project/1.0.0": {
-        "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
-        "dependencies": {
-          "Microsoft.AspNetCore.Mvc.Abstractions": "1.0.0-rc2-final",
-          "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0-rc2-final",
-          "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-rc2-final",
-          "Microsoft.Extensions.Configuration.Json": "1.0.0-rc2-final",
-          "WebVella.ERP": "1.0.0"
-        },
-        "frameworkAssemblies": [
-          "System.Data",
-          "System.Xml"
-        ],
-        "compile": {
-          "net46/WebVella.ERP.Project.dll": {}
-        },
-        "runtime": {
-          "net46/WebVella.ERP.Project.dll": {}
-        }
       }
     }
   },
@@ -6823,16 +6783,6 @@
       "type": "project",
       "path": "../WebVella.ERP/project.json",
       "msbuildProject": "../WebVella.ERP/WebVella.ERP.xproj"
-    },
-    "WebVella.ERP.Crm/1.0.0": {
-      "type": "project",
-      "path": "../WebVella.ERP.Crm/project.json",
-      "msbuildProject": "../WebVella.ERP.Crm/WebVella.ERP.Crm.xproj"
-    },
-    "WebVella.ERP.Project/1.0.0": {
-      "type": "project",
-      "path": "../WebVella.ERP.Project/project.json",
-      "msbuildProject": "../WebVella.ERP.Project/WebVella.ERP.Project.xproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -6864,8 +6814,6 @@
       "System.Linq >= 4.0.0",
       "System.Threading >= 4.0.10",
       "WebVella.ERP >= 1.0.0-*",
-      "WebVella.ERP.Crm >= 1.0.0-*",
-      "WebVella.ERP.Project >= 1.0.0-*",
       "iTextSharp >= 5.5.6",
       "morelinq >= 2.0.0-alpha01"
     ],

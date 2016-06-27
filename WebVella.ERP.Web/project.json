@@ -74,9 +74,9 @@
     "System.Threading": "4.0.10.0",
     "WebVella.ERP": "1.0.0-*",
     "ImageProcessor": "2.4.1",
-			"ImageProcessor.Web": "4.6.1",
-			"WebVella.ERP.Project": "1.0.0-*",
-			"WebVella.ERP.Crm": "1.0.0-*"
+	"ImageProcessor.Web": "4.6.1"//,
+	//"WebVella.ERP.Project": "1.0.0-*",
+	//"WebVella.ERP.Crm": "1.0.0-*"
   },
    
   "commands": {
