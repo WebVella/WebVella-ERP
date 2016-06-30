@@ -3994,8 +3994,8 @@ namespace WebVella.ERP.Web.Controllers
 				csvReader.Configuration.IsHeaderCaseSensitive = false;
 
 				csvReader.Read();
-
 				List<string> columns = csvReader.FieldHeaders.ToList();
+				
 				List<dynamic> fieldMetaList = new List<dynamic>();
 
 				foreach (var column in columns)
@@ -4062,16 +4062,17 @@ namespace WebVella.ERP.Web.Controllers
 
 				try
 				{
-					while (csvReader.Read())
+					do
 					{
 						EntityRecord newRecord = new EntityRecord();
 						foreach (var fieldMeta in fieldMetaList)
 						{
-							string value = csvReader.GetField<string>(fieldMeta.ColumnName);
+							string columnName = fieldMeta.ColumnName.ToString();
+							string value = csvReader.GetField<string>(columnName);
 
 							if (value.StartsWith("[") && value.EndsWith("]"))
 							{
-								newRecord[fieldMeta.ColumnName] = JsonConvert.DeserializeObject<List<string>>(value);
+								newRecord[columnName] = JsonConvert.DeserializeObject<List<string>>(value);
 							}
 							else
 							{
@@ -4084,18 +4085,18 @@ namespace WebVella.ERP.Web.Controllers
 										{
 											decimal decValue;
 											if (decimal.TryParse(value, out decValue))
-												newRecord[fieldMeta.ColumnName] = decValue;
+												newRecord[columnName] = decValue;
 											else
-												newRecord[fieldMeta.ColumnName] = null;
+												newRecord[columnName] = null;
 										}
 										break;
 									case FieldType.CheckboxField:
 										{
 											bool bValue;
 											if (bool.TryParse(value, out bValue))
-												newRecord[fieldMeta.ColumnName] = bValue;
+												newRecord[columnName] = bValue;
 											else
-												newRecord[fieldMeta.ColumnName] = null;
+												newRecord[columnName] = null;
 										}
 										break;
 									case FieldType.DateField:
@@ -4103,39 +4104,39 @@ namespace WebVella.ERP.Web.Controllers
 										{
 											DateTime dtValue;
 											if (DateTime.TryParse(value, out dtValue))
-												newRecord[fieldMeta.ColumnName] = dtValue;
+												newRecord[columnName] = dtValue;
 											else
-												newRecord[fieldMeta.ColumnName] = null;
+												newRecord[columnName] = null;
 										}
 										break;
 									case FieldType.MultiSelectField:
 										{
 											if (!string.IsNullOrWhiteSpace(value))
-												newRecord[fieldMeta.ColumnName] = new List<string>(new string[] { value });
+												newRecord[columnName] = new List<string>(new string[] { value });
 											else
-												newRecord[fieldMeta.ColumnName] = null;
+												newRecord[columnName] = null;
 										}
 										break;
 									case FieldType.TreeSelectField:
 										{
 											if (!string.IsNullOrWhiteSpace(value))
-												newRecord[fieldMeta.ColumnName] = new List<string>(new string[] { value });
+												newRecord[columnName] = new List<string>(new string[] { value });
 											else
-												newRecord[fieldMeta.ColumnName] = null;
+												newRecord[columnName] = null;
 										}
 										break;
 									case FieldType.GuidField:
 										{
 											Guid gValue;
 											if (Guid.TryParse(value, out gValue))
-												newRecord[fieldMeta.ColumnName] = gValue;
+												newRecord[columnName] = gValue;
 											else
-												newRecord[fieldMeta.ColumnName] = null;
+												newRecord[columnName] = null;
 										}
 										break;
 									default:
 										{
-											newRecord[fieldMeta.ColumnName] = value;
+											newRecord[columnName] = value;
 										}
 										break;
 								}
@@ -4143,7 +4144,7 @@ namespace WebVella.ERP.Web.Controllers
 						}
 
 						QueryResponse result;
-						if (!newRecord.GetProperties().Any(x => x.Key == "id") || string.IsNullOrEmpty(newRecord["id"].ToString()))
+						if (!newRecord.GetProperties().Any(x => x.Key == "id") || newRecord["id"] == null || string.IsNullOrEmpty(newRecord["id"].ToString()))
 						{
 							newRecord["id"] = Guid.NewGuid();
 							result = recMan.CreateRecord(entityName, newRecord);
@@ -4151,20 +4152,18 @@ namespace WebVella.ERP.Web.Controllers
 						else
 						{
 							result = recMan.UpdateRecord(entityName, newRecord);
-
-							if (!result.Success)
-							{
-								string message = result.Message;
-								if (result.Errors.Count > 0)
-								{
-									foreach (ErrorModel error in result.Errors)
-										message += " " + error.Message;
-								}
-								throw new Exception(message);
-							}
 						}
-					}
-
+						if (!result.Success)
+						{
+							string message = result.Message;
+							if (result.Errors.Count > 0)
+							{
+								foreach (ErrorModel error in result.Errors)
+									message += " " + error.Message;
+							}
+							throw new Exception(message);
+						}
+					}while (csvReader.Read());
 					connection.CommitTransaction();
 				}
 				catch (Exception e)

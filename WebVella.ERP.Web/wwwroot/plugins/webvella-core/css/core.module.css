@@ -4249,6 +4249,7 @@ table.editable td {
 	padding: 10px;
 	border: 1px solid #ccc;
 	background-color: #fff !important;
+	overflow-x: hidden;
 }
 
 .view-manage-section .section .panel-heading {
