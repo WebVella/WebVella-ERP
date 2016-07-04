@@ -410,7 +410,7 @@
 												<div class="editable-wrapper input-group editable-updatable" ng-if="viewData[item.dataName].length > 0"
 													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin',viewData)">
 													<table class="table table-bordered editable origin lookup">
-														<tr ng-repeat="relationDataRecord in viewData[item.dataName]">
+														<tr ng-repeat="relationDataRecord in viewData[item.dataName] track by $index">
 															<td>{{relationDataRecord}}</td>
 														</tr>
 														<tr ng-if="viewData[item.dataName].length == 0">
@@ -421,7 +421,7 @@
 												</div>
 												<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 													<table class="table table-bordered editable origin lookup">
-														<tr ng-repeat="relationDataRecord in viewData[item.dataName]">
+														<tr ng-repeat="relationDataRecord in viewData[item.dataName] track by $index">
 															<td>{{relationDataRecord}}</td>
 														</tr>
 														<tr ng-if="viewData[item.dataName].length == 0">
@@ -456,7 +456,7 @@
 													<div class="editable-wrapper input-group editable-updatable" ng-if="viewData[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
 														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin',viewData)">
 														<table class="table table-bordered editable origin lookup">
-															<tr ng-repeat="relationDataRecord in viewData[item.dataName]">
+															<tr ng-repeat="relationDataRecord in viewData[item.dataName]  track by $index">
 																<td>{{relationDataRecord}}</td>
 															</tr>
 															<tr ng-if="viewData[item.dataName].length == 0">
@@ -467,7 +467,7 @@
 													</div>
 													<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 														<table class="table table-bordered editable origin lookup">
-															<tr ng-repeat="relationDataRecord in viewData[item.dataName]">
+															<tr ng-repeat="relationDataRecord in viewData[item.dataName]  track by $index">
 																<td>{{relationDataRecord}}</td>
 															</tr>
 															<tr ng-if="viewData[item.dataName].length == 0">
@@ -505,7 +505,7 @@
 												</div>
 												<div class="editable-wrapper input-group editable-updatable" ng-if="viewData[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 													<table class="table table-bordered editable origin lookup" ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'origin',viewData)">
-														<tr ng-repeat="relationDataRecord in viewData[item.dataName]">
+														<tr ng-repeat="relationDataRecord in viewData[item.dataName] track by $index">
 															<td>{{relationDataRecord}}</td>
 														</tr>
 														<tr ng-if="viewData[item.dataName].length == 0">
@@ -516,7 +516,7 @@
 												</div>
 												<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 													<table class="table table-bordered editable origin lookup">
-														<tr ng-repeat="relationDataRecord in viewData[item.dataName]">
+														<tr ng-repeat="relationDataRecord in viewData[item.dataName] track by $index">
 															<td>{{relationDataRecord}}</td>
 														</tr>
 														<tr ng-if="viewData[item.dataName].length == 0">
@@ -537,7 +537,7 @@
 												<div class="editable-wrapper input-group editable-updatable" ng-if="viewData[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
 													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'target',viewData)">
 													<table class="table table-bordered editable origin lookup">
-														<tr ng-repeat="relationDataRecord in viewData[item.dataName]">
+														<tr ng-repeat="relationDataRecord in viewData[item.dataName] track by $index">
 															<td>{{relationDataRecord}}</td>
 														</tr>
 														<tr ng-if="viewData[item.dataName].length == 0">
@@ -548,7 +548,7 @@
 												</div>
 												<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 													<table class="table table-bordered editable origin lookup">
-														<tr ng-repeat="relationDataRecord in viewData[item.dataName]">
+														<tr ng-repeat="relationDataRecord in viewData[item.dataName] track by $index">
 															<td>{{relationDataRecord}}</td>
 														</tr>
 														<tr ng-if="viewData[item.dataName].length == 0">
@@ -569,7 +569,7 @@
 												<div class="editable-wrapper input-group editable-updatable" ng-if="viewData[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
 													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'origin',viewData)">
 													<table class="table table-bordered editable origin lookup">
-														<tr ng-repeat="relationDataRecord in viewData[item.dataName]">
+														<tr ng-repeat="relationDataRecord in viewData[item.dataName] track by $index">
 															<td>{{relationDataRecord}}</td>
 														</tr>
 														<tr ng-if="viewData[item.dataName].length == 0">
@@ -580,7 +580,7 @@
 												</div>
 												<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 													<table class="table table-bordered editable origin lookup">
-														<tr ng-repeat="relationDataRecord in viewData[item.dataName]">
+														<tr ng-repeat="relationDataRecord in viewData[item.dataName] track by $index">
 															<td>{{relationDataRecord}}</td>
 														</tr>
 														<tr ng-if="viewData[item.dataName].length == 0">
@@ -633,6 +633,7 @@
 							<!--If item is view WITH relation-->
 							<div class="field" ng-switch-when="viewFromRelation">
 								<label class="control-label">{{::ngCtrl.getRelationLabel(item)}}</label>
+								<pre>{{viewData[item.dataName]}}</pre>
 								<div ng-if="::ngCtrl.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
 									<recursive-view view-meta="::item"
 													view-data="::viewData[item.dataName]"
