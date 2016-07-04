@@ -124,7 +124,7 @@
 										<div ng-switch-when="5">
 											<!--datetime field-->
 											<div class="form-group form-group-sm">
-												<div class="col-sm-6" style="padding:0">
+												<!--<div class="col-sm-6" style="padding:0">
 													<div class="left-inner-addon">
 														<i class="fa fa-fw fa-calendar"></i>
 														<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}} e.g.'15 Feb 2015 14:35'">
@@ -135,6 +135,10 @@
 														<i class="fa fa-fw fa-clock-o"></i>
 														<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="e.g.'14:35'">
 													</div>
+												</div>-->
+												<div class="left-inner-addon">
+													<i class="fa fa-fw fa-calendar"></i>
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}} e.g.'15 Feb 2015'">
 												</div>
 											</div>
 										</div>

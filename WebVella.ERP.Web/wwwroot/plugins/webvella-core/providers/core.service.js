@@ -449,11 +449,11 @@
 		//2.Checkbox
 		function getCheckboxString(data, fieldMeta) {
 			if (data == undefined) {
-				return "";
+				return "undefined";
 			}
 			else if (data instanceof Array) {
 				if (data.length == 0) {
-					return "";
+					return "undefined";
 				}
 				else if (data.length == 1) {
 					return getCheckboxString(data[0], fieldMeta);

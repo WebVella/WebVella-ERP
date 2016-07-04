@@ -794,15 +794,23 @@ body.hidden-sidebar #page-topnav {
 }
 
 /* Sidebar switcher */
+#sidebar-switcher {
+	background:#212121;
+}
+
 #sidebar-switcher .nav {
 	margin-top: 0;
 }
 
 #sidebar-switcher #switcher {
-	padding-top: 15px;
-	padding-bottom: 15px;
+	padding-top: 10px;
+	padding-bottom: 13px;
 }
 
+
+.mini-sidebar #sidebar-switcher .nav > li{
+	margin-bottom:0;
+}
 /*#endregion */
 
 /*#region << Page topnav >> */
@@ -4249,7 +4257,6 @@ table.editable td {
 	padding: 10px;
 	border: 1px solid #ccc;
 	background-color: #fff !important;
-	overflow-x: hidden;
 }
 
 .view-manage-section .section .panel-heading {
