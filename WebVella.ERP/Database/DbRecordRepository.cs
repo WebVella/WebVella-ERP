@@ -470,7 +470,7 @@ namespace WebVella.ERP.Database
 									continue;
 
 								sortSql = sortSql + " " + GetTableNameForEntity(entity) + "." + sortField;
-								if (sortOrder == null)
+								if (string.IsNullOrEmpty(sortOrder))
 								{
 									if (s.SortType == QuerySortType.Ascending)
 										sortSql = sortSql + " ASC,";
