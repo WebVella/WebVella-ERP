@@ -3806,11 +3806,15 @@ namespace WebVella.ERP.Web.Controllers
 
 						var textWriter = new StreamWriter(stream);
 						var csv = new CsvWriter(textWriter);
+						csv.Configuration.QuoteAllFields = true;
 
 						if (page == 1)
 						{
 							foreach (var prop in records[0].Properties)
 							{
+								var listItem = listMeta.Columns.FirstOrDefault(c => c.DataName == prop.Key);
+								if (prop.Key.StartsWith("$field") && listItem == null)
+									continue;// remove id field from relation that are not inserted as columns
 								string name = prop.Key;
 								if (prop.Key.StartsWith("$field$"))
 								{
@@ -3831,6 +3835,10 @@ namespace WebVella.ERP.Web.Controllers
 									if (prop.Value is List<object>)
 									{
 										var listItem = (RecordListRelationFieldItem)listMeta.Columns.FirstOrDefault(c => c.DataName == prop.Key);
+										if (prop.Key.StartsWith("$field") && listItem == null)
+										{
+											continue;// remove id field from relation that are not inserted as columns
+										}
 										var type = listItem != null ? listItem.Meta.GetFieldType() : FieldType.GuidField;
 										if (prop.Key.StartsWith("$field"))
 										{
@@ -3839,12 +3847,17 @@ namespace WebVella.ERP.Web.Controllers
 											if (relation.RelationType == EntityRelationType.ManyToMany ||
 												(relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == entity.Id))
 												csv.WriteField(JsonConvert.SerializeObject(prop.Value).ToString());
-											else
+											else if (((List<object>)prop.Value).Count > 0)
 												csv.WriteField(((List<object>)prop.Value)[0]);
+											else
+												csv.WriteField("");
 										}
 										else if (type != FieldType.MultiSelectField && type != FieldType.TreeSelectField)
 										{
-											csv.WriteField(((List<object>)prop.Value)[0]);
+											if (((List<object>)prop.Value).Count > 0)
+												csv.WriteField(((List<object>)prop.Value)[0]);
+											else
+												csv.WriteField("");
 										}
 										else
 										{
