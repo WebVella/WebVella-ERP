@@ -64,7 +64,7 @@
 						"parentName": "",
 						"folder": translations.ADMINISTRATION_ABBR,
 						"nodes": [],
-						"weight": 1000,
+						"weight": 10000,
 						"color": "red",
 						"iconName": "cogs",
 						"roles": "[\"bdc56420-caf0-4030-8a0e-d264938e0cda\"]"

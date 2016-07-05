@@ -470,7 +470,7 @@ namespace WebVella.ERP.Database
 									continue;
 
 								sortSql = sortSql + " " + GetTableNameForEntity(entity) + "." + sortField;
-								if (sortOrder == null)
+								if (string.IsNullOrEmpty(sortOrder))
 								{
 									if (s.SortType == QuerySortType.Ascending)
 										sortSql = sortSql + " ASC,";
@@ -1592,8 +1592,7 @@ namespace WebVella.ERP.Database
 				KeyValuePair<string, string> pair = overwriteArgs.Single(x => x.Key.ToLowerInvariant() == sortParameterKey);
 				sortField = pair.Value;
 			}
-
-			if (defaultToken.Type != JTokenType.Null)
+			else if (defaultToken.Type != JTokenType.Null)
 				sortField = defaultToken.ToString();
 
 			if (settingsToken.Type == JTokenType.Object)

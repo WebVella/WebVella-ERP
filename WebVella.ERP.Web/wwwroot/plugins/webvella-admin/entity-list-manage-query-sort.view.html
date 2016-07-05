@@ -181,6 +181,49 @@
 	</div>
 	<div class="modal-body">
 		<p translate="{{::'DATA_LINK_QUERY_MODAL_INTRO'}}"></p>
+		<h4>url_query</h4>
+		<pre class="ng-binding">Example: {"name":"url_query", "option": "some_query_key", "default": null, "settings":{}}</pre>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th width="100" translate="{{::'ATTRIBUTES'}}"></th>
+					<th width="80" translate="{{::'TYPE'}}"></th>
+					<th width="150" translate="{{::'VALUE'}}"></th>
+					<th translate="{{::'DESCRIPTION'}}"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="go-green">name</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td><span class="go-blue">url_query</span></td>
+					<td translate="{{::'DATA_LINK_QUERY_MODAL_URL_QUERY_NAME_DESCRIPTION'}}"></td>
+				</tr>
+				<tr>
+					<td><span class="go-green">option</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td><span class="go-gray">user defined string</span></td>
+					<td translate="{{::'DATA_LINK_QUERY_MODAL_URL_QUERY_OPTION_DESCRIPTION'}}"></td>
+				</tr>
+				<tr>
+					<td><span class="go-green">default</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td>
+						<ul style="margin:0;padding-left:16px;">
+							<li><span class="go-blue">null</span></li>
+							<li><span class="go-blue">"string"</span></li>
+						</ul>
+					</td>
+					<td translate="{{::'DATA_LINK_QUERY_MODAL_URL_QUERY_DEFAULT_DESCRIPTION'}}"></td>
+				</tr>
+				<tr>
+					<td><span class="go-green">settings</span></td>
+					<td><span class="go-grey">object</span></td>
+					<td><span class="go-blue">{}</span></td>
+					<td translate="{{::'DATA_LINK_QUERY_MODAL_URL_QUERY_SETTINGS_DESCRIPTION'}}"></td>
+				</tr>
+			</tbody>
+		</table>
 		<h4>current_user</h4>
 		<pre class="ng-binding">Example: {"name":"current_user", "option": "id", "default": null, "settings":{}}</pre>
 		<table class="table table-bordered">
@@ -279,49 +322,7 @@
 				</tr>
 			</tbody>
 		</table>
-		<h4>url_query</h4>
-		<pre class="ng-binding">Example: {"name":"url_query", "option": "some_query_key", "default": "some_value", "settings":{}}</pre>
-		<table class="table table-bordered">
-			<thead>
-				<tr>
-					<th width="100" translate="{{::'ATTRIBUTES'}}"></th>
-					<th width="80" translate="{{::'TYPE'}}"></th>
-					<th width="150" translate="{{::'VALUE'}}"></th>
-					<th translate="{{::'DESCRIPTION'}}"></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td><span class="go-green">name</span></td>
-					<td><span class="go-grey">string</span></td>
-					<td><span class="go-blue">url_query</span></td>
-					<td translate="{{::'DATA_LINK_QUERY_MODAL_URL_QUERY_NAME_DESCRIPTION'}}"></td>
-				</tr>
-				<tr>
-					<td><span class="go-green">option</span></td>
-					<td><span class="go-grey">string</span></td>
-					<td><span class="go-gray">user defined string</span></td>
-					<td translate="{{::'DATA_LINK_QUERY_MODAL_URL_QUERY_OPTION_DESCRIPTION'}}"></td>
-				</tr>
-				<tr>
-					<td><span class="go-green">default</span></td>
-					<td><span class="go-grey">string</span></td>
-					<td>
-						<ul style="margin:0;padding-left:16px;">
-							<li><span class="go-blue">null</span></li>
-							<li><span class="go-blue">"string"</span></li>
-						</ul>
-					</td>
-					<td translate="{{::'DATA_LINK_QUERY_MODAL_URL_QUERY_DEFAULT_DESCRIPTION'}}"></td>
-				</tr>
-				<tr>
-					<td><span class="go-green">settings</span></td>
-					<td><span class="go-grey">object</span></td>
-					<td><span class="go-blue">{}</span></td>
-					<td translate="{{::'DATA_LINK_QUERY_MODAL_URL_QUERY_SETTINGS_DESCRIPTION'}}"></td>
-				</tr>
-			</tbody>
-		</table>
+
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
