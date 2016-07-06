@@ -1014,14 +1014,15 @@ namespace WebVella.ERP.Project
 						viewRegion.Sections.Add(viewSection);
 					}
 					#endregion
-					#region << Section: comments >>
+
+					#region << Section: hidden >>
 					{
 						var viewSection = new InputRecordViewSection();
 						viewSection.Id = new Guid("23557322-9c2c-4824-b817-9d4d5bc0e83b");
-						viewSection.Name = "comments";
-						viewSection.Label = "Comments";
+						viewSection.Name = "hidden";
+						viewSection.Label = "Hidden";
 						viewSection.ShowLabel = false;
-						viewSection.CssClass = "";
+						viewSection.CssClass = "ng-hide";
 						viewSection.Collapsed = false;
 						viewSection.TabOrder = "left-right";
 						viewSection.Weight = Decimal.Parse("2.0");
@@ -1040,7 +1041,17 @@ namespace WebVella.ERP.Project
 								viewColumn.GridColCount = Int32.Parse("12");
 								viewColumn.Items = new List<InputRecordViewItemBase>();
 
-
+								#region << code >>
+								{
+									var viewItem = new InputRecordViewFieldItem();
+									viewItem.EntityId = new Guid("65acced0-1650-4ff0-bbff-9937c382cd89");
+									viewItem.EntityName = "wv_task";
+									viewItem.FieldId = new Guid("04f31ad8-4583-4237-8d54-f82c3f44b918");
+									viewItem.FieldName = "code";
+									viewItem.Type = "field";
+									viewColumn.Items.Add(viewItem);
+								}
+								#endregion
 								//Save column
 								viewRow.Columns.Add(viewColumn);
 							}

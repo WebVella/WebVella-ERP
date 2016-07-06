@@ -7813,24 +7813,6 @@ ng-href=""{{::ngCtrl.getRecordCreateUrl()}}"">Add New</a>";
 						viewColumn.Items.Add(viewItem);
 					}
 					#endregion
-					#region << field from Relation: name >>
-					{
-						var viewItemFromRelation = new InputRecordViewRelationFieldItem();
-						viewItemFromRelation.EntityId = new Guid("7821ece9-42ce-470b-84d4-afc9eb35aa32");
-						viewItemFromRelation.EntityName = "wv_project";
-						viewItemFromRelation.Type = "fieldFromRelation";
-						viewItemFromRelation.FieldId = new Guid("d13427b7-e518-4305-b2cc-bc814a299b55");
-						viewItemFromRelation.FieldName = "name";
-						viewItemFromRelation.FieldLabel = "Project";
-						viewItemFromRelation.FieldPlaceholder = "";
-						viewItemFromRelation.FieldHelpText = null;
-						viewItemFromRelation.FieldRequired = true;
-						viewItemFromRelation.FieldLookupList = "lookup";
-						viewItemFromRelation.RelationId = new Guid("d94f100c-024c-47e7-af32-d67a49be2b6c");
-						viewItemFromRelation.RelationName = "project_1_n_bug";
-						viewColumn.Items.Add(viewItemFromRelation);
-					}
-					#endregion
 					#region << description >>
 					{
 						var viewItem = new InputRecordViewFieldItem();
@@ -7840,6 +7822,24 @@ ng-href=""{{::ngCtrl.getRecordCreateUrl()}}"">Add New</a>";
 						viewItem.FieldName = "description";
 						viewItem.Type = "field";
 						viewColumn.Items.Add(viewItem);
+					}
+					#endregion
+					#region << List from relation: bug_comments >>
+					{
+						var viewItemFromRelation = new InputRecordViewRelationListItem();
+						viewItemFromRelation.EntityId = new Guid("7a57d17e-98f0-4356-baf0-9a8798da0b99");
+						viewItemFromRelation.EntityName = "wv_project_comment";
+						viewItemFromRelation.ListId = new Guid("b143b82f-b79f-47c1-87e7-ecba6f6f2a32");
+						viewItemFromRelation.ListName = "bug_comments";
+						viewItemFromRelation.FieldLabel = "Comments";
+						viewItemFromRelation.FieldPlaceholder = "";
+						viewItemFromRelation.FieldHelpText = "";
+						viewItemFromRelation.FieldRequired = false;
+						viewItemFromRelation.FieldLookupList = "lookup";
+						viewItemFromRelation.RelationId = new Guid("5af026bd-d046-42ba-b6a0-e9090727348f");
+						viewItemFromRelation.RelationName = "bug_1_n_comment";
+						viewItemFromRelation.Type = "listFromRelation";
+						viewColumn.Items.Add(viewItemFromRelation);
 					}
 					#endregion
 					//Save column
@@ -7852,17 +7852,7 @@ ng-href=""{{::ngCtrl.getRecordCreateUrl()}}"">Add New</a>";
 					viewColumn.GridColCount = Int32.Parse("4");
 					viewColumn.Items = new List<InputRecordViewItemBase>();
 
-					#region << code >>
-					{
-						var viewItem = new InputRecordViewFieldItem();
-						viewItem.EntityId = new Guid("c11655fa-e4a3-4c2b-8f1e-0a6d87cfd20c");
-						viewItem.EntityName = "wv_bug";
-						viewItem.FieldId = new Guid("6f2030e9-edd7-42ac-bb2a-2766b76c3da1");
-						viewItem.FieldName = "code";
-						viewItem.Type = "field";
-						viewColumn.Items.Add(viewItem);
-					}
-					#endregion
+
 					#region << status >>
 					{
 						var viewItem = new InputRecordViewFieldItem();
@@ -7883,6 +7873,24 @@ ng-href=""{{::ngCtrl.getRecordCreateUrl()}}"">Add New</a>";
 						viewItem.FieldName = "priority";
 						viewItem.Type = "field";
 						viewColumn.Items.Add(viewItem);
+					}
+					#endregion
+					#region << field from Relation: name >>
+					{
+						var viewItemFromRelation = new InputRecordViewRelationFieldItem();
+						viewItemFromRelation.EntityId = new Guid("7821ece9-42ce-470b-84d4-afc9eb35aa32");
+						viewItemFromRelation.EntityName = "wv_project";
+						viewItemFromRelation.Type = "fieldFromRelation";
+						viewItemFromRelation.FieldId = new Guid("d13427b7-e518-4305-b2cc-bc814a299b55");
+						viewItemFromRelation.FieldName = "name";
+						viewItemFromRelation.FieldLabel = "Project";
+						viewItemFromRelation.FieldPlaceholder = "";
+						viewItemFromRelation.FieldHelpText = null;
+						viewItemFromRelation.FieldRequired = true;
+						viewItemFromRelation.FieldLookupList = "lookup";
+						viewItemFromRelation.RelationId = new Guid("d94f100c-024c-47e7-af32-d67a49be2b6c");
+						viewItemFromRelation.RelationName = "project_1_n_bug";
+						viewColumn.Items.Add(viewItemFromRelation);
 					}
 					#endregion
 					#region << field from Relation: username >>
@@ -7933,14 +7941,14 @@ ng-href=""{{::ngCtrl.getRecordCreateUrl()}}"">Add New</a>";
 			viewRegion.Sections.Add(viewSection);
 			}
 			#endregion
-			#region << Section: comments >>
+			#region << Section: hidden >>
 			{
 			var viewSection = new InputRecordViewSection();
 			viewSection.Id = new Guid("b8bbe88a-04d0-46a9-85a4-0601c8f46847");
-			viewSection.Name = "comments";
-			viewSection.Label = "Comments";
+			viewSection.Name = "hidden";
+			viewSection.Label = "Hidden";
 			viewSection.ShowLabel = false;
-			viewSection.CssClass = "";
+			viewSection.CssClass = "ng-hide";
 			viewSection.Collapsed = false;
 			viewSection.TabOrder = "left-right";
 			viewSection.Weight = Decimal.Parse("2.0");
@@ -7959,24 +7967,18 @@ ng-href=""{{::ngCtrl.getRecordCreateUrl()}}"">Add New</a>";
 					viewColumn.GridColCount = Int32.Parse("12");
 					viewColumn.Items = new List<InputRecordViewItemBase>();
 
-					#region << List from relation: bug_comments >>
+					#region << code >>
 					{
-						var viewItemFromRelation = new InputRecordViewRelationListItem();
-						viewItemFromRelation.EntityId = new Guid("7a57d17e-98f0-4356-baf0-9a8798da0b99");
-						viewItemFromRelation.EntityName = "wv_project_comment";
-						viewItemFromRelation.ListId = new Guid("b143b82f-b79f-47c1-87e7-ecba6f6f2a32");
-						viewItemFromRelation.ListName = "bug_comments";
-						viewItemFromRelation.FieldLabel = "Comments";
-						viewItemFromRelation.FieldPlaceholder = "";
-						viewItemFromRelation.FieldHelpText = "";
-						viewItemFromRelation.FieldRequired = false;
-						viewItemFromRelation.FieldLookupList = "lookup";
-						viewItemFromRelation.RelationId = new Guid("5af026bd-d046-42ba-b6a0-e9090727348f");
-						viewItemFromRelation.RelationName = "bug_1_n_comment";
-						viewItemFromRelation.Type = "listFromRelation";
-						viewColumn.Items.Add(viewItemFromRelation);
+						var viewItem = new InputRecordViewFieldItem();
+						viewItem.EntityId = new Guid("c11655fa-e4a3-4c2b-8f1e-0a6d87cfd20c");
+						viewItem.EntityName = "wv_bug";
+						viewItem.FieldId = new Guid("6f2030e9-edd7-42ac-bb2a-2766b76c3da1");
+						viewItem.FieldName = "code";
+						viewItem.Type = "field";
+						viewColumn.Items.Add(viewItem);
 					}
 					#endregion
+
 					//Save column
 					viewRow.Columns.Add(viewColumn);
 					}
