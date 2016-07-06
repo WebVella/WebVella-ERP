@@ -1,4 +1,4 @@
-﻿{
+{
   "buildOptions": {
     "emitEntryPoint": false
   },
@@ -13,8 +13,8 @@
   },
 
   "dependencies": {
-    "Microsoft.AspNetCore.Mvc.Abstractions": "1.0.0-rc2-final",
-    "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Mvc.Abstractions": "1.0.0",
+    "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0",
     "WebVella.ERP": "1.0.0-*"
   }
 
