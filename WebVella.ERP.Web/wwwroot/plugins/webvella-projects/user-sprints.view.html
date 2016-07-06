@@ -274,7 +274,7 @@
 				<i class="fa fa-arrow-circle-up go-red" title="{{::task.priority}}" ng-if="::task.priority == 'high'"></i>
 				<i class="fa fa-minus-circle go-orange" title="{{::task.priority}}" ng-if="::task.priority == 'medium'"></i>
 				<i class="fa fa-arrow-circle-down go-green" title="{{::task.priority}}" ng-if="::task.priority == 'low'"></i>
-				<div class="progress hidden-md hidden-sm hidden-xs" title="{{task.logged}} h logged / {{task.estimation}} h estimated" ng-bind-html="ngCtrl.generateProgressBars(task)">
+				<div class="progress hidden-md hidden-sm hidden-xs" title="{{task.logged}} h logged / {{task.estimation}} h estimated" ng-bind-html="ngCtrl.generateProgressBars(task)" ng-if="task.estimation && task.estimation > 0">
 				</div>
 			</div>
 			<div class="col-md-7 col-md-12 text-right">
