@@ -7330,8 +7330,8 @@ $"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t#region << view from relation: {relatedView.Name} >>\n" +
 			"\t\t{\n" +
 			"\t\t\tvar viewItemFromRelation = new InputRecordViewSidebarRelationViewItem();\n" +
-			$"\t\t\tviewItemFromRelation.EntityId = new Guid(\"{entityId}\");\n" +
-			$"\t\t\tviewItemFromRelation.EntityName = \"{entityName}\";\n" +
+			$"\t\t\tviewItemFromRelation.EntityId = new Guid(\"{relatedEntity.Id}\");\n" +
+			$"\t\t\tviewItemFromRelation.EntityName = \"{relatedEntity.Name}\";\n" +
 			$"\t\t\tviewItemFromRelation.ViewId = new Guid(\"{recordViewItem.ViewId}\");\n" +
 			$"\t\t\tviewItemFromRelation.ViewName =\"{relatedView.Name}\";\n";
 			if (recordViewItem.FieldLabel == null)
@@ -7421,8 +7421,8 @@ $"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t#region << list from relation: {relatedList.Name} >>\n" +
 			"\t\t{\n" +
 			"\t\t\tvar viewItemFromRelation = new InputRecordViewSidebarRelationListItem();\n" +
-			$"\t\t\tviewItemFromRelation.EntityId = new Guid(\"{entityId}\");\n" +
-			$"\t\t\tviewItemFromRelation.EntityName = \"{entityName}\";\n" +
+			$"\t\t\tviewItemFromRelation.EntityId = new Guid(\"{relatedEntity.Id}\");\n" +
+			$"\t\t\tviewItemFromRelation.EntityName = \"{relatedEntity.Name}\";\n" +
 			$"\t\t\tviewItemFromRelation.ListId = new Guid(\"{listItem.ListId}\");\n" +
 			$"\t\t\tviewItemFromRelation.ListName =\"{relatedList.Name}\";\n";
 			if (listItem.FieldLabel == null)
@@ -7492,8 +7492,8 @@ $"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t#region << list from relation: {relatedTree.Name} >>\n" +
 			"\t\t{\n" +
 			"\t\t\tvar viewItemFromRelation = new InputRecordViewSidebarRelationTreeItem();\n" +
-			$"\t\t\tviewItemFromRelation.EntityId = new Guid(\"{entityId}\");\n" +
-			$"\t\t\tviewItemFromRelation.EntityName = \"{entityName}\";\n" +
+			$"\t\t\tviewItemFromRelation.EntityId = new Guid(\"{relatedEntity.Id}\");\n" +
+			$"\t\t\tviewItemFromRelation.EntityName = \"{relatedEntity.Name}\";\n" +
 			$"\t\t\tviewItemFromRelation.TreeId = new Guid(\"{treeItem.TreeId}\");\n" +
 			$"\t\t\tviewItemFromRelation.TreeName =\"{relatedTree.Name}\";\n";
 			if (treeItem.FieldLabel == null)

@@ -39,7 +39,9 @@
 					controllerAs: 'ngCtrl'
 				}
 			},
-			resolve: { },
+			resolve: {
+				resolvedEntityList:resolveEntityList
+			},
 			data: {
 
 			}
@@ -48,6 +50,19 @@
 
 
 	// Resolve Function /////////////////////////
+	resolveEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
+	function resolveEntityList($q, $log, webvellaCoreService, $state, $stateParams) {
+		var defer = $q.defer();
+		function successCallback(response) {
+			defer.resolve(response.object);
+		}
+		function errorCallback(response) {
+			defer.reject(response.message);
+		}
+		webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
+		return defer.promise;
+	}
+
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityList', '$uibModal', '$timeout','$translate','$stateParams','webvellaCoreService'];
