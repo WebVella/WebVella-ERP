@@ -3564,6 +3564,10 @@ table .btn-xs.btn-link {
 			cursor: auto;
 		}
 
+	.editable-wrapper.textarea .form-control {
+		height:auto;
+	}
+
 .fake-input-wrapper {
 	background: #fafafa;
 	border: 1px solid #ccc;
