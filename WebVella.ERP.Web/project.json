@@ -50,14 +50,10 @@
       "type": "build"
     },
     "AutoMapper": "3.3.1",
-    "CsvHelper": "2.13.0",
-    "iTextSharp": "5.5.6",
     "morelinq": "2.0.0-alpha01",
     "System.Linq": "4.0.0.0",
     "System.Threading": "4.0.10.0",
     "WebVella.ERP": "1.0.0-*",
-    "ImageProcessor": "2.4.1",
-    "ImageProcessor.Web": "4.6.1",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0",
     "Microsoft.AspNetCore.StaticFiles": "1.0.0",
@@ -74,10 +70,11 @@
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
     "Microsoft.AspNetCore.Mvc": "1.0.0",
     "Microsoft.AspNetCore.Mvc.Abstractions": "1.0.0",
-    "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0"//,
-    //"WebVella.ERP.SamplePlugin": "1.0.0-*",
-    //"WebVella.ERP.Project": "1.0.0-*",
-    //"WebVella.ERP.Crm": "1.0.0-*"
+			"Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0",
+			"CsvHelper": "2.15.0.2",
+			"ImageProcessor": "2.4.2",
+			"ImageProcessor.Web": "4.6.2",
+			"iTextSharp": "5.5.9"
   },
    
   "commands": {
