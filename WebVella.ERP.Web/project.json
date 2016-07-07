@@ -74,8 +74,8 @@
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
     "Microsoft.AspNetCore.Mvc": "1.0.0",
     "Microsoft.AspNetCore.Mvc.Abstractions": "1.0.0",
-    "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0",
-    "WebVella.ERP.SamplePlugin": "1.0.0-*" //,
+    "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0"//,
+    //"WebVella.ERP.SamplePlugin": "1.0.0-*",
     //"WebVella.ERP.Project": "1.0.0-*",
     //"WebVella.ERP.Crm": "1.0.0-*"
   },
