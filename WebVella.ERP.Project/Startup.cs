@@ -197,6 +197,20 @@ namespace WebVella.ERP.Project
 							}
 						}
 
+						if (currentPluginSettings.Version < 20160707)
+						{
+							try
+							{
+								currentPluginSettings.Version = 20160707;
+								Patch160707(entMan, relMan, recMan, createSampleRecords);
+							}
+							catch (Exception ex)
+							{
+								var exception = ex;
+								throw ex;
+							}
+						}
+
 						#endregion
 
 						#region << 4. Save needed changes to the plugin setting data >>
