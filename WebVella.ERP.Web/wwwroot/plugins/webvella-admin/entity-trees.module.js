@@ -40,7 +40,8 @@
 			},
 			resolve: {
 				resolvedRelationsList: resolveRelationsList,
-				resolvedEntityRecordTrees: resolveEntityRecordTrees
+				resolvedEntityRecordTrees: resolveEntityRecordTrees,
+				resolvedEntityList:resolveEntityList
 			},
 			data: {
 
@@ -87,6 +88,19 @@
 		}
 
 		webvellaCoreService.getEntityTreesMeta($stateParams.entityName, successCallback, errorCallback);
+		return defer.promise;
+	}
+
+ 	resolveEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
+	function resolveEntityList($q, $log, webvellaCoreService, $state, $stateParams) {
+		var defer = $q.defer();
+		function successCallback(response) {
+			defer.resolve(response.object);
+		}
+		function errorCallback(response) {
+			defer.reject(response.message);
+		}
+		webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
 		return defer.promise;
 	}
 

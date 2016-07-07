@@ -167,21 +167,25 @@
 							break;
 						case 4: //Date
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
+								var dateFormat = "yyyy-MMM-dd";
+								if(availableViewFields[j].meta.format) {
+									dateFormat = availableViewFields[j].meta.format;
+								}
 								if (availableViewFields[j].meta.useCurrentTimeAsDefaultValue) {
-									ngCtrl.view.data[availableViewFields[j].meta.name] = moment().toISOString();
+									ngCtrl.view.data[availableViewFields[j].meta.name] =  moment().toDate();
 								}
 								else if (availableViewFields[j].meta.defaultValue) {
-									ngCtrl.view.data[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
+									ngCtrl.view.data[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toDate();
 								}
 							}
 							break;
-						case 5: //Date
+						case 5: //Date  time
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
 								if (availableViewFields[j].meta.useCurrentTimeAsDefaultValue) {
-									ngCtrl.view.data[availableViewFields[j].meta.name] = moment().toISOString();
+									ngCtrl.view.data[availableViewFields[j].meta.name] = moment().toDate();
 								}
 								else if (availableViewFields[j].meta.defaultValue) {
-									ngCtrl.view.data[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
+									ngCtrl.view.data[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toDate();
 								}
 							}
 							break;
@@ -612,8 +616,8 @@
 						}
 					}
 				}
-
-				webvellaCoreService.createRecord(ngCtrl.entity.name, ngCtrl.view.data, ngCtrl.successCallback, errorCallback);
+				var viewData = fastCopy(ngCtrl.view.data);
+				webvellaCoreService.createRecord(ngCtrl.entity.name, viewData, ngCtrl.successCallback, errorCallback);
 			}
 			else {
 				//Scroll top

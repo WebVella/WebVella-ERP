@@ -56,7 +56,8 @@
 			"/plugins/webvella-core/lib/oclazyload/dist/oclazyload.js",
 			"/plugins/webvella-core/lib/ace-builds/src-min-noconflict/ace.js",
 			"/plugins/webvella-core/lib/angular-ui-ace/ui-ace.js",
-			"/plugins/webvella-core/lib/angular-translate/angular-translate.js"
+			"/plugins/webvella-core/lib/angular-translate/angular-translate.js",
+			"/plugins/webvella-core/lib/moment-angular-date-format-parser/moment-angular-date-format-parser.js"
 		]
 	},
 	"module": {

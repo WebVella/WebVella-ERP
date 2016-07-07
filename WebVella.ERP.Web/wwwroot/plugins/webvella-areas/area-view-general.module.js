@@ -651,6 +651,11 @@
 		//#endregion
 
 		//#region << Render >>
+		ngCtrl.convertToJSDate = function(date){
+			return moment(fastCopy(date)).toDate();
+		}
+
+
 		ngCtrl.headerRegion = [];
 		ngCtrl.activeRegion = [];
 		ngCtrl.activeTabName = ngCtrl.stateParams.regionName;

@@ -99,7 +99,7 @@
 									<div ng-switch-when="4">
 										<div class="input-group">
 											<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-												   ng-required="{{item.meta.required}}" datetime-picker="{{item.meta.format || 'dd MMM yyyy'}}" is-open="ngCtrl.calendars[item.meta.name]"
+												   ng-required="{{item.meta.required}}" uib-datepicker-popup="{{item.meta.format || 'yyyy-MMM-dd'}}" is-open="ngCtrl.calendars[item.meta.name]"
 												   enable-date="true" enable-time="false" ng-click="ngCtrl.openCalendar($event, item.meta.name)" ng-model-options="{allowInvalid:true}">
 											<span class="input-group-btn">
 												<button type="button" class="btn btn-default" ng-click="ngCtrl.openCalendar($event, item.meta.name)"><i class="fa fa-calendar"></i></button>
@@ -120,7 +120,7 @@
 									<div ng-switch-when="5">
 										<div class="input-group">
 											<input type="text" class="form-control" ng-model="ngCtrl.view.data[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-												   ng-required="{{item.meta.required}}" datetime-picker="{{item.meta.format || 'dd MMM yyyy HH:mm'}}" is-open="ngCtrl.calendars[item.meta.name]"
+												   ng-required="{{item.meta.required}}" uib-datepicker-popup="{{item.meta.format || 'yyyy-MMM-dd HH:mm'}}" is-open="ngCtrl.calendars[item.meta.name]"
 												   enable-date="true" enable-time="true" ng-click="ngCtrl.openCalendar($event, item.meta.name)" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
 											<span class="input-group-btn">
 												<button type="button" class="btn btn-default" ng-click="ngCtrl.openCalendar($event, item.meta.name)"><i class="fa fa-calendar"></i></button>
@@ -643,8 +643,8 @@
 					<tbody>
 						<tr style="background:#ddd" class="query-filter-row">
 							<td>
-								<a class="btn btn-outline btn-sm btn-block" ng-click="popupCtrl.applyQueryFilter()">
-									<i class="fa fa-fw" ng-class="{'fa-filter':!popupCtrl.filterLoading, 'fa-spin fa-spinner': popupCtrl.filterLoading}"></i>
+								<a class="btn btn-success btn-sm btn-block" ng-click="popupCtrl.applyQueryFilter()">
+									<i class="fa fa-fw" ng-class="{'fa-search':!popupCtrl.filterLoading, 'fa-spin fa-spinner': popupCtrl.filterLoading}"></i>
 								</a>
 							</td>
 							<td ng-repeat="column in popupCtrl.relationLookupList.meta.columns | limitTo: popupCtrl.relationLookupList.meta.visibleColumnsCount">

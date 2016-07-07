@@ -28,7 +28,10 @@
 			</thead>
 			<tbody>
 				<tr ng-if="ngCtrl.sprint == null">
-					<td colspan="7"><i class="fa fa-info-circle go-blue"></i> There are no currently running sprints. To review a non running sprint click on the button on the right</td>
+					<td colspan="7">
+						<div ng-if="::ngCtrl.noSprints"><i class="fa fa-info-circle go-blue"></i> There are no currently running sprints. To review a non running sprint click on the button on the right</div>
+						<div ng-if="::ngCtrl.noAccess"><i class="fa fa-warning go-red"></i> You do not have access to the current or selected sprint</div>
+					</td>
 					<td><a class="btn btn-outline" ng-click="ngCtrl.showSprintsListModal()"><i class="fa fa-list"></i></a></td>
 				</tr>
 				<tr ng-if="ngCtrl.sprint != null">
@@ -51,7 +54,7 @@
 				</tr>
 			</tbody>
 		</table>
-		<div class="row">
+		<div class="row" ng-if="::!ngCtrl.noAccess">
 			<div class="col-md-4">
 				<div class="panel sprint-wrapper panel-white" id="not-started">
 					<div class="panel-heading">
@@ -274,7 +277,7 @@
 				<i class="fa fa-arrow-circle-up go-red" title="{{::task.priority}}" ng-if="::task.priority == 'high'"></i>
 				<i class="fa fa-minus-circle go-orange" title="{{::task.priority}}" ng-if="::task.priority == 'medium'"></i>
 				<i class="fa fa-arrow-circle-down go-green" title="{{::task.priority}}" ng-if="::task.priority == 'low'"></i>
-				<div class="progress hidden-md hidden-sm hidden-xs" title="{{task.logged}} h logged / {{task.estimation}} h estimated" ng-bind-html="ngCtrl.generateProgressBars(task)" ng-if="task.estimation && task.estimation > 0">
+				<div class="progress hidden-md hidden-sm hidden-xs" title="{{task.logged}} h logged / {{task.estimation}} h estimated" ng-bind-html="ngCtrl.generateProgressBars(task)">
 				</div>
 			</div>
 			<div class="col-md-7 col-md-12 text-right">

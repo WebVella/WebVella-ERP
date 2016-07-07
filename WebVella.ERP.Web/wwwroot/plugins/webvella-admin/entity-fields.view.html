@@ -389,7 +389,7 @@
 								<div class="input-group">
 									<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
 										   ng-required="popupCtrl.field.required" placeholder="{{::'DATE_PLACEHOLDER' | translate}}" valid-date
-										   datetime-picker="{{popupCtrl.field.format || 'dd MMM yyyy'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true"
+										   uib-datepicker-popup="{{popupCtrl.field.format || 'dd MMM yyyy'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true"
 										   enable-time="false" ng-click="popupCtrl.openCalendar($event, 'defaultValue')" />
 									<span class="input-group-btn">
 										<button type="button" class="btn btn-default" ng-click="popupCtrl.openCalendar($event, 'defaultValue')"><i class="fa fa-calendar"></i></button>
@@ -447,7 +447,7 @@
 								<div class="input-group">
 									<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
 										   ng-required="popupCtrl.field.required" placeholder="{{::'DATETIME_PLACEHOLDER' | translate}}" valid-date ng-model-options="{allowInvalid:true}"
-										   datetime-picker="{{popupCtrl.field.format || 'dd MMM yyyy HH:mm'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true" enable-time="true"
+										   uib-datepicker-popup="{{popupCtrl.field.format || 'dd MMM yyyy HH:mm'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true" enable-time="true"
 										   timepicker-options="{showMeridian:false}" ng-click="popupCtrl.openCalendar($event, 'defaultValue')" />
 									<span class="input-group-btn">
 										<button type="button" class="btn btn-default" ng-click="popupCtrl.openCalendar($event, 'defaultValue')"><i class="fa fa-calendar"></i></button>
@@ -1445,7 +1445,7 @@
 							<div class="input-group">
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
 									   ng-required="popupCtrl.field.required" placeholder="{{::'DATE_PLACEHOLDER' | translate}}" valid-date ng-model-options="{allowInvalid:true}"
-									   datetime-picker="{{popupCtrl.field.format || 'dd MMM yyyy'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true"
+									   uib-datepicker-popup="{{popupCtrl.field.format || 'dd MMM yyyy'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true"
 									   enable-time="false" ng-click="popupCtrl.openCalendar($event, 'defaultValue')" />
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default" ng-click="popupCtrl.openCalendar($event, 'defaultValue')"><i class="fa fa-calendar"></i></button>
@@ -1503,7 +1503,7 @@
 							<div class="input-group">
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
 									   ng-required="popupCtrl.field.required" placeholder="{{::'DATETIME_PLACEHOLDER' | translate}}" valid-date ng-model-options="{allowInvalid:true}"
-									   datetime-picker="{{popupCtrl.field.format || 'dd MMM yyyy HH:mm'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true" enable-time="true"
+									   uib-datepicker-popup="{{popupCtrl.field.format || 'dd MMM yyyy HH:mm'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true" enable-time="true"
 									   timepicker-options="{showMeridian:false}" ng-click="popupCtrl.openCalendar($event, 'defaultValue')" />
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default" ng-click="popupCtrl.openCalendar($event, 'defaultValue')"><i class="fa fa-calendar"></i></button>

@@ -40,7 +40,7 @@
 				}
 			},
 			resolve: {
-				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
+				resolvedEntityList:resolveEntityList,
 				resolvedRolesList: resolveRolesList,
 				resolvedRelationsList: resolveRelationsList,
 				translatedFieldTypes: translateFieldTypes
@@ -53,41 +53,6 @@
 
 
 	//#region << Resolve Function /////////////////////////
-
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', '$translate'];
-
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout, $translate) {
-		// Initialize
-		var defer = $q.defer();
-
-		// Process
-		function successCallback(response) {
-			if (response.object === null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.resolve(response.object);
-			}
-		}
-
-		function errorCallback(response) {
-			if (response.object === null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.reject(response.message);
-			}
-		}
-
-		webvellaCoreService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
-
-		// Return
-		return defer.promise;
-	}
 
 	// Resolve Roles list /////////////////////////
 	resolveRolesList.$inject = ['$q', '$log', 'webvellaCoreService'];
@@ -145,20 +110,34 @@
 		return defer.promise;
 	}
 
+ 	resolveEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
+	function resolveEntityList($q, $log, webvellaCoreService, $state, $stateParams) {
+		var defer = $q.defer();
+		function successCallback(response) {
+			defer.resolve(response.object);
+		}
+		function errorCallback(response) {
+			defer.reject(response.message);
+		}
+		webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
+		return defer.promise;
+	}
+
+
 	//#endregion
 
 	// Controller ///////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedRolesList',
-						'resolvedRelationsList', '$timeout', '$q', 'webvellaCoreService', '$translate','translatedFieldTypes'];
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle','$uibModal', 'resolvedRolesList','resolvedEntityList',
+						'resolvedRelationsList', '$timeout', '$q', 'webvellaCoreService', '$translate','translatedFieldTypes','$stateParams'];
 
-	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedRolesList,
-						resolvedRelationsList, $timeout, $q, webvellaCoreService, $translate,translatedFieldTypes) {
+	function controller($scope, $log, $rootScope, $state, pageTitle, $uibModal, resolvedRolesList,resolvedEntityList,
+						resolvedRelationsList, $timeout, $q, webvellaCoreService, $translate,translatedFieldTypes,$stateParams) {
 
 		var ngCtrl = this;
 
 		//#region << Init >>
 		ngCtrl.search = {};
-		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.entity = webvellaCoreService.getEntityMetaFromEntityList($stateParams.entityName,resolvedEntityList);
 		ngCtrl.rolesList = resolvedRolesList;
 		ngCtrl.entity.fields = ngCtrl.entity.fields.sort(function (a, b) {
 			if (a.name < b.name) return -1;
@@ -667,12 +646,12 @@
 					break;
 				case 4: //Date
 					if (popupCtrl.field.defaultValue !== null) {
-						popupCtrl.field.defaultValue = moment(popupCtrl.field.defaultValue).startOf('day').utc().toISOString();
+						popupCtrl.field.defaultValue = moment(popupCtrl.field.defaultValue).startOf('day').utc().toDate();
 					}
 					break;
 				case 5: //Date & Time
 					if (popupCtrl.field.defaultValue !== null) {
-						popupCtrl.field.defaultValue = moment(popupCtrl.field.defaultValue).startOf('minute').utc().toISOString();
+						popupCtrl.field.defaultValue = moment(popupCtrl.field.defaultValue).startOf('minute').utc().toDate();
 					}
 					break;
 				case 11: //Multiselect
@@ -915,6 +894,10 @@
 		popupCtrl.openCalendar = function (event, name) {
 			popupCtrl.calendars[name] = true;
 		}
+		if (popupCtrl.field.fieldType === 4 || popupCtrl.field.fieldType === 5) {
+			 popupCtrl.field.defaultValue = moment(popupCtrl.field.defaultValue).toDate();
+		}
+
 
 		//Tree select
 		var relationsList = fastCopy(popupCtrl.ngCtrl.relationsList);
@@ -1012,12 +995,12 @@
 					break;
 				case 4: //Date
 					if (popupCtrl.field.defaultValue !== null) {
-						popupCtrl.field.defaultValue = moment(popupCtrl.field.defaultValue).startOf('day').utc().toISOString();
+						popupCtrl.field.defaultValue = moment(popupCtrl.field.defaultValue).startOf('day').utc().toDate();
 					}
 					break;
 				case 5: //Date & Time
 					if (popupCtrl.field.defaultValue !== null) {
-						popupCtrl.field.defaultValue = moment(popupCtrl.field.defaultValue).startOf('minute').utc().toISOString();
+						popupCtrl.field.defaultValue = moment(popupCtrl.field.defaultValue).startOf('minute').utc().toDate();
 					}
 					break;
 			}

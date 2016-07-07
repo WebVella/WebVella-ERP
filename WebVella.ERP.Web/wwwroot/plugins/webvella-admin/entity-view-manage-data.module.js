@@ -37,7 +37,7 @@
 				}
 			},
 			resolve: {
-				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
+				resolvedEntityList:resolveEntityList,
 				resolvedOneRecord: resolveOneRecord
 			},
 			data: {
@@ -49,37 +49,16 @@
 
 	//#region << Resolve >> ///////////////////////////////
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
-	
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
-		// Initialize
+ 	resolveEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
+	function resolveEntityList($q, $log, webvellaCoreService, $state, $stateParams) {
 		var defer = $q.defer();
-
-		// Process
 		function successCallback(response) {
-			if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.resolve(response.object);
-			}
+			defer.resolve(response.object);
 		}
-
 		function errorCallback(response) {
-			if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.reject(response.message);
-			}
+			defer.reject(response.message);
 		}
-
-		webvellaCoreService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
-
+		webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
 		return defer.promise;
 	}
 
@@ -122,14 +101,14 @@
 
 	//#region << Controller >> ////////////////////////////
 	controller.$inject = ['$filter', '$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$uibModal', '$timeout',
-                            'resolvedCurrentEntityMeta', 'webvellaCoreService', 'ngToast','$translate','resolvedOneRecord','resolvedEntityList'];
+                            'webvellaCoreService', 'ngToast','$translate','resolvedOneRecord','resolvedEntityList'];
 	
 	function controller($filter, $scope, $log, $rootScope, $state, $stateParams, pageTitle, $uibModal, $timeout,
-                        resolvedCurrentEntityMeta, webvellaCoreService, ngToast,$translate,resolvedOneRecord,resolvedEntityList) {
+                        webvellaCoreService, ngToast,$translate,resolvedOneRecord,resolvedEntityList) {
 		var ngCtrl = this;
 		ngCtrl.loading = {};
 		//#region << Initialize Current Entity >>
-		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.entity = webvellaCoreService.getEntityMetaFromEntityList($stateParams.entityName,resolvedEntityList);
 		//#endregion
 
 		//#region << Update page title & hide the side menu >>
@@ -142,14 +121,8 @@
     	//#endregion
 
 		//#region << Initialize View and Content Region >>
-		ngCtrl.view = {};
-		ngCtrl.originalView = {};
-		for (var i = 0; i < ngCtrl.entity.recordViews.length; i++) {
-			if (ngCtrl.entity.recordViews[i].name === $stateParams.viewName) {
-				ngCtrl.view = fastCopy(ngCtrl.entity.recordViews[i]);
-				ngCtrl.originalView = fastCopy(ngCtrl.entity.recordViews[i]);
-			}
-		}
+        ngCtrl.view = fastCopy(webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName, $stateParams.entityName,resolvedEntityList));
+        ngCtrl.originalView = fastCopy(webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName, $stateParams.entityName,resolvedEntityList));
 		//#endregion
 		ngCtrl.sampleRecordId = fastCopy(resolvedOneRecord.data[0].id);
 

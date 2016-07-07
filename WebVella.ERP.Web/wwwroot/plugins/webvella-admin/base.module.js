@@ -37,8 +37,7 @@
 					return GlobalCompanyName;
 				},
 				resolvedCurrentUser: resolveCurrentUser,
-				checkedAccessPermission: checkAccessPermission,
-				resolvedEntityList: resolveEntityList
+				checkedAccessPermission: checkAccessPermission
 			},
 			'data': {
 				//Custom data is inherited by the parent state 'webvella-core', but it can be overwritten if necessary. Available for all child states in this plugin
@@ -134,19 +133,6 @@
 			defer.reject(null);
 		}
 
-		return defer.promise;
-	}
-
-	resolveEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
-	function resolveEntityList($q, $log, webvellaCoreService, $state, $stateParams) {
-		var defer = $q.defer();
-		function successCallback(response) {
-			defer.resolve(response.object);
-		}
-		function errorCallback(response) {
-			defer.reject(response.message);
-		}
-		webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
 		return defer.promise;
 	}
 

@@ -39,9 +39,8 @@
 				}
 			},
 			resolve: {
-				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
+				resolvedEntityList:resolveEntityList,
 				resolvedViewLibrary: resolveViewLibrary,
-				resolvedCurrentEntityList: resolveCurrentEntityList,
 				resolvedEntityRelationsList: resolveEntityRelationsList,
 			},
 			data: {
@@ -53,71 +52,16 @@
 
 	//#region << Resolve Functions >>/////////////////////////
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
-
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
-		// Initialize
+ 	resolveEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
+	function resolveEntityList($q, $log, webvellaCoreService, $state, $stateParams) {
 		var defer = $q.defer();
-
-		// Process
 		function successCallback(response) {
-			if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.resolve(response.object);
-			}
+			defer.resolve(response.object);
 		}
-
 		function errorCallback(response) {
-			if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.reject(response.message);
-			}
+			defer.reject(response.message);
 		}
-
-		webvellaCoreService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
-
-		return defer.promise;
-	}
-
-	resolveCurrentEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
-
-	function resolveCurrentEntityList($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
-
-		// Initialize
-		var defer = $q.defer();
-
-		// Process
-		function successCallback(response) {
-			if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.resolve(response.object);
-			}
-		}
-
-		function errorCallback(response) {
-			if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.reject(response.message);
-			}
-		}
-
-		webvellaCoreService.getEntityRecordList($stateParams.listName, $stateParams.entityName, successCallback, errorCallback);
+		webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
 		return defer.promise;
 	}
 
@@ -193,15 +137,15 @@
 	//#endregion
 
 	//#region << Controller >> ///////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$timeout', 'ngToast', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedCurrentEntityList',
-						'resolvedViewLibrary', 'webvellaCoreService', 'resolvedEntityRelationsList','$translate'];
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$timeout', 'ngToast', 'pageTitle', 'resolvedEntityList', '$uibModal',
+						'resolvedViewLibrary', 'webvellaCoreService', 'resolvedEntityRelationsList','$translate','$stateParams'];
 
-	function controller($scope, $log, $rootScope, $state, $timeout, ngToast, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedCurrentEntityList,
-						resolvedViewLibrary, webvellaCoreService, resolvedEntityRelationsList,$translate) {
+	function controller($scope, $log, $rootScope, $state, $timeout, ngToast, pageTitle, resolvedEntityList, $uibModal, 
+						resolvedViewLibrary, webvellaCoreService, resolvedEntityRelationsList,$translate,$stateParams) {
 
 
 		var ngCtrl = this;
-		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.entity = webvellaCoreService.getEntityMetaFromEntityList($stateParams.entityName,resolvedEntityList);
 
 		//#region << Update page title & hide the side menu >>
 		$translate(['RECORD_LIST_TAB_COLUMNS_PAGE_TITLE','ENTITIES']).then(function (translations) {
@@ -213,7 +157,7 @@
 		//#endregion
 
 		//#region << Initialize the list >>
-		ngCtrl.list = resolvedCurrentEntityList;
+		ngCtrl.list = webvellaCoreService.getEntityRecordListFromEntitiesMetaList($stateParams.listName,$stateParams.entityName,resolvedEntityList);
 		ngCtrl.relationsList = resolvedEntityRelationsList;
 
 		ngCtrl.defaultFieldName = null;

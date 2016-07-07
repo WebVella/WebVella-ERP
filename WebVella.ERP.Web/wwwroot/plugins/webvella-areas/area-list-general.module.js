@@ -780,8 +780,8 @@
 	//#endregion
 
 	//#region << Modal Controller /////////////////////////////// >>
-	exportModalController.$inject = ['$uibModalInstance', 'webvellaCoreService', 'ngToast', 'ngCtrl'];
-	function exportModalController($uibModalInstance, webvellaCoreService, ngToast, ngCtrl) {
+	exportModalController.$inject = ['$uibModalInstance', 'webvellaCoreService', 'ngToast', 'ngCtrl','$location'];
+	function exportModalController($uibModalInstance, webvellaCoreService, ngToast, ngCtrl,$location) {
 		var popupCtrl = this;
 		popupCtrl.ngCtrl = fastCopy(ngCtrl);
 		popupCtrl.loading = false;
@@ -822,7 +822,8 @@
 				if (!popupCtrl.countHasSize) {
 					popupCtrl.count = -1;
 				}
-				webvellaCoreService.exportListRecords(popupCtrl.ngCtrl.entity.name, popupCtrl.ngCtrl.list.meta.name, popupCtrl.count, popupCtrl.exportSuccessCallback, popupCtrl.exportErrorCallback);
+				
+				webvellaCoreService.exportListRecords(popupCtrl.ngCtrl.entity.name, popupCtrl.ngCtrl.list.meta.name, popupCtrl.count,$location.search(), popupCtrl.exportSuccessCallback, popupCtrl.exportErrorCallback);
 			}
 		};
 

@@ -44,7 +44,7 @@
 				}
 			},
 			resolve: {
-				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
+				resolvedEntityList:resolveEntityList,
 				resolvedEntityRelationsList: resolveEntityRelationsList,
 				resolvedViewLibrary: resolveViewLibrary
 			},
@@ -57,37 +57,16 @@
 
 	//#region << Resolve >> ///////////////////////////////
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', '$translate'];
-
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout, $translate) {
-		// Initialize
+ 	resolveEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
+	function resolveEntityList($q, $log, webvellaCoreService, $state, $stateParams) {
 		var defer = $q.defer();
-
-		// Process
 		function successCallback(response) {
-			if (response.object === null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.resolve(response.object);
-			}
+			defer.resolve(response.object);
 		}
-
 		function errorCallback(response) {
-			if (response.object === null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.reject(response.message);
-			}
+			defer.reject(response.message);
 		}
-
-		webvellaCoreService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
-
+		webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
 		return defer.promise;
 	}
 
@@ -172,15 +151,15 @@
 
 	//#region << Controller >> ////////////////////////////
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$stateParams', '$timeout', 'pageTitle', '$uibModal',
-                            'resolvedCurrentEntityMeta', 'webvellaCoreService', 'ngToast', 'resolvedViewLibrary', 'resolvedEntityRelationsList', '$translate'];
+                            'resolvedEntityList', 'webvellaCoreService', 'ngToast', 'resolvedViewLibrary', 'resolvedEntityRelationsList', '$translate'];
 
 	function controller($scope, $log, $rootScope, $state, $stateParams, $timeout, pageTitle, $uibModal,
-                        resolvedCurrentEntityMeta, webvellaCoreService, ngToast, resolvedViewLibrary, resolvedEntityRelationsList, $translate) {
+                        resolvedEntityList, webvellaCoreService, ngToast, resolvedViewLibrary, resolvedEntityRelationsList, $translate) {
 
 
 		var ngCtrl = this;
 		//#region << General init >>
-		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.entity = webvellaCoreService.getEntityMetaFromEntityList($stateParams.entityName,resolvedEntityList);
 		ngCtrl.stateParams = $stateParams;
 		//#endregion
 
@@ -194,12 +173,7 @@
 		//#endregion
 
 		//#region << Initialize View and Content Region >>
-		ngCtrl.view = {};
-		for (var i = 0; i < ngCtrl.entity.recordViews.length; i++) {
-			if (ngCtrl.entity.recordViews[i].name === $stateParams.viewName) {
-				ngCtrl.view = fastCopy(ngCtrl.entity.recordViews[i]);
-			}
-		}
+        ngCtrl.view = fastCopy(webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName, $stateParams.entityName,resolvedEntityList));
 		ngCtrl.viewSelectedRegion = {};
 		for (var i = 0; i < ngCtrl.view.regions.length; i++) {
 			if (ngCtrl.view.regions[i].name === ngCtrl.stateParams.regionName) {
@@ -566,7 +540,7 @@
 				}
 			}
 
-			function openModal(response) {
+			function openModal(entityMeta) {
 				var modalInstance = $uibModal.open({
 					animation: false,
 					templateUrl: 'manageFromRelationModal.html',
@@ -577,7 +551,7 @@
 					resolve: {
 						parentData: function () { return ngCtrl; },
 						eventObj: eventObj,
-						relatedEntityMeta: response.object,
+						relatedEntityMeta: entityMeta,
 						fieldObj: fieldItem,
 						orderChangedOnly: orderChangedOnly
 					}
@@ -637,33 +611,14 @@
 
 			}
 
-			function getRelatedEntityMetaSuccessCallback(response) {
-				openModal(response);
-			}
-
-			function getRelatedEntityMetaErrorCallback(response) {
-				$translate(['ERROR_MESSAGE_LABEL', 'VALIDATION_ENTITY_NOT_FOUND']).then(function (translations) {
-					ngToast.create({
-						className: 'error',
-						content: translations.ERROR_MESSAGE_LABEL + ' ' + translations.VALIDATION_ENTITY_NOT_FOUND,
-						timeout: 7000
-					});
-				});
-				moveFailure();
-				return;
-			}
-
 			//Get the correct related entityMeta
 
 			if (droppedItem.entityName === ngCtrl.entity.name) {
 				//the dropped item has relation to the current entity so no reason to make http request
-				var response = {};
-				response.success = true;
-				response.object = ngCtrl.entity;
-				getRelatedEntityMetaSuccessCallback(response);
+				openModal(ngCtrl.entity);
 			}
 			else {
-				webvellaCoreService.getEntityMeta(droppedItem.entityName, getRelatedEntityMetaSuccessCallback, getRelatedEntityMetaErrorCallback);
+				openModal(webvellaCoreService.getEntityMetaFromEntityList(droppedItem.entityName,resolvedEntityList));
 			}
 		};
 		//#endregion

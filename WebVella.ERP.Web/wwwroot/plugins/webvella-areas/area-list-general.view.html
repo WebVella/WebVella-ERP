@@ -74,8 +74,8 @@
 				<tbody>
 					<tr style="background:#ddd" class="query-filter-row ng-hide" ng-show="ngCtrl.show_filter || ngCtrl.listIsFiltered">
 						<td>
-							<a class="btn btn-outline btn-sm btn-block" ng-click="ngCtrl.applyQueryFilter()">
-								<i class="fa fa-fw" ng-class="{'fa-filter':!ngCtrl.filterLoading, 'fa-spin fa-spinner': ngCtrl.filterLoading}"></i>
+							<a class="btn btn-success btn-sm btn-block" ng-click="ngCtrl.applyQueryFilter()">
+								<i class="fa fa-fw" ng-class="{'fa-search':!ngCtrl.filterLoading, 'fa-spin fa-spinner': ngCtrl.filterLoading}"></i>
 							</a>
 						</td>
 						<td ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">

@@ -822,20 +822,20 @@
 						case 4: //Date
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
 								if (availableViewFields[j].meta.useCurrentTimeAsDefaultValue) {
-									popupCtrl.recordData[availableViewFields[j].meta.name] = moment().toISOString();
+									popupCtrl.recordData[availableViewFields[j].meta.name] = moment().toDate();
 								}
 								else if (availableViewFields[j].meta.defaultValue) {
-									popupCtrl.recordData[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
+									popupCtrl.recordData[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toDate();
 								}
 							}
 							break;
 						case 5: //Date
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
 								if (availableViewFields[j].meta.useCurrentTimeAsDefaultValue) {
-									popupCtrl.recordData[availableViewFields[j].meta.name] = moment().toISOString();
+									popupCtrl.recordData[availableViewFields[j].meta.name] = moment().toDate();
 								}
 								else if (availableViewFields[j].meta.defaultValue) {
-									popupCtrl.recordData[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
+									popupCtrl.recordData[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toDate();
 								}
 							}
 							break;

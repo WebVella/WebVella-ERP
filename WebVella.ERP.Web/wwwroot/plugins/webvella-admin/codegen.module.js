@@ -51,7 +51,6 @@
 
 	//#region << Resolve Functions >>/////////////////////////
 
-
 	//#endregion
 
 	//#region << Controller >> ///////////////////////////////

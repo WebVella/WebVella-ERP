@@ -61,7 +61,7 @@
 		var defer = $q.defer();
 
 		function successCallback(response) {
-			defer.resolve(response.object);
+			defer.resolve(response);
 		}
 		function errorCallback(response) {
 			defer.reject(response.message);
@@ -84,8 +84,19 @@
 		//#region << ngCtrl initialization >>
 		var ngCtrl = this;
 		ngCtrl.loading = false;
-		ngCtrl.sprint = resolvedSprintData;
+		ngCtrl.sprint = resolvedSprintData.object;
 		ngCtrl.scope = $stateParams.scope;
+		ngCtrl.noSprints = false;
+		ngCtrl.noAccess = false;
+		if(ngCtrl.sprint == null){
+			if(resolvedSprintData.message == "no access"){
+				ngCtrl.noAccess = true;
+			}
+			else {
+				ngCtrl.noSprints = true;
+			}
+		}
+
 		//#endregion
 
 		//#region << Set Page meta >>
@@ -145,23 +156,27 @@
 		}
 
 		ngCtrl.generateProgressBars = function (task) {
-			if (task["estimation"] == 0) {
-				return "";
-			}
 			var loggedBar = "";
-			var progressPercent = Math.round((task["logged"] / task["estimation"]) * 100);
-			//1. Logged are less than estimated
-			if (progressPercent <= 100) {
-				loggedBar = "<div class=\"progress-bar progress-bar-success\" style=\"width: " + progressPercent + "%\"></div>";
+			if (task["estimation"] == 0 && task["logged"] == 0) {
+				loggedBar = "";
+			}
+			else if (task["estimation"] == 0 && task["logged"] != 0) {
+				loggedBar = "<div class=\"progress-bar progress-bar-danger\" style=\"width: 100%\"></div>";
 			}
 			else {
-				progressPercent = Math.round((task["estimation"] / task["logged"]) * 100);
-				var overPercent = 100 - progressPercent;
-				//2. logged are more than estimated - the difference should be a red bar
-				loggedBar = "<div class=\"progress-bar progress-bar-success\" style=\"width: " + progressPercent + "%\"></div>" + "<div class=\"progress-bar progress-bar-danger\" style=\"width: " + overPercent + "%\"></div>";
+				var progressPercent = Math.round((task["logged"] / task["estimation"]) * 100);
+				//1. Logged are less than estimated
+				if (progressPercent <= 100) {
+					loggedBar = "<div class=\"progress-bar progress-bar-success\" style=\"width: " + progressPercent + "%\"></div>";
+				}
+				else {
+					progressPercent = Math.round((task["estimation"] / task["logged"]) * 100);
+					var overPercent = 100 - progressPercent;
+					//2. logged are more than estimated - the difference should be a red bar
+					loggedBar = "<div class=\"progress-bar progress-bar-success\" style=\"width: " + progressPercent + "%\"></div>" + "<div class=\"progress-bar progress-bar-danger\" style=\"width: " + overPercent + "%\"></div>";
 
+				}
 			}
-
 			return $sce.trustAsHtml(loggedBar);
 		}
 
@@ -188,7 +203,13 @@
 				return "<span class='go-gray'>not started</span>";
 			}
 			else if (untilStartDate == 0) {
-				return "<span class='go-orange'>starts tomorrow</span>";
+				//check if it is today or tomorrow
+				if(moment(ngCtrl.sprint.start_date).date() == moment().date()){
+					return "<span class='go-orange'>starts today</span>";
+				}
+				else {
+					return "<span class='go-orange'>starts tomorrow</span>";
+				}
 			}
 			var diffDays = moment(ngCtrl.sprint.end_date).add(1, 'days').diff(now, 'days');
 			if (diffDays > 0) {

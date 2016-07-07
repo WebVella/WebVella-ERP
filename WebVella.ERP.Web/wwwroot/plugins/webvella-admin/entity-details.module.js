@@ -39,9 +39,9 @@
                 }
             },
             resolve: {
-                resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
                 resolvedRolesList: resolveRolesList,
-                resolvedAreasList: resolveAreasList
+                resolvedAreasList: resolveAreasList,
+				resolvedEntityList:resolveEntityList
             },
             data: {
 
@@ -52,43 +52,8 @@
 
 	// Resolve Function /////////////////////////
 
-    resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
-    
-    function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
-        // Initialize
-        var defer = $q.defer();
-
-        // Process
-        function successCallback(response) {
-            if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-            }
-            else {
-                defer.resolve(response.object);
-            }
-        }
-
-        function errorCallback(response) {
-            if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-	                alert(translations.ERROR_IN_RESPONSE);
-				});
-            }
-            else {
-            	defer.reject(response.message);
-            }
-        }
-
-        webvellaCoreService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
-
-        return defer.promise;
-    }
-
 	// Resolve Roles list /////////////////////////
     resolveRolesList.$inject = ['$q', '$log', 'webvellaCoreService'];
-	
     function resolveRolesList($q, $log, webvellaCoreService) {
     	// Initialize
     	var defer = $q.defer();
@@ -110,7 +75,6 @@
 
     // Resolve Roles list /////////////////////////
     resolveAreasList.$inject = ['$q', '$log', 'webvellaCoreService'];
-    
     function resolveAreasList($q, $log, webvellaCoreService) {
 
         // Initialize
@@ -130,16 +94,31 @@
         return defer.promise;
     }
 
+	resolveEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
+	function resolveEntityList($q, $log, webvellaCoreService, $state, $stateParams) {
+		var defer = $q.defer();
+		function successCallback(response) {
+			defer.resolve(response.object);
+		}
+		function errorCallback(response) {
+			defer.reject(response.message);
+		}
+		webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
+		return defer.promise;
+	}
+
+
+
     // Controller ///////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'ngToast', 'resolvedCurrentEntityMeta', '$uibModal',
-        'resolvedRolesList', 'webvellaCoreService', 'resolvedAreasList', '$timeout','$translate'];
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'ngToast', '$uibModal','resolvedEntityList',
+        'resolvedRolesList', 'webvellaCoreService', 'resolvedAreasList', '$timeout','$translate','$stateParams'];
 
     
-    function controller($scope, $log, $rootScope, $state, pageTitle, ngToast, resolvedCurrentEntityMeta, $uibModal,
-        resolvedRolesList, webvellaCoreService, resolvedAreasList, $timeout,$translate) {
+    function controller($scope, $log, $rootScope, $state, pageTitle, ngToast, $uibModal,resolvedEntityList,
+        resolvedRolesList, webvellaCoreService, resolvedAreasList, $timeout,$translate,$stateParams) {
         
         var ngCtrl = this;
-        ngCtrl.entity = resolvedCurrentEntityMeta;
+        ngCtrl.entity = webvellaCoreService.getEntityMetaFromEntityList($stateParams.entityName,resolvedEntityList);
         //Update page title
 		$translate(['ENTITY','DETAILS','ENTITIES']).then(function (translations) {
 			ngCtrl.pageTitle = translations.ENTITY + " > " + ngCtrl.entity.label +" > " + translations.DETAILS +" | " + pageTitle;

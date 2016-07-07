@@ -535,7 +535,7 @@
 				}
 			}
 			else {
-				return moment(data).format("DD MMM YYYY"); //should be first converted to local format
+				return moment(data).formatWithADF(fieldMeta.format);
 			}
 		}
 		//5.Datetime
@@ -1356,6 +1356,7 @@
 		function getEntityView(viewName, entityName, successCallback, errorCallback) {
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/view/' + viewName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
+
 		///////////////////////
 		function getEntityRecordViewFromEntitiesMetaList(viewName, entityName, entitiesMetaList) {
 			var itemMeta = null;
@@ -2109,8 +2110,15 @@
 			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/import', data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
-		function exportListRecords(entityName, listName, count, successCallback, errorCallback) {
-			window.location =  wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + "/export?count=" + count;
+		function exportListRecords(entityName, listName, count,queryParams, successCallback, errorCallback) {
+			var path = wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + "/export?count=" + count;
+			  
+			if(!isEmpty(queryParams)){
+				for(var param in queryParams){
+					path += "&"+param+"=" + queryParams[param];
+				}
+			}
+			window.location = path;
 			//$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + "/export?count=" + count }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 			var response = {};
 			response.data = {};
@@ -3334,7 +3342,7 @@
 					}
 					if (data != null) {
 						//Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
-						data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toISOString();
+						data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toDate();
 					}
 					break;
 				case 5: //Datetime
@@ -3342,7 +3350,7 @@
 						return "This is a required field";
 					}
 					if (data != null) {
-						data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('minute').utc().toISOString();
+						data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('minute').utc().toDate();
 					}
 					break;
 				case 6: //Email

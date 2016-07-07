@@ -40,7 +40,8 @@
 				}
 			},
 			resolve: {
-				resolvedRelationsList: resolveRelationsList
+				resolvedRelationsList: resolveRelationsList,
+				resolvedEntityList:resolveEntityList
 			},
 			data: {
 
@@ -73,11 +74,26 @@
 		return defer.promise;
 	}
 
+ 	resolveEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
+	function resolveEntityList($q, $log, webvellaCoreService, $state, $stateParams) {
+		var defer = $q.defer();
+		function successCallback(response) {
+			defer.resolve(response.object);
+		}
+		function errorCallback(response) {
+			defer.reject(response.message);
+		}
+		webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
+		return defer.promise;
+	}
+
 	// Controller ///////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', 'resolvedRelationsList', 'webvellaCoreService', 'resolvedEntityList', '$uibModal','$timeout','$translate'];
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', 'resolvedRelationsList', 
+		'webvellaCoreService', 'resolvedEntityList', '$uibModal','$timeout','$translate'];
 
 	
-	function controller($scope, $log, $rootScope, $state,$stateParams, pageTitle, resolvedRelationsList, webvellaCoreService, resolvedEntityList, $uibModal,$timeout,$translate) {
+	function controller($scope, $log, $rootScope, $state,$stateParams, pageTitle, resolvedRelationsList, 
+		webvellaCoreService, resolvedEntityList, $uibModal,$timeout,$translate) {
 		
 		var ngCtrl = this;
 		ngCtrl.search = {};

@@ -38,7 +38,7 @@
 				}
 			},
 			resolve: {
-				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
+				resolvedEntityList:resolveEntityList,
 				resolvedEntityRelationsList: resolveEntityRelationsList,
 				resolvedViewLibrary: resolveViewLibrary
 			},
@@ -51,37 +51,16 @@
 
 	//#region << Resolve >> ///////////////////////////////
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', '$translate'];
-
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout, $translate) {
-		// Initialize
+ 	resolveEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
+	function resolveEntityList($q, $log, webvellaCoreService, $state, $stateParams) {
 		var defer = $q.defer();
-
-		// Process
 		function successCallback(response) {
-			if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.resolve(response.object);
-			}
+			defer.resolve(response.object);
 		}
-
 		function errorCallback(response) {
-			if (response.object == null) {
-				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
-					alert(translations.ERROR_IN_RESPONSE);
-				});
-			}
-			else {
-				defer.reject(response.message);
-			}
+			defer.reject(response.message);
 		}
-
-		webvellaCoreService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
-
+		webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
 		return defer.promise;
 	}
 
@@ -172,14 +151,14 @@
 
 	//#region << Controller >> ////////////////////////////
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$uibModal', '$timeout',
-                            'resolvedCurrentEntityMeta', 'webvellaCoreService', 'ngToast', 'resolvedViewLibrary', 'resolvedEntityRelationsList', '$translate'];
+                            'resolvedEntityList', 'webvellaCoreService', 'ngToast', 'resolvedViewLibrary', 'resolvedEntityRelationsList', '$translate'];
 
 	function controller($scope, $log, $rootScope, $state, $stateParams, pageTitle, $uibModal, $timeout,
-                        resolvedCurrentEntityMeta, webvellaCoreService, ngToast, resolvedViewLibrary, resolvedEntityRelationsList, $translate) {
+                        resolvedEntityList, webvellaCoreService, ngToast, resolvedViewLibrary, resolvedEntityRelationsList, $translate) {
 
 
 		var ngCtrl = this;
-		ngCtrl.entity = resolvedCurrentEntityMeta;
+		ngCtrl.entity = webvellaCoreService.getEntityMetaFromEntityList($stateParams.entityName,resolvedEntityList);
 		//#region << Update page title & hide the side menu >>
 		$translate(['RECORD_VIEW_MANAGE_PAGE_TITLE', 'ENTITIES']).then(function (translations) {
 			ngCtrl.pageTitle = translations.RECORD_VIEW_MANAGE_PAGE_TITLE + " | " + pageTitle;
@@ -190,12 +169,7 @@
 		//#endregion
 
 		//#region << Initialize View >>
-		ngCtrl.view = {};
-		for (var i = 0; i < ngCtrl.entity.recordViews.length; i++) {
-			if (ngCtrl.entity.recordViews[i].name == $stateParams.viewName) {
-				ngCtrl.view = fastCopy(ngCtrl.entity.recordViews[i]);
-			}
-		}
+        ngCtrl.view = fastCopy(webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName, $stateParams.entityName,resolvedEntityList));
 		//#endregion
 
 		//#region << item Library init >>
@@ -393,7 +367,7 @@
 				}
 			}
 
-			function getRelatedEntityMetaSuccessCallback(response) {
+			function openModal(entityMeta) {
 
 				var modalInstance = $uibModal.open({
 					animation: false,
@@ -405,7 +379,7 @@
 					resolve: {
 						parentData: function () { return ngCtrl; },
 						eventObj: eventObj,
-						relatedEntityMeta: response.object,
+						relatedEntityMeta: entityMeta,
 						fieldObj: fieldItem,
 						orderChangedOnly: orderChangedOnly
 					}
@@ -441,14 +415,11 @@
 
 			if (droppedItem.entityName == ngCtrl.entity.name) {
 				//the dropped item has relation to the current entity so no reason to make http request
-				var response = {};
-				response.success = true;
-				response.object = ngCtrl.entity;
-				getRelatedEntityMetaSuccessCallback(response);
+				openModal(ngCtrl.entity);
 			}
 			else {
 				var relatedEntityName = null;
-				webvellaCoreService.getEntityMeta(droppedItem.entityName, getRelatedEntityMetaSuccessCallback, getRelatedEntityMetaErrorCallback);
+				openModal(webvellaCoreService.getEntityMetaFromEntityList(droppedItem.entityName,resolvedEntityList));
 			}
 		};
 		//#endregion

@@ -574,7 +574,7 @@ namespace WebVella.ERP.Project
 
 				#region << Get tasks >>
 				{
-					var fields = "id,number,subject,start_date,end_date,status,priority,$user_1_n_task_owner.id,$user_1_n_task_owner.image";
+					var fields = "id,code,number,subject,start_date,end_date,status,priority,$user_1_n_task_owner.id,$user_1_n_task_owner.image";
 
 					QueryObject rootFilterSection = null;
 					QueryObject auxFilterSection = null;
@@ -603,14 +603,10 @@ namespace WebVella.ERP.Project
 					{
 						switch (query.Key.ToLowerInvariant())
 						{
-							case "number":
+							case "code":
 								auxRule = new QueryObject();
-								decimal outDecimal = 0;
-								if (decimal.TryParse((string)query.Value, out outDecimal))
-								{
-									auxRule = EntityQuery.QueryEQ("number", outDecimal);
-									auxRulesList.Add(auxRule);
-								}
+								auxRule = EntityQuery.QueryContains("code", (string)query.Value);
+								auxRulesList.Add(auxRule);
 								break;
 							case "subject":
 								auxRule = new QueryObject();
@@ -673,7 +669,7 @@ namespace WebVella.ERP.Project
 				{
 					var record = new EntityRecord();
 					record["id"] = (Guid)task["id"];
-					record["number"] = (decimal)task["number"];
+					record["code"] = (string)task["code"];
 					record["subject"] = (string)task["subject"];
 					record["start_date"] = (DateTime)task["start_date"];
 					record["end_date"] = (DateTime)task["end_date"];
@@ -787,7 +783,7 @@ namespace WebVella.ERP.Project
 
 				#region << Get bugs >>
 				{
-					var fields = "id,number,subject,status,priority,$user_1_n_bug_owner.id,$user_1_n_bug_owner.image";
+					var fields = "id,code,number,subject,status,priority,$user_1_n_bug_owner.id,$user_1_n_bug_owner.image";
 
 					QueryObject rootFilterSection = null;
 					QueryObject auxFilterSection = null;
@@ -816,14 +812,10 @@ namespace WebVella.ERP.Project
 					{
 						switch (query.Key.ToLowerInvariant())
 						{
-							case "number":
+							case "code":
 								auxRule = new QueryObject();
-								decimal outDecimal = 0;
-								if (decimal.TryParse((string)query.Value, out outDecimal))
-								{
-									auxRule = EntityQuery.QueryEQ("number", outDecimal);
-									auxRulesList.Add(auxRule);
-								}
+								auxRule = EntityQuery.QueryContains("code", (string)query.Value);
+								auxRulesList.Add(auxRule);
 								break;
 							case "subject":
 								auxRule = new QueryObject();
@@ -886,7 +878,7 @@ namespace WebVella.ERP.Project
 				{
 					var record = new EntityRecord();
 					record["id"] = (Guid)bug["id"];
-					record["number"] = (decimal)bug["number"];
+					record["code"] = (string)bug["code"];
 					record["subject"] = (string)bug["subject"];
 					record["status"] = (string)bug["status"];
 					record["priority"] = (string)bug["priority"];
@@ -1620,11 +1612,12 @@ namespace WebVella.ERP.Project
 				{
 					//Get all current sprints
 					{
+						var sprintFields = "id";
 						var queryFilter = EntityQuery.QueryAND(EntityQuery.QueryLTE("start_date", DateTime.UtcNow), EntityQuery.QueryGTE("end_date", DateTime.UtcNow.AddDays(-1)));
 						var sortRulesList = new List<QuerySortObject>();
 						var sortRule = new QuerySortObject("start_date", QuerySortType.Ascending);
 						sortRulesList.Add(sortRule);
-						var query = new EntityQuery("wv_sprint", "*", queryFilter, sortRulesList.ToArray());
+						var query = new EntityQuery("wv_sprint", sprintFields, queryFilter, sortRulesList.ToArray());
 						var queryResponse = recMan.Find(query);
 						if (!queryResponse.Success)
 						{
@@ -1662,7 +1655,8 @@ namespace WebVella.ERP.Project
 				{
 					var fields = "id,start_date,end_date,name," +
 					"$wv_sprint_n_n_wv_task.id,$wv_sprint_n_n_wv_task.code,$wv_sprint_n_n_wv_task.owner_id, $wv_sprint_n_n_wv_task.priority,$wv_sprint_n_n_wv_task.status,$wv_sprint_n_n_wv_task.subject," +
-					"$wv_sprint_n_n_wv_task.x_billable_hours,$wv_sprint_n_n_wv_task.x_nonbillable_hours,$wv_sprint_n_n_wv_task.estimation";
+					"$wv_sprint_n_n_wv_task.x_billable_hours,$wv_sprint_n_n_wv_task.x_nonbillable_hours,$wv_sprint_n_n_wv_task.estimation," +
+					"$$role_n_n_wv_sprint.id";
 					var queryFilter = EntityQuery.QueryEQ("id", currentSprintId);
 					var query = new EntityQuery("wv_sprint", fields, queryFilter);
 					var queryResponse = recMan.Find(query);
@@ -1684,7 +1678,23 @@ namespace WebVella.ERP.Project
 					}
 
 					currentSprint = queryResponse.Object.Data[0];
-
+					var sprintRoleRecords = (List<EntityRecord>)currentSprint["$role_n_n_wv_sprint"];
+					//Check if the current user can see the sprint
+					var userRoles = SecurityContext.CurrentUser.Roles;
+					var userCanAccessSprint = false;
+					foreach(var role in sprintRoleRecords) {
+						if(userRoles.Any(x => x.Id == (Guid)role["id"])) {
+							userCanAccessSprint = true;
+							break;
+						}
+					}
+					if(!userCanAccessSprint) {
+						response.Success = true;
+						response.Timestamp = DateTime.UtcNow;
+						response.Message = "no access";
+						response.Object = null;	
+						return Json(response);					
+					}
 
 				}
 				#endregion
@@ -1729,8 +1739,8 @@ namespace WebVella.ERP.Project
 						processedSprintObject["logged"] = (decimal)processedSprintObject["logged"] + (decimal)proccessedTask["logged"];
 					}
 				}
-
-
+				processedSprintObject["estimation"] = Math.Round((decimal)processedSprintObject["estimation"],2);
+				processedSprintObject["logged"] = Math.Round((decimal)processedSprintObject["logged"],2);
 				response.Success = true;
 				response.Timestamp = DateTime.UtcNow;
 				response.Message = "My projects successfully read";

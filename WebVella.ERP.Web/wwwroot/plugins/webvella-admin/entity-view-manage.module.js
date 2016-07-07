@@ -37,7 +37,9 @@
                     controllerAs: 'ngCtrl'
                 }
             },
-            resolve: {},
+            resolve: {
+				resolvedEntityList:resolveEntityList
+			},
             data: {
 
             }
@@ -46,6 +48,18 @@
     //#endregion
 
 	//#region << Resolve >> ///////////////////////////////
+ 	resolveEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
+	function resolveEntityList($q, $log, webvellaCoreService, $state, $stateParams) {
+		var defer = $q.defer();
+		function successCallback(response) {
+			defer.resolve(response.object);
+		}
+		function errorCallback(response) {
+			defer.reject(response.message);
+		}
+		webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
+		return defer.promise;
+	}
     //#endregion
 
     //#region << Controller >> ////////////////////////////
@@ -74,14 +88,9 @@
         ngCtrl.icons = getFontAwesomeIconNames();
 
     	//#region << Initialize View and Content Region >>
-        ngCtrl.view = {};
-        ngCtrl.originalView = {};
-        for (var i = 0; i < ngCtrl.entity.recordViews.length; i++) {
-        	if (ngCtrl.entity.recordViews[i].name === $stateParams.viewName) {
-        		ngCtrl.view = fastCopy(ngCtrl.entity.recordViews[i]);
-        		ngCtrl.originalView = fastCopy(ngCtrl.entity.recordViews[i]);
-        	}
-        }
+        ngCtrl.view = fastCopy(webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName, $stateParams.entityName,resolvedEntityList));
+        ngCtrl.originalView = fastCopy(webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.viewName, $stateParams.entityName,resolvedEntityList));
+
         //#endregion
         ngCtrl.nameIsChanged = false;
 		ngCtrl.renderFieldValue = webvellaCoreService.renderFieldValue;
