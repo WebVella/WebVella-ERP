@@ -116,6 +116,7 @@ var translationsEN = {
 	DELETE: 'Delete',
 	DELETE_FILE: 'Delete file',
 	DELETE_LOCKED: 'Delete locked',
+	DESKTOP: 'Desktop',
 	DESCRIPTION: 'Description',
 	DETAILS: 'Details',
 	DIRECTION: 'Direction',

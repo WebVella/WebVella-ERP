@@ -20,6 +20,15 @@
         
         var topnavData = this;
         topnavData.currentArea = webvellaCoreService.getCurrentAreaFromAreaList($stateParams.areaName, resolvedAreas.data);
+		topnavData.currentArea.attachments = angular.fromJson(topnavData.currentArea.attachments);
+		topnavData.areaLink = "";
+		topnavData.firstAttachment = topnavData.currentArea.attachments[0];
+		if(topnavData.firstAttachment.url && topnavData.firstAttachment != ""){
+			topnavData.areaLink = topnavData.firstAttachment.url;
+		}
+		else {
+			topnavData.areaLink = "#/areas/" + topnavData.currentArea.name +"/" + topnavData.firstAttachment.name +"/list-general/" + topnavData.firstAttachment.list.name;
+		}
 		topnavData.currentEntity = resolvedCurrentEntityMeta;
 		topnavData.currentUser = angular.copy(resolvedCurrentUser);
         topnavData.logout = function () {

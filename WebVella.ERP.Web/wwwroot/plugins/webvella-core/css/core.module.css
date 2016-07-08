@@ -1222,7 +1222,7 @@ body.hidden-sidebar #page-topnav {
 			background: #fff;
 		}
 
-#page-topnav #area-title {
+#page-topnav .area-title {
 	font-size: 12px;
 	text-transform: uppercase;
 	float: left;
@@ -1252,6 +1252,7 @@ body.hidden-sidebar #page-topnav {
 
 #page-topnav .divider-box {
 	margin-left: 10px;
+	margin-right: 10px;
 	font-size: 13px;
 	float: left;
 	max-width: 20px;
@@ -1372,7 +1373,7 @@ body.hidden-sidebar #page-topnav {
 		line-height: 1.2em;
 		font-size: 20px;
 		position: relative;
-		top: -3px;
+		top: -5px;
 		overflow: hidden;
 		-ms-text-overflow: ellipsis;
 		-o-text-overflow: ellipsis;
