@@ -63,7 +63,9 @@
 		"CsvHelper": "2.15.0.2",
 		"ImageProcessor": "2.4.2",
 		"ImageProcessor.Web": "4.6.2",
-		"iTextSharp": "5.5.9"
+		"iTextSharp": "5.5.9",
+		"WebVella.ERP.Project": "1.0.0",
+		"WebVella.ERP.Crm": "1.0.0"
 	},
 
 	"commands": {
