@@ -2386,7 +2386,30 @@ namespace WebVella.ERP.Web.Controllers
 			}
 			try
 			{
-				response.Object = GetListRecords(entities, entity, listName, page, null, pageSize);
+				QueryObject queryObj = null;
+				if (Request.Query.Count > 0)
+				{
+					List<QueryObject> queryObjList = new List<QueryObject>();
+
+					RecordList listMeta = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
+					if (listMeta != null)
+					{
+						foreach (var query in Request.Query)
+						{
+							if (listMeta.Columns.Any(c => c.DataName == query.Key))
+							{
+								queryObjList.Add(EntityQuery.QueryContains(query.Key, query.Value));
+							}
+						}
+					}
+
+					if (queryObjList.Count == 1)
+						queryObj = queryObjList[0];
+					else if (queryObjList.Count > 1)
+						queryObj = EntityQuery.QueryAND(queryObjList.ToArray());
+				}
+
+				response.Object = GetListRecords(entities, entity, listName, page, queryObj, pageSize);
 			}
 			catch (Exception ex)
 			{
@@ -3785,6 +3808,30 @@ namespace WebVella.ERP.Web.Controllers
 				Response.Headers.Add("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 				//Response.Headers.Add("Content-Length", fileResp.ContentLength.ToString());
 
+				RecordList listMeta = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
+
+				QueryObject queryObj = null;
+				if (Request.Query.Count > 0)
+				{
+					List<QueryObject> queryObjList = new List<QueryObject>();
+
+					if (listMeta != null)
+					{
+						foreach (var query in Request.Query)
+						{
+							if (listMeta.Columns.Any(c => c.DataName == query.Key))
+							{
+								queryObjList.Add(EntityQuery.QueryContains(query.Key, query.Value));
+							}
+						}
+					}
+
+					if (queryObjList.Count == 1)
+						queryObj = queryObjList[0];
+					else if (queryObjList.Count > 1)
+						queryObj = EntityQuery.QueryAND(queryObjList.ToArray());
+				}
+
 				int page = 1;
 				int pageSize = 100;
 				int offset = 0;
@@ -3798,12 +3845,10 @@ namespace WebVella.ERP.Web.Controllers
 						pageSize = count < pageSize ? count : (count - (pageSize * (page - 1)));
 					}
 
-					List<EntityRecord> records = GetListRecords(entities, entity, listName, page, null, pageSize, true);
+					List<EntityRecord> records = GetListRecords(entities, entity, listName, page, queryObj, pageSize, true);
 
 					if (records.Count > 0)
 					{
-						RecordList listMeta = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
-
 						var textWriter = new StreamWriter(stream);
 						var csv = new CsvWriter(textWriter);
 						csv.Configuration.QuoteAllFields = true;
