@@ -151,15 +151,7 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-6">
-						<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.placeholderText.$invalid && !createFieldStep2.placeholderText.$pristine || popupCtrl.placeholderTextError}">
-							<label class="control-label" translate="{{::'PLACEHOLDER_TEXT'}}"></label>
-							<input class="form-control" ng-model="popupCtrl.field.placeholderText" name="placeholderText" type="text" ng-model-options="{allowInvalid:true}" />
-							<div class="error ng-hide" ng-show="createFieldStep2.placeholderText.$touched && createFieldStep2.placeholderText.$dirty && createFieldStep2.placeholderText.$invalid || popupCtrl.placeholderTextError">
-								<small class="error ng-hide" ng-show="popupCtrl.placeholderTextError">
-									{{popupCtrl.placeholderTextMessage}}
-								</small>
-							</div>
-						</div>
+
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
@@ -223,6 +215,17 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-6">
+						<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.placeholderText.$invalid && !createFieldStep2.placeholderText.$pristine || popupCtrl.placeholderTextError}">
+							<label class="control-label" translate="{{::'PLACEHOLDER_TEXT'}}"></label>
+							<input class="form-control" ng-model="popupCtrl.field.placeholderText" name="placeholderText" type="text" ng-model-options="{allowInvalid:true}" />
+							<div class="error ng-hide" ng-show="createFieldStep2.placeholderText.$touched && createFieldStep2.placeholderText.$dirty && createFieldStep2.placeholderText.$invalid || popupCtrl.placeholderTextError">
+								<small class="error ng-hide" ng-show="popupCtrl.placeholderTextError">
+									{{popupCtrl.placeholderTextMessage}}
+								</small>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
 						<div class="form-group">
 							<label for="searchableStatus" class="control-label" translate="{{::'SEARCHABLE'}}"></label>
 							<div class="checkbox" ng-if="popupCtrl.field.fieldType != 13">
@@ -233,20 +236,6 @@
 							</div>
 							<div class="form-control-static" ng-if="popupCtrl.field.fieldType == 13" translate="{{::'FIELD_TYPE_PASSWORD_NOT_SEARCHABLE_DESCRIPTION'}}"></div>
 						</div>
-
-					</div>
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label for="auditableStatus" class="control-label" translate="{{::'AUDITABLE'}}"></label>
-							<div class="checkbox">
-								<label>
-									<input ng-model="popupCtrl.field.auditable" type="checkbox" id="auditableStatus" value="true">
-									<span translate="{{::'AUDITABLE_FIELD_CHECKBOX_LABEL'}}"></span>
-								</label>
-							</div>
-						</div>
-
-
 					</div>
 				</div>
 				<!--Auto increment 1 -->
@@ -389,7 +378,7 @@
 								<div class="input-group">
 									<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
 										   ng-required="popupCtrl.field.required" placeholder="{{::'DATE_PLACEHOLDER' | translate}}" valid-date
-										   uib-datepicker-popup="{{popupCtrl.field.format || 'dd MMM yyyy'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true"
+										   datetime-picker="{{popupCtrl.field.format || 'dd MMM yyyy'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true"
 										   enable-time="false" ng-click="popupCtrl.openCalendar($event, 'defaultValue')" />
 									<span class="input-group-btn">
 										<button type="button" class="btn btn-default" ng-click="popupCtrl.openCalendar($event, 'defaultValue')"><i class="fa fa-calendar"></i></button>
@@ -447,7 +436,7 @@
 								<div class="input-group">
 									<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
 										   ng-required="popupCtrl.field.required" placeholder="{{::'DATETIME_PLACEHOLDER' | translate}}" valid-date ng-model-options="{allowInvalid:true}"
-										   uib-datepicker-popup="{{popupCtrl.field.format || 'dd MMM yyyy HH:mm'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true" enable-time="true"
+										   datetime-picker="{{popupCtrl.field.format || 'dd MMM yyyy HH:mm'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true" enable-time="true"
 										   timepicker-options="{showMeridian:false}" ng-click="popupCtrl.openCalendar($event, 'defaultValue')" />
 									<span class="input-group-btn">
 										<button type="button" class="btn btn-default" ng-click="popupCtrl.openCalendar($event, 'defaultValue')"><i class="fa fa-calendar"></i></button>
@@ -1115,13 +1104,24 @@
 				</div>
 
 				<div class="row">
-					<div class="col-sm-12">
+					<div class="col-sm-6">
 						<div class="form-group">
 							<label class="control-label" translate="{{::'FIELD_SECURITY'}}"></label>
 							<div class="checkbox">
 								<label>
 									<input type="checkbox" ng-model="popupCtrl.field.enableSecurity" value="true"> 
 									<span translate="{{::'FIELD_SECURITY_CHECKBOX_LABEL'}}"></span>
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="auditableStatus" class="control-label" translate="{{::'AUDITABLE'}}"></label>
+							<div class="checkbox">
+								<label>
+									<input ng-model="popupCtrl.field.auditable" type="checkbox" id="auditableStatus" value="true">
+									<span translate="{{::'AUDITABLE_FIELD_CHECKBOX_LABEL'}}"></span>
 								</label>
 							</div>
 						</div>
@@ -1197,7 +1197,10 @@
 				<div class="col-sm-6">
 					<div class="form-group">
 						<label class="control-label" translate="{{::'NAME'}}"></label>
-						<p class="form-control-static">{{popupCtrl.field.name}}</p>
+						<div class="input-group">
+							<p class="form-control-static form-control disabled">{{popupCtrl.field.name}}</p>
+							<span class="input-group-addon"><i class="fa fa-lock"></i></span>
+						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
@@ -1216,13 +1219,11 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.placeholderText.$invalid && !manageFieldForm.placeholderText.$pristine || popupCtrl.placeholderTextError}">
-						<label class="control-label" translate="{{::'PLACEHOLDER_TEXT'}}"></label>
-						<input class="form-control" ng-model="popupCtrl.field.placeholderText" name="placeholderText" type="text" ng-model-options="{allowInvalid:true}" />
-						<div class="error ng-hide" ng-show="manageFieldForm.placeholderText.$touched && manageFieldForm.placeholderText.$dirty && manageFieldForm.placeholderText.$invalid || popupCtrl.placeholderTextError">
-							<small class="error ng-hide" ng-show="popupCtrl.placeholderTextError">
-								{{popupCtrl.placeholderTextMessage}}
-							</small>
+					<div class="form-group">
+						<label class="control-label" translate="{{::'ID'}}"></label>
+						<div class="input-group">
+							<p class="form-control-static form-control disabled">{{popupCtrl.field.id}}</p>
+							<span class="input-group-addon"><i class="fa fa-lock"></i></span>
 						</div>
 					</div>
 				</div>
@@ -1289,6 +1290,17 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.placeholderText.$invalid && !manageFieldForm.placeholderText.$pristine || popupCtrl.placeholderTextError}">
+						<label class="control-label" translate="{{::'PLACEHOLDER_TEXT'}}"></label>
+						<input class="form-control" ng-model="popupCtrl.field.placeholderText" name="placeholderText" type="text" ng-model-options="{allowInvalid:true}" />
+						<div class="error ng-hide" ng-show="manageFieldForm.placeholderText.$touched && manageFieldForm.placeholderText.$dirty && manageFieldForm.placeholderText.$invalid || popupCtrl.placeholderTextError">
+							<small class="error ng-hide" ng-show="popupCtrl.placeholderTextError">
+								{{popupCtrl.placeholderTextMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
 					<div class="form-group">
 						<label for="searchableStatus" class="control-label" translate="{{::'SEARCHABLE'}}"></label>
 						<div class="checkbox" ng-if="popupCtrl.field.fieldType != 13">
@@ -1298,18 +1310,6 @@
 							</label>
 						</div>
 						<div class="form-control-static" ng-if="popupCtrl.field.fieldType == 13" translate="{{::'FIELD_TYPE_PASSWORD_NOT_SEARCHABLE_DESCRIPTION'}}"></div>
-					</div>
-
-				</div>
-				<div class="col-sm-6">
-					<div class="form-group">
-						<label for="auditableStatus" class="control-label" translate="{{::'AUDITABLE'}}"></label>
-						<div class="checkbox">
-							<label>
-								<input ng-model="popupCtrl.field.auditable" type="checkbox" id="auditableStatus" value="true">
-								<span translate="{{::'AUDITABLE_FIELD_CHECKBOX_LABEL'}}"></span>
-							</label>
-						</div>
 					</div>
 				</div>
 			</div>
@@ -1445,7 +1445,7 @@
 							<div class="input-group">
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
 									   ng-required="popupCtrl.field.required" placeholder="{{::'DATE_PLACEHOLDER' | translate}}" valid-date ng-model-options="{allowInvalid:true}"
-									   uib-datepicker-popup="{{popupCtrl.field.format || 'dd MMM yyyy'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true"
+									   datetime-picker="{{popupCtrl.field.format || 'dd MMM yyyy'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true"
 									   enable-time="false" ng-click="popupCtrl.openCalendar($event, 'defaultValue')" />
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default" ng-click="popupCtrl.openCalendar($event, 'defaultValue')"><i class="fa fa-calendar"></i></button>
@@ -1503,7 +1503,7 @@
 							<div class="input-group">
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
 									   ng-required="popupCtrl.field.required" placeholder="{{::'DATETIME_PLACEHOLDER' | translate}}" valid-date ng-model-options="{allowInvalid:true}"
-									   uib-datepicker-popup="{{popupCtrl.field.format || 'dd MMM yyyy HH:mm'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true" enable-time="true"
+									   datetime-picker="{{popupCtrl.field.format || 'dd MMM yyyy HH:mm'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true" enable-time="true"
 									   timepicker-options="{showMeridian:false}" ng-click="popupCtrl.openCalendar($event, 'defaultValue')" />
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default" ng-click="popupCtrl.openCalendar($event, 'defaultValue')"><i class="fa fa-calendar"></i></button>
@@ -2170,13 +2170,24 @@
 			</div>
 
 			<div class="row">
-				<div class="col-sm-12">
+				<div class="col-sm-6">
 					<div class="form-group">
 						<label class="control-label" translate="{{::'FIELD_SECURITY'}}"></label>
 						<div class="checkbox">
 							<label>
 								<input type="checkbox" ng-model="popupCtrl.field.enableSecurity" value="true">
 								<span translate="{{::'FIELD_SECURITY_CHECKBOX_LABEL'}}"></span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label for="auditableStatus" class="control-label" translate="{{::'AUDITABLE'}}"></label>
+						<div class="checkbox">
+							<label>
+								<input ng-model="popupCtrl.field.auditable" type="checkbox" id="auditableStatus" value="true">
+								<span translate="{{::'AUDITABLE_FIELD_CHECKBOX_LABEL'}}"></span>
 							</label>
 						</div>
 					</div>

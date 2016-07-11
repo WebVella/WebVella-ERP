@@ -51,6 +51,7 @@
 
 	//#region << Resolve Functions >>/////////////////////////
 
+
 	//#endregion
 
 	//#region << Controller >> ///////////////////////////////
@@ -86,6 +87,7 @@
 		}
 
 		ngCtrl.executeCodeGen = function () {
+			ngCtrl.metaChanges = {};
 			ngCtrl.hasError = false;
 			ngCtrl.errorMessage = "";
 			$http({

@@ -67,7 +67,7 @@ namespace WebVella.ERP.Web.Controllers
 				var oldRelationsList = new List<DbEntityRelation>();
 				var oldRelationsDictionary = new Dictionary<Guid, DbEntityRelation>();
 				var oldRelationsProcessedDictionary = new Dictionary<Guid, bool>();
-				var relationsNameDictionary = new Dictionary<string,DbEntityRelation>();
+				var relationsNameDictionary = new Dictionary<string, DbEntityRelation>();
 				//Area
 				var currentAreaList = new List<EntityRecord>();
 				var oldAreaList = new List<EntityRecord>();
@@ -214,7 +214,7 @@ namespace WebVella.ERP.Web.Controllers
 							changeRow.Type = "created";
 							changeRow.Name = entity.Name;
 							response.Changes.Add(changeRow);
-							response.Code += CreateEntityCode(entity,relationsNameDictionary);
+							response.Code += CreateEntityCode(entity, relationsNameDictionary);
 						}
 						else
 						{
@@ -658,7 +658,7 @@ $"#region << Update area: {(string)currentArea["name"]} >>\n" +
 		#region << Entity >>
 
 
-		private string CreateEntityCode(DbEntity entity, Dictionary<string,DbEntityRelation> relationsNameDictionary)
+		private string CreateEntityCode(DbEntity entity, Dictionary<string, DbEntityRelation> relationsNameDictionary)
 		{
 
 			//escape some possible quotes
@@ -678,26 +678,26 @@ $"#region << Create entity: {entity.Name} >>\n" +
 		$"\t\tsystemFieldIdDictionary[\"created_by\"] = new Guid(\"{entity.Fields.Single(x => x.Name == "created_by").Id}\");\n" +
 		$"\t\tsystemFieldIdDictionary[\"last_modified_on\"] = new Guid(\"{entity.Fields.Single(x => x.Name == "last_modified_on").Id}\");\n" +
 		$"\t\tsystemFieldIdDictionary[\"last_modified_by\"] = new Guid(\"{entity.Fields.Single(x => x.Name == "last_modified_by").Id}\");\n";
-		//Generating system relations
-		var createdBySystemRelationName = "user_" + entity.Name + "_created_by";
-		var modifiedBySystemRelationName = "user_" + entity.Name + "_modified_by";
-		response +=
-		$"\t\tsystemFieldIdDictionary[\"{createdBySystemRelationName}\"] = new Guid(\"{relationsNameDictionary[createdBySystemRelationName].Id}\");\n" +
-		$"\t\tsystemFieldIdDictionary[\"{modifiedBySystemRelationName}\"] = new Guid(\"{relationsNameDictionary[modifiedBySystemRelationName].Id}\");\n" +
+			//Generating system relations
+			var createdBySystemRelationName = "user_" + entity.Name + "_created_by";
+			var modifiedBySystemRelationName = "user_" + entity.Name + "_modified_by";
+			response +=
+			$"\t\tsystemFieldIdDictionary[\"{createdBySystemRelationName}\"] = new Guid(\"{relationsNameDictionary[createdBySystemRelationName].Id}\");\n" +
+			$"\t\tsystemFieldIdDictionary[\"{modifiedBySystemRelationName}\"] = new Guid(\"{relationsNameDictionary[modifiedBySystemRelationName].Id}\");\n" +
 
-		$"\t\tentity.Id = new Guid(\"{entity.Id}\");\n" +
-		$"\t\tentity.Name = \"{entity.Name}\";\n" +
-		$"\t\tentity.Label = \"{entity.Label}\";\n" +
-		$"\t\tentity.LabelPlural = \"{entity.LabelPlural}\";\n" +
-		$"\t\tentity.System = {(entity.System).ToString().ToLowerInvariant()};\n" +
-		$"\t\tentity.IconName = \"{entity.IconName}\";\n" +
-		$"\t\tentity.Weight = (decimal){entity.Weight};\n" +
-		"\t\tentity.RecordPermissions = new RecordPermissions();\n" +
-		"\t\tentity.RecordPermissions.CanCreate = new List<Guid>();\n" +
-		"\t\tentity.RecordPermissions.CanRead = new List<Guid>();\n" +
-		"\t\tentity.RecordPermissions.CanUpdate = new List<Guid>();\n" +
-		"\t\tentity.RecordPermissions.CanDelete = new List<Guid>();\n" +
-		"\t\t//Create\n";
+			$"\t\tentity.Id = new Guid(\"{entity.Id}\");\n" +
+			$"\t\tentity.Name = \"{entity.Name}\";\n" +
+			$"\t\tentity.Label = \"{entity.Label}\";\n" +
+			$"\t\tentity.LabelPlural = \"{entity.LabelPlural}\";\n" +
+			$"\t\tentity.System = {(entity.System).ToString().ToLowerInvariant()};\n" +
+			$"\t\tentity.IconName = \"{entity.IconName}\";\n" +
+			$"\t\tentity.Weight = (decimal){entity.Weight};\n" +
+			"\t\tentity.RecordPermissions = new RecordPermissions();\n" +
+			"\t\tentity.RecordPermissions.CanCreate = new List<Guid>();\n" +
+			"\t\tentity.RecordPermissions.CanRead = new List<Guid>();\n" +
+			"\t\tentity.RecordPermissions.CanUpdate = new List<Guid>();\n" +
+			"\t\tentity.RecordPermissions.CanDelete = new List<Guid>();\n" +
+			"\t\t//Create\n";
 			foreach (var permId in entity.RecordPermissions.CanCreate)
 			{
 				response += $"\t\tentity.RecordPermissions.CanCreate.Add(new Guid(\"{permId}\"));\n";
@@ -732,9 +732,10 @@ $"#region << Create entity: {entity.Name} >>\n" +
 
 			foreach (var field in entity.Fields)
 			{
-				if(field.Name != "id" && field.Name != "created_on" && field.Name != "created_by" && field.Name != "last_modified_on" && field.Name != "last_modified_by") {
+				if (field.Name != "id" && field.Name != "created_on" && field.Name != "created_by" && field.Name != "last_modified_on" && field.Name != "last_modified_by")
+				{
 					//System field and relations will be created on entity creation
-					response += CreateFieldCode(field, entity.Id, entity.Name);					
+					response += CreateFieldCode(field, entity.Id, entity.Name);
 				}
 			}
 
@@ -792,7 +793,8 @@ $"#region << Create entity: {entity.Name} >>\n" +
 				{
 					//// CREATED
 					/////////////////////////////////////////////////////
-					if(field.Name != "id" && field.Name != "created_by" && field.Name != "created_on" && field.Name != "last_modified_by" && field.Name != "last_modified_on") {
+					if (field.Name != "id" && field.Name != "created_by" && field.Name != "created_on" && field.Name != "last_modified_by" && field.Name != "last_modified_on")
+					{
 						//the creation of system fields and relations is managed during the entity creation process
 						response.HasUpdate = true;
 						response.ChangeList.Add($"<span class='go-green label-block'>field</span>  new field <span class='go-red'>{field.Name}</span> was created.</span>");
@@ -2958,6 +2960,14 @@ $"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			if (oldField.Description != null)
 				oldField.Description = oldField.Description.Replace("\"", "\\\"");
 
+			//Check if field type is updated
+			if(currentField.GetFieldType() != oldField.GetFieldType()) {
+				response.Code = "";
+				response.HasUpdate = true;
+				response.ChangeList.Add($"<span class='go-green label-block'>field</span>  with name <span class='go-red'>{oldField.Name}</span> has its type updated from <span class='go-red'>{oldField.GetFieldType()}</span> to <span class='go-red'>{currentField.GetFieldType()}</span>");
+				return response;
+			}
+
 			switch (currentField.GetFieldType())
 			{
 				case FieldType.AutoNumberField:
@@ -3252,87 +3262,93 @@ $"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 		"#endregion\n\n";
 			#endregion
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DefaultValue != oldField.DefaultValue)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DisplayFormat != oldField.DisplayFormat)
+			else if (currentField.DefaultValue != oldField.DefaultValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.StartingNumber != oldField.StartingNumber)
+			else if (currentField.DisplayFormat != oldField.DisplayFormat)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
+			else if (currentField.StartingNumber != oldField.StartingNumber)
 			{
 				hasUpdate = true;
 			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
+				hasUpdate = true;
 			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
+			else
 			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -3415,79 +3431,85 @@ $"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DefaultValue != oldField.DefaultValue)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
+			else if (currentField.DefaultValue != oldField.DefaultValue)
 			{
 				hasUpdate = true;
 			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
+				hasUpdate = true;
 			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
+			else
 			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -3597,91 +3619,97 @@ $"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DefaultValue != oldField.DefaultValue)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.MinValue != oldField.MinValue)
+			else if (currentField.DefaultValue != oldField.DefaultValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.MaxValue != oldField.MaxValue)
+			else if (currentField.MinValue != oldField.MinValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Currency.Code != oldField.Currency.Code)
+			else if (currentField.MaxValue != oldField.MaxValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
+			else if (currentField.Currency.Code != oldField.Currency.Code)
 			{
 				hasUpdate = true;
 			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
+				hasUpdate = true;
 			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
+			else
 			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -3786,87 +3814,93 @@ $"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DefaultValue != oldField.DefaultValue)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Format != oldField.Format)
+			else if (currentField.DefaultValue != oldField.DefaultValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.UseCurrentTimeAsDefaultValue != oldField.UseCurrentTimeAsDefaultValue)
+			else if (currentField.Format != oldField.Format)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
+			else if (currentField.UseCurrentTimeAsDefaultValue != oldField.UseCurrentTimeAsDefaultValue)
 			{
 				hasUpdate = true;
 			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
+				hasUpdate = true;
 			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
+			else
 			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -3971,87 +4005,93 @@ $"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DefaultValue != oldField.DefaultValue)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Format != oldField.Format)
+			else if (currentField.DefaultValue != oldField.DefaultValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.UseCurrentTimeAsDefaultValue != oldField.UseCurrentTimeAsDefaultValue)
+			else if (currentField.Format != oldField.Format)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
+			else if (currentField.UseCurrentTimeAsDefaultValue != oldField.UseCurrentTimeAsDefaultValue)
 			{
 				hasUpdate = true;
 			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
+				hasUpdate = true;
 			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
+			else
 			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -4151,83 +4191,89 @@ $"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DefaultValue != oldField.DefaultValue)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.MaxLength != oldField.MaxLength)
+			else if (currentField.DefaultValue != oldField.DefaultValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
+			else if (currentField.MaxLength != oldField.MaxLength)
 			{
 				hasUpdate = true;
 			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
+				hasUpdate = true;
 			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
+			else
 			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -4319,79 +4365,86 @@ $"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DefaultValue != oldField.DefaultValue)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
+			else if (currentField.DefaultValue != oldField.DefaultValue)
 			{
 				hasUpdate = true;
 			}
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
+			{
+				hasUpdate = true;
+			}
+			else
+			{
 
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
-			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
-			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
-			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -4483,79 +4536,85 @@ $"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DefaultValue != oldField.DefaultValue)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
+			else if (currentField.DefaultValue != oldField.DefaultValue)
 			{
 				hasUpdate = true;
 			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
+				hasUpdate = true;
 			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
+			else
 			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -4647,79 +4706,85 @@ $"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DefaultValue != oldField.DefaultValue)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
+			else if (currentField.DefaultValue != oldField.DefaultValue)
 			{
 				hasUpdate = true;
 			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
+				hasUpdate = true;
 			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
+			else
 			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -4830,87 +4895,93 @@ $"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DefaultValue != oldField.DefaultValue)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.MaxLength != oldField.MaxLength)
+			else if (currentField.DefaultValue != oldField.DefaultValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.VisibleLineNumber != oldField.VisibleLineNumber)
+			else if (currentField.MaxLength != oldField.MaxLength)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
+			else if (currentField.VisibleLineNumber != oldField.VisibleLineNumber)
 			{
 				hasUpdate = true;
 			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
+				hasUpdate = true;
 			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
+			else
 			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -5033,39 +5104,43 @@ $"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
@@ -5073,64 +5148,66 @@ $"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			{
 				hasUpdate = true;
 			}
+			else
+			{
+				var oldDefaultValuesDictionary = new Dictionary<string, bool>();
+				//create dictionary
+				foreach (var value in oldField.DefaultValue.ToList())
+				{
+					oldDefaultValuesDictionary[value] = true;
+				}
+				foreach (var value in currentField.DefaultValue.ToList())
+				{
+					if (!oldDefaultValuesDictionary.ContainsKey(value))
+					{
+						hasUpdate = true;
+					}
+				}
 
-			var oldDefaultValuesDictionary = new Dictionary<string, bool>();
-			//create dictionary
-			foreach (var value in oldField.DefaultValue.ToList())
-			{
-				oldDefaultValuesDictionary[value] = true;
-			}
-			foreach (var value in currentField.DefaultValue.ToList())
-			{
-				if (!oldDefaultValuesDictionary.ContainsKey(value))
+				var oldOptionsDictionary = new Dictionary<string, bool>();
+				//create dictionary
+				foreach (var value in oldField.Options.ToList())
+				{
+					oldOptionsDictionary[value.Key] = true;
+				}
+				foreach (var value in currentField.Options.ToList())
+				{
+					if (!oldOptionsDictionary.ContainsKey(value.Key))
+					{
+						hasUpdate = true;
+					}
+				}
+
+				if (currentField.EnableSecurity != oldField.EnableSecurity)
 				{
 					hasUpdate = true;
 				}
-			}
 
-			var oldOptionsDictionary = new Dictionary<string, bool>();
-			//create dictionary
-			foreach (var value in oldField.Options.ToList())
-			{
-				oldOptionsDictionary[value.Key] = true;
-			}
-			foreach (var value in currentField.Options.ToList())
-			{
-				if (!oldOptionsDictionary.ContainsKey(value.Key))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
-			{
-				hasUpdate = true;
-			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
-			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
-			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
-			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+
+				foreach (var permission in currentField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -5239,91 +5316,97 @@ $"#region << Create  Entity: {entityName} field: {field.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DefaultValue != oldField.DefaultValue)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.MinValue != oldField.MinValue)
+			else if (currentField.DefaultValue != oldField.DefaultValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.MaxValue != oldField.MaxValue)
+			else if (currentField.MinValue != oldField.MinValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DecimalPlaces != oldField.DecimalPlaces)
+			else if (currentField.MaxValue != oldField.MaxValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
+			else if (currentField.DecimalPlaces != oldField.DecimalPlaces)
 			{
 				hasUpdate = true;
 			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
+				hasUpdate = true;
 			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
+			else
 			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -5427,87 +5510,93 @@ $"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.MinLength != oldField.MinLength)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.MaxLength != oldField.MaxLength)
+			else if (currentField.MinLength != oldField.MinLength)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Encrypted != oldField.Encrypted)
+			else if (currentField.MaxLength != oldField.MaxLength)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
+			else if (currentField.Encrypted != oldField.Encrypted)
 			{
 				hasUpdate = true;
 			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
+				hasUpdate = true;
 			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
+			else
 			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -5616,91 +5705,97 @@ $"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DefaultValue != oldField.DefaultValue)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.MinValue != oldField.MinValue)
+			else if (currentField.DefaultValue != oldField.DefaultValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.MaxValue != oldField.MaxValue)
+			else if (currentField.MinValue != oldField.MinValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DecimalPlaces != oldField.DecimalPlaces)
+			else if (currentField.MaxValue != oldField.MaxValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
+			else if (currentField.DecimalPlaces != oldField.DecimalPlaces)
 			{
 				hasUpdate = true;
 			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
+				hasUpdate = true;
 			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
+			else
 			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -5810,87 +5905,93 @@ $"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DefaultValue != oldField.DefaultValue)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.MaxLength != oldField.MaxLength)
+			else if (currentField.DefaultValue != oldField.DefaultValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Format != oldField.Format)
+			else if (currentField.MaxLength != oldField.MaxLength)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
+			else if (currentField.Format != oldField.Format)
 			{
 				hasUpdate = true;
 			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
+				hasUpdate = true;
 			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
+			else
 			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -5984,83 +6085,89 @@ $"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DefaultValue != oldField.DefaultValue)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.GenerateNewId != oldField.GenerateNewId)
+			else if (currentField.DefaultValue != oldField.DefaultValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
+			else if (currentField.GenerateNewId != oldField.GenerateNewId)
 			{
 				hasUpdate = true;
 			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
+				hasUpdate = true;
 			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
+			else
 			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -6174,94 +6281,100 @@ $"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DefaultValue != oldField.DefaultValue)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
+			else if (currentField.DefaultValue != oldField.DefaultValue)
+			{
+				hasUpdate = true;
+			}
+			else
+			{
+				var oldOptionsDictionary = new Dictionary<string, bool>();
+				//create dictionary
+				foreach (var value in oldField.Options.ToList())
+				{
+					oldOptionsDictionary[value.Key] = true;
+				}
+				foreach (var value in currentField.Options.ToList())
+				{
+					if (!oldOptionsDictionary.ContainsKey(value.Key))
+					{
+						hasUpdate = true;
+					}
+				}
 
-			var oldOptionsDictionary = new Dictionary<string, bool>();
-			//create dictionary
-			foreach (var value in oldField.Options.ToList())
-			{
-				oldOptionsDictionary[value.Key] = true;
-			}
-			foreach (var value in currentField.Options.ToList())
-			{
-				if (!oldOptionsDictionary.ContainsKey(value.Key))
+				if (currentField.EnableSecurity != oldField.EnableSecurity)
 				{
 					hasUpdate = true;
 				}
-			}
 
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
-			{
-				hasUpdate = true;
-			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
-			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
-			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
-			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -6364,83 +6477,89 @@ $"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DefaultValue != oldField.DefaultValue)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.MaxLength != oldField.MaxLength)
+			else if (currentField.DefaultValue != oldField.DefaultValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
+			else if (currentField.MaxLength != oldField.MaxLength)
 			{
 				hasUpdate = true;
 			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
+				hasUpdate = true;
 			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
+			else
 			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -6542,87 +6661,93 @@ $"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			#endregion
 
 			#region << Update check >>
-			if (currentField.Name != oldField.Name)
+			if (oldField == null) //oldField is null where its field type is different from currentField
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Label != oldField.Label)
+			else if (currentField.Name != oldField.Name)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.PlaceholderText != oldField.PlaceholderText)
+			else if (currentField.Label != oldField.Label)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Description != oldField.Description)
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.HelpText != oldField.HelpText)
+			else if (currentField.Description != oldField.Description)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Required != oldField.Required)
+			else if (currentField.HelpText != oldField.HelpText)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Unique != oldField.Unique)
+			else if (currentField.Required != oldField.Required)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Searchable != oldField.Searchable)
+			else if (currentField.Unique != oldField.Unique)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.Auditable != oldField.Auditable)
+			else if (currentField.Searchable != oldField.Searchable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.Auditable != oldField.Auditable)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.DefaultValue != oldField.DefaultValue)
+			else if (currentField.System != oldField.System)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.MaxLength != oldField.MaxLength)
+			else if (currentField.DefaultValue != oldField.DefaultValue)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.OpenTargetInNewWindow != oldField.OpenTargetInNewWindow)
+			else if (currentField.MaxLength != oldField.MaxLength)
 			{
 				hasUpdate = true;
 			}
-			if (currentField.EnableSecurity != oldField.EnableSecurity)
+			else if (currentField.OpenTargetInNewWindow != oldField.OpenTargetInNewWindow)
 			{
 				hasUpdate = true;
 			}
-
-			//Create old permissions Dictionaries
-			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-			foreach (var permission in oldField.Permissions.CanRead)
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
-				oldFieldCanReadPermissionDictionary[permission] = true;
+				hasUpdate = true;
 			}
-			foreach (var permission in oldField.Permissions.CanUpdate)
+			else
 			{
-				oldFieldCanUpdatePermissionDictionary[permission] = true;
-			}
-
-			foreach (var permission in currentField.Permissions.CanRead)
-			{
-				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
 				{
-					hasUpdate = true;
+					oldFieldCanReadPermissionDictionary[permission] = true;
 				}
-			}
-			foreach (var permission in currentField.Permissions.CanUpdate)
-			{
-				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				foreach (var permission in oldField.Permissions.CanUpdate)
 				{
-					hasUpdate = true;
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
 				}
 			}
 			#endregion
@@ -7557,6 +7682,7 @@ $"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			$"\t\t\tcreateViewInput.ActionItems.Add(actionItem);\n" +
 			"\t\t}\n" +
 			"\t\t#endregion\n\n";
+
 			return response;
 		}
 
@@ -7793,7 +7919,37 @@ $"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 
 			if (JsonConvert.SerializeObject(currentView.ActionItems) != JsonConvert.SerializeObject(oldView.ActionItems))
 			{
-				hasUpdate = true;
+				//Because of the \r\n <> \n problem we will need to artificially add \r to the new view templates and test again
+				var differenceInTemplateFound = false;
+				//create an action item dictionary for the oldView
+				var oldActionsDictionary = new Dictionary<string,ActionItem>();
+				foreach(var item in oldView.ActionItems) {
+					var dictionaryKey = item.Name + "-" + item.Menu;
+					oldActionsDictionary[dictionaryKey] = item;
+				}
+
+				foreach(var item in currentView.ActionItems) {
+					//check if item with the same name-menu exists in the old menu
+					var dictionaryKey = item.Name + "-" + item.Menu;
+					if(!oldActionsDictionary.ContainsKey(dictionaryKey)) {
+						differenceInTemplateFound = true;	
+						break;
+					}
+					else {
+						var correspondingActionItem = oldActionsDictionary[dictionaryKey];
+						var newTemplateWithoutRs = item.Template;
+						var newTemplateWithRs = item.Template.Replace("\n", "\r\n");
+						if(newTemplateWithoutRs == correspondingActionItem.Template || newTemplateWithRs == correspondingActionItem.Template) {
+							//Do nothing as both templates are considered equal
+						}
+						else {
+							differenceInTemplateFound = true;	
+						}
+					}
+				}
+				if(differenceInTemplateFound) {
+					hasUpdate = true;
+				}
 			}
 
 			if (JsonConvert.SerializeObject(currentView.Sidebar) != JsonConvert.SerializeObject(oldView.Sidebar))
@@ -8771,7 +8927,37 @@ $"#region << Update  Entity: {entityName} field: {currentField.Name} >>\n" +
 			}
 			if (JsonConvert.SerializeObject(currentList.ActionItems) != JsonConvert.SerializeObject(oldList.ActionItems))
 			{
-				hasUpdate = true;
+				//Because of the \r\n <> \n problem we will need to artificially add \r to the new view templates and test again
+				var differenceInTemplateFound = false;
+				//create an action item dictionary for the oldView
+				var oldActionsDictionary = new Dictionary<string,ActionItem>();
+				foreach(var item in oldList.ActionItems) {
+					var dictionaryKey = item.Name + "-" + item.Menu;
+					oldActionsDictionary[dictionaryKey] = item;
+				}
+
+				foreach(var item in currentList.ActionItems) {
+					//check if item with the same name-menu exists in the old menu
+					var dictionaryKey = item.Name + "-" + item.Menu;
+					if(!oldActionsDictionary.ContainsKey(dictionaryKey)) {
+						differenceInTemplateFound = true;	
+						break;
+					}
+					else {
+						var correspondingActionItem = oldActionsDictionary[dictionaryKey];
+						var newTemplateWithoutRs = item.Template;
+						var newTemplateWithRs = item.Template.Replace("\n", "\r\n");
+						if(newTemplateWithoutRs == correspondingActionItem.Template || newTemplateWithRs == correspondingActionItem.Template) {
+							//Do nothing as both templates are considered equal
+						}
+						else {
+							differenceInTemplateFound = true;	
+						}
+					}
+				}
+				if(differenceInTemplateFound) {
+					hasUpdate = true;
+				}
 			}
 			if (JsonConvert.SerializeObject(currentList.Columns) != JsonConvert.SerializeObject(oldList.Columns))
 			{
