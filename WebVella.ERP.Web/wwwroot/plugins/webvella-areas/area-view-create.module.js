@@ -549,12 +549,12 @@
 						switch (availableViewFields[k].meta.fieldType) {
 							case 4: //Date
 								if (ngCtrl.view.data[availableViewFields[k].dataName] != null) {
-									ngCtrl.view.data[availableViewFields[k].dataName] = moment(ngCtrl.view.data[availableViewFields[k].dataName]).startOf('day').utc().toISOString();
+									ngCtrl.view.data[availableViewFields[k].dataName] = moment(ngCtrl.view.data[availableViewFields[k].dataName]).utc().toDate();
 								}
 								break;
 							case 5: //Date & Time
 								if (ngCtrl.view.data[availableViewFields[k].dataName] != null) {
-									ngCtrl.view.data[availableViewFields[k].dataName] = moment(ngCtrl.view.data[availableViewFields[k].dataName]).startOf('minute').utc().toISOString();
+									ngCtrl.view.data[availableViewFields[k].dataName] = moment(ngCtrl.view.data[availableViewFields[k].dataName]).startOf('minute').utc().toDate();
 								}
 								break;
 							case 14: //Percent
@@ -1252,7 +1252,6 @@
 				selectedRecordIdArray: popupCtrl.currentlyAttachedIds
 			};
 			$uibModalInstance.close(returnObject);
-			//category_id
 		};
 
 

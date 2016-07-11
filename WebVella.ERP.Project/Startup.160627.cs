@@ -1195,6 +1195,11 @@ namespace WebVella.ERP.Project
 	#region << Sorts >>
 	{
 	createListInput.Sorts = new List<InputRecordListSort>();
+	var listSort = new InputRecordListSort();
+	listSort = new InputRecordListSort();
+	listSort.FieldName = "created_on";
+	listSort.SortType = "descending";
+	createListInput.Sorts.Add(listSort);
 
 	}
 	#endregion

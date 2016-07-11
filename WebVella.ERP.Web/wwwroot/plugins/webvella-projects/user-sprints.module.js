@@ -511,6 +511,7 @@
 		popupCtrl.record.task_id = fastCopy(resolvedTask.id);
 
 		popupCtrl.ok = function () {
+			popupCtrl.record.log_date = moment(popupCtrl.record.log_date).utc().toDate();
 			webvellaCoreService.createRecord("wv_timelog", popupCtrl.record, successCallback, errorCallback);
 		};
 
@@ -597,7 +598,7 @@
 
 		popupCtrl.detachTask = function (task) {
 			var relationName = "wv_sprint_n_n_wv_task";
-			var originFieldRecordId = $stateParams.sprintId;
+			var originFieldRecordId = popupCtrl.sprint.id;
 			var attachTargetFieldRecordIds = [];
 			var detachTargetFieldRecordIds = []
 			detachTargetFieldRecordIds.push(task.id);
