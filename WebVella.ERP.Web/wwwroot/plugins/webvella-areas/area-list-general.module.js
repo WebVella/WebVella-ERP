@@ -255,11 +255,11 @@
 	//#endregion
 
 	//#region << Controller /////////////////////////////// >>
-	controller.$inject = ['$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaCoreService', '$injector',
+	controller.$inject = ['$q','$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaCoreService', '$injector',
         'resolvedAreas', 'resolvedRecordListData', 'resolvedEntityList', 'resolvedCurrentEntityMeta', '$timeout', '$translate',
 		'resolvedEntityRelationsList', 'resolvedCurrentUser', '$sessionStorage', '$location', '$window', '$sce', 'resolvedParentViewData'];
 
-	function controller($log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaCoreService, $injector,
+	function controller($q,$log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaCoreService, $injector,
         resolvedAreas, resolvedRecordListData, resolvedEntityList, resolvedCurrentEntityMeta, $timeout, $translate,
 		resolvedEntityRelationsList, resolvedCurrentUser, $sessionStorage, $location, $window, $sce, resolvedParentViewData) {
 
@@ -672,14 +672,26 @@
 				templateUrl: 'importModalContent.html',
 				controller: 'importModalController',
 				controllerAs: "popupCtrl",
-				//size: "lg",
+				size: "width-100p",
 				resolve: {
 					ngCtrl: function () {
 						return ngCtrl;
-					}
+					},
+					fieldTypes: resolveFieldTypes
 				}
 			});
 		}
+
+		var  resolveFieldTypes = function(){
+			 var defer = $q.defer();
+			function getTypesSuccess(response) {
+				defer.resolve(response);
+			}
+			webvellaCoreService.getFieldTypes(getTypesSuccess);
+			return defer.promise;
+		}
+
+
 		//Close the modal on state change
 		$rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
 			if (ngCtrl.importModal) {
@@ -831,8 +843,9 @@
 			$uibModalInstance.dismiss('cancel');
 		};
 	}
-	importModalController.$inject = ['$uibModalInstance', 'webvellaCoreService', 'ngToast', '$timeout', '$state', 'ngCtrl'];
-	function importModalController($uibModalInstance, webvellaCoreService, ngToast, $timeout, $state, ngCtrl) {
+
+	importModalController.$inject = ['$uibModalInstance', 'webvellaCoreService', 'ngToast', '$timeout', '$state', 'ngCtrl','fieldTypes','$sce'];
+	function importModalController($uibModalInstance, webvellaCoreService, ngToast, $timeout, $state, ngCtrl,fieldTypes,$sce) {
 		var popupCtrl = this;
 		popupCtrl.ngCtrl = fastCopy(ngCtrl);
 		popupCtrl.uploadedFile = null;
@@ -841,6 +854,14 @@
 		popupCtrl.loading = false;
 		popupCtrl.hasError = false;
 		popupCtrl.errorMessage = "";
+		popupCtrl.accordion = {};
+		popupCtrl.accordion.clipboard = {};
+		popupCtrl.accordion.clipboard.active = true;
+		popupCtrl.accordion.file = {};
+		popupCtrl.accordion.file.active = false;
+		popupCtrl.step1Active = true;
+		popupCtrl.step2Active = false;
+		popupCtrl.step3Active = false;
 
 		popupCtrl.upload = function (file) {
 			popupCtrl.uploadedFilePath = null;
@@ -910,6 +931,63 @@
 		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
+
+		popupCtrl.evaluate = function () {
+			popupCtrl.step1Active = false;
+			popupCtrl.step2Active = true;
+		};
+
+		popupCtrl.back = function () {
+			popupCtrl.step1Active = true;
+			popupCtrl.step2Active = false;
+		};
+
+		popupCtrl.import = function () {
+			popupCtrl.step1Active = false;
+			popupCtrl.step2Active = false;
+			popupCtrl.step3Active = true;
+		};
+
+
+		popupCtrl.importTypes = [
+		{
+			key:"no-import",
+			value:"Do not import"
+		},
+		{
+			key:"to-update",
+			value:"To existing field"
+		},
+		{
+			key:"to-create",
+			value:"Create new field"
+		}]
+		
+		popupCtrl.fieldActions = {};
+		
+		popupCtrl.fieldTypes = fieldTypes;
+
+		popupCtrl.getFieldTypeDescription = function(typeId) {
+			var response = "";
+			for (var i = 0; i < fieldTypes.length; i++) {
+				if(fieldTypes[i].id == typeId){
+					response = fieldTypes[i].description;
+					break;
+				}
+			}
+			return $sce.trustAsHtml(response);
+		}
+
+
+		//Test data		
+		popupCtrl.fieldActions.field1 = "no-import";
+		popupCtrl.testData = [];
+		for (var i = 0; i < 14; i++) {
+			popupCtrl.testData.push("Harvard University and itx dadad dasda das dasd");
+			popupCtrl.fieldActions['field' + i] = "to-update";
+		}
+
+
 	}
 	//#endregion
 

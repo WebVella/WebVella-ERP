@@ -173,9 +173,9 @@ span.divider {
 	}
 
 .label-block {
-	display:inline-block;
-	width:100px;
-	}
+	display: inline-block;
+	width: 100px;
+}
 
 .field-list {
 	padding-left: 1em;
@@ -207,8 +207,8 @@ span.divider {
 	}
 
 #page-text .alert {
-	border:none;
-	border-radius:0;
+	border: none;
+	border-radius: 0;
 }
 
 .display-block {
@@ -280,22 +280,22 @@ span.divider {
 
 .recursive-view-wrapper {
 	/*border: none;*/
-	margin-bottom:15px;
+	margin-bottom: 15px;
 }
 
 	.recursive-view-wrapper .panel {
 		/*background: #fff !important;*/
 		margin: 0;
-		border:1px solid #ccc;
+		border: 1px solid #ccc;
 	}
 
 	.recursive-view-wrapper .panel-body {
-		position:relative;
-		padding:10px 10px;
+		position: relative;
+		padding: 10px 10px;
 	}
 
 		.recursive-view-wrapper .panel-body .form-group:last-child {
-			margin-bottom:0;
+			margin-bottom: 0;
 		}
 
 .panel-body-actions {
@@ -303,17 +303,17 @@ span.divider {
 	/*padding: 5px;*/
 	/*background: #fff;*/
 	/*border-bottom: 1px solid #ccc;*/
-	position:absolute;
-	right:5px;
-	top:5px;
-	z-index:100;
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	z-index: 100;
 }
 
 .recursive-view-wrapper .panel-body .field > .control-label {
 	text-transform: uppercase;
-    font-weight: normal;
-    color: #bdbdbd;
-    font-size: 12px;
+	font-weight: normal;
+	color: #bdbdbd;
+	font-size: 12px;
 }
 
 .width-2000 {
@@ -337,11 +337,11 @@ span.divider {
 	width: 4000px;
 }
 
-.table.colorize-values .true-value{
+.table.colorize-values .true-value {
 	color: #4CAF50 !important;
 }
 
-.table.colorize-values .false-value{
+.table.colorize-values .false-value {
 	color: #F44336 !important;
 }
 
@@ -355,8 +355,9 @@ span.divider {
 }
 
 .tooltip.bottom .tooltip-arrow {
-border-bottom-color: rgba(0,0,0,0.5);
+	border-bottom-color: rgba(0,0,0,0.5);
 }
+
 .tooltip-inner {
 	background: rgba(0,0,0,0.5);
 }
@@ -795,21 +796,21 @@ body.hidden-sidebar #page-topnav {
 
 /* Sidebar switcher */
 #sidebar-switcher {
-	background:#212121;
+	background: #212121;
 }
 
-#sidebar-switcher .nav {
-	margin-top: 0;
-}
+	#sidebar-switcher .nav {
+		margin-top: 0;
+	}
 
-#sidebar-switcher #switcher {
-	padding-top: 10px;
-	padding-bottom: 13px;
-}
+	#sidebar-switcher #switcher {
+		padding-top: 10px;
+		padding-bottom: 13px;
+	}
 
 
-.mini-sidebar #sidebar-switcher .nav > li{
-	margin-bottom:0;
+.mini-sidebar #sidebar-switcher .nav > li {
+	margin-bottom: 0;
 }
 /*#endregion */
 
@@ -1680,8 +1681,8 @@ body.hidden-sidebar #page-topnav {
 
 .title-label {
 	color: #aaa;
-    text-transform: uppercase;
-    font-size: 16px;
+	text-transform: uppercase;
+	font-size: 16px;
 }
 
 /*#endregion */
@@ -2467,6 +2468,7 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 		width: 98%;
 	}
 }
+
 @media (min-width: 992px) {
 	.modal-width-75p {
 		width: 75%;
@@ -2614,7 +2616,7 @@ form .error,
 		background: #000000;
 		background: rgba(0,0,0,0.4);
 		color: #d9534f;
-		border:1px solid rgba(217,83,79,0.8);
+		border: 1px solid rgba(217,83,79,0.8);
 	}
 
 		.form .image-upload .delete-link:hover,
@@ -2634,7 +2636,7 @@ form .error,
 		background: #000000;
 		background: rgba(0,0,0,0.4);
 		color: #FF9800;
-		border:1px solid rgba(255,152,0,0.8);
+		border: 1px solid rgba(255,152,0,0.8);
 	}
 
 		.form .image-upload .update-link:hover,
@@ -3566,7 +3568,7 @@ table .btn-xs.btn-link {
 		}
 
 	.editable-wrapper.textarea .form-control {
-		height:auto;
+		height: auto;
 	}
 
 .fake-input-wrapper {
@@ -4237,6 +4239,30 @@ table.editable td {
 
 
 /*#endregion */
+
+/*#region << Accordion >>*/
+
+.accordion .panel-group {
+	margin: 15px 0;
+}
+
+.panel-accordion .panel-heading {
+	background-color: #fafafa !important;
+	border: 1px solid #ddd;
+	padding: 0;
+}
+
+	.panel-accordion .panel-heading div {
+		padding: 10px;
+	}
+
+.panel-accordion .panel-body {
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-top: none;
+}
+
+/*#endregion << Panel >>*/
 
 /*#region << View Manage >> */
 
@@ -5300,7 +5326,6 @@ a.link-icon.link[href]:before {
 
 /*#endregion */
 
-
 /*#region << Post >>*/
 .post .post-heading {
 	height: 70px;
@@ -5414,4 +5439,77 @@ a.link-icon.link[href]:before {
 			}
 /*#endregion*/
 
+/*#region << import-evaluation >>*/
+.import-evaluation thead th {
+	min-width: 180px;
+	white-space: nowrap;
+	background: #444;
+	color: #fff !important;
+}
 
+	.import-evaluation thead th .form-control {
+		padding: 2px 4px;
+		height: 24px;
+	}
+
+	.import-evaluation thead th .input-group-addon {
+		padding: 2px 4px;
+		height: 24px;
+		background:#e0e0e0
+	}
+
+	.import-evaluation thead th .form-group {
+		margin-bottom:0;
+	}
+
+	.import-evaluation thead th .go-gray {
+		color:#999 !important;
+	}
+
+.import-evaluation .field-type {
+	text-transform:none;
+	color:#ccc;
+	line-height:24px;
+	height:24px;
+	margin-bottom:5px;
+}
+
+.import-evaluation tbody td {
+	width:100%;
+	
+}
+
+.import-evaluation .to-create {
+	background: #E8F5E9;
+}
+
+.import-evaluation tr:hover .to-create {
+	background:#C8E6C9;
+}
+
+.import-evaluation .to-update {
+	background: #FFF3E0;
+}
+
+.import-evaluation tr:hover .to-update {
+	background:#FFE0B2;
+}
+
+.import-evaluation .no-import {
+	background: #F5F5F5;
+}
+
+.import-evaluation tr:hover .no-import {
+	background:#E0E0E0;
+}
+
+.import-evaluation td.id-field {
+	background: #E0E0E0;
+	white-space: nowrap;
+}
+
+.import-evaluation tr:hover .id-field {
+	background:#BDBDBD;
+}
+
+/*#endregion << import-evaluation >>*/

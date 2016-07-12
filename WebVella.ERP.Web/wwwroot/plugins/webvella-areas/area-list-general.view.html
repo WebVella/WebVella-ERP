@@ -12,7 +12,7 @@
 		<div class="meta-icon">
 			<i class="fa fa-fw fa-{{::ngCtrl.entity.iconName}} fa-2x"></i>
 		</div>
-        <div class="meta-label">
+		<div class="meta-label">
 			<div class="meta-label-aux">{{::ngCtrl.entity.label}} <span class="ng-hide" ng-show="ngCtrl.showPageTitleAuxLabelSecondary"><span class="divider"><i class="fa fa-caret-right"></i></span> <span ng-bind="::ngCtrl.generateAuxHighlightString()" title="{{::ngCtrl.generateAuxHighlightString()}}"></span></span></div>
 			<h4>
 				<span ng-bind="::ngCtrl.generateHighlightString()" title="{{::ngCtrl.generateHighlightString()}}"></span>
@@ -27,7 +27,7 @@
 					</ul>
 				</span>
 			</h4>
-        </div>
+		</div>
 	</div>
 </div>
 <div id="page-body">
@@ -54,7 +54,7 @@
 						<th ng-style="::{'width': ngCtrl.columnWidths[$index]}" class="wv-{{::column.meta.name}} position-relative" ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount"
 							ng-switch="::column.type">
 							<span ng-switch-when="field">
-								<a class="sort-link ng-hide" ng-click="ngCtrl.toggleSort(column)" ng-if="::column.meta.searchable"  ng-show="::ngCtrl.canSortList">
+								<a class="sort-link ng-hide" ng-click="ngCtrl.toggleSort(column)" ng-if="::column.meta.searchable" ng-show="::ngCtrl.canSortList">
 									<span class="sort-marker {{ngCtrl.sortObject[column.dataName]}}">
 										<i class="fa fa-caret-up"></i>
 										<i class="fa fa-caret-down"></i>
@@ -185,8 +185,8 @@
 											<!--multiselect field-->
 											<div class="form-group form-group-sm">
 												<select class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
-														<option value=""></option>
-														<option value="{{::option.key}}" ng-repeat="option in column.meta.options">{{::option.value}}</option>
+													<option value=""></option>
+													<option value="{{::option.key}}" ng-repeat="option in column.meta.options">{{::option.value}}</option>
 												</select>
 											</div>
 										</div>
@@ -227,8 +227,8 @@
 											<!--dropdown field-->
 											<div class="form-group form-group-sm">
 												<select class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
-														<option value=""></option>
-														<option value="{{::option.key}}" ng-repeat="option in column.meta.options">{{::option.value}}</option>
+													<option value=""></option>
+													<option value="{{::option.key}}" ng-repeat="option in column.meta.options">{{::option.value}}</option>
 												</select>
 											</div>
 										</div>
@@ -362,38 +362,176 @@
 
 <script type="text/ng-template" id="importModalContent.html">
 	<div class="modal-header">
-		<h4 class="modal-title">Import records</h4>
+		<h4 class="modal-title" ng-if="popupCtrl.step1Active">Import <span class="go-green">institutions</span> <span class="divider">|</span> Step 1: <span class="go-green">Select data source</span></h4>
+		<h4 class="modal-title" ng-if="popupCtrl.step2Active">Import <span class="go-green">institutions</span> <span class="divider">|</span> Step 2: <span class="go-green">Review evaluation results</span></h4>
+		<h4 class="modal-title" ng-if="popupCtrl.step3Active">Import <span class="go-green">institutions</span> <span class="divider">|</span> Step 3: <span class="go-green">Review import summery</span></h4>
 	</div>
-	<div class="modal-body record-details">
+	<div class="modal-body">
 		<div class="alert alert-danger ng-hide" ng-show="popupCtrl.hasError" ng-bind="popupCtrl.errorMessage"></div>
-		<h4>Import CSV</h4>
-		<p class="text-muted">
-			The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated.
-			If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones. If "id" does not exists, validation error will be raised
-		</p>
-		<div class="form">
-			<div class="editable-field field">
-				<label class="control-label">Uploaded CSV file</label>
-				<div>
-					<a ng-show='!popupCtrl.uploadedFilePath && popupCtrl.uploadProgress == 0' href='javascript:void(0)' class='btn btn-default btn-outline ng-hide' ngf-select="popupCtrl.upload(popupCtrl.uploadedFile)" ngf-max-size="20MB"
-					   ng-model='popupCtrl.uploadedFile' ngf-multiple='false' translate="{{::'BROWSE'}}"></a>
-					<div class="progress ng-hide" ng-show="!popupCtrl.uploadedFilePath && popupCtrl.uploadProgress > 0 && popupCtrl.uploadProgress <= 100">
-						<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupCtrl.uploadProgress}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': popupCtrl.uploadProgress+'%'}">
-							<span ng-show="popupCtrl.uploadProgress < 100">{{popupCtrl.uploadProgress || '0'}}%</span>
-							<span ng-show="popupCtrl.uploadProgress == 100"  translate="{{::'FILE_UPLOAD_ALMOST_DONE'}}"></span>
+		<div ng-if="popupCtrl.step1Active">
+			<p class="text-muted">
+				The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated.
+				If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones. If "id" does not exists, validation error will be raised
+			</p>
+			<uib-accordion close-others="true" class="accordion">
+				<uib-accordion-group panel-class="panel-accordion" is-open="popupCtrl.accordion.clipboard.active" is-disabled="false">
+					<uib-accordion-heading><div><i class="fa fa-fw" ng-class="{'fa-caret-right': !popupCtrl.accordion.clipboard.active,'fa-caret-down go-red': popupCtrl.accordion.clipboard.active}"></i> 1. Import from <b>clipboard</b></div></uib-accordion-heading>
+					<div class="form">
+						<div class="editable-field field">
+							<label class="control-label">Clipboard</label>
+							<div>
+								<textarea style="height:200px;" class="form-control" ng-model="popupCtrl.clipboard"></textarea>
+								<div class="form-description">Should be tab delimited column list, which should be the Excel's default, when coping and pasting</div>
+							</div>
 						</div>
 					</div>
-					<div class="input-group file-upload ng-hide" ng-show='popupCtrl.uploadedFilePath'>
-						<span class="form-control"><a href="{{popupCtrl.uploadedFilePath}}"><i class="fa fa-file"></i> {{popupCtrl.uploadedFile.name}}</a></span>
-						<a class="input-group-addon update" href='javascript:void(0)' ngf-select="popupCtrl.upload(popupCtrl.uploadedFile)" ngf-max-size="20MB" ng-model='popupCtrl.uploadedFile' ngf-multiple='false'><i class="fa fa-fw fa-refresh"></i></a>
-						<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFileUpload()" ng-confirm-click="{{::'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
+				</uib-accordion-group>
+				<uib-accordion-group panel-class="panel-accordion" is-open="popupCtrl.accordion.file.active" is-disabled="false">
+					<uib-accordion-heading><div><i class="fa fa-fw" ng-class="{'fa-caret-right': !popupCtrl.accordion.file.active,'fa-caret-down go-red': popupCtrl.accordion.file.active}"></i> 2. Import from <b>CSV file</b></div></uib-accordion-heading>
+					<div class="form">
+						<div class="editable-field field">
+							<label class="control-label">Uploaded CSV file</label>
+							<div>
+								<a ng-show='!popupCtrl.uploadedFilePath && popupCtrl.uploadProgress == 0' href='javascript:void(0)' class='btn btn-default btn-outline ng-hide' ngf-select="popupCtrl.upload(popupCtrl.uploadedFile)" ngf-max-size="20MB"
+								   ng-model='popupCtrl.uploadedFile' ngf-multiple='false' translate="{{::'BROWSE'}}"></a>
+								<div class="progress ng-hide" ng-show="!popupCtrl.uploadedFilePath && popupCtrl.uploadProgress > 0 && popupCtrl.uploadProgress <= 100">
+									<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupCtrl.uploadProgress}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': popupCtrl.uploadProgress+'%'}">
+										<span ng-show="popupCtrl.uploadProgress < 100">{{popupCtrl.uploadProgress || '0'}}%</span>
+										<span ng-show="popupCtrl.uploadProgress == 100" translate="{{::'FILE_UPLOAD_ALMOST_DONE'}}"></span>
+									</div>
+								</div>
+								<div class="input-group file-upload ng-hide" ng-show='popupCtrl.uploadedFilePath'>
+									<span class="form-control"><a href="{{popupCtrl.uploadedFilePath}}"><i class="fa fa-file"></i> {{popupCtrl.uploadedFile.name}}</a></span>
+									<a class="input-group-addon update" href='javascript:void(0)' ngf-select="popupCtrl.upload(popupCtrl.uploadedFile)" ngf-max-size="20MB" ng-model='popupCtrl.uploadedFile' ngf-multiple='false'><i class="fa fa-fw fa-refresh"></i></a>
+									<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFileUpload()" ng-confirm-click="{{::'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
+								</div>
+							</div>
+						</div>
 					</div>
-				</div>
+				</uib-accordion-group>
+			</uib-accordion>
+		</div>
+		<div ng-if="popupCtrl.step2Active">
+			<!--<p>Scheduled for import <b>23</b> institutions - <span class="go-green">3 <i class="fa fa-plus-circle"></i></span> to be created and <span class="go-orange">20 <i class="fa fa-warning"></i></span> to be updated. No errors found!</p>-->
+			<p>Scheduled for import <b>23</b> institutions - <span class="go-green">3 <i class="fa fa-plus-circle"></i></span> to be created and <span class="go-orange">20 <i class="fa fa-refresh"></i></span> to be updated. There are <span class="go-orange">20 <i class="fa fa-warning"></i></span> warnings</p>
+			<div class="alert alert-danger" style="margin-bottom:15px"><i class="fa fa-warning"></i> There are errors. Please fix them and try again!</div>
+			<div data-double-scroll-bar-horizontal>
+				<table class="table table-bordered import-evaluation" style="margin:0;">
+					<thead>
+						<tr>
+							<th></th>
+							<th ng-repeat="name in popupCtrl.testData track by $index">
+								<form class="form" name="myForm">
+									<div class="form-group">
+										<div class="input-group">
+											<span class="input-group-addon">
+												<!--<i class="fa fa-fw fa-clock-o go-gray"></i>-->
+												<i ng-if="$index != 4 && $index != 2" class="fa fa-fw fa-check go-green"></i>
+												<i ng-if="$index == 4" class="fa fa-fw fa-warning go-red"></i>
+												<i ng-if="$index == 2" class="fa fa-fw fa-warning go-orange"></i>
+											</span>
+											<select class="form-control" ng-model="popupCtrl.fieldActions['field' + $index]" ng-options="::option.key as option.value for option in popupCtrl.importTypes"></select>
+										</div>
+									</div>
+								</form>
+							</th>
+						</tr>
+						<tr>
+							<th>id</th>
+							<th ng-repeat="name in popupCtrl.testData track by $index">
+								<div ng-if="popupCtrl.fieldActions['field' + $index] == 'no-import'">
+									<div class="field-type">not imported</div>
+									<div class="input-group" style="margin-bottom:29px;">
+										<input class="form-control go-gray" disabled value="medical" />
+									</div>
+								</div>
+								<div ng-if="popupCtrl.fieldActions['field' + $index] == 'to-update'">
+									<div class="field-type">DateTime</div>
+									<div class="input-group" title="field name" style="margin-bottom:5px;">
+										<span class="input-group-addon">
+											<i class="fa fa-fw fa-database go-gray"></i>
+										</span>
+										<select class="form-control">
+											<option>name</option>
+											<option>label</option>
+											<option>software_n_n_institution.label</option>
+										</select>
+									</div>
+									<div class="input-group" title="field label">
+										<span class="input-group-addon">
+											<i class="fa fa-fw fa-tag go-gray"></i>
+										</span>
+										<input class="form-control go-gray" disabled value="medical" />
+									</div>
+								</div>
+								<div ng-if="popupCtrl.fieldActions['field' + $index] == 'to-create'">
+									<div class="input-group" style="margin-bottom:5px;">
+										<span class="input-group-addon" popover-placement="top" popover-append-to-body="true" uib-popover="{{popupCtrl.getFieldTypeDescription(popupCtrl.newFieldType['field' + $index])}}" popover-trigger="mouseenter">
+											<i class="fa fa-fw fa-info-circle go-gray"></i>
+										</span>
+										<select class="form-control" ng-init="popupCtrl.newFieldType['field' + $index] = 18" ng-model="popupCtrl.newFieldType['field' + $index]" ng-options="::option.id as option.label for option in popupCtrl.fieldTypes"></select>
+									</div>
+									<div class="input-group" title="field label" style="margin-bottom:5px;">
+										<span class="input-group-addon">
+											<i class="fa fa-fw fa-database go-gray"></i>
+										</span>
+										<input class="form-control go-gray" disabled value="medical" />
+									</div>
+									<div class="input-group" title="field label">
+										<span class="input-group-addon">
+											<i class="fa fa-fw fa-tag go-gray"></i>
+										</span>
+										<input class="form-control go-gray" disabled value="medical" />
+									</div>
+								</div>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="name in popupCtrl.testData track by $index">
+							<td class="id-field">
+								f46273d4-1a0d-4835-aeab-36da8c9dd3e7 <i class="fa fa-refresh fa-fw go-orange" ng-if="$index != 4"></i><i class="fa fa-plus-circle fa-fw go-green" ng-if="$index == 4"></i></a>
+							</td>
+							<td ng-repeat="name in popupCtrl.testData track by $index" ng-class="{'to-create': popupCtrl.fieldActions['field' + $index] == 'to-create','to-update': popupCtrl.fieldActions['field' + $index] == 'to-update','no-import': popupCtrl.fieldActions['field' + $index] == 'no-import'}">
+								<i ng-if="$index == 4" class="fa fa-warning go-red" uib-popover="Error description" popover-trigger="mouseenter" style="margin-right:5px;"></i>
+								<i ng-if="$index == 2" class="fa fa-warning go-orange" uib-popover="Warning description" popover-trigger="mouseenter" style="margin-right:5px;"></i>
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
+		</div>
+		<div ng-if="popupCtrl.step3Active">
+			<div class="alert alert-success"><i class="fa fa-check go-green"></i> Data successfully imported!</div>
+			<table class="table table-bordered" style="width:auto">
+				<tbody>
+					<tr>
+						<th style="width:300px;">Total records read</th>
+						<td style="width:80px;">23</td>
+					</tr>
+					<tr>
+						<th>New records (institutions) created</th>
+						<td>3</td>
+					</tr>
+					<tr>
+						<th>Existing records (institutions) updated</th>
+						<td>23</td>
+					</tr>
+					<tr>
+						<th>New fields created</th>
+						<td>3</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<a href="javascript:void(0)" ng-click="popupCtrl.ok()" class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Import</a>
-		<a href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CANCEL'}}"></a>
+		<a ng-if="popupCtrl.step1Active" href="javascript:void(0)" ng-click="popupCtrl.evaluate()" class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-cog': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate</a>
+		<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" ng-click="popupCtrl.back()" class="btn btn-default pull-left"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
+		<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" ng-click="popupCtrl.evaluate()" class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-cog': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate again</a>
+		<!--<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" ng-click="popupCtrl.ok()" class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Import</a>-->
+		<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" ng-click="popupCtrl.import()" class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Import</a>
+		<a ng-if="!popupCtrl.step3Active" href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CANCEL'}}"></a>
+		<a ng-if="popupCtrl.step3Active" href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CLOSE'}}"></a>
 	</div>
 </script>
