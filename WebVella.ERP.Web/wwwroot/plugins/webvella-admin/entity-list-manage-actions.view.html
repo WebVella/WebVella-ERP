@@ -169,6 +169,14 @@
 						</td>
 					</tr>
 					<tr>
+						<td style="font-weight:bold">wv_manage_list</td>
+						<td>rendered only for administrators. Provides link to the list management screen</td>
+						<td ng-bind-html="::popupCtrl.getTemplateCurrentMenu('wv_manage_list')"></td>
+						<td>
+							<a href="javascript:void(0)" class="btn btn-outline" ng-click="popupCtrl.selectTemplate('wv_manage_list')">select</a>
+						</td>
+					</tr>
+					<tr>
 						<td style="font-weight:bold">wv_record_details</td>
 						<td>redirects to the default record details page.</td>
 						<td ng-bind-html="::popupCtrl.getTemplateCurrentMenu('wv_record_details')"></td>

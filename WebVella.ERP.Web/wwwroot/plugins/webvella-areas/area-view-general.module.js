@@ -1447,6 +1447,15 @@
 			webvellaCoreService.viewAction_deleteRecord(ngCtrl);
 		}
 
+		//Manage list
+		ngCtrl.getViewManageUrl = function(){
+			return "/#/admin/entities/"+ $stateParams.entityName +"/views/" + $stateParams.viewName;
+		}
+
+		ngCtrl.userIsAdmin = function(){
+			return webvellaCoreService.userIsInRole("bdc56420-caf0-4030-8a0e-d264938e0cda");
+		}
+
 		//#endregion
 	}
 

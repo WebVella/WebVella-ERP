@@ -782,9 +782,17 @@
 		ngCtrl.getRecordCreateUrl = function () {
 			return webvellaCoreService.listAction_getRecordCreateUrl(ngCtrl);
 		}
-
 		ngCtrl.getRecordDetailsUrl = function (record) {
 			return webvellaCoreService.listAction_getRecordDetailsUrl(record, ngCtrl);
+		}
+
+		//Manage list
+		ngCtrl.getListManageUrl = function(){
+			return "/#/admin/entities/"+ $stateParams.entityName +"/lists/" + $stateParams.listName;
+		}
+
+		ngCtrl.userIsAdmin = function(){
+			return webvellaCoreService.userIsInRole("bdc56420-caf0-4030-8a0e-d264938e0cda");
 		}
 
 		//#endregion

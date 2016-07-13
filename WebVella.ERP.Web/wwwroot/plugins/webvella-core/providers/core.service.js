@@ -1295,6 +1295,12 @@
 					actionItem.weight = 1;
 					actionItem.template =  "<a href=\"javascript:void(0)\" confirmed-click=\"::ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"Are you sure?\" ng-if=\"::ngCtrl.userHasRecordPermissions('canDelete')\"><i class=\"fa fa-trash go-red\"></i> Delete Record</a>";
 					break;
+				case "wv_manage_view":
+					actionItem.name = "wv_manage_view";
+					actionItem.menu = "page-title-dropdown";
+					actionItem.weight = 101;
+					actionItem.template =  "<a target=\"_blank\" ng-href=\"{{ngCtrl.getViewManageUrl()}}\" ng-if=\"::ngCtrl.userIsAdmin()\">\n\t<i class=\"fa fa-fw fa-cog\"></i> Manage View\n</a>";
+					break;
 				case "wv_create_and_list":
 					actionItem.name = "wv_create_and_list";
 					actionItem.menu = "create-bottom";
@@ -1819,6 +1825,12 @@
 					actionItem.menu = "page-title-dropdown";
 					actionItem.weight = 11;
 					actionItem.template =  "<a ng-click=\"ngCtrl.openExportModal()\" class=\"ng-hide\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-download\"></i> Export CSV\n</a>";
+					break;
+				case "wv_manage_list":
+					actionItem.name = "wv_manage_list";
+					actionItem.menu = "page-title-dropdown";
+					actionItem.weight = 101;
+					actionItem.template =  "<a target=\"_blank\" ng-href=\"{{ngCtrl.getListManageUrl()}}\" ng-if=\"::ngCtrl.userIsAdmin()\">\n\t<i class=\"fa fa-fw fa-cog\"></i> Manage List\n</a>";
 					break;
 				case "wv_record_details":
 					actionItem.name = "wv_record_details";
@@ -2879,8 +2891,14 @@
 			return userHasAllPermissions;
 		}
 		///////////////////////
-		function userIsInRole(roleName) {
-
+		function userIsInRole(roleId) {
+			var userRoles = getCurrentUser().roles;
+			for (var i = 0; i < userRoles.length; i++) {
+				 if(userRoles[i] == roleId){
+					return true;
+				 }
+			}
+			return false;
 		}
 		//#endregion
 

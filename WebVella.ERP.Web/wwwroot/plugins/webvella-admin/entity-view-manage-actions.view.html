@@ -135,6 +135,14 @@
 						</td>
 					</tr>
 					<tr>
+						<td style="font-weight:bold">wv_manage_view</td>
+						<td>rendered only for administrators. Provides link to the view management screen</td>
+						<td ng-bind-html="::popupCtrl.getTemplateCurrentMenu('wv_manage_view')"></td>
+						<td>
+							<a href="javascript:void(0)" class="btn btn-outline" ng-click="popupCtrl.selectTemplate('wv_manage_view')">select</a>
+						</td>
+					</tr>
+					<tr>
 						<td style="font-weight:bold">wv_create_and_list</td>
 						<td>Displayed when creating record. After the creation attempts to go back to the returnUrl or the default list in this area</td>
 						<td ng-bind-html="::popupCtrl.getTemplateCurrentMenu('wv_create_and_list')"></td>

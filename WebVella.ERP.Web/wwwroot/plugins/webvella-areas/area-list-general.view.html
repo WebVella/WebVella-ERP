@@ -447,7 +447,7 @@
 								</div>
 								<div ng-if="popupCtrl.fieldActions['field' + $index] == 'to-update'">
 									<div class="field-type">DateTime</div>
-									<div class="input-group" title="field name" style="margin-bottom:5px;">
+									<div class="input-group" title="software_n_n_institution.label" style="margin-bottom:5px;">
 										<span class="input-group-addon">
 											<i class="fa fa-fw fa-database go-gray"></i>
 										</span>
@@ -490,7 +490,10 @@
 					<tbody>
 						<tr ng-repeat="name in popupCtrl.testData track by $index">
 							<td class="id-field">
-								f46273d4-1a0d-4835-aeab-36da8c9dd3e7 <i class="fa fa-refresh fa-fw go-orange" ng-if="$index != 4"></i><i class="fa fa-plus-circle fa-fw go-green" ng-if="$index == 4"></i></a>
+								<span ng-if="$index != 4">f46273d4-1a0d-4835-aeab-36da8c9dd3e7 </span>
+								<span ng-if="$index == 4" class="noid">this row does not have id data provided</span>
+								<i class="fa fa-refresh fa-fw go-orange" ng-if="$index != 4" uib-popover="Existing record will be updated" popover-trigger="mouseenter"></i>
+								<i class="fa fa-plus-circle fa-fw go-green" ng-if="$index == 4" uib-popover="A new record will be created" popover-trigger="mouseenter"></i></a>
 							</td>
 							<td ng-repeat="name in popupCtrl.testData track by $index" ng-class="{'to-create': popupCtrl.fieldActions['field' + $index] == 'to-create','to-update': popupCtrl.fieldActions['field' + $index] == 'to-update','no-import': popupCtrl.fieldActions['field' + $index] == 'no-import'}">
 								<i ng-if="$index == 4" class="fa fa-warning go-red" uib-popover="Error description" popover-trigger="mouseenter" style="margin-right:5px;"></i>
@@ -530,7 +533,7 @@
 		<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" ng-click="popupCtrl.back()" class="btn btn-default pull-left"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
 		<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" ng-click="popupCtrl.evaluate()" class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-cog': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate again</a>
 		<!--<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" ng-click="popupCtrl.ok()" class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Import</a>-->
-		<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" ng-click="popupCtrl.import()" class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Import</a>
+		<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" confirmed-click="popupCtrl.import()" ng-confirm-click="WARNING: This import will create 2 new fields in the entity 'Institutions'. Click OK to confirm." class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Import</a>
 		<a ng-if="!popupCtrl.step3Active" href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CANCEL'}}"></a>
 		<a ng-if="popupCtrl.step3Active" href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CLOSE'}}"></a>
 	</div>

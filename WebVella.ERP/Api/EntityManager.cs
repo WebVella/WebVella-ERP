@@ -5721,6 +5721,12 @@ namespace WebVella.ERP.Api
 					actionItem.Weight = 11;
 					actionItem.Template = "<a ng-click=\"ngCtrl.openExportModal()\" class=\"ng-hide\" ng-show=\"::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\"><i class=\"fa fa-fw fa-download\"></i> Export CSV</a>";
 					break;
+				case "wv_manage_list":
+					actionItem.Name = "wv_manage_list";
+					actionItem.Menu = "page-title-dropdown";
+					actionItem.Weight = 101;
+					actionItem.Template = "<a target=\"_blank\" ng-href=\"{{ngCtrl.getListManageUrl()}}\" ng-if=\"::ngCtrl.userIsAdmin()\">\n\t<i class=\"fa fa-fw fa-cog\"></i> Manage List\n</a>";
+					break;
 				case "wv_record_details":
 					actionItem.Name = "wv_record_details";
 					actionItem.Menu = "record-row";
@@ -5834,6 +5840,12 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 1;
 					actionItem.Template = "<a href=\"javascript:void(0)\" confirmed-click=\"::ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"Are you sure?\" ng-if=\"::ngCtrl.userHasRecordPermissions('canDelete')\"><i class=\"fa fa-trash go-red\"></i> Delete Record</a>";
+					break;
+				case "wv_manage_view":
+					actionItem.Name = "wv_manage_view";
+					actionItem.Menu = "page-title-dropdown";
+					actionItem.Weight = 101;
+					actionItem.Template = "<a target=\"_blank\" ng-href=\"{{ngCtrl.getViewManageUrl()}}\" ng-if=\"::ngCtrl.userIsAdmin()\">\n\t<i class=\"fa fa-fw fa-cog\"></i> Manage View\n</a>";
 					break;
 				case "wv_create_and_list":
 					actionItem.Name = "wv_create_and_list";
@@ -5967,6 +5979,7 @@ namespace WebVella.ERP.Api
 			quickView.DataSourceUrl = null;
 			quickView.ActionItems = new List<ActionItem>();
 			quickView.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
+			quickView.ActionItems.Add(GenerateViewActionItem("wv_manage_view"));
 			quickView.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
 			quickView.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_add_existing"));
 			quickView.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_add_new"));
@@ -5991,6 +6004,7 @@ namespace WebVella.ERP.Api
 			general.DataSourceUrl = null;
 			general.ActionItems = new List<ActionItem>();
 			general.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
+			general.ActionItems.Add(GenerateViewActionItem("wv_manage_view"));
 			general.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
 			general.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_add_existing"));
 			general.ActionItems.Add(GenerateViewActionItem("wv_recursive_view_add_new"));

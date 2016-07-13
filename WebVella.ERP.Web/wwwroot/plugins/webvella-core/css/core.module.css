@@ -5506,10 +5506,16 @@ a.link-icon.link[href]:before {
 .import-evaluation td.id-field {
 	background: #E0E0E0;
 	white-space: nowrap;
+	text-align:right;
 }
 
 .import-evaluation tr:hover .id-field {
 	background:#BDBDBD;
 }
+
+	.import-evaluation tr .id-field .noid {
+		color:#999;
+		font-style:italic;
+	}
 
 /*#endregion << import-evaluation >>*/
