@@ -535,7 +535,12 @@
 				}
 			}
 			else {
-				return moment(data).formatWithADF(fieldMeta.format);
+				if(fieldMeta.format){
+					return moment(data).formatWithADF(fieldMeta.format);
+				}
+				else {
+					return moment(data).formatWithADF("DD MMM YYYY");
+				}
 			}
 		}
 		//5.Datetime

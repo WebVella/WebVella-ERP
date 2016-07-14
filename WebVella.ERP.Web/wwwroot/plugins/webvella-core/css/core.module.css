@@ -1236,6 +1236,10 @@ body.hidden-sidebar #page-topnav {
 	color: #bdbdbd;
 }
 
+	#page-topnav .area-title:hover {
+		color:#999;
+	}
+
 #page-topnav #entity-label {
 	margin-left: 10px;
 	font-size: 13px;

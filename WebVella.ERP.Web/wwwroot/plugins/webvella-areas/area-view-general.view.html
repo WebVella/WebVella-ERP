@@ -635,7 +635,6 @@
 							<!--If item is view WITH relation-->
 							<div class="field" ng-switch-when="viewFromRelation">
 								<label class="control-label">{{::ngCtrl.getRelationLabel(item)}}</label>
-								<pre>{{viewData[item.dataName]}}</pre>
 								<div ng-if="::ngCtrl.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
 									<recursive-view view-meta="::item"
 													view-data="::viewData[item.dataName]"
@@ -788,7 +787,7 @@
 					<tbody>
 					<tr style="background:#ddd" class="query-filter-row">
 						<td>
-							<a class="btn btn-success btn-sm btn-block" ng-click="popupCtrl.applyQueryFilter()">
+							<a class="btn btn-default btn-sm btn-block" ng-click="popupCtrl.applyQueryFilter()">
 								<i class="fa fa-fw" ng-class="{'fa-search':!popupCtrl.filterLoading, 'fa-spin fa-spinner': popupCtrl.filterLoading}"></i>
 							</a>
 						</td>
