@@ -1363,10 +1363,10 @@ namespace WebVella.ERP.Api
 															if (relation == null)
 																errorList.Add(new ErrorModel("regions.sections.rows.columns.items.relationName", null, "Wrong name or. There is no relation with such name or id!"));
 															else
-																inputItem.RelationId = relationList.FirstOrDefault(r => r.Name == inputItem.RelationName).Id;
+																inputItem.RelationId = relation.Id;
 														}
 
-														if (string.IsNullOrWhiteSpace(inputItem.ViewName))
+														if (string.IsNullOrWhiteSpace(inputItem.ViewName) && inputItem.ViewId == null)
 														{
 															errorList.Add(new ErrorModel("regions.sections.rows.columns.items.viewName", null, "View name is required!"));
 														}
