@@ -149,6 +149,7 @@
 		//Create
 		serviceInstance.createRecord = createRecord;
 		serviceInstance.importEntityRecords = importEntityRecords;
+		serviceInstance.evaluateImportEntityRecords = evaluateImportEntityRecords;
 		serviceInstance.exportListRecords = exportListRecords;
 		//Read
 		serviceInstance.getRecord = getRecord;
@@ -2121,11 +2122,22 @@
 			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName, data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
-		function importEntityRecords(entityName, fileTempPath, successCallback, errorCallback) {
+		function importEntityRecords(entityName, fileTempPath,clipboard, successCallback, errorCallback) {
 			var postObject = {};
 			postObject.fileTempPath = fileTempPath;
+			postObject.clipboard = clipboard;
 			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/import', data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
+		///////////////////////
+		function evaluateImportEntityRecords(entityName, fileTempPath,general_command, clipboard,commands, successCallback, errorCallback) {
+			var postObject = {};
+			postObject.fileTempPath = fileTempPath;
+			postObject.clipboard = clipboard;
+			postObject.commands = commands;
+			postObject.general_command = general_command;
+			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/import-evaluate', data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
 		///////////////////////
 		function exportListRecords(entityName, listName, count,queryParams, successCallback, errorCallback) {
 			var path = wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + "/export?count=" + count;

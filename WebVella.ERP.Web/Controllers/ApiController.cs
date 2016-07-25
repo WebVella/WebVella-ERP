@@ -137,9 +137,9 @@ namespace WebVella.ERP.Web.Controllers
 		public IActionResult GetEntityMetaList(string hash = null)
 		{
 			var bo = entMan.ReadEntities();
-			
+
 			//check hash and clear data if hash match
-			if (bo.Success && bo.Object != null && !string.IsNullOrWhiteSpace(hash) && bo.Hash == hash )
+			if (bo.Success && bo.Object != null && !string.IsNullOrWhiteSpace(hash) && bo.Hash == hash)
 				bo.Object = null;
 
 			return DoResponse(bo);
@@ -176,7 +176,7 @@ namespace WebVella.ERP.Web.Controllers
 			entity.Weight = submitObj.Weight;
 			entity.RecordPermissions = submitObj.RecordPermissions;
 
-			return DoResponse(entMan.CreateEntity(entity,submitObj.CreateViews,submitObj.CreateLists));
+			return DoResponse(entMan.CreateEntity(entity, submitObj.CreateViews, submitObj.CreateLists));
 		}
 
 		// Create an entity
@@ -3893,7 +3893,7 @@ namespace WebVella.ERP.Web.Controllers
 												(relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == entity.Id))
 												csv.WriteField(JsonConvert.SerializeObject(prop.Value).ToString());
 											else if (((List<object>)prop.Value).Count > 0)
-												csv.WriteField(((List<object>)prop.Value)[0]);
+												csv.WriteField(((List<object>)prop.Value)[0] ?? "");
 											else
 												csv.WriteField("");
 										}
@@ -3938,10 +3938,11 @@ namespace WebVella.ERP.Web.Controllers
 			}
 			catch (Exception ex)
 			{
-				response.Timestamp = DateTime.UtcNow;
-				response.Success = false;
-				response.Message = ex.Message;
-				return DoResponse(response);
+				//response.Timestamp = DateTime.UtcNow;
+				//response.Success = false;
+				//response.Message = ex.Message;
+				//return DoResponse(response);
+				throw ex;
 			}
 
 			//var random = new Random().Next(10, 99);
@@ -3968,7 +3969,7 @@ namespace WebVella.ERP.Web.Controllers
 
 		// Import list records to csv
 		// POST: api/v1/en_US/record/{entityName}/list/{listName}/import
-		[AcceptVerbs(new[] { "GET", "POST" }, Route = "api/v1/en_US/record/{entityName}/import")]
+		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/import")]
 		public IActionResult ImportEntityRecordsFromCsv(string entityName, [FromBody]JObject postObject)
 		{
 			//The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated. 
@@ -4053,7 +4054,7 @@ namespace WebVella.ERP.Web.Controllers
 
 				csvReader.Read();
 				List<string> columns = csvReader.FieldHeaders.ToList();
-				
+
 				List<dynamic> fieldMetaList = new List<dynamic>();
 
 				foreach (var column in columns)
@@ -4221,7 +4222,7 @@ namespace WebVella.ERP.Web.Controllers
 							}
 							throw new Exception(message);
 						}
-					}while (csvReader.Read());
+					} while (csvReader.Read());
 					connection.CommitTransaction();
 				}
 				catch (Exception e)
@@ -4245,6 +4246,202 @@ namespace WebVella.ERP.Web.Controllers
 
 				return DoResponse(response);
 			}
+		}
+
+
+		// Import list records to csv
+		// POST: api/v1/en_US/record/{entityName}/list/{listName}/import
+		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/import-evaluate")]
+		public IActionResult EvaluateImportEntityRecordsFromCsv(string entityName, [FromBody]JObject postObject)
+		{
+			ResponseModel response = new ResponseModel();
+			response.Message = "Records successfully evaluated";
+			response.Timestamp = DateTime.UtcNow;
+			response.Success = true;
+			response.Object = null;
+			EntityListResponse entitiesResponse = entMan.ReadEntities();
+			List<Entity> entities = entitiesResponse.Object;
+			Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
+			if (entity == null)
+			{
+				response.Success = false;
+				response.Message = "Entity not found";
+				return DoResponse(response);
+			}
+			var entityFields = entity.Fields;
+			string fileTempPath = "";
+			string clipboard = "";
+			string generalCommand = "";
+			EntityRecord commands = new EntityRecord();
+			if (!postObject.IsNullOrEmpty() && postObject.Properties().Any(p => p.Name == "fileTempPath"))
+			{
+				fileTempPath = postObject["fileTempPath"].ToString();
+			}
+
+			if (!postObject.IsNullOrEmpty() && postObject.Properties().Any(p => p.Name == "clipboard"))
+			{
+				clipboard = postObject["clipboard"].ToString();
+			}
+
+			if (!postObject.IsNullOrEmpty() && postObject.Properties().Any(p => p.Name == "commands") && !((JToken)postObject["commands"]).IsNullOrEmpty())
+			{
+				var commandsObject = postObject["commands"].Value<JObject>();
+				if(!commandsObject.IsNullOrEmpty() && commandsObject.Properties().Any()){
+					foreach(var property in commandsObject.Properties()) {
+						commands[property.Name] = (JObject)property.Value;		
+					}
+				}
+			}
+
+			if (!postObject.IsNullOrEmpty() && postObject.Properties().Any(p => p.Name == "general_command"))
+			{
+				generalCommand = postObject["general_command"].ToString(); //could be "evaluate" & "evaluate-import" the first will just evaluate, the second one will evaluate and import if all is fine
+			}
+
+			//VALIDATE:
+			if (fileTempPath == "" && clipboard == "")
+			{
+				response.Success = false;
+				response.Message = "Both clipboard and file CSV sources are empty!";
+				return DoResponse(response);
+			}
+
+			string csvContent = "";
+			bool usingClipboard = false;
+			//CASE: 1 If fileTempPath != "" -> get the csv from the file
+			if (fileTempPath != "")
+			{
+				csvContent = fileTempPath;
+			}
+			//CASE: 2 If fileTempPath == "" -> get the csv from the clipboard
+			else
+			{
+				csvContent = clipboard;
+				usingClipboard = true;
+			}
+			CsvReader csvReader = new CsvReader(new StringReader(csvContent));
+			csvReader.Configuration.HasHeaderRecord = true;
+			csvReader.Configuration.IsHeaderCaseSensitive = false;
+			if (usingClipboard)
+			{
+				csvReader.Configuration.Delimiter = "\t";
+			}
+			//The evaluation object has two properties - errors and warnings. Both are objects
+			//The error validation object should return arrays by field name ex. {field_name:[null,null,"error message"]}
+			//The warning validation object should return arrays by field name ex. {field_name:[null,null,"warning message"]}
+			var evaluationObj = new EntityRecord();
+			evaluationObj["errors"] = new EntityRecord();
+			evaluationObj["warnings"] = new EntityRecord();
+			evaluationObj["records"] = new List<EntityRecord>();
+			evaluationObj["commands"] = new EntityRecord(); // the commands is object with properties the fieldNames and the following object as value {command: "to_create" | "no_import" | "to_update", fieldType: 14, fieldName: "name", fieldLabel: "label"}
+			var statsObject = new EntityRecord();
+			statsObject["to_create"] = 0;
+			statsObject["no_import"] = 0;
+			statsObject["to_update"] = 0;
+			statsObject["errors"] = 0;
+			statsObject["warnings"] = 0;
+			evaluationObj["stats"] = statsObject;
+
+			var index = 0;//temp
+
+			while (csvReader.Read())
+			{
+				index++;//temp
+				var rowRecord = new EntityRecord();
+				List<string> columnNames = csvReader.FieldHeaders.ToList();
+				foreach (var columnName in columnNames)
+				{
+					bool existingField = false;
+					string fieldValue = csvReader.GetField<string>(columnName);
+					var currentFieldMeta = entityFields.FirstOrDefault(f => f.Name == columnName);
+					if (currentFieldMeta != null)
+					{
+						existingField = true;
+					}
+
+					#region << Validation >>
+					//Init the error list for this field
+					var errorsList = new List<string>();
+					if (((EntityRecord)evaluationObj["errors"]).GetProperties().Any(p => p.Key == columnName))
+					{
+						errorsList = (List<string>)((EntityRecord)evaluationObj["errors"])[columnName];
+					}
+					//Init the warning list for this field
+					var warningList = new List<string>();
+					if (((EntityRecord)evaluationObj["warnings"]).GetProperties().Any(p => p.Key == columnName))
+					{
+						warningList = (List<string>)((EntityRecord)evaluationObj["warnings"])[columnName];
+					}
+
+					//validate the value for errors
+					var hasError = false;
+
+					if(index == 2 && columnName == "start_date") {//for test
+						hasError = true;
+					}
+
+					if (hasError)
+					{
+						errorsList.Add("This field has some error");
+					}
+					else
+					{
+						errorsList.Add(null);
+					}
+					((EntityRecord)evaluationObj["errors"])[columnName] = errorsList;
+
+					//validate the value for warnings
+					var hasWarning = false;
+					if(index == 2 && columnName == "code") { // for test
+						hasWarning = true;
+					}
+
+					if (hasWarning)
+					{
+						warningList.Add("This field has some warning");
+					}
+					else
+					{
+						warningList.Add(null);
+					}
+					((EntityRecord)evaluationObj["warnings"])[columnName] = warningList;
+					#endregion
+
+					#region << Commands >>
+					if(!commands.GetProperties().Any(p => p.Key == columnName)) {
+						//we need to init the command for this column - if it is new field the default is do nothing, if it is existing the default is update
+						commands[columnName] = new EntityRecord();
+						if(existingField) {
+							((EntityRecord)commands[columnName])["command"] = "to_update";
+							((EntityRecord)commands[columnName])["fieldType"] = currentFieldMeta.GetFieldType();
+							((EntityRecord)commands[columnName])["fieldName"] = currentFieldMeta.Name;
+							((EntityRecord)commands[columnName])["fieldLabel"] = currentFieldMeta.Label;
+						}
+						else {
+							//we need to check wheather the property of the command match the fieldName
+							((EntityRecord)commands[columnName])["command"] = "to_create";
+							((EntityRecord)commands[columnName])["fieldType"] = 18;
+							((EntityRecord)commands[columnName])["fieldName"] = columnName;
+							((EntityRecord)commands[columnName])["fieldLabel"] = columnName;							
+						}
+
+					}
+
+					evaluationObj["commands"] = commands;
+					#endregion
+
+					#region << Data >>
+					//Submit row data
+					rowRecord[columnName] = fieldValue;
+					#endregion
+				}
+
+				((List<EntityRecord>)evaluationObj["records"]).Add(rowRecord);
+
+			}
+
+			response.Object = evaluationObj;
+			return DoResponse(response);
 		}
 
 		#endregion
@@ -4292,7 +4489,7 @@ namespace WebVella.ERP.Web.Controllers
 			var extension = Path.GetExtension(filepath).ToLowerInvariant();
 			new FileExtensionContentTypeProvider().Mappings.TryGetValue(extension, out mimeType);
 
-			
+
 			IDictionary<string, StringValues> queryCollection = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(HttpContext.Request.QueryString.ToString());
 			string action = queryCollection.Keys.Any(x => x == "action") ? ((string)queryCollection["action"]).ToLowerInvariant() : "";
 			string requestedMode = queryCollection.Keys.Any(x => x == "mode") ? ((string)queryCollection["mode"]).ToLowerInvariant() : "";
@@ -4306,7 +4503,7 @@ namespace WebVella.ERP.Web.Controllers
 				{
 					using (Stream inStream = new MemoryStream(fileContent))
 					{
-						
+
 						MemoryStream outStream = new MemoryStream();
 						imageFactory.Load(inStream);
 
@@ -4362,7 +4559,7 @@ namespace WebVella.ERP.Web.Controllers
 					}
 				}
 			}
-		
+
 			return File(file.GetBytes(), mimeType);
 		}
 

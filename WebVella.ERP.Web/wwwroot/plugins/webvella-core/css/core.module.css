@@ -5444,6 +5444,14 @@ a.link-icon.link[href]:before {
 /*#endregion*/
 
 /*#region << import-evaluation >>*/
+.evaluation-wrapper {
+	background: #444;
+}
+
+.import-evaluation {
+	margin:0 0 1.5em 0;
+}
+
 .import-evaluation thead th {
 	min-width: 180px;
 	white-space: nowrap;
@@ -5472,7 +5480,6 @@ a.link-icon.link[href]:before {
 
 .import-evaluation .field-type {
 	text-transform:none;
-	color:#ccc;
 	line-height:24px;
 	height:24px;
 	margin-bottom:5px;
@@ -5483,34 +5490,63 @@ a.link-icon.link[href]:before {
 	
 }
 
-.import-evaluation .to-create {
+.import-evaluation .to_create {
 	background: #E8F5E9;
 }
 
-.import-evaluation tr:hover .to-create {
+.import-evaluation tr:hover .to_create {
 	background:#C8E6C9;
 }
 
-.import-evaluation .to-update {
+.import-evaluation .select_to_create {
+	background: #A5D6A7;
+}
+	.import-evaluation .select_to_create .field-type {
+		color:#555;
+	}
+
+
+.import-evaluation .to_update {
 	background: #FFF3E0;
 }
 
-.import-evaluation tr:hover .to-update {
+.import-evaluation tr:hover .to_update {
 	background:#FFE0B2;
 }
 
-.import-evaluation .no-import {
+.import-evaluation .select_to_update {
+	background: #FFCC80;
+}
+
+	.import-evaluation .select_to_update .field-type {
+		color:#555;
+	}
+
+
+
+.import-evaluation .no_import {
 	background: #F5F5F5;
 }
 
-.import-evaluation tr:hover .no-import {
+.import-evaluation tr:hover .no_import {
 	background:#E0E0E0;
 }
+
+.import-evaluation .select_no_import {
+	background: #E0E0E0;
+}
+
+
+	.import-evaluation .select_no_import .field-type {
+		color:#555;
+	}
+
 
 .import-evaluation td.id-field {
 	background: #E0E0E0;
 	white-space: nowrap;
 	text-align:right;
+	width:180px;
 }
 
 .import-evaluation tr:hover .id-field {

@@ -2005,6 +2005,9 @@ namespace WebVella.ERP.Api
 				//if (relationListResponse.Object != null)
 				//	relationList = relationListResponse.Object;
 
+
+				//TODO RUMEN - the unique key for finding fields, lists, views should be not only fieldId for example, but the fieldId+entityId combination. 
+				//The problem occurs when there are two fields in two different entities with the same id.Same applies for view and list.
 				List<RecordList> recordLists = new List<RecordList>();
 				List<RecordView> recordViews = new List<RecordView>();
 				List<Field> fields = new List<Field>();
@@ -2227,7 +2230,8 @@ namespace WebVella.ERP.Api
 											{
 												if (item is RecordViewFieldItem)
 												{
-													Field field = fields.FirstOrDefault(f => f.Id == ((RecordViewFieldItem)item).FieldId);
+													Entity fieldEntity = entities.Single(f => f.Id == ((RecordViewFieldItem)item).EntityId);
+													Field field = fieldEntity.Fields.Single(f => f.Id == ((RecordViewFieldItem)item).FieldId);
 													if (field != null)
 													{
 														//((RecordViewFieldItem)item).DataName = string.Format("$field${0}", field.Name);

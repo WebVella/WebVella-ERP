@@ -916,40 +916,142 @@
 			//popupCtrl.errorMessage = response.message;
 		}
 
-		popupCtrl.ok = function () {
-			popupCtrl.loading = true;
-			popupCtrl.hasError = false;
-			popupCtrl.errorMessage = "";
-
-			if (popupCtrl.uploadedFilePath == null || popupCtrl.uploadedFilePath == "") {
-				popupCtrl.loading = false;
-				popupCtrl.hasError = true;
-				popupCtrl.errorMessage = "You need to upload a CSV file first";
-			}
-			else if (!popupCtrl.uploadedFile.name.endsWith(".csv")) {
-				popupCtrl.loading = false;
-				popupCtrl.hasError = true;
-				popupCtrl.errorMessage = "This is not a CSV file";
-			}
-			else {
-				webvellaCoreService.importEntityRecords(popupCtrl.ngCtrl.entity.name, popupCtrl.uploadedFilePath, popupCtrl.importSuccessCallback, popupCtrl.importErrorCallback);
-			}
+		popupCtrl.evaluateAndImport = function () {
+			webvellaCoreService.evaluateImportEntityRecords(popupCtrl.ngCtrl.entity.name, popupCtrl.uploadedFilePath,"evaluate-import", popupCtrl.clipboard,popupCtrl.evaluationResult.commands, popupCtrl.evaluationSuccessCallback, popupCtrl.evaluationErrorCallback);
 		};
 
 		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 
+
+		//EVALUATE
+		//init eval object
+		popupCtrl.evaluationResult = {};
+		popupCtrl.evaluationResult.commands = null;
+		popupCtrl.columnHasError = {};
+		popupCtrl.columnHasWarning = {};
 		popupCtrl.evaluate = function () {
-			popupCtrl.step1Active = false;
-			popupCtrl.step2Active = true;
+			webvellaCoreService.evaluateImportEntityRecords(popupCtrl.ngCtrl.entity.name, popupCtrl.uploadedFilePath,"evaluate", popupCtrl.clipboard,popupCtrl.evaluationResult.commands, popupCtrl.evaluationSuccessCallback, popupCtrl.evaluationErrorCallback);
 		};
 
+		popupCtrl.ifColumnHasError = function(errorArray){
+			for (var i = 0; i < errorArray.length; i++) {
+				if(errorArray[i] != null &&  errorArray[i] != ""){
+					return true;
+				}
+			}
+			return false;
+		}
+
+		popupCtrl.ifColumnHasWarning = function(warningArray){
+			for (var i = 0; i < warningArray.length; i++) {
+				if(warningArray[i] != null &&  warningArray[i] != ""){
+					return true;
+				}
+			}
+			return false;
+		}
+
+		popupCtrl.evaluationSuccessCallback = function(response){
+			popupCtrl.evaluationResult = response.object;			
+			for(var columnName in popupCtrl.evaluationResult.errors){
+				  if(popupCtrl.ifColumnHasError(popupCtrl.evaluationResult.errors[columnName])){
+					popupCtrl.columnHasError[columnName] = true;
+				  }
+				  else {
+					popupCtrl.columnHasError[columnName] = false;
+				  }
+			}
+			for(var columnName in popupCtrl.evaluationResult.warnings){
+				  if(popupCtrl.ifColumnHasWarning(popupCtrl.evaluationResult.warnings[columnName])){
+					popupCtrl.columnHasWarning[columnName] = true;
+				  }
+				  else {
+					popupCtrl.columnHasWarning[columnName] = false;
+				  }
+			}
+			popupCtrl.step1Active = false;
+			popupCtrl.step2Active = true;	
+			popupCtrl.hasError = false;
+		}
+
+		popupCtrl.evaluationErrorCallback = function(response){
+			popupCtrl.hasError = true;
+			popupCtrl.errorMessage = response.message;
+		}
+
+		popupCtrl.getEntityFieldsFromType = function(type){
+			var fields = [];
+			popupCtrl.ngCtrl.entity.fields.forEach(function(field){
+				if(field.fieldType == type){
+					  fields.push(field);
+				}
+			});
+			return fields;
+		}
+
+		popupCtrl.fieldTypes = [];
+
+		function getFieldTypesSuccessCallback(response){
+		  popupCtrl.fieldTypes = response;
+		}
+		webvellaCoreService.getFieldTypes(getFieldTypesSuccessCallback);
+
+		popupCtrl.getFieldTypeLabel = function(typeId){
+			for (var i = 0; i < popupCtrl.fieldTypes.length; i++) {
+				if(popupCtrl.fieldTypes[i].id == typeId){
+					  return  popupCtrl.fieldTypes[i].label;
+				}
+			}
+			return "";
+		}
+
+		popupCtrl.updateExistingFieldCommand = function(command){
+			for (var i = 0; i < popupCtrl.ngCtrl.entity.fields.length; i++) {
+				if(popupCtrl.ngCtrl.entity.fields[i].name == command.fieldName){
+					command.fieldLabel = popupCtrl.ngCtrl.entity.fields[i].label;
+					return;
+				}
+			}
+		}
+
+		popupCtrl.updateColumnCommand = function(key,command){
+			switch(command.command){
+				case "no_import":
+					command.fieldName = key;
+					command.fieldLabel = key;
+					command.fieldType = 18;
+					break;
+				case "to_update":
+					break;
+				case "to_create":
+					command.fieldName = key;
+					command.fieldLabel = key;
+					command.fieldType = 18;
+					break;
+			}			
+		}
+
+		popupCtrl.recalculateCreateFields = function(){
+			popupCtrl.evaluationResult.stats.to_create = 0;
+			for(var command in popupCtrl.evaluationResult.commands){
+				if(command.command == "to_create"){
+					popupCtrl.evaluationResult.stats.to_create = popupCtrl.evaluationResult.stats.to_create + 1;
+				  }
+			}			
+			
+
+		}
+
+		//BACK
 		popupCtrl.back = function () {
 			popupCtrl.step1Active = true;
 			popupCtrl.step2Active = false;
 		};
 
+
+		//IMPORT
 		popupCtrl.import = function () {
 			popupCtrl.step1Active = false;
 			popupCtrl.step2Active = false;
@@ -959,19 +1061,17 @@
 
 		popupCtrl.importTypes = [
 		{
-			key:"no-import",
+			key:"no_import",
 			value:"Do not import"
 		},
 		{
-			key:"to-update",
+			key:"to_update",
 			value:"To existing field"
 		},
 		{
-			key:"to-create",
+			key:"to_create",
 			value:"Create new field"
 		}]
-		
-		popupCtrl.fieldActions = {};
 		
 		popupCtrl.fieldTypes = fieldTypes;
 
@@ -984,15 +1084,6 @@
 				}
 			}
 			return $sce.trustAsHtml(response);
-		}
-
-
-		//Test data		
-		popupCtrl.fieldActions.field1 = "no-import";
-		popupCtrl.testData = [];
-		for (var i = 0; i < 14; i++) {
-			popupCtrl.testData.push("Harvard University and itx dadad dasda das dasd");
-			popupCtrl.fieldActions['field' + i] = "to-update";
 		}
 
 

@@ -412,25 +412,32 @@
 			</uib-accordion>
 		</div>
 		<div ng-if="popupCtrl.step2Active">
-			<!--<p>Scheduled for import <b>23</b> institutions - <span class="go-green">3 <i class="fa fa-plus-circle"></i></span> to be created and <span class="go-orange">20 <i class="fa fa-warning"></i></span> to be updated. No errors found!</p>-->
-			<p>Scheduled for import <b>23</b> institutions - <span class="go-green">3 <i class="fa fa-plus-circle"></i></span> to be created and <span class="go-orange">20 <i class="fa fa-refresh"></i></span> to be updated. There are <span class="go-orange">20 <i class="fa fa-warning"></i></span> warnings</p>
-			<div class="alert alert-danger" style="margin-bottom:15px"><i class="fa fa-warning"></i> There are errors. Please fix them and try again!</div>
-			<div data-double-scroll-bar-horizontal>
-				<table class="table table-bordered import-evaluation" style="margin:0;">
+			<p>Scheduled for import <b>{{popupCtrl.evaluationResult.records.length}}</b> {{popupCtrl.ngCtrl.entity.labelPlural}} - 
+				<span ng-if="popupCtrl.evaluationResult.stats.to_create > 0"><span class="go-green">{{popupCtrl.evaluationResult.stats.to_create}} <i class="fa fa-plus-circle"></i></span> to be created</span> 
+				<span ng-if="popupCtrl.evaluationResult.stats.to_update > 0">and <span class="go-orange">{{popupCtrl.evaluationResult.stats.to_update}} <i class="fa fa-refresh"></i></span> to be updated.</span> 
+				<span ng-if="popupCtrl.evaluationResult.stats.warnings > 0">There are <span class="go-orange">{{popupCtrl.evaluationResult.stats.warnings}} <i class="fa fa-warning"></i></span> warnings</span>
+				<span ng-if="popupCtrl.evaluationResult.stats.warnings == 0">No warnings found! </span>
+				<span ng-if="popupCtrl.evaluationResult.stats.errors > 0">There are <span class="go-red">{{popupCtrl.evaluationResult.stats.errors}} <i class="fa fa-exclamation-circle"></i></span> errors</span>
+				<span ng-if="popupCtrl.evaluationResult.stats.errors == 0">No errors found! </span>
+			</p>
+			<div data-double-scroll-bar-horizontal class="evaluation-wrapper">
+				<table class="table table-bordered import-evaluation">
 					<thead>
 						<tr>
 							<th></th>
-							<th ng-repeat="name in popupCtrl.testData track by $index">
+							<th ng-repeat="(key, value) in popupCtrl.evaluationResult.records[0]" ng-if="key != 'id'">
 								<form class="form" name="myForm">
 									<div class="form-group">
 										<div class="input-group">
 											<span class="input-group-addon">
 												<!--<i class="fa fa-fw fa-clock-o go-gray"></i>-->
-												<i ng-if="$index != 4 && $index != 2" class="fa fa-fw fa-check go-green"></i>
-												<i ng-if="$index == 4" class="fa fa-fw fa-warning go-red"></i>
-												<i ng-if="$index == 2" class="fa fa-fw fa-warning go-orange"></i>
+												<i ng-show="::!popupCtrl.columnHasError[key] && !popupCtrl.columnHasWarning[key]" class="fa fa-fw fa-check go-green ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="no warnings or errors in this column" popover-trigger="mouseenter"></i>
+												<i ng-show="::popupCtrl.columnHasError[key]" class="fa fa-fw fa-exclamation-circle go-red ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="this column has errors. Check the fields below" popover-trigger="mouseenter"></i>
+												<i ng-show="::popupCtrl.columnHasWarning[key]" class="fa fa-fw fa-warning go-orange ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="this column has warnings. Check the fields below" popover-trigger="mouseenter"></i>
 											</span>
-											<select class="form-control" ng-model="popupCtrl.fieldActions['field' + $index]" ng-options="::option.key as option.value for option in popupCtrl.importTypes"></select>
+											<select class="form-control" ng-model="popupCtrl.evaluationResult.commands[key].command" 
+												ng-options="::option.key as option.value for option in popupCtrl.importTypes"
+												ng-change="popupCtrl.updateColumnCommand(key,popupCtrl.evaluationResult.commands[key])"></select>
 										</div>
 									</div>
 								</form>
@@ -438,67 +445,62 @@
 						</tr>
 						<tr>
 							<th>id</th>
-							<th ng-repeat="name in popupCtrl.testData track by $index">
-								<div ng-if="popupCtrl.fieldActions['field' + $index] == 'no-import'">
+							<th ng-repeat="(key, value) in popupCtrl.evaluationResult.records[0]" ng-if="key != 'id'" ng-class="{'select_to_create': popupCtrl.evaluationResult.commands[key].command == 'to_create','select_to_update': popupCtrl.evaluationResult.commands[key].command == 'to_update','select_no_import': popupCtrl.evaluationResult.commands[key].command == 'no_import'}">
+								<div ng-if="popupCtrl.evaluationResult.commands[key].command == 'no_import'">
 									<div class="field-type">not imported</div>
 									<div class="input-group" style="margin-bottom:29px;">
-										<input class="form-control go-gray" disabled value="medical" />
+										<input class="form-control go-gray" disabled value="{{popupCtrl.evaluationResult.commands[key].fieldName}}" />
 									</div>
 								</div>
-								<div ng-if="popupCtrl.fieldActions['field' + $index] == 'to-update'">
-									<div class="field-type">DateTime</div>
-									<div class="input-group" title="software_n_n_institution.label" style="margin-bottom:5px;">
-										<span class="input-group-addon">
+								<div ng-if="popupCtrl.evaluationResult.commands[key].command == 'to_update'">
+									<div class="field-type">{{popupCtrl.getFieldTypeLabel(popupCtrl.evaluationResult.commands[key].fieldType)}}</div>
+									<div class="input-group" title="{{popupCtrl.evaluationResult.commands[key].fieldName}}" style="margin-bottom:5px;">
+										<span class="input-group-addon" title="field name">
 											<i class="fa fa-fw fa-database go-gray"></i>
 										</span>
-										<select class="form-control">
-											<option>name</option>
-											<option>label</option>
-											<option>software_n_n_institution.label</option>
-										</select>
+										<select class="form-control" ng-change="popupCtrl.updateExistingFieldCommand(popupCtrl.evaluationResult.commands[key])" ng-model="popupCtrl.evaluationResult.commands[key].fieldName" ng-options="::field.name as field.name for field in popupCtrl.getEntityFieldsFromType(popupCtrl.evaluationResult.commands[key].fieldType)"></select>
 									</div>
-									<div class="input-group" title="field label">
-										<span class="input-group-addon">
+									<div class="input-group" title="{{popupCtrl.evaluationResult.commands[key].fieldLabel}}">
+										<span class="input-group-addon" title="field label">
 											<i class="fa fa-fw fa-tag go-gray"></i>
 										</span>
-										<input class="form-control go-gray" disabled value="medical" />
+										<input class="form-control go-gray" disabled value="{{popupCtrl.evaluationResult.commands[key].fieldLabel}}" />
 									</div>
 								</div>
-								<div ng-if="popupCtrl.fieldActions['field' + $index] == 'to-create'">
+								<div ng-if="popupCtrl.evaluationResult.commands[key].command == 'to_create'">
 									<div class="input-group" style="margin-bottom:5px;">
 										<span class="input-group-addon" popover-placement="top" popover-append-to-body="true" uib-popover="{{popupCtrl.getFieldTypeDescription(popupCtrl.newFieldType['field' + $index])}}" popover-trigger="mouseenter">
 											<i class="fa fa-fw fa-info-circle go-gray"></i>
 										</span>
 										<select class="form-control" ng-init="popupCtrl.newFieldType['field' + $index] = 18" ng-model="popupCtrl.newFieldType['field' + $index]" ng-options="::option.id as option.label for option in popupCtrl.fieldTypes"></select>
 									</div>
-									<div class="input-group" title="field label" style="margin-bottom:5px;">
+									<div class="input-group" title="{{popupCtrl.evaluationResult.commands[key].fieldName}}" style="margin-bottom:5px;">
 										<span class="input-group-addon">
 											<i class="fa fa-fw fa-database go-gray"></i>
 										</span>
-										<input class="form-control go-gray" disabled value="medical" />
+										<input class="form-control go-gray" disabled value="{{popupCtrl.evaluationResult.commands[key].fieldName}}"/>
 									</div>
-									<div class="input-group" title="field label">
+									<div class="input-group" title="{{popupCtrl.evaluationResult.commands[key].fieldLabel}}">
 										<span class="input-group-addon">
 											<i class="fa fa-fw fa-tag go-gray"></i>
 										</span>
-										<input class="form-control go-gray" disabled value="medical" />
+										<input class="form-control" ng-model="popupCtrl.evaluationResult.commands[key].fieldLabel" />
 									</div>
 								</div>
 							</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="name in popupCtrl.testData track by $index">
+						<tr ng-repeat="record in popupCtrl.evaluationResult.records track by $index">
 							<td class="id-field">
-								<span ng-if="$index != 4">f46273d4-1a0d-4835-aeab-36da8c9dd3e7 </span>
-								<span ng-if="$index == 4" class="noid">this row does not have id data provided</span>
-								<i class="fa fa-refresh fa-fw go-orange" ng-if="$index != 4" uib-popover="Existing record will be updated" popover-trigger="mouseenter"></i>
-								<i class="fa fa-plus-circle fa-fw go-green" ng-if="$index == 4" uib-popover="A new record will be created" popover-trigger="mouseenter"></i></a>
+								<span ng-if="record.id">{{record.id}} <i class="fa fa-refresh fa-fw go-orange" uib-popover="Existing record will be updated" popover-trigger="mouseenter"></i></span>
+								<span ng-if="!record.id" class="noid">this row does not have id data provided <i class="fa fa-plus-circle fa-fw go-green" uib-popover="A new record will be created" popover-trigger="mouseenter"></i></span>
 							</td>
-							<td ng-repeat="name in popupCtrl.testData track by $index" ng-class="{'to-create': popupCtrl.fieldActions['field' + $index] == 'to-create','to-update': popupCtrl.fieldActions['field' + $index] == 'to-update','no-import': popupCtrl.fieldActions['field' + $index] == 'no-import'}">
-								<i ng-if="$index == 4" class="fa fa-warning go-red" uib-popover="Error description" popover-trigger="mouseenter" style="margin-right:5px;"></i>
-								<i ng-if="$index == 2" class="fa fa-warning go-orange" uib-popover="Warning description" popover-trigger="mouseenter" style="margin-right:5px;"></i>
-								Lorem ipsum dolor sit amet, consectetur adipiscing elit</td>
+							<td ng-repeat="(key, value) in record" ng-if="key != 'id'" ng-class="{'to_create': popupCtrl.evaluationResult.commands[key].command == 'to_create','to_update': popupCtrl.evaluationResult.commands[key].command == 'to_update','no_import': popupCtrl.evaluationResult.commands[key].command == 'no_import'}">
+								<i ng-show="::popupCtrl.evaluationResult.errors[key][$parent.$parent.$index] != null" class="fa fa-exclamation-circle go-red ng-hide" uib-popover="{{::popupCtrl.evaluationResult.errors[key][$parent.$parent.$index]}}" popover-trigger="mouseenter" style="margin-right:5px;"></i>
+								<i ng-show="::popupCtrl.evaluationResult.warnings[key][$parent.$parent.$index] != null" class="fa fa-warning go-orange ng-hide" uib-popover="{{::popupCtrl.evaluationResult.warnings[key][$parent.$parent.$index]}}" popover-trigger="mouseenter" style="margin-right:5px;"></i>
+								{{record[key]}}
+							</td>
 						</tr>
 					</tbody>
 				</table>
@@ -531,9 +533,8 @@
 	<div class="modal-footer">
 		<a ng-if="popupCtrl.step1Active" href="javascript:void(0)" ng-click="popupCtrl.evaluate()" class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-cog': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate</a>
 		<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" ng-click="popupCtrl.back()" class="btn btn-default pull-left"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
-		<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" ng-click="popupCtrl.evaluate()" class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-cog': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate again</a>
-		<!--<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" ng-click="popupCtrl.ok()" class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Import</a>-->
-		<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" confirmed-click="popupCtrl.import()" ng-confirm-click="WARNING: This import will create 2 new fields in the entity 'Institutions'. Click OK to confirm." class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Import</a>
+		<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" ng-show="popupCtrl.createFieldCount == 0" ng-click="popupCtrl.evaluateAndImport()" class="btn btn-primary ng-hide"><i class="fa fa-fw" ng-class="{'fa-cog': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate & Import</a>
+		<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" ng-show="popupCtrl.createFieldCount > 0" confirmed-click="popupCtrl.evaluateAndImport()" ng-confirm-click="WARNING: This import will create {{popupCtrl.createFieldCount}} new fields in the entity '{{popupCtrl.ngCtrl.entity.label}}'. Click OK to confirm." class="btn btn-primary ng-hide"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate & Import</a>
 		<a ng-if="!popupCtrl.step3Active" href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CANCEL'}}"></a>
 		<a ng-if="popupCtrl.step3Active" href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CLOSE'}}"></a>
 	</div>
