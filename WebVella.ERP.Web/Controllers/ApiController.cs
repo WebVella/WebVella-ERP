@@ -2353,7 +2353,8 @@ namespace WebVella.ERP.Web.Controllers
 		// Get an entity record list
 		// GET: api/v1/en_US/record/{entityName}/list
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/{page}")]
-		public IActionResult GetRecordListByEntityName(string entityName, string listName, int page, int? pageSize = null)
+		public IActionResult GetRecordListByEntityName(string entityName, string listName, int page, int? pageSize = null, 
+				Guid? relationId = null, Guid? relatedRecordId = null, string direction = "origin-target")
 		{
 
 			EntityListResponse entitiesResponse = entMan.ReadEntities();
@@ -2384,6 +2385,20 @@ namespace WebVella.ERP.Web.Controllers
 				response.Errors.Add(new ErrorModel { Message = "Access denied." });
 				return DoResponse(response);
 			}
+
+			var relation = relMan.Read().Object.SingleOrDefault(r => r.Id == relationId);
+			if(relation == null) {
+				response.Success = false;
+				response.Message = "The provided relationId is not of any existing relation";
+				return DoResponse(response);
+			}
+			if(relation != null && relatedRecordId == null) {
+				response.Success = false;
+				response.Message = "The Id of the relation record is required when a relation is submitted";
+				return DoResponse(response);			
+			} 
+
+
 			try
 			{
 				QueryObject queryObj = null;
@@ -2409,7 +2424,13 @@ namespace WebVella.ERP.Web.Controllers
 						queryObj = EntityQuery.QueryAND(queryObjList.ToArray());
 				}
 
-				response.Object = GetListRecords(entities, entity, listName, page, queryObj, pageSize);
+				if(relation == null) {
+					response.Object = GetListRecords(entities, entity, listName, page, queryObj, pageSize);				
+				}
+				else {
+					response.Object = GetListRecords(entities, entity, listName, page, queryObj, pageSize, false, relation, relatedRecordId, direction);
+				}
+				
 			}
 			catch (Exception ex)
 			{
@@ -2575,10 +2596,16 @@ namespace WebVella.ERP.Web.Controllers
 				return EntityQuery.QueryContains(field.Name, search);
 		}
 
-		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null, int? pageSize = null, bool export = false)
+		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null, 
+					int? pageSize = null, bool export = false, EntityRelation auxRelation = null, Guid? auxRelatedRecordId = null, string auxRelationDirection = "origin-target")
 		{
 			if (entity == null)
 				throw new Exception($"Entity '{entity.Name}' do not exist");
+
+
+			//TODO Rumen - Validate if relation != null there should be also relatedRecordId != null
+			//IMPLEMENT also the relation filtering
+
 
 			RecordList list = null;
 			if (entity != null && entity.RecordLists != null)
@@ -2964,7 +2991,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/view/{viewName}/{id}")]
-		public IActionResult GetViewRecords(string entityName, string viewName, Guid id)
+		public IActionResult GetRecordWithView(string entityName, string viewName, Guid id)
 		{
 			EntityListResponse entitiesResponse = entMan.ReadEntities();
 			List<Entity> entities = entitiesResponse.Object;
@@ -2989,6 +3016,7 @@ namespace WebVella.ERP.Web.Controllers
 			response.Object = GetViewRecords(entities, entity, viewName, "id", id);
 			return DoResponse(response);
 		}
+
 
 		private List<EntityRecord> GetViewRecords(List<Entity> entities, Entity entity, string viewName, string queryFieldName, object queryFieldValue)
 		{

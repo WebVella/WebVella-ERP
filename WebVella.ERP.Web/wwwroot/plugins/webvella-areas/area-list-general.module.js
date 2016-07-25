@@ -570,6 +570,22 @@
 			var searchParams = $location.search();
 			var listEntityName = safeListNameAndEntityName.entityName;
 			ngCtrl.currentPage = page;
+
+			searchParams.relationId = null;
+			searchParams.relatedRecordId = null;
+			searchParams.direction = "origin-target";
+
+			if ($stateParams.parentViewName != null) {
+				searchParams.relatedRecordId = $stateParams.recordId;
+				for (var i = 0; i < ngCtrl.parentView.meta.sidebar.items.length; i++) {
+					var sidebarItem = ngCtrl.parentView.meta.sidebar.items[i];
+					if(sidebarItem.listName == ngCtrl.list.meta.name){
+						searchParams.relationId = sidebarItem.relationId;
+						break;
+					}
+				}
+			}
+
 			webvellaCoreService.getRecordsByListMeta(ngCtrl.list.meta, listEntityName, page, $stateParams, searchParams, ngCtrl.PagingReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
 		}
 
@@ -633,10 +649,24 @@
 
 			var searchParams = $location.search();
 			var listEntityName = safeListNameAndEntityName.entityName;
-			webvellaCoreService.getRecordsByListMeta(ngCtrl.list.meta, listEntityName, 1, $stateParams, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
 
+			searchParams.relationId = null;
+			searchParams.relatedRecordId = null;
+			searchParams.direction = "origin-target";
+
+			if ($stateParams.parentViewName != null) {
+				searchParams.relatedRecordId = $stateParams.recordId;
+				for (var i = 0; i < ngCtrl.parentView.meta.sidebar.items.length; i++) {
+					var sidebarItem = ngCtrl.parentView.meta.sidebar.items[i];
+					if(sidebarItem.listName == ngCtrl.list.meta.name){
+						searchParams.relationId = sidebarItem.relationId;
+						break;
+					}
+				}
+			}
+
+			webvellaCoreService.getRecordsByListMeta(ngCtrl.list.meta, listEntityName, 1, $stateParams, searchParams,ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);	
 		}
-
 		//#endregion
 
 		//#endregion
