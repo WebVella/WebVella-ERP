@@ -1192,8 +1192,8 @@
 		function initViewSection() {
 			var section = {
 				"id": newGuid(),
-				"name": "section",
-				"label": "Section name",
+				"name": "general",
+				"label": "General",
 				"cssClass": "",
 				"showLabel": true,
 				"collapsed": false,
