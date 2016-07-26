@@ -2353,7 +2353,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Get an entity record list
 		// GET: api/v1/en_US/record/{entityName}/list
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/{page}")]
-		public IActionResult GetRecordListByEntityName(string entityName, string listName, int page, int? pageSize = null, 
+		public IActionResult GetRecordListByEntityName(string entityName, string listName, int page, int? pageSize = null,
 				Guid? relationId = null, Guid? relatedRecordId = null, string direction = "origin-target")
 		{
 
@@ -2386,18 +2386,23 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(response);
 			}
 
-			var relation = relMan.Read().Object.SingleOrDefault(r => r.Id == relationId);
-			if(relation == null) {
-				response.Success = false;
-				response.Message = "The provided relationId is not of any existing relation";
-				return DoResponse(response);
+			EntityRelation relation = null;
+			if (relationId != null)
+			{
+				relation = relMan.Read().Object.SingleOrDefault(r => r.Id == relationId);
+				if (relation == null)
+				{
+					response.Success = false;
+					response.Message = "The provided relationId is not of any existing relation";
+					return DoResponse(response);
+				}
+				if (relation != null && relatedRecordId == null)
+				{
+					response.Success = false;
+					response.Message = "The Id of the relation record is required when a relation is submitted";
+					return DoResponse(response);
+				}
 			}
-			if(relation != null && relatedRecordId == null) {
-				response.Success = false;
-				response.Message = "The Id of the relation record is required when a relation is submitted";
-				return DoResponse(response);			
-			} 
-
 
 			try
 			{
@@ -2424,13 +2429,15 @@ namespace WebVella.ERP.Web.Controllers
 						queryObj = EntityQuery.QueryAND(queryObjList.ToArray());
 				}
 
-				if(relation == null) {
-					response.Object = GetListRecords(entities, entity, listName, page, queryObj, pageSize);				
+				if (relation == null)
+				{
+					response.Object = GetListRecords(entities, entity, listName, page, queryObj, pageSize);
 				}
-				else {
+				else
+				{
 					response.Object = GetListRecords(entities, entity, listName, page, queryObj, pageSize, false, relation, relatedRecordId, direction);
 				}
-				
+
 			}
 			catch (Exception ex)
 			{
@@ -2596,7 +2603,7 @@ namespace WebVella.ERP.Web.Controllers
 				return EntityQuery.QueryContains(field.Name, search);
 		}
 
-		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null, 
+		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null,
 					int? pageSize = null, bool export = false, EntityRelation auxRelation = null, Guid? auxRelatedRecordId = null, string auxRelationDirection = "origin-target")
 		{
 			if (entity == null)
@@ -4314,9 +4321,11 @@ namespace WebVella.ERP.Web.Controllers
 			if (!postObject.IsNullOrEmpty() && postObject.Properties().Any(p => p.Name == "commands") && !((JToken)postObject["commands"]).IsNullOrEmpty())
 			{
 				var commandsObject = postObject["commands"].Value<JObject>();
-				if(!commandsObject.IsNullOrEmpty() && commandsObject.Properties().Any()){
-					foreach(var property in commandsObject.Properties()) {
-						commands[property.Name] = (JObject)property.Value;		
+				if (!commandsObject.IsNullOrEmpty() && commandsObject.Properties().Any())
+				{
+					foreach (var property in commandsObject.Properties())
+					{
+						commands[property.Name] = (JObject)property.Value;
 					}
 				}
 			}
@@ -4404,7 +4413,8 @@ namespace WebVella.ERP.Web.Controllers
 					//validate the value for errors
 					var hasError = false;
 
-					if(index == 2 && columnName == "start_date") {//for test
+					if (index == 2 && columnName == "start_date")
+					{//for test
 						hasError = true;
 					}
 
@@ -4420,7 +4430,8 @@ namespace WebVella.ERP.Web.Controllers
 
 					//validate the value for warnings
 					var hasWarning = false;
-					if(index == 2 && columnName == "code") { // for test
+					if (index == 2 && columnName == "code")
+					{ // for test
 						hasWarning = true;
 					}
 
@@ -4436,21 +4447,24 @@ namespace WebVella.ERP.Web.Controllers
 					#endregion
 
 					#region << Commands >>
-					if(!commands.GetProperties().Any(p => p.Key == columnName)) {
+					if (!commands.GetProperties().Any(p => p.Key == columnName))
+					{
 						//we need to init the command for this column - if it is new field the default is do nothing, if it is existing the default is update
 						commands[columnName] = new EntityRecord();
-						if(existingField) {
+						if (existingField)
+						{
 							((EntityRecord)commands[columnName])["command"] = "to_update";
 							((EntityRecord)commands[columnName])["fieldType"] = currentFieldMeta.GetFieldType();
 							((EntityRecord)commands[columnName])["fieldName"] = currentFieldMeta.Name;
 							((EntityRecord)commands[columnName])["fieldLabel"] = currentFieldMeta.Label;
 						}
-						else {
+						else
+						{
 							//we need to check wheather the property of the command match the fieldName
 							((EntityRecord)commands[columnName])["command"] = "to_create";
 							((EntityRecord)commands[columnName])["fieldType"] = 18;
 							((EntityRecord)commands[columnName])["fieldName"] = columnName;
-							((EntityRecord)commands[columnName])["fieldLabel"] = columnName;							
+							((EntityRecord)commands[columnName])["fieldLabel"] = columnName;
 						}
 
 					}
