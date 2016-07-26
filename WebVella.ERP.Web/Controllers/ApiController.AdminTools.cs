@@ -3041,7 +3041,8 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 				oldField.Description = oldField.Description.Replace("\"", "\\\"");
 
 			//Check if field type is updated
-			if(currentField.GetFieldType() != oldField.GetFieldType()) {
+			if (currentField.GetFieldType() != oldField.GetFieldType())
+			{
 				response.Code = "";
 				response.HasUpdate = true;
 				response.ChangeList.Add($"<span class='go-green label-block'>field</span>  with name <span class='go-red'>{oldField.Name}</span> has its type updated from <span class='go-red'>{oldField.GetFieldType()}</span> to <span class='go-red'>{currentField.GetFieldType()}</span>");
@@ -3414,32 +3415,8 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 			else
 			{
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -3575,32 +3552,8 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 			else
 			{
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -3775,32 +3728,8 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 			else
 			{
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -3966,32 +3895,8 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 			else
 			{
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -4157,32 +4062,8 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 			else
 			{
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -4339,32 +4220,8 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 			else
 			{
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -4510,32 +4367,8 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			else
 			{
 
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -4680,32 +4513,8 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 			else
 			{
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -4850,32 +4659,8 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 			else
 			{
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -5047,32 +4832,8 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 			else
 			{
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -5234,7 +4995,11 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			{
 				hasUpdate = true;
 			}
-			if (currentField.System != oldField.System)
+			else if (currentField.System != oldField.System)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
 				hasUpdate = true;
 			}
@@ -5273,32 +5038,8 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 					hasUpdate = true;
 				}
 
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -5472,32 +5213,8 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 			else
 			{
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -5662,32 +5379,8 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -5861,32 +5554,8 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -6057,32 +5726,8 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -6233,32 +5878,8 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -6421,51 +6042,8 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				var oldOptionsDictionary = new Dictionary<string, bool>();
-				//create dictionary
-				foreach (var value in oldField.Options.ToList())
-				{
-					oldOptionsDictionary[value.Key] = true;
-				}
-				foreach (var value in currentField.Options.ToList())
-				{
-					if (!oldOptionsDictionary.ContainsKey(value.Key))
-					{
-						hasUpdate = true;
-					}
-				}
-
-				if (currentField.EnableSecurity != oldField.EnableSecurity)
-				{
-					hasUpdate = true;
-				}
-
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -6625,32 +6203,8 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -6813,32 +6367,8 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -6999,32 +6529,8 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				//Create old permissions Dictionaries
-				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
-				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
-				foreach (var permission in oldField.Permissions.CanRead)
-				{
-					oldFieldCanReadPermissionDictionary[permission] = true;
-				}
-				foreach (var permission in oldField.Permissions.CanUpdate)
-				{
-					oldFieldCanUpdatePermissionDictionary[permission] = true;
-				}
-
-				foreach (var permission in currentField.Permissions.CanRead)
-				{
-					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
-				foreach (var permission in currentField.Permissions.CanUpdate)
-				{
-					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
-					{
-						hasUpdate = true;
-					}
-				}
+				// Permissions change check
+				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -8198,32 +7704,39 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 				//Because of the \r\n <> \n problem we will need to artificially add \r to the new view templates and test again
 				var differenceInTemplateFound = false;
 				//create an action item dictionary for the oldView
-				var oldActionsDictionary = new Dictionary<string,ActionItem>();
-				foreach(var item in oldView.ActionItems) {
+				var oldActionsDictionary = new Dictionary<string, ActionItem>();
+				foreach (var item in oldView.ActionItems)
+				{
 					var dictionaryKey = item.Name + "-" + item.Menu;
 					oldActionsDictionary[dictionaryKey] = item;
 				}
 
-				foreach(var item in currentView.ActionItems) {
+				foreach (var item in currentView.ActionItems)
+				{
 					//check if item with the same name-menu exists in the old menu
 					var dictionaryKey = item.Name + "-" + item.Menu;
-					if(!oldActionsDictionary.ContainsKey(dictionaryKey)) {
-						differenceInTemplateFound = true;	
+					if (!oldActionsDictionary.ContainsKey(dictionaryKey))
+					{
+						differenceInTemplateFound = true;
 						break;
 					}
-					else {
+					else
+					{
 						var correspondingActionItem = oldActionsDictionary[dictionaryKey];
 						var newTemplateWithoutRs = item.Template;
 						var newTemplateWithRs = item.Template.Replace("\n", "\r\n");
-						if(newTemplateWithoutRs == correspondingActionItem.Template || newTemplateWithRs == correspondingActionItem.Template) {
+						if (newTemplateWithoutRs == correspondingActionItem.Template || newTemplateWithRs == correspondingActionItem.Template)
+						{
 							//Do nothing as both templates are considered equal
 						}
-						else {
-							differenceInTemplateFound = true;	
+						else
+						{
+							differenceInTemplateFound = true;
 						}
 					}
 				}
-				if(differenceInTemplateFound) {
+				if (differenceInTemplateFound)
+				{
 					hasUpdate = true;
 				}
 			}
@@ -9206,32 +8719,39 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 				//Because of the \r\n <> \n problem we will need to artificially add \r to the new view templates and test again
 				var differenceInTemplateFound = false;
 				//create an action item dictionary for the oldView
-				var oldActionsDictionary = new Dictionary<string,ActionItem>();
-				foreach(var item in oldList.ActionItems) {
+				var oldActionsDictionary = new Dictionary<string, ActionItem>();
+				foreach (var item in oldList.ActionItems)
+				{
 					var dictionaryKey = item.Name + "-" + item.Menu;
 					oldActionsDictionary[dictionaryKey] = item;
 				}
 
-				foreach(var item in currentList.ActionItems) {
+				foreach (var item in currentList.ActionItems)
+				{
 					//check if item with the same name-menu exists in the old menu
 					var dictionaryKey = item.Name + "-" + item.Menu;
-					if(!oldActionsDictionary.ContainsKey(dictionaryKey)) {
-						differenceInTemplateFound = true;	
+					if (!oldActionsDictionary.ContainsKey(dictionaryKey))
+					{
+						differenceInTemplateFound = true;
 						break;
 					}
-					else {
+					else
+					{
 						var correspondingActionItem = oldActionsDictionary[dictionaryKey];
 						var newTemplateWithoutRs = item.Template;
 						var newTemplateWithRs = item.Template.Replace("\n", "\r\n");
-						if(newTemplateWithoutRs == correspondingActionItem.Template || newTemplateWithRs == correspondingActionItem.Template) {
+						if (newTemplateWithoutRs == correspondingActionItem.Template || newTemplateWithRs == correspondingActionItem.Template)
+						{
 							//Do nothing as both templates are considered equal
 						}
-						else {
-							differenceInTemplateFound = true;	
+						else
+						{
+							differenceInTemplateFound = true;
 						}
 					}
 				}
-				if(differenceInTemplateFound) {
+				if (differenceInTemplateFound)
+				{
 					hasUpdate = true;
 				}
 			}
@@ -9905,6 +9425,85 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 
 		}
 		#endregion
+
+		#region << Helpers >>
+		private bool CheckFieldPermissionsHasUpdate(DbFieldPermissions oldFieldPermissions, DbFieldPermissions currentFieldPermissions)
+		{
+			var response = false;
+
+			#region << Fast check based on count >>
+			if(oldFieldPermissions.CanRead.Count != currentFieldPermissions.CanRead.Count) {
+				return true;
+			}
+			if(oldFieldPermissions.CanUpdate.Count != currentFieldPermissions.CanUpdate.Count) {
+				return true;
+			}
+			#endregion
+
+			var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+			var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+			var currentFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+			var currentFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+
+			#region << Fill dictionaries >>
+			foreach (var permission in oldFieldPermissions.CanRead)
+			{
+				oldFieldCanReadPermissionDictionary[permission] = true;
+			}
+			foreach (var permission in oldFieldPermissions.CanUpdate)
+			{
+				oldFieldCanUpdatePermissionDictionary[permission] = true;
+			}
+			foreach (var permission in currentFieldPermissions.CanRead)
+			{
+				currentFieldCanReadPermissionDictionary[permission] = true;
+			}
+			foreach (var permission in currentFieldPermissions.CanUpdate)
+			{
+				currentFieldCanUpdatePermissionDictionary[permission] = true;
+			}
+			#endregion
+
+			#region << Check if all current permissions are existing in the old Field >>
+
+			foreach (var permission in currentFieldPermissions.CanRead)
+			{
+				if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+				{
+					return true;
+				}
+			}
+			foreach (var permission in currentFieldPermissions.CanUpdate)
+			{
+				if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				{
+					return true;
+				}
+			}
+			#endregion
+
+			#region << Check if all old permissions are existing in the current Field >>
+
+			foreach (var permission in oldFieldPermissions.CanRead)
+			{
+				if (!currentFieldCanReadPermissionDictionary.ContainsKey(permission))
+				{
+					return true;
+				}
+			}
+			foreach (var permission in oldFieldPermissions.CanUpdate)
+			{
+				if (!currentFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+				{
+					return true;
+				}
+			}
+			#endregion
+
+			return response;
+		}
+		#endregion
+
 		#endregion
 
 	}
