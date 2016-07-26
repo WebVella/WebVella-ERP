@@ -150,7 +150,8 @@ namespace WebVella.ERP.Database
 				return FieldType.TextField;
 			else if (this is DbUrlField)
 				return FieldType.UrlField;
-
+			else if (this is DbTreeSelectField)
+				return FieldType.TreeSelectField;
 			return FieldType.GuidField;
 		}
 	}

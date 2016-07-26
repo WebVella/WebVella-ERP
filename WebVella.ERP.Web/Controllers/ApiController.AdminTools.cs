@@ -1252,6 +1252,9 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 				case FieldType.UrlField:
 					response += CreateUrlFieldCode(field as DbUrlField, entityId, entityName);
 					break;
+				case FieldType.TreeSelectField:
+					response += CreateTreeSelectFieldCode(field as DbTreeSelectField, entityId, entityName);
+					break;
 			}
 
 			return response;
@@ -2917,6 +2920,83 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			return response;
 		}
 
+		private string CreateTreeSelectFieldCode(DbTreeSelectField field, Guid entityId, string entityName)
+		{
+			var response = string.Empty;
+			response =
+$"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >>\n" +
+"{\n" +
+	$"\tInputTreeSelectField treeSelectField = new InputTreeSelectField();\n" +
+	$"\ttreeSelectField.Id = new Guid(\"{field.Id}\");\n" +
+	$"\ttreeSelectField.Name = \"{field.Name}\";\n" +
+	$"\ttreeSelectField.Label = \"{field.Label}\";\n";
+			if (field.PlaceholderText == null)
+			{
+				response += $"\ttreeSelectField.PlaceholderText = null;\n";
+			}
+			else
+			{
+				response += $"\ttreeSelectField.PlaceholderText = \"{field.PlaceholderText}\";\n";
+			}
+			if (field.Description == null)
+			{
+				response += $"\ttreeSelectField.Description = null;\n";
+			}
+			else
+			{
+				response += $"\ttreeSelectField.Description = \"{field.Description}\";\n";
+			}
+			if (field.HelpText == null)
+			{
+				response += $"\ttreeSelectField.HelpText = null;\n";
+			}
+			else
+			{
+				response += $"\ttreeSelectField.HelpText = \"{field.HelpText}\";\n";
+			}
+
+			response +=
+			$"\ttreeSelectField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
+			$"\ttreeSelectField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
+			$"\ttreeSelectField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
+			$"\ttreeSelectField.Auditable = {(field.Auditable).ToString().ToLowerInvariant()};\n" +
+			$"\ttreeSelectField.System = {(field.System).ToString().ToLowerInvariant()};\n";
+
+			response +=
+			$"\ttreeSelectField.RelatedEntityId = new Guid(\"{field.RelatedEntityId}\");\n" +
+			$"\ttreeSelectField.RelationId = new Guid(\"{field.RelationId}\");\n" +
+			$"\ttreeSelectField.SelectedTreeId = new Guid(\"{field.SelectedTreeId}\");\n" +
+			$"\ttreeSelectField.SelectionTarget = \"{field.SelectionTarget}\";\n" +
+			$"\ttreeSelectField.SelectionType = \"{field.SelectionType}\";\n" +
+
+
+			$"\ttreeSelectField.EnableSecurity = {(field.EnableSecurity).ToString().ToLowerInvariant()};\n" +
+			$"\ttreeSelectField.Permissions = new FieldPermissions();\n" +
+			$"\ttreeSelectField.Permissions.CanRead = new List<Guid>();\n" +
+			$"\ttreeSelectField.Permissions.CanUpdate = new List<Guid>();\n" +
+			"\t//READ\n";
+			foreach (var permId in field.Permissions.CanRead)
+			{
+				response += $"\ttreeSelectField.Permissions.CanRead.Add(new Guid(\"{permId}\"));\n";
+			}
+			response += "\t//UPDATE\n";
+			foreach (var permId in field.Permissions.CanUpdate)
+			{
+				response += $"\ttreeSelectField.Permissions.CanUpdate.Add(new Guid(\"{permId}\"));\n";
+			}
+			response +=
+			"\t{\n" +
+				$"\t\tvar response = entMan.CreateField(new Guid(\"{entityId}\"), treeSelectField, false);\n" +
+				"\t\tif (!response.Success)\n" +
+					$"\t\t\tthrow new Exception(\"System error 10060. Entity: {entityName} Field: {field.Name} Message:\" + response.Message);\n" +
+			"\t}\n" +
+		"}\n" +
+		"#endregion\n\n";
+
+			return response;
+		}
+
+
 		private string DeleteFieldCode(DbBaseField field, Guid entityId, string entityName)
 		{
 			var response =
@@ -3153,6 +3233,16 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 				case FieldType.UrlField:
 					{
 						var responseCode = UpdateUrlFieldCode(currentField as DbUrlField, oldField as DbUrlField, currentEntity.Id, currentEntity.Name);
+						if (responseCode != string.Empty)
+						{
+							code = responseCode;
+							hasUpdate = true;
+						}
+					}
+					break;
+				case FieldType.TreeSelectField:
+					{
+						var responseCode = UpdateTreeSelectFieldCode(currentField as DbTreeSelectField, oldField as DbTreeSelectField, currentEntity.Id, currentEntity.Name);
 						if (responseCode != string.Empty)
 						{
 							code = responseCode;
@@ -6714,6 +6804,192 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 				hasUpdate = true;
 			}
 			else if (currentField.OpenTargetInNewWindow != oldField.OpenTargetInNewWindow)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
+			{
+				hasUpdate = true;
+			}
+			else
+			{
+				//Create old permissions Dictionaries
+				var oldFieldCanReadPermissionDictionary = new Dictionary<Guid, bool>();
+				var oldFieldCanUpdatePermissionDictionary = new Dictionary<Guid, bool>();
+				foreach (var permission in oldField.Permissions.CanRead)
+				{
+					oldFieldCanReadPermissionDictionary[permission] = true;
+				}
+				foreach (var permission in oldField.Permissions.CanUpdate)
+				{
+					oldFieldCanUpdatePermissionDictionary[permission] = true;
+				}
+
+				foreach (var permission in currentField.Permissions.CanRead)
+				{
+					if (!oldFieldCanReadPermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var permission in currentField.Permissions.CanUpdate)
+				{
+					if (!oldFieldCanUpdatePermissionDictionary.ContainsKey(permission))
+					{
+						hasUpdate = true;
+					}
+				}
+			}
+			#endregion
+
+			if (!hasUpdate)
+			{
+				return string.Empty;
+			}
+
+			return response;
+		}
+
+		private string UpdateTreeSelectFieldCode(DbTreeSelectField currentField, DbTreeSelectField oldField, Guid entityId, string entityName)
+		{
+			var response = string.Empty;
+			var hasUpdate = false;
+
+			#region << Code >>
+			response =
+$"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.Name} >>\n" +
+"{\n" +
+	$"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
+	$"\tInputTreeSelectField treeSelectField = new InputTreeSelectField();\n" +
+	$"\ttreeSelectField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
+	$"\ttreeSelectField.Name = \"{currentField.Name}\";\n" +
+	$"\ttreeSelectField.Label = \"{currentField.Label}\";\n";
+			if (currentField.PlaceholderText == null)
+			{
+				response += $"\ttreeSelectField.PlaceholderText = null;\n";
+			}
+			else
+			{
+				response += $"\ttreeSelectField.PlaceholderText = \"{currentField.PlaceholderText}\";\n";
+			}
+			if (currentField.Description == null)
+			{
+				response += $"\ttreeSelectField.Description = null;\n";
+			}
+			else
+			{
+				response += $"\ttreeSelectField.Description = \"{currentField.Description}\";\n";
+			}
+			if (currentField.HelpText == null)
+			{
+				response += $"\ttreeSelectField.HelpText = null;\n";
+			}
+			else
+			{
+				response += $"\ttreeSelectField.HelpText = \"{currentField.HelpText}\";\n";
+			}
+
+			response +=
+			$"\ttreeSelectField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
+			$"\ttreeSelectField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
+			$"\ttreeSelectField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
+			$"\ttreeSelectField.Auditable = {(currentField.Auditable).ToString().ToLowerInvariant()};\n" +
+			$"\ttreeSelectField.System = {(currentField.System).ToString().ToLowerInvariant()};\n";
+
+			response +=
+			$"\ttreeSelectField.RelatedEntityId = new Guid(\"{currentField.RelatedEntityId}\");\n" +
+			$"\ttreeSelectField.RelationId = new Guid(\"{currentField.RelationId}\");\n" +
+			$"\ttreeSelectField.SelectedTreeId = new Guid(\"{currentField.SelectedTreeId}\");\n" +
+			$"\ttreeSelectField.SelectionTarget = \"{currentField.SelectionTarget}\";\n" +
+			$"\ttreeSelectField.SelectionType = \"{currentField.SelectionType}\";\n" +
+
+
+			$"\ttreeSelectField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
+			$"\ttreeSelectField.Permissions = new FieldPermissions();\n" +
+			$"\ttreeSelectField.Permissions.CanRead = new List<Guid>();\n" +
+			$"\ttreeSelectField.Permissions.CanUpdate = new List<Guid>();\n" +
+			"\t//READ\n";
+			foreach (var permId in currentField.Permissions.CanRead)
+			{
+				response += $"\ttreeSelectField.Permissions.CanRead.Add(new Guid(\"{permId}\"));\n";
+			}
+			response += "\t//UPDATE\n";
+			foreach (var permId in currentField.Permissions.CanUpdate)
+			{
+				response += $"\ttreeSelectField.Permissions.CanUpdate.Add(new Guid(\"{permId}\"));\n";
+			}
+			response +=
+			"\t{\n" +
+				$"\t\tvar response = entMan.UpdateField(new Guid(\"{entityId}\"), treeSelectField);\n" +
+				"\t\tif (!response.Success)\n" +
+					$"\t\t\tthrow new Exception(\"System error 10060. Entity: {entityName} Field: {currentField.Name} Message:\" + response.Message);\n" +
+			"\t}\n" +
+		"}\n" +
+		"#endregion\n\n";
+			#endregion
+
+			#region << Update check >>
+			if (oldField == null) //oldField is null where its field type is different from currentField
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.Name != oldField.Name)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.Label != oldField.Label)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.PlaceholderText != oldField.PlaceholderText)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.Description != oldField.Description)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.HelpText != oldField.HelpText)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.Required != oldField.Required)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.Unique != oldField.Unique)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.Searchable != oldField.Searchable)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.Auditable != oldField.Auditable)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.System != oldField.System)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.RelatedEntityId != oldField.RelatedEntityId)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.RelationId != oldField.RelationId)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.SelectedTreeId != oldField.SelectedTreeId)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.SelectionTarget != oldField.SelectionTarget)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.SelectionType != oldField.SelectionType)
 			{
 				hasUpdate = true;
 			}
