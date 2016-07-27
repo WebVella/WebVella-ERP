@@ -267,7 +267,7 @@
 					//** - target should not be used by another 
 					//** - id field cannot be target
 					if (popupCtrl.targetedFields.indexOf(popupCtrl.entities[i].fields[j].id) === -1 &&
-						popupCtrl.entities[i].fields[j].name != "id") {
+						popupCtrl.entities[i].fields[j].name != "id" && popupCtrl.entities[i].fields[j].required) {
 						entity.fields11.push(field);
 					}
 

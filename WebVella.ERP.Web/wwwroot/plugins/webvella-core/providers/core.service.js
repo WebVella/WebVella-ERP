@@ -2432,7 +2432,11 @@
 			//Fill in validationError boolean and message for each field according to the template
 			// scopeDate.fieldNameError => boolean; scopeDate.fieldNameMessage => the error from the api; 
 			scopeObj.validation = {};
+			scopeObj.validation["errors"] = [];
 			for (var i = 0; i < response.errors.length; i++) {
+				var error = {};
+				error.field = response.errors[i].key;
+				error.message = response.errors[i].message;
 				scopeObj.validation[response.errors[i].key] = {};
 				scopeObj.validation[response.errors[i].key]["message"] = response.errors[i].message;
 				scopeObj.validation[response.errors[i].key]["state"] = true;

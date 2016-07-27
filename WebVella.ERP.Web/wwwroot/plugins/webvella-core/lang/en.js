@@ -503,7 +503,7 @@ var translationsEN = {
 	RELATION_ID: 'Relation ID',
 	RELATION_LABEL_PLACEHOLDER: 'e.g. Category 1:N Item',	
 	RELATION_MANAGE_MODAL_TITLE: 'Manage relation',
-	RELATION_MANAGE_MODAL_WARNING:'only "Identifier GUID" fields can be related. Origin fields should be unique and required also. A field can be target to only one relation.<br />The relations - "1:1" and "1:N", do not allow the "id" to be Target field for the relation',
+	RELATION_MANAGE_MODAL_WARNING:'only "Identifier GUID" fields can be related. Origin fields should be unique and required also. A field can be target to only one relation. If 1:1 relation, the target field should be both unique and required.<br />The relations - "1:1" and "1:N", do not allow the "id" to be Target field for the relation',
 	RELATION_NAME: 'Relation Name',
 	RELATION_NAME_PLACEHOLDER: 'e.g. category_1_n_item',
 	RELATION_ORIGIN_ENTITY: 'Origin Entity',
