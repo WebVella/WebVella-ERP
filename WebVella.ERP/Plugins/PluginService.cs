@@ -49,7 +49,7 @@ namespace WebVella.ERP.Plugins
 				plugin.Assemblies.AddRange(GetAssembliesInFolder(binDir));
 			}
 
-			plugins = plugins.OrderBy(x => x.LoadPriority).ToList();
+			plugins = plugins.OrderByDescending(x => x.LoadPriority).ToList();
 			ExecutePluginStart(serviceProvider);
 		}
 
