@@ -1770,18 +1770,18 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			try
 			{
-				dynamic hookFilterObj = new ExpandoObject();
-				hookFilterObj.record = model;
-				hookFilterObj.result = result;
-				hookFilterObj.relation = relation;
-				hookFilterObj.controller = this;
-				hooksService.ProcessActions(SystemWebHookNames.ManageRelationAction, originEntity.Name, hookFilterObj);
-				hookFilterObj = new ExpandoObject();
-				hookFilterObj.record = model;
-				hookFilterObj.result = result;
-				hookFilterObj.relation = relation;
-				hookFilterObj.controller = this;
-				hooksService.ProcessActions(SystemWebHookNames.ManageRelationAction, targetEntity.Name, hookFilterObj);
+				dynamic hookActionObj = new ExpandoObject();
+				hookActionObj.record = model;
+				hookActionObj.result = result;
+				hookActionObj.relation = relation;
+				hookActionObj.controller = this;
+				hooksService.ProcessActions(SystemWebHookNames.ManageRelationAction, originEntity.Name, hookActionObj);
+				hookActionObj = new ExpandoObject();
+				hookActionObj.record = model;
+				hookActionObj.result = result;
+				hookActionObj.relation = relation;
+				hookActionObj.controller = this;
+				hooksService.ProcessActions(SystemWebHookNames.ManageRelationAction, targetEntity.Name, hookActionObj);
 			}
 			catch (Exception ex)
 			{
@@ -1844,11 +1844,11 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			try
 			{
-				dynamic hookFilterObj = new ExpandoObject();
-				hookFilterObj.recordId = recordId;
-				hookFilterObj.result = result;
-				hookFilterObj.controller = this;
-				hooksService.ProcessActions(SystemWebHookNames.GetRecordAction, entityName, hookFilterObj);
+				dynamic hookActionObj = new ExpandoObject();
+				hookActionObj.recordId = recordId;
+				hookActionObj.result = result;
+				hookActionObj.controller = this;
+				hooksService.ProcessActions(SystemWebHookNames.GetRecordAction, entityName, hookActionObj);
 			}
 			catch (Exception ex)
 			{
@@ -1954,11 +1954,11 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			try
 			{
-				dynamic hookFilterObj = new ExpandoObject();
-				hookFilterObj.recordId = recordId;
-				hookFilterObj.result = result;
-				hookFilterObj.controller = this;
-				hooksService.ProcessActions(SystemWebHookNames.DeleteRecordAction, entityName, hookFilterObj);
+				dynamic hookActionObj = new ExpandoObject();
+				hookActionObj.recordId = recordId;
+				hookActionObj.result = result;
+				hookActionObj.controller = this;
+				hooksService.ProcessActions(SystemWebHookNames.DeleteRecordAction, entityName, hookActionObj);
 			}
 			catch (Exception ex)
 			{
@@ -2089,11 +2089,11 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			try
 			{
-				dynamic hookFilterObj = new ExpandoObject();
-				hookFilterObj.record = postObj;
-				hookFilterObj.result = result;
-				hookFilterObj.controller = this;
-				hooksService.ProcessActions(SystemWebHookNames.CreateRecordAction, entityName, hookFilterObj);
+				dynamic hookActionObj = new ExpandoObject();
+				hookActionObj.record = postObj;
+				hookActionObj.result = result;
+				hookActionObj.controller = this;
+				hooksService.ProcessActions(SystemWebHookNames.CreateRecordAction, entityName, hookActionObj);
 			}
 			catch (Exception ex)
 			{
@@ -2212,13 +2212,13 @@ namespace WebVella.ERP.Web.Controllers
 			#region
 			try
 			{
-				dynamic hookFilterObj = new ExpandoObject();
-				hookFilterObj.record = postObj;
-				hookFilterObj.oldRecord = postObj;
-				hookFilterObj.result = result;
-				hookFilterObj.recordId = recordId;
-				hookFilterObj.controller = this;
-				hooksService.ProcessActions(SystemWebHookNames.UpdateRecordAction, entityName, hookFilterObj);
+				dynamic hookActionObj = new ExpandoObject();
+				hookActionObj.record = postObj;
+				hookActionObj.oldRecord = postObj;
+				hookActionObj.result = result;
+				hookActionObj.recordId = recordId;
+				hookActionObj.controller = this;
+				hooksService.ProcessActions(SystemWebHookNames.UpdateRecordAction, entityName, hookActionObj);
 			}
 			catch (Exception ex)
 			{
@@ -2335,12 +2335,12 @@ namespace WebVella.ERP.Web.Controllers
 			//////////////////////////////////////////////////////////////////////////////////////
 			try
 			{
-				dynamic hookFilterObj = new ExpandoObject();
-				hookFilterObj.record = postObj;
-				hookFilterObj.result = result;
-				hookFilterObj.recordId = recordId;
-				hookFilterObj.controller = this;
-				hooksService.ProcessActions(SystemWebHookNames.PatchRecordAction, entityName, hookFilterObj);
+				dynamic hookActionObj = new ExpandoObject();
+				hookActionObj.record = postObj;
+				hookActionObj.result = result;
+				hookActionObj.recordId = recordId;
+				hookActionObj.controller = this;
+				hooksService.ProcessActions(SystemWebHookNames.PatchRecordAction, entityName, hookActionObj);
 			}
 			catch (Exception ex)
 			{
