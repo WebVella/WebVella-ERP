@@ -78,7 +78,12 @@
         <h3 class="modal-title" ng-show="popupCtrl.relation.id != null" translate="{{::'RELATION_MANAGE_MODAL_TITLE'}}"></h3>
     </div>
     <div class="modal-body">
-		<div class="alert alert-danger ng-hide" ng-show="popupCtrl.validation.hasError" ng-bind="popupCtrl.validation.message"></div>
+		<div class="alert alert-danger ng-hide" ng-show="popupCtrl.validation.hasError">
+			<p ng-bind="popupCtrl.validation.message"></p>
+			<ul ng-if="popupCtrl.validation.errors.length > 0">
+				<li ng-repeat="error in popupCtrl.validation.errors track by $index"><strong>{{error.field}}</strong> - {{error.message}}</li>
+			</ul>
+		</div>
         <form name="createRelation">
             <div class="row">
                 <div class="col-sm-6">

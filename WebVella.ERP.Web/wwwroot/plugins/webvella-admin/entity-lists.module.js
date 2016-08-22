@@ -173,6 +173,10 @@
 		{
 			name: "lookup",
 			label: "lookup"
+		},
+				{
+			name: "hidden",
+			label: "hidden"
 		}
         ];
 
