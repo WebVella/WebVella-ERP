@@ -14,7 +14,7 @@
 </div>
 <div id="page-body">
 	<div id="page-text">
-		<div class="record-details">
+		<div class="record-details" ng-if='!ngCtrl.view.meta.dynamicHtmlTemplate'>
 			<div class="alert alert-warning" ng-if="::ngCtrl.createViewRegion == null">There is no default "create" view defined for this entity. Please contact your system integrator!</div>
 			<div class="alert alert-warning" ng-if="::!ngCtrl.userHasRecordPermissions('canCreate')">You are not allowed to create records in this entity</div>
 			<div class="alert alert-danger" ng-if="ngCtrl.validation.hasError" ng-bind-html="ngCtrl.validation.errorMessage"></div>
@@ -39,7 +39,11 @@
 				<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.createBottomActions track by actionItem.name"></span>
 			</div>
 		</div>
-		<div class="page-bottom-actions" dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageBottomActions track by actionItem.name"></div>
+		<div class="page-bottom-actions" dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageBottomActions track by actionItem.name" ng-if='!ngCtrl.view.meta.dynamicHtmlTemplate'></div>
+
+		<div id="page-text" ng-if='::ngCtrl.view.meta.dynamicHtmlTemplate'>
+			<div ng-include="::ngCtrl.view.meta.dynamicHtmlTemplate"></div>
+		</div>
 	</div>
 </div>
 

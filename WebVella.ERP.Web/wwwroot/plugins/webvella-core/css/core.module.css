@@ -250,6 +250,11 @@ span.divider {
 		color: #F44336 !important;
 	}
 
+.navbar.navbar-default.navbar-erp .navbar-btn {
+	margin-top:3px;
+	margin-bottom:3px;
+}
+
 .nav > li > a:focus {
 	background: transparent;
 }
@@ -2280,8 +2285,8 @@ body.hidden-sidebar #page-topnav {
 		bottom: 0;
 		left: 0;
 		right: 0;
-		width: 3em;
-		height: 3em;
+		width: 2em;
+		height: 2em;
 	}
 
 .ajax-wrapper {
@@ -2821,6 +2826,13 @@ table .btn-xs.btn-link {
 .table.table-noborder td {
 	border: none;
 }
+
+.table.table-clean th,
+.table.table-clean td{
+	background:none;
+	border:none;
+}
+
 
 .sort-link em,
 .table .actions em {
