@@ -41,7 +41,7 @@
 		</div>
 		<div class="page-bottom-actions" dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageBottomActions track by actionItem.name" ng-if='!ngCtrl.view.meta.dynamicHtmlTemplate'></div>
 
-		<div id="page-text" ng-if='::ngCtrl.view.meta.dynamicHtmlTemplate'>
+		<div ng-if='::ngCtrl.view.meta.dynamicHtmlTemplate'>
 			<div ng-include="::ngCtrl.view.meta.dynamicHtmlTemplate"></div>
 		</div>
 	</div>
