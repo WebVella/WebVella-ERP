@@ -852,6 +852,10 @@ body.hidden-sidebar #page-topnav {
 		font-size: 20px;
 	}
 
+    #page-topnav .aux-actions .btn:hover {
+        text-decoration:none;
+    }
+
 	#page-topnav .aux-actions .btn:hover i {
 		color: #555;
 	}

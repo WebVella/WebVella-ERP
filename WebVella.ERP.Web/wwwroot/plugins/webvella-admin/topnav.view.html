@@ -1,8 +1,9 @@
 <div class="aux-actions">
-	<span class="btn btn-link btn-sm" tooltip-placement="bottom"  tooltip-append-to-body="true" uib-tooltip="{{::topnavData.currentUser.username}}">
-		<img class="avatar img-circle" src="/plugins/webvella-core/assets/avatar.png" ng-if="::!topnavData.currentUser.image">
-		<img class="avatar img-circle" ng-src="{{::topnavData.currentUser.image}}" ng-if="::topnavData.currentUser.image">		
-	</span>
+    <span class="btn btn-link btn-sm" style="padding-right:0">
+        <img class="avatar img-circle" src="/plugins/webvella-core/assets/avatar.png" ng-if="::!topnavData.currentUser.image">
+        <img class="avatar img-circle" ng-src="{{::topnavData.currentUser.image}}" ng-if="::topnavData.currentUser.image">
+        <span class="go-gray">{{::topnavData.currentUser.username}}</span>
+    </span>
     <a style="padding-right:0;" class="btn btn-link btn-sm" tooltip-placement="bottom"  tooltip-append-to-body="true" ng-click="topnavData.logout()" uib-tooltip="{{::'LOG_OUT' | translate}}"><i class="fa fa-fw fa-power-off"></i></a>
 </div>
 
