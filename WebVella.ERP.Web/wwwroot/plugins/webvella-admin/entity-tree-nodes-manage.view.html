@@ -53,7 +53,7 @@
 		<span class="btn btn-default disabled">
 			{{node.label}}
 			<span class="btn btn-default btn-xs add-node" ng-click="ngCtrl.addNodeModal(node)"><i class="fa fa-fw" ng-class="{'fa-plus go-green': !ngCtrl.addButtonLoadingClass[node.id], 'fa-cog fa-spin go-orange': ngCtrl.addButtonLoadingClass[node.id]}"></i></span>
-			<span class="btn btn-default btn-xs delete-node" confirmed-click="ngCtrl.removeNodeModal(node)" ng-confirm-click="{{::'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" ng-if="node.parentId != null"><i class="fa fa-fw fa-times-circle go-red"></i></span>
+			<span class="btn btn-default btn-xs delete-node" confirmed-click="ngCtrl.removeNodeModal(node)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" ng-if="node.parentId != null"><i class="fa fa-fw fa-times-circle go-red"></i></span>
 		</span>
 	</div>
 	<ol ui-tree-nodes ng-model="node.nodes">

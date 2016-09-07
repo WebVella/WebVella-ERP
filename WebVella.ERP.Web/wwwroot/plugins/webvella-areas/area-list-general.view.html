@@ -403,7 +403,7 @@
 								<div class="input-group file-upload ng-hide" ng-show='popupCtrl.uploadedFilePath'>
 									<span class="form-control"><a href="{{popupCtrl.uploadedFilePath}}"><i class="fa fa-file"></i> {{popupCtrl.uploadedFile.name}}</a></span>
 									<a class="input-group-addon update" href='javascript:void(0)' ngf-select="popupCtrl.upload(popupCtrl.uploadedFile)" ngf-max-size="20MB" ng-model='popupCtrl.uploadedFile' ngf-multiple='false'><i class="fa fa-fw fa-refresh"></i></a>
-									<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFileUpload()" ng-confirm-click="{{::'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
+									<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFileUpload()" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 								</div>
 							</div>
 						</div>
