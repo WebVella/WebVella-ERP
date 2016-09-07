@@ -2407,7 +2407,7 @@ namespace WebVella.ERP.Web.Controllers
 			try
 			{
 				QueryObject queryObj = null;
-				if (Request.Query.Count > 0)
+				/*if (Request.Query.Count > 0)
 				{
 					List<QueryObject> queryObjList = new List<QueryObject>();
 
@@ -2427,7 +2427,7 @@ namespace WebVella.ERP.Web.Controllers
 						queryObj = queryObjList[0];
 					else if (queryObjList.Count > 1)
 						queryObj = EntityQuery.QueryAND(queryObjList.ToArray());
-				}
+				}*/
 
 				if (relation == null)
 				{
