@@ -173,7 +173,7 @@
 										</div>
 										<div class="input-group file-upload" ng-show='ngCtrl.view.data[item.dataName]'>
 											<a class="form-control link-icon" href="{{ngCtrl.view.data[item.dataName]}}" target="_blank">view file</a>
-											<a class="input-group-addon" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="{{::'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" style="margin-left:1em;" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
+											<a class="input-group-addon" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" style="margin-left:1em;" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 										</div>
 										<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">
 											{{item.meta.helpText}}
@@ -211,7 +211,7 @@
 										</div>
 										<div class="image-upload" ng-show='ngCtrl.view.data[item.dataName]'>
 											<img class="image-field" ng-src="{{ngCtrl.view.data[item.dataName]}}" style="width:120px;" />
-											<a class="delete-link" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="{{::'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
+											<a class="delete-link" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 										</div>
 										<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">
 											{{item.meta.helpText}}
@@ -421,7 +421,7 @@
 												<p class="form-control form-control-static" ng-bind-html="ngCtrl.renderFieldValue(ngCtrl.view.data[item.dataName],item.meta) || '<span class=&quot;go-gray&quot;>Click to select</span>'"
 												   ng-click="ngCtrl.openManageRelationFieldModal(item,1,'target')"></p>
 												<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.view.data[item.dataName].length > 0"
-													  confirmed-click="ngCtrl.emptyField(item)" ng-confirm-click="{{::'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
+													  confirmed-click="ngCtrl.emptyField(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
 												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,1,'target')"><i class="fa fa-indent fa-fw"></i></span>
 											</div>
 										</div>
@@ -459,7 +459,7 @@
 												<p class="form-control-static form-control" ng-bind-html="ngCtrl.dummyFields[item.dataName] || '<span class=&quot;go-gray&quot;>Click to select</span>'"
 												   ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target')"></p>
 												<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.hasFieldFromRelationValue(item.dataName)"
-													  confirmed-click="ngCtrl.removeFieldFromRelationValue(item.dataName)" ng-confirm-click="{{::'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
+													  confirmed-click="ngCtrl.removeFieldFromRelationValue(item.dataName)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"><i class="fa fa-trash-o fa-fw"></i></span>
 												<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target')"><i class="fa fa-indent fa-fw"></i></span>
 											</div>
 										</div>

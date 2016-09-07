@@ -1084,7 +1084,7 @@
                 "name": "wv_record_delete",
                 "menu": "page-title-dropdown",
                 "weight": 1,
-                "template": "<a href=\"javascript:void(0)\" confirmed-click=\"ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"{{'::DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}\" \n\t\t ng-if=\"::ngCtrl.userHasRecordPermissions('canDelete')\"> \n\t <i class=\"fa fa-trash go-red\"></i> Delete Record \n </a>"
+                "template": "<a href=\"javascript:void(0)\" confirmed-click=\"ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}\" \n\t\t ng-if=\"::ngCtrl.userHasRecordPermissions('canDelete')\"> \n\t <i class=\"fa fa-trash go-red\"></i> Delete Record \n </a>"
             };
             var createListAction = {
                 "name": "wv_create_and_list",

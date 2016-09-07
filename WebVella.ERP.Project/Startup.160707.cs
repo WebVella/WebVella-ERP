@@ -1156,7 +1156,7 @@ namespace WebVella.ERP.Project
 			actionItem.Name = "wv_record_delete";
 			actionItem.Menu = "page-title-dropdown";
 			actionItem.Weight = Decimal.Parse("1.0");
-			actionItem.Template = @"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.deleteRecord(ngCtrl)"" ng-confirm-click=""{{'::DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"" 
+			actionItem.Template = @"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.deleteRecord(ngCtrl)"" ng-confirm-click=""{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}"" 
 		 ng-if=""::ngCtrl.userHasRecordPermissions('canDelete')""> 
 	 <i class=""fa fa-trash go-red""></i> Delete Record 
  </a>";
