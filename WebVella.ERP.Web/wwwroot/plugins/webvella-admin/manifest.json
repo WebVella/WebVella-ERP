@@ -11,7 +11,7 @@
 	"license": "Apache License 2.0",
 	"settings_url": "",
 	"icon_url": "",
-	"load_priority": 13,
+	"load_priority": 9998,
 	"libraries": {
 		"css": [ ],
 		"js": [ ]
