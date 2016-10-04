@@ -178,6 +178,8 @@
         serviceInstance.launchHook = launchHook;
         serviceInstance.setPageTitle = setPageTitle;
         serviceInstance.setBodyColorClass = setBodyColorClass;
+		serviceInstance.initValidationObject = initValidationObject;
+		serviceInstance.setValidationError = setValidationError;
         serviceInstance.generateValidationMessages = generateValidationMessages;
         serviceInstance.GoToState = GoToState;
         //#endregion
@@ -2003,6 +2005,7 @@
                 "nodeIdFieldId": null, //Inherited from the relation Origin field
                 "nodeNameFieldId": null, //Only certain types should be allowed here - used for URL generation
                 "nodeLabelFieldId": null, //Only certain types should be allowed here - human readable node label
+				"nodeWeightFieldId": null, //Only certain types should be allowed here - human readable node label
                 "rootNodes": [],
                 "nodeObjectProperties": []
             }
@@ -2428,6 +2431,29 @@
         function setBodyColorClass(color) {
             $rootScope.$emit("application-body-color-update", color);
         }
+		/////////////////////
+		function initValidationObject(){
+			var validation = {};
+			validation.message = null;
+			validation.isInvalid = false;
+			validation.errors = {};
+			return validation;
+		}
+		////////////////////
+		function setValidationError(validationObj,generalMessage,fieldName,fieldMessage){
+			validationObj.isInvalid = true;
+			if (generalMessage != "" && generalMessage != null) {
+				validationObj.message  = generalMessage;
+			}
+			if (fieldName != null) {
+			    validationObj.errors[fieldName] = {};
+			    validationObj.errors[fieldName].isInvalid = true;
+			    validationObj.errors[fieldName].message = fieldMessage;
+			}
+
+			return validationObj;
+		}
+
         ///////////////////
         function generateValidationMessages(response, scopeObj, formObject, location) {
             //Fill in validationError boolean and message for each field according to the template
