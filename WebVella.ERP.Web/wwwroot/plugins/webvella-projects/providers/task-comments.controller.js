@@ -83,22 +83,25 @@
 		$scope.editorOptions = {
 			language: GlobalLanguage,
 			skin: 'moono',
-			height: '300',
+			height: '160',
 			contentsCss: '/plugins/webvella-core/css/editor.css',
-			extraPlugins: "sourcedialog,colorbutton",
+			extraPlugins: "sourcedialog,colorbutton,colordialog,panel,font",
 			allowedContent: true,
+			colorButton_colors: '333333,FFFFFF,F44336,E91E63,9C27B0,673AB7,3F51B5,2196F3,03A9F4,00BCD4,009688,4CAF50,8BC34A,CDDC39,FFEB3B,FFC107,FF9800,FF5722,795548,607D8B,999999',
+			colorButton_enableAutomatic: false,
+			colorButton_enableMore: false,
 			toolbarLocation: 'top',
 			toolbar: 'full',
 			toolbar_full: [
 				{ name: 'basicstyles', items: ['Save', 'Bold', 'Italic', 'Strike', 'Underline'] },
+				{ name: 'colors', items: ['TextColor', 'BGColor'] },
+				{ name: 'styles', items: ['FontSize', 'RemoveFormat'] },
+				{ name: 'editing', items: ['Format'] },
+				{ name: 'links', items: ['Link', 'Unlink'] },
+				{ name: 'pasting', items: ['PasteText', 'PasteFromWord'] },
 				{ name: 'paragraph', items: ['BulletedList', 'NumberedList', 'Blockquote'] },
-				{ name: 'editing', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
-				{ name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
-				{ name: 'tools', items: ['SpellChecker', 'Maximize'] },
-				{ name: 'clipboard', items: ['Undo', 'Redo'] },
-				{ name: 'styles', items: ['Format', 'FontSize', 'TextColor', 'PasteText', 'PasteFromWord', 'RemoveFormat'] },
-				{ name: 'colors' },
-				{ name: 'insert', items: ['Image', 'Table', 'SpecialChar', 'Sourcedialog'] }, '/',
+				{ name: 'insert', items: ['Image', 'Table', 'SpecialChar'] },
+				{ name: 'tools', items: ['Sourcedialog', 'Maximize'] }, '/'
 			]
 		};
 

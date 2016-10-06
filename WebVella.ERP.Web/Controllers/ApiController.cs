@@ -2408,7 +2408,7 @@ namespace WebVella.ERP.Web.Controllers
 			try
 			{
 				QueryObject queryObj = null;
-				if (Request.Query.Count > 0)
+				/*if (Request.Query.Count > 0)
 				{
 					List<QueryObject> queryObjList = new List<QueryObject>();
 
@@ -2428,7 +2428,7 @@ namespace WebVella.ERP.Web.Controllers
 						queryObj = queryObjList[0];
 					else if (queryObjList.Count > 1)
 						queryObj = EntityQuery.QueryAND(queryObjList.ToArray());
-				}
+				}*/
 
 				if (relation == null)
 				{
@@ -2844,8 +2844,15 @@ namespace WebVella.ERP.Web.Controllers
 			List<EntityRecord> resultDataList = new List<EntityRecord>();
 
 			QueryResponse result = recMan.Find(resultQuery);
-			if (!result.Success)
-				throw new Exception(result.Message);
+            if (!result.Success)
+                if (result.Errors.Count > 0)
+                {
+                    throw new Exception(result.Message + ". Reason: " + result.Errors[0].Message);
+                }
+                else
+                {
+                    throw new Exception(result.Message);
+                }
 
 			if (list != null)
 			{
@@ -3582,7 +3589,7 @@ namespace WebVella.ERP.Web.Controllers
 			try
 			{
 				List<EntityRelation> relationList = new EntityRelationManager().Read().Object ?? new List<EntityRelation>();
-				response.Object.Data = GetTreeRecords(entities, relationList, tree);
+				response.Object.Data = Helpers.GetTreeRecords(entities, relationList, tree);
 				response.Object.Meta = tree;
 			}
 			catch (Exception ex)
@@ -3595,193 +3602,6 @@ namespace WebVella.ERP.Web.Controllers
 
 			return DoResponse(response);
 		}
-
-		private List<ResponseTreeNode> GetTreeRecords(List<Entity> entities, List<EntityRelation> relationList, RecordTree tree)
-		{
-			EntityRelation relation = relationList.FirstOrDefault(r => r.Id == tree.RelationId);
-
-			Guid treeEntityId = relation.OriginEntityId;
-			Guid treeRelFieldId = relation.OriginFieldId;
-
-			Entity treeEntity = entities.FirstOrDefault(e => e.Id == treeEntityId);
-			Field treeIdField = treeEntity.Fields.FirstOrDefault(f => f.Id == treeRelFieldId);
-			Field treeParrentField = treeEntity.Fields.FirstOrDefault(f => f.Id == tree.NodeParentIdFieldId);
-			Field nameField = treeEntity.Fields.FirstOrDefault(f => f.Id == tree.NodeNameFieldId);
-			Field labelField = treeEntity.Fields.FirstOrDefault(f => f.Id == tree.NodeLabelFieldId);
-			Field weightField = treeEntity.Fields.FirstOrDefault(f => f.Id == tree.NodeWeightFieldId);
-
-			var relIdField = treeEntity.Fields.Single(x => x.Name == "id");
-
-			List<Guid> fieldIdsToInclude = new List<Guid>();
-
-			if (!fieldIdsToInclude.Contains(treeIdField.Id))
-				fieldIdsToInclude.Add(treeIdField.Id);
-
-			if (!fieldIdsToInclude.Contains(treeParrentField.Id))
-				fieldIdsToInclude.Add(treeParrentField.Id);
-
-			if (!fieldIdsToInclude.Contains(tree.NodeNameFieldId))
-				fieldIdsToInclude.Add(tree.NodeNameFieldId);
-
-			if (!fieldIdsToInclude.Contains(tree.NodeLabelFieldId))
-				fieldIdsToInclude.Add(tree.NodeLabelFieldId);
-
-			var weightFieldNonNullable = Guid.Empty;
-			if (tree.NodeWeightFieldId.HasValue)
-			{
-				weightFieldNonNullable = tree.NodeWeightFieldId.Value;
-			}
-			if (weightField != null && !fieldIdsToInclude.Contains(weightFieldNonNullable))
-				fieldIdsToInclude.Add(weightFieldNonNullable);
-
-			string queryFields = string.Empty;
-			foreach (var fieldId in fieldIdsToInclude)
-			{
-				var f = treeEntity.Fields.SingleOrDefault(x => x.Id == fieldId);
-				if (f != null)
-				{
-					if (!queryFields.Contains(f.Name))
-						queryFields += (f.Name + ",");
-				}
-			}
-			queryFields += "id";
-
-			EntityQuery eq = new EntityQuery(treeEntity.Name, queryFields);
-			RecordManager recMan = new RecordManager();
-			var allRecords = recMan.Find(eq).Object.Data;
-
-			List<ResponseTreeNode> rootNodes = new List<ResponseTreeNode>();
-			foreach (var rootNode in tree.RootNodes.OrderBy(x => x.Name))
-			{
-				List<ResponseTreeNode> children = new List<ResponseTreeNode>();
-				int? rootNodeWeight = null;
-				if (weightField != null)
-				{
-					rootNodeWeight = rootNode.Weight;
-					children = GetTreeNodeChildren(allRecords, treeIdField.Name,
-									 treeParrentField.Name, nameField.Name, labelField.Name, rootNode.Id, weightField.Name, 1, tree.DepthLimit);
-				}
-				else
-				{
-					children = GetTreeNodeChildren(allRecords, treeIdField.Name,
-									 treeParrentField.Name, nameField.Name, labelField.Name, rootNode.Id, "no-weight", 1, tree.DepthLimit);
-				}
-				rootNodes.Add(new ResponseTreeNode
-				{
-					RecordId = rootNode.RecordId,
-					Id = rootNode.Id.Value,
-					ParentId = rootNode.ParentId,
-					Name = rootNode.Name,
-					Label = rootNode.Label,
-					Weight = rootNodeWeight,
-					Nodes = children
-				});
-
-			}
-
-			return rootNodes;
-		}
-
-		private List<ResponseTreeNode> GetTreeNodeChildren(string entityName, string fields, string idFieldName, string parentIdFieldName,
-				string nameFieldName, string labelFieldName, Guid? nodeId, string weightFieldName = "no-weight", int depth = 1, int maxDepth = 20)
-		{
-			if (depth >= maxDepth)
-				return new List<ResponseTreeNode>();
-
-			var query = EntityQuery.QueryEQ(parentIdFieldName, nodeId);
-			EntityQuery eq = new EntityQuery(entityName, fields, query);
-			RecordManager recMan = new RecordManager();
-			var records = recMan.Find(eq).Object.Data;
-			List<ResponseTreeNode> nodes = new List<ResponseTreeNode>();
-			depth++;
-			foreach (var record in records)
-			{
-				if (weightFieldName == "no-weight")
-				{
-					nodes.Add(new ResponseTreeNode
-					{
-						RecordId = (Guid)record["id"],
-						Id = (Guid)record[idFieldName],
-						ParentId = (Guid?)record[parentIdFieldName],
-						Name = record[nameFieldName]?.ToString(),
-						Label = record[labelFieldName]?.ToString(),
-						Weight = null,
-						Nodes = GetTreeNodeChildren(entityName, fields, idFieldName, parentIdFieldName, nameFieldName, labelFieldName, (Guid)record[idFieldName], weightFieldName, depth, maxDepth)
-					});
-				}
-				else
-				{
-					nodes.Add(new ResponseTreeNode
-					{
-						RecordId = (Guid)record["id"],
-						Id = (Guid)record[idFieldName],
-						ParentId = (Guid?)record[parentIdFieldName],
-						Name = record[nameFieldName]?.ToString(),
-						Label = record[labelFieldName]?.ToString(),
-						Weight = (int?)((decimal?)record[weightFieldName]),
-						Nodes = GetTreeNodeChildren(entityName, fields, idFieldName, parentIdFieldName, nameFieldName, labelFieldName, (Guid)record[idFieldName], weightFieldName, depth, maxDepth)
-					});
-				}
-			}
-			if (weightFieldName == "no-weight")
-			{
-				return nodes.OrderBy(x => x.Name).ToList();
-			}
-			else
-			{
-				return nodes.OrderBy(x => x.Weight).ThenBy(y => y.Name).ToList();
-			}
-		}
-
-		private List<ResponseTreeNode> GetTreeNodeChildren(List<EntityRecord> allRecords, string idFieldName, string parentIdFieldName,
-				string nameFieldName, string labelFieldName, Guid? nodeId, string weightFieldName = "no-weight", int depth = 1, int maxDepth = 20)
-		{
-			if (depth >= maxDepth)
-				return new List<ResponseTreeNode>();
-
-			var records = allRecords.Where(x => (Guid?)x[parentIdFieldName] == nodeId).ToList();
-			List<ResponseTreeNode> nodes = new List<ResponseTreeNode>();
-			depth++;
-			foreach (var record in records)
-			{
-				if (weightFieldName == "no-weight")
-				{
-					nodes.Add(new ResponseTreeNode
-					{
-						RecordId = (Guid)record["id"],
-						Id = (Guid)record[idFieldName],
-						ParentId = (Guid?)record[parentIdFieldName],
-						Name = record[nameFieldName]?.ToString(),
-						Label = record[labelFieldName]?.ToString(),
-						Weight = null,
-						Nodes = GetTreeNodeChildren(allRecords, idFieldName, parentIdFieldName, nameFieldName, labelFieldName, (Guid)record[idFieldName], weightFieldName, depth, maxDepth)
-					});
-				}
-				else
-				{
-					nodes.Add(new ResponseTreeNode
-					{
-						RecordId = (Guid)record["id"],
-						Id = (Guid)record[idFieldName],
-						ParentId = (Guid?)record[parentIdFieldName],
-						Name = record[nameFieldName]?.ToString(),
-						Label = record[labelFieldName]?.ToString(),
-						Weight = (int?)((decimal?)record[weightFieldName]),
-						Nodes = GetTreeNodeChildren(allRecords, idFieldName, parentIdFieldName, nameFieldName, labelFieldName, (Guid)record[idFieldName], weightFieldName, depth, maxDepth)
-					});
-				}
-			}
-
-			if (weightFieldName == "no-weight")
-			{
-				return nodes.OrderBy(x => x.Name).ToList();
-			}
-			else
-			{
-				return nodes.OrderBy(x => x.Weight).ThenBy(y => y.Name).ToList();
-			}
-		}
-
 
 		private QueryResponse CreateErrorResponse(string message)
 		{

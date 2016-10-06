@@ -44,11 +44,12 @@
 					<td>
 						<span ng-if="ngCtrl.loading"><i class="fa fa-fw fa-spin fa-spinner go-gray"></i></span>
 						<span ng-if="!ngCtrl.loading">
-							<i class="fa fa-fw fa-retweet go-gray"></i><span>
-								<a href="javascript:void(0)" ng-click="ngCtrl.changeScope()" title="click to change the scope">
-									<span ng-if="ngCtrl.scope == 'user'">my tasks</span>
-									<span ng-if="ngCtrl.scope != 'user'">all tasks</span>
-								</a>
+							<i class="fa fa-fw fa-retweet go-gray"></i>
+							<a href="javascript:void(0)" ng-click="ngCtrl.changeScope()" title="click to change the scope">
+								<span ng-if="ngCtrl.scope == 'user'">my tasks</span>
+								<span ng-if="ngCtrl.scope != 'user'">all tasks</span>
+							</a>
+						</span>
 					</td>
 					<td><a class="btn btn-outline" ng-click="ngCtrl.showSprintsListModal()"><i class="fa fa-list"></i></a></td>
 				</tr>
@@ -62,8 +63,8 @@
 						<span class="badge">{{ngCtrl.sprint.tasks_not_started.length}}</span> not started
 					</div>
 					<div class="panel-body" as-sortable="ngCtrl.dragControlListeners" ng-model="ngCtrl.sprint.tasks_not_started">
-						<div class="sprint-item" ng-repeat="task in ngCtrl.sprint.tasks_not_started track by task.id" 
-							ng-include="'sprintItemTemplate.html'" as-sortable-item  as-sortable-item-handle>
+						<div class="sprint-item" ng-repeat="task in ngCtrl.sprint.tasks_not_started track by task.id"
+							 ng-include="'sprintItemTemplate.html'" as-sortable-item as-sortable-item-handle>
 
 						</div>
 					</div>
@@ -76,8 +77,8 @@
 						<span class="badge">{{ngCtrl.sprint.tasks_in_progress.length}}</span> in progress
 					</div>
 					<div class="panel-body" as-sortable="ngCtrl.dragControlListeners" ng-model="ngCtrl.sprint.tasks_in_progress">
-						<div class="sprint-item" ng-repeat="task in ngCtrl.sprint.tasks_in_progress track by task.id" 
-							ng-include="'sprintItemTemplate.html'" as-sortable-item  as-sortable-item-handle>
+						<div class="sprint-item" ng-repeat="task in ngCtrl.sprint.tasks_in_progress track by task.id"
+							 ng-include="'sprintItemTemplate.html'" as-sortable-item as-sortable-item-handle>
 
 						</div>
 					</div>
@@ -87,8 +88,8 @@
 				<div class="panel sprint-wrapper panel-white" id="completed">
 					<div class="panel-heading"><span class="badge">{{ngCtrl.sprint.tasks_completed.length}}</span> completed</div>
 					<div class="panel-body" as-sortable="ngCtrl.dragControlListeners" ng-model="ngCtrl.sprint.tasks_completed">
-						<div class="sprint-item" ng-repeat="task in ngCtrl.sprint.tasks_completed track by task.id" 
-							ng-include="'sprintItemTemplate.html'" data-as-sortable-item  as-sortable-item-handle>
+						<div class="sprint-item" ng-repeat="task in ngCtrl.sprint.tasks_completed track by task.id"
+							 ng-include="'sprintItemTemplate.html'" data-as-sortable-item as-sortable-item-handle>
 
 						</div>
 					</div>
@@ -181,7 +182,7 @@
 							<div class="field">
 								<label class="control-label required">Billable</label>
 								<div class="checkbox">
-									<label><input type="checkbox" ng-value="true"  ng-model="popupCtrl.record.billable"> selected</label>
+									<label><input type="checkbox" ng-value="true" ng-model="popupCtrl.record.billable"> selected</label>
 								</div>
 							</div>
 						</div>
@@ -197,7 +198,7 @@
 								</div>
 							</div>
 						</div>
-					</div>					
+					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-12">
@@ -209,7 +210,7 @@
 								</div>
 							</div>
 						</div>
-					</div>					
+					</div>
 				</div>
 			</div>
 		</div>

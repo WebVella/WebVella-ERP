@@ -160,7 +160,7 @@
 				templateUrl: 'createTreeModal.html',
 				controller: 'CreateTreeModalController',
 				controllerAs: "popupCtrl",
-				size: "",
+				size: "lg",
 				resolve: {
 					ngCtrl: function () {
 						return ngCtrl;
@@ -188,22 +188,57 @@
 
 	//#region << Modal Controllers >>
 	createTreeModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl',
-						'resolvedEligibleRelationsList', 'webvellaCoreService','$translate'];
+						'resolvedEligibleRelationsList', 'webvellaCoreService','$translate','$scope'];
 	
 	function createTreeModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, ngCtrl,
-						resolvedEligibleRelationsList, webvellaCoreService,$translate) {
+						resolvedEligibleRelationsList, webvellaCoreService,$translate,$scope) {
 		
 		var popupCtrl = this;
 		popupCtrl.modalInstance = $uibModalInstance;
 		popupCtrl.tree = webvellaCoreService.initTree();
 		popupCtrl.entity = fastCopy(ngCtrl.entity);
 		popupCtrl.eligibleRelations = fastCopy(resolvedEligibleRelationsList);
+		popupCtrl.selectedRelation = {};
+		popupCtrl.nodeIdField = {};
+		popupCtrl.nodeParentIdField = {};
+		popupCtrl.nodeNameField = {};
+		popupCtrl.nodeLabelField = {};
+		popupCtrl.nodeWeightField = {};
+		popupCtrl.nodeNameEligibleFields = [];
+		popupCtrl.nodeLabelEligibleFields = [];
+		popupCtrl.nodeWeightEligibleFields = [];		
+		popupCtrl.validation = webvellaCoreService.initValidationObject();
+
 		if (popupCtrl.eligibleRelations.length > 0) {
 			popupCtrl.tree.relationId = popupCtrl.eligibleRelations[0].id;
+			popupCtrl.selectedRelation = popupCtrl.eligibleRelations[0];
 		}
 
+
+
 		popupCtrl.ok = function () {
-			webvellaCoreService.createEntityTree(popupCtrl.tree, popupCtrl.entity.name, successCallback, errorCallback);
+			popupCtrl.validation = webvellaCoreService.initValidationObject();
+			if(popupCtrl.tree.name == ""){
+				popupCtrl.validation = webvellaCoreService.setValidationError(popupCtrl.validation,"There are validation errors","name","required field")					
+			}
+
+			if(popupCtrl.tree.label == ""){
+				popupCtrl.validation = webvellaCoreService.setValidationError(popupCtrl.validation,"There are validation errors","label","required field")					
+			}
+
+			if(popupCtrl.tree.nodeNameFieldId == null){
+				popupCtrl.validation = webvellaCoreService.setValidationError(popupCtrl.validation,"There are validation errors","nodeNameField","required field")					
+			}
+			if(popupCtrl.tree.nodeLabelFieldId == null){
+				popupCtrl.validation = webvellaCoreService.setValidationError(popupCtrl.validation,"There are validation errors","nodeLabelField","required field")					
+			}
+			if(popupCtrl.tree.nodeWeightFieldId == null){
+				popupCtrl.validation = webvellaCoreService.setValidationError(popupCtrl.validation,"There are validation errors","nodeWeightField","required field")					
+			}
+
+			if(!$scope.createFrom.$invalid && !popupCtrl.validation.isInvalid ) {
+				webvellaCoreService.createEntityTree(popupCtrl.tree, popupCtrl.entity.name, successCallback, errorCallback);
+			}
 		};
 
 		popupCtrl.cancel = function () {
@@ -225,8 +260,104 @@
 		function errorCallback(response) {
 			var location = $location;
 			//Process the response and generate the validation Messages
-			webvellaCoreService.generateValidationMessages(response, popupCtrl, popupCtrl.entity, location);
+			popupCtrl.validation = webvellaCoreService.setValidationError(popupCtrl.validation,response.message,null,null);
+			for (var i = 0; i < response.errors.length; i++) {
+				popupCtrl.validation = webvellaCoreService.setValidationError(popupCtrl.validation,response.message,response.errors[i].key,response.errors[i].message);
+			}
 		}
+	
+		//#region << Node options >>
+		for (var i = 0; i < popupCtrl.entity.fields.length; i++) {
+			//Fill dictionaries
+			switch (popupCtrl.entity.fields[i].fieldType) {
+				case 1: //Auto-increment
+					if (popupCtrl.entity.fields[i].required) {
+						popupCtrl.nodeLabelEligibleFields.push(popupCtrl.entity.fields[i]);
+						popupCtrl.nodeNameEligibleFields.push(popupCtrl.entity.fields[i]);
+						popupCtrl.nodeWeightEligibleFields.push(popupCtrl.entity.fields[i]);
+					}
+					break;
+				case 12: //Guid
+					if (popupCtrl.entity.fields[i].required) {
+						popupCtrl.nodeWeightEligibleFields.push(popupCtrl.entity.fields[i]);
+					}
+					break;
+				case 16: //Guid
+					if (popupCtrl.entity.fields[i].required) {
+						popupCtrl.nodeLabelEligibleFields.push(popupCtrl.entity.fields[i]);
+						popupCtrl.nodeNameEligibleFields.push(popupCtrl.entity.fields[i]);
+					}
+					break;
+				case 18: // Text
+					if (popupCtrl.entity.fields[i].required) {
+						popupCtrl.nodeLabelEligibleFields.push(popupCtrl.entity.fields[i]);
+						popupCtrl.nodeNameEligibleFields.push(popupCtrl.entity.fields[i]);
+					}
+					break;
+			}
+		}
+
+		popupCtrl.nodeNameEligibleFields = popupCtrl.nodeNameEligibleFields.sort(function (a, b) {
+			if (a.name < b.name) return -1;
+			if (a.name > b.name) return 1;
+			return 0;
+		});
+
+		popupCtrl.nodeLabelEligibleFields = popupCtrl.nodeLabelEligibleFields.sort(function (a, b) {
+			if (a.name < b.name) return -1;
+			if (a.name > b.name) return 1;
+			return 0;
+		});
+
+		function getFieldById(fieldId){
+			for (var i = 0; i < popupCtrl.entity.fields.length; i++) {
+				if(popupCtrl.entity.fields[i].id == fieldId){
+					return popupCtrl.entity.fields[i];
+				}
+			}
+
+			return null;
+		}
+
+		$scope.$watch("popupCtrl.selectedRelation",function(newValue,oldValue){
+			if(!isEmpty(newValue)){
+				popupCtrl.tree.relationId = newValue.id;
+				var originField =  getFieldById(newValue.originFieldId);
+				var targetField =  getFieldById(newValue.targetFieldId);
+				if(originField != null){
+					popupCtrl.nodeIdField = originField
+					popupCtrl.tree.nodeIdFieldId = originField.id;
+				}
+				if(targetField != null){
+					popupCtrl.nodeParentIdField = targetField;
+					popupCtrl.tree.nodeParentIdFieldId = targetField.id;
+				}
+			}
+		});
+
+		$scope.$watch("popupCtrl.nodeNameField",function(newValue,oldValue){
+			if(!isEmpty(newValue)){
+				popupCtrl.tree.nodeNameFieldId = newValue.id;
+			}
+		});
+
+		$scope.$watch("popupCtrl.nodeLabelField",function(newValue,oldValue){
+			if(!isEmpty(newValue)){
+				popupCtrl.tree.nodeLabelFieldId = newValue.id;
+			}
+		});
+
+		$scope.$watch("popupCtrl.nodeWeightField",function(newValue,oldValue){
+			if(!isEmpty(newValue)){
+				popupCtrl.tree.nodeWeightFieldId = newValue.id;
+			}
+		});
+
+		//#endregion	
+	
+
+
+
 	};
 
 	//#endregion

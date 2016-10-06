@@ -195,6 +195,9 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "nodes")]
 		public List<ResponseTreeNode> Nodes{ get; set; }
+
+		[JsonProperty(PropertyName = "object")]
+		public EntityRecord Object{ get; set; }
 	}
 
 	[Serializable]

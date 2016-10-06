@@ -19,8 +19,6 @@ body {
 
 .transparent {
 	opacity: 0; /* Opacity for Modern Browsers */
-	filter: alpha(opacity=0); /* Opacity for IE8 and lower */
-	zoom: 1; /* Fix for IE7 */
 }
 
 a, a:hover, a:active, a:focus {
@@ -163,10 +161,6 @@ span.divider {
 		padding: 10px;
 		background: none;
 	}
-
-.panel .panel .form-group {
-	/*margin-bottom: 0;*/
-}
 
 	.panel .panel .form-group ul {
 		padding-left: 15px;
@@ -2535,6 +2529,10 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 	font-size: 12px;
 }
 
+.well .control-label {
+    color:#aaa;
+}
+
 .form .control-label {
 	margin-bottom: 0;
 }
@@ -2570,11 +2568,6 @@ div.form-control {
 		font-weight: normal !important;
 		background-color: #f5f5f5;
 	}
-
-.form .radio, .form .checkbox {
-	/*margin-top: 5px;
-	margin-bottom: 24px;*/
-}
 
 label.required:after {
 	content: "*";
@@ -2706,6 +2699,16 @@ form .error,
 .table-vertical-align-middle tbody th,
 .table-vertical-align-middle tbody td {
 	vertical-align: middle !important;
+}
+
+.table-th-right th{
+    text-align:right;
+    padding-right:1em !important;
+}
+
+.table-th-gray th{
+    color:#999;
+    font-weight:normal;
 }
 
 .table .img-thumbnail {
@@ -3829,7 +3832,6 @@ table.editable td {
 */
 
 .wizard {
-	*zoom: 1;
 	border: 1px solid #d4d4d4;
 	border-radius: 0;
 	background-color: #f9f9f9;
@@ -4979,9 +4981,6 @@ a.link-icon.link[href]:before {
 
 /*#region << Angular UI tree >> */
 
-.angular-ui-tree {
-}
-
 .angular-ui-tree-empty {
 	border: 1px dashed #bbb;
 	min-height: 100px;
@@ -5582,14 +5581,32 @@ a.link-icon.link[href]:before {
 {
     margin: 20px 0;
     padding: 20px;
-    border-left: 3px solid #eee;
+    border:none;
+    border-radius:0;
+    border-left: 3px solid #eee !important;
 }
+
+
 .alert-message h4
 {
     margin-top: 0;
     margin-bottom: 5px;
 	font-size: 16px;
 }
+
+.alert-message-with-icon
+{
+    position:relative;
+	padding-left:50px;
+}
+
+	.alert-message-with-icon > .fa {
+		font-size:32px;
+		position:absolute;
+		top:20px;
+		left:10px;
+	}
+
 .alert-message p:last-child
 {
     margin-bottom: 0;
@@ -5602,43 +5619,62 @@ a.link-icon.link[href]:before {
 .alert-message-success
 {
     background-color: #F4FDF0;
-    border-color: #3C763D;
+    border-color: #3C763D !important;
 }
 .alert-message-success h4
 {
     color: #3C763D;
 }
+
+.alert-message-success  > .fa {
+	color: #3C763D;
+}
+
 .alert-message-danger
 {
     background-color: #fdf7f7;
-    border-color: #d9534f;
+    border-color: #d9534f !important;
 }
 .alert-message-danger h4
 {
     color: #d9534f;
 }
+
+.alert-message-danger  > .fa {
+	color: #d9534f;
+}
 .alert-message-warning
 {
     background-color: #fcf8f2;
-    border-color: #f0ad4e;
+    border-color: #f0ad4e !important;
 }
 .alert-message-warning h4
 {
     color: #f0ad4e;
 }
+
+.alert-message-warning  > .fa {
+	color: #f0ad4e;
+}
+
 .alert-message-info
 {
     background-color: #f4f8fa;
-    border-color: #5bc0de;
+    border-color: #5bc0de !important;
 }
 .alert-message-info h4
 {
     color: #5bc0de;
 }
+
+.alert-message-info  > .fa {
+	color: #5bc0de;
+}
+
 .alert-message-default
 {
     background-color: #EEE;
-    border-color: #B4B4B4;
+    border-color: #B4B4B4 !important;
 }
 .alert-message-default h4
 {
