@@ -29,6 +29,7 @@ using ImageProcessor;
 using Microsoft.Extensions.Primitives;
 using ImageProcessor.Imaging;
 using System.Drawing;
+using Newtonsoft.Json.Converters;
 
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -4294,6 +4295,8 @@ namespace WebVella.ERP.Web.Controllers
 			response.Timestamp = DateTime.UtcNow;
 			response.Success = true;
 			response.Object = null;
+
+			List<EntityRelation> relations = relMan.Read().Object;
 			EntityListResponse entitiesResponse = entMan.ReadEntities();
 			List<Entity> entities = entitiesResponse.Object;
 			Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
@@ -4303,6 +4306,7 @@ namespace WebVella.ERP.Web.Controllers
 				response.Message = "Entity not found";
 				return DoResponse(response);
 			}
+
 			var entityFields = entity.Fields;
 			string fileTempPath = "";
 			string clipboard = "";
@@ -4325,7 +4329,7 @@ namespace WebVella.ERP.Web.Controllers
 				{
 					foreach (var property in commandsObject.Properties())
 					{
-						commands[property.Name] = (JObject)property.Value;
+						commands[property.Name] = ((JObject)property.Value).ToObject<EntityRecord>();
 					}
 				}
 			}
@@ -4343,20 +4347,45 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(response);
 			}
 
+			CsvReader csvReader = null;
 			string csvContent = "";
 			bool usingClipboard = false;
 			//CASE: 1 If fileTempPath != "" -> get the csv from the file
 			if (fileTempPath != "")
 			{
-				csvContent = fileTempPath;
+				if (fileTempPath.StartsWith("/fs"))
+					fileTempPath = fileTempPath.Remove(0, 3);
+
+				if (!fileTempPath.StartsWith("/"))
+					fileTempPath = "/" + fileTempPath;
+
+				fileTempPath = fileTempPath.ToLowerInvariant();
+
+				DbFileRepository fs = new DbFileRepository();
+				DbFile file = fs.Find(fileTempPath);
+
+				if (file == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "Import failed! File does not exist!";
+					response.Errors.Add(new ErrorModel("fileTempPath", fileTempPath, "Import failed! File does not exist!"));
+					return DoItemNotFoundResponse(response);
+				}
+
+				byte[] fileBytes = file.GetBytes();
+				MemoryStream fileStream = new MemoryStream(fileBytes);
+				TextReader reader = new StreamReader(fileStream);
+				csvReader = new CsvReader(reader);
 			}
 			//CASE: 2 If fileTempPath == "" -> get the csv from the clipboard
 			else
 			{
 				csvContent = clipboard;
 				usingClipboard = true;
+				csvReader = new CsvReader(new StringReader(csvContent));
 			}
-			CsvReader csvReader = new CsvReader(new StringReader(csvContent));
+
 			csvReader.Configuration.HasHeaderRecord = true;
 			csvReader.Configuration.IsHeaderCaseSensitive = false;
 			if (usingClipboard)
@@ -4381,96 +4410,449 @@ namespace WebVella.ERP.Web.Controllers
 
 			var index = 0;//temp
 
-			while (csvReader.Read())
+			csvReader.Read();
+			List<string> columnNames = csvReader.FieldHeaders.ToList();
+			foreach (var columnName in columnNames)
 			{
-				index++;//temp
-				var rowRecord = new EntityRecord();
-				List<string> columnNames = csvReader.FieldHeaders.ToList();
-				foreach (var columnName in columnNames)
+				//Init the error list for this field
+				var errorsList = new List<string>();
+				if (((EntityRecord)evaluationObj["errors"]).GetProperties().Any(p => p.Key == columnName))
 				{
-					bool existingField = false;
-					string fieldValue = csvReader.GetField<string>(columnName);
-					var currentFieldMeta = entityFields.FirstOrDefault(f => f.Name == columnName);
-					if (currentFieldMeta != null)
+					errorsList = (List<string>)((EntityRecord)evaluationObj["errors"])[columnName];
+				}
+
+				bool existingField = false;
+
+				Field currentFieldMeta = null;
+				Field relationEntityFieldMeta = null;
+				Field relationFieldMeta = null;
+				Entity relationEntity = null;
+				string direction = "origin-target";
+				EntityRelationType relationType = EntityRelationType.OneToMany;
+				string fieldEnityName = entity.Name;
+				string fieldRelationName = string.Empty;
+
+				if (columnName.Contains(RELATION_SEPARATOR))
+				{
+					var relationData = columnName.Split(RELATION_SEPARATOR).Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+					if (relationData.Count > 2)
 					{
-						existingField = true;
+						errorsList.Add(string.Format("The specified field name '{0}' is incorrect. Only first level relation can be specified.", columnName));
+						((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+						continue;
 					}
 
-					#region << Validation >>
-					//Init the error list for this field
-					var errorsList = new List<string>();
-					if (((EntityRecord)evaluationObj["errors"]).GetProperties().Any(p => p.Key == columnName))
-					{
-						errorsList = (List<string>)((EntityRecord)evaluationObj["errors"])[columnName];
-					}
-					//Init the warning list for this field
-					var warningList = new List<string>();
-					if (((EntityRecord)evaluationObj["warnings"]).GetProperties().Any(p => p.Key == columnName))
-					{
-						warningList = (List<string>)((EntityRecord)evaluationObj["warnings"])[columnName];
-					}
+					string relationName = relationData[0];
+					string relationFieldName = relationData[1];
 
-					//validate the value for errors
-					var hasError = false;
-
-					if (index == 2 && columnName == "start_date")
-					{//for test
-						hasError = true;
-					}
-
-					if (hasError)
+					if (string.IsNullOrWhiteSpace(relationName) || relationName == "$" || relationName == "$$")
 					{
-						errorsList.Add("This field has some error");
+						errorsList.Add(string.Format("Invalid relation '{0}'. The relation name is not specified.", columnName));
+						((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+						continue;
+					}
+					else if (!relationName.StartsWith("$"))
+					{
+						errorsList.Add(string.Format("Invalid relation '{0}'. The relation name is not correct.", columnName));
+						((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+						continue;
 					}
 					else
-					{
-						errorsList.Add(null);
-					}
-					((EntityRecord)evaluationObj["errors"])[columnName] = errorsList;
+						relationName = relationName.Substring(1);
 
-					//validate the value for warnings
-					var hasWarning = false;
-					if (index == 2 && columnName == "code")
-					{ // for test
-						hasWarning = true;
+					//check for target priority mark $$
+					if (relationName.StartsWith("$"))
+					{
+						relationName = relationName.Substring(1);
+						direction = "target-origin";
 					}
 
-					if (hasWarning)
+					if (string.IsNullOrWhiteSpace(relationFieldName))
 					{
-						warningList.Add("This field has some warning");
+						errorsList.Add(string.Format("Invalid relation '{0}'. The relation field name is not specified.", columnName));
+						((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+						continue;
 					}
-					else
-					{
-						warningList.Add(null);
-					}
-					((EntityRecord)evaluationObj["warnings"])[columnName] = warningList;
-					#endregion
 
-					#region << Commands >>
-					if (!commands.GetProperties().Any(p => p.Key == columnName))
+					var relation = relations.SingleOrDefault(x => x.Name == relationName);
+					if (relation == null)
 					{
-						//we need to init the command for this column - if it is new field the default is do nothing, if it is existing the default is update
-						commands[columnName] = new EntityRecord();
-						if (existingField)
+						errorsList.Add(string.Format("Invalid relation '{0}'. The relation does not exist.", columnName));
+						((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+						continue;
+					}
+
+					if (relation.TargetEntityId != entity.Id && relation.OriginEntityId != entity.Id)
+					{
+						errorsList.Add(string.Format("Invalid relation '{0}'. The relation field belongs to entity that does not relate to current entity.", columnName));
+						((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+						continue;
+					}
+
+					if (relation.OriginEntityId == relation.TargetEntityId)
+					{
+						if (direction == "origin-target")
 						{
-							((EntityRecord)commands[columnName])["command"] = "to_update";
-							((EntityRecord)commands[columnName])["fieldType"] = currentFieldMeta.GetFieldType();
-							((EntityRecord)commands[columnName])["fieldName"] = currentFieldMeta.Name;
-							((EntityRecord)commands[columnName])["fieldLabel"] = currentFieldMeta.Label;
+							relationEntity = entity;
+							relationEntityFieldMeta = relationEntity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
+							currentFieldMeta = relationEntity.Fields.FirstOrDefault(f => f.Name == relationFieldName);
+							relationFieldMeta = entity.Fields.FirstOrDefault(f => f.Id == relation.OriginFieldId);
 						}
 						else
 						{
-							//we need to check wheather the property of the command match the fieldName
-							((EntityRecord)commands[columnName])["command"] = "to_create";
-							((EntityRecord)commands[columnName])["fieldType"] = 18;
-							((EntityRecord)commands[columnName])["fieldName"] = columnName;
-							((EntityRecord)commands[columnName])["fieldLabel"] = columnName;
+							relationEntity = entity;
+							relationEntityFieldMeta = relationEntity.Fields.FirstOrDefault(f => f.Id == relation.OriginFieldId);
+							currentFieldMeta = relationEntity.Fields.FirstOrDefault(f => f.Name == relationFieldName);
+							relationFieldMeta = entity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
 						}
-
+					}
+					else if (relation.OriginEntityId == entity.Id)
+					{
+						//direction doesn't matter
+						relationEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
+						relationEntityFieldMeta = relationEntity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
+						currentFieldMeta = relationEntity.Fields.FirstOrDefault(f => f.Name == relationFieldName);
+						relationFieldMeta = entity.Fields.FirstOrDefault(f => f.Id == relation.OriginFieldId);
+					}
+					else
+					{
+						//direction doesn't matter
+						relationEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
+						relationEntityFieldMeta = relationEntity.Fields.FirstOrDefault(f => f.Id == relation.OriginFieldId);
+						currentFieldMeta = relationEntity.Fields.FirstOrDefault(f => f.Name == relationFieldName);
+						relationFieldMeta = entity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
 					}
 
-					evaluationObj["commands"] = commands;
-					#endregion
+					if (currentFieldMeta.GetFieldType() == FieldType.MultiSelectField || currentFieldMeta.GetFieldType() == FieldType.TreeSelectField)
+					{
+						errorsList.Add(string.Format("Invalid relation '{0}'. Fields from Multiselect and Treeselect types can't be used as relation fields.", columnName));
+						((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+						continue;
+					}
+
+					if (relation.RelationType == EntityRelationType.OneToOne &&
+						((relation.TargetEntityId == entity.Id && relationFieldMeta.Name == "id") || (relation.OriginEntityId == entity.Id && relationEntityFieldMeta.Name == "id")))
+					{
+						errorsList.Add(string.Format("Invalid relation '{0}'. Can't use relations when relation field is id field.", columnName));
+						((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+						continue;
+					}
+
+					fieldEnityName = relationEntity.Name;
+					fieldRelationName = relationName;
+					relationType = relation.RelationType;
+				}
+				else
+				{
+					currentFieldMeta = entity.Fields.FirstOrDefault(f => f.Name == columnName);
+				}
+
+				if (currentFieldMeta != null)
+				{
+					existingField = true;
+				}
+
+				if (!existingField && !string.IsNullOrWhiteSpace(fieldRelationName))
+				{
+					errorsList.Add(string.Format("Creation of a new relation field is not allowed.", columnName));
+					((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+					continue;
+				}
+
+				#region << Commands >>
+				if (!commands.GetProperties().Any(p => p.Key == columnName))
+				{
+					//we need to init the command for this column - if it is new field the default is do nothing, if it is existing the default is update
+					commands[columnName] = new EntityRecord();
+					if (existingField)
+					{
+						((EntityRecord)commands[columnName])["command"] = "to_update";
+						((EntityRecord)commands[columnName])["relationName"] = fieldRelationName;
+						((EntityRecord)commands[columnName])["relationDirection"] = direction;
+						((EntityRecord)commands[columnName])["relationType"] = relationType;
+						((EntityRecord)commands[columnName])["entityName"] = fieldEnityName;
+						((EntityRecord)commands[columnName])["fieldType"] = currentFieldMeta.GetFieldType();
+						((EntityRecord)commands[columnName])["fieldName"] = currentFieldMeta.Name;
+						((EntityRecord)commands[columnName])["fieldLabel"] = currentFieldMeta.Label;
+
+						((EntityRecord)commands[columnName])["currentFieldMeta"] = currentFieldMeta;
+						((EntityRecord)commands[columnName])["relationEntityFieldMeta"] = relationEntityFieldMeta;
+						((EntityRecord)commands[columnName])["relationFieldMeta"] = relationFieldMeta;
+
+						bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Update, entity);
+						if (!hasPermisstion)
+						{
+							errorsList.Add($"Access denied. Trying to update record in entity '{entity.Name}' with no update access.");
+							((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+							continue;
+						}
+					}
+					else
+					{
+						//we need to check wheather the property of the command match the fieldName
+						((EntityRecord)commands[columnName])["command"] = "to_create";
+						((EntityRecord)commands[columnName])["entityName"] = fieldEnityName;
+						((EntityRecord)commands[columnName])["fieldType"] = FieldType.TextField;
+						((EntityRecord)commands[columnName])["fieldName"] = columnName;
+						((EntityRecord)commands[columnName])["fieldLabel"] = columnName;
+
+						bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Create, entity);
+						if (!hasPermisstion)
+						{
+							errorsList.Add($"Access denied. Trying to create record in entity '{entity.Name}' with no create access.");
+							((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+							continue;
+						}
+					}
+
+				}
+				#endregion
+			}
+
+			evaluationObj["commands"] = commands;
+
+			if ((int)statsObject["errors"] > 0)
+			{
+				foreach (var columnName in columnNames)
+				{
+					((EntityRecord)commands[columnName]).Properties.Remove("currentFieldMeta");
+					((EntityRecord)commands[columnName]).Properties.Remove("relationEntityFieldMeta");
+					((EntityRecord)commands[columnName]).Properties.Remove("relationFieldMeta");
+				}
+
+				response.Object = evaluationObj;
+				return DoResponse(response);
+			}
+
+			do
+			{
+				index++;//temp
+				var rowRecord = new EntityRecord();
+				foreach (var columnName in columnNames)
+				{
+					string fieldValue = csvReader.GetField<string>(columnName);
+					Field currentFieldMeta = (Field)((EntityRecord)commands[columnName])["currentFieldMeta"];
+					string fieldEnityName = (string)((EntityRecord)commands[columnName])["entityName"];
+					string command = (string)((EntityRecord)commands[columnName])["command"];
+
+					bool existingField = false;
+					if (command == "to_update")
+						existingField = true;
+
+					if (existingField)
+					{
+						#region << Validation >>
+						//Init the error list for this field
+						var errorsList = new List<string>();
+						if (((EntityRecord)evaluationObj["errors"]).GetProperties().Any(p => p.Key == columnName))
+						{
+							errorsList = (List<string>)((EntityRecord)evaluationObj["errors"])[columnName];
+						}
+						//Init the warning list for this field
+						var warningList = new List<string>();
+						if (((EntityRecord)evaluationObj["warnings"]).GetProperties().Any(p => p.Key == columnName))
+						{
+							warningList = (List<string>)((EntityRecord)evaluationObj["warnings"])[columnName];
+						}
+
+						//validate the value for errors
+
+						if (columnName.Contains(RELATION_SEPARATOR))
+						{
+							string relationName = (string)((EntityRecord)commands[columnName])["relationName"];
+							string relationDirection = (string)((EntityRecord)commands[columnName])["relationDirection"];
+							EntityRelationType relationType = (EntityRelationType)((EntityRecord)commands[columnName])["relationType"];
+							Field relationEntityFieldMeta = (Field)((EntityRecord)commands[columnName])["relationEntityFieldMeta"];
+							Field relationFieldMeta = (Field)((EntityRecord)commands[columnName])["relationFieldMeta"];
+
+							var relation = relations.SingleOrDefault(x => x.Name == relationName);
+
+							string relationFieldValue = "";
+							if (columnNames.Any(c => c == relationFieldMeta.Name))
+								relationFieldValue = csvReader.GetField<string>(relationFieldMeta.Name);
+
+							QueryObject filter = null;
+							if ((relationType == EntityRelationType.OneToMany && relation.OriginEntityId == relation.TargetEntityId && relationDirection == "origin-target") ||
+								(relationType == EntityRelationType.OneToMany && relation.OriginEntityId != relation.TargetEntityId && relation.OriginEntityId == entity.Id) ||
+								relationType == EntityRelationType.ManyToMany)
+							{
+								//expect array of values
+								if (!columnNames.Any(c => c == relationFieldMeta.Name) || string.IsNullOrEmpty(relationFieldValue))
+								{
+									errorsList.Add(string.Format("Invalid relation '{0}'. Relation field does not exist into input record data or its value is null.", columnName));
+									((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+									continue;
+
+								}
+
+								List<string> values = new List<string>();
+								if (relationFieldValue.StartsWith("[") && relationFieldValue.EndsWith("]"))
+								{
+									values = JsonConvert.DeserializeObject<List<string>>(relationFieldValue);
+								}
+								if (values.Count < 1)
+									continue;
+
+								List<QueryObject> queries = new List<QueryObject>();
+								foreach (var val in values)
+								{
+									queries.Add(EntityQuery.QueryEQ(currentFieldMeta.Name, val));
+								}
+
+								filter = EntityQuery.QueryOR(queries.ToArray());
+							}
+							else
+							{
+								filter = EntityQuery.QueryEQ(currentFieldMeta.Name, DbRecordRepository.ExtractFieldValue(fieldValue, currentFieldMeta, true));
+							}
+
+							//get related records
+							QueryResponse relatedRecordResponse = recMan.Find(new EntityQuery(fieldEnityName, "*", filter, null, null, null));
+
+							if (!relatedRecordResponse.Success && relatedRecordResponse.Object.Data.Count < 1)
+							{
+								errorsList.Add(string.Format("Invalid relation '{0}'. The relation record does not exist.", columnName));
+								((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+								continue;
+							}
+							else if (relatedRecordResponse.Object.Data.Count > 1 && ((relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == relation.TargetEntityId && relationDirection == "target-origin") ||
+								(relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId != relation.TargetEntityId && relation.TargetEntityId == entity.Id) ||
+								relation.RelationType == EntityRelationType.OneToOne))
+							{
+								//there can be no more than 1 records
+								errorsList.Add(string.Format("Invalid relation '{0} value {1}'. There are multiple relation records.", columnName, fieldValue));
+								((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+								continue;
+							}
+
+							var relatedRecords = relatedRecordResponse.Object.Data;
+							List<Guid> relatedRecordValues = new List<Guid>();
+							foreach (var relatedRecord in relatedRecords)
+							{
+								relatedRecordValues.Add((Guid)relatedRecord[relationEntityFieldMeta.Name]);
+							}
+
+							if (relation.RelationType == EntityRelationType.OneToOne &&
+								((relation.OriginEntityId == relation.TargetEntityId && relationDirection == "origin-target") || relation.OriginEntityId == entity.Id))
+							{
+								if (!columnNames.Any(c => c == relationFieldMeta.Name) || string.IsNullOrWhiteSpace(relationFieldValue))
+								{
+									errorsList.Add(string.Format("Invalid relation '{0}'. Relation field does not exist into input record data or its value is null.", columnName));
+									((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+									continue;
+								}
+							}
+							else if (relation.RelationType == EntityRelationType.OneToMany &&
+								((relation.OriginEntityId == relation.TargetEntityId && relationDirection == "origin-target") || relation.OriginEntityId == entity.Id))
+							{
+								if (!columnNames.Any(c => c == relationFieldMeta.Name) || string.IsNullOrWhiteSpace(relationFieldValue))
+								{
+									errorsList.Add(string.Format("Invalid relation '{0}'. Relation field does not exist into input record data or its value is null.", columnName));
+									((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+									continue;
+								}
+							}
+							else if (relation.RelationType == EntityRelationType.ManyToMany)
+							{
+								foreach (Guid relatedRecordIdValue in relatedRecordValues)
+								{
+									Guid relRecordId = Guid.Empty;
+									if (!Guid.TryParse(relationFieldValue, out relRecordId))
+									{
+										errorsList.Add("Invalid record value for field: '" + columnName + "'. Invalid value: '" + fieldValue + "'");
+										((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+										continue;
+									}
+								}
+							}
+
+						}
+						if (string.IsNullOrWhiteSpace(fieldValue))
+						{
+							if (currentFieldMeta.Required)
+							{
+								errorsList.Add("Field is required. Value can not be empty!");
+								((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+							}
+						}
+						else if (!(fieldValue.StartsWith("[") && fieldValue.EndsWith("]")))
+						{
+							FieldType fType = (FieldType)currentFieldMeta.GetFieldType();
+							switch (fType)
+							{
+								case FieldType.AutoNumberField:
+								case FieldType.CurrencyField:
+								case FieldType.NumberField:
+								case FieldType.PercentField:
+									{
+										decimal decValue;
+										if (!decimal.TryParse(fieldValue, out decValue))
+										{
+											errorsList.Add("Value have to be of decimal type!");
+											((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+										}
+									}
+									break;
+								case FieldType.CheckboxField:
+									{
+										bool bValue;
+										if (!bool.TryParse(fieldValue, out bValue))
+										{
+											errorsList.Add("Value have to be of boolean type!");
+											((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+										}
+									}
+									break;
+								case FieldType.DateField:
+								case FieldType.DateTimeField:
+									{
+										DateTime dtValue;
+										if (!DateTime.TryParse(fieldValue, out dtValue))
+										{
+											errorsList.Add("Value have to be of datetime type!");
+											((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+										}
+									}
+									break;
+								case FieldType.MultiSelectField:
+									{
+
+									}
+									break;
+								case FieldType.SelectField:
+									{
+										if (!((SelectField)currentFieldMeta).Options.Any(o => o.Value == fieldValue))
+										{
+											errorsList.Add("Value does not exist in select field options!");
+											((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+										}
+									}
+									break;
+								case FieldType.TreeSelectField:
+									{
+
+									}
+									break;
+								case FieldType.GuidField:
+									{
+										Guid gValue;
+										if (!Guid.TryParse(fieldValue, out gValue))
+										{
+											errorsList.Add("Value have to be of guid type!");
+											((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+										}
+
+									}
+									break;
+							}
+						}
+
+					((EntityRecord)evaluationObj["errors"])[columnName] = errorsList;
+
+						//validate the value for warnings
+						((EntityRecord)evaluationObj["warnings"])[columnName] = warningList;
+						#endregion
+					}
 
 					#region << Data >>
 					//Submit row data
@@ -4480,6 +4862,98 @@ namespace WebVella.ERP.Web.Controllers
 
 				((List<EntityRecord>)evaluationObj["records"]).Add(rowRecord);
 
+			}
+			while (csvReader.Read());
+
+			foreach (var columnName in columnNames)
+			{
+				((EntityRecord)commands[columnName]).Properties.Remove("currentFieldMeta");
+				((EntityRecord)commands[columnName]).Properties.Remove("relationEntityFieldMeta");
+				((EntityRecord)commands[columnName]).Properties.Remove("relationFieldMeta");
+			}
+
+			if ((int)statsObject["errors"] > 0)
+			{
+				response.Object = evaluationObj;
+				return DoResponse(response);
+			}
+
+			if (generalCommand == "evaluate-import")
+			//if ((int)statsObject["errors"] == 0)
+			{
+				using (DbConnection connection = DbContext.Current.CreateConnection())
+				{
+					connection.BeginTransaction();
+
+					try
+					{
+
+						foreach (var columnName in columnNames)
+						{
+							string command = (string)((EntityRecord)commands[columnName])["command"];
+
+							if (command == "to_create")
+							{
+								FieldType fieldType = (FieldType)((EntityRecord)commands[columnName])["fieldType"];
+								string fieldName = (string)((EntityRecord)commands[columnName])["fieldName"];
+								string fieldLabel = (string)((EntityRecord)commands[columnName])["fieldLabel"];
+								var result = entMan.CreateField(entity.Id, fieldType, null, fieldName, fieldLabel);
+
+								if (!result.Success)
+								{
+									string message = result.Message;
+									if (result.Errors.Count > 0)
+									{
+										foreach (ErrorModel error in result.Errors)
+											message += " " + error.Message;
+									}
+									throw new Exception(message);
+								}
+							}
+						}
+
+						List<EntityRecord> records = (List<EntityRecord>)evaluationObj["records"];
+						foreach (var newRecord in records)
+						{
+							QueryResponse result;
+							if (!newRecord.GetProperties().Any(x => x.Key == "id") || newRecord["id"] == null || string.IsNullOrEmpty(newRecord["id"].ToString()))
+							{
+								newRecord["id"] = Guid.NewGuid();
+								result = recMan.CreateRecord(entityName, newRecord);
+							}
+							else
+							{
+								result = recMan.UpdateRecord(entityName, newRecord);
+							}
+							if (!result.Success)
+							{
+								string message = result.Message;
+								if (result.Errors.Count > 0)
+								{
+									foreach (ErrorModel error in result.Errors)
+										message += " " + error.Message;
+								}
+								throw new Exception(message);
+							}
+						}
+						connection.CommitTransaction();
+					}
+					catch (Exception e)
+					{
+						connection.RollbackTransaction();
+
+						response.Success = false;
+						response.Object = evaluationObj;
+						response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+						response.Message = e.Message + e.StackTrace;
+#else
+							response.Message = "Import failed! An internal error occurred!";
+#endif
+					}
+				}
+
+				return DoResponse(response);
 			}
 
 			response.Object = evaluationObj;

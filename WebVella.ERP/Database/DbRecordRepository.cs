@@ -248,7 +248,7 @@ namespace WebVella.ERP.Database
 			return record;
 		}
 
-		private object ExtractFieldValue(object value, Field field, bool encryptPasswordFields = false)
+		public static object ExtractFieldValue(object value, Field field, bool encryptPasswordFields = false)
 		{
 			if (value == null)
 				return field.GetDefaultValue();
