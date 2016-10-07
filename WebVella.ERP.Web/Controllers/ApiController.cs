@@ -4718,7 +4718,7 @@ namespace WebVella.ERP.Web.Controllers
 
 							if (command == "to_create")
 							{
-								FieldType fieldType = (FieldType)((EntityRecord)commands[columnName])["fieldType"];
+								FieldType fieldType = (FieldType)Enum.Parse(typeof(FieldType), ((long)((EntityRecord)commands[columnName])["fieldType"]).ToString());
 								string fieldName = (string)((EntityRecord)commands[columnName])["fieldName"];
 								string fieldLabel = (string)((EntityRecord)commands[columnName])["fieldLabel"];
 								var result = entMan.CreateField(entity.Id, fieldType, null, fieldName, fieldLabel);
