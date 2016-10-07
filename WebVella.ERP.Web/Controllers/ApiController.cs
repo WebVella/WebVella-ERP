@@ -2844,15 +2844,15 @@ namespace WebVella.ERP.Web.Controllers
 			List<EntityRecord> resultDataList = new List<EntityRecord>();
 
 			QueryResponse result = recMan.Find(resultQuery);
-            if (!result.Success)
-                if (result.Errors.Count > 0)
-                {
-                    throw new Exception(result.Message + ". Reason: " + result.Errors[0].Message);
-                }
-                else
-                {
-                    throw new Exception(result.Message);
-                }
+			if (!result.Success)
+				if (result.Errors.Count > 0)
+				{
+					throw new Exception(result.Message + ". Reason: " + result.Errors[0].Message);
+				}
+				else
+				{
+					throw new Exception(result.Message);
+				}
 
 			if (list != null)
 			{
@@ -4452,9 +4452,12 @@ namespace WebVella.ERP.Web.Controllers
 				foreach (var columnName in columnNames)
 				{
 					string fieldValue = csvReader.GetField<string>(columnName);
-					Field currentFieldMeta = (Field)((EntityRecord)commands[columnName])["currentFieldMeta"];
-					string fieldEnityName = (string)((EntityRecord)commands[columnName])["entityName"];
-					string command = (string)((EntityRecord)commands[columnName])["command"];
+					EntityRecord commandRecords = ((EntityRecord)commands[columnName]);
+					Field currentFieldMeta = new TextField();
+					if (commandRecords.GetProperties().Any(p => p.Key == columnName))
+						currentFieldMeta = (Field)commandRecords["currentFieldMeta"];
+					string fieldEnityName = (string)commandRecords["entityName"];
+					string command = (string)commandRecords["command"];
 
 					bool existingField = false;
 					if (command == "to_update")
