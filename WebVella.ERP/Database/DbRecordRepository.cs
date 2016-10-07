@@ -248,10 +248,10 @@ namespace WebVella.ERP.Database
             return record;
         }
 
-        private object ExtractFieldValue(object value, Field field, bool encryptPasswordFields = false)
-        {
-            if (value == null)
-                return field.GetDefaultValue();
+		public static object ExtractFieldValue(object value, Field field, bool encryptPasswordFields = false)
+		{
+			if (value == null)
+				return field.GetDefaultValue();
 
             if (value is JToken)
                 value = ((JToken)value).ToObject<object>();
