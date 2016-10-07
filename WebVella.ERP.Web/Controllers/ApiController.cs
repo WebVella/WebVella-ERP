@@ -4130,7 +4130,7 @@ namespace WebVella.ERP.Web.Controllers
 			var entityFields = entity.Fields;
 			string fileTempPath = "";
 			string clipboard = "";
-			string generalCommand = "";
+			string generalCommand = "evaluate";
 			EntityRecord commands = new EntityRecord();
 			if (!postObject.IsNullOrEmpty() && postObject.Properties().Any(p => p.Name == "fileTempPath"))
 			{
@@ -4142,7 +4142,13 @@ namespace WebVella.ERP.Web.Controllers
 				clipboard = postObject["clipboard"].ToString();
 			}
 
-			if (!postObject.IsNullOrEmpty() && postObject.Properties().Any(p => p.Name == "commands") && !((JToken)postObject["commands"]).IsNullOrEmpty())
+			if (!postObject.IsNullOrEmpty() && postObject.Properties().Any(p => p.Name == "general_command"))
+			{
+				generalCommand = postObject["general_command"].ToString(); //could be "evaluate" & "evaluate-import" the first will just evaluate, the second one will evaluate and import if all is fine
+			}
+
+			if (!postObject.IsNullOrEmpty() && generalCommand == "evaluate-import" &&
+				postObject.Properties().Any(p => p.Name == "commands") && !((JToken)postObject["commands"]).IsNullOrEmpty())
 			{
 				var commandsObject = postObject["commands"].Value<JObject>();
 				if (!commandsObject.IsNullOrEmpty() && commandsObject.Properties().Any())
@@ -4152,11 +4158,6 @@ namespace WebVella.ERP.Web.Controllers
 						commands[property.Name] = ((JObject)property.Value).ToObject<EntityRecord>();
 					}
 				}
-			}
-
-			if (!postObject.IsNullOrEmpty() && postObject.Properties().Any(p => p.Name == "general_command"))
-			{
-				generalCommand = postObject["general_command"].ToString(); //could be "evaluate" & "evaluate-import" the first will just evaluate, the second one will evaluate and import if all is fine
 			}
 
 			//VALIDATE:
@@ -4589,7 +4590,7 @@ namespace WebVella.ERP.Web.Controllers
 						}
 						if (string.IsNullOrWhiteSpace(fieldValue))
 						{
-							if (currentFieldMeta.Required)
+							if (currentFieldMeta.Required && currentFieldMeta.Name != "id")
 							{
 								errorsList.Add("Field is required. Value can not be empty!");
 								((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
@@ -4641,7 +4642,7 @@ namespace WebVella.ERP.Web.Controllers
 									break;
 								case FieldType.SelectField:
 									{
-										if (!((SelectField)currentFieldMeta).Options.Any(o => o.Value == fieldValue))
+										if (!((SelectField)currentFieldMeta).Options.Any(o => o.Key == fieldValue))
 										{
 											errorsList.Add("Value does not exist in select field options!");
 											((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
