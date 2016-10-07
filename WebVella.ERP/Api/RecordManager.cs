@@ -471,6 +471,8 @@ namespace WebVella.ERP.Api
 						}
 					}
 
+					SetRecordRequiredFieldsDefaultData(entity, storageRecordData);
+
 					recRepo.Create(entity.Name, storageRecordData);
 
 					foreach (var ooRelData in oneToOneRecordData)
@@ -1534,6 +1536,25 @@ namespace WebVella.ERP.Api
 				else
 					record["last_modified_by"] = null;
 
+			}
+		}
+
+		private void SetRecordRequiredFieldsDefaultData(Entity entity, List<KeyValuePair<string, object>> recordData)
+		{
+			if (recordData == null)
+				return;
+
+			if (entity == null)
+				return;
+
+			foreach(var field in entity.Fields)
+			{
+				if(field.Required && !recordData.Any(p => p.Key == field.Name))
+				{
+					var defaultValue = field.GetDefaultValue();
+
+					recordData.Add(new KeyValuePair<string, object>(field.Name, defaultValue));
+				}
 			}
 		}
 	}

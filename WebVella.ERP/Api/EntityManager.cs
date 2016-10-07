@@ -2788,7 +2788,8 @@ namespace WebVella.ERP.Api
 
 		public FieldResponse CreateField(Guid entityId, FieldType type, Expando data, string name, string label, Guid? id = null,
 					string placeholderText = "", string helpText = "", string description = "",
-					bool system = false, bool required = false, bool unique = false, bool searchable = false, bool auditable = false)
+					bool system = false, bool required = false, bool unique = false, bool searchable = false, bool auditable = false,
+					bool transactional = true)
 		{
 			Field field = null;
 
@@ -2986,7 +2987,7 @@ namespace WebVella.ERP.Api
 			field.Auditable = auditable;
 			field.System = system;
 
-			return CreateField(entityId, field.MapTo<InputField>());
+			return CreateField(entityId, field.MapTo<InputField>(), transactional);
 		}
 
 		public FieldResponse UpdateField(Guid entityId, InputField inputField)
