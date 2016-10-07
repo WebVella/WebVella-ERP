@@ -680,7 +680,7 @@
 				templateUrl: 'exportModalContent.html',
 				controller: 'exportModalController',
 				controllerAs: "popupCtrl",
-				//size: "lg",
+				size: "lg",
 				resolve: {
 					ngCtrl: function () {
 						return ngCtrl;
@@ -843,6 +843,17 @@
 
 		popupCtrl.count = popupCtrl.ngCtrl.list.meta.pageSize;
 
+		popupCtrl.getExportFields = function(){
+			var columnsForExport = [];
+			for (var i = 0; i < popupCtrl.ngCtrl.list.meta.columns.length; i++) {
+				var currentColumnMeta = popupCtrl.ngCtrl.list.meta.columns[i];
+				if(currentColumnMeta.type == "field" || currentColumnMeta == "fieldFromRelation"){
+					columnsForExport.push(currentColumnMeta.fieldName);
+				}
+			}
+			return columnsForExport;
+		}
+
 		popupCtrl.exportSuccessCallback = function (response) {
 			//popupCtrl.loading = false;
 			ngToast.create({
@@ -882,8 +893,8 @@
 		};
 	}
 
-	importModalController.$inject = ['$uibModalInstance', 'webvellaCoreService', 'ngToast', '$timeout', '$state', 'ngCtrl','fieldTypes','$sce'];
-	function importModalController($uibModalInstance, webvellaCoreService, ngToast, $timeout, $state, ngCtrl,fieldTypes,$sce) {
+	importModalController.$inject = ['$scope','$uibModalInstance', 'webvellaCoreService', 'ngToast', '$timeout', '$state', 'ngCtrl','fieldTypes','$sce'];
+	function importModalController($scope,$uibModalInstance, webvellaCoreService, ngToast, $timeout, $state, ngCtrl,fieldTypes,$sce) {
 		var popupCtrl = this;
 		popupCtrl.ngCtrl = fastCopy(ngCtrl);
 		popupCtrl.uploadedFile = null;
@@ -900,6 +911,7 @@
 		popupCtrl.step1Active = true;
 		popupCtrl.step2Active = false;
 		popupCtrl.step3Active = false;
+		popupCtrl.createFieldCount = 0;
 
 		popupCtrl.upload = function (file) {
 			popupCtrl.uploadedFilePath = null;
@@ -1001,10 +1013,28 @@
 					popupCtrl.columnHasWarning[columnName] = false;
 				  }
 			}
+			//Calculate fields to create
+			updateCreateFieldCount()
+
 			popupCtrl.step1Active = false;
 			popupCtrl.step2Active = true;	
 			popupCtrl.hasError = false;
 		}
+
+		function updateCreateFieldCount(){
+			console.log("create field count updated");
+			popupCtrl.createFieldCount = 0;
+			for (var commandObject in popupCtrl.evaluationResult.commands) {
+				if(popupCtrl.evaluationResult.commands[commandObject].command == "to_create"){
+					popupCtrl.createFieldCount ++;
+				}
+			}			
+		}
+
+		$scope.$watch("popupCtrl.evaluationResult.commands",function(){
+			updateCreateFieldCount();
+		},true);
+
 
 		popupCtrl.evaluationErrorCallback = function(response){
 			popupCtrl.hasError = true;
