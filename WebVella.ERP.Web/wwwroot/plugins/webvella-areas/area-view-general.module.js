@@ -714,6 +714,12 @@
 			}
 		}
 
+		ngCtrl.initDate = function(date){
+			if(date != null){
+				return ngCtrl.convertToJSDate(date)
+			}
+			return null;
+		}
 
 		ngCtrl.showPageTitleAuxLabelSecondary = false;
 

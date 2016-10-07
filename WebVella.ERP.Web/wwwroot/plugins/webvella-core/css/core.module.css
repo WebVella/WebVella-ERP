@@ -2910,6 +2910,10 @@ table .btn-xs.btn-link {
 	background-color: #F44336 !important;
 }
 
+.hover-red:hover {
+	color: #F44336 !important;
+}
+
 .go-pink {
 	color: #E91E63 !important;
 }
