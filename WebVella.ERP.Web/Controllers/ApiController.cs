@@ -2109,6 +2109,10 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult UpdateEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
+			if(!postObj.Properties.ContainsKey("id")) {
+				postObj["id"] = recordId;
+			}			
+			
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK FILTER << update_record_input_filter >>
 			//////////////////////////////////////////////////////////////////////////////////////
