@@ -13,7 +13,7 @@
 			<i class="fa fa-fw fa-{{::ngCtrl.entity.iconName}} fa-2x"></i>
 		</div>
 		<div class="meta-label">
-			<div class="meta-label-aux">{{::ngCtrl.entity.label}} <span class="ng-hide" ng-show="ngCtrl.showPageTitleAuxLabelSecondary"><span class="divider"><i class="fa fa-caret-right"></i></span> <span ng-bind="::ngCtrl.generateAuxHighlightString()" title="{{::ngCtrl.generateAuxHighlightString()}}"></span></span></div>
+			<div class="meta-label-aux">{{::ngCtrl.entity.label}} <span class="ng-hide" ng-show="ngCtrl.showPageTitleAuxLabelSecondary"><span class="divider"><i class="fa fa-caret-right"></i></span> <span ng-bind-html="::ngCtrl.generateAuxHighlightString()" title="{{::ngCtrl.generateAuxHighlightString()}}"></span></span></div>
 			<h4>
 				<span ng-bind-html="::ngCtrl.generateHighlightString()" title="{{::ngCtrl.generateHighlightString()}}"></span>
 				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalViews.length > 1" dropdown-append-to-body="true">
