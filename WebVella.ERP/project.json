@@ -3,19 +3,20 @@
     "emitEntryPoint": false
   },
 
-    "dependencies": {
-        "AutoMapper": "3.3.1",
-        "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
-        "Microsoft.AspNetCore.Diagnostics": "1.0.0",
-        "Microsoft.AspNetCore.Mvc": "1.0.0",
-        "Microsoft.Extensions.Configuration.Json": "1.0.0",
-        "Microsoft.Extensions.DependencyModel": "1.0.0",
-        "Microsoft.Extensions.Logging": "1.0.0",
-        "Microsoft.Extensions.Logging.Console": "1.0.0",
-        "Microsoft.Extensions.Logging.Debug": "1.0.0",
-        "Newtonsoft.Json": "9.0.1",
+	"dependencies": {
+		"AutoMapper": "3.3.1",
+		"Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
+		"Microsoft.AspNetCore.Diagnostics": "1.0.0",
+		"Microsoft.AspNetCore.Mvc": "1.0.0",
+		"Microsoft.Extensions.Configuration.Json": "1.0.0",
+		"Microsoft.Extensions.DependencyModel": "1.0.0",
+		"Microsoft.Extensions.Logging": "1.0.0",
+		"Microsoft.Extensions.Logging.Console": "1.0.0",
+		"Microsoft.Extensions.Logging.Debug": "1.0.0",
+		"Newtonsoft.Json": "9.0.1",
+		"CsvHelper": "2.15.0.2",
 		"npgsql": "3.1.5"
-    },
+	},
   
   "frameworks": {
     "net46": {
