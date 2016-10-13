@@ -1061,8 +1061,12 @@ namespace WebVella.ERP.Api
 				if (enableWebHooks)
 				{
 					Guid? recordId = null;
-					if (rowRecord.GetProperties().Any(p => p.Key == "id"))
-						recordId = (Guid?)rowRecord["id"];
+					if (rowRecord.GetProperties().Any(p => p.Key == "id") && !string.IsNullOrWhiteSpace((string)rowRecord["id"]))
+					{
+						Guid id;
+						if (Guid.TryParse((string)rowRecord["id"], out id))
+							recordId = id;
+					}
 					//////////////////////////////////////////////////////////////////////////////////////
 					//WEBHOOK FILTERS << create_record_input_filter >> AND << update_record_input_filter >>
 					//////////////////////////////////////////////////////////////////////////////////////
