@@ -908,9 +908,7 @@
 		popupCtrl.accordion.clipboard.active = true;
 		popupCtrl.accordion.file = {};
 		popupCtrl.accordion.file.active = false;
-		popupCtrl.step1Active = true;
-		popupCtrl.step2Active = false;
-		popupCtrl.step3Active = false;
+		popupCtrl.activeStep = 1;
 		popupCtrl.createFieldCount = 0;
 
 		popupCtrl.upload = function (file) {
@@ -959,7 +957,7 @@
 		}
 
 		popupCtrl.evaluateAndImport = function () {
-			webvellaCoreService.evaluateImportEntityRecords(popupCtrl.ngCtrl.entity.name, popupCtrl.uploadedFilePath,"evaluate-import", popupCtrl.clipboard,popupCtrl.evaluationResult.commands, popupCtrl.evaluationSuccessCallback, popupCtrl.evaluationErrorCallback);
+			webvellaCoreService.evaluateImportEntityRecords(popupCtrl.ngCtrl.entity.name, popupCtrl.uploadedFilePath,"evaluate-import", popupCtrl.clipboard,popupCtrl.evaluationResult.commands, popupCtrl.importSuccessCallback, popupCtrl.evaluationErrorCallback);
 		};
 
 		popupCtrl.cancel = function () {
@@ -1016,10 +1014,15 @@
 			//Calculate fields to create
 			updateCreateFieldCount()
 
-			popupCtrl.step1Active = false;
-			popupCtrl.step2Active = true;	
-			popupCtrl.hasError = false;
+			popupCtrl.activeStep = 2;
 		}
+
+		popupCtrl.importSuccessCallback = function(response){
+			popupCtrl.evaluationResult = response.object;			
+
+			popupCtrl.activeStep = 3;
+		}
+
 
 		function updateCreateFieldCount(){
 			console.log("create field count updated");
@@ -1106,16 +1109,13 @@
 
 		//BACK
 		popupCtrl.back = function () {
-			popupCtrl.step1Active = true;
-			popupCtrl.step2Active = false;
+			popupCtrl.activeStep = 1;
 		};
 
 
 		//IMPORT
 		popupCtrl.import = function () {
-			popupCtrl.step1Active = false;
-			popupCtrl.step2Active = false;
-			popupCtrl.step3Active = true;
+			popupCtrl.activeStep = 3;
 		};
 
 

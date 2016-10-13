@@ -45,9 +45,23 @@ namespace WebVella.ERP.Project
 		public dynamic TaskCreateRecordPreSave(dynamic data)
 		{
 			EntityRecord record = (EntityRecord)data.record;
-			record["project_id"] = new Guid((string)record["$project_1_n_task.id"]);
-			record.Properties.Remove("$project_1_n_task.id");
+			if(record.Properties.ContainsKey("$project_1_n_task.id")) {
+				record["project_id"] = new Guid((string)record["$project_1_n_task.id"]);
+				record.Properties.Remove("$project_1_n_task.id");
+			}
+			else {
+				//we should set the default project
+				var taskEntity = entMan.ReadEntity("wv_task");
+				var projectIdField = taskEntity.Object.Fields.SingleOrDefault(x => x.Name == "project_id");
+				if(projectIdField == null) {
+					throw new Exception("project_id field not defined");
+				}
+				if(((GuidField)projectIdField).DefaultValue == null) {
+					throw new Exception("default project id not defined in project_id field");
+				}
+				record["project_id"] = ((GuidField)projectIdField).DefaultValue;
 
+			}
 			#region << Get project owner and set as ticket owner >>
 			EntityRecord projectObject = null;
 			{

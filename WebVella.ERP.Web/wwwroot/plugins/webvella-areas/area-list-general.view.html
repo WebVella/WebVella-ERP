@@ -362,13 +362,13 @@
 
 <script type="text/ng-template" id="importModalContent.html">
 	<div class="modal-header">
-		<h4 class="modal-title" ng-if="popupCtrl.step1Active">Import <span class="go-green">institutions</span> <span class="divider">|</span> Step 1: <span class="go-green">Select data source</span></h4>
-		<h4 class="modal-title" ng-if="popupCtrl.step2Active">Import <span class="go-green">institutions</span> <span class="divider">|</span> Step 2: <span class="go-green">Review evaluation results</span></h4>
-		<h4 class="modal-title" ng-if="popupCtrl.step3Active">Import <span class="go-green">institutions</span> <span class="divider">|</span> Step 3: <span class="go-green">Review import summery</span></h4>
+		<h4 class="modal-title" ng-if="popupCtrl.activeStep == 1">Import <span class="go-green">institutions</span> <span class="divider">|</span> Step 1: <span class="go-green">Select data source</span></h4>
+		<h4 class="modal-title" ng-if="popupCtrl.activeStep == 2">Import <span class="go-green">institutions</span> <span class="divider">|</span> Step 2: <span class="go-green">Review evaluation results</span></h4>
+		<h4 class="modal-title" ng-if="popupCtrl.activeStep == 3">Import <span class="go-green">institutions</span> <span class="divider">|</span> Step 3: <span class="go-green">Review import summery</span></h4>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger ng-hide" ng-show="popupCtrl.hasError" ng-bind="popupCtrl.errorMessage"></div>
-		<div ng-if="popupCtrl.step1Active">
+		<div ng-if="popupCtrl.activeStep == 1">
 			<p class="text-muted">
 				The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated.
 				If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones. If "id" does not exists, validation error will be raised
@@ -411,7 +411,7 @@
 				</uib-accordion-group>
 			</uib-accordion>
 		</div>
-		<div ng-if="popupCtrl.step2Active">
+		<div ng-if="popupCtrl.activeStep == 2">
 			<p>Scheduled for import <b>{{popupCtrl.evaluationResult.records.length}}</b> {{popupCtrl.ngCtrl.entity.labelPlural}} - 
 				<span ng-if="popupCtrl.evaluationResult.stats.to_create > 0"><span class="go-green">{{popupCtrl.evaluationResult.stats.to_create}} <i class="fa fa-plus-circle"></i></span> to be created</span> 
 				<span ng-if="popupCtrl.evaluationResult.stats.to_update > 0">and <span class="go-orange">{{popupCtrl.evaluationResult.stats.to_update}} <i class="fa fa-refresh"></i></span> to be updated.</span> 
@@ -507,7 +507,7 @@
 			</div>
 
 		</div>
-		<div ng-if="popupCtrl.step3Active">
+		<div ng-if="popupCtrl.activeStep == 3">
 			<div class="alert alert-success"><i class="fa fa-check go-green"></i> Data successfully imported!</div>
 			<table class="table table-bordered" style="width:auto">
 				<tbody>
@@ -533,11 +533,11 @@
 		<!--<pre>{{popupCtrl.createFieldCount | json}}</pre>-->
 	</div>
 	<div class="modal-footer">
-		<a ng-if="popupCtrl.step1Active" href="javascript:void(0)" ng-click="popupCtrl.evaluate()" class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-cog': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate</a>
-		<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" ng-click="popupCtrl.back()" class="btn btn-default pull-left"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
-		<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" ng-show="popupCtrl.createFieldCount == 0" ng-click="popupCtrl.evaluateAndImport()" class="btn btn-primary ng-hide"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate & Import</a>
-		<a ng-if="popupCtrl.step2Active" href="javascript:void(0)" ng-show="popupCtrl.createFieldCount > 0" confirmed-click="popupCtrl.evaluateAndImport()" ng-confirm-click="WARNING: This import will create {{popupCtrl.createFieldCount}} new fields in the entity '{{popupCtrl.ngCtrl.entity.label}}'. Click OK to confirm." class="btn btn-primary ng-hide"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate & Import</a>
-		<a ng-if="!popupCtrl.step3Active" href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CANCEL'}}"></a>
-		<a ng-if="popupCtrl.step3Active" href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CLOSE'}}"></a>
+		<a ng-if="popupCtrl.activeStep == 1" href="javascript:void(0)" ng-click="popupCtrl.evaluate()" class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-cog': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate</a>
+		<a ng-if="popupCtrl.activeStep == 2" href="javascript:void(0)" ng-click="popupCtrl.back()" class="btn btn-default pull-left"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
+		<a ng-if="popupCtrl.activeStep == 2" href="javascript:void(0)" ng-show="popupCtrl.createFieldCount == 0" ng-click="popupCtrl.evaluateAndImport()" class="btn btn-primary ng-hide"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate & Import</a>
+		<a ng-if="popupCtrl.activeStep == 2" href="javascript:void(0)" ng-show="popupCtrl.createFieldCount > 0" confirmed-click="popupCtrl.evaluateAndImport()" ng-confirm-click="WARNING: This import will create {{popupCtrl.createFieldCount}} new fields in the entity '{{popupCtrl.ngCtrl.entity.label}}'. Click OK to confirm." class="btn btn-primary ng-hide"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate & Import</a>
+		<a ng-if="popupCtrl.activeStep != 3" href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CANCEL'}}"></a>
+		<a ng-if="popupCtrl.activeStep == 3" href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CLOSE'}}"></a>
 	</div>
 </script>

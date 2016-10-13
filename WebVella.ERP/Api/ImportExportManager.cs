@@ -1082,7 +1082,7 @@ namespace WebVella.ERP.Api
 					{
 						dynamic hookFilterObj = new ExpandoObject();
 						hookFilterObj.record = rowRecord;
-						hookFilterObj.recordId = recordId.Value;
+						hookFilterObj.recordId = recordId;
 						hookFilterObj.controller = controller;
 						string webHookName = (!recordId.HasValue || recordId.Value == Guid.Empty) ? SystemWebHookNames.CreateRecordInput : SystemWebHookNames.UpdateRecordInput;
 						hookFilterObj = hooksService.ProcessFilters(webHookName, entityName, hookFilterObj);
@@ -1112,7 +1112,7 @@ namespace WebVella.ERP.Api
 						dynamic hookFilterObj = new ExpandoObject();
 						hookFilterObj.errors = validationErrors;
 						hookFilterObj.record = rowRecord;
-						hookFilterObj.recordId = recordId.Value;
+						hookFilterObj.recordId = recordId;
 						hookFilterObj.controller = controller;
 						string webHookName = (!recordId.HasValue || recordId.Value == Guid.Empty) ? SystemWebHookNames.CreateRecordValidationErrors : SystemWebHookNames.UpdateRecordValidationErrors;
 						hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordValidationErrors, entityName, hookFilterObj);
