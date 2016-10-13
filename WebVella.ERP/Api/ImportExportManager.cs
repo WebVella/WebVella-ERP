@@ -107,7 +107,11 @@ namespace WebVella.ERP.Api
 						pageSize = count < pageSize ? count : (count - (pageSize * (page - 1)));
 					}
 
-					List<EntityRecord> records = recMan.GetListRecords(entities, entity, listName, page, queryObj, pageSize, true);
+					List<EntityRecord> records = null;
+					if (count == -1)
+						records = recMan.GetListRecords(entities, entity, listName, null, queryObj, null, true, returnAllRecords: true);
+					else
+						records = recMan.GetListRecords(entities, entity, listName, page, queryObj, pageSize, true);
 
 					if (records.Count > 0)
 					{
@@ -482,7 +486,7 @@ namespace WebVella.ERP.Api
 			}
 		}
 
-		public ResponseModel EvaluateImportEntityRecordsFromCsv(string entityName, JObject postObject, bool enableWebHooks = true)
+		public ResponseModel EvaluateImportEntityRecordsFromCsv(string entityName, JObject postObject, bool enableWebHooks = true, object controller = null)
 		{
 			ResponseModel response = new ResponseModel();
 			response.Message = "Records successfully evaluated";
@@ -602,6 +606,7 @@ namespace WebVella.ERP.Api
 			statsObject["errors"] = 0;
 			statsObject["warnings"] = 0;
 			evaluationObj["stats"] = statsObject;
+			evaluationObj["general_command"] = generalCommand;
 
 			var index = 0;//temp
 
@@ -1058,9 +1063,11 @@ namespace WebVella.ERP.Api
 					#endregion
 				}
 
-				if (enableWebHooks)
+				if (enableWebHooks && generalCommand == "evaluate-import")
 				{
-					Guid? recordId = null;
+					#region << WebHook Filters >>
+
+					Guid ? recordId = null;
 					if (rowRecord.GetProperties().Any(p => p.Key == "id") && !string.IsNullOrWhiteSpace((string)rowRecord["id"]))
 					{
 						Guid id;
@@ -1076,7 +1083,7 @@ namespace WebVella.ERP.Api
 						dynamic hookFilterObj = new ExpandoObject();
 						hookFilterObj.record = rowRecord;
 						hookFilterObj.recordId = recordId.Value;
-						hookFilterObj.controller = this;
+						hookFilterObj.controller = controller;
 						string webHookName = (!recordId.HasValue || recordId.Value == Guid.Empty) ? SystemWebHookNames.CreateRecordInput : SystemWebHookNames.UpdateRecordInput;
 						hookFilterObj = hooksService.ProcessFilters(webHookName, entityName, hookFilterObj);
 						rowRecord = hookFilterObj.record;
@@ -1106,7 +1113,7 @@ namespace WebVella.ERP.Api
 						hookFilterObj.errors = validationErrors;
 						hookFilterObj.record = rowRecord;
 						hookFilterObj.recordId = recordId.Value;
-						hookFilterObj.controller = this;
+						hookFilterObj.controller = controller;
 						string webHookName = (!recordId.HasValue || recordId.Value == Guid.Empty) ? SystemWebHookNames.CreateRecordValidationErrors : SystemWebHookNames.UpdateRecordValidationErrors;
 						hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordValidationErrors, entityName, hookFilterObj);
 						validationErrors = hookFilterObj.errors;
@@ -1134,6 +1141,8 @@ namespace WebVella.ERP.Api
 							continue;
 						}
 					}
+
+					#endregion
 				}
 
 				((List<EntityRecord>)evaluationObj["records"]).Add(rowRecord);
@@ -1163,7 +1172,7 @@ namespace WebVella.ERP.Api
 
 					try
 					{
-
+						int fieldCreated = 0;
 						foreach (var columnName in columnNames)
 						{
 							string command = (string)((EntityRecord)commands[columnName])["command"];
@@ -1185,8 +1194,12 @@ namespace WebVella.ERP.Api
 									}
 									throw new Exception(message);
 								}
+								fieldCreated++;
 							}
 						}
+
+						int successfullyCreatedRecordsCount = 0;
+						int successfullyUpdatedRecordsCount = 0;
 
 						List<EntityRecord> records = (List<EntityRecord>)evaluationObj["records"];
 						foreach (EntityRecord record in records)
@@ -1200,11 +1213,12 @@ namespace WebVella.ERP.Api
 									//////////////////////////////////////////////////////////////////////////////////////
 									//WEBHOOK FILTER << create_record_pre_save_filter >>
 									//////////////////////////////////////////////////////////////////////////////////////
+									#region
 									try
 									{
 										dynamic hookFilterObj = new ExpandoObject();
 										hookFilterObj.record = newRecord;
-										hookFilterObj.controller = this;
+										hookFilterObj.controller = controller;
 										hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.CreateRecordPreSave, entityName, hookFilterObj);
 										newRecord = hookFilterObj.record;
 									}
@@ -1212,28 +1226,34 @@ namespace WebVella.ERP.Api
 									{
 										throw new Exception("Plugin error in web hook create_record_pre_save_filter: " + ex.Message);
 									}// <<<
+									#endregion
 								}
 
 								newRecord["id"] = Guid.NewGuid();
 								result = recMan.CreateRecord(entityName, newRecord);
 
-								if(result.Success && enableWebHooks)
+								if (result.Success)
+									successfullyCreatedRecordsCount++;
+
+								if (result.Success && enableWebHooks)
 								{
 									//////////////////////////////////////////////////////////////////////////////////////
 									//WEBHOOK ACTION << create_record >>
 									//////////////////////////////////////////////////////////////////////////////////////
+									#region
 									try
 									{
 										dynamic hookActionObj = new ExpandoObject();
 										hookActionObj.record = newRecord;
 										hookActionObj.result = result;
-										hookActionObj.controller = this;
+										hookActionObj.controller = controller;
 										hooksService.ProcessActions(SystemWebHookNames.CreateRecordAction, entityName, hookActionObj);
 									}
 									catch (Exception ex)
 									{
 										throw new Exception("Plugin error in web hook create_record_success_action: " + ex.Message);
 									}// <<<
+									#endregion
 								}
 							}
 							else
@@ -1248,7 +1268,7 @@ namespace WebVella.ERP.Api
 									{
 										dynamic hookFilterObj = new ExpandoObject();
 										hookFilterObj.record = newRecord;
-										hookFilterObj.controller = this;
+										hookFilterObj.controller = controller;
 										hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordPreSave, entityName, hookFilterObj);
 										newRecord = hookFilterObj.record;
 									}
@@ -1259,6 +1279,9 @@ namespace WebVella.ERP.Api
 									#endregion
 								}
 								result = recMan.UpdateRecord(entityName, newRecord);
+
+								if (result.Success)
+									successfullyUpdatedRecordsCount++;
 
 								if (result.Success && enableWebHooks)
 								{
@@ -1273,7 +1296,7 @@ namespace WebVella.ERP.Api
 										hookActionObj.oldRecord = newRecord;
 										hookActionObj.result = result;
 										hookActionObj.recordId = newRecord["id"];
-										hookActionObj.controller = this;
+										hookActionObj.controller = controller;
 										hooksService.ProcessActions(SystemWebHookNames.UpdateRecordAction, entityName, hookActionObj);
 									}
 									catch (Exception ex)
@@ -1295,6 +1318,12 @@ namespace WebVella.ERP.Api
 								throw new Exception(message);
 							}
 						}
+
+						((EntityRecord)evaluationObj["stats"])["to_create"] = successfullyCreatedRecordsCount;
+						((EntityRecord)evaluationObj["stats"])["to_update"] = successfullyUpdatedRecordsCount;
+						((EntityRecord)evaluationObj["stats"])["total_records"] = records.Count;
+						((EntityRecord)evaluationObj["stats"])["fields_created"] = fieldCreated;
+
 						connection.CommitTransaction();
 					}
 					catch (Exception e)
