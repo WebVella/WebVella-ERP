@@ -1560,7 +1560,7 @@ namespace WebVella.ERP.Api
 
 		public List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null,
 					int? pageSize = null, bool export = false, EntityRelation auxRelation = null, Guid? auxRelatedRecordId = null, 
-					string auxRelationDirection = "origin-target", List<KeyValuePair<string, string>> overwriteArgs = null)
+					string auxRelationDirection = "origin-target", List<KeyValuePair<string, string>> overwriteArgs = null, bool returnAllRecords = false)
 		{
 			if (entity == null)
 				throw new Exception($"Entity '{entity.Name}' do not exist");
@@ -1785,14 +1785,22 @@ namespace WebVella.ERP.Api
 
 				}
 
-				if (!pageSize.HasValue)
-					pageSize = list.PageSize;
-
-				if (pageSize.Value > 0)
+				if (returnAllRecords)
 				{
-					resultQuery.Limit = pageSize.Value;
-					if (page != null && page > 0)
-						resultQuery.Skip = (page - 1) * resultQuery.Limit;
+					resultQuery.Skip = null;
+					resultQuery.Limit = null;
+				}
+				else
+				{
+					if (!pageSize.HasValue)
+						pageSize = list.PageSize;
+
+					if (pageSize.Value > 0)
+					{
+						resultQuery.Limit = pageSize.Value;
+						if (page != null && page > 0)
+							resultQuery.Skip = (page - 1) * resultQuery.Limit;
+					}
 				}
 			}
 
