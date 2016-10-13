@@ -837,7 +837,7 @@ namespace WebVella.ERP.Api
 					string fieldValue = csvReader.GetField<string>(columnName);
 					EntityRecord commandRecords = ((EntityRecord)commands[columnName]);
 					Field currentFieldMeta = new TextField();
-					if (commandRecords.GetProperties().Any(p => p.Key == columnName))
+					if (commandRecords.GetProperties().Any(p => p.Key == "currentFieldMeta"))
 						currentFieldMeta = (Field)commandRecords["currentFieldMeta"];
 					string fieldEnityName = (string)commandRecords["entityName"];
 					string command = (string)commandRecords["command"];
@@ -868,7 +868,7 @@ namespace WebVella.ERP.Api
 						{
 							string relationName = (string)((EntityRecord)commands[columnName])["relationName"];
 							string relationDirection = (string)((EntityRecord)commands[columnName])["relationDirection"];
-							EntityRelationType relationType = (EntityRelationType)((EntityRecord)commands[columnName])["relationType"];
+							EntityRelationType relationType = (EntityRelationType)(int)((EntityRecord)commands[columnName])["relationType"];
 							Field relationEntityFieldMeta = (Field)((EntityRecord)commands[columnName])["relationEntityFieldMeta"];
 							Field relationFieldMeta = (Field)((EntityRecord)commands[columnName])["relationFieldMeta"];
 
@@ -888,8 +888,6 @@ namespace WebVella.ERP.Api
 								{
 									errorsList.Add(string.Format("Invalid relation '{0}'. Relation field does not exist into input record data or its value is null.", columnName));
 									((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
-									continue;
-
 								}
 
 								List<string> values = new List<string>();
@@ -920,7 +918,6 @@ namespace WebVella.ERP.Api
 							{
 								errorsList.Add(string.Format("Invalid relation '{0}'. The relation record does not exist.", columnName));
 								((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
-								continue;
 							}
 							else if (relatedRecordResponse.Object.Data.Count > 1 && ((relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == relation.TargetEntityId && relationDirection == "target-origin") ||
 								(relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId != relation.TargetEntityId && relation.TargetEntityId == entity.Id) ||
@@ -929,7 +926,6 @@ namespace WebVella.ERP.Api
 								//there can be no more than 1 records
 								errorsList.Add(string.Format("Invalid relation '{0} value {1}'. There are multiple relation records.", columnName, fieldValue));
 								((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
-								continue;
 							}
 
 							var relatedRecords = relatedRecordResponse.Object.Data;
@@ -946,7 +942,6 @@ namespace WebVella.ERP.Api
 								{
 									errorsList.Add(string.Format("Invalid relation '{0}'. Relation field does not exist into input record data or its value is null.", columnName));
 									((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
-									continue;
 								}
 							}
 							else if (relation.RelationType == EntityRelationType.OneToMany &&
@@ -956,7 +951,6 @@ namespace WebVella.ERP.Api
 								{
 									errorsList.Add(string.Format("Invalid relation '{0}'. Relation field does not exist into input record data or its value is null.", columnName));
 									((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
-									continue;
 								}
 							}
 							else if (relation.RelationType == EntityRelationType.ManyToMany)
@@ -968,7 +962,6 @@ namespace WebVella.ERP.Api
 									{
 										errorsList.Add("Invalid record value for field: '" + columnName + "'. Invalid value: '" + fieldValue + "'");
 										((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
-										continue;
 									}
 								}
 							}
@@ -1054,7 +1047,7 @@ namespace WebVella.ERP.Api
 							}
 						}
 
-					((EntityRecord)evaluationObj["errors"])[columnName] = errorsList;
+						((EntityRecord)evaluationObj["errors"])[columnName] = errorsList;
 
 						//validate the value for warnings
 						((EntityRecord)evaluationObj["warnings"])[columnName] = warningList;
@@ -1071,7 +1064,7 @@ namespace WebVella.ERP.Api
 				{
 					#region << WebHook Filters >>
 
-					Guid ? recordId = null;
+					Guid? recordId = null;
 					if (rowRecord.GetProperties().Any(p => p.Key == "id") && !string.IsNullOrWhiteSpace((string)rowRecord["id"]))
 					{
 						Guid id;
