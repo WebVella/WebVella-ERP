@@ -1212,6 +1212,7 @@ namespace WebVella.ERP.Api
 							QueryResponse result;
 							if (!newRecord.GetProperties().Any(x => x.Key == "id") || newRecord["id"] == null || string.IsNullOrEmpty(newRecord["id"].ToString()))
 							{
+								newRecord["id"] = Guid.NewGuid();
 								if (enableWebHooks)
 								{
 									//////////////////////////////////////////////////////////////////////////////////////
@@ -1234,7 +1235,7 @@ namespace WebVella.ERP.Api
 									#endregion
 								}
 
-								newRecord["id"] = Guid.NewGuid();
+
 								result = recMan.CreateRecord(entityName, newRecord);
 
 								if (result.Success)
@@ -1265,6 +1266,9 @@ namespace WebVella.ERP.Api
 							{
 								if (enableWebHooks)
 								{
+									Guid id;
+									if (Guid.TryParse((string)newRecord["id"], out id))
+										newRecord["id"] = id;
 									//////////////////////////////////////////////////////////////////////////////////////
 									//WEBHOOK FILTER << update_record_pre_save_filter >>
 									//////////////////////////////////////////////////////////////////////////////////////
