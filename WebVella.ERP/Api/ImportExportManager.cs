@@ -109,7 +109,11 @@ namespace WebVella.ERP.Api
 
 					List<EntityRecord> records = null;
 					if (count == -1)
+					{
 						records = recMan.GetListRecords(entities, entity, listName, null, queryObj, null, true, returnAllRecords: true);
+						int recordsCount = records.Count();
+						pageSize = recordsCount > 0 ? recordsCount : 0;
+					}
 					else
 						records = recMan.GetListRecords(entities, entity, listName, page, queryObj, pageSize, true);
 
