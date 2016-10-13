@@ -1555,7 +1555,7 @@ namespace WebVella.ERP.Api
 
 			foreach (var field in entity.Fields)
 			{
-				if (field.Required && !recordData.Any(p => p.Key == field.Name))
+				if (field.Required && !recordData.Any(p => p.Key == field.Name) && field.GetFieldType() != FieldType.AutoNumberField)
 				{
 					var defaultValue = field.GetDefaultValue();
 

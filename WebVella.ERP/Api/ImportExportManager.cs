@@ -1056,7 +1056,9 @@ namespace WebVella.ERP.Api
 
 					#region << Data >>
 					//Submit row data
-					rowRecord[columnName] = fieldValue;
+
+					if (command != "no_import")
+						rowRecord[columnName] = fieldValue;
 					#endregion
 				}
 
@@ -1243,7 +1245,7 @@ namespace WebVella.ERP.Api
 									try
 									{
 										dynamic hookActionObj = new ExpandoObject();
-										hookActionObj.record = newRecord;
+										hookActionObj.record = result.Object.Data[0];
 										hookActionObj.result = result;
 										hookActionObj.controller = controller;
 										hooksService.ProcessActions(SystemWebHookNames.CreateRecordAction, entityName, hookActionObj);
@@ -1295,10 +1297,10 @@ namespace WebVella.ERP.Api
 									try
 									{
 										dynamic hookActionObj = new ExpandoObject();
-										hookActionObj.record = newRecord;
+										hookActionObj.record = result.Object.Data[0];
 										hookActionObj.oldRecord = newRecord;
 										hookActionObj.result = result;
-										hookActionObj.recordId = newRecord["id"];
+										hookActionObj.recordId = result.Object.Data[0]["id"];
 										hookActionObj.controller = controller;
 										hooksService.ProcessActions(SystemWebHookNames.UpdateRecordAction, entityName, hookActionObj);
 									}
@@ -1347,6 +1349,7 @@ namespace WebVella.ERP.Api
 				}
 
 				Cache.ClearEntities();
+				response.Object = evaluationObj;
 				return response;
 			}
 
