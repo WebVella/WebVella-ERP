@@ -524,10 +524,10 @@ namespace WebVella.ERP.Project
 					var updatedRecord = new EntityRecord();
 					updatedRecord["id"] = (Guid)bug["id"];
 					if(billableString == "billable") {
-						updatedRecord["x_billable_hours"] = (decimal)bug["x_billable_hours"] + (decimal)record["hours"];
+						updatedRecord["x_billable_hours"] = (decimal)bug["x_billable_hours"] + Convert.ToDecimal(record["hours"]);
 					}
 					else {
-						updatedRecord["x_nonbillable_hours"] = (decimal)bug["x_nonbillable_hours"] + (decimal)record["hours"];
+						updatedRecord["x_nonbillable_hours"] = (decimal)bug["x_nonbillable_hours"] + Convert.ToDecimal(record["hours"]);
 					}
 					var updateRecordResult = recMan.UpdateRecord("wv_bug",updatedRecord);
 					if(!updateRecordResult.Success) {

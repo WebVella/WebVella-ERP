@@ -59,11 +59,12 @@
 		loginData.pageTitle = "Login | " + pageTitle;
 		webvellaCoreService.setPageTitle(loginData.pageTitle);
 
-		loginData.ValidationErrors = false;
+		loginData.validation = webvellaCoreService.initValidationObject();
 
 		webvellaCoreService.setPageTitle(loginData.pageTitle);
 
 		loginData.doLogin = function () {
+			loginData.validation = webvellaCoreService.initValidationObject();
 			webvellaCoreService.login(loginData, function (response) {
 				if ($stateParams.returnUrl != null) {
 					var returnUrl = decodeURI($stateParams.returnUrl);
@@ -74,7 +75,7 @@
 					webvellaCoreService.GoToState("webvella-desktop-browse", {});
 				}
 			}, function (response) {
-				//alert(response.message);
+				loginData.validation = webvellaCoreService.setValidationError(loginData.validation,response.message,null,null);
 			});
 		}
 	}
