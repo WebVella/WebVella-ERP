@@ -941,15 +941,6 @@
 			}, 0);
 		}
 
-		popupCtrl.importSuccessCallback = function (response) {
-			//popupCtrl.loading = false;
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success </span> Records successfully imported!'
-			});
-			//$uibModalInstance.dismiss('cancel');
-			$state.reload();
-		}
 		popupCtrl.importErrorCallback = function (response) {
 			popupCtrl.loading = false;
 			//popupCtrl.hasError = true;
@@ -957,12 +948,64 @@
 		}
 
 		popupCtrl.evaluateAndImport = function () {
+			popupCtrl.evaluationResult.records = popupCtrl.removeUnderscore(popupCtrl.evaluationResult.records,'array');
+			popupCtrl.evaluationResult.commands = popupCtrl.removeUnderscore(popupCtrl.evaluationResult.commands,'object');
 			webvellaCoreService.evaluateImportEntityRecords(popupCtrl.ngCtrl.entity.name, popupCtrl.uploadedFilePath,"evaluate-import", popupCtrl.clipboard,popupCtrl.evaluationResult.commands, popupCtrl.importSuccessCallback, popupCtrl.evaluationErrorCallback);
 		};
 
 		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
+
+		popupCtrl.addUnderscore = function (targetObject, type) {
+			if (type == "array") {
+				for (var i = 0; i < targetObject.length; i++) {
+					var record = targetObject[i];
+					for (var property in record) {
+						if (property.startsWith("$")) {
+							record["_" + property] = record[property];
+							delete record[property];
+						}
+					}
+				};
+			}
+			else if(type == "object"){
+				var record = targetObject;
+				for (var property in record) {
+					if (property.startsWith("$")) {
+						record["_" + property] = record[property];
+						delete record[property];
+					}
+				}				
+			}
+			return targetObject;
+		}
+
+		popupCtrl.removeUnderscore = function (targetObject, type) {
+			if (type == "array") {
+				for (var i = 0; i < targetObject.length; i++) {
+					var record = targetObject[i];
+					for (var property in record) {
+						if (property.startsWith("_$")) {
+							var newProperty = property.substring(1);
+							record[newProperty] = record[property];
+							delete record[property];
+						}
+					}
+				};
+			}
+			else if(type == "object"){
+				var record = targetObject;
+				for (var property in record) {
+					if (property.startsWith("_$")) {
+						var newProperty = property.substring(1);
+						record[newProperty] = record[property];
+						delete record[property];
+					}
+				}				
+			}
+			return targetObject;
+		}
 
 
 		//EVALUATE
@@ -994,6 +1037,9 @@
 		}
 
 		popupCtrl.evaluationSuccessCallback = function(response){
+			response.object.records = popupCtrl.addUnderscore(response.object.records,'array');
+			response.object.commands = popupCtrl.addUnderscore(response.object.commands,'object');
+			console.log("success callback");
 			popupCtrl.evaluationResult = response.object;			
 			for(var columnName in popupCtrl.evaluationResult.errors){
 				  if(popupCtrl.ifColumnHasError(popupCtrl.evaluationResult.errors[columnName])){
@@ -1019,13 +1065,11 @@
 
 		popupCtrl.importSuccessCallback = function(response){
 			popupCtrl.evaluationResult = response.object;			
-
 			popupCtrl.activeStep = 3;
 		}
 
 
 		function updateCreateFieldCount(){
-			console.log("create field count updated");
 			popupCtrl.createFieldCount = 0;
 			for (var commandObject in popupCtrl.evaluationResult.commands) {
 				if(popupCtrl.evaluationResult.commands[commandObject].command == "to_create"){
@@ -1120,19 +1164,19 @@
 
 
 		popupCtrl.importTypes = [
-		{
-			key:"no_import",
-			value:"Do not import"
-		},
-		{
-			key:"to_update",
-			value:"To existing field"
-		},
-		{
-			key:"to_create",
-			value:"Create new field"
-		}]
-		
+			{
+				key: "no_import",
+				value: "Do not import"
+			},
+			{
+				key: "to_update",
+				value: "To existing field"
+			},
+			{
+				key: "to_create",
+				value: "Create new field"
+			}];
+
 		popupCtrl.fieldTypes = fieldTypes;
 
 		popupCtrl.getFieldTypeDescription = function(typeId) {

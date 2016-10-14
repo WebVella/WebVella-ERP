@@ -421,6 +421,7 @@
 				<span ng-if="popupCtrl.evaluationResult.stats.errors == 0">No errors found! </span>
 			</p>
 			<div data-double-scroll-bar-horizontal class="evaluation-wrapper">
+
 				<table class="table table-bordered import-evaluation">
 					<thead>
 						<tr>
@@ -430,13 +431,12 @@
 									<div class="form-group">
 										<div class="input-group">
 											<span class="input-group-addon">
-												<!--<i class="fa fa-fw fa-clock-o go-gray"></i>-->
 												<i ng-show="::!popupCtrl.columnHasError[key] && !popupCtrl.columnHasWarning[key]" class="fa fa-fw fa-check go-green ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="no warnings or errors in this column" popover-trigger="mouseenter"></i>
 												<i ng-show="::popupCtrl.columnHasError[key]" class="fa fa-fw fa-exclamation-circle go-red ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="this column has errors. Check the fields below" popover-trigger="mouseenter"></i>
 												<i ng-show="::popupCtrl.columnHasWarning[key]" class="fa fa-fw fa-warning go-orange ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="this column has warnings. Check the fields below" popover-trigger="mouseenter"></i>
 											</span>
 											<select class="form-control" ng-model="popupCtrl.evaluationResult.commands[key].command" 
-												ng-options="::option.key as option.value for option in popupCtrl.importTypes"
+												ng-options="option.key as option.value for option in popupCtrl.importTypes"
 												ng-change="popupCtrl.updateColumnCommand(key,popupCtrl.evaluationResult.commands[key])"></select>
 										</div>
 									</div>
@@ -478,7 +478,7 @@
 										<span class="input-group-addon">
 											<i class="fa fa-fw fa-database go-gray"></i>
 										</span>
-										<input class="form-control go-gray" disabled value="{{popupCtrl.evaluationResult.commands[key].fieldName}}"/>
+										<input class="form-control" ng-model="popupCtrl.evaluationResult.commands[key].fieldName"/>
 									</div>
 									<div class="input-group" title="{{popupCtrl.evaluationResult.commands[key].fieldLabel}}">
 										<span class="input-group-addon">
@@ -530,13 +530,14 @@
 				</tbody>
 			</table>
 		</div>
-		<!--<pre>{{popupCtrl.createFieldCount | json}}</pre>-->
+		<pre>{{popupCtrl.createFieldCount | json}}</pre>
+		<pre>{{popupCtrl.evaluationResult.commands | json}}</pre>
 	</div>
 	<div class="modal-footer">
 		<a ng-if="popupCtrl.activeStep == 1" href="javascript:void(0)" ng-click="popupCtrl.evaluate()" class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-cog': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate</a>
 		<a ng-if="popupCtrl.activeStep == 2" href="javascript:void(0)" ng-click="popupCtrl.back()" class="btn btn-default pull-left"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
 		<a ng-if="popupCtrl.activeStep == 2" href="javascript:void(0)" ng-show="popupCtrl.createFieldCount == 0" ng-click="popupCtrl.evaluateAndImport()" class="btn btn-primary ng-hide"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate & Import</a>
-		<a ng-if="popupCtrl.activeStep == 2" href="javascript:void(0)" ng-show="popupCtrl.createFieldCount > 0" confirmed-click="popupCtrl.evaluateAndImport()" ng-confirm-click="WARNING: This import will create {{popupCtrl.createFieldCount}} new fields in the entity '{{popupCtrl.ngCtrl.entity.label}}'. Click OK to confirm." class="btn btn-primary ng-hide"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate & Import</a>
+		<a ng-if="popupCtrl.activeStep == 2" href="javascript:void(0)" ng-show="popupCtrl.createFieldCount > 0" confirmed-click="popupCtrl.evaluateAndImport()" ng-confirm-click="WARNING: This import will create new fields! Click OK to confirm." class="btn btn-primary ng-hide"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate & Import</a>
 		<a ng-if="popupCtrl.activeStep != 3" href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CANCEL'}}"></a>
 		<a ng-if="popupCtrl.activeStep == 3" href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CLOSE'}}"></a>
 	</div>
