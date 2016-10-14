@@ -948,6 +948,7 @@
 		}
 
 		popupCtrl.evaluateAndImport = function () {
+			popupCtrl.hasError = false;
 			popupCtrl.evaluationResult.records = popupCtrl.removeUnderscore(popupCtrl.evaluationResult.records,'array');
 			popupCtrl.evaluationResult.commands = popupCtrl.removeUnderscore(popupCtrl.evaluationResult.commands,'object');
 			webvellaCoreService.evaluateImportEntityRecords(popupCtrl.ngCtrl.entity.name, popupCtrl.uploadedFilePath,"evaluate-import", popupCtrl.clipboard,popupCtrl.evaluationResult.commands, popupCtrl.importSuccessCallback, popupCtrl.evaluationErrorCallback);
@@ -1015,6 +1016,7 @@
 		popupCtrl.columnHasError = {};
 		popupCtrl.columnHasWarning = {};
 		popupCtrl.evaluate = function () {
+			popupCtrl.hasError = false;
 			webvellaCoreService.evaluateImportEntityRecords(popupCtrl.ngCtrl.entity.name, popupCtrl.uploadedFilePath,"evaluate", popupCtrl.clipboard,popupCtrl.evaluationResult.commands, popupCtrl.evaluationSuccessCallback, popupCtrl.evaluationErrorCallback);
 		};
 
@@ -1039,7 +1041,8 @@
 		popupCtrl.evaluationSuccessCallback = function(response){
 			response.object.records = popupCtrl.addUnderscore(response.object.records,'array');
 			response.object.commands = popupCtrl.addUnderscore(response.object.commands,'object');
-			console.log("success callback");
+			response.object.errors = popupCtrl.addUnderscore(response.object.errors,'object');
+			
 			popupCtrl.evaluationResult = response.object;			
 			for(var columnName in popupCtrl.evaluationResult.errors){
 				  if(popupCtrl.ifColumnHasError(popupCtrl.evaluationResult.errors[columnName])){

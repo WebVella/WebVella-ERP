@@ -86,6 +86,9 @@ namespace WebVella.ERP.Project
 				#region << Increase the project counter >>
 				var patchObject = new EntityRecord();
 				patchObject["id"] = (Guid)projectObject["id"];
+				if(!record.Properties.ContainsKey("status")) {
+					record["status"] = "not started";
+				}
 				switch ((string)record["status"])
 				{
 					case "not started":

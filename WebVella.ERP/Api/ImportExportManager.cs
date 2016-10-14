@@ -924,7 +924,7 @@ namespace WebVella.ERP.Api
 								relation.RelationType == EntityRelationType.OneToOne))
 							{
 								//there can be no more than 1 records
-								errorsList.Add(string.Format("Invalid relation '{0} value {1}'. There are multiple relation records.", columnName, fieldValue));
+								errorsList.Add(string.Format("Invalid relation '{0} value {1}'. There are multiple relation records matching this value.", columnName, fieldValue));
 								((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
 							}
 

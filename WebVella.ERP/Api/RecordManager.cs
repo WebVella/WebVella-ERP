@@ -372,7 +372,7 @@ namespace WebVella.ERP.Api
 									relation.RelationType == EntityRelationType.OneToOne))
 								{
 									//there can be no more than 1 records
-									throw new Exception(string.Format("Invalid relation '{0} value {1}'. There are multiple relation records.", pair.Key, pair.Value));
+									throw new Exception(string.Format("Invalid relation '{0} value {1}'. There are multiple relation records matching this value.", pair.Key, pair.Value));
 								}
 
 								var relatedRecords = relatedRecordResponse.Object.Data;
@@ -825,7 +825,7 @@ namespace WebVella.ERP.Api
 									relation.RelationType == EntityRelationType.OneToOne))
 								{
 									//there can be no more than 1 records
-									throw new Exception(string.Format("Invalid relation '{0} value {1}'. There are multiple relation records.", pair.Key, pair.Value));
+									throw new Exception(string.Format("Invalid relation '{0} value {1}'. There are multiple relation records matching this value.", pair.Key, pair.Value));
 								}
 
 								var relatedRecords = relatedRecordResponse.Object.Data;
