@@ -910,6 +910,14 @@
 		popupCtrl.accordion.file.active = false;
 		popupCtrl.activeStep = 1;
 		popupCtrl.createFieldCount = 0;
+		popupCtrl.entityFieldsObject = {};
+		//Init entityFields array
+		for (var i = 0; i < popupCtrl.ngCtrl.entityList.length; i++) {
+			var currentEntity = popupCtrl.ngCtrl.entityList[i];
+			popupCtrl.entityFieldsObject[currentEntity.name] = currentEntity.fields;
+
+		}
+
 
 		popupCtrl.upload = function (file) {
 			popupCtrl.uploadedFilePath = null;
@@ -956,6 +964,11 @@
 
 		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
+		};
+
+		popupCtrl.CloseAfterImport = function () {
+			$uibModalInstance.dismiss('cancel');
+			$state.reload();
 		};
 
 		popupCtrl.addUnderscore = function (targetObject, type) {
@@ -1091,13 +1104,23 @@
 			popupCtrl.errorMessage = response.message;
 		}
 
-		popupCtrl.getEntityFieldsFromType = function(type){
+		popupCtrl.getEntityFieldsFromType = function(type,entityName){
 			var fields = [];
-			popupCtrl.ngCtrl.entity.fields.forEach(function(field){
-				if(field.fieldType == type){
-					  fields.push(field);
-				}
-			});
+			if(entityName == null){
+				popupCtrl.ngCtrl.entity.fields.forEach(function(field){
+					if(field.fieldType == type){
+						  fields.push(field);
+					}
+				});
+			}
+			else if(popupCtrl.entityFieldsObject[entityName] != undefined){
+				popupCtrl.entityFieldsObject[entityName].forEach(function(field){
+					if(field.fieldType == type){
+						  fields.push(field);
+					}
+				});
+			}
+
 			return fields;
 		}
 
@@ -1118,26 +1141,32 @@
 		}
 
 		popupCtrl.updateExistingFieldCommand = function(command){
-			for (var i = 0; i < popupCtrl.ngCtrl.entity.fields.length; i++) {
-				if(popupCtrl.ngCtrl.entity.fields[i].name == command.fieldName){
-					command.fieldLabel = popupCtrl.ngCtrl.entity.fields[i].label;
-					return;
+			if(command.relationName == ''){
+				for (var i = 0; i < popupCtrl.ngCtrl.entity.fields.length; i++) {
+					if(popupCtrl.ngCtrl.entity.fields[i].name == command.fieldName){
+						command.fieldLabel = popupCtrl.ngCtrl.entity.fields[i].label;
+						return;
+					}
 				}
+			}
+			else if(popupCtrl.entityFieldsObject[command.entityName] != undefined){
+				for (var i = 0; i < popupCtrl.entityFieldsObject[command.entityName].length; i++) {
+					if(popupCtrl.entityFieldsObject[command.entityName][i].name == command.fieldName){
+						command.fieldLabel = popupCtrl.entityFieldsObject[command.entityName][i].label;
+						return;
+					}
+				}				
 			}
 		}
 
 		popupCtrl.updateColumnCommand = function(key,command){
 			switch(command.command){
 				case "no_import":
-					command.fieldName = key;
-					command.fieldLabel = key;
 					command.fieldType = 18;
 					break;
 				case "to_update":
 					break;
 				case "to_create":
-					command.fieldName = key;
-					command.fieldLabel = key;
 					command.fieldType = 18;
 					break;
 			}			
