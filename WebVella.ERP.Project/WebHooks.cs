@@ -45,9 +45,23 @@ namespace WebVella.ERP.Project
 		public dynamic TaskCreateRecordPreSave(dynamic data)
 		{
 			EntityRecord record = (EntityRecord)data.record;
-			record["project_id"] = new Guid((string)record["$project_1_n_task.id"]);
-			record.Properties.Remove("$project_1_n_task.id");
+			if(record.Properties.ContainsKey("$project_1_n_task.id")) {
+				record["project_id"] = new Guid((string)record["$project_1_n_task.id"]);
+				record.Properties.Remove("$project_1_n_task.id");
+			}
+			else {
+				//we should set the default project
+				var taskEntity = entMan.ReadEntity("wv_task");
+				var projectIdField = taskEntity.Object.Fields.SingleOrDefault(x => x.Name == "project_id");
+				if(projectIdField == null) {
+					throw new Exception("project_id field not defined");
+				}
+				if(((GuidField)projectIdField).DefaultValue == null) {
+					throw new Exception("default project id not defined in project_id field");
+				}
+				record["project_id"] = ((GuidField)projectIdField).DefaultValue;
 
+			}
 			#region << Get project owner and set as ticket owner >>
 			EntityRecord projectObject = null;
 			{
@@ -72,6 +86,9 @@ namespace WebVella.ERP.Project
 				#region << Increase the project counter >>
 				var patchObject = new EntityRecord();
 				patchObject["id"] = (Guid)projectObject["id"];
+				if(!record.Properties.ContainsKey("status")) {
+					record["status"] = "not started";
+				}
 				switch ((string)record["status"])
 				{
 					case "not started":
@@ -507,10 +524,10 @@ namespace WebVella.ERP.Project
 					var updatedRecord = new EntityRecord();
 					updatedRecord["id"] = (Guid)bug["id"];
 					if(billableString == "billable") {
-						updatedRecord["x_billable_hours"] = (decimal)bug["x_billable_hours"] + (decimal)record["hours"];
+						updatedRecord["x_billable_hours"] = (decimal)bug["x_billable_hours"] + Convert.ToDecimal(record["hours"]);
 					}
 					else {
-						updatedRecord["x_nonbillable_hours"] = (decimal)bug["x_nonbillable_hours"] + (decimal)record["hours"];
+						updatedRecord["x_nonbillable_hours"] = (decimal)bug["x_nonbillable_hours"] + Convert.ToDecimal(record["hours"]);
 					}
 					var updateRecordResult = recMan.UpdateRecord("wv_bug",updatedRecord);
 					if(!updateRecordResult.Success) {

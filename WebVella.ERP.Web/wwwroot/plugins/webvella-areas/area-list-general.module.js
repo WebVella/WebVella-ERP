@@ -908,10 +908,16 @@
 		popupCtrl.accordion.clipboard.active = true;
 		popupCtrl.accordion.file = {};
 		popupCtrl.accordion.file.active = false;
-		popupCtrl.step1Active = true;
-		popupCtrl.step2Active = false;
-		popupCtrl.step3Active = false;
+		popupCtrl.activeStep = 1;
 		popupCtrl.createFieldCount = 0;
+		popupCtrl.entityFieldsObject = {};
+		//Init entityFields array
+		for (var i = 0; i < popupCtrl.ngCtrl.entityList.length; i++) {
+			var currentEntity = popupCtrl.ngCtrl.entityList[i];
+			popupCtrl.entityFieldsObject[currentEntity.name] = currentEntity.fields;
+
+		}
+
 
 		popupCtrl.upload = function (file) {
 			popupCtrl.uploadedFilePath = null;
@@ -943,15 +949,6 @@
 			}, 0);
 		}
 
-		popupCtrl.importSuccessCallback = function (response) {
-			//popupCtrl.loading = false;
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success </span> Records successfully imported!'
-			});
-			//$uibModalInstance.dismiss('cancel');
-			$state.reload();
-		}
 		popupCtrl.importErrorCallback = function (response) {
 			popupCtrl.loading = false;
 			//popupCtrl.hasError = true;
@@ -959,12 +956,70 @@
 		}
 
 		popupCtrl.evaluateAndImport = function () {
-			webvellaCoreService.evaluateImportEntityRecords(popupCtrl.ngCtrl.entity.name, popupCtrl.uploadedFilePath,"evaluate-import", popupCtrl.clipboard,popupCtrl.evaluationResult.commands, popupCtrl.evaluationSuccessCallback, popupCtrl.evaluationErrorCallback);
+			popupCtrl.hasError = false;
+			popupCtrl.evaluationResult.records = popupCtrl.removeUnderscore(popupCtrl.evaluationResult.records,'array');
+			popupCtrl.evaluationResult.commands = popupCtrl.removeUnderscore(popupCtrl.evaluationResult.commands,'object');
+			webvellaCoreService.evaluateImportEntityRecords(popupCtrl.ngCtrl.entity.name, popupCtrl.uploadedFilePath,"evaluate-import", popupCtrl.clipboard,popupCtrl.evaluationResult.commands, popupCtrl.importSuccessCallback, popupCtrl.evaluationErrorCallback);
 		};
 
 		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
+
+		popupCtrl.CloseAfterImport = function () {
+			$uibModalInstance.dismiss('cancel');
+			$state.reload();
+		};
+
+		popupCtrl.addUnderscore = function (targetObject, type) {
+			if (type == "array") {
+				for (var i = 0; i < targetObject.length; i++) {
+					var record = targetObject[i];
+					for (var property in record) {
+						if (property.startsWith("$")) {
+							record["_" + property] = record[property];
+							delete record[property];
+						}
+					}
+				};
+			}
+			else if(type == "object"){
+				var record = targetObject;
+				for (var property in record) {
+					if (property.startsWith("$")) {
+						record["_" + property] = record[property];
+						delete record[property];
+					}
+				}				
+			}
+			return targetObject;
+		}
+
+		popupCtrl.removeUnderscore = function (targetObject, type) {
+			if (type == "array") {
+				for (var i = 0; i < targetObject.length; i++) {
+					var record = targetObject[i];
+					for (var property in record) {
+						if (property.startsWith("_$")) {
+							var newProperty = property.substring(1);
+							record[newProperty] = record[property];
+							delete record[property];
+						}
+					}
+				};
+			}
+			else if(type == "object"){
+				var record = targetObject;
+				for (var property in record) {
+					if (property.startsWith("_$")) {
+						var newProperty = property.substring(1);
+						record[newProperty] = record[property];
+						delete record[property];
+					}
+				}				
+			}
+			return targetObject;
+		}
 
 
 		//EVALUATE
@@ -974,6 +1029,7 @@
 		popupCtrl.columnHasError = {};
 		popupCtrl.columnHasWarning = {};
 		popupCtrl.evaluate = function () {
+			popupCtrl.hasError = false;
 			webvellaCoreService.evaluateImportEntityRecords(popupCtrl.ngCtrl.entity.name, popupCtrl.uploadedFilePath,"evaluate", popupCtrl.clipboard,popupCtrl.evaluationResult.commands, popupCtrl.evaluationSuccessCallback, popupCtrl.evaluationErrorCallback);
 		};
 
@@ -996,6 +1052,10 @@
 		}
 
 		popupCtrl.evaluationSuccessCallback = function(response){
+			response.object.records = popupCtrl.addUnderscore(response.object.records,'array');
+			response.object.commands = popupCtrl.addUnderscore(response.object.commands,'object');
+			response.object.errors = popupCtrl.addUnderscore(response.object.errors,'object');
+			
 			popupCtrl.evaluationResult = response.object;			
 			for(var columnName in popupCtrl.evaluationResult.errors){
 				  if(popupCtrl.ifColumnHasError(popupCtrl.evaluationResult.errors[columnName])){
@@ -1016,13 +1076,16 @@
 			//Calculate fields to create
 			updateCreateFieldCount()
 
-			popupCtrl.step1Active = false;
-			popupCtrl.step2Active = true;	
-			popupCtrl.hasError = false;
+			popupCtrl.activeStep = 2;
 		}
 
+		popupCtrl.importSuccessCallback = function(response){
+			popupCtrl.evaluationResult = response.object;			
+			popupCtrl.activeStep = 3;
+		}
+
+
 		function updateCreateFieldCount(){
-			console.log("create field count updated");
 			popupCtrl.createFieldCount = 0;
 			for (var commandObject in popupCtrl.evaluationResult.commands) {
 				if(popupCtrl.evaluationResult.commands[commandObject].command == "to_create"){
@@ -1041,13 +1104,23 @@
 			popupCtrl.errorMessage = response.message;
 		}
 
-		popupCtrl.getEntityFieldsFromType = function(type){
+		popupCtrl.getEntityFieldsFromType = function(type,entityName){
 			var fields = [];
-			popupCtrl.ngCtrl.entity.fields.forEach(function(field){
-				if(field.fieldType == type){
-					  fields.push(field);
-				}
-			});
+			if(entityName == null){
+				popupCtrl.ngCtrl.entity.fields.forEach(function(field){
+					if(field.fieldType == type){
+						  fields.push(field);
+					}
+				});
+			}
+			else if(popupCtrl.entityFieldsObject[entityName] != undefined){
+				popupCtrl.entityFieldsObject[entityName].forEach(function(field){
+					if(field.fieldType == type){
+						  fields.push(field);
+					}
+				});
+			}
+
 			return fields;
 		}
 
@@ -1068,26 +1141,32 @@
 		}
 
 		popupCtrl.updateExistingFieldCommand = function(command){
-			for (var i = 0; i < popupCtrl.ngCtrl.entity.fields.length; i++) {
-				if(popupCtrl.ngCtrl.entity.fields[i].name == command.fieldName){
-					command.fieldLabel = popupCtrl.ngCtrl.entity.fields[i].label;
-					return;
+			if(command.relationName == ''){
+				for (var i = 0; i < popupCtrl.ngCtrl.entity.fields.length; i++) {
+					if(popupCtrl.ngCtrl.entity.fields[i].name == command.fieldName){
+						command.fieldLabel = popupCtrl.ngCtrl.entity.fields[i].label;
+						return;
+					}
 				}
+			}
+			else if(popupCtrl.entityFieldsObject[command.entityName] != undefined){
+				for (var i = 0; i < popupCtrl.entityFieldsObject[command.entityName].length; i++) {
+					if(popupCtrl.entityFieldsObject[command.entityName][i].name == command.fieldName){
+						command.fieldLabel = popupCtrl.entityFieldsObject[command.entityName][i].label;
+						return;
+					}
+				}				
 			}
 		}
 
 		popupCtrl.updateColumnCommand = function(key,command){
 			switch(command.command){
 				case "no_import":
-					command.fieldName = key;
-					command.fieldLabel = key;
 					command.fieldType = 18;
 					break;
 				case "to_update":
 					break;
 				case "to_create":
-					command.fieldName = key;
-					command.fieldLabel = key;
 					command.fieldType = 18;
 					break;
 			}			
@@ -1106,33 +1185,30 @@
 
 		//BACK
 		popupCtrl.back = function () {
-			popupCtrl.step1Active = true;
-			popupCtrl.step2Active = false;
+			popupCtrl.activeStep = 1;
 		};
 
 
 		//IMPORT
 		popupCtrl.import = function () {
-			popupCtrl.step1Active = false;
-			popupCtrl.step2Active = false;
-			popupCtrl.step3Active = true;
+			popupCtrl.activeStep = 3;
 		};
 
 
 		popupCtrl.importTypes = [
-		{
-			key:"no_import",
-			value:"Do not import"
-		},
-		{
-			key:"to_update",
-			value:"To existing field"
-		},
-		{
-			key:"to_create",
-			value:"Create new field"
-		}]
-		
+			{
+				key: "no_import",
+				value: "Do not import"
+			},
+			{
+				key: "to_update",
+				value: "To existing field"
+			},
+			{
+				key: "to_create",
+				value: "Create new field"
+			}];
+
 		popupCtrl.fieldTypes = fieldTypes;
 
 		popupCtrl.getFieldTypeDescription = function(typeId) {

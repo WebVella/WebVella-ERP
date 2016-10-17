@@ -372,7 +372,7 @@ namespace WebVella.ERP.Api
 									relation.RelationType == EntityRelationType.OneToOne))
 								{
 									//there can be no more than 1 records
-									throw new Exception(string.Format("Invalid relation '{0} value {1}'. There are multiple relation records.", pair.Key, pair.Value));
+									throw new Exception(string.Format("Invalid relation '{0} value {1}'. There are multiple relation records matching this value.", pair.Key, pair.Value));
 								}
 
 								var relatedRecords = relatedRecordResponse.Object.Data;
@@ -460,6 +460,9 @@ namespace WebVella.ERP.Api
 							{
 								//locate the field
 								var field = entity.Fields.SingleOrDefault(x => x.Name == pair.Key);
+
+								if (field is AutoNumberField && pair.Value == null)
+									continue;
 
 								storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
 							}
@@ -822,7 +825,7 @@ namespace WebVella.ERP.Api
 									relation.RelationType == EntityRelationType.OneToOne))
 								{
 									//there can be no more than 1 records
-									throw new Exception(string.Format("Invalid relation '{0} value {1}'. There are multiple relation records.", pair.Key, pair.Value));
+									throw new Exception(string.Format("Invalid relation '{0} value {1}'. There are multiple relation records matching this value.", pair.Key, pair.Value));
 								}
 
 								var relatedRecords = relatedRecordResponse.Object.Data;
@@ -912,6 +915,9 @@ namespace WebVella.ERP.Api
 								var field = entity.Fields.SingleOrDefault(x => x.Name == pair.Key);
 
 								if (field is PasswordField && pair.Value == null)
+									continue;
+
+								if (field is AutoNumberField && pair.Value == null)
 									continue;
 
 								if (!storageRecordData.Any(r => r.Key == field.Name))
@@ -1547,9 +1553,9 @@ namespace WebVella.ERP.Api
 			if (entity == null)
 				return;
 
-			foreach(var field in entity.Fields)
+			foreach (var field in entity.Fields)
 			{
-				if(field.Required && !recordData.Any(p => p.Key == field.Name))
+				if (field.Required && !recordData.Any(p => p.Key == field.Name) && field.GetFieldType() != FieldType.AutoNumberField)
 				{
 					var defaultValue = field.GetDefaultValue();
 
@@ -1559,8 +1565,8 @@ namespace WebVella.ERP.Api
 		}
 
 		public List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null,
-					int? pageSize = null, bool export = false, EntityRelation auxRelation = null, Guid? auxRelatedRecordId = null, 
-					string auxRelationDirection = "origin-target", List<KeyValuePair<string, string>> overwriteArgs = null)
+					int? pageSize = null, bool export = false, EntityRelation auxRelation = null, Guid? auxRelatedRecordId = null,
+					string auxRelationDirection = "origin-target", List<KeyValuePair<string, string>> overwriteArgs = null, bool returnAllRecords = false)
 		{
 			if (entity == null)
 				throw new Exception($"Entity '{entity.Name}' do not exist");
@@ -1785,14 +1791,22 @@ namespace WebVella.ERP.Api
 
 				}
 
-				if (!pageSize.HasValue)
-					pageSize = list.PageSize;
-
-				if (pageSize.Value > 0)
+				if (returnAllRecords)
 				{
-					resultQuery.Limit = pageSize.Value;
-					if (page != null && page > 0)
-						resultQuery.Skip = (page - 1) * resultQuery.Limit;
+					resultQuery.Skip = null;
+					resultQuery.Limit = null;
+				}
+				else
+				{
+					if (!pageSize.HasValue)
+						pageSize = list.PageSize;
+
+					if (pageSize.Value > 0)
+					{
+						resultQuery.Limit = pageSize.Value;
+						if (page != null && page > 0)
+							resultQuery.Skip = (page - 1) * resultQuery.Limit;
+					}
 				}
 			}
 
