@@ -35,7 +35,7 @@ namespace WebVella.ERP.Database
         const string END_SELECT = @"";
         const string END_OUTER_SELECT = @") X";
         const string FROM = @"FROM {0}";
-        //const string JOIN = @"LEFT JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
+
         //const string GROUPBY = @"GROUP BY {0}";
 
         const string OTM_RELATION_TEMPLATE = @"	(SELECT  COALESCE( array_to_json( array_agg( row_to_json(d) )), '[]') FROM ( 
@@ -48,6 +48,10 @@ namespace WebVella.ERP.Database
 					FROM {2} {3}
 					LEFT JOIN  {4} {5} ON {6}.{7} = {8}.{9}
 					WHERE {10}.{11} = {12}.{13} )d  ) AS ""{0}"",";
+
+        const string FILTER_JOIN = @"LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
+
+
 
         #endregion
 
@@ -163,12 +167,16 @@ namespace WebVella.ERP.Database
             string tableName = RECORD_COLLECTION_PREFIX + entityName;
             using (DbConnection con = DbContext.Current.CreateConnection())
             {
-                string sql = $"SELECT COUNT(*) FROM {tableName} ";
+                string sql = $"SELECT COUNT( DISTINCT * ) FROM {tableName} ";
                 string whereSql = string.Empty;
+                string whereJoinSql = string.Empty;
 
                 Entity entity = new EntityManager().ReadEntity(entityName).Object;
                 List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
-                GenerateWhereClause(query, entity, ref whereSql, ref parameters);
+                GenerateWhereClause(query, entity, ref whereSql, ref whereJoinSql, ref parameters);
+
+                if (whereJoinSql.Length > 0)
+                    sql = sql + "  " + whereJoinSql;
 
                 if (whereSql.Length > 0)
                     sql = sql + " WHERE " + whereSql;
@@ -248,10 +256,10 @@ namespace WebVella.ERP.Database
             return record;
         }
 
-		public static object ExtractFieldValue(object value, Field field, bool encryptPasswordFields = false)
-		{
-			if (value == null)
-				return field.GetDefaultValue();
+        public static object ExtractFieldValue(object value, Field field, bool encryptPasswordFields = false)
+        {
+            if (value == null)
+                return field.GetDefaultValue();
 
             if (value is JToken)
                 value = ((JToken)value).ToObject<object>();
@@ -439,12 +447,18 @@ namespace WebVella.ERP.Database
 
                 var tableName = GetTableNameForEntity(entity);
                 string columnNames = String.Join(",", fields.Select(x => tableName + ".\"" + x.Name + "\""));
-                sql.AppendLine("SELECT " + columnNames + " FROM " + tableName);
+                sql.AppendLine("SELECT DISTINCT " + columnNames + " FROM " + tableName);
 
-                string whereSql = string.Empty;
                 if (query.Query != null)
                 {
-                    GenerateWhereClause(query.Query, entity, ref whereSql, ref parameters, query.OverwriteArgs);
+                    string whereSql = string.Empty;
+                    string whereJoinSql = string.Empty;
+
+                    GenerateWhereClause(query.Query, entity, ref whereSql, ref whereJoinSql, ref parameters, query.OverwriteArgs);
+
+                    if (whereJoinSql.Length > 0)
+                        sql.AppendLine(whereJoinSql);
+
                     if (whereSql.Length > 0)
                         sql.AppendLine("WHERE " + whereSql);
                 }
@@ -588,7 +602,7 @@ namespace WebVella.ERP.Database
                                 //	relationField.TargetField.Name, GetTableNameForEntity(relationField.OriginEntity), relationField.OriginField.Name));
 
                                 sql.AppendLine(string.Format(OTM_RELATION_TEMPLATE,
-                                    field.Name,
+                                    relationField.Name,
                                     sbRelatedFields.ToString(),
                                     GetTableNameForEntity(relationField.TargetEntity),
                                     relationName,
@@ -603,7 +617,7 @@ namespace WebVella.ERP.Database
                                 //	relationField.OriginField.Name, GetTableNameForEntity(relationField.TargetEntity), relationField.TargetField.Name));
 
                                 sql.AppendLine(string.Format(OTM_RELATION_TEMPLATE,
-                                    field.Name,
+                                    relationField.Name,
                                     sbRelatedFields.ToString(),
                                     GetTableNameForEntity(relationField.OriginEntity),
                                     relationName,
@@ -625,7 +639,7 @@ namespace WebVella.ERP.Database
                                     //	relationField.TargetField.Name, GetTableNameForEntity(relationField.OriginEntity), relationField.OriginField.Name));
 
                                     sql.AppendLine(string.Format(OTM_RELATION_TEMPLATE,
-                                        field.Name,
+                                        relationField.Name,
                                         sbRelatedFields.ToString(),
                                         GetTableNameForEntity(relationField.TargetEntity),
                                         relationName,
@@ -639,7 +653,7 @@ namespace WebVella.ERP.Database
                                     //sqlJoins.AppendLine(string.Format(JOIN, GetTableNameForEntity(relationField.OriginEntity), relationName, relationName,
                                     //	relationField.OriginField.Name, GetTableNameForEntity(relationField.TargetEntity), relationField.TargetField.Name));
                                     sql.AppendLine(string.Format(OTM_RELATION_TEMPLATE,
-                                        field.Name,
+                                        relationField.Name,
                                         sbRelatedFields.ToString(),
                                         GetTableNameForEntity(relationField.OriginEntity),
                                         relationName,
@@ -657,7 +671,7 @@ namespace WebVella.ERP.Database
                                     //	relationField.OriginField.Name, GetTableNameForEntity(relationField.TargetEntity), relationField.TargetField.Name));
 
                                     sql.AppendLine(string.Format(OTM_RELATION_TEMPLATE,
-                                        field.Name,
+                                        relationField.Name,
                                         sbRelatedFields.ToString(),
                                         GetTableNameForEntity(relationField.OriginEntity),
                                         relationName,
@@ -671,7 +685,7 @@ namespace WebVella.ERP.Database
                                     //sqlJoins.AppendLine(string.Format(JOIN, GetTableNameForEntity(relationField.TargetEntity), relationName, relationName,
                                     //	relationField.TargetField.Name, GetTableNameForEntity(relationField.OriginEntity), relationField.OriginField.Name));
                                     sql.AppendLine(string.Format(OTM_RELATION_TEMPLATE,
-                                        field.Name,
+                                        relationField.Name,
                                         sbRelatedFields.ToString(),
                                         GetTableNameForEntity(relationField.TargetEntity),
                                         relationName,
@@ -699,7 +713,7 @@ namespace WebVella.ERP.Database
                                     //			 relationName, relationField.OriginField.Name, targetJoinAlias, "origin_id"));
 
                                     sql.AppendLine(string.Format(MTM_RELATION_TEMPLATE,
-                                        field.Name,
+                                        relationField.Name,
                                         sbRelatedFields.ToString(),
                                         GetTableNameForEntity(relationField.OriginEntity),
                                         relationName,
@@ -723,7 +737,7 @@ namespace WebVella.ERP.Database
                                     //	 originJoinAlias, "target_id", relationName, relationField.TargetField.Name));
 
                                     sql.AppendLine(string.Format(MTM_RELATION_TEMPLATE,
-                                        field.Name,
+                                        relationField.Name,
                                         sbRelatedFields.ToString(),
                                         GetTableNameForEntity(relationField.TargetEntity),
                                         relationName,
@@ -755,7 +769,7 @@ namespace WebVella.ERP.Database
 
 
                                 sql.AppendLine(string.Format(MTM_RELATION_TEMPLATE,
-                                        field.Name,
+                                        relationField.Name,
                                         sbRelatedFields.ToString(),
                                         GetTableNameForEntity(relationField.TargetEntity),
                                         relationName,
@@ -779,7 +793,7 @@ namespace WebVella.ERP.Database
                                 //			targetJoinAlias, "origin_id", relationName, relationField.OriginField.Name));
 
                                 sql.AppendLine(string.Format(MTM_RELATION_TEMPLATE,
-                                        field.Name,
+                                        relationField.Name,
                                         sbRelatedFields.ToString(),
                                         GetTableNameForEntity(relationField.OriginEntity),
                                         relationName,
@@ -802,10 +816,17 @@ namespace WebVella.ERP.Database
                 sql.AppendLine(string.Format(FROM, GetTableNameForEntity(entity)));
 
                 //where clause
-                string whereSql = string.Empty;
+
                 if (query.Query != null)
                 {
-                    GenerateWhereClause(query.Query, entity, ref whereSql, ref parameters, query.OverwriteArgs);
+                    string whereSql = string.Empty;
+                    string whereJoinSql = string.Empty;
+
+                    GenerateWhereClause(query.Query, entity, ref whereSql, ref whereJoinSql, ref parameters, query.OverwriteArgs);
+
+                    if (whereJoinSql.Length > 0)
+                        sql.AppendLine(whereJoinSql);
+
                     if (whereSql.Length > 0)
                         sql.AppendLine("WHERE " + whereSql);
                 }
@@ -903,7 +924,7 @@ namespace WebVella.ERP.Database
             }
         }
 
-        private void GenerateWhereClause(QueryObject query, Entity entity, ref string sql, ref List<NpgsqlParameter> parameters,
+        private void GenerateWhereClause(QueryObject query, Entity entity, ref string sql, ref string joinSql, ref List<NpgsqlParameter> parameters,
                                         List<KeyValuePair<string, string>> overwriteArgs = null)
         {
 
@@ -913,19 +934,210 @@ namespace WebVella.ERP.Database
             string completeFieldName = null;
             if (!string.IsNullOrWhiteSpace(query.FieldName))
             {
-                field = entity.Fields.SingleOrDefault(x => x.Name == query.FieldName);
-                fieldType = field.GetFieldType();
-                string entityTablePrefix = GetTableNameForEntity(entity) + ".";
-                completeFieldName = entityTablePrefix + query.FieldName;
-                paramName = "@" + query.FieldName + "_" + Guid.NewGuid().ToString().Replace("-", "");
+                if (!query.FieldName.Contains(RELATION_NAME_RESULT_SEPARATOR))
+                {
+                    field = entity.Fields.SingleOrDefault(x => x.Name == query.FieldName);
+                    fieldType = field.GetFieldType();
+                    string entityTablePrefix = GetTableNameForEntity(entity) + ".";
+                    completeFieldName = entityTablePrefix + query.FieldName;
+                    paramName = "@" + query.FieldName + "_" + Guid.NewGuid().ToString().Replace("-", "");
 
-                bool skipClause;
-                var value = ExtractQueryFieldValue(query.FieldValue, field, overwriteArgs, out skipClause) ?? DBNull.Value;
-                if (skipClause)
-                    return;
+                    bool skipClause;
+                    var value = ExtractQueryFieldValue(query.FieldValue, field, overwriteArgs, out skipClause) ?? DBNull.Value;
+                    if (skipClause)
+                        return;
 
-                parameters.Add(new NpgsqlParameter(paramName, value));
+                    parameters.Add(new NpgsqlParameter(paramName, value));
+                }
+                else
+                {
+                    var relationData = query.FieldName.Split(RELATION_SEPARATOR).Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+                    if (relationData.Count > 2)
+                        throw new Exception(string.Format("The specified query filter field '{0}' is incorrect. Only first level relation can be specified.", query.FieldName));
 
+                    string relationName = relationData[0];
+                    string relationFieldName = relationData[1];
+                    string direction = "origin-target";
+
+                    if (string.IsNullOrWhiteSpace(relationName) || relationName == "$" || relationName == "$$")
+                        throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not specified.", query.FieldName));
+                    else if (!relationName.StartsWith("$"))
+                        throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not correct.", query.FieldName));
+                    else
+                        relationName = relationName.Substring(1);
+
+                    //check for target priority mark $$
+                    if (relationName.StartsWith("$"))
+                    {
+                        direction = "target-origin";
+                        relationName = relationName.Substring(1);
+                    }
+
+                    if (string.IsNullOrWhiteSpace(relationFieldName))
+                        throw new Exception(string.Format("Invalid query result field '{0}'. The relation field name is not specified.", query.FieldName));
+
+
+                    RelationFieldMeta relationFieldMeta = new RelationFieldMeta();
+                    relationFieldMeta.Name = "$" + relationName;
+                    relationFieldMeta.Direction = direction;
+
+                    relationFieldMeta.Relation = relMan.Read().Object.SingleOrDefault(x => x.Name == relationName);
+                    if (relationFieldMeta.Relation == null)
+                        throw new Exception(string.Format("Invalid relation '{0}'. The relation does not exist.", query.FieldName));
+
+                    if (relationFieldMeta.Relation.TargetEntityId != entity.Id && relationFieldMeta.Relation.OriginEntityId != entity.Id)
+                        throw new Exception(string.Format("Invalid relation '{0}'. The relation does relate to queries entity.", query.FieldName));
+
+                    if (relationFieldMeta.Direction != direction)
+                        throw new Exception(string.Format("You are trying to query relation '{0}' from origin->target and target->origin direction in single query. This is not allowed.", query.FieldName));
+
+                    //Entity entity = entMan.ReadEntity(query.EntityName).Object;
+                    relationFieldMeta.TargetEntity = entMan.ReadEntity(relationFieldMeta.Relation.TargetEntityId).Object;
+                    relationFieldMeta.OriginEntity = entMan.ReadEntity(relationFieldMeta.Relation.OriginEntityId).Object;
+
+                    //this should not happen in a perfect (no bugs) world
+                    if (relationFieldMeta.OriginEntity == null)
+                        throw new Exception(string.Format("Invalid query result field '{0}'. Related (origin)entity is missing.", query.FieldName));
+                    if (relationFieldMeta.TargetEntity == null)
+                        throw new Exception(string.Format("Invalid query result field '{0}'. Related (target)entity is missing.", query.FieldName));
+
+                    relationFieldMeta.TargetField = relationFieldMeta.TargetEntity.Fields.Single(x => x.Id == relationFieldMeta.Relation.TargetFieldId);
+                    relationFieldMeta.OriginField = relationFieldMeta.OriginEntity.Fields.Single(x => x.Id == relationFieldMeta.Relation.OriginFieldId);
+
+                    //this should not happen in a perfect (no bugs) world
+                    if (relationFieldMeta.OriginField == null)
+                        throw new Exception(string.Format("Invalid query result field '{0}'. Related (origin)field is missing.", query.FieldName));
+                    if (relationFieldMeta.TargetField == null)
+                        throw new Exception(string.Format("Invalid query result field '{0}'. Related (target)field is missing.", query.FieldName));
+
+                    Entity joinToEntity = null;
+                    if (relationFieldMeta.TargetEntity.Id == entity.Id)
+                        joinToEntity = relationFieldMeta.OriginEntity;
+                    else
+                        joinToEntity = relationFieldMeta.TargetEntity;
+
+                    relationFieldMeta.Entity = joinToEntity;
+
+                    var relatedField = joinToEntity.Fields.SingleOrDefault(x => x.Name == relationFieldName);
+                    if (relatedField == null)
+                        throw new Exception(string.Format("Invalid query result field '{0}'. The relation field does not exist.", query.FieldName));
+
+
+                    string relationJoinSql = string.Empty;
+                    completeFieldName = relationName + "." + relationFieldName;
+                    fieldType = relatedField.GetFieldType();
+                    paramName = "@" + relationFieldName + "_" + Guid.NewGuid().ToString().Replace("-", "");
+
+                    bool skipClause;
+                    var value = ExtractQueryFieldValue(query.FieldValue, relatedField, overwriteArgs, out skipClause) ?? DBNull.Value;
+                    if (skipClause)
+                        return;
+
+                    parameters.Add(new NpgsqlParameter(paramName, value));
+
+                    if (relationFieldMeta.Relation.RelationType == EntityRelationType.OneToOne)
+                    {
+                        //when the relation is origin -> target entity
+                        if (relationFieldMeta.Relation.OriginEntityId == entity.Id)
+                        {
+                            relationJoinSql = string.Format(FILTER_JOIN,
+                                GetTableNameForEntity(relationFieldMeta.TargetEntity), relationName,
+                                relationName, relationFieldMeta.TargetField.Name,
+                                GetTableNameForEntity(relationFieldMeta.OriginEntity), relationFieldMeta.OriginField.Name);
+                        }
+                        else //when the relation is target -> origin, we have to query origin entity
+                        {
+                            relationJoinSql = string.Format(FILTER_JOIN,
+                                   GetTableNameForEntity(relationFieldMeta.OriginEntity), relationName,
+                                   relationName, relationFieldMeta.OriginField.Name,
+                                   GetTableNameForEntity(relationFieldMeta.TargetEntity), relationFieldMeta.TargetField.Name);
+                        }
+                    }
+                    else if (relationFieldMeta.Relation.RelationType == EntityRelationType.OneToMany)
+                    {
+                        //when origin and target entity are different, then direction don't matter
+                        if (relationFieldMeta.Relation.OriginEntityId != relationFieldMeta.Relation.TargetEntityId)
+                        {
+                            //when the relation is origin -> target entity
+                            if (relationFieldMeta.Relation.OriginEntityId == entity.Id)
+                            {
+                                relationJoinSql = string.Format(FILTER_JOIN,
+                                    GetTableNameForEntity(relationFieldMeta.TargetEntity), relationName,
+                                    relationName, relationFieldMeta.TargetField.Name,
+                                    GetTableNameForEntity(relationFieldMeta.OriginEntity), relationFieldMeta.OriginField.Name);
+                            }
+                            else //when the relation is target -> origin, we have to query origin entity
+                            {
+                                relationJoinSql = string.Format(FILTER_JOIN,
+                                    GetTableNameForEntity(relationFieldMeta.OriginEntity), relationName,
+                                    relationName, relationFieldMeta.OriginField.Name,
+                                    GetTableNameForEntity(relationFieldMeta.TargetEntity), relationFieldMeta.TargetField.Name);
+                            }
+                        }
+                        else //when the origin entity is same as target entity direction matters
+                        {
+                            if (relationFieldMeta.Direction == "target-origin")
+                            {
+                                relationJoinSql = string.Format(FILTER_JOIN,
+                                   GetTableNameForEntity(relationFieldMeta.OriginEntity), relationName,
+                                   relationName, relationFieldMeta.OriginField.Name,
+                                   GetTableNameForEntity(relationFieldMeta.TargetEntity), relationFieldMeta.TargetField.Name);
+                            }
+                            else
+                            {
+                                relationJoinSql = string.Format(FILTER_JOIN,
+                                    GetTableNameForEntity(relationFieldMeta.TargetEntity), relationName,
+                                    relationName, relationFieldMeta.TargetField.Name,
+                                    GetTableNameForEntity(relationFieldMeta.OriginEntity), relationFieldMeta.OriginField.Name);
+                            }
+                        }
+                    }
+                    else if (relationFieldMeta.Relation.RelationType == EntityRelationType.ManyToMany)
+                    {
+                        string relationTable = "rel_" + relationFieldMeta.Relation.Name;
+                        string targetJoinAlias = relationName + "_target";
+                        string originJoinAlias = relationName + "_origin";
+                        string targetJoinTable = GetTableNameForEntity(relationFieldMeta.TargetEntity);
+                        string originJoinTable = GetTableNameForEntity(relationFieldMeta.OriginEntity);
+
+                        //if target is entity we query
+                        if (entity.Id == relationFieldMeta.TargetEntity.Id)
+                        {
+                            relationJoinSql = string.Format(FILTER_JOIN,
+                                     /*LEFT OUTER JOIN*/ relationTable, /* */ targetJoinAlias /*ON*/,
+                                     targetJoinAlias, /*.*/ "target_id", /* =  */
+                                     targetJoinTable, /*.*/ relationFieldMeta.TargetField.Name);
+
+                            relationJoinSql = relationJoinSql + "\r\n" + string.Format(FILTER_JOIN,
+                                    /*LEFT OUTER JOIN*/ originJoinTable, /* */ originJoinAlias /*ON*/,
+                                    targetJoinAlias, /*.*/ "origin_id", /* =  */
+                                    originJoinTable, /*.*/ relationFieldMeta.OriginField.Name);
+
+                            completeFieldName = originJoinAlias + "." + relationFieldName;
+                        }
+                        else // if origin is entity we query
+                        {
+                            relationJoinSql = string.Format(FILTER_JOIN,
+                                    /*LEFT OUTER JOIN*/ relationTable, /* */ originJoinAlias /*ON*/,
+                                    originJoinAlias, /*.*/ "origin_id", /* =  */
+                                    originJoinTable, /*.*/ relationFieldMeta.OriginField.Name);
+
+                            relationJoinSql = relationJoinSql + "\r\n" + string.Format(FILTER_JOIN,
+                                      /*LEFT OUTER JOIN*/ targetJoinTable, /* */ targetJoinAlias /*ON*/,
+                                    originJoinAlias, /*.*/ "target_id", /* =  */
+                                    targetJoinAlias, /*.*/ relationFieldMeta.TargetField.Name);
+
+                            completeFieldName = targetJoinAlias + "." + relationFieldName;
+                        }
+                    }
+
+
+                    if (!joinSql.Contains(relationJoinSql))
+                        joinSql = joinSql + "\r\n" + relationJoinSql;
+
+
+
+                }
 
                 if ((fieldType == FieldType.MultiSelectField || fieldType == FieldType.TreeSelectField) &&
                       !(query.QueryType == QueryType.EQ || query.QueryType == QueryType.NOT))
@@ -1049,14 +1261,14 @@ namespace WebVella.ERP.Database
                 case QueryType.AND:
                     {
                         if (query.SubQueries.Count == 1)
-                            GenerateWhereClause(query.SubQueries[0], entity, ref sql, ref parameters, overwriteArgs);
+                            GenerateWhereClause(query.SubQueries[0], entity, ref sql, ref joinSql, ref parameters, overwriteArgs);
                         else
                         {
                             string andSql = string.Empty;
                             foreach (var q in query.SubQueries)
                             {
                                 string subQuerySql = string.Empty;
-                                GenerateWhereClause(q, entity, ref subQuerySql, ref parameters, overwriteArgs);
+                                GenerateWhereClause(q, entity, ref subQuerySql, ref joinSql, ref parameters, overwriteArgs);
                                 if (andSql.Length == 0)
                                     andSql = subQuerySql;
                                 else if (subQuerySql.Length > 0)
@@ -1071,14 +1283,14 @@ namespace WebVella.ERP.Database
                 case QueryType.OR:
                     {
                         if (query.SubQueries.Count == 1)
-                            GenerateWhereClause(query.SubQueries[0], entity, ref sql, ref parameters, overwriteArgs);
+                            GenerateWhereClause(query.SubQueries[0], entity, ref sql, ref joinSql, ref parameters, overwriteArgs);
                         else
                         {
                             string orSql = string.Empty;
                             foreach (var q in query.SubQueries)
                             {
                                 string subQuerySql = string.Empty;
-                                GenerateWhereClause(q, entity, ref subQuerySql, ref parameters, overwriteArgs);
+                                GenerateWhereClause(q, entity, ref subQuerySql, ref joinSql, ref parameters, overwriteArgs);
                                 if (orSql.Length == 0)
                                     orSql = subQuerySql;
                                 else if (subQuerySql.Length > 0)
