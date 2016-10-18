@@ -742,12 +742,12 @@
 										<label class="control-label">{{item.meta.label}}</label>
 										<div ng-if="item.type === 'field'">
 											<div class="editable-wrapper input-group editable-readonly">
-												<input type="text" class="form-control" disabled value="{{::popupCtrl.renderFieldValue(popupCtrl.recordData[item.dataName],item.meta)}}"></input>
+												<input type="text" class="form-control" disabled value="{{::popupCtrl.renderFieldValue(popupCtrl.recordData[item.dataName],item.meta)}}">
 											</div>
 										</div>
 										<div ng-if="item.type === 'fieldFromRelation'">
 											<div class="editable-wrapper input-group editable-readonly">
-												<input type="text" class="form-control" disabled value="{{::popupCtrl.renderFieldValue(popupCtrl.recordData[item.dataName],item.meta)}}"></input>
+												<input type="text" class="form-control" disabled value="{{::popupCtrl.renderFieldValue(popupCtrl.recordData[item.dataName],item.meta)}}">
 											</div>
 										</div>
 										<div ng-if="item.type === 'view'">
