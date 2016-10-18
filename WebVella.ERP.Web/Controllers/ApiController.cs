@@ -1877,7 +1877,7 @@ namespace WebVella.ERP.Web.Controllers
             }// <<<		
 
 
-            EntityQuery query = new EntityQuery(originEntity.Name, "id," + targetField.Name, EntityQuery.QueryEQ("id", model.TargetFieldRecordId), null, null, null);
+            EntityQuery query = new EntityQuery(targetEntity.Name, "id," + targetField.Name, EntityQuery.QueryEQ("id", model.TargetFieldRecordId), null, null, null);
             QueryResponse result = recMan.Find(query);
             if (result.Object.Data.Count == 0)
             {

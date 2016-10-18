@@ -144,7 +144,7 @@ span.divider {
 		}
 
 .panel-white.query .table.rule {
-	margin: 10px 0;
+	margin: 5px 0;
 }
 
 .panel .panel {
@@ -2616,7 +2616,7 @@ form .error,
 	.form .image-upload .delete-link,
 	.form-horizontal .image-upload .delete-link {
 		position: absolute;
-		left: 40px;
+		left: 5px;
 		top: 5px;
 		padding: 7px;
 		border-radius: 20px;
