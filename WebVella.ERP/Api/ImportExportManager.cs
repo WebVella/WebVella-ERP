@@ -612,8 +612,6 @@ namespace WebVella.ERP.Api
 			evaluationObj["stats"] = statsObject;
 			evaluationObj["general_command"] = generalCommand;
 
-			var index = 0;//temp
-
 			csvReader.Read();
 			List<string> columnNames = csvReader.FieldHeaders.ToList();
 			foreach (var columnName in columnNames)
@@ -622,6 +620,12 @@ namespace WebVella.ERP.Api
 				if (!((EntityRecord)evaluationObj["errors"]).GetProperties().Any(p => p.Key == columnName))
 				{
 					((EntityRecord)evaluationObj["errors"])[columnName] = new List<string>();
+				}
+				//Init the warning list for this field
+				var warningList = new List<string>();
+				if (!((EntityRecord)evaluationObj["warnings"]).GetProperties().Any(p => p.Key == columnName))
+				{
+					((EntityRecord)evaluationObj["warnings"])[columnName] = new List<string>();
 				}
 
 				bool existingField = false;
@@ -831,12 +835,131 @@ namespace WebVella.ERP.Api
 
 			do
 			{
+				Dictionary<string, EntityRecord> fieldsFromRelationList = new Dictionary<string, EntityRecord>();
+				Dictionary<string, string> rowRecordData = new Dictionary<string, string>();
+
+				foreach (var columnName in columnNames)
+				{
+					string fieldValue = csvReader.GetField<string>(columnName);
+					rowRecordData[columnName] = fieldValue;
+
+					EntityRecord commandRecords = ((EntityRecord)commands[columnName]);
+					Field currentFieldMeta = new TextField();
+					if (commandRecords.GetProperties().Any(p => p.Key == "currentFieldMeta"))
+						currentFieldMeta = (Field)commandRecords["currentFieldMeta"];
+
+					if (columnName.Contains(RELATION_SEPARATOR))
+					{
+						string relationName = (string)((EntityRecord)commands[columnName])["relationName"];
+						string relationDirection = (string)((EntityRecord)commands[columnName])["relationDirection"];
+						string relationEntityName = (string)((EntityRecord)commands[columnName])["entityName"];
+
+						EntityRelationType relationType = (EntityRelationType)Enum.Parse(typeof(EntityRelationType), (((EntityRecord)commands[columnName])["relationType"]).ToString());
+						Field relationEntityFieldMeta = (Field)((EntityRecord)commands[columnName])["relationEntityFieldMeta"];
+						Field relationFieldMeta = (Field)((EntityRecord)commands[columnName])["relationFieldMeta"];
+
+						var relation = relations.SingleOrDefault(x => x.Name == relationName);
+
+						string relationFieldValue = "";
+						if (columnNames.Any(c => c == relationFieldMeta.Name))
+							relationFieldValue = csvReader.GetField<string>(relationFieldMeta.Name);
+
+						QueryObject filter = null;
+						if ((relationType == EntityRelationType.OneToMany && relation.OriginEntityId == relation.TargetEntityId && relationDirection == "origin-target") ||
+							(relationType == EntityRelationType.OneToMany && relation.OriginEntityId != relation.TargetEntityId && relation.OriginEntityId == entity.Id) ||
+							relationType == EntityRelationType.ManyToMany)
+						{
+							//expect array of values
+							if (!columnNames.Any(c => c == relationFieldMeta.Name) || string.IsNullOrEmpty(relationFieldValue))
+							{
+								((List<string>)((EntityRecord)evaluationObj["errors"])[columnName]).Add(string.Format("Invalid relation '{0}'. Relation field does not exist into input record data or its value is null.", columnName));
+								((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+							}
+
+							List<string> values = new List<string>();
+							if (relationFieldValue.StartsWith("[") && relationFieldValue.EndsWith("]"))
+							{
+								values = JsonConvert.DeserializeObject<List<string>>(relationFieldValue);
+							}
+							if (values.Count < 1)
+								continue;
+
+							List<QueryObject> queries = new List<QueryObject>();
+							foreach (var val in values)
+							{
+								queries.Add(EntityQuery.QueryEQ(currentFieldMeta.Name, val));
+							}
+
+							filter = EntityQuery.QueryOR(queries.ToArray());
+						}
+						else
+						{
+							filter = EntityQuery.QueryEQ(currentFieldMeta.Name, DbRecordRepository.ExtractFieldValue(fieldValue, currentFieldMeta, true));
+						}
+
+						EntityRecord fieldsFromRelation = new EntityRecord();
+
+						if (fieldsFromRelationList.Any(r => r.Key == relation.Name))
+						{
+							fieldsFromRelation = fieldsFromRelationList[relationName];
+						}
+						else
+						{
+							fieldsFromRelation["columns"] = new List<string>();
+							fieldsFromRelation["queries"] = new List<QueryObject>();
+							fieldsFromRelation["direction"] = relationDirection;
+							fieldsFromRelation["relationEntityName"] = relationEntityName;
+						}
+
+						((List<string>)fieldsFromRelation["columns"]).Add(columnName);
+						((List<QueryObject>)fieldsFromRelation["queries"]).Add(filter);
+						fieldsFromRelationList[relationName] = fieldsFromRelation;
+					}
+				}
+
+				foreach (var fieldsFromRelation in fieldsFromRelationList)
+				{
+					EntityRecord fieldsFromRelationValue = fieldsFromRelation.Value;
+					List<string> columnList = (List<string>)fieldsFromRelationValue["columns"];
+					List<QueryObject> queries = (List<QueryObject>)fieldsFromRelationValue["queries"];
+					string relationDirection = (string)fieldsFromRelationValue["direction"];
+					string relationEntityName = (string)fieldsFromRelationValue["relationEntityName"];
+					QueryObject filter = EntityQuery.QueryAND(queries.ToArray());
+
+					var relation = relations.SingleOrDefault(r => r.Name == fieldsFromRelation.Key);
+
+					//get related records
+					QueryResponse relatedRecordResponse = recMan.Find(new EntityQuery(relationEntityName, "*", filter, null, null, null));
+
+					if (!relatedRecordResponse.Success || relatedRecordResponse.Object.Data.Count < 1)
+					{
+						foreach (var columnName in columnList)
+						{
+							((List<string>)((EntityRecord)evaluationObj["errors"])[columnName]).Add(string.Format("Invalid relation '{0}'. The relation record does not exist.", columnName));
+							((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+						}
+					}
+					else if (relatedRecordResponse.Object.Data.Count > 1 && ((relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == relation.TargetEntityId && relationDirection == "target-origin") ||
+						(relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId != relation.TargetEntityId && relation.TargetEntityId == entity.Id) ||
+						relation.RelationType == EntityRelationType.OneToOne))
+					{
+						//there can be no more than 1 records
+						foreach (var columnName in columnList)
+						{
+							((List<string>)((EntityRecord)evaluationObj["errors"])[columnName]).Add(string.Format("Invalid relation '{0}'. There are multiple relation records matching this value.", columnName));
+							((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
+						}
+					}
+
+					fieldsFromRelationList[fieldsFromRelation.Key]["relatedRecordResponse"] = relatedRecordResponse;
+				}
+
 				var rowRecord = new EntityRecord();
 				if ((int)statsObject["errors"] == 0)
 				{
 					foreach (var columnName in columnNames)
 					{
-						string fieldValue = csvReader.GetField<string>(columnName);
+						string fieldValue = rowRecordData[columnName];
 						EntityRecord commandRecords = ((EntityRecord)commands[columnName]);
 						Field currentFieldMeta = new TextField();
 						if (commandRecords.GetProperties().Any(p => p.Key == "currentFieldMeta"))
@@ -851,25 +974,15 @@ namespace WebVella.ERP.Api
 						if (existingField)
 						{
 							#region << Validation >>
-							//Init the error list for this field
-							var errorsList = new List<string>();
-							if (((EntityRecord)evaluationObj["errors"]).GetProperties().Any(p => p.Key == columnName))
-							{
-								errorsList = (List<string>)((EntityRecord)evaluationObj["errors"])[columnName];
-							}
-							//Init the warning list for this field
-							var warningList = new List<string>();
-							if (((EntityRecord)evaluationObj["warnings"]).GetProperties().Any(p => p.Key == columnName))
-							{
-								warningList = (List<string>)((EntityRecord)evaluationObj["warnings"])[columnName];
-							}
 
-							//validate the value for errors
+							var errorsList = (List<string>)((EntityRecord)evaluationObj["errors"])[columnName];
+							var warningList = (List<string>)((EntityRecord)evaluationObj["warnings"])[columnName];
 
 							if (columnName.Contains(RELATION_SEPARATOR))
 							{
 								string relationName = (string)((EntityRecord)commands[columnName])["relationName"];
 								string relationDirection = (string)((EntityRecord)commands[columnName])["relationDirection"];
+								string relationEntityName = (string)((EntityRecord)commands[columnName])["entityName"];
 
 								EntityRelationType relationType = (EntityRelationType)Enum.Parse(typeof(EntityRelationType), (((EntityRecord)commands[columnName])["relationType"]).ToString());
 								Field relationEntityFieldMeta = (Field)((EntityRecord)commands[columnName])["relationEntityFieldMeta"];
@@ -877,59 +990,7 @@ namespace WebVella.ERP.Api
 
 								var relation = relations.SingleOrDefault(x => x.Name == relationName);
 
-								string relationFieldValue = "";
-								if (columnNames.Any(c => c == relationFieldMeta.Name))
-									relationFieldValue = csvReader.GetField<string>(relationFieldMeta.Name);
-
-								QueryObject filter = null;
-								if ((relationType == EntityRelationType.OneToMany && relation.OriginEntityId == relation.TargetEntityId && relationDirection == "origin-target") ||
-									(relationType == EntityRelationType.OneToMany && relation.OriginEntityId != relation.TargetEntityId && relation.OriginEntityId == entity.Id) ||
-									relationType == EntityRelationType.ManyToMany)
-								{
-									//expect array of values
-									if (!columnNames.Any(c => c == relationFieldMeta.Name) || string.IsNullOrEmpty(relationFieldValue))
-									{
-										errorsList.Add(string.Format("Invalid relation '{0}'. Relation field does not exist into input record data or its value is null.", columnName));
-										((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
-									}
-
-									List<string> values = new List<string>();
-									if (relationFieldValue.StartsWith("[") && relationFieldValue.EndsWith("]"))
-									{
-										values = JsonConvert.DeserializeObject<List<string>>(relationFieldValue);
-									}
-									if (values.Count < 1)
-										continue;
-
-									List<QueryObject> queries = new List<QueryObject>();
-									foreach (var val in values)
-									{
-										queries.Add(EntityQuery.QueryEQ(currentFieldMeta.Name, val));
-									}
-
-									filter = EntityQuery.QueryOR(queries.ToArray());
-								}
-								else
-								{
-									filter = EntityQuery.QueryEQ(currentFieldMeta.Name, DbRecordRepository.ExtractFieldValue(fieldValue, currentFieldMeta, true));
-								}
-
-								//get related records
-								QueryResponse relatedRecordResponse = recMan.Find(new EntityQuery(fieldEnityName, "*", filter, null, null, null));
-
-								if (!relatedRecordResponse.Success || relatedRecordResponse.Object.Data.Count < 1)
-								{
-									errorsList.Add(string.Format("Invalid relation '{0}'. The relation record does not exist.", columnName));
-									((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
-								}
-								else if (relatedRecordResponse.Object.Data.Count > 1 && ((relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == relation.TargetEntityId && relationDirection == "target-origin") ||
-									(relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId != relation.TargetEntityId && relation.TargetEntityId == entity.Id) ||
-									relation.RelationType == EntityRelationType.OneToOne))
-								{
-									//there can be no more than 1 records
-									errorsList.Add(string.Format("Invalid relation '{0} value {1}'. There are multiple relation records matching this value.", columnName, fieldValue));
-									((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
-								}
+								QueryResponse relatedRecordResponse = (QueryResponse)fieldsFromRelationList[relationName]["relatedRecordResponse"];
 
 								var relatedRecords = relatedRecordResponse.Object.Data;
 								List<Guid> relatedRecordValues = new List<Guid>();
@@ -937,6 +998,10 @@ namespace WebVella.ERP.Api
 								{
 									relatedRecordValues.Add((Guid)relatedRecord[relationEntityFieldMeta.Name]);
 								}
+
+								string relationFieldValue = "";
+								if (columnNames.Any(c => c == relationFieldMeta.Name))
+									relationFieldValue = rowRecordData[relationFieldMeta.Name];
 
 								if (relation.RelationType == EntityRelationType.OneToOne &&
 									((relation.OriginEntityId == relation.TargetEntityId && relationDirection == "origin-target") || relation.OriginEntityId == entity.Id))
