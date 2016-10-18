@@ -542,6 +542,33 @@
 
 		//#endregion
 
+		//#region << Column widths from CSV >>
+		popupCtrl.columnWidths = [];
+		var columnWidthsArray = [];
+		if (popupCtrl.relationLookupList.meta.columnWidthsCSV) {
+			columnWidthsArray = popupCtrl.relationLookupList.meta.columnWidthsCSV.split(',');
+		}
+		var visibleColumns = popupCtrl.relationLookupList.meta.visibleColumnsCount;
+		if (columnWidthsArray.length > 0) {
+			for (var i = 0; i < visibleColumns; i++) {
+				if (columnWidthsArray.length >= i + 1) {
+					popupCtrl.columnWidths.push(columnWidthsArray[i]);
+				}
+				else {
+					popupCtrl.columnWidths.push("auto");
+				}
+			}
+		}
+		else {
+			//set all to auto
+			for (var i = 0; i < visibleColumns; i++) {
+				popupCtrl.columnWidths.push("auto");
+			}
+		}
+
+		//#endregion
+
+
 		//#region << List filter row >>
 		popupCtrl.filterQuery = {};
 		popupCtrl.listIsFiltered = false;
@@ -709,6 +736,7 @@
 
 					});
 		//#endregion
+
 		popupCtrl.getFilterInputPlaceholder = function (dataName) {
 			var fieldIndex = popupCtrl.fieldsInQueryArray.fieldNames.indexOf(dataName);
 			if (fieldIndex == -1) {
