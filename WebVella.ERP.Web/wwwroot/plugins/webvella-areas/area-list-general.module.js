@@ -361,6 +361,17 @@
 		//Extract available url query strings
 		var queryObject = $location.search();
 		for (var key in queryObject) {
+			//The $relation.field_name format needs to be converted to dataNameFormat
+			if(key.startsWith("$")){
+				var proccessedKey = key;
+				proccessedKey = proccessedKey.substring(1);
+				var proccessedKeyArray = proccessedKey.split(".");
+				proccessedKey = "$field$" + proccessedKeyArray[0] + "$" +proccessedKeyArray[1];
+				queryObject[proccessedKey] = fastCopy(queryObject[key]);
+				delete queryObject[key];
+				key = proccessedKey;
+			}
+
 			if (ngCtrl.queryParametersArray.indexOf(key) == -1) {
 				ngCtrl.queryParametersArray.push(key);
 			}
@@ -394,6 +405,10 @@
 		ngCtrl.clearQueryFilter = function () {
 			ngCtrl.filterLoading = true;
 			for (var activeFilter in ngCtrl.filterQuery) {
+				if (activeFilter.startsWith("$field")) {
+					var dataNameArray = activeFilter.split("$");
+					activeFilter = "$" + dataNameArray[2] + "." + dataNameArray[3];
+				}
 				$location.search(activeFilter, null);
 			}
 			var searchParams = $location.search();
@@ -407,11 +422,19 @@
 			ngCtrl.filterLoading = true;
 			var queryFieldsCount = 0;
 			for (var filter in ngCtrl.filterQuery) {
-				if(ngCtrl.filterQuery[filter]){
+				if(ngCtrl.filterQuery[filter] && ngCtrl.filterQuery[filter] != ''){
 					queryFieldsCount ++;
 					for (var i = 0; i < ngCtrl.list.meta.columns.length; i++) {
-						if(ngCtrl.list.meta.columns[i].meta.name == filter){
+						if(ngCtrl.list.meta.columns[i].dataName == filter){
 							var selectedField = ngCtrl.list.meta.columns[i].meta;
+							//When field from relation, the data name needs to be converted to $relation.field_name
+							if(filter.startsWith("$field")){
+								var dataNameArray = filter.split("$");
+								filter = "$"+dataNameArray[2] + "." + dataNameArray[3];
+								ngCtrl.filterQuery[filter] = fastCopy(ngCtrl.filterQuery[ngCtrl.list.meta.columns[i].dataName]);
+								delete ngCtrl.filterQuery[ngCtrl.list.meta.columns[i].dataName];
+								$location.search(ngCtrl.list.meta.columns[i].dataName,null);
+							}
 							switch(selectedField.fieldType){
 								case 4: //Date
 									$location.search(filter, moment(ngCtrl.filterQuery[filter],'D MMM YYYYY').toISOString());
@@ -449,6 +472,18 @@
 				ngCtrl.filterLoading = false;
 			},300);
 			ngCtrl.list.data = response.object;
+			//fieldName and dataName are different when fromRelation (the second $ is a dot)
+			for (var key in ngCtrl.filterQuery) {
+				//The $relation.field_name format needs to be converted to dataNameFormat
+				if(key.startsWith("$")){
+					var proccessedKey = key;
+					proccessedKey = proccessedKey.substring(1);
+					var proccessedKeyArray = proccessedKey.split(".");
+					proccessedKey = "$field$" + proccessedKeyArray[0] + "$" +proccessedKeyArray[1];
+					ngCtrl.filterQuery[proccessedKey] = fastCopy(ngCtrl.filterQuery[key]);
+					delete ngCtrl.filterQuery[key];
+				}
+			}
 		}
 
 		ngCtrl.ReloadRecordsErrorCallback = function (response) {
@@ -463,6 +498,11 @@
 		//#region << Extract fields that are supported in the query to be filters>>
 		ngCtrl.fieldsInQueryArray = webvellaCoreService.extractSupportedFilterFields(ngCtrl.list);
 		ngCtrl.checkIfFieldSetInQuery = function (dataName) {
+			//fieldName and dataName are different when fromRelation (the second $ is a dot)
+			if(dataName.startsWith("$field")){
+				var dataNameArray = dataName.split("$");
+				dataName = "$"+dataNameArray[2] + "." + dataNameArray[3];
+			}
 			if (ngCtrl.fieldsInQueryArray.fieldNames.indexOf(dataName) != -1) {
 				return true;
 			}
