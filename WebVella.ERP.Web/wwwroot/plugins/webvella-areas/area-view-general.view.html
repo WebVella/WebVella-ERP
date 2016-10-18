@@ -79,7 +79,7 @@
 						<div class="form-group" ng-repeat="item in column.items" ng-switch="::item.type">
 							<!--If item is field WITH NO relation-->
 							<div class="editable-field field" ng-switch-when="field">
-								<label class="control-label">{{::item.meta.label}}</label>
+								<label class="control-label" ng-class="{'required':item.meta.required }">{{::item.meta.label}}</label>
 								<div ng-if="::ngCtrl.currentUserHasReadPermission(item)">
 									<div ng-switch="::item.meta.fieldType">
 										<!-- If type 1 - auto-increment -->
@@ -366,7 +366,7 @@
 
 							<!--If item is field WITH relation-->
 							<div class="editable-field field" ng-switch-when="fieldFromRelation">
-								<label class="control-label">{{::ngCtrl.getRelationLabel(item)}}</label>
+								<label class="control-label" ng-class="{'required':item.fieldRequired }">{{::ngCtrl.getRelationLabel(item)}}</label>
 								<div ng-if="::ngCtrl.currentUserHasReadPermission(item)">
 									<div ng-switch="::ngCtrl.getRelation(item.relationName).relationType">
 										<div ng-switch-when="1" ng-switch="::ngCtrl.getRelation(item.relationName).currentEntityRole">
