@@ -123,13 +123,30 @@
 			<td style="width:30px;">
 				<a class="btn btn-default btn-outline" ng-click="ngCtrl.manageQueryDataLink()"><i class="fa fa-fw fa-database"></i></a>
 			</td>
-			<td width="250">
-				<select class="form-control" ng-model="currentQuery.fieldName" ng-change="ngCtrl.updateQuery()" ng-options="item.fieldName as item.meta.name for item in ngCtrl.onlyFieldsLibrary.items"></select>
+			<td width="50%" class="position-relative">
+				<div class="editable-wrapper input-group editable-updatable" ng-dblclick="this['queryForm_field' + queryIndex].$show()">
+					<span class="input-group-addon"><i class="fa fa-fw fa-table"></i></span>
+					<input type="text" class="form-control" disabled editable-text="currentQuery.fieldName"
+						   value="{{currentQuery.fieldName}}"
+						   onaftersave="ngCtrl.updateQuery()" e-form="{{'queryForm_field' + queryIndex}}">
+					<span class="input-group-addon" ng-click="this['queryForm_field' + queryIndex].$show()" ng-hide="this['queryForm_field' + queryIndex].$visible"><i class="fa fa-pencil fa-fw"></i></span>
+				</div>
 			</td>
-			<td width="200">
-				<select class="form-control" ng-model="currentQuery.queryType" ng-change="ngCtrl.updateQuery()" ng-options="item.key as item.value for item in ngCtrl.getQueryComparisonOptionsList(currentQuery)"></select>
+			<td width="50%">
+				<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-fw fa-filter"></i></span>
+					<select class="form-control" ng-model="currentQuery.queryType" ng-change="ngCtrl.updateQuery()" ng-options="item.key as item.value for item in ngCtrl.getQueryComparisonOptionsList(currentQuery)"></select>
+				</div>
 			</td>
-			<td class="position-relative">
+
+			<td style="width:60px;">
+				<a ng-hide="parentQuery.subQueries.length <= 1" class="btn btn-default btn-outline go-red" ng-click="ngCtrl.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
+				<span ng-hide="parentQuery.subQueries.length > 1" class="btn go-red " uib-tooltip="section needs to have at least one rule"><i class="fa fa-fw fa-lock"></i></span>
+			</td>
+		</tr>
+		<tr>
+			<td style="width:30px;"></td>
+			<td class="position-relative" colspan="2">
 				<div class="editable-wrapper input-group editable-updatable" ng-dblclick="this['queryForm_' + queryIndex].$show()">
 					<input type="text" class="form-control" disabled editable-text="currentQuery.fieldValue"
 						   value="{{currentQuery.fieldValue}}"
@@ -137,10 +154,7 @@
 					<span class="input-group-addon" ng-click="this['queryForm_' + queryIndex].$show()" ng-hide="this['queryForm_' + queryIndex].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 				</div>
 			</td>
-			<td style="width:60px;">
-				<a ng-hide="parentQuery.subQueries.length <= 1" class="btn btn-default btn-outline go-red" ng-click="ngCtrl.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
-				<span ng-hide="parentQuery.subQueries.length > 1" class="btn go-red " uib-tooltip="section needs to have at least one rule"><i class="fa fa-fw fa-lock"></i></span>
-			</td>
+			<td style="width:60px;"></td>
 		</tr>
 	</table>
 </script>

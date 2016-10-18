@@ -53,7 +53,7 @@
 						</th>
 						<th ng-style="::{'width': ngCtrl.columnWidths[$index]}" class="wv-{{::column.meta.name}} position-relative" ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount"
 							ng-switch="::column.type">
-							<span ng-switch-when="field">
+							<span ng-switch-when="field"  data-fitler-name="{{column.fieldName}}">
 								<a class="sort-link ng-hide" ng-click="ngCtrl.toggleSort(column)" ng-if="::column.meta.searchable" ng-show="::ngCtrl.canSortList">
 									<span class="sort-marker {{ngCtrl.sortObject[column.dataName]}}">
 										<i class="fa fa-caret-up"></i>
@@ -63,7 +63,7 @@
 								</a>
 								{{::column.meta.label}}
 							</span>
-							<span ng-switch-when="fieldFromRelation">{{::column.fieldLabel}}</span>
+							<span ng-switch-when="fieldFromRelation"  data-fitler-name="${{column.relationName}}.{{column.fieldName}}">{{::column.fieldLabel}}</span>
 							<span ng-switch-when="view">{{::column.meta.label}}</span>
 							<span ng-switch-when="viewFromRelation">{{::column.fieldLabel}}</span>
 							<span ng-switch-when="list">{{::column.meta.label}}</span>
@@ -80,7 +80,7 @@
 						</td>
 						<td ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">
 							<form ng-switch="column.type" ng-submit="ngCtrl.applyQueryFilter()" novalidate ng-if="::ngCtrl.checkIfFieldSetInQuery(column.dataName)">
-								<div ng-switch-when="field" ng-switch="::column.meta.fieldType">
+								<div ng-if="column.type == 'field' || column.type == 'fieldFromRelation'" ng-switch="::column.meta.fieldType">
 									<div ng-switch="column.meta.fieldType" ng-if="::column.meta.searchable">
 										<div ng-switch-when="1">
 											<!--AutoNumber field-->
@@ -252,12 +252,6 @@
 										not searchable
 									</div>
 								</div>
-								<div ng-switch-when="fieldFromRelation">field from relation</div>
-								<div ng-switch-when="view">view</div>
-								<div ng-switch-when="viewFromRelation">view from relation</div>
-								<div ng-switch-when="list">list</div>
-								<div ng-switch-when="listFromRelation">list from relation</div>
-								<div ng-switch-when="treeFromRelation">tree from relation</div>
 							</form>
 						</td>
 					</tr>
@@ -421,13 +415,12 @@
 				<span ng-if="popupCtrl.evaluationResult.stats.errors == 0">No errors found! </span>
 			</p>
 			<div data-double-scroll-bar-horizontal class="evaluation-wrapper">
-
 				<table class="table table-bordered import-evaluation">
 					<thead>
 						<tr>
 							<th></th>
 							<th ng-repeat="(key, value) in popupCtrl.evaluationResult.records[0]" ng-if="key != 'id'">
-								<form class="form" name="myForm">
+								<form class="form" name="myForm" ng-if="!key.startsWith('_$')">
 									<div class="form-group">
 										<div class="input-group">
 											<span class="input-group-addon">
@@ -441,6 +434,9 @@
 										</div>
 									</div>
 								</form>
+								<div ng-if="key.startsWith('_$')">
+									related record match field
+								</div>
 							</th>
 						</tr>
 						<tr>
@@ -453,18 +449,43 @@
 									</div>
 								</div>
 								<div ng-if="popupCtrl.evaluationResult.commands[key].command == 'to_update'">
-									<div class="field-type">{{popupCtrl.getFieldTypeLabel(popupCtrl.evaluationResult.commands[key].fieldType)}}</div>
-									<div class="input-group" title="{{popupCtrl.evaluationResult.commands[key].fieldName}}" style="margin-bottom:5px;">
-										<span class="input-group-addon" title="field name">
-											<i class="fa fa-fw fa-database go-gray"></i>
-										</span>
-										<select class="form-control" ng-change="popupCtrl.updateExistingFieldCommand(popupCtrl.evaluationResult.commands[key])" ng-model="popupCtrl.evaluationResult.commands[key].fieldName" ng-options="::field.name as field.name for field in popupCtrl.getEntityFieldsFromType(popupCtrl.evaluationResult.commands[key].fieldType)"></select>
+									<!--Not from relation-->
+									<div ng-if="popupCtrl.evaluationResult.commands[key].relationName == ''">
+										<div class="field-type">{{popupCtrl.getFieldTypeLabel(popupCtrl.evaluationResult.commands[key].fieldType)}}</div>
+										<div class="input-group" title="{{popupCtrl.evaluationResult.commands[key].fieldName}}" style="margin-bottom:5px;">
+											<span class="input-group-addon" title="field name">
+												<i class="fa fa-fw fa-database go-gray"></i>
+											</span>
+											<select class="form-control" ng-change="popupCtrl.updateExistingFieldCommand(popupCtrl.evaluationResult.commands[key])" ng-model="popupCtrl.evaluationResult.commands[key].fieldName" ng-options="::field.name as field.name for field in popupCtrl.getEntityFieldsFromType(popupCtrl.evaluationResult.commands[key].fieldType,null)"></select>
+										</div>
+										<div class="input-group" title="{{popupCtrl.evaluationResult.commands[key].fieldLabel}}">
+											<span class="input-group-addon" title="field label">
+												<i class="fa fa-fw fa-tag go-gray"></i>
+											</span>
+											<input class="form-control go-gray" disabled value="{{popupCtrl.evaluationResult.commands[key].fieldLabel}}" />
+										</div>
 									</div>
-									<div class="input-group" title="{{popupCtrl.evaluationResult.commands[key].fieldLabel}}">
-										<span class="input-group-addon" title="field label">
-											<i class="fa fa-fw fa-tag go-gray"></i>
-										</span>
-										<input class="form-control go-gray" disabled value="{{popupCtrl.evaluationResult.commands[key].fieldLabel}}" />
+									<!--From relation-->
+									<div ng-if="popupCtrl.evaluationResult.commands[key].relationName != ''">
+										<div class="field-type">{{popupCtrl.getFieldTypeLabel(popupCtrl.evaluationResult.commands[key].fieldType)}}</div>
+										<div class="input-group" title="${{popupCtrl.evaluationResult.commands[key].relationName}}" style="margin-bottom:5px;">
+											<span class="input-group-addon">
+												<i class="fa fa-fw fa-link go-gray"></i>
+											</span>
+											<input class="form-control" disabled value="${{popupCtrl.evaluationResult.commands[key].relationName}}" />
+										</div>
+										<div class="input-group" title="{{popupCtrl.evaluationResult.commands[key].fieldName}}" style="margin-bottom:5px;">
+											<span class="input-group-addon" title="field name">
+												<i class="fa fa-fw fa-database go-gray"></i>
+											</span>
+											<select class="form-control" ng-change="popupCtrl.updateExistingFieldCommand(popupCtrl.evaluationResult.commands[key])" ng-model="popupCtrl.evaluationResult.commands[key].fieldName" ng-options="::field.name as field.name for field in popupCtrl.getEntityFieldsFromType(popupCtrl.evaluationResult.commands[key].fieldType,popupCtrl.evaluationResult.commands[key].entityName)"></select>
+										</div>
+										<div class="input-group" title="{{popupCtrl.evaluationResult.commands[key].fieldLabel}}">
+											<span class="input-group-addon" title="field label">
+												<i class="fa fa-fw fa-tag go-gray"></i>
+											</span>
+											<input class="form-control go-gray" disabled value="{{popupCtrl.evaluationResult.commands[key].fieldLabel}}" />
+										</div>
 									</div>
 								</div>
 								<div ng-if="popupCtrl.evaluationResult.commands[key].command == 'to_create'">
@@ -537,6 +558,6 @@
 		<a ng-if="popupCtrl.activeStep == 2" href="javascript:void(0)" ng-show="popupCtrl.createFieldCount == 0" ng-click="popupCtrl.evaluateAndImport()" class="btn btn-primary ng-hide"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate & Import</a>
 		<a ng-if="popupCtrl.activeStep == 2" href="javascript:void(0)" ng-show="popupCtrl.createFieldCount > 0" confirmed-click="popupCtrl.evaluateAndImport()" ng-confirm-click="WARNING: This import will create new fields! Click OK to confirm." class="btn btn-primary ng-hide"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Evaluate & Import</a>
 		<a ng-if="popupCtrl.activeStep != 3" href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CANCEL'}}"></a>
-		<a ng-if="popupCtrl.activeStep == 3" href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CLOSE'}}"></a>
+		<a ng-if="popupCtrl.activeStep == 3" href="javascript:void(0)" ng-click="popupCtrl.CloseAfterImport()" class="btn btn-default" translate="{{::'CLOSE'}}"></a>
 	</div>
 </script>

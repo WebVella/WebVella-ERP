@@ -104,6 +104,7 @@ namespace WebVella.ERP.Api.Models
         public List<EntityRelation> Object { get; set; }
     }
 
+    [Serializable]
     public class InputEntityRelationRecordUpdateModel
     {
         [JsonProperty(PropertyName = "relationName")]
@@ -119,7 +120,23 @@ namespace WebVella.ERP.Api.Models
         public List<Guid> DetachTargetFieldRecordIds { get; set; }
     }
 
-	[Serializable]
+    [Serializable]
+    public class InputEntityRelationRecordReverseUpdateModel
+    {
+        [JsonProperty(PropertyName = "relationName")]
+        public string RelationName { get; set; }
+
+        [JsonProperty(PropertyName = "targetFieldRecordId")]
+        public Guid TargetFieldRecordId { get; set; }
+
+        [JsonProperty(PropertyName = "attachOriginFieldRecordIds")]
+        public List<Guid> AttachOriginFieldRecordIds { get; set; }
+
+        [JsonProperty(PropertyName = "detachOriginFieldRecordIds")]
+        public List<Guid> DetachOriginFieldRecordIds { get; set; }
+    }
+
+    [Serializable]
 	public class EntityRelationOptions
 	{
 		[JsonProperty(PropertyName = "relationId")]
