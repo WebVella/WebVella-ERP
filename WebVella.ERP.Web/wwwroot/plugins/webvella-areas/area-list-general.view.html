@@ -53,7 +53,7 @@
 						</th>
 						<th ng-style="::{'width': ngCtrl.columnWidths[$index]}" class="wv-{{::column.meta.name}} position-relative" ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount"
 							ng-switch="::column.type">
-							<span ng-switch-when="field">
+							<span ng-switch-when="field"  data-fitler-name="{{column.fieldName}}">
 								<a class="sort-link ng-hide" ng-click="ngCtrl.toggleSort(column)" ng-if="::column.meta.searchable" ng-show="::ngCtrl.canSortList">
 									<span class="sort-marker {{ngCtrl.sortObject[column.dataName]}}">
 										<i class="fa fa-caret-up"></i>
@@ -63,7 +63,7 @@
 								</a>
 								{{::column.meta.label}}
 							</span>
-							<span ng-switch-when="fieldFromRelation">{{::column.fieldLabel}}</span>
+							<span ng-switch-when="fieldFromRelation"  data-fitler-name="${{column.relationName}}.{{column.fieldName}}">{{::column.fieldLabel}}</span>
 							<span ng-switch-when="view">{{::column.meta.label}}</span>
 							<span ng-switch-when="viewFromRelation">{{::column.fieldLabel}}</span>
 							<span ng-switch-when="list">{{::column.meta.label}}</span>
@@ -80,7 +80,7 @@
 						</td>
 						<td ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">
 							<form ng-switch="column.type" ng-submit="ngCtrl.applyQueryFilter()" novalidate ng-if="::ngCtrl.checkIfFieldSetInQuery(column.dataName)">
-								<div ng-switch-when="field" ng-switch="::column.meta.fieldType">
+								<div ng-if="column.type == 'field' || column.type == 'fieldFromRelation'" ng-switch="::column.meta.fieldType">
 									<div ng-switch="column.meta.fieldType" ng-if="::column.meta.searchable">
 										<div ng-switch-when="1">
 											<!--AutoNumber field-->
@@ -252,12 +252,6 @@
 										not searchable
 									</div>
 								</div>
-								<div ng-switch-when="fieldFromRelation">field from relation</div>
-								<div ng-switch-when="view">view</div>
-								<div ng-switch-when="viewFromRelation">view from relation</div>
-								<div ng-switch-when="list">list</div>
-								<div ng-switch-when="listFromRelation">list from relation</div>
-								<div ng-switch-when="treeFromRelation">tree from relation</div>
 							</form>
 						</td>
 					</tr>

@@ -2187,7 +2187,7 @@ namespace WebVella.ERP.Web.Controllers
 					{
 						dynamic hookFilterObj = new ExpandoObject();
 						hookFilterObj.record = postObj;
-						hookFilterObj.recordId = (Guid)postObj["id"];
+						hookFilterObj.recordId = new Guid((string)postObj["id"]);
 						hookFilterObj.controller = this;
 						hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordPreSave, entityName, hookFilterObj);
 						postObj = hookFilterObj.record;
