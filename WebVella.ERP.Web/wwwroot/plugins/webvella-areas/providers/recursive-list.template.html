@@ -18,7 +18,8 @@
 				<td style="width:1%;white-space:nowrap;">
 					<span dynamic-html template="::actionItem.template" ng-repeat="actionItem in listRecordActionItems track by actionItem.name" style="margin-right:5px;"></span>
 				</td>
-				<td class="wv-{{::column.meta.name}}" ng-repeat="column in listMeta.meta.columns  | limitTo: listMeta.meta.visibleColumnsCount" ng-switch="::column.type">
+				<td class="wv-{{::column.meta.name}}" ng-repeat="column in listMeta.meta.columns  | limitTo: listMeta.meta.visibleColumnsCount"
+					ng-switch="::column.type" ng-style="::{'width': columnWidths[$index]}">
 					<div ng-switch-when="field">
 						<span ng-bind-html="::renderFieldValue(record[column.dataName],column.meta)"></span>
 					</div>
@@ -73,7 +74,8 @@
 					<thead>
 						<tr>
 							<th class="actions" style="width:80px;"></th>
-							<th class="wv-{{::column.meta.name}}" ng-repeat="column in popupCtrl.relationLookupList.meta.columns  | limitTo: popupCtrl.relationLookupList.meta.visibleColumnsCount">{{::column.meta.label}}</th>
+							<th class="wv-{{::column.meta.name}}" ng-repeat="column in popupCtrl.relationLookupList.meta.columns  | limitTo: popupCtrl.relationLookupList.meta.visibleColumnsCount"
+								ng-style="{'width': popupCtrl.columnWidths[$index]}">{{::column.meta.label}}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -262,7 +264,7 @@
 								</form>
 							</td>
 						</tr>
-						<tr ng-repeat="record in popupCtrl.relationLookupList.data track by record.id"  ng-hide="popupCtrl.relationLookupList.data.length == 0">
+						<tr ng-repeat="record in popupCtrl.relationLookupList.data track by record.id" ng-hide="popupCtrl.relationLookupList.data.length == 0">
 							<td>
 								<a ng-click='popupCtrl.instantAttachRecord(record)' href="javascript:void(0)" ng-if="::!popupCtrl.isSelected(record)">
 									select
@@ -344,7 +346,7 @@
 												</div>
 												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
 													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupCtrl[item.meta.name + 'Error']"  translate="{{::'VALIDATION_DECIMAL_NO_COMMA'}}"></small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupCtrl[item.meta.name + 'Error']" translate="{{::'VALIDATION_DECIMAL_NO_COMMA'}}"></small>
 													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !popupCtrl[item.meta.name + 'Error']" translate="{{::'VALIDATION_DECIMAL_NO_COMMA'}}" translate-value-digit="{{item.meta.minValue}}"></small>
 													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !popupCtrl[item.meta.name + 'Error']" translate="{{::'VALIDATION_LESS_EQUAL_THAN_VALUE'}}" translate-value-digit="{{item.meta.maxValue}}"></small>
 													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
@@ -460,7 +462,7 @@
 													<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
 														 ng-style="{'width': popupCtrl.progress[item.dataName]+'%'}">
 														<span ng-show="popupCtrl.progress[item.dataName] < 100">{{popupCtrl.progress[item.dataName]}}%</span>
-														<span ng-show="popupCtrl.progress[item.dataName] == 100"  translate="{{::'FILE_UPLOAD_ALMOST_DONE'}}"></span>
+														<span ng-show="popupCtrl.progress[item.dataName] == 100" translate="{{::'FILE_UPLOAD_ALMOST_DONE'}}"></span>
 													</div>
 												</div>
 												<div class="image-upload" ng-show='popupCtrl.recordData[item.dataName]'>
@@ -780,7 +782,7 @@
 										<div ng-if="item.type === 'listFromRelation'">
 											<recursive-list list-meta="::item"
 															list-data="::popupCtrl.recordData[item.dataName]"
-															 relations-list="::relationsList"
+															relations-list="::relationsList"
 															parent-id="::ngCtrl.stateParams.recordId"
 															can-create="false"
 															can-update="false">

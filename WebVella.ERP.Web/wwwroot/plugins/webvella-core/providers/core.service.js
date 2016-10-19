@@ -164,6 +164,7 @@
         serviceInstance.updateRecord = updateRecord;
         serviceInstance.patchRecord = patchRecord;
         serviceInstance.updateRecordRelation = updateRecordRelation;
+		serviceInstance.updateRecordRelationReverse = updateRecordRelationReverse;
         //Delete
         serviceInstance.deleteRecord = deleteRecord;
         //Helpers
@@ -2310,6 +2311,16 @@
                 detachTargetFieldRecordIds: detachTargetFieldRecordIds  //guid array - list of recordIds that needs to be detached to the new origin - should be empty array when the target field is required
             }
             $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/relation', data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+        }
+        /////////////////////////
+        function updateRecordRelationReverse(relationName, targetFieldRecordId, attachOriginFieldRecordIds, detachOriginFieldRecordIds, successCallback, errorCallback) {
+            var postObject = {
+                relationName: relationName,//string
+                targetFieldRecordId: targetFieldRecordId, //guid
+                attachOriginFieldRecordIds: attachOriginFieldRecordIds, //guid array - list of recordIds that needs to be attached to the new origin
+                detachOriginFieldRecordIds: detachOriginFieldRecordIds  //guid array - list of recordIds that needs to be detached to the new origin - should be empty array when the target field is required
+            }
+            $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/relation/reverse', data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
         }
         ////////////////////////
         function generateHighlightString(elementMeta, elementData, stateParams, targetType) {

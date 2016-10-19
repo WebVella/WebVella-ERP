@@ -233,6 +233,11 @@ namespace WebVella.ERP.Api
 					List<dynamic> oneToManyRecordData = new List<dynamic>();
 					List<dynamic> manyToManyRecordData = new List<dynamic>();
 
+					Dictionary<string, EntityRecord> fieldsFromRelationList = new Dictionary<string, EntityRecord>();
+					Dictionary<string, EntityRecord> relationFieldMetaList = new Dictionary<string, EntityRecord>();
+
+					var relations = GetRelations();
+
 					foreach (var pair in record.GetProperties())
 					{
 						try
@@ -242,8 +247,6 @@ namespace WebVella.ERP.Api
 
 							if (pair.Key.Contains(RELATION_SEPARATOR))
 							{
-								var relations = GetRelations();
-
 								var relationData = pair.Key.Split(RELATION_SEPARATOR).Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
 								if (relationData.Count > 2)
 									throw new Exception(string.Format("The specified field name '{0}' is incorrect. Only first level relation can be specified.", pair.Key));
@@ -315,6 +318,9 @@ namespace WebVella.ERP.Api
 									field = entity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
 								}
 
+								if (realtionSearchField == null)
+									throw new Exception(string.Format("Invalid relation '{0}'. Field does not exist.", pair.Key));
+
 								if (realtionSearchField.GetFieldType() == FieldType.MultiSelectField || realtionSearchField.GetFieldType() == FieldType.TreeSelectField)
 									throw new Exception(string.Format("Invalid relation '{0}'. Fields from Multiselect and Treeselect types can't be used as relation fields.", pair.Key));
 
@@ -360,20 +366,92 @@ namespace WebVella.ERP.Api
 									filter = EntityQuery.QueryEQ(realtionSearchField.Name, ExtractFieldValue(pair, realtionSearchField, true));
 								}
 
-								//get related records
-								QueryResponse relatedRecordResponse = Find(new EntityQuery(relationEntity.Name, "*", filter, null, null, null));
+								EntityRecord relationFieldMeta = new EntityRecord();
+								relationFieldMeta["key"] = pair.Key;
+								relationFieldMeta["direction"] = direction;
+								relationFieldMeta["relationName"] = relationName;
+								relationFieldMeta["relationEntity"] = relationEntity;
+								relationFieldMeta["relationField"] = relationField;
+								relationFieldMeta["realtionSearchField"] = realtionSearchField;
+								relationFieldMeta["field"] = field;
+								relationFieldMetaList[pair.Key] = relationFieldMeta;
 
-								if (!relatedRecordResponse.Success && relatedRecordResponse.Object.Data.Count < 1)
+								EntityRecord fieldsFromRelation = new EntityRecord();
+
+								if (fieldsFromRelationList.Any(r => r.Key == relation.Name))
 								{
-									throw new Exception(string.Format("Invalid relation '{0}'. The relation record does not exist.", pair.Key));
+									fieldsFromRelation = fieldsFromRelationList[relationName];
 								}
-								else if (relatedRecordResponse.Object.Data.Count > 1 && ((relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == relation.TargetEntityId && direction == "target-origin") ||
-									(relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId != relation.TargetEntityId && relation.TargetEntityId == entity.Id) ||
-									relation.RelationType == EntityRelationType.OneToOne))
+								else
 								{
-									//there can be no more than 1 records
-									throw new Exception(string.Format("Invalid relation '{0} value {1}'. There are multiple relation records matching this value.", pair.Key, pair.Value));
+									fieldsFromRelation["queries"] = new List<QueryObject>();
+									fieldsFromRelation["direction"] = direction;
+									fieldsFromRelation["relationEntityName"] = relationEntity.Name;
 								}
+
+								((List<QueryObject>)fieldsFromRelation["queries"]).Add(filter);
+								fieldsFromRelationList[relationName] = fieldsFromRelation;
+							}
+						}
+						catch (Exception ex)
+						{
+							if (pair.Key != null)
+								throw new Exception("Error during processing value for field: '" + pair.Key + "'. Invalid value: '" + pair.Value + "'", ex);
+						}
+					}
+
+					foreach(var fieldsFromRelation in  fieldsFromRelationList)
+					{
+						EntityRecord fieldsFromRelationValue = (EntityRecord)fieldsFromRelation.Value;
+						List<QueryObject> queries = (List<QueryObject>)fieldsFromRelationValue["queries"];
+						string direction = (string)fieldsFromRelationValue["direction"];
+						string relationEntityName = (string)fieldsFromRelationValue["relationEntityName"];
+						QueryObject filter = EntityQuery.QueryAND(queries.ToArray());
+
+						var relation = relations.SingleOrDefault(r => r.Name == fieldsFromRelation.Key);
+
+						//get related records
+						QueryResponse relatedRecordResponse = Find(new EntityQuery(relationEntityName, "*", filter, null, null, null));
+
+						if (!relatedRecordResponse.Success || relatedRecordResponse.Object.Data.Count < 1)
+						{
+							throw new Exception(string.Format("Invalid relation '{0}'. The relation record does not exist.", relationEntityName));
+						}
+						else if (relatedRecordResponse.Object.Data.Count > 1 && ((relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == relation.TargetEntityId && direction == "target-origin") ||
+							(relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId != relation.TargetEntityId && relation.TargetEntityId == entity.Id) ||
+							relation.RelationType == EntityRelationType.OneToOne))
+						{
+							//there can be no more than 1 records
+							throw new Exception(string.Format("Invalid relation '{0}'. There are multiple relation records matching this value.", relationEntityName));
+						}
+
+						((EntityRecord)fieldsFromRelationList[fieldsFromRelation.Key])["relatedRecordResponse"] = relatedRecordResponse;
+					}
+
+					foreach (var pair in record.GetProperties())
+					{
+						try
+						{
+							if (pair.Key == null)
+								continue;
+
+							if (pair.Key.Contains(RELATION_SEPARATOR))
+							{
+								EntityRecord relationFieldMeta = relationFieldMetaList.FirstOrDefault(f=> f.Key == pair.Key).Value;
+
+								if (relationFieldMeta == null)
+									continue;
+
+								string direction = (string)relationFieldMeta["direction"];
+								string relationName = (string)relationFieldMeta["relationName"];
+								Entity relationEntity = (Entity)relationFieldMeta["relationEntity"];
+								Field relationField = (Field)relationFieldMeta["relationField"];
+								Field realtionSearchField = (Field)relationFieldMeta["realtionSearchField"];
+								Field field = (Field)relationFieldMeta["field"];
+
+								var relation = relations.SingleOrDefault(r => r.Name == relationName);
+
+								QueryResponse relatedRecordResponse = (QueryResponse)((EntityRecord)fieldsFromRelationList[relationName])["relatedRecordResponse"];
 
 								var relatedRecords = relatedRecordResponse.Object.Data;
 								List<Guid> relatedRecordValues = new List<Guid>();
@@ -675,6 +753,9 @@ namespace WebVella.ERP.Api
 					List<dynamic> oneToManyRecordData = new List<dynamic>();
 					List<dynamic> manyToManyRecordData = new List<dynamic>();
 
+					Dictionary<string, EntityRecord> fieldsFromRelationList = new Dictionary<string, EntityRecord>();
+					Dictionary<string, EntityRecord> relationFieldMetaList = new Dictionary<string, EntityRecord>();
+
 					foreach (var pair in record.GetProperties())
 					{
 						try
@@ -757,6 +838,9 @@ namespace WebVella.ERP.Api
 									field = entity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
 								}
 
+								if (realtionSearchField == null)
+									throw new Exception(string.Format("Invalid relation '{0}'. Field does not exist.", pair.Key));
+
 								if (realtionSearchField.GetFieldType() == FieldType.MultiSelectField || realtionSearchField.GetFieldType() == FieldType.TreeSelectField)
 									throw new Exception(string.Format("Invalid relation '{0}'. Fields from Multiselect and Treeselect types can't be used as relation fields.", pair.Key));
 
@@ -813,20 +897,92 @@ namespace WebVella.ERP.Api
 									filter = EntityQuery.QueryEQ(realtionSearchField.Name, ExtractFieldValue(pair, realtionSearchField, true));
 								}
 
-								//get related records
-								QueryResponse relatedRecordResponse = Find(new EntityQuery(relationEntity.Name, "*", filter, null, null, null));
+								EntityRecord relationFieldMeta = new EntityRecord();
+								relationFieldMeta["key"] = pair.Key;
+								relationFieldMeta["direction"] = direction;
+								relationFieldMeta["relationName"] = relationName;
+								relationFieldMeta["relationEntity"] = relationEntity;
+								relationFieldMeta["relationField"] = relationField;
+								relationFieldMeta["realtionSearchField"] = realtionSearchField;
+								relationFieldMeta["field"] = field;
+								relationFieldMetaList[pair.Key] = relationFieldMeta;
 
-								if (!relatedRecordResponse.Success && relatedRecordResponse.Object.Data.Count < 1)
+								EntityRecord fieldsFromRelation = new EntityRecord();
+
+								if (fieldsFromRelationList.Any(r => r.Key == relation.Name))
 								{
-									throw new Exception(string.Format("Invalid relation '{0}'. The relation record does not exist.", pair.Key));
+									fieldsFromRelation = fieldsFromRelationList[relationName];
 								}
-								else if (relatedRecordResponse.Object.Data.Count > 1 && ((relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == relation.TargetEntityId && direction == "target-origin") ||
-									(relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId != relation.TargetEntityId && relation.TargetEntityId == entity.Id) ||
-									relation.RelationType == EntityRelationType.OneToOne))
+								else
 								{
-									//there can be no more than 1 records
-									throw new Exception(string.Format("Invalid relation '{0} value {1}'. There are multiple relation records matching this value.", pair.Key, pair.Value));
+									fieldsFromRelation["queries"] = new List<QueryObject>();
+									fieldsFromRelation["direction"] = direction;
+									fieldsFromRelation["relationEntityName"] = relationEntity.Name;
 								}
+
+								((List<QueryObject>)fieldsFromRelation["queries"]).Add(filter);
+								fieldsFromRelationList[relationName] = fieldsFromRelation;
+							}
+						}
+						catch (Exception ex)
+						{
+							if (pair.Key != null)
+								throw new Exception("Error during processing value for field: '" + pair.Key + "'. Invalid value: '" + pair.Value + "'", ex);
+						}
+					}
+
+					foreach (var fieldsFromRelation in fieldsFromRelationList)
+					{
+						EntityRecord fieldsFromRelationValue = (EntityRecord)fieldsFromRelation.Value;
+						List<QueryObject> queries = (List<QueryObject>)fieldsFromRelationValue["queries"];
+						string direction = (string)fieldsFromRelationValue["direction"];
+						string relationEntityName = (string)fieldsFromRelationValue["relationEntityName"];
+						QueryObject filter = EntityQuery.QueryAND(queries.ToArray());
+
+						var relation = relations.SingleOrDefault(r => r.Name == fieldsFromRelation.Key);
+
+						//get related records
+						QueryResponse relatedRecordResponse = Find(new EntityQuery(relationEntityName, "*", filter, null, null, null));
+
+						if (!relatedRecordResponse.Success || relatedRecordResponse.Object.Data.Count < 1)
+						{
+							throw new Exception(string.Format("Invalid relation '{0}'. The relation record does not exist.", relationEntityName));
+						}
+						else if (relatedRecordResponse.Object.Data.Count > 1 && ((relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == relation.TargetEntityId && direction == "target-origin") ||
+							(relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId != relation.TargetEntityId && relation.TargetEntityId == entity.Id) ||
+							relation.RelationType == EntityRelationType.OneToOne))
+						{
+							//there can be no more than 1 records
+							throw new Exception(string.Format("Invalid relation '{0}'. There are multiple relation records matching this value.", relationEntityName));
+						}
+
+						((EntityRecord)fieldsFromRelationList[fieldsFromRelation.Key])["relatedRecordResponse"] = relatedRecordResponse;
+					}
+
+					foreach (var pair in record.GetProperties())
+					{
+						try
+						{
+							if (pair.Key == null)
+								continue;
+
+							if (pair.Key.Contains(RELATION_SEPARATOR))
+							{
+								EntityRecord relationFieldMeta = relationFieldMetaList.FirstOrDefault(f => f.Key == pair.Key).Value;
+
+								if (relationFieldMeta == null)
+									continue;
+
+								string direction = (string)relationFieldMeta["direction"];
+								string relationName = (string)relationFieldMeta["relationName"];
+								Entity relationEntity = (Entity)relationFieldMeta["relationEntity"];
+								Field relationField = (Field)relationFieldMeta["relationField"];
+								Field realtionSearchField = (Field)relationFieldMeta["realtionSearchField"];
+								Field field = (Field)relationFieldMeta["field"];
+
+								var relation = relations.SingleOrDefault(r => r.Name == relationName);
+
+								QueryResponse relatedRecordResponse = (QueryResponse)((EntityRecord)fieldsFromRelationList[relationName])["relatedRecordResponse"];
 
 								var relatedRecords = relatedRecordResponse.Object.Data;
 								List<Guid> relatedRecordValues = new List<Guid>();
