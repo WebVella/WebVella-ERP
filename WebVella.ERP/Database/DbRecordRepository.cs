@@ -580,6 +580,16 @@ namespace WebVella.ERP.Database
                     {
                         try
                         {
+                            //remove not needed fields
+                            if (missingSortFields.Any())
+                            {
+                                foreach (var sf in missingSortFields)
+                                {
+                                    var selectedField = fields.Single(f => f.Id == sf.Id);
+                                    fields.Remove(selectedField);
+                                }
+                            }
+
                             int fieldcount = reader.FieldCount;
                             while (reader.Read())
                             {
