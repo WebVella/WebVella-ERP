@@ -440,7 +440,47 @@ namespace WebVella.ERP.Database
             StringBuilder sqlGroupBy = new StringBuilder();
             List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
 
-            bool noRelations = !fields.Any(field => field is RelationFieldMeta);
+            //there is a problem when select distinct rows and sort on field not included in select
+            //so we add field we sort on and later remove it
+            List<Field> missingSortFields = new List<Field>();
+            if (query.Sort != null && query.Sort.Length > 0)
+            {
+                foreach (var s in query.Sort)
+                {
+                    if (s.FieldName.Trim().StartsWith("{"))
+                    {
+                        //process json
+                        dynamic parametrizedSort = ExtractSortFieldJsonValue(s.FieldName, query.OverwriteArgs);
+                        if (parametrizedSort != null)
+                        {
+                            var sortField = entity.Fields.SingleOrDefault(x => x.Name == parametrizedSort.Field );
+                            if (sortField == null) //we skip sorf fields not found in entity
+                                continue;
+                          
+                            if(!fields.Any(f=>f.Id == sortField.Id))
+                            {
+                                fields.Add(sortField);
+                                missingSortFields.Add(sortField);
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        var sortField = entity.Fields.SingleOrDefault(x => x.Name == s.FieldName);
+                        if (sortField == null) //we skip sorf fields not found in entity
+                            continue;
+
+                        if (!fields.Any(f => f.Id == sortField.Id))
+                        {
+                            fields.Add(sortField);
+                            missingSortFields.Add(sortField);
+                        }
+                    }
+                }
+            }
+
+                bool noRelations = !fields.Any(field => field is RelationFieldMeta);
             if (noRelations)
             {
                 #region no relations 
@@ -911,6 +951,15 @@ namespace WebVella.ERP.Database
                 }
 
                 List<EntityRecord> result = new List<EntityRecord>();
+
+                if( missingSortFields.Any() )
+                {
+                    foreach( var sf in missingSortFields )
+                    {
+                        var selectedField = fields.Single(f => f.Id == sf.Id);
+                        fields.Remove(selectedField);
+                    }
+                }
 
                 foreach (DataRow dr in dt.Rows)
                 {
