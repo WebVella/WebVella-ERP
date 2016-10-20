@@ -590,7 +590,7 @@ namespace WebVella.ERP.Database
                                 }
                             }
 
-                            int fieldcount = reader.FieldCount;
+                            int fieldcount = fields.Count;
                             while (reader.Read())
                             {
                                 EntityRecord record = new EntityRecord();
