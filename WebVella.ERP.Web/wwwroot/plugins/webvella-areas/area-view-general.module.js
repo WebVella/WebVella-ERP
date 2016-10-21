@@ -168,7 +168,7 @@
 		var getViewMeta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList(safeViewNameAndEntity.viewName, safeViewNameAndEntity.entityName, resolvedEntityList);
 		if (getViewMeta.dataSourceUrl != null && getViewMeta.dataSourceUrl != "") {
 			//This view has a dynamicSourceUrl defined
-			webvellaCoreService.getRecordsByViewMeta($stateParams.recordId, getViewMeta, safeViewNameAndEntity.entityName, $stateParams, successCallback, errorCallback);
+			webvellaCoreService.getRecordByViewMeta($stateParams.recordId, getViewMeta, safeViewNameAndEntity.entityName, $stateParams, successCallback, errorCallback);
 		}
 		else {
 			//No dynamicSourceUrl defined
