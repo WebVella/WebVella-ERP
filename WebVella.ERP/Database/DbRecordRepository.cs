@@ -167,7 +167,7 @@ namespace WebVella.ERP.Database
             string tableName = RECORD_COLLECTION_PREFIX + entityName;
             using (DbConnection con = DbContext.Current.CreateConnection())
             {
-                string sql = $"SELECT COUNT( DISTINCT * ) FROM {tableName} ";
+                string sql = $"SELECT COUNT( DISTINCT id ) FROM {tableName} ";
                 string whereSql = string.Empty;
                 string whereJoinSql = string.Empty;
 
@@ -590,7 +590,7 @@ namespace WebVella.ERP.Database
                                 }
                             }
 
-                            int fieldcount = reader.FieldCount;
+                            int fieldcount = fields.Count;
                             while (reader.Read())
                             {
                                 EntityRecord record = new EntityRecord();

@@ -219,12 +219,9 @@
 				ngCtrl.library.relations = [];
 			}
 			ngCtrl.fullLibrary.items.forEach(function (item) {
+				//Initially remove all items that are from relation or relationOptions
 				if ((item.meta && alreadyUsedItemDataNames.indexOf(item.dataName) == -1) || !item.meta) {
-					//Initially remove all items that are from relation or relationOptions
 					switch (item.type) {
-						//case "field":
-						//	ngCtrl.library.items.push(item);
-						//	break;
 						case "view":
 							if (item.viewId != ngCtrl.view.id) {
 								ngCtrl.library.items.push(item);
@@ -628,7 +625,7 @@
 				ngCtrl.library.items = tempRelationChangeLibrary;
 				relation.addedToLibrary = false;
 			}
-			sortLibrary();
+			ngCtrl.sortLibrary();
 		}
 
 		ngCtrl.getRelationType = function (relationId) {

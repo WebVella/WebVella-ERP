@@ -2181,6 +2181,7 @@
                 extraParamQueryString += "recordId=" + recordId;
                 if (stateParams != null) {
                     if (!isEmpty(stateParams)) {
+						extraParamQueryString += "&";
                         for (var param in stateParams) {
                             if (extraParamQueryString.indexOf(param) == -1) {
                                 extraParamQueryString += param + "=" + stateParams[param] + "&";
