@@ -1727,11 +1727,6 @@ namespace WebVella.ERP.Api
 			if (entity == null)
 				throw new Exception($"Entity '{entity.Name}' do not exist");
 
-
-			//TODO Rumen - Validate if relation != null there should be also relatedRecordId != null
-			//IMPLEMENT also the relation filtering
-
-
 			RecordList list = null;
 			if (entity != null && entity.RecordLists != null)
 				list = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
@@ -1782,7 +1777,21 @@ namespace WebVella.ERP.Api
 					resultQuery.Query = queryObj;
 				}
 
-				string queryFields = "id,";
+                if (auxRelation != null && auxRelatedRecordId != null)
+                {
+                    string relationField = $"${auxRelation.Name}.id";
+                    if (auxRelationDirection == "target-origin")
+                        relationField = "$" + relationField;
+
+                    var auxRelQuery = EntityQuery.QueryEQ(relationField, auxRelatedRecordId);
+                    if (resultQuery.Query != null)
+                        resultQuery.Query = EntityQuery.QueryAND(resultQuery.Query, auxRelQuery);
+                    else
+                        resultQuery.Query = auxRelQuery;
+
+                }
+
+                string queryFields = "id,";
 				if (list.Columns != null)
 				{
 					foreach (var column in list.Columns)
