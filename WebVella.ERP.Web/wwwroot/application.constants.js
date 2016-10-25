@@ -187,6 +187,14 @@ function checkEmail(data) {
     return response;
 }
 
+function isArray(object){
+	if( Object.prototype.toString.call( object ) === '[object Array]' ) {
+		return true;
+	}
+	return false;
+}
+
+
 function getFontAwesomeIconNames() {
     //Extracting the font-awesome icon names from rawJSON
     //1. Get the raw json from the amazing work here https://github.com/Smartik89/SMK-Font-Awesome-PHP-JSON/blob/master/font-awesome/json/font-awesome-data.json
