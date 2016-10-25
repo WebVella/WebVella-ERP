@@ -28,7 +28,7 @@ namespace WebVella.ERP.Database
         private const char RELATION_NAME_RESULT_SEPARATOR = '$';
 
         internal const string RECORD_COLLECTION_PREFIX = "rec_";
-        const string BEGIN_OUTER_SELECT = @"SELECT row_to_json( X )FROM (";
+        const string BEGIN_OUTER_SELECT = @"SELECT row_to_json( X ) FROM (";
         const string BEGIN_SELECT = @"SELECT ";
         const string REGULAR_FIELD_SELECT = @" {1}.""{0}"" AS ""{0}"",";
         const string END_SELECT = @"";
@@ -41,13 +41,13 @@ namespace WebVella.ERP.Database
         const string OTM_RELATION_TEMPLATE = @"	(SELECT  COALESCE( array_to_json( array_agg( row_to_json(d) )), '[]') FROM ( 
 					SELECT {1} 
 					FROM {2} {3}
-					WHERE {3}.{4} = {5}.{6} ) d ) AS ""{0}"",";
+					WHERE {3}.{4} = {5}.{6} ) d )::jsonb AS ""{0}"",";
 
         const string MTM_RELATION_TEMPLATE = @"( SELECT  COALESCE(  array_to_json(array_agg( row_to_json(d))), '[]') FROM ( 
 					SELECT {1}
 					FROM {2} {3}
 					LEFT JOIN  {4} {5} ON {6}.{7} = {8}.{9}
-					WHERE {10}.{11} = {12}.{13} )d  ) AS ""{0}"",";
+					WHERE {10}.{11} = {12}.{13} )d  )::jsonb AS ""{0}"",";
 
         const string FILTER_JOIN = @"LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 
