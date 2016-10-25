@@ -31,8 +31,8 @@ namespace WebVella.ERP.Database
         const string BEGIN_OUTER_SELECT = @"SELECT row_to_json( X )FROM (";
         const string BEGIN_SELECT = @"SELECT ";
         const string REGULAR_FIELD_SELECT = @" {1}.""{0}"" AS ""{0}"",";
-        //const string JOIN_FIELD_SELECT = @"	'{0}', array_remove(array_agg(distinct(json_build_object({1})::jsonb)), NULL),";
         const string END_SELECT = @"";
+        const string BEGIN_SELECT_DISTINCT = @"SELECT DISTINCT ";
         const string END_OUTER_SELECT = @") X";
         const string FROM = @"FROM {0}";
 
@@ -162,12 +162,39 @@ namespace WebVella.ERP.Database
             }
         }
 
+        private static bool ContainsRelationalQuery(QueryObject query)
+        {
+            Queue<QueryObject> queue = new Queue<QueryObject>();
+
+            if (query == null)
+                return false;
+
+            queue.Enqueue(query);
+            while(queue.Count > 0 )
+            {
+                var q = queue.Dequeue();
+                if( q.SubQueries != null && q.SubQueries.Count > 0 )
+                {
+                    foreach (var sq in q.SubQueries)
+                        queue.Enqueue(sq);
+                }
+                if (q.FieldName != null && q.FieldName.Contains(RELATION_SEPARATOR))
+                    return true;
+            }
+
+            return false;
+
+        }
+
         public long Count(string entityName, QueryObject query)
         {
             string tableName = RECORD_COLLECTION_PREFIX + entityName;
             using (DbConnection con = DbContext.Current.CreateConnection())
             {
-                string sql = $"SELECT COUNT( DISTINCT id ) FROM {tableName} ";
+                string sql = $"SELECT id FROM {tableName} ";
+                if(ContainsRelationalQuery(query))
+                    sql = $"SELECT COUNT( DISTINCT id ) FROM {tableName} ";
+
                 string whereSql = string.Empty;
                 string whereJoinSql = string.Empty;
 
@@ -439,11 +466,12 @@ namespace WebVella.ERP.Database
             StringBuilder sqlJoins = new StringBuilder();
             StringBuilder sqlGroupBy = new StringBuilder();
             List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
+            bool containsRelationalQuery = ContainsRelationalQuery(query.Query);
 
             //there is a problem when select distinct rows and sort on field not included in select
-            //so we add field we sort on and later remove it
+            //so we add field we sort on and later remove it, only then distinct (containsRelationalQuery) is used
             List<Field> missingSortFields = new List<Field>();
-            if (query.Sort != null && query.Sort.Length > 0)
+            if (containsRelationalQuery && query.Sort != null && query.Sort.Length > 0)
             {
                 foreach (var s in query.Sort)
                 {
@@ -480,14 +508,17 @@ namespace WebVella.ERP.Database
                 }
             }
 
-                bool noRelations = !fields.Any(field => field is RelationFieldMeta);
-            if (noRelations)
+            bool noSelectRelations = !fields.Any(field => field is RelationFieldMeta);
+            if (noSelectRelations)
             {
                 #region no relations 
 
                 var tableName = GetTableNameForEntity(entity);
                 string columnNames = String.Join(",", fields.Select(x => tableName + ".\"" + x.Name + "\""));
-                sql.AppendLine("SELECT DISTINCT " + columnNames + " FROM " + tableName);
+                if(!containsRelationalQuery)
+                    sql.AppendLine("SELECT " + columnNames + " FROM " + tableName);
+                else
+                    sql.AppendLine("SELECT DISTINCT " + columnNames + " FROM " + tableName);
 
                 if (query.Query != null)
                 {
@@ -620,7 +651,12 @@ namespace WebVella.ERP.Database
                 #region relational 
 
                 sql.AppendLine(BEGIN_OUTER_SELECT);
-                sql.AppendLine(BEGIN_SELECT);
+
+                if (!containsRelationalQuery)
+                    sql.AppendLine(BEGIN_SELECT);
+                else
+                    sql.AppendLine(BEGIN_SELECT_DISTINCT);
+
                 foreach (var field in fields)
                 {
                     if (!(field is RelationFieldMeta))
