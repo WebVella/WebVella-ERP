@@ -907,7 +907,7 @@
 				ngCtrl.uploadSuccessCallback = function (response) {
 					var tempPath = response.object.url;
 					var fileName = response.object.filename;
-					var targetPath = "/fs/" + ngCtrl.entity.name + "/" + newGuid() + "/" + fileName;
+					var targetPath = "/" + ngCtrl.entity.name + "/" + newGuid() + "/" + fileName;
 					var overwrite = false;
 					webvellaCoreService.moveFileFromTempToFS(tempPath, targetPath, overwrite, ngCtrl.moveSuccessCallback, ngCtrl.uploadErrorCallback);
 				}
@@ -926,12 +926,6 @@
 		ngCtrl.updateFileUpload = function (file, item, recordId) {
 			if (file != null) {
 				ngCtrl.uploadedFileName = item.dataName + "-" + recordId;
-				var oldFileName = null;
-				for (var i = 0; i < ngCtrl.view.data.length; i++) {
-					if (ngCtrl.view.data[i].id == recordId) {
-						oldFileName = ngCtrl.view.data[i][ngCtrl.uploadedFileName];
-					}
-				}
 
 				ngCtrl.moveSuccessCallback = function (response) {
 					for (var i = 0; i < ngCtrl.view.data.length; i++) {
@@ -947,7 +941,7 @@
 				ngCtrl.uploadSuccessCallback = function (response) {
 					var tempPath = response.object.url;
 					var fileName = response.object.filename;
-					var targetPath = file.name;
+					var targetPath = "/" + ngCtrl.entity.name + "/" + newGuid() + "/" + fileName;
 					var overwrite = true;
 					webvellaCoreService.moveFileFromTempToFS(tempPath, targetPath, overwrite, ngCtrl.moveSuccessCallback, ngCtrl.uploadErrorCallback);
 				}

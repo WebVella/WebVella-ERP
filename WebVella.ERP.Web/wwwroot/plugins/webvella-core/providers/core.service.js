@@ -626,7 +626,7 @@
             else {
                 var lastSlashIndex = data.lastIndexOf("/") + 1;
                 var fileName = data.slice(lastSlashIndex, data.length);
-                return "<a href='" + data + "' target='_blank' class='link-icon'>" + escapeHtml(fileName) + "</a>";
+                return "<a href='/fs" + data + "' target='_blank' class='link-icon'>" + escapeHtml(fileName) + "</a>";
             }
         }
         //8.Html
@@ -676,7 +676,7 @@
                 }
             }
             else {
-                return "<a target='_blank' href='" + data + "'><img src='" + escapeHtml(data) + "?width=36' class='table-image'/></a>";
+                return "<a target='_blank' href='/fs" + data + "'><img src='/fs" + escapeHtml(data) + "?width=36' class='table-image'/></a>";
             }
         }
         //10. Textarea
