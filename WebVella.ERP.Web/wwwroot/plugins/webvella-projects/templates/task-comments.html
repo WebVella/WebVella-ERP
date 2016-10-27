@@ -2,8 +2,9 @@
 <div ng-if="ngCtrl.view.data[0].$list$task_1_n_comment$task_comments.length > 0">
 	<div class="panel panel-white post" ng-repeat="record in ngCtrl.view.data[0].$list$task_1_n_comment$task_comments" >
 		<div class="post-heading">
-			<div class="pull-left image">
-				<img ng-src="/fs{{record.$field$user_wv_project_comment_created_by$image[0] || '/plugins/webvella-core/assets/avatar.png'}}" class="img-circle avatar" alt="user profile image">
+			<div class="pull-left image" ng-switch="!record.$field$user_wv_project_comment_created_by$image[0] && record.$field$user_wv_project_comment_created_by$image[0] != ''">
+				<img ng-switch-when="true" ng-src="/fs{{record.$field$user_wv_project_comment_created_by$image[0]}}" class="img-circle avatar" alt="user profile image">
+				<img ng-switch-when="false" ng-src="/plugins/webvella-core/assets/avatar.png" class="img-circle avatar" alt="user profile image">
 			</div>
 			<div class="pull-left meta">
 				<div class="title h5">

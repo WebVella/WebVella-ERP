@@ -18,8 +18,9 @@
 			<td class="td-code">{{record.code}}</td>
 			<td class="td-name">{{record.name}}</td>
 			<td class="td-owner">
-				<div class="avatar-wrapper">
-					<img class="avatar" ng-src="/fs{{record.owner_image || '/plugins/webvella-core/assets/avatar.png'}}" title="{{record.owner_username}}" />
+				<div class="avatar-wrapper" ng-switch="!record.owner_image && record.owner_image != ''">
+					<img ng-switch-when="true" class="avatar" ng-src="/fs{{record.owner_image}}" title="{{record.owner_username}}" />
+					<img ng-switch-when="false" class="avatar" ng-src="/plugins/webvella-core/assets/avatar.png" title="{{record.owner_username}}" />
 				</div>
 			</td>
 			<td class="td-tasks" title="{{record.tasks_completed_count}} completed - {{record.tasks_in_progress_count}} in progress - {{record.tasks_not_started_count}} not started">

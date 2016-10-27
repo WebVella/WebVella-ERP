@@ -52,8 +52,9 @@
 									</div>
 
 									<div class="timeline-label with-action with-image">
-										<div class="timeline-image">
-											<span class="image-wrapper"><img ng-src="/fs{{::activity.$user_wv_project_activity_created_by[0].image || '/plugins/webvella-core/assets/avatar.png'}}"/></span>
+										<div class="timeline-image" ng-switch="activity.$user_wv_project_activity_created_by[0].image != null && activity.$user_wv_project_activity_created_by[0].image != ''">
+											<span ng-switch-when="true" class="image-wrapper"><img ng-src="/fs{{::activity.$user_wv_project_activity_created_by[0].image}}"/></span>
+											<span ng-switch-when="false" class="image-wrapper"><img ng-src="/plugins/webvella-core/assets/avatar.png" /></span>
 										</div>
 										<h2>
 											<div class="form-description" title="{{::activity.created_on | date: 'dd MMM yyyy HH:mm'}}">
