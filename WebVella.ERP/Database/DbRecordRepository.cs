@@ -191,7 +191,7 @@ namespace WebVella.ERP.Database
             string tableName = RECORD_COLLECTION_PREFIX + entityName;
             using (DbConnection con = DbContext.Current.CreateConnection())
             {
-                string sql = $"SELECT id FROM {tableName} ";
+                string sql = $"SELECT COUNT( id ) FROM {tableName} ";
                 if(ContainsRelationalQuery(query))
                     sql = $"SELECT COUNT( DISTINCT id ) FROM {tableName} ";
 
