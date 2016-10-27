@@ -1,10 +1,3 @@
-<!--<div id="userbox" class="dropdown" uib-dropdown>
-	<div class="dropdown-toggle" uib-dropdown-toggle>
-		<img class="avatar" src="/plugins/webvella-core/assets/avatar.png" ng-if="::!sidebarData.currentUser.image">
-		<img class="avatar" ng-src="{{::sidebarData.currentUser.image}}" ng-if="::sidebarData.currentUser.image">
-		<span class="username">{{::sidebarData.currentUser.first_name}} {{::sidebarData.currentUser.last_name}}</span>
-	</div>
-</div>-->
 <div id="sidebar-switcher">
 	<ul class="nav nav-pills nav-stacked" style="margin-top:0;">
 		<li>
@@ -14,22 +7,22 @@
 </div>
 <div class="tabbable tabs-left spilled">
 	<ul class="nav nav-tabs">
-		<li dynamic-html template="actionItem.template" ng-repeat="actionItem in sidebarData.sidebarTopActions track by actionItem.name" class="dynamic"/>
+		<li dynamic-html template="actionItem.template" ng-repeat="actionItem in sidebarData.sidebarTopActions track by actionItem.name" class="dynamic" />
 		<li role="presentation" ng-class="::{active: sidebarData.isItemActive(item)}" ng-repeat="item in sidebarData.items" ng-switch="item.type">
 			<a ng-switch-when="view" ng-if="item.is_parent" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.name}}/{{::sidebarData.stateParams.recordId}}">
 				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
 			</a>
 			<a ng-switch-when="view" ng-if="!item.is_parent" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.parentViewName}}/{{::sidebarData.stateParams.recordId}}/view-general/{{::item.name}}">
-				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding"  ng-bind="::sidebarData.generateHighlightString(item)" title="{{::sidebarData.generateHighlightString(item)}}"></span>
+				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding" ng-bind="::sidebarData.generateHighlightString(item)" title="{{::sidebarData.generateHighlightString(item)}}"></span>
 			</a>
 			<a ng-switch-when="viewFromRelation" ng-if="!item.is_parent" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.parentViewName}}/{{::sidebarData.stateParams.recordId}}/view-general/{{::item.name}}">
-				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding"  ng-bind="::sidebarData.generateHighlightString(item)" title="{{::sidebarData.generateHighlightString(item)}}"></span>
+				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding" ng-bind="::sidebarData.generateHighlightString(item)" title="{{::sidebarData.generateHighlightString(item)}}"></span>
 			</a>
 			<a ng-switch-when="list" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.parentViewName}}/{{::sidebarData.stateParams.recordId}}/list-general/{{::item.name}}">
-				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding"  ng-bind="::sidebarData.generateHighlightString(item)" title="{{::sidebarData.generateHighlightString(item)}}"></span>
+				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding" ng-bind="::sidebarData.generateHighlightString(item)" title="{{::sidebarData.generateHighlightString(item)}}"></span>
 			</a>
 			<a ng-switch-when="listFromRelation" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.parentViewName}}/{{::sidebarData.stateParams.recordId}}/list-general/{{::item.name}}">
-				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding"  ng-bind="::sidebarData.generateHighlightString(item)" title="{{::sidebarData.generateHighlightString(item)}}"></span>
+				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding" ng-bind="::sidebarData.generateHighlightString(item)" title="{{::sidebarData.generateHighlightString(item)}}"></span>
 			</a>
 		</li>
 	</ul>

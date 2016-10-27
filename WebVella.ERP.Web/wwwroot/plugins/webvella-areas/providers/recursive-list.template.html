@@ -466,7 +466,7 @@
 													</div>
 												</div>
 												<div class="image-upload" ng-show='popupCtrl.recordData[item.dataName]'>
-													<img class="image-field" ng-src="{{popupCtrl.recordData[item.dataName]}}" style="width:120px;" />
+													<img class="image-field" ng-src="/fs{{popupCtrl.recordData[item.dataName]}}" style="width:120px;" />
 													<a class="delete-link" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFileUpload(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 												</div>
 												<div class="form-description" ng-hide="popupCtrl[item.meta.name + 'Error']">

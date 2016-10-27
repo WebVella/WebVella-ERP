@@ -91,7 +91,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr style="background:#ddd" class="query-filter-row"  ng-if="popupCtrl.fieldsInQueryArray.fieldNames.length > 0">
+						<tr style="background:#ddd" class="query-filter-row" ng-if="popupCtrl.fieldsInQueryArray.fieldNames.length > 0">
 							<td>
 								<a class="btn btn-default btn-sm btn-block" ng-click="popupCtrl.applyQueryFilter()">
 									<i class="fa fa-fw" ng-class="{'fa-search':!popupCtrl.filterLoading, 'fa-spin fa-spinner': popupCtrl.filterLoading}"></i>
@@ -276,7 +276,7 @@
 								</form>
 							</td>
 						</tr>
-						<tr ng-repeat="record in popupCtrl.relationLookupList.data track by record.id"  ng-hide="popupCtrl.relationLookupList.data.length == 0">
+						<tr ng-repeat="record in popupCtrl.relationLookupList.data track by record.id" ng-hide="popupCtrl.relationLookupList.data.length == 0">
 							<td>
 								<a ng-click='popupCtrl.instantAttachRecord(record)' href="javascript:void(0)" ng-if="::!popupCtrl.isSelected(record)">
 									select
@@ -476,7 +476,7 @@
 													</div>
 												</div>
 												<div class="image-upload" ng-show='popupCtrl.recordData[item.dataName]'>
-													<img class="image-field" ng-src="{{popupCtrl.recordData[item.dataName]}}" />
+													<img class="image-field" ng-src="/fs{{popupCtrl.recordData[item.dataName]}}" />
 													<a class="delete-link" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFileUpload(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 												</div>
 												<div class="form-description" ng-hide="popupCtrl[item.meta.name + 'Error']">
