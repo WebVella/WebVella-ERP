@@ -219,7 +219,7 @@
         		popupCtrl.uploadSuccessCallback = function (response) {
         			var tempPath = response.object.url;
         			var fileName = response.object.filename;
-        			var targetPath = "/fs/" + popupCtrl.user.id + "/" + fileName;
+        			var targetPath = "/" + popupCtrl.user.id + "/" + fileName;
         			var overwrite = true;
         			webvellaCoreService.moveFileFromTempToFS(tempPath, targetPath, overwrite, popupCtrl.moveSuccessCallback, popupCtrl.uploadErrorCallback);
         		}

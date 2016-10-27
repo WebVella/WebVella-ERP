@@ -172,7 +172,7 @@
 											</div>
 										</div>
 										<div class="input-group file-upload" ng-show='ngCtrl.view.data[item.dataName]'>
-											<a class="form-control link-icon" href="{{ngCtrl.view.data[item.dataName]}}" target="_blank">view file</a>
+											<a class="form-control link-icon" href="/fs{{ngCtrl.view.data[item.dataName]}}" target="_blank">view file</a>
 											<a class="input-group-addon" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" style="margin-left:1em;" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 										</div>
 										<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">
@@ -210,7 +210,7 @@
 											</div>
 										</div>
 										<div class="image-upload" ng-show='ngCtrl.view.data[item.dataName]'>
-											<img class="image-field" ng-src="{{ngCtrl.view.data[item.dataName]}}" style="width:120px;" />
+											<img class="image-field" ng-src="/fs{{ngCtrl.view.data[item.dataName]}}" style="width:120px;" />
 											<a class="delete-link" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 										</div>
 										<div class="form-description" ng-hide="ngCtrl[item.meta.name + 'Error']">

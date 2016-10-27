@@ -272,7 +272,7 @@
 		<div class="media-body">
 			<p>{{::task.subject}}</p>
 		</div>
-		<div class="media-right hidden-xs" title="{{::task.owner_username}}"><img ng-src="{{::task.owner_image}}" width="24" class="img-circle"></div>
+		<div class="media-right hidden-xs" title="{{::task.owner_username}}"><img ng-src="/fs{{::task.owner_image}}" width="24" class="img-circle"></div>
 		<div class="row">
 			<div class="col-md-5">
 				<i class="fa fa-arrow-circle-up go-red" title="{{::task.priority}}" ng-if="::task.priority == 'high'"></i>

@@ -120,7 +120,7 @@
 							</div>
 						</div>
 						<div class="image-upload" ng-show='popupCtrl.user.image'>
-							<img class="img-thumbnail" ng-src="{{popupCtrl.user.image}}" />
+							<img class="img-thumbnail" ng-src="/fs{{popupCtrl.user.image}}" />
 							<a class="delete-link" href="javascript:void(0)" confirmed-click="popupCtrl.deleteImage()" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 						</div>
 						<div class="error" ng-show="manageForm.image.$touched && manageForm.image.$dirty && manageForm.image.$invalid ||  popupCtrl.validation.image.state">

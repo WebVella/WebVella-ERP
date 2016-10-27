@@ -3253,7 +3253,7 @@ namespace WebVella.ERP.Web.Controllers
 			DbFileRepository fsRepository = new DbFileRepository();
 			var createdFile = fsRepository.CreateTempFile(fileName, ReadFully(file.OpenReadStream()));
 
-			return DoResponse(new FSResponse(new FSResult { Url = "/fs" + createdFile.FilePath, Filename = fileName }));
+			return DoResponse(new FSResponse(new FSResult { Url = createdFile.FilePath, Filename = fileName }));
 
 		}
 
@@ -3269,25 +3269,13 @@ namespace WebVella.ERP.Web.Controllers
 			source = source.ToLowerInvariant();
 			target = target.ToLowerInvariant();
 
-			if (source.StartsWith("/fs/"))
-				source = source.Substring(3);
-
-			if (source.StartsWith("fs/"))
-				source = source.Substring(2);
-
-			if (target.StartsWith("/fs/"))
-				target = target.Substring(3);
-
-			if (target.StartsWith("fs/"))
-				target = target.Substring(2);
-
 			var fileName = target.Split(new char[] { '/' }).LastOrDefault();
 
 			DbFileRepository fsRepository = new DbFileRepository();
 			var sourceFile = fsRepository.Find(source);
 
 			var movedFile = fsRepository.Move(source, target, overwrite);
-			return DoResponse(new FSResponse(new FSResult { Url = "/fs" + movedFile.FilePath, Filename = fileName }));
+			return DoResponse(new FSResponse(new FSResult { Url = movedFile.FilePath, Filename = fileName }));
 
 		}
 
@@ -3296,19 +3284,13 @@ namespace WebVella.ERP.Web.Controllers
 		{
 			filepath = filepath.ToLowerInvariant();
 
-			if (filepath.StartsWith("/fs/"))
-				filepath = filepath.Substring(3);
-
-			if (filepath.StartsWith("fs/"))
-				filepath = filepath.Substring(2);
-
 			var fileName = filepath.Split(new char[] { '/' }).LastOrDefault();
 
 			DbFileRepository fsRepository = new DbFileRepository();
 			var sourceFile = fsRepository.Find(filepath);
 
 			fsRepository.Delete(filepath);
-			return DoResponse(new FSResponse(new FSResult { Url = "/fs" + filepath, Filename = fileName }));
+			return DoResponse(new FSResponse(new FSResult { Url = filepath, Filename = fileName }));
 		}
 
 		private static byte[] ReadFully(Stream input)
