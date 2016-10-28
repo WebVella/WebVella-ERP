@@ -46,7 +46,7 @@ namespace WebVella.ERP.Project
 		{
 			EntityRecord record = (EntityRecord)data.record;
 			if(record.Properties.ContainsKey("$project_1_n_task.id")) {
-				record["project_id"] = new Guid((string)record["$project_1_n_task.id"]);
+				record["project_id"] = new Guid(record["$project_1_n_task.id"].ToString());
 				record.Properties.Remove("$project_1_n_task.id");
 			}
 			else {
@@ -281,7 +281,7 @@ namespace WebVella.ERP.Project
 		public dynamic BugCreateRecordPreSave(dynamic data)
 		{
 			EntityRecord record = (EntityRecord)data.record;
-			record["project_id"] = new Guid((string)record["$project_1_n_bug.id"]);
+			record["project_id"] = new Guid(record["$project_1_n_bug.id"].ToString());
 			record.Properties.Remove("$project_1_n_bug.id");
 
 			#region << Get project owner and set as ticket owner >>
@@ -571,7 +571,7 @@ namespace WebVella.ERP.Project
 				using (SecurityContext.OpenSystemScope())
 				{
 					var patchObject = new EntityRecord();
-					patchObject["id"] = new Guid((string)record["task_id"]);
+					patchObject["id"] = new Guid(record["task_id"].ToString());
 					patchObject["last_modified_on"] = DateTime.UtcNow;
 					patchObject["last_modified_by"] = SecurityContext.CurrentUser.Id;
 					var updateResponse = recMan.UpdateRecord("wv_task", patchObject);
@@ -584,7 +584,7 @@ namespace WebVella.ERP.Project
 			else if (record.Properties.ContainsKey("bug_id") && record["bug_id"] != null)
 			{
 				var patchObject = new EntityRecord();
-				patchObject["id"] = new Guid((string)record["bug_id"]);
+				patchObject["id"] = new Guid(record["bug_id"].ToString());
 				patchObject["last_modified_on"] = DateTime.UtcNow;
 				patchObject["last_modified_by"] = SecurityContext.CurrentUser.Id;
 				var updateResponse = recMan.UpdateRecord("wv_bug", patchObject);
@@ -664,7 +664,7 @@ namespace WebVella.ERP.Project
 						if (!isCommentatorInWatchList)
 						{
 							var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
-							var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], new Guid((string)record["task_id"]));
+							var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], new Guid(record["task_id"].ToString()));
 							if (!createRelationNtoNResponse.Success)
 							{
 								throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
@@ -690,7 +690,7 @@ namespace WebVella.ERP.Project
 						if (!isCommentatorInWatchList)
 						{
 							var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
-							var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], new Guid((string)record["bug_id"]));
+							var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)record["created_by"], new Guid(record["bug_id"].ToString()));
 							if (!createRelationNtoNResponse.Success)
 							{
 								throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);

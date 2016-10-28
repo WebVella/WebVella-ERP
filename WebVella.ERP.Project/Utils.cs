@@ -38,7 +38,7 @@ namespace WebVella.ERP.Project
 				//Convert ids to guid
 				if (newTaskObject.Properties.ContainsKey("project_id") && newTaskObject["project_id"] != null)
 				{
-					newTaskObject["project_id"] = new Guid((string)newTaskObject["project_id"]);
+					newTaskObject["project_id"] = new Guid(newTaskObject["project_id"].ToString());
 				}
 				else if (newTaskObject.Properties.ContainsKey("project_id"))
 				{
@@ -47,7 +47,7 @@ namespace WebVella.ERP.Project
 
 				if (newTaskObject.Properties.ContainsKey("milestone_id") && newTaskObject["milestone_id"] != null)
 				{
-					newTaskObject["milestone_id"] = new Guid((string)newTaskObject["milestone_id"]);
+					newTaskObject["milestone_id"] = new Guid(newTaskObject["milestone_id"].ToString());
 				}
 				else if (newTaskObject.Properties.ContainsKey("milestone_id"))
 				{
@@ -410,7 +410,7 @@ namespace WebVella.ERP.Project
 			//Convert ids to guid
 			if (newBugObject.Properties.ContainsKey("project_id") && newBugObject["project_id"] != null)
 			{
-				newBugObject["project_id"] = new Guid((string)newBugObject["project_id"]);
+				newBugObject["project_id"] = new Guid(newBugObject["project_id"].ToString());
 			}
 			else if (newBugObject.Properties.ContainsKey("project_id"))
 			{
