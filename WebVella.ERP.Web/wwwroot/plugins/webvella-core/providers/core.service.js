@@ -2348,7 +2348,7 @@
 
         function substituteTagsWithData(processedString, elementData, stateParams) {
             if (processedString.indexOf('{') != -1 && processedString.indexOf('}') != -1) {
-                var arrayOfTemplateKeys = processedString.match(/\{([\$\w]+)\}/g); //Include support for matching also data from relations which include $ symbol
+                var arrayOfTemplateKeys = processedString.match(/\{([\$\w\[\]]+)\}/g); //Include support for matching also data from relations which include $ symbol
                 var resultStringStorage = processedString;
 
                 for (var i = 0; i < arrayOfTemplateKeys.length; i++) {
@@ -2365,6 +2365,15 @@
                     else if (elementData != null) {
                         //Extract the dataName from string by removing the leading and the closing {}
                         var dataName = arrayOfTemplateKeys[i].replace('{', '').replace('}', '');
+						//If it is a relation it should be possible to have an index required to select the data - example $field$relation_name$field_name[0]
+						var arrayIndices = dataName.match(/\[([\w]+)\]/g);
+						//We support only one level of drill down so we will use only the first of any matched such indexes
+						var arrayIndex = null;
+						if(arrayIndices != null && arrayIndices.length > 0){
+							var indexString = arrayIndices[0];
+							arrayIndex = _.toInteger(indexString.replace("[","").replace("]",""));
+						}
+						var dataNameFromRelation = "$" + dataName.substring(dataName.indexOf('['),1);
                         //Check template has corresponding list data value
                         if (elementData[dataName]) {
                             //YES -> check the value of this dataName and substitute with it in the string, even if it is null (toString)
@@ -2378,6 +2387,10 @@
                             }
 
                         }
+						//Could be a relation field
+						else if(elementData[dataNameFromRelation]){
+							resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], elementData[dataNameFromRelation][arrayIndex].toString());
+						}
                         else {
                             //Try to look for other views from this entity that may have this value
                             var deepScanMatchFound = false;
