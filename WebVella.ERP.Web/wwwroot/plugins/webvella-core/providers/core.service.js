@@ -803,7 +803,7 @@
                 }
             }
             else {
-                return data * 100 + "%";
+                return data + " = " + data * 100 + "%";
             }
 
         }
