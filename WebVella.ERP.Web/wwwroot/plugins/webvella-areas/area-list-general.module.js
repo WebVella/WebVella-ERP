@@ -345,6 +345,7 @@
 		//#endregion
 
 		//#region << List filter row >>
+		ngCtrl.show_filter = true;
 		ngCtrl.filterQuery = {};
 		ngCtrl.listIsFiltered = false;
 		ngCtrl.columnDictionary = {};
