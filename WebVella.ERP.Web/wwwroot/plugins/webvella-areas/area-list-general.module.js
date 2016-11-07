@@ -345,7 +345,6 @@
 		//#endregion
 
 		//#region << List filter row >>
-		ngCtrl.show_filter = true;
 		ngCtrl.filterQuery = {};
 		ngCtrl.listIsFiltered = false;
 		ngCtrl.columnDictionary = {};
@@ -498,6 +497,9 @@
 
 		//#region << Extract fields that are supported in the query to be filters>>
 		ngCtrl.fieldsInQueryArray = webvellaCoreService.extractSupportedFilterFields(ngCtrl.list);
+		if(ngCtrl.fieldsInQueryArray.fieldNames.length > 0){
+			ngCtrl.show_filter = true;
+		}
 		ngCtrl.checkIfFieldSetInQuery = function (dataName) {
 			//fieldName and dataName are different when fromRelation (the second $ is a dot)
 			if(dataName.startsWith("$field")){
