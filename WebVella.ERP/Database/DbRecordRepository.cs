@@ -327,10 +327,10 @@ namespace WebVella.ERP.Database
                 {
                     if (string.IsNullOrWhiteSpace(value as string))
                         return null;
-                    date = DateTime.Parse(value as string);
+                    date = DateTime.Parse(value as string).ToUniversalTime();
                 }
                 else
-                    date = value as DateTime?;
+                    date = (value as DateTime?)?.ToUniversalTime();
 
                 if (date != null)
                     return new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, DateTimeKind.Utc);
@@ -345,10 +345,10 @@ namespace WebVella.ERP.Database
                 {
                     if (string.IsNullOrWhiteSpace(value as string))
                         return null;
-                    return DateTime.Parse(value as string);
+                    return DateTime.Parse(value as string).ToUniversalTime();
                 }
 
-                return value as DateTime?;
+                return (value as DateTime?)?.ToUniversalTime();
             }
             else if (field is EmailField)
                 return value as string;
