@@ -2033,7 +2033,7 @@ namespace WebVella.ERP.Api
 								{
 									if (column is RecordListFieldItem)
 									{
-										Field field = fields.FirstOrDefault(f => f.Id == ((RecordListFieldItem)column).FieldId);
+										Field field = fields.SingleOrDefault(f => f.Id == ((RecordListFieldItem)column).FieldId);
 										if (field != null)
 										{
 											//((RecordListFieldItem)column).DataName = string.Format("$field${0}", field.Name);
@@ -2057,7 +2057,7 @@ namespace WebVella.ERP.Api
 											((RecordListRelationFieldItem)column).EntityLabelPlural = entity.LabelPlural;
 										}
 
-										var relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationFieldItem)column).RelationId);
+										var relation = relationList.SingleOrDefault(r => r.Id == ((RecordListRelationFieldItem)column).RelationId);
 										((RecordListRelationFieldItem)column).RelationName = relation != null ? relation.Name : string.Empty;
 
 										if (relation != null)
@@ -2069,7 +2069,7 @@ namespace WebVella.ERP.Api
 												((RecordListRelationFieldItem)column).RelationDirection = "origin-target";
 										}
 
-										Field field = fields.FirstOrDefault(f => f.Id == ((RecordListRelationFieldItem)column).FieldId);
+										Field field = fields.SingleOrDefault(f => f.Id == ((RecordListRelationFieldItem)column).FieldId);
 										if (field != null)
 										{
 											((RecordListRelationFieldItem)column).DataName = string.Format("$field${0}${1}", ((RecordListRelationFieldItem)column).RelationName, field.Name);
@@ -2079,7 +2079,7 @@ namespace WebVella.ERP.Api
 									}
 									if (column is RecordListViewItem)
 									{
-										RecordView view = recordViews.FirstOrDefault(v => v.Id == ((RecordListViewItem)column).ViewId);
+										RecordView view = recordViews.SingleOrDefault(v => v.Id == ((RecordListViewItem)column).ViewId);
 										if (view != null)
 										{
 											((RecordListViewItem)column).DataName = string.Format("$view${0}", view.Name);
@@ -2102,7 +2102,7 @@ namespace WebVella.ERP.Api
 											((RecordListRelationViewItem)column).EntityLabelPlural = entity.LabelPlural;
 										}
 
-										var relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationViewItem)column).RelationId);
+										var relation = relationList.SingleOrDefault(r => r.Id == ((RecordListRelationViewItem)column).RelationId);
 										((RecordListRelationViewItem)column).RelationName = relation != null ? relation.Name : string.Empty;
 
 										if (relation != null)
@@ -2115,7 +2115,7 @@ namespace WebVella.ERP.Api
 										}
 
 
-										RecordView view = recordViews.FirstOrDefault(v => v.Id == ((RecordListRelationViewItem)column).ViewId);
+										RecordView view = recordViews.SingleOrDefault(v => v.Id == ((RecordListRelationViewItem)column).ViewId);
 										if (view != null)
 										{
 											((RecordListRelationViewItem)column).DataName = string.Format("$view${0}${1}", ((RecordListRelationViewItem)column).RelationName, view.Name);
@@ -2125,7 +2125,7 @@ namespace WebVella.ERP.Api
 									}
 									if (column is RecordListListItem)
 									{
-										RecordList list = recordLists.FirstOrDefault(l => l.Id == ((RecordListListItem)column).ListId);
+										RecordList list = recordLists.SingleOrDefault(l => l.Id == ((RecordListListItem)column).ListId);
 										if (list != null)
 										{
 											((RecordListListItem)column).DataName = string.Format("list${0}", list.Name);
@@ -2148,7 +2148,7 @@ namespace WebVella.ERP.Api
 											((RecordListRelationListItem)column).EntityLabelPlural = entity.LabelPlural;
 										}
 
-										var relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationListItem)column).RelationId);
+										var relation = relationList.SingleOrDefault(r => r.Id == ((RecordListRelationListItem)column).RelationId);
 										((RecordListRelationListItem)column).RelationName = relation != null ? relation.Name : string.Empty;
 
 										if (relation != null)
@@ -2160,7 +2160,7 @@ namespace WebVella.ERP.Api
 												((RecordListRelationListItem)column).RelationDirection = "origin-target";
 										}
 
-										RecordList list = recordLists.FirstOrDefault(l => l.Id == ((RecordListRelationListItem)column).ListId);
+										RecordList list = recordLists.SingleOrDefault(l => l.Id == ((RecordListRelationListItem)column).ListId);
 										if (list != null)
 										{
 											((RecordListRelationListItem)column).DataName = string.Format("$list${0}${1}", ((RecordListRelationListItem)column).RelationName, list.Name);
@@ -2179,10 +2179,10 @@ namespace WebVella.ERP.Api
 											((RecordListRelationTreeItem)column).EntityLabelPlural = entity.LabelPlural;
 										}
 
-										var relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationTreeItem)column).RelationId);
+										var relation = relationList.SingleOrDefault(r => r.Id == ((RecordListRelationTreeItem)column).RelationId);
 										((RecordListRelationTreeItem)column).RelationName = relation != null ? relation.Name : string.Empty;
 
-										RecordTree tree = relEntity.RecordTrees.FirstOrDefault(l => l.Id == ((RecordListRelationTreeItem)column).TreeId);
+										RecordTree tree = relEntity.RecordTrees.SingleOrDefault(l => l.Id == ((RecordListRelationTreeItem)column).TreeId);
 										if (tree != null)
 										{
 											((RecordListRelationTreeItem)column).DataName = string.Format("$tree${0}${1}", ((RecordListRelationTreeItem)column).RelationName, tree.Name);

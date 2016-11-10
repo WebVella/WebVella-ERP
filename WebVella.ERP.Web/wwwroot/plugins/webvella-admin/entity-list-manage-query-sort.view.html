@@ -6,14 +6,14 @@
 		<div class="meta-icon">
 			<i class="fa fa-fw fa-list fa-2x"></i>
 		</div>
-        <div class="meta-label">
+		<div class="meta-label">
 			<div class="meta-label-aux">
 				<span translate="{{::'RECORD_LIST_MANAGE_QUERY_SORT'}}"></span>
 				<span class="divider"><i class="fa fa-caret-right"></i></span>
 				<span ng-bind="ngCtrl.entity.name"></span>
 			</div>
-            <h4 ng-bind="::ngCtrl.list.name"></h4>
-        </div>
+			<h4 ng-bind="::ngCtrl.list.name"></h4>
+		</div>
 	</div>
 
 </div>
@@ -131,6 +131,7 @@
 						   onaftersave="ngCtrl.updateQuery()" e-form="{{'queryForm_field' + queryIndex}}">
 					<span class="input-group-addon" ng-click="this['queryForm_field' + queryIndex].$show()" ng-hide="this['queryForm_field' + queryIndex].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 				</div>
+				<div class="form-description ng-hide" ng-show="this['queryForm_field' + queryIndex].$visible" translate="{{::'QUERY_RULE_FIELD_NAME_DESCRIPTION'}}"></div>
 			</td>
 			<td width="50%">
 				<div class="input-group">
