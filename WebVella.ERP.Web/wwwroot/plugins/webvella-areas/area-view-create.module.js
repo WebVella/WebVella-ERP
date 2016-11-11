@@ -1188,7 +1188,7 @@
 		popupCtrl.selectPage = function (page) {
 			// Process
 			function successCallback(response) {
-				popupCtrl.relationLookupList = fastCopy(response.object);
+				popupCtrl.relationLookupList.data = fastCopy(response.object);
 				popupCtrl.currentPage = page;
 			}
 
