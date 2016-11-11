@@ -426,28 +426,12 @@
             if (!data && data != 0) {
                 return "";
             }
-            else if (data instanceof Array) {
-                if (data.length == 0) {
-                    return "";
-                }
-                else if (data.length == 1) {
-                    return getAutoIncrementString(data[0], fieldMeta);
-                }
-                else {
-                    var htmlString = "<ul class='field-list'>";
-                    for (var i = 0; i < data.length; i++) {
-                        htmlString += "<li>" + getAutoIncrementString(data[i], fieldMeta) + "</li>";
-                    }
-                    htmlString += "</ul>";
-                    return htmlString;
-                }
-            }
             else {
                 if (fieldMeta.displayFormat) {
                     return fieldMeta.displayFormat.replace("{0}", data);
                 }
                 else {
-                    return escapeHtml(data);
+                    return data;
                 }
             }
         }
