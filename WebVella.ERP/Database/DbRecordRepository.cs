@@ -1041,7 +1041,7 @@ namespace WebVella.ERP.Database
                     var value = ExtractQueryFieldValue(query.FieldValue, field, overwriteArgs, out skipClause) ?? DBNull.Value;
                     if (skipClause)
                         return;
-
+					query.FieldValue = value;
                     parameters.Add(new NpgsqlParameter(paramName, value));
                 }
                 else
