@@ -779,7 +779,11 @@
 			var returnObject = {};
 			returnObject.prefix = null;
 			returnObject.suffix = null;
-			var keyIndex = column.meta.displayFormat.indexOf('{0}');
+
+			var keyIndex = 0;
+			if(column.meta.displayFormat){
+				keyIndex = column.meta.displayFormat.indexOf('{0}');
+			}
 			if (keyIndex == 0) {
 				return null;
 			}

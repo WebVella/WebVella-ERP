@@ -630,6 +630,11 @@
         popupCtrl.ok = function () {
             popupCtrl.validation = {};
             switch (popupCtrl.field.fieldType) {
+				case 1:
+					if(!popupCtrl.field.displayFormat || popupCtrl.field.displayFormat  == ''){
+						popupCtrl.field.displayFormat = null;
+					}
+					break;
                 case 3:
                     for (var i = 0; i < ngCtrl.currencyMetas.length; i++) {
                         if (ngCtrl.currencyMetas[i].code === popupCtrl.selectedCurrencyMeta) {
@@ -994,6 +999,11 @@
 
         popupCtrl.ok = function () {
             switch (popupCtrl.field.fieldType) {
+				case 1:
+					if(!popupCtrl.field.displayFormat || popupCtrl.field.displayFormat  == ''){
+						popupCtrl.field.displayFormat = null;
+					}
+					break;
                 case 3:
                     for (var i = 0; i < ngCtrl.currencyMetas.length; i++) {
                         if (ngCtrl.currencyMetas[i].code === popupCtrl.selectedCurrencyMeta) {
