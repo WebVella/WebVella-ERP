@@ -338,7 +338,7 @@
 												<div class="input-group">
 													<div class="input-group-addon">{{item.meta.currency.code}}</div>
 													<input type="number" class="form-control" ng-model="popupCtrl.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-														   ng-required="{{item.meta.required}}" pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
+														   ng-required="{{item.meta.required}}" pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
 														   ng-model-options="{allowInvalid:true}">
 												</div>
 												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
@@ -510,7 +510,7 @@
 											<!-- 12. Number -->
 											<div ng-switch-when="12">
 												<input type="number" class="form-control" ng-model="popupCtrl.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-													   ng-required="{{item.meta.required}}" pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
+													   ng-required="{{item.meta.required}}" pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
 													   ng-model-options="{allowInvalid:true}">
 												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
@@ -549,7 +549,7 @@
 											<div ng-switch-when="14">
 												<div class="input-group">
 													<input type="number" class="form-control" ng-model="popupCtrl.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-														   ng-required="{{item.meta.required}}" pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
+														   ng-required="{{item.meta.required}}" pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
 														   ng-model-options="{allowInvalid:true}">
 													<div class="input-group-addon">%</div>
 												</div>

@@ -12,10 +12,10 @@
 		<div class="meta-icon">
 			<i class="fa fa-fw fa-th-large fa-2x"></i>
 		</div>
-        <div class="meta-label">
+		<div class="meta-label">
 			<div class="meta-label-aux" translate="{{::'AREAS'}}"></div>
-            <h4 translate="{{::'AVAILABLE_AREAS'}}"></h4>
-        </div>
+			<h4 translate="{{::'AVAILABLE_AREAS'}}"></h4>
+		</div>
 	</div>
 </div>
 <div id="page-body">
@@ -150,7 +150,7 @@
 						<label for="folder" translate="{{::'AREA_FOLDER_NAME'}}"></label>
 						<input ng-model="popupCtrl.area.folder" type="text" class="form-control" id="folder" name="folder" placeholder="{{::'AREA_FOLDER_NAME_PLACEHOLDER' | translate}}"
 							   ng-model-options="{allowInvalid:true}">
-						<div class="form-description"  translate="{{::'AREA_FOLDER_NAME_DESCRIPTION'}}"></div>
+						<div class="form-description" translate="{{::'AREA_FOLDER_NAME_DESCRIPTION'}}"></div>
 						<small class="error ng-hide" ng-show="popupCtrl.folderError">
 							{{popupCtrl.folderMessage}}
 						</small>
@@ -160,7 +160,7 @@
 					<div class="form-group" ng-class="{ 'has-error' : manageArea.weight.$invalid && !manageArea.weight.$pristine || popupCtrl.weightError }">
 						<label class="required" for="weight" translate="{{::'WEIGHT'}}"></label>
 						<input ng-model="popupCtrl.area.weight" type="number" class="form-control" id="weight" name="weight" placeholder="{{::'WEIGHT_PLACEHOLDER' | translate}}"
-							   required pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+							   required pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}">
 						<ng-messages for="manageArea.weight.$error" ng-if="manageArea.weight.$touched && manageArea.weight.$dirty && manageArea.weight.$invalid || popupCtrl.weightError">
 							<ng-message when="required" class="error" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></ng-message>
 							<ng-message when="pattern" class="error" translate="{{::'VALIDATION_INTEGER_OR_DECIMAL_2_PLACES'}}"></ng-message>
@@ -252,7 +252,7 @@
 								<th width="40" translate="{{::'WEIGHT_ABBR'}}"></th>
 								<th translate="{{::'ITEM'}}"></th>
 								<th></th>
-								<th width="40"  translate="{{::'ACTION'}}"></th>
+								<th width="40" translate="{{::'ACTION'}}"></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -265,7 +265,7 @@
 											<div class="form-group">
 												<label class="control-label col-sm-2" translate="{{::'DETAILS'}}"></label>
 												<div class="col-sm-10">
-													<select class="form-control" ng-change="popupCtrl.updateattachmentView(attachment)" ng-model="attachment.view.name"  ng-options="view.name as view.name for view in popupCtrl.getViews(attachment.name)"></select>
+													<select class="form-control" ng-change="popupCtrl.updateattachmentView(attachment)" ng-model="attachment.view.name" ng-options="view.name as view.name for view in popupCtrl.getViews(attachment.name)"></select>
 												</div>
 											</div>
 										</div>
@@ -273,7 +273,7 @@
 											<div class="form-group">
 												<label class="control-label col-sm-2" translate="{{::'CREATE'}}"></label>
 												<div class="col-sm-10">
-													<select class="form-control" ng-change="popupCtrl.updateattachmentCreate(attachment)"  ng-model="attachment.create.name"  ng-options="create.name as create.name for create in popupCtrl.getCreates(attachment.name)"></select>
+													<select class="form-control" ng-change="popupCtrl.updateattachmentCreate(attachment)" ng-model="attachment.create.name" ng-options="create.name as create.name for create in popupCtrl.getCreates(attachment.name)"></select>
 												</div>
 											</div>
 										</div>
@@ -281,7 +281,7 @@
 											<div class="form-group" style="margin-bottom:0;">
 												<label class="control-label col-sm-2" translate="{{::'LIST'}}"></label>
 												<div class="col-sm-10">
-													<select class="form-control" ng-change="popupCtrl.updateattachmentList(attachment)"  ng-model="attachment.list.name"  ng-options="list.name as list.name for list in popupCtrl.getLists(attachment.name)"></select>
+													<select class="form-control" ng-change="popupCtrl.updateattachmentList(attachment)" ng-model="attachment.list.name" ng-options="list.name as list.name for list in popupCtrl.getLists(attachment.name)"></select>
 												</div>
 											</div>
 										</div>
@@ -293,7 +293,7 @@
 											<div class="form-group" style="margin-bottom:0;">
 												<label class="control-label col-sm-2" translate="{{::'URL'}}"></label>
 												<div class="col-sm-10">
-													<input type="text" class="form-control" ng-model="attachment.url"/>
+													<input type="text" class="form-control" ng-model="attachment.url" />
 												</div>
 											</div>
 										</div>

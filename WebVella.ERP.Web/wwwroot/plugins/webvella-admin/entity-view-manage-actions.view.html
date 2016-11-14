@@ -5,14 +5,14 @@
 		<div class="meta-icon">
 			<i class="fa fa-fw fa-file-text-o fa-2x"></i>
 		</div>
-        <div class="meta-label">
+		<div class="meta-label">
 			<div class="meta-label-aux">
 				<span translate="{{::'RECORD_VIEW_MANAGE_ACTIONS'}}"></span>
 				<span class="divider"><i class="fa fa-caret-right"></i></span>
 				<span ng-bind="ngCtrl.entity.name"></span>
 			</div>
-            <h4 ng-bind="::ngCtrl.view.name"></h4>
-        </div>
+			<h4 ng-bind="::ngCtrl.view.name"></h4>
+		</div>
 	</div>
 </div>
 <div id="page-body" ng-mousedown="ngCtrl.viewCheckMouseButton($event)">
@@ -229,7 +229,7 @@
 					<label class="control-label col-sm-1" translate="{{::'WEIGHT'}}"></label>
 					<div class="col-sm-3">
 						<input ng-model="popupCtrl.actionItem.weight" type="number" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
-							   required pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+							   required pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}">
 						<ng-messages for="formName.weight.$error" ng-if="formName.weight.$touched && formName.weight.$dirty && formName.weight.$invalid || popupCtrl.weightError">
 							<ng-message when="required" class="error" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></ng-message>
 							<ng-message when="pattern" class="error" translate="{{::'VALIDATION_INTEGER_OR_DECIMAL_2_PLACES'}}"></ng-message>
@@ -261,10 +261,10 @@
 	</div>
 	<div class="modal-footer">
 		<div ng-if="!popupCtrl.selectTemplateFirst">
-		<button ng-if="popupCtrl.isEdit" class="btn btn-link pull-left go-red" ng-click="popupCtrl.delete()" translate="{{::'DELETE'}}"></button>
-		<button class="btn btn-primary" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.isEdit" translate="{{::'SAVE'}}"></button>
-		<button class="btn btn-success" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" ng-if="!popupCtrl.isEdit" translate="{{::'ADD'}}"></button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
+			<button ng-if="popupCtrl.isEdit" class="btn btn-link pull-left go-red" ng-click="popupCtrl.delete()" translate="{{::'DELETE'}}"></button>
+			<button class="btn btn-primary" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.isEdit" translate="{{::'SAVE'}}"></button>
+			<button class="btn btn-success" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" ng-if="!popupCtrl.isEdit" translate="{{::'ADD'}}"></button>
+			<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
 		</div>
 		<div ng-if="popupCtrl.selectTemplateFirst">
 			<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>

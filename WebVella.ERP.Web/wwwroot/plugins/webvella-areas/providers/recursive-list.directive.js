@@ -1063,7 +1063,8 @@
 				}
 			}
 			if (!popupCtrl.isEdit) {
-				webvellaCoreService.createRecord(popupCtrl.entity.name, popupCtrl.recordData, createSuccessCallback, manageErrorCallback);
+				//we need to add the relation field as it is needed
+				webvellaCoreService.createRecordWithRelation(popupCtrl.entity.name, popupCtrl.recordData, popupCtrl.relation.name, $stateParams.recordId, createSuccessCallback, manageErrorCallback);
 			}
 			else {
 				webvellaCoreService.updateRecord(popupCtrl.recordData.id, popupCtrl.entity.name, popupCtrl.recordData, successCallback, manageErrorCallback);

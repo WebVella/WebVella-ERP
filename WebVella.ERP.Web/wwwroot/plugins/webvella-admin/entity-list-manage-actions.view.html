@@ -247,7 +247,7 @@
 					<label class="control-label col-sm-1" translate="{{::'WEIGHT'}}"></label>
 					<div class="col-sm-3">
 						<input ng-model="popupCtrl.actionItem.weight" type="number" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
-							   required pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+							   required pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}">
 						<ng-messages for="formName.weight.$error" ng-if="formName.weight.$touched && formName.weight.$dirty && formName.weight.$invalid || popupCtrl.weightError">
 							<ng-message when="required" class="error" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></ng-message>
 							<ng-message when="pattern" class="error" translate="{{::'VALIDATION_INTEGER_OR_DECIMAL_2_PLACES'}}"></ng-message>

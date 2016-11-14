@@ -148,6 +148,7 @@
 
         //Create
         serviceInstance.createRecord = createRecord;
+		serviceInstance.createRecordWithRelation = createRecordWithRelation;
         serviceInstance.importEntityRecords = importEntityRecords;
         serviceInstance.evaluateImportEntityRecords = evaluateImportEntityRecords;
         serviceInstance.exportListRecords = exportListRecords;
@@ -2110,6 +2111,11 @@
         function createRecord(entityName, postObject, successCallback, errorCallback) {
             $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName, data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
         }
+
+        function createRecordWithRelation(entityName, postObject,relationName,parentRecordId, successCallback, errorCallback) {
+            $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/with-relation/' + relationName + '/' + parentRecordId, data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+        }
+
         ///////////////////////
         function importEntityRecords(entityName, fileTempPath, clipboard, successCallback, errorCallback) {
             var postObject = {};

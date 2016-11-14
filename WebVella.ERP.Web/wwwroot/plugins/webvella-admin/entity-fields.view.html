@@ -4,7 +4,7 @@
 			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.entity.fields.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
-					<input ng-model="ngCtrl.search.name" type="text" class="form-control" placeholder="{{::'FIELD_NAME' | translate}}"  focus-me="true">
+					<input ng-model="ngCtrl.search.name" type="text" class="form-control" placeholder="{{::'FIELD_NAME' | translate}}" focus-me="true">
 				</div>
 			</div>
 			<a class="btn btn-default btn-outline" ng-click="ngCtrl.createFieldModal()"><span translate="{{::'ADD_NEW'}}"></span></a>
@@ -12,10 +12,10 @@
 		<div class="meta-icon">
 			<i class="fa fa-fw fa-table fa-2x"></i>
 		</div>
-        <div class="meta-label">
+		<div class="meta-label">
 			<div class="meta-label-aux" translate="{{::'ENTITY_MANAGE_FIELDS'}}"></div>
-            <h4 ng-bind="::ngCtrl.entity.name"></h4>
-        </div>
+			<h4 ng-bind="::ngCtrl.entity.name"></h4>
+		</div>
 	</div>
 </div>
 <div id="page-body">
@@ -315,7 +315,7 @@
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
 								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{::'DEFAULT_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="number"
-									   ng-required="popupCtrl.field.required" pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
+									   ng-required="popupCtrl.field.required" pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
 									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></small>
 									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupCtrl.defaultValueError" translate="{{::'VALIDATION_DECIMAL'}}"></small>
@@ -334,7 +334,7 @@
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.minValue.$invalid && !createFieldStep2.minValue.$pristine || popupCtrl.minValueError}">
 								<label class="control-label" translate="{{::'MINIMUM_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.minValue" name="minValue" type="number"
-									   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
+									   pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.minValue.$touched && createFieldStep2.minValue.$dirty && createFieldStep2.minValue.$invalid || popupCtrl.minValueError">
 									<small class="error ng-hide" ng-show="createFieldStep2.minValue.$error.pattern && !popupCtrl.minValueError" translate="{{::'VALIDATION_DECIMAL'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.minValueError">
@@ -347,7 +347,7 @@
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxValue.$invalid && !createFieldStep2.maxValue.$pristine || popupCtrl.maxValueError}">
 								<label class="control-label" translate="{{::'MAXIMUM_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.maxValue" name="maxValue" type="number"
-									   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
+									   pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.maxValue.$touched && createFieldStep2.maxValue.$dirty && createFieldStep2.maxValue.$invalid || popupCtrl.maxValueError">
 									<small class="error ng-hide" ng-show="createFieldStep2.maxValue.$error.pattern && !popupCtrl.maxValueError" translate="{{::'VALIDATION_DECIMAL'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.maxValueError">
@@ -400,7 +400,7 @@
 								<input class="form-control" ng-model="popupCtrl.field.format" name="format" type="text"
 									   ng-required="true" placeholder="{{::'DATE_FORMAT_PLACEHOLDER' | translate}}" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.format.$touched && createFieldStep2.format.$dirty && createFieldStep2.format.$invalid || popupCtrl.formatError">
-									<small class="error ng-hide" ng-show="createFieldStep2.format.$error.required && !popupCtrl.formatError"  translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></small>
+									<small class="error ng-hide" ng-show="createFieldStep2.format.$error.required && !popupCtrl.formatError" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.formatError">
 										{{popupCtrl.formatMessage}}
 									</small>
@@ -695,7 +695,7 @@
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.minValue.$invalid && !createFieldStep2.minValue.$pristine || popupCtrl.minValueError}">
 								<label class="control-label" translate="{{::'MINIMUM_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.minValue" name="minValue" type="number"
-									   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
+									   pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.minValue.$touched && createFieldStep2.minValue.$dirty && createFieldStep2.minValue.$invalid || popupCtrl.minValueError">
 									<small class="error ng-hide" ng-show="createFieldStep2.minValue.$error.pattern && !popupCtrl.minValueError" translate="{{::'VALIDATION_DECIMAL'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.minValueError">
@@ -708,7 +708,7 @@
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxValue.$invalid && !createFieldStep2.maxValue.$pristine || popupCtrl.maxValueError}">
 								<label class="control-label" translate="{{::'MAXIMUM_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.maxValue" name="maxValue" type="number"
-									   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
+									   pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.maxValue.$touched && createFieldStep2.maxValue.$dirty && createFieldStep2.maxValue.$invalid || popupCtrl.maxValueError">
 									<small class="error ng-hide" ng-show="createFieldStep2.maxValue.$error.pattern && !popupCtrl.maxValueError" translate="{{::'VALIDATION_DECIMAL'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.maxValueError">
@@ -777,7 +777,7 @@
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
 								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{::'DEFAULT_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
-									   ng-required="popupCtrl.field.required" pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
+									   ng-required="popupCtrl.field.required" pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
 									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></small>
 									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupCtrl.defaultValueError" translate="{{::'VALIDATION_POSITIVE_INTEGER'}}"></small>
@@ -806,7 +806,7 @@
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.minValue.$invalid && !createFieldStep2.minValue.$pristine || popupCtrl.minValueError}">
 								<label class="control-label" translate="{{::'MINIMUM_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.minValue" name="minValue" type="number"
-									   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
+									   pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.minValue.$touched && createFieldStep2.minValue.$dirty && createFieldStep2.minValue.$invalid || popupCtrl.minValueError">
 									<small class="error ng-hide" ng-show="createFieldStep2.minValue.$error.pattern && !popupCtrl.minValueError" translate="{{::'VALIDATION_DECIMAL'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.minValueError">
@@ -819,7 +819,7 @@
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxValue.$invalid && !createFieldStep2.maxValue.$pristine || popupCtrl.maxValueError}">
 								<label class="control-label" translate="{{::'MAXIMUM_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.maxValue" name="maxValue" type="number"
-									   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
+									   pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.maxValue.$touched && createFieldStep2.maxValue.$dirty && createFieldStep2.maxValue.$invalid || popupCtrl.maxValueError">
 									<small class="error ng-hide" ng-show="createFieldStep2.maxValue.$error.pattern && !popupCtrl.maxValueError" translate="{{::'VALIDATION_DECIMAL'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.maxValueError">
@@ -912,7 +912,7 @@
 										<input ng-model="popupCtrl.field.generateNewId" name="generateNewId" type="checkbox"
 											   ng-change='popupCtrl.uniqueGuidGenerateToggle(popupCtrl.field.generateNewId)'
 											   ng-disabled="!popupCtrl.uniqueGuidGenerateCheckboxEnabled" />
-											   <span translate="{{::'GUID_GENERATION_CHECKBOX_LABEL'}}"></span>
+										<span translate="{{::'GUID_GENERATION_CHECKBOX_LABEL'}}"></span>
 									</label>
 								</div>
 							</div>
@@ -1109,7 +1109,7 @@
 							<label class="control-label" translate="{{::'FIELD_SECURITY'}}"></label>
 							<div class="checkbox">
 								<label>
-									<input type="checkbox" ng-model="popupCtrl.field.enableSecurity" value="true"> 
+									<input type="checkbox" ng-model="popupCtrl.field.enableSecurity" value="true">
 									<span translate="{{::'FIELD_SECURITY_CHECKBOX_LABEL'}}"></span>
 								</label>
 							</div>
@@ -1382,7 +1382,7 @@
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupCtrl.defaultValueError}">
 							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{::'DEFAULT_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="number"
-								   ng-required="popupCtrl.field.required" pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
+								   ng-required="popupCtrl.field.required" pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
 								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></small>
 								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.pattern && !popupCtrl.defaultValueError" translate="{{::'VALIDATION_DECIMAL'}}"></small>
@@ -1401,7 +1401,7 @@
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.minValue.$invalid && !manageFieldForm.minValue.$pristine || popupCtrl.minValueError}">
 							<label class="control-label" translate="{{::'MINIMUM_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.minValue" name="minValue" type="number"
-								   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
+								   pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.minValue.$touched && manageFieldForm.minValue.$dirty && manageFieldForm.minValue.$invalid || popupCtrl.minValueError">
 								<small class="error ng-hide" ng-show="manageFieldForm.minValue.$error.pattern && !popupCtrl.minValueError" translate="{{::'VALIDATION_DECIMAL'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.minValueError">
@@ -1414,7 +1414,7 @@
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxValue.$invalid && !manageFieldForm.maxValue.$pristine || popupCtrl.maxValueError}">
 							<label class="control-label" translate="{{::'MAXIMUM_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.maxValue" name="maxValue" type="number"
-								   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
+								   pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.maxValue.$touched && manageFieldForm.maxValue.$dirty && manageFieldForm.maxValue.$invalid || popupCtrl.maxValueError">
 								<small class="error ng-hide" ng-show="manageFieldForm.maxValue.$error.pattern && !popupCtrl.maxValueError" translate="{{::'VALIDATION_DECIMAL'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.maxValueError">
@@ -1763,7 +1763,7 @@
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.minValue.$invalid && !manageFieldForm.minValue.$pristine || popupCtrl.minValueError}">
 							<label class="control-label" translate="{{::'MINIMUM_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.minValue" name="minValue" type="number"
-								   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
+								   pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.minValue.$touched && manageFieldForm.minValue.$dirty && manageFieldForm.minValue.$invalid || popupCtrl.minValueError">
 								<small class="error ng-hide" ng-show="manageFieldForm.minValue.$error.pattern && !popupCtrl.minValueError" translate="{{::'VALIDATION_DECIMAL'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.minValueError">
@@ -1776,7 +1776,7 @@
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxValue.$invalid && !manageFieldForm.maxValue.$pristine || popupCtrl.maxValueError}">
 							<label class="control-label" translate="{{::'MAXIMUM_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.maxValue" name="maxValue" type="number"
-								   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
+								   pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.maxValue.$touched && manageFieldForm.maxValue.$dirty && manageFieldForm.maxValue.$invalid || popupCtrl.maxValueError">
 								<small class="error ng-hide" ng-show="manageFieldForm.maxValue.$error.pattern && !popupCtrl.maxValueError" translate="{{::'VALIDATION_DECIMAL'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.maxValueError">
@@ -1874,7 +1874,7 @@
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.minValue.$invalid && !manageFieldForm.minValue.$pristine || popupCtrl.minValueError}">
 							<label class="control-label" translate="{{::'MINIMUM_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.minValue" name="minValue" type="number"
-								   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
+								   pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.minValue.$touched && manageFieldForm.minValue.$dirty && manageFieldForm.minValue.$invalid || popupCtrl.minValueError">
 								<small class="error ng-hide" ng-show="manageFieldForm.minValue.$error.pattern && !popupCtrl.minValueError" translate="{{::'VALIDATION_DECIMAL'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.minValueError">
@@ -1887,7 +1887,7 @@
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxValue.$invalid && !manageFieldForm.maxValue.$pristine || popupCtrl.maxValueError}">
 							<label class="control-label" translate="{{::'MAXIMUM_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.maxValue" name="maxValue" type="number"
-								   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
+								   pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.maxValue.$touched && manageFieldForm.maxValue.$dirty && manageFieldForm.maxValue.$invalid || popupCtrl.maxValueError">
 								<small class="error ng-hide" ng-show="manageFieldForm.maxValue.$error.pattern && !popupCtrl.maxValueError" translate="{{::'VALIDATION_DECIMAL'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.maxValueError">
@@ -1980,7 +1980,7 @@
 									<input ng-model="popupCtrl.field.generateNewId" name="generateNewId" type="checkbox"
 										   ng-change='popupCtrl.uniqueGuidGenerateToggle(popupCtrl.field.generateNewId)'
 										   ng-disabled="!popupCtrl.uniqueGuidGenerateCheckboxEnabled" />
-											<span translate="{{::'GUID_GENERATION_CHECKBOX_LABEL'}}"></span>
+									<span translate="{{::'GUID_GENERATION_CHECKBOX_LABEL'}}"></span>
 								</label>
 							</div>
 						</div>
@@ -2113,7 +2113,7 @@
 							<div class="checkbox">
 								<label>
 									<input ng-model="popupCtrl.field.openTargetInNewWindow" name="openTargetInNewWindow" type="checkbox" />
-									<span  translate="{{::'URL_LINK_TARGET_CHECKBOX_LABEL'}}"></span>
+									<span translate="{{::'URL_LINK_TARGET_CHECKBOX_LABEL'}}"></span>
 								</label>
 							</div>
 						</div>

@@ -2403,6 +2403,210 @@ namespace WebVella.ERP.Web.Controllers
 			return DoResponse(result);
 		}
 
+		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/with-relation/{relationName}/{relatedRecordId}")]
+		public IActionResult CreateEntityRecordWithRelation(string entityName,string relationName,Guid relatedRecordId, [FromBody]EntityRecord postObj)
+		{
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK FILTER << create_record_input_filter >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			try
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.record = postObj;
+				hookFilterObj.relationName = relationName;
+				hookFilterObj.parentRecordId = relatedRecordId;
+				hookFilterObj.controller = this;
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.CreateRecordInput, entityName, hookFilterObj);
+				postObj = hookFilterObj.record;
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook create_record_input_filter: " + ex.Message));
+			}// <<<
+
+			var validationErrors = new List<ErrorModel>();
+			
+			//1.Validate relationName
+			//1.1. Relation exists
+			var relation = relMan.Read().Object.SingleOrDefault(x => x.Name == relationName);
+			string targetEntityName = String.Empty;
+			string targetFieldName = String.Empty;
+			var relatedRecord = new EntityRecord();
+			var relatedRecordResponse = new QueryResponse();
+			if(relation == null) {
+				var error = new ErrorModel();
+				error.Key = "relationName";
+				error.Value = relationName;
+				error.Message = "A relation with this name, does not exist";
+				validationErrors.Add(error);
+			}
+			else {
+			//1.2. Relation is correct - entityName is part of this relation
+				if(relation.OriginEntityName != entityName && relation.TargetEntityName != entityName) {
+					var error = new ErrorModel();
+					error.Key = "relationName";
+					error.Value = relationName;
+					error.Message = "This is not the correct relation, as it does not include the requested entity: " + entityName;		
+					validationErrors.Add(error);			
+				}			
+				else {
+					if(relation.OriginEntityName == entityName) {
+						relatedRecordResponse = recMan.Find(new EntityQuery(relation.TargetEntityName,"*", EntityQuery.QueryEQ("id",relatedRecordId)));
+						targetFieldName = relation.TargetFieldName;
+					}
+					else {
+						relatedRecordResponse = recMan.Find(new EntityQuery(relation.OriginEntityName,"*", EntityQuery.QueryEQ("id",relatedRecordId)));
+						targetFieldName = relation.OriginFieldName;
+					}
+					//2. Validate parentRecordId
+					//2.1. parentRecordId exists
+
+					if(!relatedRecordResponse.Object.Data.Any()) {
+						var error = new ErrorModel();
+						error.Key = "parentRecordId";
+						error.Value = relatedRecordId.ToString();
+						error.Message = "There is no parent record with this Id in the entity: " + entityName;	
+						validationErrors.Add(error);						
+					}
+					else {
+						relatedRecord = relatedRecordResponse.Object.Data.First();
+						//2.2. Record has value in the related field		
+						if(!relatedRecord.Properties.ContainsKey(targetFieldName) || relatedRecord[targetFieldName] == null) {
+							var error = new ErrorModel();
+							error.Key = "parentRecordId";
+							error.Value = relatedRecordId.ToString();
+							error.Message = "The parent record does not have field " + targetFieldName + " or its value is null";		
+							validationErrors.Add(error);					
+						}
+					}
+				}
+			}
+
+
+			if (postObj == null)
+				postObj = new EntityRecord();
+
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK FILTER << create_record_validation_errors_filter >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			try
+			{
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.errors = validationErrors;
+				hookFilterObj.record = postObj;
+				hookFilterObj.relationName = relationName;
+				hookFilterObj.parentRecordId = relatedRecordId;
+				hookFilterObj.controller = this;
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.CreateRecordValidationErrors, entityName, hookFilterObj);
+				validationErrors = hookFilterObj.errors;
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook create_record_validation_errors_filter: " + ex.Message));
+			}// <<<
+
+			if (validationErrors.Count > 0)
+			{
+				var response = new ResponseModel();
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Errors = validationErrors;
+				response.Message = "Validation error occurred!";
+				response.Object = null;
+				return Json(response);
+			}
+
+			if (!postObj.GetProperties().Any(x => x.Key == "id"))
+				postObj["id"] = Guid.NewGuid();
+			else if (string.IsNullOrEmpty(postObj["id"] as string))
+				postObj["id"] = Guid.NewGuid();
+
+
+			//Create transaction
+			var result = new QueryResponse();
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				try
+				{
+					connection.BeginTransaction();
+					//////////////////////////////////////////////////////////////////////////////////////
+					//WEBHOOK FILTER << create_record_pre_save_filter >>
+					//////////////////////////////////////////////////////////////////////////////////////
+					try
+					{
+						dynamic hookFilterObj = new ExpandoObject();
+						hookFilterObj.record = postObj;
+						hookFilterObj.recordId = (Guid)postObj["id"];
+						hookFilterObj.relationName = relationName;
+						hookFilterObj.parentRecordId = relatedRecordId;
+						hookFilterObj.controller = this;
+						hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.CreateRecordPreSave, entityName, hookFilterObj);
+						postObj = hookFilterObj.record;
+					}
+					catch (Exception ex)
+					{
+						connection.RollbackTransaction();
+						return Json(CreateErrorResponse("Plugin error in web hook create_record_pre_save_filter: " + ex.Message));
+					}// <<<
+
+					//Add the relation field value if the relation is 1:1 or 1:N
+					if(relation.RelationType == EntityRelationType.OneToOne || relation.RelationType == EntityRelationType.OneToMany) {
+						//if currentEntity is origin -> update the parent record
+						if(relation.OriginEntityName == entityName) {
+							throw new Exception("We need a case to finish this");
+						}
+						else {
+							//if currentEntity is target -> get the target field and assing the correct id value of the origin 
+							postObj[relation.TargetFieldName] = relatedRecord[relation.OriginFieldName];
+						}
+					}
+
+					result = recMan.CreateRecord(entityName, postObj);
+
+					//Create a relation record if it is N:N
+					if(relation.RelationType == EntityRelationType.ManyToMany) {
+						//if current is target -> create relation
+						throw new Exception("We need a case to finish both case");
+						
+						//if current is origin -> create relation	
+					}
+
+					connection.CommitTransaction();
+				}
+				catch (Exception ex)
+				{
+					connection.RollbackTransaction();
+					var response = new ResponseModel();
+					response.Success = false;
+					response.Timestamp = DateTime.UtcNow;
+					response.Message = "Error while saving the record: " + ex.Message;
+					response.Object = null;
+					return Json(response);
+				}
+			}
+
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK ACTION << create_record >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			try
+			{
+				dynamic hookActionObj = new ExpandoObject();
+				hookActionObj.record = postObj;
+				hookActionObj.relationName = relationName;
+				hookActionObj.parentRecordId = relatedRecordId;
+				hookActionObj.result = result;
+				hookActionObj.controller = this;
+				hooksService.ProcessActions(SystemWebHookNames.CreateRecordAction, entityName, hookActionObj);
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook create_record_success_action: " + ex.Message));
+			}// <<<						
+
+			return DoResponse(result);
+		}
+
+
 		// Update an entity record
 		// PUT: api/v1/en_US/record/{entityName}/{recordId}
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
