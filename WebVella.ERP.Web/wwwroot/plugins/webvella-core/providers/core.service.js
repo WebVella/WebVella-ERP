@@ -2209,7 +2209,7 @@
                     if (!isEmpty(extraParams)) {
                         extraParamQueryString = "?";
                         for (var param in extraParams) {
-                            if (extraParamQueryString.indexOf(param) == -1) {
+                            if (extraParamQueryString.indexOf(param + "=") == -1) {
                                 extraParamQueryString += param + "=" + extraParams[param] + "&";
                             }
                         }
