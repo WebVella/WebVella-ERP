@@ -3367,7 +3367,9 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				//Validate if field is not included in list or view of its entity or any related one. Check by ID
+				//Validate if field is not included in list or view of its entity or another one. Check by ID
+
+				#region << validation check >>
 				var entityList = ReadEntities().Object;
 				var validationErrors = new List<ErrorModel>();
 				foreach (var entityObj in entityList)
@@ -3386,7 +3388,7 @@ namespace WebVella.ERP.Api
 													var error = new ErrorModel();
 													error.Key = "field";
 													error.Value = id.ToString();
-													error.Message = "Field used in view: " + viewObj.Name + " in entity: " + entityObj.Name;
+													error.Message = "Field used in view: " + viewObj.Name + " of entity: " + entityObj.Name;
 													validationErrors.Add(error);
 												}
 											}
@@ -3396,6 +3398,7 @@ namespace WebVella.ERP.Api
 							}
 						}
 						//sidebar cannot have fields attached so it will not be checked
+
 					}
 					//check lists
 					foreach (var listObj in entityObj.RecordLists)
@@ -3406,7 +3409,7 @@ namespace WebVella.ERP.Api
 									var error = new ErrorModel();
 									error.Key = "field";
 									error.Value = id.ToString();
-									error.Message = "Field used in list: " + listObj.Name + " in entity: " + entityObj.Name;
+									error.Message = "Field is used in list: " + listObj.Name + " in entity: " + entityObj.Name;
 									validationErrors.Add(error);
 								}
 							}
@@ -3460,7 +3463,7 @@ namespace WebVella.ERP.Api
 					response.Errors = validationErrors;
 					return response;				
 				}
-
+				#endregion
 
 				entity.Fields.Remove(field);
 
@@ -3938,6 +3941,79 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
+				//Validate if list is not included in list or view of its entity or another one. Check by ID
+
+				#region << validation check >>
+				var entityList = ReadEntities().Object;
+				var validationErrors = new List<ErrorModel>();
+				foreach (var entityObj in entityList)
+				{
+					//check views
+					foreach (var viewObj in entityObj.RecordViews)
+					{
+						//region
+						foreach(var region in viewObj.Regions) {
+							foreach(var section in region.Sections) {
+								foreach(var row in section.Rows) {
+									foreach(var column in row.Columns) {
+										foreach(var item in column.Items) {
+											if(item.GetType().Name == "RecordViewListItem") {
+												if(((RecordViewListItem)item).ListId == id) {
+													var error = new ErrorModel();
+													error.Key = "list";
+													error.Value = id.ToString();
+													error.Message = "List is used in view: " + viewObj.Name + " of entity: " + entityObj.Name;
+													validationErrors.Add(error);
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						//sidebar
+						foreach(var sidebarItem in viewObj.Sidebar.Items) {
+							if(sidebarItem.GetType().Name == "RecordViewSidebarListItem") {
+								if(((RecordViewSidebarListItem)sidebarItem).ListId == id) {
+									var error = new ErrorModel();
+									error.Key = "list";
+									error.Value = id.ToString();
+									error.Message = "List is used in the sidebar of view: " + viewObj.Name + " of entity: " + entityObj.Name;
+									validationErrors.Add(error);
+								}								
+							}
+						}
+					}					
+
+					//check lists
+					foreach (var listObj in entityObj.RecordLists)
+					{
+						foreach(var column in listObj.Columns) {
+							if(column.GetType().Name == "RecordListListItem") {
+								if(((RecordListListItem)column).ListId == id) {
+									var error = new ErrorModel();
+									error.Key = "list";
+									error.Value = id.ToString();
+									error.Message = "List is used in list: " + listObj.Name + " in entity: " + entityObj.Name;
+									validationErrors.Add(error);
+								}
+							}
+						}
+					}
+
+				}
+
+
+				if(validationErrors.Count > 0) {
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "The list was not deleted. Validation error occurred!";
+					response.Errors = validationErrors;
+					return response;				
+				}
+
+				#endregion
+
 				entity.RecordLists.Remove(recordList);
 
 				DbEntity updatedEntity = entity.MapTo<DbEntity>();
@@ -4008,6 +4084,81 @@ namespace WebVella.ERP.Api
 					response.Errors.Add(new ErrorModel("name", name, "List with such Name does not exist!"));
 					return response;
 				}
+
+
+				//Validate if list is not included in list or view of its entity or another one. Check by ID
+				var id = recordList.Id;
+				#region << validation check >>
+				var entityList = ReadEntities().Object;
+				var validationErrors = new List<ErrorModel>();
+				foreach (var entityObj in entityList)
+				{
+					//check views
+					foreach (var viewObj in entityObj.RecordViews)
+					{
+						//region
+						foreach(var region in viewObj.Regions) {
+							foreach(var section in region.Sections) {
+								foreach(var row in section.Rows) {
+									foreach(var column in row.Columns) {
+										foreach(var item in column.Items) {
+											if(item.GetType().Name == "RecordViewListItem") {
+												if(((RecordViewListItem)item).ListId == id) {
+													var error = new ErrorModel();
+													error.Key = "list";
+													error.Value = id.ToString();
+													error.Message = "List is used in view: " + viewObj.Name + " of entity: " + entityObj.Name;
+													validationErrors.Add(error);
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						//sidebar
+						foreach(var sidebarItem in viewObj.Sidebar.Items) {
+							if(sidebarItem.GetType().Name == "RecordViewSidebarListItem") {
+								if(((RecordViewSidebarListItem)sidebarItem).ListId == id) {
+									var error = new ErrorModel();
+									error.Key = "list";
+									error.Value = id.ToString();
+									error.Message = "List is used in the sidebar of view: " + viewObj.Name + " of entity: " + entityObj.Name;
+									validationErrors.Add(error);
+								}								
+							}
+						}
+					}					
+
+					//check lists
+					foreach (var listObj in entityObj.RecordLists)
+					{
+						foreach(var column in listObj.Columns) {
+							if(column.GetType().Name == "RecordListListItem") {
+								if(((RecordListListItem)column).ListId == id) {
+									var error = new ErrorModel();
+									error.Key = "list";
+									error.Value = id.ToString();
+									error.Message = "List is used in list: " + listObj.Name + " in entity: " + entityObj.Name;
+									validationErrors.Add(error);
+								}
+							}
+						}
+					}
+
+				}
+
+
+				if(validationErrors.Count > 0) {
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "The list was not deleted. Validation error occurred!";
+					response.Errors = validationErrors;
+					return response;				
+				}
+
+				#endregion
+
 
 				entity.RecordLists.Remove(recordList);
 
@@ -4557,6 +4708,77 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
+				//Validate if view is not included in list or view of its entity or another one. Check by ID
+
+				#region << validation check >>
+				var entityList = ReadEntities().Object;
+				var validationErrors = new List<ErrorModel>();
+				foreach (var entityObj in entityList)
+				{
+					//check views
+					foreach (var viewObj in entityObj.RecordViews)
+					{
+						//region
+						foreach(var region in viewObj.Regions) {
+							foreach(var section in region.Sections) {
+								foreach(var row in section.Rows) {
+									foreach(var column in row.Columns) {
+										foreach(var item in column.Items) {
+											if(item.GetType().Name == "RecordViewViewItem") {
+												if(((RecordViewViewItem)item).ViewId == id) {
+													var error = new ErrorModel();
+													error.Key = "view";
+													error.Value = id.ToString();
+													error.Message = "View is used in view: " + viewObj.Name + " of entity: " + entityObj.Name;
+													validationErrors.Add(error);
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						//sidebar
+						foreach(var sidebarItem in viewObj.Sidebar.Items) {
+							if(sidebarItem.GetType().Name == "RecordViewSidebarViewItem") {
+								if(((RecordViewSidebarViewItem)sidebarItem).ViewId == id) {
+									var error = new ErrorModel();
+									error.Key = "view";
+									error.Value = id.ToString();
+									error.Message = "View is used in the sidebar of view: " + viewObj.Name + " of entity: " + entityObj.Name;
+									validationErrors.Add(error);
+								}								
+							}
+						}
+					}					
+
+					//check lists
+					foreach (var listObj in entityObj.RecordLists)
+					{
+						foreach(var column in listObj.Columns) {
+							if(column.GetType().Name == "RecordListViewItem") {
+								if(((RecordListViewItem)column).ViewId == id) {
+									var error = new ErrorModel();
+									error.Key = "view";
+									error.Value = id.ToString();
+									error.Message = "View is used in list: " + listObj.Name + " in entity: " + entityObj.Name;
+									validationErrors.Add(error);
+								}
+							}
+						}
+					}
+				}
+
+				if(validationErrors.Count > 0) {
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "The view was not deleted. Validation error occurred!";
+					response.Errors = validationErrors;
+					return response;				
+				}
+
+				#endregion
+
 				entity.RecordViews.Remove(recordView);
 
 				DbEntity updatedEntity = entity.MapTo<DbEntity>();
@@ -4620,6 +4842,8 @@ namespace WebVella.ERP.Api
 
 				RecordView recordView = entity.RecordViews.FirstOrDefault(r => r.Name == name);
 
+				var id = recordView.Id;
+
 				if (recordView == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -4628,6 +4852,75 @@ namespace WebVella.ERP.Api
 					response.Errors.Add(new ErrorModel("name", name, "Record view with such Name does not exist!"));
 					return response;
 				}
+
+				#region << validation check >>
+				var entityList = ReadEntities().Object;
+				var validationErrors = new List<ErrorModel>();
+				foreach (var entityObj in entityList)
+				{
+					//check views
+					foreach (var viewObj in entityObj.RecordViews)
+					{
+						//region
+						foreach(var region in viewObj.Regions) {
+							foreach(var section in region.Sections) {
+								foreach(var row in section.Rows) {
+									foreach(var column in row.Columns) {
+										foreach(var item in column.Items) {
+											if(item.GetType().Name == "RecordViewViewItem") {
+												if(((RecordViewViewItem)item).ViewId == id) {
+													var error = new ErrorModel();
+													error.Key = "view";
+													error.Value = id.ToString();
+													error.Message = "View is used in view: " + viewObj.Name + " of entity: " + entityObj.Name;
+													validationErrors.Add(error);
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						//sidebar
+						foreach(var sidebarItem in viewObj.Sidebar.Items) {
+							if(sidebarItem.GetType().Name == "RecordViewSidebarViewItem") {
+								if(((RecordViewSidebarViewItem)sidebarItem).ViewId == id) {
+									var error = new ErrorModel();
+									error.Key = "view";
+									error.Value = id.ToString();
+									error.Message = "View is used in the sidebar of view: " + viewObj.Name + " of entity: " + entityObj.Name;
+									validationErrors.Add(error);
+								}								
+							}
+						}
+					}					
+
+					//check lists
+					foreach (var listObj in entityObj.RecordLists)
+					{
+						foreach(var column in listObj.Columns) {
+							if(column.GetType().Name == "RecordListViewItem") {
+								if(((RecordListViewItem)column).ViewId == id) {
+									var error = new ErrorModel();
+									error.Key = "view";
+									error.Value = id.ToString();
+									error.Message = "View is used in list: " + listObj.Name + " in entity: " + entityObj.Name;
+									validationErrors.Add(error);
+								}
+							}
+						}
+					}
+				}
+
+				if(validationErrors.Count > 0) {
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "The view was not deleted. Validation error occurred!";
+					response.Errors = validationErrors;
+					return response;				
+				}
+
+				#endregion
 
 				entity.RecordViews.Remove(recordView);
 

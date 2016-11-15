@@ -6,14 +6,14 @@
 		<div class="meta-icon">
 			<i class="fa fa-fw fa-list fa-2x"></i>
 		</div>
-        <div class="meta-label">
+		<div class="meta-label">
 			<div class="meta-label-aux">
 				<span translate="{{::'RECORD_LIST_MANAGE_ATTRIBUTES'}}"></span>
 				<span class="divider"><i class="fa fa-caret-right"></i></span>
 				<span ng-bind="ngCtrl.entity.name"></span>
 			</div>
-            <h4 ng-bind="::ngCtrl.list.name"></h4>
-        </div>
+			<h4 ng-bind="::ngCtrl.list.name"></h4>
+		</div>
 	</div>
 
 </div>
@@ -343,7 +343,12 @@
 		<h3 class="modal-title" translate="{{::'RECORD_LIST_DELETE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
-		<div class="alert alert-danger" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
+		<div class="alert alert-danger ng-hide" ng-show="popupCtrl.hasError">
+			<p>{{popupCtrl.errorMessage}}</p>
+			<ul class="ng-hide" ng-show="popupCtrl.errors.length > 0">
+				<li ng-repeat="error in popupCtrl.errors">{{error.message}}</li>
+			</ul>
+		</div>
 		<div ng-hide="popupCtrl.hasError">
 			<p translate="{{::'RECORD_LIST_DELETE_MODAL_QUESTION'}}"></p>
 		</div>

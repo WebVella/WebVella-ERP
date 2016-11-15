@@ -437,8 +437,7 @@
 		function errorCallback(response) {
 			popupCtrl.hasError = true;
 			popupCtrl.errorMessage = response.message;
-
-
+			popupCtrl.errors = response.errors;
 		}
 	};
 
