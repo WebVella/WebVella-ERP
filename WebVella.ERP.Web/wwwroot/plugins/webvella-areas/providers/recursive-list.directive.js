@@ -537,7 +537,10 @@
 
 			}
 
-			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.parentEntity.name, page, null, null, successCallback, errorCallback);
+			var searchParams = popupCtrl.calculateSearchParams();
+
+
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.parentEntity.name, page, $stateParams, searchParams, successCallback, errorCallback);
 		}
 
 		//#endregion
@@ -603,9 +606,8 @@
 			}
 		});
 
-		popupCtrl.applyQueryFilter = function () {
+		popupCtrl.calculateSearchParams = function(){
 			var searchParams = {};
-			popupCtrl.filterLoading = true;
 			for (var filter in popupCtrl.filterQuery) {
 				//Check if the field is percent or date
 				if(popupCtrl.filterQuery[filter]){
@@ -632,10 +634,17 @@
 				else {
 					delete 	searchParams[filter];
 				}				
-			}
+			}		
+
+			return searchParams;
+		}
+
+		popupCtrl.applyQueryFilter = function () {
+			popupCtrl.filterLoading = true;
+			var searchParams = popupCtrl.calculateSearchParams();
 			//Find the entity of the list. It could not be the current one as it could be listFromRelation case
 			var listEntityName =popupCtrl.parentEntity.name;
-
+			popupCtrl.currentPage = 1;
 			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, listEntityName, 1, $stateParams, searchParams, popupCtrl.ReloadRecordsSuccessCallback, popupCtrl.ReloadRecordsErrorCallback);
 		}
 
