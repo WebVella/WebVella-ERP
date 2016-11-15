@@ -2244,7 +2244,12 @@
 		<h3 class="modal-title" translate="{{::'FIELD_DELETE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
-		<div class="alert alert-danger" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
+		<div class="alert alert-danger ng-hide" ng-show="popupCtrl.hasError">
+			<p>{{popupCtrl.errorMessage}}</p>
+			<ul class="ng-hide" ng-show="popupCtrl.errors.length > 0">
+				<li ng-repeat="error in popupCtrl.errors">{{error.message}}</li>
+			</ul>
+		</div>
 		<div ng-hide="popupCtrl.hasError">
 			<h4 translate="{{::'FIELD_DELETE_MODAL_QUESTION'}}"></h4>
 			<div class="alert alert-warning" translate="{{::'FIELD_DELETE_MODAL_WARNING'}}" translate-value-label="{{popupCtrl.parentData.field.label}}"></div>

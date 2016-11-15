@@ -3367,6 +3367,101 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
+				//Validate if field is not included in list or view of its entity or any related one. Check by ID
+				var entityList = ReadEntities().Object;
+				var validationErrors = new List<ErrorModel>();
+				foreach (var entityObj in entityList)
+				{
+					//check views
+					foreach (var viewObj in entityObj.RecordViews)
+					{
+						//region
+						foreach(var region in viewObj.Regions) {
+							foreach(var section in region.Sections) {
+								foreach(var row in section.Rows) {
+									foreach(var column in row.Columns) {
+										foreach(var item in column.Items) {
+											if(item.GetType().Name == "RecordViewFieldItem") {
+												if(((RecordViewFieldItem)item).FieldId == id) {
+													var error = new ErrorModel();
+													error.Key = "field";
+													error.Value = id.ToString();
+													error.Message = "Field used in view: " + viewObj.Name + " in entity: " + entityObj.Name;
+													validationErrors.Add(error);
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						//sidebar cannot have fields attached so it will not be checked
+					}
+					//check lists
+					foreach (var listObj in entityObj.RecordLists)
+					{
+						foreach(var column in listObj.Columns) {
+							if(column.GetType().Name == "RecordListFieldItem") {
+								if(((RecordListFieldItem)column).FieldId == id) {
+									var error = new ErrorModel();
+									error.Key = "field";
+									error.Value = id.ToString();
+									error.Message = "Field used in list: " + listObj.Name + " in entity: " + entityObj.Name;
+									validationErrors.Add(error);
+								}
+							}
+						}
+					}
+					//check trees
+					foreach (var treeObj in entityObj.RecordTrees)
+					{
+						if(treeObj.NodeIdFieldId == id) {
+								var error = new ErrorModel();
+								error.Key = "field";
+								error.Value = id.ToString();
+								error.Message = "Field used as NodeIdFieldId in tree: " + treeObj.Name + " in entity: " + entityObj.Name;
+								validationErrors.Add(error);
+						}
+						if(treeObj.NodeLabelFieldId == id) {
+								var error = new ErrorModel();
+								error.Key = "field";
+								error.Value = id.ToString();
+								error.Message = "Field used as NodeLabelFieldId in tree: " + treeObj.Name + " in entity: " + entityObj.Name;
+								validationErrors.Add(error);
+						}
+						if(treeObj.NodeNameFieldId == id) {
+								var error = new ErrorModel();
+								error.Key = "field";
+								error.Value = id.ToString();
+								error.Message = "Field used as NodeNameFieldId in tree: " + treeObj.Name + " in entity: " + entityObj.Name;
+								validationErrors.Add(error);
+						}
+						if(treeObj.NodeParentIdFieldId == id) {
+								var error = new ErrorModel();
+								error.Key = "field";
+								error.Value = id.ToString();
+								error.Message = "Field used as NodeParentIdFieldId in tree: " + treeObj.Name + " in entity: " + entityObj.Name;
+								validationErrors.Add(error);
+						}
+						if(treeObj.NodeWeightFieldId == id) {
+								var error = new ErrorModel();
+								error.Key = "field";
+								error.Value = id.ToString();
+								error.Message = "Field used as NodeWeightFieldId in tree: " + treeObj.Name + " in entity: " + entityObj.Name;
+								validationErrors.Add(error);
+						}
+					}
+				}
+
+				if(validationErrors.Count > 0) {
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "The field was not deleted. Validation error occurred!";
+					response.Errors = validationErrors;
+					return response;				
+				}
+
+
 				entity.Fields.Remove(field);
 
 				using (DbConnection con = DbContext.Current.CreateConnection())
