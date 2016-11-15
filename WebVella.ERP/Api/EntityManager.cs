@@ -5766,7 +5766,7 @@ namespace WebVella.ERP.Api
 					actionItem.Name = "wv_recursive_list_unrelate";
 					actionItem.Menu = "recursive-list-record-row";
 					actionItem.Weight = 3;
-					actionItem.Template = "<a href=\"javascript:void(0)\" title=\"Detach records relation\" class=\"btn btn-sm btn-outline\" confirmed-click=\"instantDetachRecord(record)\" ng-confirm-click=\"Are you sure that you need this relation broken?\" ng-if=\"::canRemove\"><i class=\"fa fa-times go-red\"></i></a>";
+					actionItem.Template = "<a href=\"javascript:void(0)\" title=\"Detach records relation\" class=\"btn btn-sm btn-outline\" confirmed-click=\"instantDetachRecord(record)\" ng-confirm-click=\"Are you sure that you need this relation removed?\" ng-if=\"::canRemove\"><i class=\"fa fa-times go-red\"></i></a>";
 					break;
 				default:
 					throw new Exception("no such action type");
@@ -5898,7 +5898,7 @@ namespace WebVella.ERP.Api
 					actionItem.Name = "wv_recursive_view_unrelate";
 					actionItem.Menu = "recursive-list-record-row";
 					actionItem.Weight = 2;
-					actionItem.Template = "<a href=\"javascript:void(0)\" title=\"remove relation\" class=\"btn btn-sm btn-outline\" confirmed-click=\"instantDetachRecord(recordData)\" ng-confirm-click=\"Are you sure that you need this relation broken?\" ng-if=\"::canRemove\"><i class=\"fa fa-times go-red\"></i></a>";
+					actionItem.Template = "<a href=\"javascript:void(0)\" title=\"remove relation\" class=\"btn btn-sm btn-outline\" confirmed-click=\"instantDetachRecord(recordData)\" ng-confirm-click=\"Are you sure that you need this relation removed?\" ng-if=\"::canRemove\"><i class=\"fa fa-times go-red\"></i></a>";
 					break;
 				default:
 					throw new Exception("no such action type");
