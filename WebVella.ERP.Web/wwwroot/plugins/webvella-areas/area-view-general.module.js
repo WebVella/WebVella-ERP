@@ -1005,14 +1005,15 @@
 			if (relation.relationType == 2 && relation.targetEntityId == currentEntityId) {
 				var itemObject = {};
 				itemObject.meta = null;
+				itemObject.entityName = ngCtrl.entity.name;
 				for (var i = 0; i < ngCtrl.entity.fields.length; i++) {
 					if (ngCtrl.entity.fields[i].id == relation.targetFieldId) {
 						itemObject.meta = ngCtrl.entity.fields[i];
 					}
 				}
 				if (itemObject.meta != null && !itemObject.meta.required) {
-					ngCtrl.view.data[item.dataName] = [];
-					ngCtrl.fieldUpdate(itemObject, null, ngCtrl.view.data["id"]);
+					ngCtrl.view.data[0][item.dataName] = [];
+					ngCtrl.fieldUpdate(itemObject, null, ngCtrl.view.data[0]["id"]);
 				}
 			}
 		}
@@ -2145,6 +2146,3 @@
 
 
 })();
-
-
-
