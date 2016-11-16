@@ -53,7 +53,7 @@
 						</th>
 						<th ng-style="::{'width': ngCtrl.columnWidths[$index]}" class="wv-{{::column.meta.name}} position-relative" ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount"
 							ng-switch="::column.type">
-							<span ng-switch-when="field"  data-fitler-name="{{column.fieldName}}">
+							<span ng-switch-when="field" data-fitler-name="{{column.fieldName}}">
 								<a class="sort-link ng-hide" ng-click="ngCtrl.toggleSort(column)" ng-if="::column.meta.searchable" ng-show="::ngCtrl.canSortList">
 									<span class="sort-marker {{ngCtrl.sortObject[column.dataName]}}">
 										<i class="fa fa-caret-up"></i>
@@ -63,7 +63,7 @@
 								</a>
 								{{::column.meta.label}}
 							</span>
-							<span ng-switch-when="fieldFromRelation"  data-fitler-name="${{column.relationName}}.{{column.fieldName}}">{{::column.fieldLabel}}</span>
+							<span ng-switch-when="fieldFromRelation" data-fitler-name="${{column.relationName}}.{{column.fieldName}}">{{::column.fieldLabel}}</span>
 							<span ng-switch-when="view">{{::column.meta.label}}</span>
 							<span ng-switch-when="viewFromRelation">{{::column.fieldLabel}}</span>
 							<span ng-switch-when="list">{{::column.meta.label}}</span>
@@ -95,11 +95,9 @@
 										<div ng-switch-when="2">
 											<!--checkbox field-->
 											<div class="form-group form-group-sm">
-												<div class="checkbox">
-													<label>
-														<input type="checkbox" ng-model="ngCtrl.filterQuery[column.dataName]" ng-true-value="'true'" ng-false-value="'false'" /> true
-													</label>
-												</div>
+												<select class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<option value="{{::option}}" ng-repeat="option in ['','true','false']">{{::option}}</option>
+												</select>
 											</div>
 										</div>
 										<div ng-switch-when="3">
@@ -124,18 +122,6 @@
 										<div ng-switch-when="5">
 											<!--datetime field-->
 											<div class="form-group form-group-sm">
-												<!--<div class="col-sm-6" style="padding:0">
-													<div class="left-inner-addon">
-														<i class="fa fa-fw fa-calendar"></i>
-														<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}} e.g.'15 Feb 2015 14:35'">
-													</div>
-												</div>
-												<div class="col-sm-6" style="padding: 0 0 0 5px">
-													<div class="left-inner-addon">
-														<i class="fa fa-fw fa-clock-o"></i>
-														<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="e.g.'14:35'">
-													</div>
-												</div>-->
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-calendar"></i>
 													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" placeholder="{{::ngCtrl.getFilterInputPlaceholder(column.dataName)}} e.g.'15 Feb 2015'">
@@ -406,9 +392,10 @@
 			</uib-accordion>
 		</div>
 		<div ng-if="popupCtrl.activeStep == 2">
-			<p>Scheduled for import <b>{{popupCtrl.evaluationResult.records.length}}</b> {{popupCtrl.ngCtrl.entity.labelPlural}} - 
-				<span ng-if="popupCtrl.evaluationResult.stats.to_create > 0"><span class="go-green">{{popupCtrl.evaluationResult.stats.to_create}} <i class="fa fa-plus-circle"></i></span> to be created</span> 
-				<span ng-if="popupCtrl.evaluationResult.stats.to_update > 0">and <span class="go-orange">{{popupCtrl.evaluationResult.stats.to_update}} <i class="fa fa-refresh"></i></span> to be updated.</span> 
+			<p>
+				Scheduled for import <b>{{popupCtrl.evaluationResult.records.length}}</b> {{popupCtrl.ngCtrl.entity.labelPlural}} -
+				<span ng-if="popupCtrl.evaluationResult.stats.to_create > 0"><span class="go-green">{{popupCtrl.evaluationResult.stats.to_create}} <i class="fa fa-plus-circle"></i></span> to be created</span>
+				<span ng-if="popupCtrl.evaluationResult.stats.to_update > 0">and <span class="go-orange">{{popupCtrl.evaluationResult.stats.to_update}} <i class="fa fa-refresh"></i></span> to be updated.</span>
 				<span ng-if="popupCtrl.evaluationResult.stats.warnings > 0">There are <span class="go-orange">{{popupCtrl.evaluationResult.stats.warnings}} <i class="fa fa-warning"></i></span> warnings</span>
 				<span ng-if="popupCtrl.evaluationResult.stats.warnings == 0">No warnings found! </span>
 				<span ng-if="popupCtrl.evaluationResult.stats.errors > 0">There are <span class="go-red">{{popupCtrl.evaluationResult.stats.errors}} <i class="fa fa-exclamation-circle"></i></span> errors</span>
@@ -428,9 +415,9 @@
 												<i ng-show="::popupCtrl.columnHasError[key]" class="fa fa-fw fa-exclamation-circle go-red ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="this column has errors. Check the fields below" popover-trigger="mouseenter"></i>
 												<i ng-show="::popupCtrl.columnHasWarning[key]" class="fa fa-fw fa-warning go-orange ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="this column has warnings. Check the fields below" popover-trigger="mouseenter"></i>
 											</span>
-											<select class="form-control" ng-model="popupCtrl.evaluationResult.commands[key].command" 
-												ng-options="option.key as option.value for option in popupCtrl.importTypes"
-												ng-change="popupCtrl.updateColumnCommand(key,popupCtrl.evaluationResult.commands[key])"></select>
+											<select class="form-control" ng-model="popupCtrl.evaluationResult.commands[key].command"
+													ng-options="option.key as option.value for option in popupCtrl.importTypes"
+													ng-change="popupCtrl.updateColumnCommand(key,popupCtrl.evaluationResult.commands[key])"></select>
 										</div>
 									</div>
 								</form>
@@ -499,7 +486,7 @@
 										<span class="input-group-addon">
 											<i class="fa fa-fw fa-database go-gray"></i>
 										</span>
-										<input class="form-control" ng-model="popupCtrl.evaluationResult.commands[key].fieldName"/>
+										<input class="form-control" ng-model="popupCtrl.evaluationResult.commands[key].fieldName" />
 									</div>
 									<div class="input-group" title="{{popupCtrl.evaluationResult.commands[key].fieldLabel}}">
 										<span class="input-group-addon">

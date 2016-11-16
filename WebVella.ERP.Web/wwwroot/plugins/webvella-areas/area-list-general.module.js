@@ -383,6 +383,11 @@
 				var columnObj = ngCtrl.columnDictionary[dataName];
 				//some data validations and conversions	
 				switch (columnObj.meta.fieldType) {
+					case 2: //Checkbox
+						if(!queryObject[dataName]){
+							ngCtrl.filterQuery[dataName] = null;
+						}
+						break;
 					case 4: //Date
 						ngCtrl.filterQuery[dataName] = moment(queryObject[dataName]).format('D MMM YYYY');
 						break;
