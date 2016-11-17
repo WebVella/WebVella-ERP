@@ -43,29 +43,30 @@
 		"System.Linq": "4.0.0.0",
 		"System.Threading": "4.0.10.0",
 		"WebVella.ERP": "1.0.0-*",
-		"Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
-		"Microsoft.AspNetCore.Server.Kestrel": "1.0.0",
-		"Microsoft.AspNetCore.StaticFiles": "1.0.0",
-		"Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
-		"Microsoft.Extensions.Configuration.Json": "1.0.0",
-		"Microsoft.Extensions.Configuration.UserSecrets": "1.0.0",
-		"Microsoft.Extensions.Logging": "1.0.0",
-		"Microsoft.Extensions.Logging.Console": "1.0.0",
-		"Microsoft.Extensions.Logging.Debug": "1.0.0",
-		"Microsoft.Extensions.PlatformAbstractions": "1.0.0",
 		"Newtonsoft.Json": "9.0.1",
-		"Microsoft.ApplicationInsights.AspNetCore": "1.0.0",
-		"Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
-		"Microsoft.AspNetCore.Diagnostics": "1.0.0",
-		"Microsoft.AspNetCore.Mvc": "1.0.0",
-		"Microsoft.AspNetCore.Mvc.Abstractions": "1.0.0",
-		"Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0",
-		"CsvHelper": "2.15.0.2",
-		"ImageProcessor": "2.4.2",
-		"ImageProcessor.Web": "4.6.2",
-		"iTextSharp": "5.5.9",
+		"CsvHelper": "2.16.3",
+		"ImageProcessor": "2.4.5",
+		"ImageProcessor.Web": "4.6.6",
 		"WebVella.ERP.Project": "1.0.0",
-		"WebVella.ERP.Crm": "1.0.0"
+		"WebVella.ERP.Crm": "1.0.0",
+		"WebVella.ERP.SamplePlugin": "1.0.0",
+		"iTextSharp": "5.5.10",
+		"Microsoft.ApplicationInsights.AspNetCore": "1.0.2",
+		"Microsoft.AspNetCore.Authentication.Cookies": "1.1.0",
+		"Microsoft.AspNetCore.Diagnostics": "1.1.0",
+		"Microsoft.AspNetCore.Mvc": "1.1.0",
+		"Microsoft.AspNetCore.Mvc.Abstractions": "1.1.0",
+		"Microsoft.AspNetCore.Mvc.ViewFeatures": "1.1.0",
+		"Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
+		"Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
+		"Microsoft.AspNetCore.StaticFiles": "1.1.0",
+		"Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0",
+		"Microsoft.Extensions.Configuration.Json": "1.1.0",
+		"Microsoft.Extensions.Configuration.UserSecrets": "1.1.0",
+		"Microsoft.Extensions.Logging": "1.1.0",
+		"Microsoft.Extensions.Logging.Console": "1.1.0",
+		"Microsoft.Extensions.Logging.Debug": "1.1.0",
+		"Microsoft.Extensions.PlatformAbstractions": "1.1.0"
 	},
 
 	"commands": {
@@ -74,22 +75,22 @@
 
 	"tools": {
 		"Microsoft.AspNetCore.Razor.Tools": {
-			"version": "1.0.0-preview2-final",
-			"imports": "portable-net45+win8+dnxcore50"
+			"version": "1.0.0-preview1-final",
+			"imports": "portable-net451+win8+dnxcore50"
 		},
 		"Microsoft.AspNetCore.Server.IISIntegration.Tools": {
-			"version": "1.0.0-preview2-final",
-			"imports": "portable-net45+win8+dnxcore50"
+			"version": "1.0.0-preview1-final",
+			"imports": "portable-net451+win8+dnxcore50"
 		},
 		"Microsoft.Extensions.SecretManager.Tools": {
-			"version": "1.0.0-preview2-final",
-			"imports": "portable-net45+win8+dnxcore50"
+			"version": "1.0.0-preview1-final",
+			"imports": "portable-net451+win8+dnxcore50"
 		},
 		"Microsoft.VisualStudio.Web.CodeGeneration.Tools": {
-			"version": "1.0.0-preview2-final",
+			"version": "1.0.0-preview1-final",
 			"imports": [
-				"portable-net45+win8+dnxcore50",
-				"portable-net45+win8"
+				"portable-net451+win8+dnxcore50",
+				"portable-net451+win8"
 			]
 		}
 	},
