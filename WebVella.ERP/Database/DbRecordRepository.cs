@@ -1343,7 +1343,14 @@ namespace WebVella.ERP.Database
                         sql = sql + " " + completeFieldName + " " + regexOperator + " " + paramName;
                         return;
                     }
-                case QueryType.RELATED:
+				case QueryType.FTS:
+					{
+						var parameter = parameters.Single(x => x.ParameterName == paramName);
+						parameter.Value = "%" + parameter.Value + "%";
+						sql = sql + " to_tsvector( " + completeFieldName + ") @@ plainto_tsquery( " + paramName + ") ";
+						return;
+					}
+				case QueryType.RELATED:
                     {
                         //TODO
                         throw new NotImplementedException();

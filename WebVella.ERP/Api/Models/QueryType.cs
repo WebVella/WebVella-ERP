@@ -16,6 +16,7 @@ namespace WebVella.ERP.Api.Models
         STARTSWITH,
         REGEX,
 		RELATED,
-		NOTRELATED		
+		NOTRELATED,
+		FTS	
 	}
 }
