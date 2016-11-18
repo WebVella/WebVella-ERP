@@ -16,8 +16,11 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "fieldValue")]
         public object FieldValue { get; set; }
 
-		[JsonProperty(PropertyName = "fieldValue")]
+		[JsonProperty(PropertyName = "regexOperator")]
 		public QueryObjectRegexOperator RegexOperator { get; set; }
+
+		[JsonProperty(PropertyName = "ftsLanguage")]
+		public string FtsLanguage { get; set; }
 
 		[JsonProperty(PropertyName = "subQueries")]
         public List<QueryObject> SubQueries { get; set; }

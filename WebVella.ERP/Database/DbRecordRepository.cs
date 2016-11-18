@@ -1345,9 +1345,10 @@ namespace WebVella.ERP.Database
                     }
 				case QueryType.FTS:
 					{
-						var parameter = parameters.Single(x => x.ParameterName == paramName);
-						parameter.Value = "%" + parameter.Value + "%";
-						sql = sql + " to_tsvector( " + completeFieldName + ") @@ plainto_tsquery( " + paramName + ") ";
+						if( string.IsNullOrWhiteSpace( query.FtsLanguage ))
+							sql = sql + " to_tsvector( 'english', " + completeFieldName + ") @@ plainto_tsquery( 'english', " + paramName + ") ";
+						else
+							sql = sql + " to_tsvector( '"+ query.FtsLanguage + "' , " + completeFieldName + ") @@ plainto_tsquery( '" + query.FtsLanguage + "' ," + paramName + ") ";
 						return;
 					}
 				case QueryType.RELATED:

@@ -106,6 +106,11 @@ namespace WebVella.ERP.Api.Models
             return new QueryObject { QueryType = QueryType.REGEX, FieldName = fieldName, FieldValue = value, RegexOperator = op };
         }
 
+		public static QueryObject QueryFTS(string fieldName, object value, string language = null )
+		{
+			return new QueryObject { QueryType = QueryType.FTS, FieldName = fieldName, FieldValue = value, FtsLanguage = language };
+		}
+
 		public static QueryObject Related(string relationName, string direction = "origin-target")
 		{
 			return new QueryObject { QueryType = QueryType.RELATED, FieldName = relationName, FieldValue = direction };
