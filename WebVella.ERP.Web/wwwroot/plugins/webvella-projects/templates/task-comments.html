@@ -2,7 +2,7 @@
 	<div ng-if="ngCtrl.view.data[0].$list$task_1_n_comment$task_comments.length > 0">
 		<div class="panel panel-white post" ng-repeat="record in ngCtrl.view.data[0].$list$task_1_n_comment$task_comments">
 			<div class="post-heading">
-				<div class="pull-left image" ng-switch="!record.$field$user_wv_project_comment_created_by$image[0] && record.$field$user_wv_project_comment_created_by$image[0] != ''">
+				<div class="pull-left image" ng-switch="record.$field$user_wv_project_comment_created_by$image.length > 0">
 					<img ng-switch-when="true" ng-src="/fs{{record.$field$user_wv_project_comment_created_by$image[0]}}?width=42" class="img-circle avatar" alt="user profile image">
 					<img ng-switch-when="false" ng-src="/plugins/webvella-core/assets/avatar.png" class="img-circle avatar" alt="user profile image">
 				</div>
@@ -19,7 +19,7 @@
 				</div>
 			</div>
 			<div class="post-description" ng-bind-html="record.content"></div>
-			<div class="post-footer text-right ng-hide"  ng-show="record.$field$attachment_1_n_comment$file.length > 0">
+			<div class="post-footer text-right ng-hide" ng-show="record.$field$attachment_1_n_comment$file.length > 0">
 				<a ng-href="/fs/{{record.$field$attachment_1_n_comment$file[0]}}" target="_blank"><i class="fa fa-paperclip"></i> {{pluginCtrl.extractFileNameFromPath(record.$field$attachment_1_n_comment$file[0])}}</a>
 			</div>
 		</div>
