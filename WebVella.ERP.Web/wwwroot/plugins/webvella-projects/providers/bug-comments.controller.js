@@ -41,6 +41,13 @@
 			}
 		}
 
+		pluginCtrl.extractFileNameFromPath = function(fullPath){
+			if(fullPath){
+				return fullPath.replace(/^.*[\\\/]/, '')
+			}
+			return '';
+		}
+
 		pluginCtrl.manageComment = manageComment;
 		function manageComment(record,ngCtrl) {
 			var modalInstance = $uibModal.open({

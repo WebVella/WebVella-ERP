@@ -3456,6 +3456,26 @@ namespace WebVella.ERP.Api
 					}
 				}
 
+				//Check relations
+				var relations = new EntityRelationManager().Read().Object;
+
+				foreach(var relation in relations) {
+					if(relation.OriginFieldId == id) {
+							var error = new ErrorModel();
+							error.Key = "relation";
+							error.Value = id.ToString();
+							error.Message = "Field used as Origin field in relation: " + relation.Name;
+							validationErrors.Add(error);						
+					}
+					else if(relation.TargetFieldId == id) {
+							var error = new ErrorModel();
+							error.Key = "relation";
+							error.Value = id.ToString();
+							error.Message = "Field used as Target field in relation: " + relation.Name;
+							validationErrors.Add(error);						
+					}
+				}
+
 				if(validationErrors.Count > 0) {
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;

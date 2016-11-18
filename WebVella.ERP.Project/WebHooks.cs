@@ -475,6 +475,7 @@ namespace WebVella.ERP.Project
 		#region << Time log >>
 
 		#region << Create >>
+
 		[WebHook("create_record_success_action", "wv_timelog")]
 		public void TimelogCreateRecordAction(dynamic data)
 		{
@@ -772,6 +773,42 @@ namespace WebVella.ERP.Project
 
 		}
 
+		#endregion
+
+		#region << Attachment >>
+
+		#region << Create >>
+		[WebHook("create_record_success_action", "wv_project_attachment")]
+		public void TimeLogCreateRecordSuccessAction(dynamic data)
+		{
+			EntityRecord record = (EntityRecord)data.record;
+
+			var commentObject = new EntityRecord();
+			commentObject["id"] = Guid.NewGuid();
+			commentObject["attachment_id"] = new Guid(record["id"].ToString());
+
+			if (record.Properties.ContainsKey("comment_content") && record["comment_content"] != null)
+			{
+				commentObject["content"] = (string)((EntityRecord)data.record)["comment_content"];
+			}
+
+			if (record.Properties.ContainsKey("$task_1_n_attachment.id") && record["$task_1_n_attachment.id"] != null)
+			{
+				commentObject["task_id"] = new Guid(record["$task_1_n_attachment.id"].ToString());
+			}
+
+			if (record.Properties.ContainsKey("$bug_1_n_attachment.id") && record["$bug_1_n_attachment.id"] != null)
+			{
+				commentObject["bug_id"] = new Guid(record["$bug_1_n_attachment.id"].ToString());
+			}
+
+			var createResponse = recMan.CreateRecord("wv_project_comment", commentObject);
+			if (!createResponse.Success)
+			{
+				throw new Exception(createResponse.Message);
+			}
+		}
+		#endregion
 		#endregion
 
 		#region << Relation >>

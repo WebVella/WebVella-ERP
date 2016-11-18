@@ -175,6 +175,10 @@ span.divider {
 	padding-left: 1em;
 }
 
+.list-missing-image {
+	font-size:26px;
+	color:#ddd;
+}
 
 .panel .alert {
 	margin: 5px;
@@ -5351,14 +5355,18 @@ a.link-icon.link[href]:before {
 /*#endregion */
 
 /*#region << Post >>*/
+.post.panel {
+	border-style:dashed;
+}
+
 .post .post-heading {
 	height: 70px;
 	padding: 10px;
 }
 
 	.post .post-heading .avatar {
-		width: 48px;
-		height: 48px;
+		width: 42px;
+		height: 42px;
 		display: block;
 		margin-right: 15px;
 	}
@@ -5409,8 +5417,8 @@ a.link-icon.link[href]:before {
 			}
 
 .post .post-footer {
-	border-top: 1px solid #ddd;
-	padding: 15px;
+	border-top: 1px dashed #bbb;
+	padding: 5px 10px;
 }
 
 	.post .post-footer .input-group-addon a {

@@ -312,6 +312,7 @@ var translationsEN = {
 	QUERY_RULE_NOT_CONTAINS_LABEL:'does not contain',
 	QUERY_RULE_STARTSWITH_LABEL:'starts with',
 	QUERY_RULE_NOT_STARTSWITH_LABEL:'does not start with',
+	QUERY_RULE_FTS_LABEL:'full text search',
 	QUERY_RULE_ADD:'add rule',
 	QUERY_SECTION_ADD:'add section',
 	PURPLE: 'Purple',

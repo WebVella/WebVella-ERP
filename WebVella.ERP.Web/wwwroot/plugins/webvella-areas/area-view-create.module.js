@@ -1120,7 +1120,7 @@
 		//#region << Query Dictionary >>
 		$translate(['QUERY_RULE_EQ_LABEL', 'QUERY_RULE_NOT_LABEL', 'QUERY_RULE_LT_LABEL', 'QUERY_RULE_LTE_LABEL',
 					'QUERY_RULE_GT_LABEL', 'QUERY_RULE_GTE_LABEL', 'QUERY_RULE_CONTAINS_LABEL', 'QUERY_RULE_NOT_CONTAINS_LABEL',
-					'QUERY_RULE_STARTSWITH_LABEL', 'QUERY_RULE_NOT_STARTSWITH_LABEL']).then(function (translations) {
+					'QUERY_RULE_STARTSWITH_LABEL', 'QUERY_RULE_NOT_STARTSWITH_LABEL','QUERY_RULE_FTS_LABEL']).then(function (translations) {
 						popupCtrl.allQueryComparisonList = [
 							{
 								key: "EQ",
@@ -1161,6 +1161,10 @@
 							{
 								key: "NOTSTARTSWITH",
 								value: translations.QUERY_RULE_NOT_STARTSWITH_LABEL
+							},
+							{
+								key: "FTS",
+								value: translations.QUERY_RULE_FTS_LABEL
 							}
 						];
 

@@ -642,11 +642,11 @@
         //9.Image
         function getImageString(data, fieldMeta) {
             if (!data) {
-                return "no image";
+                return "<i class='fa fa-picture-o list-missing-image'></i>";
             }
             else if (data instanceof Array) {
                 if (data.length == 0) {
-                    return "no image";
+                    return "<i class='fa fa-picture-o list-missing-image'></i>";
                 }
                 else if (data.length == 1) {
                     return getImageString(data[0], fieldMeta);
