@@ -211,19 +211,19 @@ namespace WebVella.ERP.Project
 							}
 						}
 
-						//if (currentPluginSettings.Version < 20160714)
-						//{
-						//	try
-						//	{
-						//		currentPluginSettings.Version = 20160714;
-						//		Patch160714(entMan, relMan, recMan, createSampleRecords);
-						//	}
-						//	catch (Exception ex)
-						//	{
-						//		var exception = ex;
-						//		throw ex;
-						//	}
-						//}
+						if (currentPluginSettings.Version < 20161118)
+						{
+							try
+							{
+								currentPluginSettings.Version = 20161118;
+								Patch161118(entMan, relMan, recMan, createSampleRecords);
+							}
+							catch (Exception ex)
+							{
+								var exception = ex;
+								throw ex;
+							}
+						}
 
 						#endregion
 
