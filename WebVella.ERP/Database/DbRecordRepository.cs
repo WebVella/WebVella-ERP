@@ -327,10 +327,10 @@ namespace WebVella.ERP.Database
                 {
                     if (string.IsNullOrWhiteSpace(value as string))
                         return null;
-                    date = DateTime.Parse(value as string).ToUniversalTime();
+                    date = DateTime.Parse(value as string);
                 }
                 else
-                    date = (value as DateTime?)?.ToUniversalTime();
+                    date = (value as DateTime?);
 
                 if (date != null)
                     return new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, DateTimeKind.Utc);
