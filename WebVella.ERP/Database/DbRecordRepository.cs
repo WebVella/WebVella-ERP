@@ -1234,10 +1234,13 @@ namespace WebVella.ERP.Database
 
                 }
 
-                if ((fieldType == FieldType.MultiSelectField || fieldType == FieldType.TreeSelectField) &&
-                      !(query.QueryType == QueryType.EQ || query.QueryType == QueryType.NOT))
+                if (fieldType == FieldType.MultiSelectField &&	
+						!(query.QueryType == QueryType.EQ || query.QueryType == QueryType.NOT || query.QueryType == QueryType.CONTAINS ))
                     throw new Exception("The query operator is not supported on field '" + fieldType.ToString() + "'");
-            }
+
+				if (fieldType == FieldType.TreeSelectField &&  !(query.QueryType == QueryType.EQ || query.QueryType == QueryType.NOT))
+					throw new Exception("The query operator is not supported on field '" + fieldType.ToString() + "'");
+			}
 
             if (sql.Length > 0)
                 sql = sql + " AND ";
@@ -1246,44 +1249,19 @@ namespace WebVella.ERP.Database
             {
                 case QueryType.EQ:
                     {
-                        //if (fieldType == FieldType.MultiSelectField)
-                        //{
-                        //	var parameter = parameters.Single(x => x.ParameterName == paramName);
-                        //	parameter.Value = new List<string>() { (string)query.FieldValue };
-                        //	sql = sql + " " + paramName + " IN ( " + completeFieldName + " )";
-                        //}
-                        //else if (fieldType == FieldType.TreeSelectField)
-                        //{
-                        //	var parameter = parameters.Single(x => x.ParameterName == paramName);
-                        //	parameter.Value = new List<Guid>() { (Guid)query.FieldValue };
-                        //	sql = sql + " " + paramName + " IN ( " + completeFieldName + " )";
-                        //}
-                        //else
-                        if (query.FieldValue == null || DBNull.Value == query.FieldValue)
-                            sql = sql + " " + completeFieldName + " IS NULL";
-                        else
-                            sql = sql + " " + completeFieldName + "=" + paramName;
-                        return;
+						if (query.FieldValue == null || DBNull.Value == query.FieldValue)
+							sql = sql + " " + completeFieldName + " IS NULL";
+						else
+							sql = sql + " " + completeFieldName + "=" + paramName;
+
+						return;
                     }
                 case QueryType.NOT:
                     {
-                        //if (fieldType == FieldType.MultiSelectField)
-                        //{
-                        //	var parameter = parameters.Single(x => x.ParameterName == paramName);
-                        //	parameter.Value = new List<string>() { (string)query.FieldValue };
-                        //	sql = sql + " " + paramName + " NOT IN ( " + completeFieldName + " )";
-                        //}
-                        //else if (fieldType == FieldType.TreeSelectField)
-                        //{
-                        //	var parameter = parameters.Single(x => x.ParameterName == paramName);
-                        //	parameter.Value = new List<Guid>() { (Guid)query.FieldValue };
-                        //	sql = sql + " " + paramName + " NOT IN ( " + completeFieldName + " )";
-                        //}
-                        //else
-                        if (query.FieldValue == null || DBNull.Value == query.FieldValue)
-                            sql = sql + " " + completeFieldName + " IS NOT NULL";
-                        else
-                            sql = sql + " " + completeFieldName + "<>" + paramName;
+						if (query.FieldValue == null || DBNull.Value == query.FieldValue)
+							sql = sql + " " + completeFieldName + " IS NOT NULL";
+						else
+							sql = sql + " " + completeFieldName + "<>" + paramName;
 
                         return;
                     }
@@ -1309,17 +1287,28 @@ namespace WebVella.ERP.Database
                     }
                 case QueryType.CONTAINS:
                     {
-                        var parameter = parameters.Single(x => x.ParameterName == paramName);
-                        parameter.Value = "%" + parameter.Value + "%";
-                        sql = sql + " " + completeFieldName + " ILIKE " + paramName;
-                        return;
+						var parameter = parameters.Single(x => x.ParameterName == paramName);
+
+						if (fieldType == FieldType.MultiSelectField)
+						{
+							//parameter here is array of text
+							sql = sql + " " + completeFieldName + " @> " + paramName;
+						}
+						else
+						{
+							//parameter value here is just text
+							parameter.Value = "%" + parameter.Value + "%";
+							sql = sql + " " + completeFieldName + " ILIKE " + paramName;
+						}
+
+						return;
                     }
                 case QueryType.STARTSWITH:
                     {
                         var parameter = parameters.Single(x => x.ParameterName == paramName);
                         parameter.Value = parameter.Value + "%";
-                        sql = sql + " " + completeFieldName + " ILIKE " + paramName;
-                        return;
+						sql = sql + " " + completeFieldName + " ILIKE " + paramName;
+						return;
                     }
                 case QueryType.REGEX:
                     {
@@ -1661,16 +1650,22 @@ namespace WebVella.ERP.Database
                 return value as string;
             else if (field is MultiSelectField)
             {
-                if (value == null)
-                    return null;
-                else if (value is JArray)
-                    return ((JArray)value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
-                else if (value is List<object>)
-                    return ((List<object>)value).Select(x => ((object)x).ToString()).ToList<string>();
-                else if (value is string[])
-                    return new List<string>(value as string[]);
-                else
-                    return value as IEnumerable<string>;
+				if (value == null)
+					return null;
+				else if (value is JArray)
+					return ((JArray)value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
+				else if (value is List<object>)
+					return ((List<object>)value).Select(x => ((object)x).ToString()).ToList<string>();
+				else if (value is string[])
+					return new List<string>(value as string[]);
+				else if (value is string)
+				{
+					var list = new List<string>();
+					list.Add(value as string);
+					return list;
+				}
+				else
+					return value as IEnumerable<string>;
             }
             else if (field is NumberField)
             {
