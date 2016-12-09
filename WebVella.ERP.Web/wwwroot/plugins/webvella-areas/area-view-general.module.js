@@ -293,12 +293,12 @@
 
 	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', '$window', 'pageTitle', 'webvellaCoreService',
         'resolvedAreas', '$timeout', 'resolvedCurrentViewData', 'ngToast', 'wvAppConstants', 'resolvedEntityList', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
-		'resolvedCurrentUserEntityPermissions', '$sessionStorage', 'resolvedParentViewData'];
+		'resolvedCurrentUserEntityPermissions', '$sessionStorage', 'resolvedParentViewData','$injector'];
 
 
 	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, $window, pageTitle, webvellaCoreService,
         resolvedAreas, $timeout, resolvedCurrentViewData, ngToast, wvAppConstants, resolvedEntityList, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
-		resolvedCurrentUserEntityPermissions, $sessionStorage, resolvedParentViewData) {
+		resolvedCurrentUserEntityPermissions, $sessionStorage, resolvedParentViewData,$injector) {
 
 		//#region << ngCtrl initialization >>
 		var ngCtrl = this;

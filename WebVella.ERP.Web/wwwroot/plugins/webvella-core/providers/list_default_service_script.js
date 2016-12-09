@@ -4,7 +4,7 @@
 // IMPORTANT: the service name should be generated with the format : "entityName_listName_list_service". This is how it will be looked for
 // end injected in the controller. If it is not found it will not be injected.
 // The service will be loaded in the controller as ngCtrl.actionService
-// So if what to use a test method from this service in an action you need to call like 'ng-click=""ngCtrl.actionService.test()""'
+// So if what to use a test method from this service in an action you need to call like 'ng-click="ngCtrl.actionService.test()"'
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Objects accessible through the ngCtrl:
