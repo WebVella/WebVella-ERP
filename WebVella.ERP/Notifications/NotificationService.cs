@@ -19,7 +19,9 @@ namespace WebVella.ERP.Notifications
 
 		public void Initialize(IServiceProvider serviceProvider)
 		{
-			var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+			var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+				.Where(a => ! ( a.FullName.ToLowerInvariant().StartsWith("microsoft.") 
+					|| a.FullName.ToLowerInvariant().StartsWith("system.") ) );
 			foreach (var assembly in assemblies)
 			{
 				foreach (Type type in assembly.GetTypes())
