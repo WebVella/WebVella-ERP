@@ -335,6 +335,7 @@ namespace WebVella.ERP.Database
 				}
 				else
 				{
+					date = value as DateTime?;
 					//date can be local, utc and unspecified
 					//if local convert to utc, unspecified is used as is
 					if (date.HasValue && date.Value.Kind == DateTimeKind.Local)
