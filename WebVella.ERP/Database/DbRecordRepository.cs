@@ -347,19 +347,32 @@ namespace WebVella.ERP.Database
 			}
 			else if (field is DateTimeField)
             {
-
-                if (value == null)
+               if (value == null)
                     return null;
 
-                if (value is string)
-                {
-                    if (string.IsNullOrWhiteSpace(value as string))
-                        return null;
-                    return DateTime.Parse(value as string).ToUniversalTime();
-                }
+				DateTime? date = null;
+				if (value is string)
+				{
+					if (string.IsNullOrWhiteSpace(value as string))
+						return null;
 
-                return (value as DateTime?)?.ToUniversalTime();
-            }
+					date = DateTime.Parse(value as string);
+					//date can be local, utc and unspecified
+					//if local convert to utc, unspecified is used as is
+					if (date.HasValue && date.Value.Kind == DateTimeKind.Local)
+						date = date.Value.ToUniversalTime();
+				}
+				else
+				{
+					date = value as DateTime?;
+					//date can be local, utc and unspecified
+					//if local convert to utc, unspecified is used as is
+					if (date.HasValue && date.Value.Kind == DateTimeKind.Local)
+						date = date.Value.ToUniversalTime();
+				}
+
+				return date;
+			}
             else if (field is EmailField)
                 return value as string;
             else if (field is FileField)
