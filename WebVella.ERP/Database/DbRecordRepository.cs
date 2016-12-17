@@ -317,25 +317,34 @@ namespace WebVella.ERP.Database
 
                 return Convert.ToDecimal(value);
             }
-            else if (field is DateField)
-            {
-                if (value == null)
-                    return null;
+			else if (field is DateField)
+			{
+				if (value == null)
+					return null;
 
-                DateTime? date = null;
-                if (value is string)
-                {
-                    if (string.IsNullOrWhiteSpace(value as string))
-                        return null;
-                    date = DateTime.Parse(value as string);
-                }
-                else
-                    date = (value as DateTime?);
+				DateTime? date = null;
+				if (value is string)
+				{
+					if (string.IsNullOrWhiteSpace(value as string))
+						return null;
+					date = DateTime.Parse(value as string);
+					//date can be local, utc and unspecified
+					//if local convert to utc, unspecified is used as is
+					if (date.HasValue && date.Value.Kind == DateTimeKind.Local)
+						date = date.Value.ToUniversalTime();
+				}
+				else
+				{
+					//date can be local, utc and unspecified
+					//if local convert to utc, unspecified is used as is
+					if (date.HasValue && date.Value.Kind == DateTimeKind.Local)
+						date = date.Value.ToUniversalTime();
+				}
 
-                if (date != null)
-                    return new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, DateTimeKind.Utc);
-            }
-            else if (field is DateTimeField)
+				if (date != null)
+					return new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, DateTimeKind.Utc);
+			}
+			else if (field is DateTimeField)
             {
 
                 if (value == null)
