@@ -823,21 +823,40 @@
 		ngCtrl.generateHighlightString = function () {
 			if (ngCtrl.parentView && ngCtrl.parentView.data) {
 				ngCtrl.showPageTitleAuxLabelSecondary = true;
-				return webvellaCoreService.generateHighlightString(ngCtrl.parentView.meta, ngCtrl.parentView.data[0], ngCtrl.stateParams, "title");
+				return webvellaCoreService.generateHighlightString(ngCtrl.list.meta,ngCtrl.parentView.data, ngCtrl.stateParams, "title");
 			}
 			else {
-				return webvellaCoreService.generateHighlightString(ngCtrl.list.meta, null, ngCtrl.stateParams, "title");
+				return webvellaCoreService.generateHighlightString(ngCtrl.list.meta, ngCtrl.list.data[0], ngCtrl.stateParams, "title");
 			}
 		}
 
 		ngCtrl.generateAuxHighlightString = function () {
 			if (ngCtrl.parentView && ngCtrl.parentView.data) {
-				return webvellaCoreService.generateHighlightString(ngCtrl.list.meta, ngCtrl.parentView.data[0], ngCtrl.stateParams, "label");
+				return webvellaCoreService.generateHighlightString(ngCtrl.parentView.meta, ngCtrl.parentView.data[0], ngCtrl.stateParams, "title");
 			}
 			else {
-				return webvellaCoreService.generateHighlightString(ngCtrl.list.meta, null, ngCtrl.stateParams, "label");
+				return webvellaCoreService.generateHighlightString(ngCtrl.list.meta, ngCtrl.list.data[0], ngCtrl.stateParams, "title");
 			}
 		}
+
+		//ngCtrl.generateHighlightString = function () {
+		//	if (ngCtrl.parentView && ngCtrl.parentView.data) {
+		//		ngCtrl.showPageTitleAuxLabelSecondary = true;
+		//		return webvellaCoreService.generateHighlightString(ngCtrl.parentView.meta, ngCtrl.parentView.data[0], ngCtrl.stateParams, "title");
+		//	}
+		//	else {
+		//		return webvellaCoreService.generateHighlightString(ngCtrl.list.meta, null, ngCtrl.stateParams, "title");
+		//	}
+		//}
+
+		//ngCtrl.generateAuxHighlightString = function () {
+		//	if (ngCtrl.parentView && ngCtrl.parentView.data) {
+		//		return webvellaCoreService.generateHighlightString(ngCtrl.list.meta, ngCtrl.parentView.data[0], ngCtrl.stateParams, "label");
+		//	}
+		//	else {
+		//		return webvellaCoreService.generateHighlightString(ngCtrl.list.meta, null, ngCtrl.stateParams, "label");
+		//	}
+		//}
 
 		//#endregion
 

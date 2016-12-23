@@ -293,12 +293,12 @@
 
 	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', '$window', 'pageTitle', 'webvellaCoreService',
         'resolvedAreas', '$timeout', 'resolvedCurrentViewData', 'ngToast', 'wvAppConstants', 'resolvedEntityList', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
-		'resolvedCurrentUserEntityPermissions', '$sessionStorage', 'resolvedParentViewData','$injector'];
+		'resolvedCurrentUserEntityPermissions', '$sessionStorage', 'resolvedParentViewData'];
 
 
 	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, $window, pageTitle, webvellaCoreService,
         resolvedAreas, $timeout, resolvedCurrentViewData, ngToast, wvAppConstants, resolvedEntityList, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
-		resolvedCurrentUserEntityPermissions, $sessionStorage, resolvedParentViewData,$injector) {
+		resolvedCurrentUserEntityPermissions, $sessionStorage, resolvedParentViewData) {
 
 		//#region << ngCtrl initialization >>
 		var ngCtrl = this;
@@ -724,8 +724,17 @@
 		ngCtrl.showPageTitleAuxLabelSecondary = false;
 
 		ngCtrl.generateHighlightString = function () {
-			if (ngCtrl.parentView && ngCtrl.parentView.data) {
+			if(ngCtrl.parentView && ngCtrl.parentView.data){
 				ngCtrl.showPageTitleAuxLabelSecondary = true;
+				return webvellaCoreService.generateHighlightString(ngCtrl.view.meta,ngCtrl.parentView.data,ngCtrl.stateParams,"title");
+			}
+			else {
+				return webvellaCoreService.generateHighlightString( ngCtrl.view.meta,ngCtrl.view.data[0],ngCtrl.stateParams,"title");
+			}
+		}
+
+		ngCtrl.generateAuxHighlightString = function(){
+			if (ngCtrl.parentView && ngCtrl.parentView.data) {
 				return webvellaCoreService.generateHighlightString(ngCtrl.parentView.meta, ngCtrl.parentView.data, ngCtrl.stateParams, "title");
 			}
 			else {
@@ -733,14 +742,24 @@
 			}
 		}
 
-		ngCtrl.generateAuxHighlightString = function(){
-			if(ngCtrl.parentView && ngCtrl.parentView.data){
-				return webvellaCoreService.generateHighlightString(ngCtrl.view.meta,ngCtrl.parentView.data,ngCtrl.stateParams,"label");
-			}
-			else {
-				return webvellaCoreService.generateHighlightString( ngCtrl.view.meta,null,ngCtrl.stateParams,"label");
-			}
-		}
+		//ngCtrl.generateHighlightString = function () {
+		//	if (ngCtrl.parentView && ngCtrl.parentView.data) {
+		//		ngCtrl.showPageTitleAuxLabelSecondary = true;
+		//		return webvellaCoreService.generateHighlightString(ngCtrl.parentView.meta, ngCtrl.parentView.data, ngCtrl.stateParams, "title");
+		//	}
+		//	else {
+		//		return webvellaCoreService.generateHighlightString(ngCtrl.view.meta, ngCtrl.view.data[0], ngCtrl.stateParams, "title");
+		//	}
+		//}
+
+		//ngCtrl.generateAuxHighlightString = function(){
+		//	if(ngCtrl.parentView && ngCtrl.parentView.data){
+		//		return webvellaCoreService.generateHighlightString(ngCtrl.view.meta,ngCtrl.parentView.data,ngCtrl.stateParams,"label");
+		//	}
+		//	else {
+		//		return webvellaCoreService.generateHighlightString( ngCtrl.view.meta,null,ngCtrl.stateParams,"label");
+		//	}
+		//}
 		//#endregion
 
 		//#region << Logic >>
