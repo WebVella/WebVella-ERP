@@ -140,7 +140,6 @@ var translationsEN = {
 	ENTITY_DELETE_LOCKED_MESSAGE:'System entities cannot be deleted',
 	ENTITY_CREATE_MODAL_TITLE: 'Create new entity',
 	ENTITY_FIELDS: 'Entity Fields',
-	ENTITY_MANAGE_DETAILS: 'Entity details',
 	ENTITY_MANAGE_FIELDS: 'Entity fields',
 	ENTITY_MANAGE_RECORD_LISTS: 'Entity record lists',
 	ENTITY_MANAGE_RECORD_RELATIONS: 'Entity record relations',
