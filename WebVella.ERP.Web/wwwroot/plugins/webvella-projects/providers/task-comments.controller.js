@@ -57,6 +57,7 @@
 				controller: 'ManageTaskCommentModalController',
 				controllerAs: "popupCtrl",
 				size: "lg",
+				backdrop:"static",
 				resolve: {
 					ngCtrl: function () {
 						return ngCtrl;
