@@ -558,18 +558,12 @@ namespace WebVella.ERP.Api
 
 					foreach (var ooRelData in oneToOneRecordData)
 					{
-						var ooResponse = recRepo.Update(ooRelData.EntityName, ooRelData.RecordData);
-
-						if (!ooResponse.Success)
-							throw new Exception(ooResponse.Message);
+						recRepo.Update(ooRelData.EntityName, ooRelData.RecordData);
 					}
 
 					foreach (var omRelData in oneToManyRecordData)
 					{
-						var omResponse = recRepo.Update(omRelData.EntityName, omRelData.RecordData);
-
-						if (!omResponse.Success)
-							throw new Exception(omResponse.Message);
+						recRepo.Update(omRelData.EntityName, omRelData.RecordData);
 					}
 
 					foreach (var mmRelData in manyToManyRecordData)
