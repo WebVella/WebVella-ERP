@@ -438,7 +438,7 @@
 						ngCtrl.view.data[relationFieldDataName] = ngCtrl.stateParams.targetRecordId;
 					}
 					else {
-						//field expects Array of values - of the targets
+						//field expects Array of values - of the targets. Reverse the relation direction with double $
 						ngCtrl.view.data[relationFieldDataName].push(ngCtrl.stateParams.targetRecordId);
 					}
 					break;
@@ -448,7 +448,7 @@
 						ngCtrl.view.data[relationFieldDataName].push(ngCtrl.stateParams.targetRecordId);
 					}
 					else {
-						//field expects Array values - of the targets
+						//field expects Array values - of the targets. Reverse the relation direction with double $
 						ngCtrl.view.data[relationFieldDataName].push(ngCtrl.stateParams.targetRecordId);
 					}
 					break;
@@ -524,7 +524,7 @@
 					//Here the trick is to check and validate the visualized field based on the submitted data. This can be done based on how the data names are generated
 					//which is always " '$' + elementType + '$' + relation_name + '$' + elementName".
 					//The format to create relation automatically on record creation is " '$' + relation_name + '.id'"
-					//So we can check based on the relation name
+					//So we can check based on the relation name.
 					var relationNameFoundInData = false;
 					var dataNameArray = availableViewFields[k].dataName.split('$');
 					for (var propertyName in ngCtrl.view.data) {
@@ -571,9 +571,7 @@
 								break;
 						}
 					}
-					else if (availableViewFields[k].type === "fieldFromRelation") {
-						//Currently no need to remove field from relations that are not id, as they are not attached to the entityData anyway
-					}
+					else if (availableViewFields[k].type === "fieldFromRelation") {}
 				}
 
 				/// Aux
@@ -620,8 +618,7 @@
 						}
 					}
 				}
-				var viewData = fastCopy(ngCtrl.view.data);
-				webvellaCoreService.createRecord(ngCtrl.entity.name, viewData, ngCtrl.successCallback, errorCallback);
+				webvellaCoreService.createRecord(ngCtrl.entity.name, ngCtrl.view.data, ngCtrl.successCallback, errorCallback);
 			}
 			else {
 				//Scroll top
@@ -712,7 +709,12 @@
 						var dummyFieldName = dataNameArray[3];
 						ngCtrl.dummyFields[item.dataName] = webvellaCoreService.renderFieldValue(response.object.data[0][dummyFieldName], item.meta);
 						//4.set in the create model $field$relation_name$id -> is this is the only way to be sure that the value will be unique and the api will not produce error
-						ngCtrl.view.data["$" + dataNameArray[2] + "." + "id"] = returnObject.selectedRecordId;
+						if(dataKind == "origin"){
+							ngCtrl.view.data["_$" + dataNameArray[2] + "." + "id"] = returnObject.selectedRecordId;
+						}
+						else {
+							ngCtrl.view.data["$" + dataNameArray[2] + "." + "id"] = returnObject.selectedRecordId;
+						}
 					}
 					function modalCase1ErrorCallback(response) {
 						ngToast.create({
@@ -759,6 +761,9 @@
 					var dataNameArray = item.dataName.split('$');
 					var dummyFieldName = dataNameArray[3];
 					var idFieldPrefix = "$" + dataNameArray[2] + ".";
+					if(dataKind == "origin"){
+						idFieldPrefix = "_" + idFieldPrefix;
+					}
 					//1.the field name needed for the view (item.fieldName) and the other's entity name	(item.entityName)
 					//2.get the record by returnObject.selectedRecordId, with the value of the field in the view 
 					//2.get the record by returnObject.selectedRecordId, with the value of the field in the view 

@@ -361,6 +361,24 @@ namespace WebVella.ERP.Api
 
 									filter = EntityQuery.QueryOR(queries.ToArray());
 								}
+								else if((relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == relation.TargetEntityId && direction == "target-origin") ||
+									(relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId != relation.TargetEntityId && relation.OriginEntityId != entity.Id))
+								{
+									List<string> values = new List<string>();
+									if (pair.Value is JArray) {
+										values = ((JArray)pair.Value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
+										if(values.Count > 0) {
+											var newPair = new KeyValuePair<string,object>(pair.Key,values[0]);
+											filter = EntityQuery.QueryEQ(realtionSearchField.Name, ExtractFieldValue(newPair, realtionSearchField, true));
+										}
+										else {
+											throw new Exception("Array has not elements");
+										}
+									}
+									else {
+										filter = EntityQuery.QueryEQ(realtionSearchField.Name, ExtractFieldValue(pair, realtionSearchField, true));
+									}
+								}
 								else
 								{
 									filter = EntityQuery.QueryEQ(realtionSearchField.Name, ExtractFieldValue(pair, realtionSearchField, true));
@@ -461,7 +479,7 @@ namespace WebVella.ERP.Api
 								}
 
 								if (relation.RelationType == EntityRelationType.OneToOne &&
-									((relation.OriginEntityId == relation.TargetEntityId && direction == "origin-target") || relation.OriginEntityId == entity.Id))
+									((relation.OriginEntityId == relation.TargetEntityId && direction == "origin-target") || (relation.OriginEntityId != relation.TargetEntityId && relation.OriginEntityId == entity.Id)))
 								{
 									if (!record.Properties.ContainsKey(field.Name) || record[field.Name] == null)
 										throw new Exception(string.Format("Invalid relation '{0}'. Relation field does not exist into input record data or its value is null.", pair.Key));
@@ -479,7 +497,7 @@ namespace WebVella.ERP.Api
 									oneToOneRecordData.Add(ooRelationData);
 								}
 								else if (relation.RelationType == EntityRelationType.OneToMany &&
-									((relation.OriginEntityId == relation.TargetEntityId && direction == "origin-target") || relation.OriginEntityId == entity.Id))
+									((relation.OriginEntityId == relation.TargetEntityId && direction == "origin-target") || (relation.OriginEntityId != relation.TargetEntityId && relation.OriginEntityId == entity.Id)))
 								{
 									if (!record.Properties.ContainsKey(field.Name) || record[field.Name] == null)
 										throw new Exception(string.Format("Invalid relation '{0}'. Relation field does not exist into input record data or its value is null.", pair.Key));

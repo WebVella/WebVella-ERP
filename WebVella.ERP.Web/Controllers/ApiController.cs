@@ -2289,6 +2289,9 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}")]
 		public IActionResult CreateEntityRecord(string entityName, [FromBody]EntityRecord postObj)
 		{
+			//Find and change properties starting with _$ to $$ - angular does not post $$ propery names
+			postObj = Helpers.FixDoubleDollarSignProblem(postObj);
+
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK FILTER << create_record_input_filter >>
 			//////////////////////////////////////////////////////////////////////////////////////
@@ -2612,6 +2615,10 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult UpdateEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
+			//Find and change properties starting with _$ to $$ - angular does not post $$ propery names
+			postObj = Helpers.FixDoubleDollarSignProblem(postObj);
+
+
 			if (!postObj.Properties.ContainsKey("id"))
 			{
 				postObj["id"] = recordId;
