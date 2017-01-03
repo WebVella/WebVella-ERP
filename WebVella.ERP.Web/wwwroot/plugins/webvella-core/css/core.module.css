@@ -5062,6 +5062,19 @@ a.link-icon.link[href]:before {
 	opacity: .8;
 }
 
+
+	.angular-ui-tree-node .toggle-node i{
+		color:#4CAF50;
+	}
+
+.angular-ui-tree-node .toggle-node:hover {
+		cursor:pointer;	
+}
+
+	.angular-ui-tree-node .toggle-node:hover i{
+		color:#FF9800;
+	}
+
 .angular-ui-tree-node .btn-group > .btn .btn {
 	position: absolute;
 }
@@ -5081,6 +5094,7 @@ a.link-icon.link[href]:before {
 	opacity: 1;
 	color: #333;
 	padding-right: 80px;
+	padding-left: 5px;
 	position: relative;
 }
 
