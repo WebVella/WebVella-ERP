@@ -1205,7 +1205,37 @@
 
 			}
 
-			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.selectedItem.entityName, page, null, null, successCallback, errorCallback);
+
+			var searchParams = {};
+			for (var filter in popupCtrl.filterQuery) {
+				//Check if the field is percent or date
+				if(popupCtrl.filterQuery[filter]){
+					for (var i = 0; i < popupCtrl.relationLookupList.meta.columns.length; i++) {
+						if(popupCtrl.relationLookupList.meta.columns[i].meta.name == filter){
+							var selectedField = popupCtrl.relationLookupList.meta.columns[i].meta;
+							switch(selectedField.fieldType){
+								case 4: //Date
+									searchParams[filter] = moment(popupCtrl.filterQuery[filter],'D MMM YYYY').toISOString();
+									break;
+								case 5: //Datetime
+									searchParams[filter] = moment(popupCtrl.filterQuery[filter],'D MMM YYYY HH:mm').toISOString();
+									break;
+								case 14: //Percent
+									searchParams[filter] = popupCtrl.filterQuery[filter] / 100;
+									break;
+								default:
+									searchParams[filter] = 	popupCtrl.filterQuery[filter];
+									break;
+							}
+						}
+					}
+				}
+				else {
+					delete 	searchParams[filter];
+				}				
+			}
+
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.selectedItem.entityName, page, $stateParams, searchParams, successCallback, errorCallback);
 		}
 
 		//#endregion
