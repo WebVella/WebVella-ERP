@@ -316,33 +316,10 @@
 		ngCtrl.fieldUpdate = function (fieldName, data) {
 			var postObj = {};
 			postObj[fieldName] = data;
-			var index = ngCtrl.tree.nodeObjectProperties.indexOf(data);
-			if(index == -1){
-				ngCtrl.tree.nodeObjectProperties.push(data);
-			}
-			postObj.nodeObjectProperties = ngCtrl.tree.nodeObjectProperties;
 			webvellaCoreService.patchEntityTree(postObj, ngCtrl.tree.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
 		}
 
 
-
-		//function forceMandatoryFieldsInNodeObjectProperties(){
-		//	//check if all the mandatory fields are included
-		//	for (var i = 0; i < ngCtrl.entity.fields.length; i++) {
-		//		var field = ngCtrl.entity.fields[i];
-		//		if(field.name =="weight")
-		//		var boz = 0;
-		//		var index = ngCtrl.tree.nodeObjectProperties.indexOf(field.id);
-		//		if (field.id == ngCtrl.tree.nodeIdFieldId || field.id == ngCtrl.tree.nodeParentIdFieldId ||	field.id == ngCtrl.tree.nodeNameFieldId || field.id == ngCtrl.tree.nodeLabelFieldId || field.id == ngCtrl.tree.nodeWeightFieldId) {
-		//			if(index == -1){
-		//				ngCtrl.tree.nodeObjectProperties.push(field.id);
-		//			}
-		//		}
-		//	}
-
-		//}
-
-		//forceMandatoryFieldsInNodeObjectProperties();
 
 		ngCtrl.nodeNameUpdate = function (fieldObject) {
 			ngCtrl.fieldUpdate('nodeNameFieldId', fieldObject.id);
@@ -404,7 +381,6 @@
 		ngCtrl.fieldSelectedBy = function (field) {
 			//Check if field id is in array
 			if(field.name == "weight"){
-				var boz = 0;
 			}
 			var index = ngCtrl.tree.nodeObjectProperties.indexOf(field.id);
 			if (index > -1) {
