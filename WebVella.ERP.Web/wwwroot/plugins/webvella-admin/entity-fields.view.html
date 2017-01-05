@@ -649,7 +649,7 @@
 									<tr ng-repeat="option in popupCtrl.field.options">
 										<td><input class="form-control" ng-model="option.key" /></td>
 										<td><input class="form-control" ng-model="option.value" /></td>
-										<td><a ng-click="popupCtrl.toggleKeyAsDefault(option.key)" href="javascript:void(0)" class="btn btn-default btn-outline" ng-class="popupCtrl.isKeyDefault(option.key) ? 'btn-success' : 'btn-default go-gray'"><i class="fa fa-fw fa-check"></i></a></td>
+										<td><a ng-click="popupCtrl.toggleKeyAsDefault(option.key)" href="javascript:void(0)" class="btn" ng-class="popupCtrl.isKeyDefault(option.key) ? 'btn-success' : 'btn-default go-gray'"><i class="fa fa-fw fa-check"></i></a></td>
 										<td><a ng-click="popupCtrl.deleteDropdownValue($index)" href="javascript:void(0)" class="btn btn-outline btn-default go-red"><i class="fa fa-fw fa-close"></i></a></td>
 									</tr>
 								</tbody>
@@ -1717,7 +1717,7 @@
 								<tr ng-repeat="option in popupCtrl.field.options track by $index">
 									<td><input class="form-control" ng-model="option.key" /></td>
 									<td><input class="form-control" ng-model="option.value" /></td>
-									<td><a ng-click="popupCtrl.toggleKeyAsDefault(option.key)" href="javascript:void(0)" class="btn btn-outline" ng-class="popupCtrl.isKeyDefault(option.key) ? 'btn-success' : 'btn-default go-gray'"><i class="fa fa-fw fa-check"></i></a></td>
+									<td><a ng-click="popupCtrl.toggleKeyAsDefault(option.key)" href="javascript:void(0)" class="btn" ng-class="popupCtrl.isKeyDefault(option.key) ? 'btn-success' : 'btn-default go-gray'"><i class="fa fa-fw fa-check"></i></a></td>
 									<td><a ng-click="popupCtrl.deleteDropdownValue($index)" href="javascript:void(0)" class="btn btn-outline btn-default go-red"><i class="fa fa-fw fa-close"></i></a></td>
 								</tr>
 							</tbody>
