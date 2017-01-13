@@ -217,6 +217,7 @@
         serviceInstance.getFileContent = getFileContent;
         serviceInstance.getFieldTypes = getFieldTypes;
         serviceInstance.currencyMetas = currencyMetas;
+		serviceInstance.generateErrorMessage = generateErrorMessage;
         //#endregion
 
         //#region << Plugins >>
@@ -3526,7 +3527,7 @@
             function patchFailedCallback(response) {
                 ngToast.create({
                     className: 'error',
-                    content: '<span class="go-red">Error:</span> ' + response.message,
+                    content: generateErrorMessage(response),
                     timeout: 7000
                 });
                 $state.go($state.current, {}, { reload: true });
@@ -3577,6 +3578,23 @@
         //#endregion
 
         //#region << Helpers >>
+		function generateErrorMessage(response){
+			var message = '<span class="go-red">Error:</span> ' + response.message;
+			
+			if(response.errors.length > 0){
+				message += '<ul>';
+				_.forEach(response.errors,function(error){
+					message += '<li>';
+					message += '<b>' + error.key + '</b> - ' + error.message;
+					message += '</li>';
+				});
+				message += '</ul>';
+			}
+
+			return message;
+		}
+
+
         function getFileContent(url, successCallback, errorCallback) {
             $http({ method: 'GET', url: url }).then(function getSuccessCallback(response) { successCallback(response); }, function getErrorCallback(response) { errorCallback(response); });
         }
