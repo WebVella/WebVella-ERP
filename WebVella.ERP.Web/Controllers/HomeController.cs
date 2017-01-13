@@ -55,6 +55,7 @@ namespace WebVella.ERP.Web.Controllers
 			ViewBag.Lang = Settings.Lang;
 			ViewBag.CompanyName = Settings.CompanyName;
 			ViewBag.CompanyLogo = Settings.CompanyLogo;
+			ViewBag.DevelopmentMode = Settings.DevelopmentMode;
 			ViewBag.LibraryCssFileList = libraryCssFileList;
 			ViewBag.ModuleCssFileList = moduleCssFileList;
 			ViewBag.LibraryJsFileList = libraryJsFileList;

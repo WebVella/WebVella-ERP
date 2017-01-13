@@ -19,21 +19,28 @@
 	<!-- library > css -->
 	@foreach (var cssFile in libraryCssFileList)
 	{
-		<link href="@cssFile" rel="stylesheet" />
+	<link href="@cssFile" rel="stylesheet" />
 	}
 	<!-- module > css -->
 	@foreach (var cssFile in moduleCssFileList)
 	{
-		<link href="@cssFile" rel="stylesheet" />
+	<link href="@cssFile" rel="stylesheet" />
 	}
 </head>
 <body class="theme-{{appData.bodyColor}}" ng-cloak ng-class="{'mini-sidebar':appData.$storage.isMiniSidebar}">
 	<toast></toast>
+	@if (ViewBag.DevelopmentMode == "true")
+	{
+	<div style="border-radius:0;margin-bottom:0;padding:5px;text-align:center;background:#FF9800;color:rgba(255,255,255,0.8);">Development mode</div>
+
+	}
+
+
 	<div ui-view="rootView"></div>
 	<!-- library > js -->
 	@foreach (var jsFile in libraryJsFileList)
 	{
-		<script src="@jsFile"></script>
+	<script src="@jsFile"></script>
 	}
 
 	@* Core Application module definition *@
@@ -98,7 +105,7 @@
 	<!-- module > js -->
 	@foreach (var jsFile in moduleJsFileList)
 	{
-		<script src="@jsFile"></script>
+	<script src="@jsFile"></script>
 	}
 
 	@ViewBag.PluginModulesJsFileStringArray
