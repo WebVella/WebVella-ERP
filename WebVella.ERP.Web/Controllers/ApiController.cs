@@ -2765,7 +2765,7 @@ namespace WebVella.ERP.Web.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(CreateErrorResponse("Plugin error in web hook patch_record_input_filter: " + ex.Message));
+				return Json(CreateErrorResponse("Plugin error in web hook update_record_input_filter: " + ex.Message));
 			}// <<<
 
 			var validationErrors = new List<ErrorModel>();
@@ -2788,7 +2788,7 @@ namespace WebVella.ERP.Web.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(CreateErrorResponse("Plugin error in web hook patch_record_validation_errors_filter: " + ex.Message));
+				return Json(CreateErrorResponse("Plugin error in web hook update_record_validation_errors_filter: " + ex.Message));
 			}// <<<
 
 			if (validationErrors.Count > 0)
@@ -2830,7 +2830,7 @@ namespace WebVella.ERP.Web.Controllers
 					catch (Exception ex)
 					{
 						connection.RollbackTransaction();
-						return Json(CreateErrorResponse("Plugin error in web hook patch_record_pre_save_filter: " + ex.Message));
+						return Json(CreateErrorResponse("Plugin error in web hook update_record_pre_save_filter: " + ex.Message));
 					}// <<<
 					result = recMan.UpdateRecord(entityName, postObj);
 					connection.CommitTransaction();
@@ -2861,7 +2861,7 @@ namespace WebVella.ERP.Web.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(CreateErrorResponse("Plugin error in web hook patch_record_success_action: " + ex.Message));
+				return Json(CreateErrorResponse("Plugin error in web hook update_record_success_action: " + ex.Message));
 			}// <<<	
 
 			return DoResponse(result);
