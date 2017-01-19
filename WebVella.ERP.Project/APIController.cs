@@ -1096,7 +1096,7 @@ namespace WebVella.ERP.Project
 
 				#region << Get tasks >>
 				{
-					var fields = "id,number,subject,priority,last_modified_on,$user_wv_task_modified_by.username";
+					var fields = "id,number,subject,code,priority,last_modified_on,$user_wv_task_modified_by.username";
 
 					//Add default sort by created_on
 					var sortRulesList = new List<QuerySortObject>();
@@ -1175,7 +1175,7 @@ namespace WebVella.ERP.Project
 
 				#region << Get bugs >>
 				{
-					var fields = "id,number,subject,priority,last_modified_on,$user_wv_bug_modified_by.username";
+					var fields = "id,number,code,subject,priority,last_modified_on,$user_wv_bug_modified_by.username";
 
 					//Add default sort by created_on
 					var sortRulesList = new List<QuerySortObject>();
