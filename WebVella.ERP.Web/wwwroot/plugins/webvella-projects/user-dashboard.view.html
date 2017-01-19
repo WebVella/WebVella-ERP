@@ -124,7 +124,7 @@
 								<i class="fa fa-fw fa-clock-o"></i> 
 								<span ng-bind="::ngCtrl.getTimeHumanizedString(task.last_modified_on)"></span>  by <span class="username" ng-bind="::task['$user_wv_task_modified_by'][0].username"></span>
 							</div>
-							<div><strong>[{{::task.code}}]</strong> <a ng-href="/#/areas/projects/wv_task/view-general/sb/general/{{::task.id}}" ng-bind="::task.subject"></a></div>
+							<div><span>[{{::task.code}}]</span> <a ng-href="/#/areas/projects/wv_task/view-general/sb/general/{{::task.id}}" ng-bind="::task.subject"></a></div>
 						</td>
 					</tr>
 					<tr ng-if="ngCtrl.ownedTasks.length == 0">
@@ -150,7 +150,7 @@
 								<i class="fa fa-fw fa-clock-o"></i> 
 								<span ng-bind="::ngCtrl.getTimeHumanizedString(bug.last_modified_on)"></span>  by <span class="username" ng-bind="::bug['$user_wv_task_modified_by'][0].username"></span>
 							</div>
-							<div><strong>[{{::bug.code}}]</strong> <a ng-href="/#/areas/projects/wv_bug/view-general/sb/general/{{::bug.id}}" ng-bind="::bug.subject"></a></div>
+							<div><span>[{{::bug.code}}]</span> <a ng-href="/#/areas/projects/wv_bug/view-general/sb/general/{{::bug.id}}" ng-bind="::bug.subject"></a></div>
 						</td>
 					</tr>
 					<tr ng-if="ngCtrl.ownedBugs.length == 0">
