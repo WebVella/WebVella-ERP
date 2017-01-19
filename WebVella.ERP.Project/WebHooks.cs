@@ -78,9 +78,16 @@ namespace WebVella.ERP.Project
 					throw new Exception("Project not found");
 				}
 				projectObject = result.Object.Data[0];
-				record["owner_id"] = (Guid)result.Object.Data[0]["owner_id"];
+				//If an owner is already submitted do nothing
+				if(!record.Properties.ContainsKey("$user_1_n_task_owner.id") || record["$user_1_n_task_owner.id"] == null) {
+					record["owner_id"] = (Guid)result.Object.Data[0]["owner_id"];
+				}
+				else {
+					record["owner_id"] = new Guid((string)record["$user_1_n_task_owner.id"]);
+				}
 			}
 			#endregion
+
 			using (SecurityContext.OpenSystemScope())
 			{
 				#region << Increase the project counter >>
@@ -109,6 +116,7 @@ namespace WebVella.ERP.Project
 
 				#endregion
 			}
+			data.record = record;
 			return data;
 		}
 
@@ -124,7 +132,6 @@ namespace WebVella.ERP.Project
 			if((string)record["priority"] == "high") {
 				priorityString = "<span class='go-red'> [high] </span>";
 			}
-			Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-tasks go-purple'></i> task #" + createdRecord["number"] + priorityString + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], (Guid)createdRecord["id"], null);
 			using (SecurityContext.OpenSystemScope())
 			{
 				#region << Add creator in watch list >>
@@ -171,6 +178,7 @@ namespace WebVella.ERP.Project
 				}
 				#endregion
 			}
+			Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-tasks go-purple'></i> task [" + patchObject["code"] + "] " + priorityString + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], (Guid)createdRecord["id"], null);
 			var creatorUsername = "";
 			#region << Get username of the creator>>
 			{
@@ -300,13 +308,22 @@ namespace WebVella.ERP.Project
 					throw new Exception("Project not found");
 				}
 				projectObject = result.Object.Data[0];
-				record["owner_id"] = (Guid)result.Object.Data[0]["owner_id"];
+				//If an owner is already submitted do nothing
+				if(!record.Properties.ContainsKey("$user_1_n_bug_owner.id") || record["$user_1_n_bug_owner.id"] == null) {
+					record["owner_id"] = (Guid)result.Object.Data[0]["owner_id"];
+				}
+				else {
+					record["owner_id"] = new Guid((string)record["$user_1_n_bug_owner.id"]);
+				}
 			}
 			#endregion
 
 			#region << Increase the project counter >>
 			var patchObject = new EntityRecord();
 			patchObject["id"] = (Guid)projectObject["id"];
+			if(!record.Properties.ContainsKey("status")) {
+				record["status"] = "opened";
+			}
 			switch ((string)record["status"])
 			{
 				case "opened":
@@ -329,6 +346,7 @@ namespace WebVella.ERP.Project
 			}
 			#endregion
 
+			data.record = record;
 			return data;
 		}
 
@@ -344,7 +362,6 @@ namespace WebVella.ERP.Project
 			if((string)record["priority"] == "high") {
 				priorityString = "<span class='go-red'> [high] </span>";
 			}
-			Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-bug go-red'></i> bug #" + createdRecord["number"] + priorityString + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], null, (Guid)createdRecord["id"]);
 
 			using (SecurityContext.OpenSystemScope())
 			{
@@ -396,6 +413,7 @@ namespace WebVella.ERP.Project
 				}
 				#endregion
 			}
+			Utils.CreateActivity(recMan, "created", "created a <i class='fa fa-fw fa-bug go-red'></i> bug [" + patchObject["code"] +"] " + priorityString + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + createdRecord["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)createdRecord["subject"]) + "</a>", null, (Guid)createdRecord["project_id"], null, (Guid)createdRecord["id"]);
 			var creatorUsername = "";
 			#region << Get username of the creator>>
 			{
@@ -496,7 +514,7 @@ namespace WebVella.ERP.Project
 				if (result.Success)
 				{
 					var task = result.Object.Data[0];
-					Utils.CreateActivity(recMan, "timelog", "created a <i class='fa fa-fw fa-clock-o go-blue'></i> time log of <b>" + ((decimal)createdRecord["hours"]).ToString("N2") + " " + billableString + "</b> hours for task #" + task["number"] + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", null, (Guid)task["project_id"], (Guid)task["id"], null);
+					Utils.CreateActivity(recMan, "timelog", "created a <i class='fa fa-fw fa-clock-o go-blue'></i> time log of <b>" + ((decimal)createdRecord["hours"]).ToString("N2") + " " + billableString + "</b> hours for task [" + task["code"] + "] <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", null, (Guid)task["project_id"], (Guid)task["id"], null);
 					//Update the x_billable_hours and x_nonbillable_hours fields
 					var updatedRecord = new EntityRecord();
 					updatedRecord["id"] = (Guid)task["id"];
@@ -520,7 +538,7 @@ namespace WebVella.ERP.Project
 				if (result.Success)
 				{
 					var bug = result.Object.Data[0];
-					Utils.CreateActivity(recMan, "timelog", "created a <i class='fa fa-fw fa-clock-o go-blue'></i> time log of <b>" + ((decimal)createdRecord["hours"]).ToString("N2") + " " + billableString + "</b> hours  for bug #" + bug["number"] + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", null, (Guid)bug["project_id"], null, (Guid)bug["id"]);
+					Utils.CreateActivity(recMan, "timelog", "created a <i class='fa fa-fw fa-clock-o go-blue'></i> time log of <b>" + ((decimal)createdRecord["hours"]).ToString("N2") + " " + billableString + "</b> hours  for bug [" + bug["code"] + "] <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", null, (Guid)bug["project_id"], null, (Guid)bug["id"]);
 					//Update the x_billable_hours and x_nonbillable_hours fields
 					var updatedRecord = new EntityRecord();
 					updatedRecord["id"] = (Guid)bug["id"];
@@ -614,12 +632,22 @@ namespace WebVella.ERP.Project
 			if (createdRecord["task_id"] != null)
 			{
 				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["task_id"]);
-				var query = new EntityQuery("wv_task", "id,code,subject,description,project_id,$$user_n_n_task_watchers.id,$$user_n_n_task_watchers.email,$$project_1_n_task.code", filterObj, null, null, null);
+				var query = new EntityQuery("wv_task", "id,code,subject,status,description,project_id,$$user_n_n_task_watchers.id,$$user_n_n_task_watchers.email,$$project_1_n_task.code", filterObj, null, null, null);
 				var result = recMan.Find(query);
 				if (result.Success)
 				{
 					task = result.Object.Data[0];
 					Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for task [" + task["code"] + "] <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", null, (Guid)task["project_id"], (Guid)task["id"], null);
+					//If status was completed turn it back to in progress
+					if((string)task["status"] == "completed") {
+						var newTask = new EntityRecord();
+						newTask["id"] = (Guid)task["id"];
+						newTask["status"] = "in progress";
+						var updateResult = recMan.UpdateRecord("wv_task",newTask,true);
+						if(!updateResult.Success) {
+							throw new Exception(result.Message);
+						}
+					}
 				}
 				else
 				{
@@ -629,12 +657,22 @@ namespace WebVella.ERP.Project
 			else if (createdRecord["bug_id"] != null)
 			{
 				var filterObj = EntityQuery.QueryEQ("id", (Guid)createdRecord["bug_id"]);
-				var query = new EntityQuery("wv_bug", "id,code,subject,description,project_id,$$user_n_n_bug_watchers.id,$$user_n_n_bug_watchers.email,$$project_1_n_bug.code", filterObj, null, null, null);
+				var query = new EntityQuery("wv_bug", "id,code,subject,status,description,project_id,$$user_n_n_bug_watchers.id,$$user_n_n_bug_watchers.email,$$project_1_n_bug.code", filterObj, null, null, null);
 				var result = recMan.Find(query);
 				if (result.Success)
 				{
 					bug = result.Object.Data[0];
 					Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for bug [" + bug["code"] + "] <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", null, (Guid)bug["project_id"], null, (Guid)bug["id"]);
+					//If status was closed turn it back to reopened
+					if((string)bug["status"] == "closed") {
+						var newBug = new EntityRecord();
+						newBug["id"] = (Guid)bug["id"];
+						newBug["status"] = "reopened";
+						var updateResult = recMan.UpdateRecord("wv_bug",newBug,true);
+						if(!updateResult.Success) {
+							throw new Exception(result.Message);
+						}
+					}
 				}
 				else
 				{

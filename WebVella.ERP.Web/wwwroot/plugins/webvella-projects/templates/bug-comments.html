@@ -3,7 +3,7 @@
 <div ng-if="ngCtrl.view.data[0].$list$bug_1_n_comment$bug_comments.length > 0">
 	<div class="panel panel-white post" ng-repeat="record in ngCtrl.view.data[0].$list$bug_1_n_comment$bug_comments" >
 		<div class="post-heading">
-			<div class="pull-left image" ng-switch="record.$field$user_wv_project_comment_created_by$image.length > 0">
+			<div class="pull-left image" ng-switch="record.$field$user_wv_project_comment_created_by$image.length > 0 && record.$field$user_wv_project_comment_created_by$image.length[0] != null  && record.$field$user_wv_project_comment_created_by$image[0] != ''">
 				<img ng-switch-when="true" ng-src="/fs{{record.$field$user_wv_project_comment_created_by$image[0]}}?width=42" class="img-circle avatar" alt="user profile image">
 				<img ng-switch-when="false" ng-src="/plugins/webvella-core/assets/avatar.png" class="img-circle avatar" alt="user profile image">
 			</div>
@@ -30,9 +30,9 @@
 	<p>Currently you are not involved in any records or there are none created yet</p>
 </div>-->
 <p>
-<a class="btn btn-default btn-outline hidden-xs" ng-show="::ngCtrl.userHasRecordPermissions('canCreate')" 
+<a class="btn btn-success hidden-xs" ng-show="::ngCtrl.userHasRecordPermissions('canCreate')" style="margin-top:10px;" 
     ng-click="pluginCtrl.manageComment(null,ngCtrl)">
-	<i class="fa fa-fw fa-plus"></i> Add Comment
+	<i class="fa fa-fw fa-plus"></i> New Comment
 </a>
 </p>
 
@@ -54,10 +54,28 @@
 					</div>
 				</div>
 			</div>
+			<div class="row">
+				<div class="col-sm-2">
+					<div class="form-group" ng-class="{ 'has-error' : popupCtrl.contentError}">
+						<label>Reassign bug</label>
+					</div>
+				</div>
+				<div class="col-sm-10">
+					<div class="form-group" ng-class="{ 'has-error' : popupCtrl.contentError}">
+						<select class="form-control" ng-model="popupCtrl.new_owner_id">
+							<option value="" selected>{{popupCtrl.bugOwner.username}} (current)</option>
+							<option ng-repeat="watcher in popupCtrl.bugWatchers track by watcher.id" ng-value="watcher.id">{{watcher.username}}</option>
+						</select>
+					</div>
+				</div>
+			</div>
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupCtrl.ok()" translate="{{::'SAVE'}}"></button>
+		<button class="btn btn-primary" ng-click="popupCtrl.ok()">
+			<span ng-if='popupCtrl.recordStatus != "closed"'>Create Comment</span>
+			<span ng-if='popupCtrl.recordStatus == "closed"'>Create Comment & Reopen</span>
+		</button>
 		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
 	</div>
 </script>

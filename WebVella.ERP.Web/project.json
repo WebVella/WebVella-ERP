@@ -43,6 +43,8 @@
 		"System.Linq": "4.0.0.0",
 		"System.Threading": "4.0.10.0",
 		"WebVella.ERP": "1.0.0-*",
+		"WebVella.ERP.Project": "1.0.0-*",
+		"WebVella.ERP.Crm": "1.0.0-*",
 		"Newtonsoft.Json": "9.0.1",
 		"CsvHelper": "2.16.3",
 		"ImageProcessor": "2.4.5",

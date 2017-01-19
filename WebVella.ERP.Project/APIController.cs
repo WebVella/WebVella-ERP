@@ -1867,5 +1867,217 @@ namespace WebVella.ERP.Project
 				return Json(response);
 			}
 		}
+
+
+		[AcceptVerbs(new[] { "POST" }, Route = "/plugins/webvella-projects/api/comment/upsert")]
+		public IActionResult UpsertComment([FromBody]JObject submitObj)
+		{
+			var response = new ResponseModel();
+			var submitRecord = new EntityRecord();
+			var postRecord = new EntityRecord();
+			#region << Init Object >>
+			var outGuid = Guid.Empty;
+			var outInt = (int)1;
+			foreach (var prop in submitObj.Properties())
+			{
+				switch (prop.Name.ToLower())
+				{
+					case "id":
+						if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
+						{
+							if (Guid.TryParse((string)prop.Value, out outGuid))
+							{
+								submitRecord["id"] = outGuid;
+							}
+							else
+							{
+								//throw error
+								response.Success = false;
+								response.Message = "Comment Id is not a valid Guid";
+								return Json(response);
+							}
+						}
+						else
+						{
+							submitRecord["id"] = null;
+						}
+						break;
+					case "task_id":
+						if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
+						{
+							if (Guid.TryParse((string)prop.Value, out outGuid))
+							{
+								submitRecord["task_id"] = outGuid;
+							}
+							else
+							{
+								//throw error
+								response.Success = false;
+								response.Message = "Task Id is not a valid Guid";
+								return Json(response);
+							}
+						}
+						else
+						{
+							submitRecord["task_id"] = null;
+						}
+						break;
+					case "bug_id":
+						if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
+						{
+							if (Guid.TryParse((string)prop.Value, out outGuid))
+							{
+								submitRecord["bug_id"] = outGuid;
+							}
+							else
+							{
+								//throw error
+								response.Success = false;
+								response.Message = "Bug Id is not a valid Guid";
+								return Json(response);
+							}
+						}
+						else
+						{
+							submitRecord["bug_id"] = null;
+						}
+						break;
+					case "new_owner_id":
+						if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
+						{
+							if (Guid.TryParse((string)prop.Value, out outGuid))
+							{
+								submitRecord["new_owner_id"] = outGuid;
+							}
+							else
+							{
+								//throw error
+								response.Success = false;
+								response.Message = "New Owner Id is not a valid Guid";
+								return Json(response);
+							}
+						}
+						else
+						{
+							submitRecord["new_owner_id"] = null;
+						}
+						break;
+					case "content":
+						if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
+						{
+							submitRecord["content"] = prop.Value.ToString();
+						}
+						else
+						{
+							//throw error
+							response.Success = false;
+							response.Message = "Content is required";
+							return Json(response);
+						}
+						break;
+				}
+			}
+
+			#endregion
+
+			if(submitRecord.Properties.ContainsKey("id") && submitRecord["id"] != null) {
+				postRecord["id"] = (Guid)submitRecord["id"];
+			}else {
+				postRecord["id"] = Guid.NewGuid();			
+			}
+			if(submitRecord.Properties.ContainsKey("task_id") && submitRecord["task_id"] != null) {
+				postRecord["task_id"] = (Guid)submitRecord["task_id"];
+			}
+			if(submitRecord.Properties.ContainsKey("bug_id") && submitRecord["bug_id"] != null) {
+				postRecord["bug_id"] = (Guid)submitRecord["bug_id"];
+			}
+			postRecord["content"] = (string)submitRecord["content"];
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				try
+				{
+					connection.BeginTransaction();
+					//Upset comment
+					if(submitRecord["id"] == null) {
+						//create
+						var createResponse = recMan.CreateRecord("wv_project_comment",postRecord,true);
+						if(!createResponse.Success) {
+							throw new Exception(createResponse.Message);
+						}
+						response.Message = "Comment successfully created";
+					}
+					else {
+						//update
+						var updateResponse = recMan.UpdateRecord("wv_project_comment",postRecord,true);
+						if(!updateResponse.Success) {
+							throw new Exception(updateResponse.Message);
+						}
+						response.Message = "Comment successfully updated";
+					}
+
+					if(submitRecord.Properties.ContainsKey("new_owner_id") && submitRecord["new_owner_id"] != null) {
+						//Check the new owner id
+						{
+							var query = EntityQuery.QueryEQ("id",(Guid)submitRecord["new_owner_id"]);
+							var queryResponse = recMan.Find(new EntityQuery("user","*",query));
+							if(!queryResponse.Success) {
+								throw new Exception(queryResponse.Message);
+							}
+							if(queryResponse.Object.Data == null || !queryResponse.Object.Data.Any()) {
+								throw new Exception("cannot find user with the provided new owner id");
+							}						
+						}
+						//Change task/bug owner if needed
+						if(submitRecord.Properties.ContainsKey("task_id") && submitRecord["task_id"] != null) {
+							var patchRecord = new EntityRecord();
+							var query = EntityQuery.QueryEQ("id",(Guid)submitRecord["task_id"]);
+							var queryResponse = recMan.Find(new EntityQuery("wv_task","*",query));
+							if(!queryResponse.Success) {
+								throw new Exception(queryResponse.Message);
+							}
+							if(queryResponse.Object.Data == null || !queryResponse.Object.Data.Any()) {
+								throw new Exception("cannot find task with the provided id");
+							}
+							patchRecord["id"] = (Guid)submitRecord["task_id"];
+							patchRecord["owner_id"] = (Guid)submitRecord["new_owner_id"];
+							var patchRecordResponse = recMan.UpdateRecord("wv_task",patchRecord);
+							if(!patchRecordResponse.Success) {
+								throw new Exception(patchRecordResponse.Message);
+							}
+						}
+						else if(submitRecord.Properties.ContainsKey("bug_id") && submitRecord["bug_id"] != null) {
+							var patchRecord = new EntityRecord();
+							var query = EntityQuery.QueryEQ("id",(Guid)submitRecord["bug_id"]);
+							var queryResponse = recMan.Find(new EntityQuery("wv_bug","*",query));
+							if(!queryResponse.Success) {
+								throw new Exception(queryResponse.Message);
+							}
+							if(queryResponse.Object.Data == null || !queryResponse.Object.Data.Any()) {
+								throw new Exception("cannot find bug with the provided id");
+							}
+							patchRecord["id"] = (Guid)submitRecord["bug_id"];
+							patchRecord["owner_id"] = (Guid)submitRecord["new_owner_id"];
+							var patchRecordResponse = recMan.UpdateRecord("wv_bug",patchRecord);
+							if(!patchRecordResponse.Success) {
+								throw new Exception(patchRecordResponse.Message);
+							}				
+						}
+					}
+					connection.CommitTransaction();
+					response.Success = true;
+					response.Timestamp = DateTime.UtcNow;
+					return Json(response);
+				}
+				catch (Exception ex)
+				{
+					connection.RollbackTransaction();
+					response.Success = false;
+					response.Timestamp = DateTime.UtcNow;
+					response.Message = "Error: " + ex.Message;
+					response.Object = null;
+					return Json(response);
+				}
+			}
+		}
 	}
 }

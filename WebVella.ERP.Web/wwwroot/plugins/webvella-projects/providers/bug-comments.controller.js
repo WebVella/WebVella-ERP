@@ -69,12 +69,14 @@
 
 	}
 
-	ManageBugCommentModalController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaCoreService', 'ngToast', '$timeout',
+	ManageBugCommentModalController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaCoreService','webvellaProjectsService', 'ngToast', '$timeout',
 									'$state', '$location', 'ngCtrl', '$translate','record','$scope'];
-	function ManageBugCommentModalController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaCoreService, ngToast, $timeout,
+	function ManageBugCommentModalController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaCoreService,webvellaProjectsService, ngToast, $timeout,
 									$state, $location, ngCtrl, $translate,record,$scope) {
 		var popupCtrl = this;
 		popupCtrl.isUpdate = false;
+		popupCtrl.recordStatus = ngCtrl.view.data[0].status;
+		popupCtrl.bug = fastCopy(ngCtrl.view.data[0]);
 		if(record != null){
 			popupCtrl.record = fastCopy(record);
 			popupCtrl.isUpdate = true;
@@ -85,6 +87,23 @@
 			popupCtrl.record.content = null;
 			popupCtrl.record.bug_id = fastCopy(ngCtrl.stateParams.recordId);
 		}
+
+		popupCtrl.new_owner_id = "";
+		popupCtrl.bugOwner = {};
+		popupCtrl.bugOwner.id = popupCtrl.bug.$field$user_1_n_bug_owner$id[0];
+		popupCtrl.bugOwner.username = popupCtrl.bug.$field$user_1_n_bug_owner$username[0];
+
+		popupCtrl.bugWatchers = [];
+		var watcherIndex = 0;
+		_.forEach(popupCtrl.bug.$field$user_n_n_bug_watchers$id,function(watcherId){
+			if(watcherId !== popupCtrl.bugOwner.id){
+				var watcher = {};
+				watcher.id = watcherId;
+				watcher.username = popupCtrl.bug.$field$user_n_n_bug_watchers$username[watcherIndex];
+				popupCtrl.bugWatchers.push(watcher);
+			}
+			watcherIndex ++;
+		});
 
 
 		$scope.editorOptions = {
@@ -113,15 +132,16 @@
 		};
 
 		popupCtrl.ok = function () {
-			if(popupCtrl.isUpdate){
-				var updateObject = {};
-				updateObject.id = popupCtrl.record.id;
-				updateObject.content = popupCtrl.record.content;
-				webvellaCoreService.updateRecord(updateObject.id, "wv_project_comment", updateObject, successCallback, errorCallback);
+			var submitObject = {};
+			submitObject.id = popupCtrl.record.id;
+			submitObject.content = popupCtrl.record.content;
+			submitObject.task_id = "";
+			submitObject.bug_id = popupCtrl.bug.id;
+			submitObject.new_owner_id = "";
+			if(popupCtrl.new_owner_id != popupCtrl.bugOwner.id){
+				submitObject.new_owner_id = popupCtrl.new_owner_id;
 			}
-			else {
-				webvellaCoreService.createRecord("wv_project_comment",  popupCtrl.record, successCallback, errorCallback);			
-			}
+			webvellaProjectsService.upsertComment(submitObject, successCallback, errorCallback);
 		
 		};
 
