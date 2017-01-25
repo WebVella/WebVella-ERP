@@ -11,14 +11,18 @@ namespace WebVella.ERP.Diagnostics
 		{
 			EntityRecord logRecord = new EntityRecord();
 			logRecord["id"] = Guid.NewGuid();
-			logRecord["type"] = (int)type;
+			logRecord["type"] = ((int)type).ToString();
 			logRecord["source"] = source;
 			logRecord["message"] = message;
-			logRecord["notification_status"] = (int)notificationStatus;
+			logRecord["notification_status"] = ((int)notificationStatus).ToString();
 			logRecord["details"] = details;
+			logRecord["created_by"] = SystemIds.SystemUserId;
+			logRecord["last_modified_by"] = SystemIds.SystemUserId;
+			logRecord["created_on"] = DateTime.UtcNow;
+			logRecord["last_modified_on"] = DateTime.UtcNow;
 
 			RecordManager recMan = new RecordManager();
-			recMan.CreateRecord("system_log", logRecord);
+			var response = recMan.CreateRecord("system_log", logRecord);
 		}
 
 		public void UpdateNotificationStatus(Guid id, LogNotificationStatus notificationStatus)
@@ -31,7 +35,8 @@ namespace WebVella.ERP.Diagnostics
 				return; //Maybe it have to throw exception here
 
 			EntityRecord logRecord = response.Object.Data[0];
-			logRecord["notification_status"] = (int)notificationStatus;
+			logRecord["notification_status"] = ((int)notificationStatus).ToString();
+			logRecord["last_modified_on"] = DateTime.UtcNow;
 
 			recMan.UpdateRecord("system_log", logRecord);
 		}
