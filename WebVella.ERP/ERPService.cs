@@ -816,7 +816,7 @@ namespace WebVella.ERP
 								systemFieldIdDictionary["user_log_created_by"] = new Guid("7ca4da74-48e2-43f3-bcbf-5e0b2a2722a1");
 								systemFieldIdDictionary["user_log_modified_by"] = new Guid("70ef01a3-9ef7-4339-adb3-74229519ffd1");
 								entity.Id = new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933");
-								entity.Name = "log";
+								entity.Name = "system_log";
 								entity.Label = "Log";
 								entity.LabelPlural = "Logs";
 								entity.System = true;

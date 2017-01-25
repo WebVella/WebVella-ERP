@@ -18,14 +18,14 @@ namespace WebVella.ERP.Diagnostics
 			logRecord["details"] = details;
 
 			RecordManager recMan = new RecordManager();
-			recMan.CreateRecord("log", logRecord);
+			recMan.CreateRecord("system_log", logRecord);
 		}
 
 		public void UpdateNotificationStatus(Guid id, LogNotificationStatus notificationStatus)
 		{
 			RecordManager recMan = new RecordManager();
 
-			var response = recMan.Find(new EntityQuery("log", "*", EntityQuery.QueryEQ("id", id)));
+			var response = recMan.Find(new EntityQuery("system_log", "*", EntityQuery.QueryEQ("id", id)));
 
 			if (!response.Success || response.Object == null || response.Object.Data == null || response.Object.Data.Count == 0)
 				return; //Maybe it have to throw exception here
@@ -33,14 +33,14 @@ namespace WebVella.ERP.Diagnostics
 			EntityRecord logRecord = response.Object.Data[0];
 			logRecord["notification_status"] = (int)notificationStatus;
 
-			recMan.UpdateRecord("log", logRecord);
+			recMan.UpdateRecord("system_log", logRecord);
 		}
 
 		public void SendEmails()
 		{
 			RecordManager recMan = new RecordManager();
 
-			var response = recMan.Find(new EntityQuery("log", "*", EntityQuery.QueryEQ("notification_status", (int)LogNotificationStatus.NotNotified)));
+			var response = recMan.Find(new EntityQuery("system_log", "*", EntityQuery.QueryEQ("notification_status", (int)LogNotificationStatus.NotNotified)));
 
 			if (!response.Success || response.Object == null || response.Object.Data == null || response.Object.Data.Count == 0)
 				return;
