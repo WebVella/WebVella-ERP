@@ -17,7 +17,6 @@ namespace WebVella.ERP
 
 		public void InitializeSystemEntities()
 		{
-			EntityResponse response = null;
 			FieldResponse fieldResponse = null;
 			EntityManager entMan = new EntityManager();
 			EntityRelationManager rm = new EntityRelationManager();
@@ -87,7 +86,7 @@ namespace WebVella.ERP
 							systemItemIdDictionary["created_by"] = new Guid("825e8367-3be1-4022-ba66-6494859d70d9");
 							systemItemIdDictionary["last_modified_on"] = new Guid("5a975d33-47c6-4ba6-83c8-c24034206879");
 							systemItemIdDictionary["last_modified_by"] = new Guid("cafc8cda-1a1d-43e4-9406-6acf8ba8fa8d");
-							response = entMan.CreateEntity(userEntity, false, false, systemItemIdDictionary);
+							var response = entMan.CreateEntity(userEntity, false, false, systemItemIdDictionary);
 
 							InputTextField firstName = new InputTextField();
 
@@ -292,7 +291,7 @@ namespace WebVella.ERP
 							systemItemIdDictionary["last_modified_by"] = new Guid("a4489db4-9d76-4d5a-8940-6ef2da562c25");
 							systemItemIdDictionary["user_role_created_by"] = new Guid("c6151e80-9dce-4c0b-ae5f-4798e14cff4c");
 							systemItemIdDictionary["user_role_modified_by"] = new Guid("f3efaefe-32d2-4840-ac06-bc5723e323d0");
-							response = entMan.CreateEntity(roleEntity, false, false, systemItemIdDictionary);
+							var response = entMan.CreateEntity(roleEntity, false, false, systemItemIdDictionary);
 
 							InputTextField nameRoleField = new InputTextField();
 
@@ -672,7 +671,7 @@ namespace WebVella.ERP
 								{
 									var createResponse = entMan.CreateField(SystemIds.AreaEntityId, textboxField, false);
 									if (!createResponse.Success)
-										throw new Exception("System error 10060. Entity: area Field: folder" + " Message:" + response.Message);
+										throw new Exception("System error 10060. Entity: area Field: folder" + " Message:" + createResponse.Message);
 								}
 							}
 							#endregion
@@ -725,7 +724,7 @@ namespace WebVella.ERP
 								{
 									var createResponse = entMan.CreateEntity(entity, false, false, systemItemIdDictionary);
 									if (!createResponse.Success)
-										throw new Exception("System error 10050. Entity: " + PLUGIN_DATA_NAME + " Field: entity creation" + " Message:" + response.Message);
+										throw new Exception("System error 10050. Entity: " + PLUGIN_DATA_NAME + " Field: entity creation" + " Message:" + createResponse.Message);
 								}
 							}
 							#endregion
@@ -757,7 +756,7 @@ namespace WebVella.ERP
 								{
 									var createResponse = entMan.CreateField(PLUGIN_DATA_ID, textboxField, false);
 									if (!createResponse.Success)
-										throw new Exception("System error 10060. Entity: " + PLUGIN_DATA_NAME + " Field: field_name" + " Message:" + response.Message);
+										throw new Exception("System error 10060. Entity: " + PLUGIN_DATA_NAME + " Field: field_name" + " Message:" + createResponse.Message);
 								}
 							}
 							#endregion
@@ -789,7 +788,7 @@ namespace WebVella.ERP
 								{
 									var createResponse = entMan.CreateField(PLUGIN_DATA_ID, textboxField, false);
 									if (!createResponse.Success)
-										throw new Exception("System error 10060. Entity: " + PLUGIN_DATA_NAME + " Field: field_name" + " Message:" + response.Message);
+										throw new Exception("System error 10060. Entity: " + PLUGIN_DATA_NAME + " Field: field_name" + " Message:" + createResponse.Message);
 								}
 							}
 							#endregion
@@ -797,6 +796,1152 @@ namespace WebVella.ERP
 						}
 						#endregion
 
+					}
+
+					if (currentVersion < 20170125)
+					{
+						systemSettings.Version = 20170125;
+
+						#region << ***Create entity*** Entity name: log >>
+						{
+							#region << entity >>
+							{
+								var entity = new InputEntity();
+								var systemFieldIdDictionary = new Dictionary<string, Guid>();
+								systemFieldIdDictionary["id"] = new Guid("fef43796-fb04-4e62-964d-c9d9a3941dfb");
+								systemFieldIdDictionary["created_on"] = new Guid("33127843-8a6f-4d89-b3ef-1f9652ecf3a3");
+								systemFieldIdDictionary["created_by"] = new Guid("43361778-2197-4f41-a7c7-e4b74b241a1f");
+								systemFieldIdDictionary["last_modified_on"] = new Guid("9a0fe7df-1e22-4074-9536-a77fad885105");
+								systemFieldIdDictionary["last_modified_by"] = new Guid("73dc9f66-dd35-4b89-80ae-7710167e31c7");
+								systemFieldIdDictionary["user_log_created_by"] = new Guid("7ca4da74-48e2-43f3-bcbf-5e0b2a2722a1");
+								systemFieldIdDictionary["user_log_modified_by"] = new Guid("70ef01a3-9ef7-4339-adb3-74229519ffd1");
+								entity.Id = new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933");
+								entity.Name = "system_log";
+								entity.Label = "Log";
+								entity.LabelPlural = "Logs";
+								entity.System = true;
+								entity.IconName = "database";
+								entity.Weight = (decimal)10.0;
+								entity.RecordPermissions = new RecordPermissions();
+								entity.RecordPermissions.CanCreate = new List<Guid>();
+								entity.RecordPermissions.CanRead = new List<Guid>();
+								entity.RecordPermissions.CanUpdate = new List<Guid>();
+								entity.RecordPermissions.CanDelete = new List<Guid>();
+								//Create
+								entity.RecordPermissions.CanCreate.Add(new Guid("bdc56420-caf0-4030-8a0e-d264938e0cda"));
+								//READ
+								entity.RecordPermissions.CanRead.Add(new Guid("bdc56420-caf0-4030-8a0e-d264938e0cda"));
+								//UPDATE
+								entity.RecordPermissions.CanUpdate.Add(new Guid("bdc56420-caf0-4030-8a0e-d264938e0cda"));
+								//DELETE
+								entity.RecordPermissions.CanDelete.Add(new Guid("bdc56420-caf0-4030-8a0e-d264938e0cda"));
+								{
+									var response = entMan.CreateEntity(entity, false, false, systemFieldIdDictionary);
+									if (!response.Success)
+										throw new Exception("System error 10050. Entity: log creation Message: " + response.Message);
+								}
+							}
+							#endregion
+						}
+						#endregion
+
+						#region << ***Create field***  Entity: log Field Name: type >>
+						{
+							InputSelectField dropdownField = new InputSelectField();
+							dropdownField.Id = new Guid("4dd8a502-e6bd-48a0-bf27-69aa47f2d73d");
+							dropdownField.Name = "type";
+							dropdownField.Label = "Type";
+							dropdownField.PlaceholderText = "";
+							dropdownField.Description = "";
+							dropdownField.HelpText = "";
+							dropdownField.Required = true;
+							dropdownField.Unique = false;
+							dropdownField.Searchable = false;
+							dropdownField.Auditable = false;
+							dropdownField.System = true;
+							dropdownField.DefaultValue = "1";
+							dropdownField.Options = new List<SelectFieldOption>
+	{
+		new SelectFieldOption() { Key = "1", Value = "error"},
+		new SelectFieldOption() { Key = "2", Value = "info"}
+	};
+							dropdownField.EnableSecurity = false;
+							dropdownField.Permissions = new FieldPermissions();
+							dropdownField.Permissions.CanRead = new List<Guid>();
+							dropdownField.Permissions.CanUpdate = new List<Guid>();
+							//READ
+							//UPDATE
+							{
+								var response = entMan.CreateField(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933"), dropdownField, false);
+								if (!response.Success)
+									throw new Exception("System error 10060. Entity: log Field: type Message:" + response.Message);
+							}
+						}
+						#endregion
+
+						#region << ***Create field***  Entity: log Field Name: message >>
+						{
+							InputTextField textboxField = new InputTextField();
+							textboxField.Id = new Guid("4d2bbc62-af48-44df-a397-f8fd86eef086");
+							textboxField.Name = "message";
+							textboxField.Label = "Message";
+							textboxField.PlaceholderText = "";
+							textboxField.Description = "";
+							textboxField.HelpText = "";
+							textboxField.Required = true;
+							textboxField.Unique = false;
+							textboxField.Searchable = true;
+							textboxField.Auditable = false;
+							textboxField.System = true;
+							textboxField.DefaultValue = "message";
+							textboxField.MaxLength = null;
+							textboxField.EnableSecurity = false;
+							textboxField.Permissions = new FieldPermissions();
+							textboxField.Permissions.CanRead = new List<Guid>();
+							textboxField.Permissions.CanUpdate = new List<Guid>();
+							//READ
+							//UPDATE
+							{
+								var response = entMan.CreateField(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933"), textboxField, false);
+								if (!response.Success)
+									throw new Exception("System error 10060. Entity: log Field: message Message:" + response.Message);
+							}
+						}
+						#endregion
+
+						#region << ***Create field***  Entity: log Field Name: source >>
+						{
+							InputTextField textboxField = new InputTextField();
+							textboxField.Id = new Guid("d96024cb-adc0-4f0b-a708-cd7e72cb913c");
+							textboxField.Name = "source";
+							textboxField.Label = "Source";
+							textboxField.PlaceholderText = "";
+							textboxField.Description = "";
+							textboxField.HelpText = "";
+							textboxField.Required = true;
+							textboxField.Unique = false;
+							textboxField.Searchable = true;
+							textboxField.Auditable = false;
+							textboxField.System = true;
+							textboxField.DefaultValue = "source";
+							textboxField.MaxLength = null;
+							textboxField.EnableSecurity = false;
+							textboxField.Permissions = new FieldPermissions();
+							textboxField.Permissions.CanRead = new List<Guid>();
+							textboxField.Permissions.CanUpdate = new List<Guid>();
+							//READ
+							//UPDATE
+							{
+								var response = entMan.CreateField(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933"), textboxField, false);
+								if (!response.Success)
+									throw new Exception("System error 10060. Entity: log Field: source Message:" + response.Message);
+							}
+						}
+						#endregion
+
+						#region << ***Create field***  Entity: log Field Name: details >>
+						{
+							InputTextField textboxField = new InputTextField();
+							textboxField.Id = new Guid("fec5493a-bdc9-4814-afcf-990c97e5abf1");
+							textboxField.Name = "details";
+							textboxField.Label = "Details";
+							textboxField.PlaceholderText = "";
+							textboxField.Description = "";
+							textboxField.HelpText = "";
+							textboxField.Required = false;
+							textboxField.Unique = false;
+							textboxField.Searchable = false;
+							textboxField.Auditable = false;
+							textboxField.System = true;
+							textboxField.DefaultValue = null;
+							textboxField.MaxLength = null;
+							textboxField.EnableSecurity = false;
+							textboxField.Permissions = new FieldPermissions();
+							textboxField.Permissions.CanRead = new List<Guid>();
+							textboxField.Permissions.CanUpdate = new List<Guid>();
+							//READ
+							//UPDATE
+							{
+								var response = entMan.CreateField(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933"), textboxField, false);
+								if (!response.Success)
+									throw new Exception("System error 10060. Entity: log Field: details Message:" + response.Message);
+							}
+						}
+						#endregion
+
+						#region << ***Create field***  Entity: log Field Name: notification_status >>
+						{
+							InputSelectField dropdownField = new InputSelectField();
+							dropdownField.Id = new Guid("986e96b9-6ab0-4ed5-92db-91f1faff1faf");
+							dropdownField.Name = "notification_status";
+							dropdownField.Label = "Notification Status";
+							dropdownField.PlaceholderText = "";
+							dropdownField.Description = "";
+							dropdownField.HelpText = "";
+							dropdownField.Required = true;
+							dropdownField.Unique = false;
+							dropdownField.Searchable = false;
+							dropdownField.Auditable = false;
+							dropdownField.System = true;
+							dropdownField.DefaultValue = "1";
+							dropdownField.Options = new List<SelectFieldOption>
+	{
+		new SelectFieldOption() { Key = "1", Value = "Do not notify"},
+		new SelectFieldOption() { Key = "2", Value = "Not notified"},
+		new SelectFieldOption() { Key = "3", Value = "Notified"},
+		new SelectFieldOption() { Key = "4", Value = "Notification failed"}
+	};
+							dropdownField.EnableSecurity = false;
+							dropdownField.Permissions = new FieldPermissions();
+							dropdownField.Permissions.CanRead = new List<Guid>();
+							dropdownField.Permissions.CanUpdate = new List<Guid>();
+							//READ
+							//UPDATE
+							{
+								var response = entMan.CreateField(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933"), dropdownField, false);
+								if (!response.Success)
+									throw new Exception("System error 10060. Entity: log Field: notification_status Message:" + response.Message);
+							}
+						}
+						#endregion
+
+						#region << View  Entity: log name: create >>
+						{
+							var createViewEntity = entMan.ReadEntity(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933")).Object;
+							var createViewInput = new InputRecordView();
+
+							#region << details >>
+							createViewInput.Id = new Guid("20848d58-5c94-41b2-a118-ee047720cd30");
+							createViewInput.Type = "Create";
+							createViewInput.Name = "create";
+							createViewInput.Label = "Create";
+							createViewInput.Title = "Create";
+							createViewInput.Default = true;
+							createViewInput.System = false;
+							createViewInput.Weight = Decimal.Parse("10.0");
+							createViewInput.CssClass = "";
+							createViewInput.IconName = "file-text-o";
+							createViewInput.DynamicHtmlTemplate = null;
+							createViewInput.DataSourceUrl = null;
+							createViewInput.ServiceCode = null;
+							#endregion
+
+							#region << regions >>
+							createViewInput.Regions = new List<InputRecordViewRegion>();
+
+							#region << Region: header >>
+							{
+								var viewRegion = new InputRecordViewRegion();
+								viewRegion.Name = "header";
+								viewRegion.Label = "Header";
+								viewRegion.Render = true;
+								viewRegion.Weight = Decimal.Parse("10.0");
+								viewRegion.CssClass = "";
+								viewRegion.Sections = new List<InputRecordViewSection>();
+
+								//Save region
+								createViewInput.Regions.Add(viewRegion);
+							}
+							#endregion
+
+							#endregion
+
+							#region << Relation options >>
+							{
+								createViewInput.RelationOptions = new List<EntityRelationOptionsItem>();
+							}
+							#endregion
+
+							#region << Action items >>
+							{
+								createViewInput.ActionItems = new List<ActionItem>();
+
+								#region << action item: wv_back_button >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_back_button";
+									actionItem.Menu = "sidebar-top";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a class=""back clearfix"" href=""javascript:void(0)"" ng-click=""sidebarData.goBack()""><i class=""fa fa-fw fa-arrow-left""></i> <span class=""text"">Back</span></a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_create_and_list >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_create_and_list";
+									actionItem.Menu = "create-bottom";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""default"")' ng-if=""::ngCtrl.createViewRegion != null"">Create</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_create_and_details >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_create_and_details";
+									actionItem.Menu = "create-bottom";
+									actionItem.Weight = Decimal.Parse("2.0");
+									actionItem.Template = @"<a class=""btn btn-default btn-outline"" ng-click='ngCtrl.create(""details"")' ng-if=""::ngCtrl.createViewRegion != null"">Create & Details</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_create_cancel >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_create_cancel";
+									actionItem.Menu = "create-bottom";
+									actionItem.Weight = Decimal.Parse("3.0");
+									actionItem.Template = @"<a class=""btn btn-default btn-outline"" ng-click=""ngCtrl.cancel()"">Cancel</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_view_add_existing >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_view_add_existing";
+									actionItem.Menu = "recursive-view-title";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" class=""btn btn-sm btn-outline"" ng-if=""::canAddExisting"" ng-click=""addExistingItem()""><i class=""fa fa-download""></i> Add existing</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_view_add_new >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_view_add_new";
+									actionItem.Menu = "recursive-view-title";
+									actionItem.Weight = Decimal.Parse("2.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" class=""btn btn-sm btn-outline"" ng-if=""::canCreate"" ng-click=""manageRelatedRecordItem(null)""><i class=""fa fa-plus""></i> Create & Add</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_view_edit >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_view_edit";
+									actionItem.Menu = "recursive-list-record-row";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" title=""quick edit"" class=""btn btn-sm btn-outline"" ng-click=""manageRelatedRecordItem(recordData)"" ng-if=""::canUpdate""><i class=""fa fa-pencil""></i></a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_view_unrelate >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_view_unrelate";
+									actionItem.Menu = "recursive-list-record-row";
+									actionItem.Weight = Decimal.Parse("2.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" title=""remove relation"" class=""btn btn-sm btn-outline"" confirmed-click=""instantDetachRecord(recordData)"" ng-confirm-click=""Are you sure that you need this relation removed?"" ng-if=""::canRemove""><i class=""fa fa-times go-red""></i></a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+							}
+							#endregion
+
+							#region << Sidebar >>
+							createViewInput.Sidebar = new InputRecordViewSidebar();
+							createViewInput.Sidebar.CssClass = "";
+							createViewInput.Sidebar.Render = false;
+							createViewInput.Sidebar.Items = new List<InputRecordViewSidebarItemBase>();
+
+							#endregion
+							{
+								var response = entMan.CreateRecordView(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933"), createViewInput);
+								if (!response.Success)
+									throw new Exception("System error 10060. Entity: log Updated view: create Message:" + response.Message);
+							}
+						}
+						#endregion
+
+						#region << View  Entity: log name: quick_create >>
+						{
+							var createViewEntity = entMan.ReadEntity(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933")).Object;
+							var createViewInput = new InputRecordView();
+
+							#region << details >>
+							createViewInput.Id = new Guid("fbc7f61c-4b74-4925-a2c1-ed17f62ccbc3");
+							createViewInput.Type = "Quick_Create";
+							createViewInput.Name = "quick_create";
+							createViewInput.Label = "Quick create";
+							createViewInput.Title = "Quick create";
+							createViewInput.Default = true;
+							createViewInput.System = false;
+							createViewInput.Weight = Decimal.Parse("10.0");
+							createViewInput.CssClass = "";
+							createViewInput.IconName = "file-text-o";
+							createViewInput.DynamicHtmlTemplate = null;
+							createViewInput.DataSourceUrl = null;
+							createViewInput.ServiceCode = null;
+							#endregion
+
+							#region << regions >>
+							createViewInput.Regions = new List<InputRecordViewRegion>();
+
+							#region << Region: header >>
+							{
+								var viewRegion = new InputRecordViewRegion();
+								viewRegion.Name = "header";
+								viewRegion.Label = "Header";
+								viewRegion.Render = true;
+								viewRegion.Weight = Decimal.Parse("10.0");
+								viewRegion.CssClass = "";
+								viewRegion.Sections = new List<InputRecordViewSection>();
+
+								//Save region
+								createViewInput.Regions.Add(viewRegion);
+							}
+							#endregion
+
+							#endregion
+
+							#region << Relation options >>
+							{
+								createViewInput.RelationOptions = new List<EntityRelationOptionsItem>();
+							}
+							#endregion
+
+							#region << Action items >>
+							{
+								createViewInput.ActionItems = new List<ActionItem>();
+
+								#region << action item: wv_back_button >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_back_button";
+									actionItem.Menu = "sidebar-top";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a class=""back clearfix"" href=""javascript:void(0)"" ng-click=""sidebarData.goBack()""><i class=""fa fa-fw fa-arrow-left""></i> <span class=""text"">Back</span></a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_create_and_list >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_create_and_list";
+									actionItem.Menu = "create-bottom";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""default"")' ng-if=""::ngCtrl.createViewRegion != null"">Create</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_create_and_details >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_create_and_details";
+									actionItem.Menu = "create-bottom";
+									actionItem.Weight = Decimal.Parse("2.0");
+									actionItem.Template = @"<a class=""btn btn-default btn-outline"" ng-click='ngCtrl.create(""details"")' ng-if=""::ngCtrl.createViewRegion != null"">Create & Details</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_create_cancel >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_create_cancel";
+									actionItem.Menu = "create-bottom";
+									actionItem.Weight = Decimal.Parse("3.0");
+									actionItem.Template = @"<a class=""btn btn-default btn-outline"" ng-click=""ngCtrl.cancel()"">Cancel</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_view_add_existing >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_view_add_existing";
+									actionItem.Menu = "recursive-view-title";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" class=""btn btn-sm btn-outline"" ng-if=""::canAddExisting"" ng-click=""addExistingItem()""><i class=""fa fa-download""></i> Add existing</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_view_add_new >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_view_add_new";
+									actionItem.Menu = "recursive-view-title";
+									actionItem.Weight = Decimal.Parse("2.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" class=""btn btn-sm btn-outline"" ng-if=""::canCreate"" ng-click=""manageRelatedRecordItem(null)""><i class=""fa fa-plus""></i> Create & Add</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_view_edit >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_view_edit";
+									actionItem.Menu = "recursive-list-record-row";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" title=""quick edit"" class=""btn btn-sm btn-outline"" ng-click=""manageRelatedRecordItem(recordData)"" ng-if=""::canUpdate""><i class=""fa fa-pencil""></i></a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_view_unrelate >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_view_unrelate";
+									actionItem.Menu = "recursive-list-record-row";
+									actionItem.Weight = Decimal.Parse("2.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" title=""remove relation"" class=""btn btn-sm btn-outline"" confirmed-click=""instantDetachRecord(recordData)"" ng-confirm-click=""Are you sure that you need this relation removed?"" ng-if=""::canRemove""><i class=""fa fa-times go-red""></i></a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+							}
+							#endregion
+
+							#region << Sidebar >>
+							createViewInput.Sidebar = new InputRecordViewSidebar();
+							createViewInput.Sidebar.CssClass = "";
+							createViewInput.Sidebar.Render = false;
+							createViewInput.Sidebar.Items = new List<InputRecordViewSidebarItemBase>();
+
+							#endregion
+							{
+								var response = entMan.CreateRecordView(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933"), createViewInput);
+								if (!response.Success)
+									throw new Exception("System error 10060. Entity: log Updated view: quick_create Message:" + response.Message);
+							}
+						}
+						#endregion
+
+						#region << View  Entity: log name: quick_view >>
+						{
+							var createViewEntity = entMan.ReadEntity(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933")).Object;
+							var createViewInput = new InputRecordView();
+
+							#region << details >>
+							createViewInput.Id = new Guid("13de1db9-6283-41f3-90a9-6787eeec7ab2");
+							createViewInput.Type = "Quick_View";
+							createViewInput.Name = "quick_view";
+							createViewInput.Label = "Quick view";
+							createViewInput.Title = "Quick view";
+							createViewInput.Default = true;
+							createViewInput.System = false;
+							createViewInput.Weight = Decimal.Parse("10.0");
+							createViewInput.CssClass = "";
+							createViewInput.IconName = "file-text-o";
+							createViewInput.DynamicHtmlTemplate = null;
+							createViewInput.DataSourceUrl = null;
+							createViewInput.ServiceCode = null;
+							#endregion
+
+							#region << regions >>
+							createViewInput.Regions = new List<InputRecordViewRegion>();
+
+							#region << Region: header >>
+							{
+								var viewRegion = new InputRecordViewRegion();
+								viewRegion.Name = "header";
+								viewRegion.Label = "Header";
+								viewRegion.Render = true;
+								viewRegion.Weight = Decimal.Parse("10.0");
+								viewRegion.CssClass = "";
+								viewRegion.Sections = new List<InputRecordViewSection>();
+
+								//Save region
+								createViewInput.Regions.Add(viewRegion);
+							}
+							#endregion
+
+							#endregion
+
+							#region << Relation options >>
+							{
+								createViewInput.RelationOptions = new List<EntityRelationOptionsItem>();
+							}
+							#endregion
+
+							#region << Action items >>
+							{
+								createViewInput.ActionItems = new List<ActionItem>();
+
+								#region << action item: wv_record_delete >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_record_delete";
+									actionItem.Menu = "page-title-dropdown";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" confirmed-click=""::ngCtrl.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?"" ng-if=""::ngCtrl.userHasRecordPermissions('canDelete')""><i class=""fa fa-trash go-red""></i> Delete Record</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_manage_view >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_manage_view";
+									actionItem.Menu = "page-title-dropdown";
+									actionItem.Weight = Decimal.Parse("101.0");
+									actionItem.Template = @"<a target=""_blank"" ng-href=""{{ngCtrl.getViewManageUrl()}}"" ng-if=""::ngCtrl.userIsAdmin()"">
+	<i class=""fa fa-fw fa-cog""></i> Manage View
+</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_back_button >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_back_button";
+									actionItem.Menu = "sidebar-top";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a class=""back clearfix"" href=""javascript:void(0)"" ng-click=""sidebarData.goBack()""><i class=""fa fa-fw fa-arrow-left""></i> <span class=""text"">Back</span></a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_view_add_existing >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_view_add_existing";
+									actionItem.Menu = "recursive-view-title";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" class=""btn btn-sm btn-outline"" ng-if=""::canAddExisting"" ng-click=""addExistingItem()""><i class=""fa fa-download""></i> Add existing</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_view_add_new >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_view_add_new";
+									actionItem.Menu = "recursive-view-title";
+									actionItem.Weight = Decimal.Parse("2.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" class=""btn btn-sm btn-outline"" ng-if=""::canCreate"" ng-click=""manageRelatedRecordItem(null)""><i class=""fa fa-plus""></i> Create & Add</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_view_edit >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_view_edit";
+									actionItem.Menu = "recursive-list-record-row";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" title=""quick edit"" class=""btn btn-sm btn-outline"" ng-click=""manageRelatedRecordItem(recordData)"" ng-if=""::canUpdate""><i class=""fa fa-pencil""></i></a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_view_unrelate >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_view_unrelate";
+									actionItem.Menu = "recursive-list-record-row";
+									actionItem.Weight = Decimal.Parse("2.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" title=""remove relation"" class=""btn btn-sm btn-outline"" confirmed-click=""instantDetachRecord(recordData)"" ng-confirm-click=""Are you sure that you need this relation removed?"" ng-if=""::canRemove""><i class=""fa fa-times go-red""></i></a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+							}
+							#endregion
+
+							#region << Sidebar >>
+							createViewInput.Sidebar = new InputRecordViewSidebar();
+							createViewInput.Sidebar.CssClass = "";
+							createViewInput.Sidebar.Render = false;
+							createViewInput.Sidebar.Items = new List<InputRecordViewSidebarItemBase>();
+
+							#endregion
+							{
+								var response = entMan.CreateRecordView(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933"), createViewInput);
+								if (!response.Success)
+									throw new Exception("System error 10060. Entity: log Updated view: quick_view Message:" + response.Message);
+							}
+						}
+						#endregion
+
+						#region << View  Entity: log name: general >>
+						{
+							var createViewEntity = entMan.ReadEntity(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933")).Object;
+							var createViewInput = new InputRecordView();
+
+							#region << details >>
+							createViewInput.Id = new Guid("a5df793f-9fb0-4deb-a0a2-afaaf8f2a3ac");
+							createViewInput.Type = "General";
+							createViewInput.Name = "general";
+							createViewInput.Label = "General";
+							createViewInput.Title = "General";
+							createViewInput.Default = true;
+							createViewInput.System = false;
+							createViewInput.Weight = Decimal.Parse("10.0");
+							createViewInput.CssClass = "";
+							createViewInput.IconName = "file-text-o";
+							createViewInput.DynamicHtmlTemplate = null;
+							createViewInput.DataSourceUrl = null;
+							createViewInput.ServiceCode = null;
+							#endregion
+
+							#region << regions >>
+							createViewInput.Regions = new List<InputRecordViewRegion>();
+
+							#region << Region: header >>
+							{
+								var viewRegion = new InputRecordViewRegion();
+								viewRegion.Name = "header";
+								viewRegion.Label = "Header";
+								viewRegion.Render = true;
+								viewRegion.Weight = Decimal.Parse("10.0");
+								viewRegion.CssClass = "";
+								viewRegion.Sections = new List<InputRecordViewSection>();
+
+								//Save region
+								createViewInput.Regions.Add(viewRegion);
+							}
+							#endregion
+
+							#endregion
+
+							#region << Relation options >>
+							{
+								createViewInput.RelationOptions = new List<EntityRelationOptionsItem>();
+							}
+							#endregion
+
+							#region << Action items >>
+							{
+								createViewInput.ActionItems = new List<ActionItem>();
+
+								#region << action item: wv_record_delete >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_record_delete";
+									actionItem.Menu = "page-title-dropdown";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" confirmed-click=""::ngCtrl.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?"" ng-if=""::ngCtrl.userHasRecordPermissions('canDelete')""><i class=""fa fa-trash go-red""></i> Delete Record</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_manage_view >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_manage_view";
+									actionItem.Menu = "page-title-dropdown";
+									actionItem.Weight = Decimal.Parse("101.0");
+									actionItem.Template = @"<a target=""_blank"" ng-href=""{{ngCtrl.getViewManageUrl()}}"" ng-if=""::ngCtrl.userIsAdmin()"">
+	<i class=""fa fa-fw fa-cog""></i> Manage View
+</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_back_button >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_back_button";
+									actionItem.Menu = "sidebar-top";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a class=""back clearfix"" href=""javascript:void(0)"" ng-click=""sidebarData.goBack()""><i class=""fa fa-fw fa-arrow-left""></i> <span class=""text"">Back</span></a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_view_add_existing >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_view_add_existing";
+									actionItem.Menu = "recursive-view-title";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" class=""btn btn-sm btn-outline"" ng-if=""::canAddExisting"" ng-click=""addExistingItem()""><i class=""fa fa-download""></i> Add existing</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_view_add_new >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_view_add_new";
+									actionItem.Menu = "recursive-view-title";
+									actionItem.Weight = Decimal.Parse("2.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" class=""btn btn-sm btn-outline"" ng-if=""::canCreate"" ng-click=""manageRelatedRecordItem(null)""><i class=""fa fa-plus""></i> Create & Add</a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_view_edit >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_view_edit";
+									actionItem.Menu = "recursive-list-record-row";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" title=""quick edit"" class=""btn btn-sm btn-outline"" ng-click=""manageRelatedRecordItem(recordData)"" ng-if=""::canUpdate""><i class=""fa fa-pencil""></i></a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_view_unrelate >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_view_unrelate";
+									actionItem.Menu = "recursive-list-record-row";
+									actionItem.Weight = Decimal.Parse("2.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" title=""remove relation"" class=""btn btn-sm btn-outline"" confirmed-click=""instantDetachRecord(recordData)"" ng-confirm-click=""Are you sure that you need this relation removed?"" ng-if=""::canRemove""><i class=""fa fa-times go-red""></i></a>";
+									createViewInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+							}
+							#endregion
+
+							#region << Sidebar >>
+							createViewInput.Sidebar = new InputRecordViewSidebar();
+							createViewInput.Sidebar.CssClass = "";
+							createViewInput.Sidebar.Render = false;
+							createViewInput.Sidebar.Items = new List<InputRecordViewSidebarItemBase>();
+
+							#endregion
+							{
+								var response = entMan.CreateRecordView(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933"), createViewInput);
+								if (!response.Success)
+									throw new Exception("System error 10060. Entity: log Updated view: general Message:" + response.Message);
+							}
+						}
+						#endregion
+
+						#region << List  Entity: log name: general >>
+						{
+							var createListEntity = entMan.ReadEntity(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933")).Object;
+							var createListInput = new InputRecordList();
+
+							#region << details >>
+							createListInput.Id = new Guid("089cbb50-13a5-4a9c-a080-7aa52f59b093");
+							createListInput.Type = "General";
+							createListInput.Name = "general";
+							createListInput.Label = "General";
+							createListInput.Title = "General";
+							createListInput.Weight = Decimal.Parse("10.0");
+							createListInput.Default = true;
+							createListInput.System = false;
+							createListInput.CssClass = null;
+							createListInput.IconName = string.IsNullOrEmpty("list") ? string.Empty : "list";
+							createListInput.VisibleColumnsCount = Int32.Parse("5");
+							createListInput.ColumnWidthsCSV = null;
+							createListInput.PageSize = Int32.Parse("10");
+							createListInput.DynamicHtmlTemplate = null;
+							createListInput.DataSourceUrl = null;
+							createListInput.ServiceCode = null;
+							#endregion
+
+							#region << Relation options >>
+							{
+								createListInput.RelationOptions = new List<EntityRelationOptionsItem>();
+							}
+							#endregion
+
+							#region << Action items >>
+							{
+								createListInput.ActionItems = new List<ActionItem>();
+
+								#region << action item: wv_create_record >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_create_record";
+									actionItem.Menu = "page-title";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" ng-href=""{{::ngCtrl.getRecordCreateUrl()}}"">Add New</a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_import_records >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_import_records";
+									actionItem.Menu = "page-title-dropdown";
+									actionItem.Weight = Decimal.Parse("10.0");
+									actionItem.Template = @"<a ng-click=""ngCtrl.openImportModal()"" class=""ng-hide"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')""><i class=""fa fa-fw fa-upload""></i> Import CSV</a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_export_records >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_export_records";
+									actionItem.Menu = "page-title-dropdown";
+									actionItem.Weight = Decimal.Parse("11.0");
+									actionItem.Template = @"<a ng-click=""ngCtrl.openExportModal()"" class=""ng-hide"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')""><i class=""fa fa-fw fa-download""></i> Export CSV</a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_record_details >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_record_details";
+									actionItem.Menu = "record-row";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record)}}""><i class=""fa fa-fw fa-eye""></i></a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_list_add_existing >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_list_add_existing";
+									actionItem.Menu = "recursive-list-title";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" class=""btn btn-outline btn-sm"" ng-if=""::canAddExisting"" ng-click=""addExistingItem()""><i class=""fa fa-download""></i> Add existing</a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_list_add_new >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_list_add_new";
+									actionItem.Menu = "recursive-list-title";
+									actionItem.Weight = Decimal.Parse("2.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" class=""btn btn-outline btn-sm"" ng-if=""::canCreate"" ng-click=""manageRelatedRecordItem(null)""><i class=""fa fa-plus""></i> Create & Add</a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_list_view >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_list_view";
+									actionItem.Menu = "recursive-list-record-row";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" title=""quick view this record"" class=""btn btn-sm btn-outline"" ng-click=""viewRelatedRecordItem(record)""><i class=""fa fa-eye""></i></a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_list_edit >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_list_edit";
+									actionItem.Menu = "recursive-list-record-row";
+									actionItem.Weight = Decimal.Parse("2.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" title=""quick edit this record"" class=""btn btn-sm btn-outline"" ng-click=""manageRelatedRecordItem(record)"" ng-if=""::canUpdate""><i class=""fa fa-pencil""></i></a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_list_unrelate >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_list_unrelate";
+									actionItem.Menu = "recursive-list-record-row";
+									actionItem.Weight = Decimal.Parse("3.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" title=""Detach records relation"" class=""btn btn-sm btn-outline"" confirmed-click=""instantDetachRecord(record)"" ng-confirm-click=""Are you sure that you need this relation removed?"" ng-if=""::canRemove""><i class=""fa fa-times go-red""></i></a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+							}
+							#endregion
+
+							#region << Columns >>
+							{
+								createListInput.Columns = new List<InputRecordListItemBase>();
+
+							}
+							#endregion
+
+							#region << Query >>
+							{
+								createListInput.Query = null;
+							}
+							#endregion
+
+							#region << Sorts >>
+							{
+								createListInput.Sorts = new List<InputRecordListSort>();
+
+							}
+							#endregion
+
+							{
+								var response = entMan.CreateRecordList(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933"), createListInput);
+								if (!response.Success)
+									throw new Exception("System error 10060. Entity: log Created list: general Message:" + response.Message);
+							}
+						}
+						#endregion
+
+						#region << List  Entity: log name: lookup >>
+						{
+							var createListEntity = entMan.ReadEntity(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933")).Object;
+							var createListInput = new InputRecordList();
+
+							#region << details >>
+							createListInput.Id = new Guid("afe4ff81-654e-4a66-8972-31aff8b556d3");
+							createListInput.Type = "Lookup";
+							createListInput.Name = "lookup";
+							createListInput.Label = "Lookup";
+							createListInput.Title = "Lookup";
+							createListInput.Weight = Decimal.Parse("10.0");
+							createListInput.Default = true;
+							createListInput.System = false;
+							createListInput.CssClass = null;
+							createListInput.IconName = string.IsNullOrEmpty("list") ? string.Empty : "list";
+							createListInput.VisibleColumnsCount = Int32.Parse("5");
+							createListInput.ColumnWidthsCSV = null;
+							createListInput.PageSize = Int32.Parse("10");
+							createListInput.DynamicHtmlTemplate = null;
+							createListInput.DataSourceUrl = null;
+							createListInput.ServiceCode = null;
+							#endregion
+
+							#region << Relation options >>
+							{
+								createListInput.RelationOptions = new List<EntityRelationOptionsItem>();
+							}
+							#endregion
+
+							#region << Action items >>
+							{
+								createListInput.ActionItems = new List<ActionItem>();
+
+								#region << action item: wv_create_record >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_create_record";
+									actionItem.Menu = "page-title";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate')"" ng-href=""{{::ngCtrl.getRecordCreateUrl()}}"">Add New</a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_import_records >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_import_records";
+									actionItem.Menu = "page-title-dropdown";
+									actionItem.Weight = Decimal.Parse("10.0");
+									actionItem.Template = @"<a ng-click=""ngCtrl.openImportModal()"" class=""ng-hide"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')""><i class=""fa fa-fw fa-upload""></i> Import CSV</a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_export_records >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_export_records";
+									actionItem.Menu = "page-title-dropdown";
+									actionItem.Weight = Decimal.Parse("11.0");
+									actionItem.Template = @"<a ng-click=""ngCtrl.openExportModal()"" class=""ng-hide"" ng-show=""::ngCtrl.userHasRecordPermissions('canCreate,canUpdate')""><i class=""fa fa-fw fa-download""></i> Export CSV</a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_record_details >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_record_details";
+									actionItem.Menu = "record-row";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a class=""btn btn-default btn-outline"" ng-href=""{{::ngCtrl.getRecordDetailsUrl(record)}}""><i class=""fa fa-fw fa-eye""></i></a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_list_add_existing >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_list_add_existing";
+									actionItem.Menu = "recursive-list-title";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" class=""btn btn-outline btn-sm"" ng-if=""::canAddExisting"" ng-click=""addExistingItem()""><i class=""fa fa-download""></i> Add existing</a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_list_add_new >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_list_add_new";
+									actionItem.Menu = "recursive-list-title";
+									actionItem.Weight = Decimal.Parse("2.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" class=""btn btn-outline btn-sm"" ng-if=""::canCreate"" ng-click=""manageRelatedRecordItem(null)""><i class=""fa fa-plus""></i> Create & Add</a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_list_view >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_list_view";
+									actionItem.Menu = "recursive-list-record-row";
+									actionItem.Weight = Decimal.Parse("1.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" title=""quick view this record"" class=""btn btn-sm btn-outline"" ng-click=""viewRelatedRecordItem(record)""><i class=""fa fa-eye""></i></a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_list_edit >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_list_edit";
+									actionItem.Menu = "recursive-list-record-row";
+									actionItem.Weight = Decimal.Parse("2.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" title=""quick edit this record"" class=""btn btn-sm btn-outline"" ng-click=""manageRelatedRecordItem(record)"" ng-if=""::canUpdate""><i class=""fa fa-pencil""></i></a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+								#region << action item: wv_recursive_list_unrelate >>
+								{
+									var actionItem = new ActionItem();
+									actionItem.Name = "wv_recursive_list_unrelate";
+									actionItem.Menu = "recursive-list-record-row";
+									actionItem.Weight = Decimal.Parse("3.0");
+									actionItem.Template = @"<a href=""javascript:void(0)"" title=""Detach records relation"" class=""btn btn-sm btn-outline"" confirmed-click=""instantDetachRecord(record)"" ng-confirm-click=""Are you sure that you need this relation removed?"" ng-if=""::canRemove""><i class=""fa fa-times go-red""></i></a>";
+									createListInput.ActionItems.Add(actionItem);
+								}
+								#endregion
+
+							}
+							#endregion
+
+							#region << Columns >>
+							{
+								createListInput.Columns = new List<InputRecordListItemBase>();
+
+							}
+							#endregion
+
+							#region << Query >>
+							{
+								createListInput.Query = null;
+							}
+							#endregion
+
+							#region << Sorts >>
+							{
+								createListInput.Sorts = new List<InputRecordListSort>();
+
+							}
+							#endregion
+
+							{
+								var response = entMan.CreateRecordList(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933"), createListInput);
+								if (!response.Success)
+									throw new Exception("System error 10060. Entity: log Created list: lookup Message:" + response.Message);
+							}
+						}
+						#endregion
 					}
 
 					new DbSystemSettingsRepository().Save(new DbSystemSettings { Id = systemSettings.Id, Version = systemSettings.Version });
