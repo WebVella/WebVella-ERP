@@ -2166,20 +2166,55 @@
             }
             else {
                 var extraParamQueryString = "";
+				var queryParamAux = [];
                 extraParamQueryString = "?";
                 extraParamQueryString += "entityName=" + entityName + "&";
                 extraParamQueryString += "listName=" + viewMeta.name + "&";
                 extraParamQueryString += "recordId=" + recordId;
-                if (stateParams != null) {
-                    if (!isEmpty(stateParams)) {
-						extraParamQueryString += "&";
-                        for (var param in stateParams) {
-                            if (extraParamQueryString.indexOf(param) == -1) {
-                                extraParamQueryString += param + "=" + stateParams[param] + "&";
-                            }
+				//Add stateParams
+                if (stateParams != null && !isEmpty(stateParams)) {
+                    for (var param in stateParams) {
+                        if (stateParams[param] && extraParamQueryString.indexOf(param) == -1) {
+                            queryParamAux.push(param + "=" + stateParams[param]);
                         }
                     }
                 }
+				//Add locationParams with override of stateParams. Can be added to the view URL
+				var locationParams = $location.search();
+				if(locationParams != null && !isEmpty(locationParams)){
+                    for (var param in locationParams) {
+                        if (locationParams[param]) {
+							var auxParamFound = _.find(queryParamAux,function(record){
+								var index = record.indexOf(param + "=");
+								if(index == -1){
+									return false;
+								}
+								else{
+									return true;
+								}
+							});
+							if(auxParamFound){
+								//Remove the found elements
+								_.remove(queryParamAux,function(record){
+									var index = record.indexOf(param + "=");
+									if(index == -1){
+										return false;
+									}
+									else{
+										return true;
+									}
+								});
+							}
+							queryParamAux.push(param + "=" + locationParams[param]);
+                        }
+                    }					
+				}
+				if(queryParamAux.length > 0){
+					extraParamQueryString += "&";
+					extraParamQueryString += queryParamAux.join("&");
+				}
+
+
                 $http({ method: 'GET', url: viewMeta.dataSourceUrl + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
             }
         }
@@ -2222,6 +2257,7 @@
             }
             else {
                 var extraParamQueryString = "";
+				var queryParamAux = [];
                 extraParamQueryString = "?";
                 extraParamQueryString += "entityName=" + entityName + "&";
                 extraParamQueryString += "listName=" + listMeta.name + "&";
@@ -2235,17 +2271,50 @@
                         }
                     }
                 }
-                if (stateParams != null) {
-                    if (!isEmpty(stateParams)) {
-                        for (var param in stateParams) {
-                            if (extraParamQueryString.indexOf(param) == -1) {
-                                extraParamQueryString += param + "=" + stateParams[param] + "&";
-                            }
+ 				//Add stateParams
+                if (stateParams != null && !isEmpty(stateParams)) {
+                    for (var param in stateParams) {
+                        if (stateParams[param] && extraParamQueryString.indexOf(param) == -1) {
+                            queryParamAux.push(param + "=" + stateParams[param]);
                         }
                     }
                 }
-                //remove the last &
-                extraParamQueryString = extraParamQueryString.substring(0, extraParamQueryString.length - 1);
+				//Add locationParams with override of stateParams. Can be added to the view URL
+				var locationParams = $location.search();
+				if(locationParams != null && !isEmpty(locationParams)){
+                    for (var param in locationParams) {
+                        if (locationParams[param]) {
+							var auxParamFound = _.find(queryParamAux,function(record){
+								var index = record.indexOf(param + "=");
+								if(index == -1){
+									return false;
+								}
+								else{
+									return true;
+								}
+							});
+							if(auxParamFound){
+								//Remove the found elements
+								_.remove(queryParamAux,function(record){
+									var index = record.indexOf(param + "=");
+									if(index == -1){
+										return false;
+									}
+									else{
+										return true;
+									}
+								});
+							}
+							queryParamAux.push(param + "=" + locationParams[param]);
+                        }
+                    }					
+				}
+				if(queryParamAux.length > 0){
+					extraParamQueryString += "&";
+					extraParamQueryString += queryParamAux.join("&");
+				}
+
+
                 $http({ method: 'GET', url: listMeta.dataSourceUrl + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
             }
         }
