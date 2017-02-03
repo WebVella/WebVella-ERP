@@ -140,14 +140,27 @@
 											<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 										</div>
 										<!-- If type 5 - datetime -->
-										<div class="row" ng-switch-when="5">
-											<div class="col-sm-6" style="padding-right: 10px;">
+										<div ng-switch-when="5">
+											<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
+												 ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">
+												<input type="text" class="form-control" disabled editable-combodate="viewData[item.dataName]"
+													   e-init-date="false"
+													   value='{{ngCtrl.renderFieldValue(viewData[item.dataName],{fieldType:5})}}'
+													   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}"
+													   ng-init="ngCtrl.initDate(viewData[item.dataName])">
+												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-calendar fa-fw"></i></span>
+											</div>
+											<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}">
+												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+											</div>
+											<!--<div class="col-sm-6" style="padding-right: 10px;">
 												<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
 													 ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">
-													<input type="text" class="form-control" disabled editable-bsdate="viewData[item.dataName]"
+													<input type="text" class="form-control" editable-bsdate="viewData[item.dataName]"
 														   data-e-datepicker-popup="yyyy-MMM-dd" e-is-open="ngCtrl.opened[item.dataName]" e-init-date="false"
 														   onshow="ngCtrl.open(item.dataName,true)" onhide="ngCtrl.open(item.dataName,false)"
-														   value='{{ngCtrl.renderFieldValue(viewData[item.dataName],{fieldType:4})}}'
+														   ng-value='{{ngCtrl.renderFieldValue(viewData[item.dataName],{fieldType:4})}}'
 														   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}"
 														   ng-init="ngCtrl.initDate(viewData[item.dataName])">
 													<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-calendar fa-fw"></i></span>
@@ -159,18 +172,20 @@
 											</div>
 											<div class="col-sm-6" style="padding-left: 10px;">
 												<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
-													<input type="text" class="form-control" disabled editable-bstime="viewData[item.dataName]"
+													<input type="text" class="form-control" editable-bstime="viewData[item.dataName]"
 														   e-show-meridian="false" e-minute-step="10" e-is-open="ngCtrl.opened[item.dataName]"
 														   onshow="ngCtrl.open(item.dataName,true)" onhide="ngCtrl.open(item.dataName,false)"
-														   value='{{ngCtrl.getTimeString(item,viewData[item.dataName])}}'
-														   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}">
+														   ng-value='{{ngCtrl.getTimeString(item,viewData[item.dataName])}}'
+														   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}"
+														   ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">
 													<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-clock-o fa-fw"></i></span>
 												</div>
+												{{ngCtrl.getTimeString(item,viewData[item.dataName])}}
 												<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
 													<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}">
 													<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 												</div>
-											</div>
+											</div>-->
 										</div>
 										<!-- If type 6 - email -->
 										<div class="editable-wrapper input-group editable-updatable" ng-switch-when="6" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"

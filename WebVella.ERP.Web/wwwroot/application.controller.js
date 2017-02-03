@@ -14,8 +14,8 @@
 
 
 	//#region << Configuration  >> ///////////////////////////////////
-	config.$inject = ['$httpProvider', 'wvAppConstants', '$translateProvider','$sceDelegateProvider'];
-	function config($httpProvider, wvAppConstants, $translateProvider,$sceDelegateProvider) {
+	config.$inject = ['$httpProvider', 'wvAppConstants', '$translateProvider','$sceDelegateProvider','$locationProvider'];
+	function config($httpProvider, wvAppConstants, $translateProvider,$sceDelegateProvider,$locationProvider) {
 
 		//#region << Request interceptors >>
 		$httpProvider.interceptors.push(function ($q, $location, ngToast, $cookies, $rootScope, $timeout) {
@@ -90,6 +90,10 @@
 			}, false);
 		}
 		//#endregion
+
+
+		//REmove the !(exclamation) after the hash
+		$locationProvider.hashPrefix('');
 
 		//#region << Translation >>
 		$translateProvider.preferredLanguage(GlobalLanguage);

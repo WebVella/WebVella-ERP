@@ -1,0 +1,43 @@
+@import compass/css3
+@import compass/css3/user-interface
+
+.offline-ui, .offline-ui *, .offline-ui:before, .offline-ui:after, .offline-ui *:before, .offline-ui *:after
+    +box-sizing(border-box)
+
+.offline-ui
+    display: none
+    position: fixed
+    background: #fff
+    z-index: 2000
+    margin: auto
+    top: 0
+    left: 0
+    right: 0
+
+    .offline-ui-content:before
+        display: inline
+
+    .offline-ui-retry
+        +user-select(none)
+        display: none
+
+        &:before
+            display: inline
+
+    &.offline-ui-up
+
+        &.offline-ui-up-5s
+            display: block
+
+    &.offline-ui-down
+        display: block
+
+        &.offline-ui-waiting
+
+            .offline-ui-retry
+                display: block
+
+        &.offline-ui-reconnect-failed-2s
+
+            &.offline-ui-waiting .offline-ui-retry
+                display: none

@@ -4,11 +4,9 @@ ng-sortable
 
 Angular Library for Drag and Drop, supports Sortable and Draggable. No JQuery UI used. Supports Touch devices.
 
-If you use this module you can give it a thumbs up at [http://ngmodules.org/modules/ng-sortable](http://ngmodules.org/modules/ng-sortable).
-
 #### Release:
 
-Latest release version 1.3.6
+Latest release version 1.3.7
 
 #### Demo Page:
 
@@ -226,7 +224,7 @@ The move failure Impl here just reverts the moved item to its original location.
            */
           moveFailure = function() {   
                eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
-               eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.task);
+               eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
           };
     }
 
@@ -274,7 +272,7 @@ Run the following commands from the project root directory.
 
 ##### Commands to run:
     $ grunt build - builds the source and generates the min files in dist.
-    $ grunt server - runs a local web server on node.js
+    $ grunt serve - runs a local web server on node.js
     $ grunt test - runs the tests (WIP).
     $ grunt test:continuous - end to end test (WIP).
 

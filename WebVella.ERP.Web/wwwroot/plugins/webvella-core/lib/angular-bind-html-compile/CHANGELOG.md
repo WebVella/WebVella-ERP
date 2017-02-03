@@ -1,3 +1,7 @@
+## 1.3.0
+
+* Add main entry to `package.json` for installing via `npm`
+
 ### 1.2.1
 
 * Change strict angular dependency to `~1.x`

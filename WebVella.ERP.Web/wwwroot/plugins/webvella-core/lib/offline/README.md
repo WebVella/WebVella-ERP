@@ -88,7 +88,7 @@ Properties
   - reconnect:connecting: We are reconnecting now
   - reconnect:failure: A reconnect check attempt failed
   - requests:flush: Any pending requests have been remade
-  - requests:hold: A new request is being held
+  - requests:capture: A new request is being held
 
 `Offline.off(event, handler)`: Unbind an event
 
@@ -113,7 +113,7 @@ If you do want to run tests on a different domain, try the image method.  It loa
 Offline.options = {checks: {image: {url: 'my-image.gif'}, active: 'image'}}
 ```
 
-The one cavet is that with the image method, we can't distinguish a 404 from a genuine connection issue, so any error at all will
+The one caveat is that with the image method, we can't distinguish a 404 from a genuine connection issue, so any error at all will
 appear to Offline as a connection issue.
 
 Offline also includes a check called `'up'` and another called `'down'` which will always report being up or down respectively for

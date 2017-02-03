@@ -1,6 +1,6 @@
 {
   "name": "ckeditor",
-  "version": "4.5.9",
+  "version": "4.6.2",
   "description": "JavaScript WYSIWYG web text editor.",
   "main": "ckeditor.js",
   "repository": {
@@ -18,7 +18,7 @@
     "javascript"
   ],
   "author": "CKSource (http://cksource.com/)",
-  "license": "For licensing, see LICENSE.md or http://ckeditor.com/license.",
+  "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
   "bugs": {
     "url": "http://dev.ckeditor.com"
   },

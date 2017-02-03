@@ -1,1 +1,1 @@
-﻿CKEDITOR.plugins.setLang("font","sl",{fontSize:{label:"Velikost",voiceLabel:"Velikost",panelTitle:"Velikost"},label:"Pisava",panelTitle:"Pisava",voiceLabel:"Pisava"});
+﻿CKEDITOR.plugins.setLang("font","sl",{fontSize:{label:"Velikost",voiceLabel:"Velikost pisave",panelTitle:"Velikost pisave"},label:"Pisava",panelTitle:"Ime pisave",voiceLabel:"Pisava"});

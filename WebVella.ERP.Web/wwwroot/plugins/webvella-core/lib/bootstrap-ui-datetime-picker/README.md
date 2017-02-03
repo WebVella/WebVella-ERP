@@ -2,7 +2,7 @@
 
 AngularJs directive to use a date and/or time picker as a dropdown from an input. 
 
-[Demo](http://plnkr.co/edit/S8UqwvXNGmDcPXV7a0N3)
+[Demo](https://rawgit.com/Gillardo/bootstrap-ui-datetime-picker/master/example/index.html)
 
 ## Installation
 To use the directive you must have the following angular-ui bootstrap directives included already
@@ -81,52 +81,58 @@ Now datetimePicker options are globally set by default.  If you do not state the
 
 ```
 .constant('uiDatetimePickerConfig', {
-        dateFormat: 'yyyy-MM-dd HH:mm',
-        defaultTime: '00:00:00',
-        html5Types: {
-            date: 'yyyy-MM-dd',
-            'datetime-local': 'yyyy-MM-ddTHH:mm:ss.sss',
-            'month': 'yyyy-MM'
-        },
-        initialPicker: 'date',
-        reOpenDefault: false,
-        enableDate: true,
-        enableTime: true,
-        buttonBar: {
+    dateFormat: 'yyyy-MM-dd HH:mm',
+    defaultTime: '00:00:00',
+    html5Types: {
+        date: 'yyyy-MM-dd',
+        'datetime-local': 'yyyy-MM-ddTHH:mm:ss.sss',
+        'month': 'yyyy-MM'
+    },
+    initialPicker: 'date',
+    reOpenDefault: false,
+    enableDate: true,
+    enableTime: true,
+    buttonBar: {
+        show: true,
+        now: {
             show: true,
-            now: {
-                show: true,
-                text: 'Now'
-            },
-            today: {
-                show: true,
-                text: 'Today'
-            },
-            clear: {
-                show: true,
-                text: 'Clear'
-            },
-            date: {
-                show: true,
-                text: 'Date'
-            },
-            time: {
-                show: true,
-                text: 'Time'
-            },
-            close: {
-                show: true,
-                text: 'Close'
-            }
+            text: 'Now',
+            cls: 'btn-sm btn-default'
         },
-        closeOnDateSelection: true,
-        closeOnTimeNow: true,
-        appendToBody: false,
-        altInputFormats: [],
-        ngModelOptions: { },
-        saveAs: false,
-        readAs: false,
-    })
+        today: {
+            show: true,
+            text: 'Today',
+            cls: 'btn-sm btn-default'
+        },
+        clear: {
+            show: true,
+            text: 'Clear',
+            cls: 'btn-sm btn-default'
+        },
+        date: {
+            show: true,
+            text: 'Date',
+            cls: 'btn-sm btn-default'
+        },
+        time: {
+            show: true,
+            text: 'Time',
+            cls: 'btn-sm btn-default'
+        },
+        close: {
+            show: true,
+            text: 'Close',
+            cls: 'btn-sm btn-default'
+        }
+    },
+    closeOnDateSelection: true,
+    closeOnTimeNow: true,
+    appendToBody: false,
+    altInputFormats: [],
+    ngModelOptions: {},
+    saveAs: false,
+    readAs: false
+})
 ```
 
 ## Css
@@ -146,7 +152,7 @@ Applied when the date picker is visible
 ```
 .datetime-picker-dropdown > li.time-picker-menu
 ```
-Applied when the time picker is visible
+Applied when the time picker is visible.  The buttons in the buttonBars can be overridden by setting the css classes as stated above
 
 ###### EXAMPLE
 For example, if i add this css code, you will see the difference to the calendar in the images below

@@ -3582,14 +3582,22 @@ table .btn-xs.btn-link {
 		cursor: auto !important;
 	}
 
-	.editable-wrapper .form-control {
+	.editable-wrapper .form-control,
+	.editable-combodate .combodate select{
 		background-color: #fafafa;
 		color: #333;
 		box-shadow: none;
 		min-height: 34px;
 	}
 
-		.editable-wrapper .form-control:focus {
+.editable-combodate .combodate select {
+	border-radius:3px;
+	padding-left:3px;
+	padding-right:3px;
+}
+
+		.editable-wrapper .form-control:focus,
+		.editable-combodate .combodate select:focus {
 			border: 1px solid #bbb;
 			-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
 			box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
@@ -3679,6 +3687,21 @@ table .btn-xs.btn-link {
 	}
 
 
+	/* editable-combodate */
+	.editable-wrap.editable-combodate,
+	.editable-wrap.editable-combodate .input-group {
+		width: 100%;
+	}
+
+	.editable-wrap.editable-combodate .editable-controls {
+		padding-right: 85px;
+	}
+
+	.editable-wrap.editable-combodate .editable-buttons {
+		position: absolute;
+		right: 0;
+		top: 2px;
+	}
 
 	/* editable-text */
 	.editable-wrap.editable-text .editable-input {

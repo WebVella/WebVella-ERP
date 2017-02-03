@@ -1,4 +1,4 @@
-/*! offline-js 0.7.17 */
+/*! offline-js 0.7.18 */
 (function() {
   var Offline, checkXHR, defaultOptions, extendNative, grab, handlers, init;
   extendNative = function(to, from) {
@@ -70,7 +70,7 @@
   }, Offline.trigger = function(event) {
     var ctx, handler, j, len, ref, ref1, results;
     if (null != handlers[event]) {
-      for (ref = handlers[event], results = [], j = 0, len = ref.length; len > j; j++) ref1 = ref[j], 
+      for (ref = handlers[event].slice(0), results = [], j = 0, len = ref.length; len > j; j++) ref1 = ref[j], 
       ctx = ref1[0], handler = ref1[1], results.push(handler.call(ctx));
       return results;
     }
@@ -185,8 +185,8 @@
     var body, i, key, len, request, requests, url;
     if (Offline.getOption("requests") !== !1) {
       for (Offline.trigger("requests:flush"), requests = {}, i = 0, len = held.length; len > i; i++) request = held[i], 
-      url = request.url.replace(/(\?|&)_=[0-9]+/, function(match, char) {
-        return "?" === char ? char :"";
+      url = request.url.replace(/(\?|&)_=[0-9]+/, function(match, chr) {
+        return "?" === chr ? chr :"";
       }), Offline.getOption("deDupBody") ? (body = request.body, body = "[object Object]" === body.toString() ? JSON.stringify(body) :body.toString(), 
       requests[request.type.toUpperCase() + " - " + url + " - " + body] = request) :requests[request.type.toUpperCase() + " - " + url] = request;
       for (key in requests) request = requests[key], makeRequest(request);

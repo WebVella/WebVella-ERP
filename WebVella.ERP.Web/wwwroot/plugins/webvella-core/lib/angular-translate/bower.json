@@ -1,7 +1,7 @@
 {
   "name": "angular-translate",
   "description": "A translation module for AngularJS",
-  "version": "2.11.0",
+  "version": "2.13.1",
   "main": "./angular-translate.js",
   "ignore": [],
   "author": "Pascal Precht",
