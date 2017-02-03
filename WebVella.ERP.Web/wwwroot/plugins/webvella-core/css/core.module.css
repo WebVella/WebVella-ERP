@@ -674,6 +674,118 @@ ngToast
 		color:#333;		
 	}
 
+	.theme-red.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background: #F44336;
+		text-shadow: 0 0 3px #F44336;
+		background: rgba(244, 67, 54, 0.60);
+		color: #fff;
+	}
+
+	.theme-pink.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background: #E91E63;
+		text-shadow: 0 0 3px #E91E63;
+		background: rgba(233, 30, 99, 0.60);
+		color: #fff;
+	}
+
+	.theme-purple.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background: #9C27B0;
+		text-shadow: 0 0 3px #9C27B0;
+		background: rgba(156, 39, 176, 0.60);
+		color: #fff;
+	}
+
+	.theme-deep-purple.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background: #673AB7;
+		text-shadow: 0 0 3px #673AB7;
+		background: rgba(103, 58, 183, 0.60);
+		color: #fff;
+	}
+
+	.theme-indigo.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background: #3F51B5;
+		text-shadow: 0 0 3px #3F51B5;
+		background: rgba(63, 81, 181, 0.60);
+		color: #fff;
+	}
+
+
+	.theme-blue.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background: #2196F3;
+		text-shadow: 0 0 3px #2196F3;
+		background: rgba(33, 150, 243, 0.60);
+		color: #fff;
+	}
+
+	.theme-light-blue.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background: #03A9F4;
+		text-shadow: 0 0 3px #03A9F4;
+		background: rgba(3, 169, 244, 0.60);
+		color: #fff;
+	}
+	.theme-cyan.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background: #00BCD4;
+		text-shadow: 0 0 3px #00BCD4;
+		background: rgba(0, 188, 212, 0.60);
+		color: #fff;
+	}
+	.theme-teal.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background: #009688;
+		text-shadow: 0 0 3px #009688;
+		background: rgba(0, 150, 136, 0.60);
+		color: #fff;
+	}
+	.theme-green.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background: #4CAF50;
+		text-shadow: 0 0 3px #4CAF50;
+		background: rgba(76, 175, 80, 0.60);
+		color: #fff;
+	}
+	.theme-light-green.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background: #8BC34A;
+		text-shadow: 0 0 3px #8BC34A;
+		background: rgba(0, 150, 136, 0.60);
+		color: #fff;
+	}
+	.theme-lime.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background: #CDDC39;
+		text-shadow: 0 0 3px #CDDC39;
+		background: rgba(205, 220, 57, 0.60);
+		color: #fff;
+	}
+	.theme-yellow.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background: #FDD835;
+		text-shadow: 0 0 3px #FDD835;
+		background: rgba(253, 216, 53, 0.60);
+		color: #fff;
+	}
+	.theme-amber.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background: #FFC107;
+		text-shadow: 0 0 3px #FFC107;
+		background: rgba(255, 193, 7, 0.60);
+		color: #fff;
+	}
+	.theme-orange.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background: #FF9800;
+		text-shadow: 0 0 3px #FF9800;
+		background: rgba(255, 152, 0, 0.60);
+		color: #fff;
+	}
+	.theme-deep-orange.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background: #FF5722;
+		text-shadow: 0 0 3px #FF5722;
+		background: rgba(255, 87, 34, 0.60);
+		color: #fff;
+	}
+	.theme-brown.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background: #795548;
+		text-shadow: 0 0 3px #795548;
+		background: rgba(121, 85, 72, 0.60);
+		color: #fff;
+	}
+
+
+
 	.mini-sidebar #sidebar .nav > li {
 		text-align: center;
 		padding: 0;
