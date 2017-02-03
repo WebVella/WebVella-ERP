@@ -537,7 +537,6 @@ ngToast
 			color: #ECEFF1;
 			color: #BDBDBD;
 			white-space: nowrap;
-			overflow: hidden;
 			-ms-text-overflow: ellipsis;
 			-o-text-overflow: ellipsis;
 			text-overflow: ellipsis;
@@ -651,6 +650,28 @@ ngToast
 	.mini-sidebar #sidebar .nav > li .text,
 	.mini-sidebar #sidebar .nav > li.header {
 		display: none;
+	}
+
+	.mini-sidebar #sidebar .nav > li a:hover .text{
+		display: block !important;
+		position: absolute;
+		right: -180px;
+		top: 0;
+		background:rgba(0,0,0,.75);
+		color:#eee;
+		text-shadow:0 0 3px rgba(0,0,0,.75);
+		line-height: 42px;
+		height:42px;
+		padding:0 10px;
+		width:180px;
+		text-align: left;
+		box-shadow: 5px 0 10px #ccc;
+	}
+
+	.mini-sidebar #sidebar .nav > li.active a:hover .text {
+		background:rgba(255,255,255,.95);
+		text-shadow:0 0 3px rgba(255,255,255,.85);
+		color:#333;		
 	}
 
 	.mini-sidebar #sidebar .nav > li {
@@ -790,7 +811,6 @@ body.hidden-sidebar #page-topnav {
 
 #sidebar .nav a {
 	white-space: nowrap;
-	overflow: hidden;
 	-ms-text-overflow: ellipsis;
 	-o-text-overflow: ellipsis;
 	text-overflow: ellipsis;
