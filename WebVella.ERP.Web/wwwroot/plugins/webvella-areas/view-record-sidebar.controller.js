@@ -244,6 +244,12 @@
 			  return webvellaCoreService.generateHighlightString(item,sidebarData.viewData,sidebarData.stateParams,"label");
 		}
 
+		sidebarData.setCurrentBreadcrumb = function(hoveredSidebarMenuLabel){
+			if(sidebarData.$storage.isMiniSidebar){
+				$rootScope.hoveredSidebarMenuLabel = hoveredSidebarMenuLabel;
+			}
+		}
+
 	}
 
 })();

@@ -6,7 +6,7 @@
 	</ul>
 </div>
 <ul class="nav nav-pills nav-stacked">
-	<li role="presentation" ng-class="{active:sidebarData.isCurrentAttachmentActive(attachment)}" ng-repeat="attachment in sidebarData.currentArea.attachments" data-weight="{{attachment.weight}}">
+	<li role="presentation" ng-class="{active:sidebarData.isCurrentAttachmentActive(attachment)}" ng-repeat="attachment in sidebarData.currentArea.attachments" data-weight="{{attachment.weight}}" ng-mouseenter="sidebarData.setCurrentBreadcrumb(attachment.list.label)" ng-mouseleave="sidebarData.setCurrentBreadcrumb(null)">
 		<a ng-if="attachment.url == null" ui-sref="webvella-area-list-general({areaName:sidebarData.currentArea.name, entityName: attachment.name, listName: attachment.list.name, page:1})"><i class="fa fa-{{::attachment.iconName}} fa-fw"></i><span class="text">{{::attachment.list.label}}</span></a>
 		<a ng-if="attachment.url != null" href='{{::attachment.url}}'><i class="fa fa-{{::attachment.iconName}} fa-fw"></i><span class="text">{{::attachment.label}}</span></a>
 	</li>

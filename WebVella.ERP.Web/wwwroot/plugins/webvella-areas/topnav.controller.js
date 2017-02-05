@@ -41,6 +41,11 @@
                     },
                     function (response) { });
         }
+		topnavData.hoveredSidebarMenuLabel = $rootScope.hoveredSidebarMenuLabel;
+		$rootScope.$watch("hoveredSidebarMenuLabel",function(newValue){
+			topnavData.hoveredSidebarMenuLabel = $rootScope.hoveredSidebarMenuLabel;
+		});
+
     }
 
 })();
