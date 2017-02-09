@@ -948,7 +948,7 @@
 				content: '<span class="go-green">Success </span> Records successfully exported!'
 			});
 			//popupCtrl.downloadFilePath = response.object;
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.close('dismiss');
 
 		}
 		popupCtrl.exportErrorCallback = function (response) {
@@ -976,7 +976,7 @@
 		};
 
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.close('dismiss');
 		};
 	}
 
@@ -1050,11 +1050,11 @@
 		};
 
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.close('dismiss');
 		};
 
 		popupCtrl.CloseAfterImport = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.close('dismiss');
 			$state.reload();
 		};
 

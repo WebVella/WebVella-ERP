@@ -728,7 +728,7 @@
 				//we are currently copying so no need to return it back
 				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.task);
 			}
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel-boz');
 		};
 
 		/// Aux

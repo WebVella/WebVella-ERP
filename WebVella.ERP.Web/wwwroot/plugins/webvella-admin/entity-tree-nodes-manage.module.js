@@ -402,7 +402,7 @@
 		};
 
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel-boz');
 		};
 		//#endregion
 

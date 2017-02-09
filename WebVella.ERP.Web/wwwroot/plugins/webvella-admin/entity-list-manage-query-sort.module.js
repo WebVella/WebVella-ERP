@@ -632,7 +632,7 @@
 		var popupCtrl = this;
 
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.close('dismiss');
 		};
 
 	};
@@ -644,7 +644,7 @@
 		var popupCtrl = this;
 
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.close('dismiss');
 		};
 
 	};
