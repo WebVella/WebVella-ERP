@@ -223,8 +223,10 @@ span.divider {
 }
 
 .navbar.navbar-default.navbar-erp {
-	background: #f2f2f2;
-	border-color: #ddd;
+	/*background: #f2f2f2;
+	border-color: #ddd;*/
+	background: #444;
+	border:none;
 	margin-bottom: 1em;
 	min-height: 40px;
 }
@@ -238,10 +240,18 @@ span.divider {
 	.navbar.navbar-default.navbar-erp .navbar-header > span {
 		padding-top: 10px;
 		padding-bottom: 10px;
+		color:#ccc;
+	}
+
+	.navbar.navbar-default.navbar-erp li > a:hover,
+	.navbar.navbar-default.navbar-erp .navbar-header > span:hover {
+		background-color: rgba(255,255,255,0.25);
+		color:#eee;
 	}
 
 	.navbar.navbar-default.navbar-erp li.active > a {
-		background-color: #ddd;
+		background-color: rgba(255,255,255,0.75);
+		color:#333;
 	}
 
 	.navbar.navbar-default.navbar-erp li > a.action:hover {
