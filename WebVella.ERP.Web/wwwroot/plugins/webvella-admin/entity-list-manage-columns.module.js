@@ -567,7 +567,7 @@
 		};
 
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel-boz');
+			$uibModalInstance.dismiss('cancel');
 		};
 
 	};

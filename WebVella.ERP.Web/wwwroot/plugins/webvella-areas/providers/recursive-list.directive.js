@@ -783,7 +783,7 @@
 		};
 
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel-boz');
+			$uibModalInstance.dismiss('cancel');
 		};
 
 		popupCtrl.processInstantSelection = ngCtrl.processInstantSelection;
@@ -1119,7 +1119,7 @@
 		}
 
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel-boz');
+			$uibModalInstance.dismiss('cancel');
 		};
 		//#endregion
 	};
@@ -1148,7 +1148,7 @@
 
 		popupCtrl.renderFieldValue = webvellaCoreService.renderFieldValue;
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel-boz');
+			$uibModalInstance.dismiss('cancel');
 		};
 		//#endregion
 
