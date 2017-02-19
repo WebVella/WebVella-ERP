@@ -291,12 +291,12 @@
 
 	// Controller ///////////////////////////////
 
-	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', '$window', 'pageTitle', 'webvellaCoreService',
+	controller.$inject = ['$filter','$injector', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', '$window', 'pageTitle', 'webvellaCoreService',
         'resolvedAreas', '$timeout', 'resolvedCurrentViewData', 'ngToast', 'wvAppConstants', 'resolvedEntityList', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
 		'resolvedCurrentUserEntityPermissions', '$sessionStorage', 'resolvedParentViewData'];
 
 
-	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, $window, pageTitle, webvellaCoreService,
+	function controller($filter, $injector, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, $window, pageTitle, webvellaCoreService,
         resolvedAreas, $timeout, resolvedCurrentViewData, ngToast, wvAppConstants, resolvedEntityList, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
 		resolvedCurrentUserEntityPermissions, $sessionStorage, resolvedParentViewData) {
 
@@ -1444,7 +1444,7 @@
 			ngCtrl.actionService = $injector.get(serviceName);
 		}
 		catch (err) {
-			//console.log(err);
+			console.log(err);
 			ngCtrl.actionService = {};
 		}
 		ngCtrl.pageTitleActions = [];
