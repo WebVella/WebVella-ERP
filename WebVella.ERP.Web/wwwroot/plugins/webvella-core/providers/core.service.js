@@ -3491,18 +3491,18 @@
                     if (!data && item.meta.required) {
                         return "This is a required field";
                     }
-                    if (data != null) {
-                        //Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
-                        data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toDate();
-                    }
+                    //if (data != null) {
+                    //    //Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
+                    //    data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toDate();
+                    //}
                     break;
                 case 5: //Datetime
                     if (!data && item.meta.required) {
                         return "This is a required field";
                     }
-                    if (data != null) {
-                        data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('minute').utc().toDate();
-                    }
+                    //if (data != null) {
+                    //    data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('minute').utc().toDate();
+                    //}
                     break;
                 case 6: //Email
                     if (!data && item.meta.required) {
