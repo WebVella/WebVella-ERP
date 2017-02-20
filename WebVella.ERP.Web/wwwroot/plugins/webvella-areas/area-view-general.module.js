@@ -1444,7 +1444,7 @@
 			ngCtrl.actionService = $injector.get(serviceName);
 		}
 		catch (err) {
-			console.log(err);
+			//console.log(err);
 			ngCtrl.actionService = {};
 		}
 		ngCtrl.pageTitleActions = [];
