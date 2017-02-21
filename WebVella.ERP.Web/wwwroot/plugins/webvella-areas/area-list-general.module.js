@@ -927,6 +927,10 @@
 		popupCtrl.count = -1;
 		popupCtrl.countHasSize = true;
 		popupCtrl.downloadFilePath = null;
+		popupCtrl.listHasExternalDataSource = false;
+		if(popupCtrl.ngCtrl.list.meta.dataSourceUrl != null && popupCtrl.ngCtrl.list.meta.dataSourceUrl != ""){
+			popupCtrl.listHasExternalDataSource = true;	
+		}
 
 		popupCtrl.count = popupCtrl.ngCtrl.list.meta.pageSize;
 
