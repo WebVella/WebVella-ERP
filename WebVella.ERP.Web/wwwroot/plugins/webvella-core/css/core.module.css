@@ -3619,6 +3619,10 @@ table .btn-xs.btn-link {
 	.editable-wrapper.textarea .form-control {
 		height: auto;
 	}
+.editable-wrapper textarea.form-control {
+	min-height: 160px;
+}
+
 
 .fake-input-wrapper {
 	background: #fafafa;

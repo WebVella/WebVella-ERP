@@ -32,7 +32,7 @@
 </div>
 
 
-<div id="page-body" ng-mousedown="ngCtrl.checkMouseButton($event)">
+<div id="page-body">
 	<div id="page-text" class="record-details" ng-if='!ngCtrl.view.meta.dynamicHtmlTemplate'>
 		<div class="view-record" ng-repeat="viewData in ngCtrl.view.data">
 
@@ -216,10 +216,10 @@
 										</div>
 										<span ng-switch-when="7" class="not-editable" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-bind-html="::ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)"></span>
 										<!-- If type 8 - html -->
-										<div ng-switch-when="8" class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
-											<div ng-attr-id="{{::'field_' + item.meta.name}}" class="form-control control-cke-editor" ng-model="viewData[item.dataName]" ckeditor="editorOptions" contenteditable="true"
-												 ng-focus="ngCtrl.htmlFieldIsEnabled($event,item,viewData['id'])" ng-keydown="ngCtrl.htmlFieldCheckEscapeKey($event,item)" ng-mousedown="ngCtrl.preventMouseSave($event)"></div>
-
+										<div ng-switch-when="8" class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)" 
+											ng-dblclick="ngCtrl.htmlFieldEdit(item,viewData)">
+											<textarea ng-attr-id="{{::'field_' + item.meta.name}}" name="{{item.dataName}}" disabled class="form-control" ng-bind="viewData[item.dataName]"></textarea>
+											<span class="input-group-addon" ng-click="ngCtrl.htmlFieldEdit(item,viewData)"><i class="fa fa-pencil fa-fw"></i></span>
 										</div>
 										<div ng-switch-when="8" class="not-editable fake-input-wrapper" readonly ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-bind-html="::ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)"></div>
 										<!-- If type 9 - image -->
@@ -1061,6 +1061,27 @@
 		</view-tree-select>
 	</div>
 	<div class="modal-footer">
+		<button class="btn btn-default" ng-click="popupCtrl.close()">Close</button>
+	</div>
+</script>
+
+<script type="text/ng-template" id="manageHtmlFieldModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupCtrl.close()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Manage field <span class="go-green">{{popupCtrl.selectedFieldName}}</span></h3>
+	</div>
+	<div class="modal-body">
+		<div class="panel panel-default" ng-hide="popupCtrl.isReady">
+			<div class="panel-body">
+				<i class="fa fa-spin fa-spinner"></i> Loading Editor...
+			</div>
+		</div>
+		<div class="ng-hide" ng-show="popupCtrl.isReady">
+			<textarea data-ckeditor="editorOptions" ng-model="popupCtrl.selectedValue"></textarea>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="popupCtrl.ok()"><i class="fa fa-save"></i> Save</button>
 		<button class="btn btn-default" ng-click="popupCtrl.close()">Close</button>
 	</div>
 </script>

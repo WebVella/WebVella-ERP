@@ -778,118 +778,92 @@
 		//#region << Html box helpers >>
 
 		//Init
-		$scope.editorOptions = {
-			language: GlobalLanguage,
-			skin: 'moono',
-			height: '160',
-			contentsCss: '/plugins/webvella-core/css/editor.css',
-			extraPlugins: "sourcedialog,colorbutton,colordialog,panel,font",
-			allowedContent: true,
-			colorButton_colors: '333333,FFFFFF,F44336,E91E63,9C27B0,673AB7,3F51B5,2196F3,03A9F4,00BCD4,009688,4CAF50,8BC34A,CDDC39,FFEB3B,FFC107,FF9800,FF5722,795548,607D8B,999999',
-			colorButton_enableAutomatic: false,
-			colorButton_enableMore: false,
-			toolbarLocation: 'top',
-			toolbar: 'full',
-			toolbar_full: [
-				{ name: 'basicstyles', items: ['Save', 'Bold', 'Italic', 'Strike', 'Underline'] },
-				{ name: 'colors', items: ['TextColor', 'BGColor'] },
-				{ name: 'styles', items: ['FontSize', 'RemoveFormat'] },
-				{ name: 'editing', items: ['Format'] },
-				{ name: 'links', items: ['Link', 'Unlink'] },
-				{ name: 'pasting', items: ['PasteText', 'PasteFromWord'] },
-				{ name: 'paragraph', items: ['BulletedList', 'NumberedList', 'Blockquote'] },
-				{ name: 'insert', items: ['Image', 'Table', 'SpecialChar'] },
-				{ name: 'tools', items: ['Sourcedialog', 'Maximize'] }, '/'
-			]
-		};
+		ngCtrl.htmlFieldEdit = function(item,viewData){
+				var modalInstance = $uibModal.open({
+					animation: false,
+					templateUrl: 'manageHtmlFieldModal.html',
+					controller: function($scope, $uibModalInstance,selectedItem,selectedViewData){
+						$scope.popupCtrl.selectedValue = fastCopy(selectedViewData[selectedItem.dataName]);
+						$scope.popupCtrl.selectedFieldName = fastCopy(selectedItem.fieldName);
 
-		//on #content check if mouse is clicked outside the editor, so to perform a possible field update
-		ngCtrl.checkMouseButton = function ($event) {
-			if (ngCtrl.lastEnabledHtmlField != null) {
+						$scope.editorOptions = {
+							language: GlobalLanguage,
+							skin: 'moono',
+							height: '300',
+							contentsCss: '/plugins/webvella-core/css/editor.css',
+							extraPlugins: "sourcedialog,colorbutton,colordialog,panel,font",
+							allowedContent: true,
+							colorButton_colors: '333333,FFFFFF,F44336,E91E63,9C27B0,673AB7,3F51B5,2196F3,03A9F4,00BCD4,009688,4CAF50,8BC34A,CDDC39,FFEB3B,FFC107,FF9800,FF5722,795548,607D8B,999999',
+							colorButton_enableAutomatic: false,
+							colorButton_enableMore: false,
+							toolbarLocation: 'top',
+							toolbar: 'full',
+							toolbar_full: [
+								{ name: 'basicstyles', items: ['Save', 'Bold', 'Italic', 'Strike', 'Underline'] },
+								{ name: 'colors', items: ['TextColor', 'BGColor'] },
+								{ name: 'styles', items: ['FontSize', 'RemoveFormat'] },
+								{ name: 'editing', items: ['Format'] },
+								{ name: 'links', items: ['Link', 'Unlink'] },
+								{ name: 'pasting', items: ['PasteText', 'PasteFromWord'] },
+								{ name: 'paragraph', items: ['BulletedList', 'NumberedList', 'Blockquote'] },
+								{ name: 'insert', items: ['Image', 'Table', 'SpecialChar'] },
+								{ name: 'tools', items: ['Sourcedialog', 'Maximize'] }, '/'
+							]
+						};
 
-				//Find the proper data for the recordId	in the view data array
-				for (var i = 0; i < ngCtrl.view.data.length; i++) {
-					if (ngCtrl.view.data[i].id == ngCtrl.lastEnabledHtmlRecordId) {
-						ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.view.data[i][ngCtrl.lastEnabledHtmlField.dataName], ngCtrl.lastEnabledHtmlRecordId);
-						break;
-					}
-				}
-				ngCtrl.lastEnabledHtmlFieldData = null;
-				ngCtrl.lastEnabledHtmlField = null;
-				ngCtrl.lastEnabledHtmlRecordId = null;
-			}
-			else {
-				//Do nothing as this is a normal mouse click
-			}
-		}
-		//on the editor textarea, prevent save when the mouse click is in the editor
-		ngCtrl.preventMouseSave = function ($event) {
-			if ($event.currentTarget.className.indexOf("cke_focus") > -1) {
-				$event.stopPropagation();
-			}
-		}
-		//save without unblur on ctrl+S, prevent exiting the textarea on tab, cancel change on esc
-		ngCtrl.htmlFieldCheckEscapeKey = function ($event, item) {
-			if ($event.keyCode == 27) { // escape key maps to keycode `27`
-				//As the id is dynamic in our case and there is a problem with ckeditor and dynamic id-s we should use ng-attr-id in the html and here to cycle through all instances and find the current bye its container.$.id
-				for (var property in CKEDITOR.instances) {
-					if (CKEDITOR.instances[property].container.$.id == 'field_' + item.meta.name) {
+						//We need to get editor so later to unfocus and destroy it before closing the modal in order not to receive errors
+						$scope.editor = {};
+						CKEDITOR.on( 'instanceCreated', function( event ) {	$scope.editor = event.editor;});
+						$scope.popupCtrl.isReady = false;
+						$scope.$on("ckeditor.ready", function( event ) {$scope.popupCtrl.isReady = true;});
 
-						CKEDITOR.instances[property].editable().$.blur();
-						//Find the proper data for the recordId	in the view data array
-						for (var i = 0; i < ngCtrl.view.data.length; i++) {
-							if (ngCtrl.view.data[i].id == ngCtrl.lastEnabledHtmlRecordId) {
-								//reinit the field
-								ngCtrl.view.data[i][item.dataName] = fastCopy(ngCtrl.lastEnabledHtmlFieldData);
-								break;
+						function destroyEditor(){
+								 try {
+									CKEDITOR.instances[$scope.editor.name].focusManager.blur( true );
+									 CKEDITOR.instances[$scope.editor.name].destroy(false);
+								 } catch (e) {
+									console.log(e);
+								 }
 							}
+						
+						$scope.popupCtrl.ok = function () {
+							var submitObject = {};
+							submitObject.dataName = selectedItem.dataName;
+							submitObject.value = $scope.popupCtrl.selectedValue;
+							destroyEditor();
+							$uibModalInstance.close(submitObject);
+						
+						};						
+
+						$scope.popupCtrl.close = function () { 
+							destroyEditor();
+							$uibModalInstance.close(null);
 						}
-						ngCtrl.lastEnabledHtmlField = null;
-						ngCtrl.lastEnabledHtmlFieldData = null;
-						ngCtrl.lastEnabledHtmlRecordId = null;
-						return false;
+					},
+					controllerAs: "popupCtrl",
+					backdrop:'static',
+					size: "lg",
+					resolve: {
+						selectedItem: function () {
+							return item;
+						},
+						selectedViewData: function () {
+							return viewData;
+						}
 					}
-				}
-				var idd = 0;
-			}
-			else if ($event.keyCode == 9) { // tab key maps to keycode `9`
-				$event.preventDefault();
-				return false;
-			}
-			else if ($event.ctrlKey || $event.metaKey) {
-				switch (String.fromCharCode($event.which).toLowerCase()) {
-					case 's':
+				});
+				//On modal exit
+				modalInstance.result.then(function (returnObject) {
+					if(returnObject != null){
+						viewData[item.dataName] = returnObject.value;
+						ngCtrl.fieldUpdate(item, returnObject.value, viewData['id']);
+						
+					}
 
-						$event.preventDefault();
-						for (var i = 0; i < ngCtrl.view.data.length; i++) {
-							if (ngCtrl.view.data[i].id == ngCtrl.lastEnabledHtmlRecordId) {
-								ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.view.data[i][ngCtrl.lastEnabledHtmlField.dataName], ngCtrl.lastEnabledHtmlRecordId);
-								ngCtrl.lastEnabledHtmlFieldData = ngCtrl.view.data[i][ngCtrl.lastEnabledHtmlField.dataName];
-								break;
-							}
-						}
-						return false;
-						break;
-				}
-			}
-			return true;
+				});
+		
 		}
 
-		ngCtrl.lastEnabledHtmlField = null;
-		ngCtrl.lastEnabledHtmlFieldData = null;
-		ngCtrl.lastEnabledHtmlRecordId = null;
-		ngCtrl.htmlFieldIsEnabled = function ($event, item, recordId) {
-			ngCtrl.lastEnabledHtmlField = item;
-			ngCtrl.lastEnabledHtmlRecordId = recordId;
-			ngCtrl.lastEnabledHtmlFieldData = null;
-			//Find the proper data for the recordId	in the view data array
-			for (var i = 0; i < ngCtrl.view.data.length; i++) {
-				if (ngCtrl.view.data[i].id == recordId) {
-					ngCtrl.lastEnabledHtmlFieldData = fastCopy(ngCtrl.view.data[i][item.dataName]);
-					break;
-				}
-			}
-		}
 
 		//#endregion
 
