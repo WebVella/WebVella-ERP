@@ -144,7 +144,7 @@
 											<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
 												 ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">
 												<input type="text" class="form-control" disabled editable-combodate="viewData[item.dataName]"
-													   e-init-date="false"
+													   e-init-date="false" e-min-year="1900" e-max-year="2100"
 													   value='{{ngCtrl.renderFieldValue(viewData[item.dataName],{fieldType:5})}}'
 													   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}"
 													   ng-init="ngCtrl.initDate(viewData[item.dataName])">
@@ -216,8 +216,8 @@
 										</div>
 										<span ng-switch-when="7" class="not-editable" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-bind-html="::ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)"></span>
 										<!-- If type 8 - html -->
-										<div ng-switch-when="8" class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)" 
-											ng-dblclick="ngCtrl.htmlFieldEdit(item,viewData)">
+										<div ng-switch-when="8" class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
+											 ng-dblclick="ngCtrl.htmlFieldEdit(item,viewData)">
 											<textarea ng-attr-id="{{::'field_' + item.meta.name}}" name="{{item.dataName}}" disabled class="form-control" ng-bind="viewData[item.dataName]"></textarea>
 											<span class="input-group-addon" ng-click="ngCtrl.htmlFieldEdit(item,viewData)"><i class="fa fa-pencil fa-fw"></i></span>
 										</div>
