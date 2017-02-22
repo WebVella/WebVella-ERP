@@ -144,7 +144,7 @@
 											<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
 												 ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">
 												<input type="text" class="form-control" disabled editable-combodate="viewData[item.dataName]"
-													   e-init-date="false" e-min-year="1900" e-max-year="2100"
+													   e-init-date="false" e-min-year="1950" e-max-year="2050"
 													   value='{{ngCtrl.renderFieldValue(viewData[item.dataName],{fieldType:5})}}'
 													   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}"
 													   ng-init="ngCtrl.initDate(viewData[item.dataName])">
