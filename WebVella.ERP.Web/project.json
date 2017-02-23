@@ -72,36 +72,6 @@
 		"web": "Microsoft.AspNet.Server.Kestrel"
 	},
 
-	//"tools": {
-	//	"Microsoft.AspNetCore.Razor.Tools": "1.1.0-preview4-final",
-	//	"Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.1.0-preview4-final",
-	//	"Microsoft.Extensions.SecretManager.Tools": "1.1.0-preview4-final",
-	//	"Microsoft.VisualStudio.Web.CodeGeneration.Tools": "1.1.0-preview4-final"
-	//},
-
-
-	"tools": {
-			"Microsoft.AspNetCore.Razor.Tools": {
-				"version": "1.1.0-preview4-final",
-				"imports": "portable-net45+win8+dnxcore50"
-			},
-			"Microsoft.AspNetCore.Server.IISIntegration.Tools": {
-				"version": "1.1.0-preview4-final",
-				"imports": "portable-net45+win8+dnxcore50"
-			},
-			"Microsoft.Extensions.SecretManager.Tools": {
-				"version": "1.1.0-preview4-final",
-				"imports": "portable-net45+win8+dnxcore50"
-			},
-			"Microsoft.VisualStudio.Web.CodeGeneration.Tools": {
-				"version": "1.1.0-preview4-final",
-				"imports": [
-					"portable-net45+win8+dnxcore50",
-					"portable-net45+win8"
-				]
-			}
-	},
-
 	"frameworks": {
 		"dnx46": {
 			"frameworkAssemblies": {

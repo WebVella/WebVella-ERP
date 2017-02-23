@@ -15,7 +15,7 @@
 		"Microsoft.Extensions.Logging.Console": "1.1.0",
 		"Microsoft.Extensions.Logging.Debug": "1.1.0",
 		"Newtonsoft.Json": "9.0.1",
-		"Npgsql": "3.2.0"
+		"Npgsql": "3.2.1"
 	},
   
   "frameworks": {
