@@ -32,6 +32,7 @@ using System.Drawing;
 using Newtonsoft.Json.Converters;
 
 
+
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebVella.ERP.Web.Controllers
@@ -2568,10 +2569,21 @@ namespace WebVella.ERP.Web.Controllers
 
 					//Create a relation record if it is N:N
 					if(relation.RelationType == EntityRelationType.ManyToMany) {
-						//if current is target -> create relation
-						throw new Exception("We need a case to finish both case");
-						
-						//if current is origin -> create relation	
+						var response = new QueryResponse();
+						if(relation.OriginEntityName == entityName && relation.TargetEntityName == entityName) {
+							throw new Exception("current entity is both target and origin, cannot find relation direction. Probably needs to be extended");
+						}
+						else if(relation.TargetEntityName == entityName) {
+							//if current is target -> create relation
+							response = recMan.CreateRelationManyToManyRecord(relation.Id,relatedRecordId,(Guid)postObj["id"]);
+						}
+						else {
+							//if current is origin -> create relation	
+							response = recMan.CreateRelationManyToManyRecord(relation.Id,(Guid)postObj["id"],relatedRecordId);
+						}
+						if(!response.Success) {
+							throw new Exception(response.Message);
+						}
 					}
 
 					connection.CommitTransaction();

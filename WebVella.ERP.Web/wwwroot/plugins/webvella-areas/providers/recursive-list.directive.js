@@ -1086,21 +1086,21 @@
 
 		/// Aux
 		function createSuccessCallback(response) {
-			if (!popupCtrl.isFromRelation) {
+			//if (!popupCtrl.isFromRelation) {
 				$state.reload();
 				$uibModalInstance.close('success');
-			}
-			else {
-				var returnObject = {
-					relationName: popupCtrl.relation.name,
-					dataKind: popupCtrl.dataKind,
-					selectedRecordId: response.object.data[0].id,
-					operation: "attach"
-				}
-				popupCtrl.processInstantSelection = ngCtrl.processInstantSelection;
-				popupCtrl.processInstantSelection(returnObject);
-				$uibModalInstance.close('success');
-			}
+			//}
+			//else {
+			//	var returnObject = {
+			//		relationName: popupCtrl.relation.name,
+			//		dataKind: popupCtrl.dataKind,
+			//		selectedRecordId: response.object.data[0].id,
+			//		operation: "attach"
+			//	}
+			//	popupCtrl.processInstantSelection = ngCtrl.processInstantSelection;
+			//	popupCtrl.processInstantSelection(returnObject);
+			//	$uibModalInstance.close('success');
+			//}
 		}
 
 		function successCallback(response) {
