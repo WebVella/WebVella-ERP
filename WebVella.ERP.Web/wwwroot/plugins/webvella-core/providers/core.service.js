@@ -1099,6 +1099,32 @@
                 "weight": 1,
                 "template": "<a class=\"back clearfix\" href=\"javascript:void(0)\" ng-click=\"sidebarData.goBack()\"><i class=\"fa fa-fw fa-arrow-left\"></i> <span class=\"text\">Back</span></a>"
             };
+            var rvAddNewAction = {
+                "name": "wv_recursive_view_add_new",
+                "menu": "sidebar-top",
+                "weight": 1,
+                "template": "<a href=\"javascript:void(0)\" class=\"btn btn-sm btn-outline\" ng-if=\"::canCreate\" ng-click=\"manageRelatedRecordItem(null)\"><i class=\"fa fa-plus\"></i> Create & Add</a>"
+            };
+            var rvAddExistingAction = {
+                "name": "wv_recursive_view_add_existing",
+                "menu": "recursive-view-title",
+                "weight": 2,
+                "template": "<a href=\"javascript:void(0)\" class=\"btn btn-sm btn-outline\" ng-if=\"::canAddExisting\" ng-click=\"addExistingItem()\"><i class=\"fa fa-download\"></i> Add existing</a>"
+            };
+
+            var rvEditAction = {
+                "name": "wv_recursive_view_edit",
+                "menu": "recursive-list-record-row",
+                "weight": 1,
+                "template": "<a href=\"javascript:void(0)\" title=\"quick edit\" class=\"btn btn-sm btn-outline\" ng-click=\"manageRelatedRecordItem(recordData)\" ng-if=\"::canUpdate\"><i class=\"fa fa-pencil\"></i></a>"
+            };
+            var rvUnrelateAction = {
+                "name": "wv_recursive_view_unrelate",
+                "menu": "recursive-list-record-row",
+                "weight": 2,
+                "template": "<a href=\"javascript:void(0)\" title=\"remove relation\" class=\"btn btn-sm btn-outline\" confirmed-click=\"instantDetachRecord(recordData)\" ng-confirm-click=\"Are you sure that you need this relation removed?\" ng-if=\"::canRemove\"><i class=\"fa fa-times go-red\"></i></a>"
+            };
+
 
             var view = {
                 "id": null,
@@ -1136,6 +1162,10 @@
                 case "general":
                     view.actionItems.push(backButtonAction);
                     view.actionItems.push(deleteAction);
+					view.actionItems.push(rvAddNewAction);
+					view.actionItems.push(rvAddExistingAction);
+					view.actionItems.push(rvEditAction);
+					view.actionItems.push(rvUnrelateAction);
                     break;
                 case "create":
                     view.actionItems.push(backButtonAction);
@@ -1738,6 +1768,36 @@
 						    "menu": "record-row",
 						    "weight": 1,
 						    "template": "<a class=\"btn btn-default btn-outline\" ng-href=\"{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-eye\"></i>\n</a>"
+						},
+						{
+						    "name": "wv_recursive_list_add_existing",
+						    "menu": "recursive-list-title",
+						    "weight": 1,
+						    "template": "<a href=\"javascript:void(0)\" class=\"btn btn-outline btn-sm\" ng-if=\"::canAddExisting\" ng-click=\"addExistingItem()\"><i class=\"fa fa-download\"></i> Add existing</a>"
+						},
+						{
+						    "name": "wv_recursive_list_add_new",
+						    "menu": "recursive-list-title",
+						    "weight": 2,
+						    "template": "<a href=\"javascript:void(0)\" class=\"btn btn-outline btn-sm\" ng-if=\"::canCreate\" ng-click=\"manageRelatedRecordItem(null)\"><i class=\"fa fa-plus\"></i> Create & Add</a>"
+						},
+						{
+						    "name": "wv_recursive_list_view",
+						    "menu": "recursive-list-record-row",
+						    "weight": 1,
+						    "template": "<a href=\"javascript:void(0)\" title=\"quick view this record\" class=\"btn btn-sm btn-outline\" ng-click=\"viewRelatedRecordItem(record)\"><i class=\"fa fa-eye\"></i></a>"
+						},
+						{
+						    "name": "wv_recursive_list_edit",
+						    "menu": "recursive-list-record-row",
+						    "weight": 2,
+						    "template": "<a href=\"javascript:void(0)\" title=\"quick edit this record\" class=\"btn btn-sm btn-outline\" ng-click=\"manageRelatedRecordItem(record)\" ng-if=\"::canUpdate\"><i class=\"fa fa-pencil\"></i></a>"
+						},
+						{
+						    "name": "wv_recursive_list_unrelate",
+						    "menu": "recursive-list-record-row",
+						    "weight": 3,
+						    "template": "<a href=\"javascript:void(0)\" title=\"Detach records relation\" class=\"btn btn-sm btn-outline\" confirmed-click=\"instantDetachRecord(record)\" ng-confirm-click=\"Are you sure that you need this relation removed?\" ng-if=\"::canRemove\"><i class=\"fa fa-times go-red\"></i></a>"
 						}
 				    ],
 				}
