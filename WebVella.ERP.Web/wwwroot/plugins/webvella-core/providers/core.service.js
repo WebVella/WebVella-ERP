@@ -3553,12 +3553,13 @@
                     }
                     if (data != null) {
                         //Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
-						try {
-							data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toISOString();
-							
-						}
-						catch(e){
+						var convertedData = data;
+						convertedData = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toISOString();
+						if(convertedData == "Invalid date"){
 							data = moment(data).utc().toISOString();
+						}
+						else{
+							data = convertedData;
 						}
                     }
                     break;
@@ -3567,12 +3568,13 @@
                         return "This is a required field";
                     }
                     if (data != null) {
-						try {
-							data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toISOString();
-							
-						}
-						catch(e){
+						var convertedData = data;
+						convertedData = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toISOString();
+						if(convertedData == "Invalid date"){
 							data = moment(data).utc().toISOString();
+						}
+						else{
+							data = convertedData;
 						}
                     }
                     break;
