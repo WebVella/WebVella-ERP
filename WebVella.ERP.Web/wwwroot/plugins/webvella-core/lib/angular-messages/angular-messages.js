@@ -1,17 +1,14 @@
 /**
- * @license AngularJS v1.5.7
+ * @license AngularJS v1.6.1
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
 (function(window, angular) {'use strict';
 
-/* jshint ignore:start */
-// this code is in the core, but not in angular-messages.js
-var isArray = angular.isArray;
-var forEach = angular.forEach;
-var isString = angular.isString;
-var jqLite = angular.element;
-/* jshint ignore:end */
+var forEach;
+var isArray;
+var isString;
+var jqLite;
 
 /**
  * @ngdoc module
@@ -72,7 +69,7 @@ var jqLite = angular.element;
  * By default, `ngMessages` will only display one message for a particular key/value collection at any time. If more
  * than one message (or error) key is currently true, then which message is shown is determined by the order of messages
  * in the HTML template code (messages declared first are prioritised). This mechanism means the developer does not have
- * to prioritise messages using custom JavaScript code.
+ * to prioritize messages using custom JavaScript code.
  *
  * Given the following error object for our example (which informs us that the field `myField` currently has both the
  * `required` and `email` errors):
@@ -267,7 +264,14 @@ var jqLite = angular.element;
  *
  * {@link ngAnimate Click here} to learn how to use JavaScript animations or to learn more about ngAnimate.
  */
-angular.module('ngMessages', [])
+angular.module('ngMessages', [], function initAngularHelpers() {
+  // Access helpers from angular core.
+  // Do it inside a `config` block to ensure `window.angular` is available.
+  forEach = angular.forEach;
+  isArray = angular.isArray;
+  isString = angular.isString;
+  jqLite = angular.element;
+})
 
   /**
    * @ngdoc directive
@@ -348,7 +352,7 @@ angular.module('ngMessages', [])
     return {
       require: 'ngMessages',
       restrict: 'AE',
-      controller: ['$element', '$scope', '$attrs', function($element, $scope, $attrs) {
+      controller: ['$element', '$scope', '$attrs', function NgMessagesCtrl($element, $scope, $attrs) {
         var ctrl = this;
         var latestKey = 0;
         var nextAttachId = 0;
@@ -408,9 +412,11 @@ angular.module('ngMessages', [])
             messageCtrl.detach();
           });
 
-          unmatchedMessages.length !== totalMessages
-              ? $animate.setClass($element, ACTIVE_CLASS, INACTIVE_CLASS)
-              : $animate.setClass($element, INACTIVE_CLASS, ACTIVE_CLASS);
+          if (unmatchedMessages.length !== totalMessages) {
+            $animate.setClass($element, ACTIVE_CLASS, INACTIVE_CLASS);
+          } else {
+            $animate.setClass($element, INACTIVE_CLASS, ACTIVE_CLASS);
+          }
         };
 
         $scope.$watchCollection($attrs.ngMessages || $attrs['for'], ctrl.render);
@@ -426,8 +432,8 @@ angular.module('ngMessages', [])
           if (!renderLater) {
             renderLater = true;
             $scope.$evalAsync(function() {
-              if (renderLater) {
-                cachedCollection && ctrl.render(cachedCollection);
+              if (renderLater && cachedCollection) {
+                ctrl.render(cachedCollection);
               }
             });
           }
@@ -628,10 +634,8 @@ angular.module('ngMessages', [])
    * @scope
    *
    * @description
-   * `ngMessageExp` is a directive with the purpose to show and hide a particular message.
-   * For `ngMessageExp` to operate, a parent `ngMessages` directive on a parent DOM element
-   * must be situated since it determines which messages are visible based on the state
-   * of the provided key/value map that `ngMessages` listens on.
+   * `ngMessageExp` is the same as {@link directive:ngMessage `ngMessage`}, but instead of a static
+   * value, it accepts an expression to be evaluated for the message key.
    *
    * @usage
    * ```html

@@ -940,12 +940,12 @@
 				webvellaCoreService.updateEntityView(popupCtrl.view, parentData.entity.name, successCallback, errorCallback);
 			}
 			else {
-				$uibModalInstance.dismiss('cancel');
+				$uibModalInstance.close('dismiss');
 			}
 		}
 
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.close('dismiss');
 		};
 
 		/// Aux
@@ -972,7 +972,7 @@
 			}
 			else {
 				webvellaCoreService.GoToState('webvella-admin-entity-view-manage',{entityName:parentData.stateParams.entityName,viewName: parentData.stateParams.viewName, regionName:"default"});
-				$uibModalInstance.dismiss('cancel');
+				$uibModalInstance.close('dismiss');
 			}
 		}
 
@@ -1054,7 +1054,7 @@
 		};
 
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.close('dismiss');
 		};
 
 		/// Aux
@@ -1186,7 +1186,7 @@
 		};
 
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.close('dismiss');
 		};
 
 		/// Aux

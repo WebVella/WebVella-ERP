@@ -33,15 +33,14 @@
     "bower.json",
     "package.json"
   ],
-  "version": "0.7.17",
-  "_release": "0.7.17",
+  "version": "0.7.18",
+  "_release": "0.7.18",
   "_resolution": {
     "type": "version",
-    "tag": "v0.7.17",
-    "commit": "1462b8f569aa7f8e443b8a557b42246e188937de"
+    "tag": "v0.7.18",
+    "commit": "3ef194de74f70965589ecc4fd9d1d8b9ca9ad0a2"
   },
   "_source": "https://github.com/HubSpot/offline.git",
   "_target": "^0.7.17",
-  "_originalSource": "offline",
-  "_direct": true
+  "_originalSource": "offline"
 }

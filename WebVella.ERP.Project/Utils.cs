@@ -381,7 +381,7 @@ namespace WebVella.ERP.Project
 				{
 					priorityString = "<span class='go-red'> [high] </span>";
 				}
-				Utils.CreateActivity(recMan, "updated", "updated a <i class='fa fa-fw fa-tasks go-purple'></i> task #" + oldTaskObject["number"] + priorityString + " <a href='/#/areas/projects/wv_task/view-general/sb/general/" + oldTaskObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldTaskObject["subject"]) + "</a>", null, (Guid)oldTaskObject["project_id"], (Guid)oldTaskObject["id"], null);
+				Utils.CreateActivity(recMan, "updated", "updated a <i class='fa fa-fw fa-tasks go-purple'></i> task [" + oldTaskObject["code"] + priorityString + "] <a href='/#/areas/projects/wv_task/view-general/sb/general/" + oldTaskObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldTaskObject["subject"]) + "</a>", null, (Guid)oldTaskObject["project_id"], (Guid)oldTaskObject["id"], null);
 				#endregion
 				return data;
 			}
@@ -618,7 +618,7 @@ namespace WebVella.ERP.Project
 			{
 				priorityString = "<span class='go-red'> [high] </span>";
 			}
-			Utils.CreateActivity(recMan, "updated", "updated a <i class='fa fa-fw fa-bug go-red'></i> bug #" + oldBugObject["number"] + priorityString + " <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + oldBugObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldBugObject["subject"]) + "</a>", null, (Guid)oldBugObject["project_id"], null, (Guid)oldBugObject["id"]);
+			Utils.CreateActivity(recMan, "updated", "updated a <i class='fa fa-fw fa-bug go-red'></i> bug [" + oldBugObject["code"] + priorityString + "] <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + oldBugObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldBugObject["subject"]) + "</a>", null, (Guid)oldBugObject["project_id"], null, (Guid)oldBugObject["id"]);
 			#endregion
 			return data;
 		}

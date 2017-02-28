@@ -1,6 +1,14 @@
 ﻿<div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
+			<a class="btn btn-default btn-outline hidden-xs" ng-href="/#/areas/projects/wv_task/view-create/create?returnUrl=%2Fareas%2Fprojects%2Fwv_project%2Fdashboard">
+				<i class="fa fa-tasks"></i>
+				Create Task
+			</a>
+			<a class="btn btn-default btn-outline hidden-xs" ng-href="/#/areas/projects/wv_bug/view-create/create?returnUrl=%2Fareas%2Fprojects%2Fwv_project%2Fdashboard">
+				<i class="fa fa-bug"></i>
+				Report Bug
+			</a>
 		</div>
 		<div class="meta-icon">
 			<i class="fa fa-fw fa-tachometer fa-2x"></i>
@@ -52,7 +60,7 @@
 									</div>
 
 									<div class="timeline-label with-action with-image">
-										<div class="timeline-image" ng-switch="activity.$user_wv_project_activity_created_by[0].image != null && activity.$user_wv_project_activity_created_by[0].image != ''">
+										<div class="timeline-image" ng-switch="activity.$user_wv_project_activity_created_by.length > 0 && activity.$user_wv_project_activity_created_by[0].image != null && activity.$user_wv_project_activity_created_by[0].image != ''">
 											<span ng-switch-when="true" class="image-wrapper"><img ng-src="/fs{{::activity.$user_wv_project_activity_created_by[0].image}}"/></span>
 											<span ng-switch-when="false" class="image-wrapper"><img ng-src="/plugins/webvella-core/assets/avatar.png" /></span>
 										</div>
@@ -116,7 +124,7 @@
 								<i class="fa fa-fw fa-clock-o"></i> 
 								<span ng-bind="::ngCtrl.getTimeHumanizedString(task.last_modified_on)"></span>  by <span class="username" ng-bind="::task['$user_wv_task_modified_by'][0].username"></span>
 							</div>
-							<div><strong>#{{::task.number}} </strong><a ng-href="/#/areas/projects/wv_task/view-general/sb/general/{{::task.id}}" ng-bind="::task.subject"></a></div>
+							<div><span>[{{::task.code}}]</span> <a ng-href="/#/areas/projects/wv_task/view-general/sb/general/{{::task.id}}" ng-bind="::task.subject"></a></div>
 						</td>
 					</tr>
 					<tr ng-if="ngCtrl.ownedTasks.length == 0">
@@ -142,7 +150,7 @@
 								<i class="fa fa-fw fa-clock-o"></i> 
 								<span ng-bind="::ngCtrl.getTimeHumanizedString(bug.last_modified_on)"></span>  by <span class="username" ng-bind="::bug['$user_wv_task_modified_by'][0].username"></span>
 							</div>
-							<div><strong>#{{::bug.number}} </strong><a ng-href="/#/areas/projects/wv_bug/view-general/sb/general/{{::bug.id}}" ng-bind="::bug.subject"></a></div>
+							<div><span>[{{::bug.code}}]</span> <a ng-href="/#/areas/projects/wv_bug/view-general/sb/general/{{::bug.id}}" ng-bind="::bug.subject"></a></div>
 						</td>
 					</tr>
 					<tr ng-if="ngCtrl.ownedBugs.length == 0">

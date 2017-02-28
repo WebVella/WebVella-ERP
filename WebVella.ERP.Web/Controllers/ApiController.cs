@@ -32,6 +32,7 @@ using System.Drawing;
 using Newtonsoft.Json.Converters;
 
 
+
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebVella.ERP.Web.Controllers
@@ -2289,6 +2290,9 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}")]
 		public IActionResult CreateEntityRecord(string entityName, [FromBody]EntityRecord postObj)
 		{
+			//Find and change properties starting with _$ to $$ - angular does not post $$ propery names
+			postObj = Helpers.FixDoubleDollarSignProblem(postObj);
+
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK FILTER << create_record_input_filter >>
 			//////////////////////////////////////////////////////////////////////////////////////
@@ -2565,10 +2569,21 @@ namespace WebVella.ERP.Web.Controllers
 
 					//Create a relation record if it is N:N
 					if(relation.RelationType == EntityRelationType.ManyToMany) {
-						//if current is target -> create relation
-						throw new Exception("We need a case to finish both case");
-						
-						//if current is origin -> create relation	
+						var response = new QueryResponse();
+						if(relation.OriginEntityName == entityName && relation.TargetEntityName == entityName) {
+							throw new Exception("current entity is both target and origin, cannot find relation direction. Probably needs to be extended");
+						}
+						else if(relation.TargetEntityName == entityName) {
+							//if current is target -> create relation
+							response = recMan.CreateRelationManyToManyRecord(relation.Id,relatedRecordId,(Guid)postObj["id"]);
+						}
+						else {
+							//if current is origin -> create relation	
+							response = recMan.CreateRelationManyToManyRecord(relation.Id,(Guid)postObj["id"],relatedRecordId);
+						}
+						if(!response.Success) {
+							throw new Exception(response.Message);
+						}
 					}
 
 					connection.CommitTransaction();
@@ -2612,6 +2627,10 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult UpdateEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
+			//Find and change properties starting with _$ to $$ - angular does not post $$ propery names
+			postObj = Helpers.FixDoubleDollarSignProblem(postObj);
+
+
 			if (!postObj.Properties.ContainsKey("id"))
 			{
 				postObj["id"] = recordId;
@@ -2745,7 +2764,7 @@ namespace WebVella.ERP.Web.Controllers
 		public IActionResult PatchEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
 			//////////////////////////////////////////////////////////////////////////////////////
-			//WEBHOOK FILTER << patch_record_input_filter >>
+			//WEBHOOK FILTER << update_record_input_filter >>
 			//////////////////////////////////////////////////////////////////////////////////////
 			try
 			{
@@ -2758,7 +2777,7 @@ namespace WebVella.ERP.Web.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(CreateErrorResponse("Plugin error in web hook patch_record_input_filter: " + ex.Message));
+				return Json(CreateErrorResponse("Plugin error in web hook update_record_input_filter: " + ex.Message));
 			}// <<<
 
 			var validationErrors = new List<ErrorModel>();
@@ -2767,7 +2786,7 @@ namespace WebVella.ERP.Web.Controllers
 				postObj = new EntityRecord();
 
 			//////////////////////////////////////////////////////////////////////////////////////
-			//WEBHOOK FILTER << patch_record_validation_errors_filter >>
+			//WEBHOOK FILTER << update_record_validation_errors_filter >>
 			//////////////////////////////////////////////////////////////////////////////////////
 			try
 			{
@@ -2781,7 +2800,7 @@ namespace WebVella.ERP.Web.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(CreateErrorResponse("Plugin error in web hook patch_record_validation_errors_filter: " + ex.Message));
+				return Json(CreateErrorResponse("Plugin error in web hook update_record_validation_errors_filter: " + ex.Message));
 			}// <<<
 
 			if (validationErrors.Count > 0)
@@ -2809,7 +2828,7 @@ namespace WebVella.ERP.Web.Controllers
 				{
 					connection.BeginTransaction();
 					//////////////////////////////////////////////////////////////////////////////////////
-					//WEBHOOK FILTER << patch_record_pre_save_filter >>
+					//WEBHOOK FILTER << update_record_pre_save_filter >>
 					//////////////////////////////////////////////////////////////////////////////////////
 					try
 					{
@@ -2823,7 +2842,7 @@ namespace WebVella.ERP.Web.Controllers
 					catch (Exception ex)
 					{
 						connection.RollbackTransaction();
-						return Json(CreateErrorResponse("Plugin error in web hook patch_record_pre_save_filter: " + ex.Message));
+						return Json(CreateErrorResponse("Plugin error in web hook update_record_pre_save_filter: " + ex.Message));
 					}// <<<
 					result = recMan.UpdateRecord(entityName, postObj);
 					connection.CommitTransaction();
@@ -2841,7 +2860,7 @@ namespace WebVella.ERP.Web.Controllers
 			}
 
 			//////////////////////////////////////////////////////////////////////////////////////
-			//WEBHOOK ACTION << patch_record_success_action >>
+			//WEBHOOK ACTION << update_record_success_action >>
 			//////////////////////////////////////////////////////////////////////////////////////
 			try
 			{
@@ -2854,7 +2873,7 @@ namespace WebVella.ERP.Web.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(CreateErrorResponse("Plugin error in web hook patch_record_success_action: " + ex.Message));
+				return Json(CreateErrorResponse("Plugin error in web hook update_record_success_action: " + ex.Message));
 			}// <<<	
 
 			return DoResponse(result);

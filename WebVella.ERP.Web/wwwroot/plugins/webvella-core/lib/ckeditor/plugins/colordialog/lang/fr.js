@@ -1,1 +1,1 @@
-﻿CKEDITOR.plugins.setLang("colordialog","fr",{clear:"Effacer",highlight:"Détails",options:"Option des couleurs",selected:"Couleur choisie",title:"Choisir une couleur"});
+﻿CKEDITOR.plugins.setLang("colordialog","fr",{clear:"Effacer",highlight:"Pointée",options:"Options de couleur",selected:"Couleur choisie",title:"Sélectionner une couleur"});

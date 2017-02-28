@@ -509,5 +509,29 @@ namespace WebVella.ERP.Utilities
 		}
 
 
+		public static EntityRecord FixDoubleDollarSignProblem(EntityRecord record) {
+			var keysForRemoval = new List<string>();
+			var recordKeyList = new List<string>();
+
+			foreach(var property in record.Properties) {
+				recordKeyList.Add(property.Key);
+			}
+
+			//in angular properties starting with $$ are not posted by the $http service, 
+			foreach(var key in recordKeyList) {
+				if(key.StartsWith("_$")) {
+					var newKey = "$$" + key.Remove(0,2);
+					record[newKey] = record[key];
+					keysForRemoval.Add(key);
+				}
+			}
+
+			foreach (var key in keysForRemoval)
+			{
+				record.Properties.Remove(key);
+			}
+			return record;
+		}
+
 	}
 }

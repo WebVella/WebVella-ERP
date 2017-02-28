@@ -455,7 +455,7 @@
 		}
 
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.close('dismiss');
 		};
 	};
 
@@ -474,7 +474,7 @@
 		};
 
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.close('dismiss');
 		};
 
 		function successCallback(response) {
@@ -516,7 +516,7 @@
 		};
 
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.close('dismiss');
 		};
 
 		function successCallback(response) {
@@ -642,7 +642,7 @@
 		}
 
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.close('dismiss');
 		};
 	};
 

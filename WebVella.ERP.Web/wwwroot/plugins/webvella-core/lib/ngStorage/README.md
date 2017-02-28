@@ -35,6 +35,14 @@ npm install ngstorage
 
 *NOTE:* We are `ngstorage` and *NOT* `ngStorage`. The casing is important!
 
+### nuget
+
+```bash
+Install-Package gsklee.ngStorage
+```
+
+Or search for `Angular ngStorage` in the nuget package manager. <https://www.nuget.org/packages/gsklee.ngStorage>
+
 CDN
 ===
 
@@ -226,6 +234,17 @@ the new values will not reliably be saved into the browser local storage. Allow 
 $scope.$storage.school = theSchool;
 $log.debug("launching and saving the new value" + url);
 $timeout(function(){
+   var myWindow = $window.open("", "_self");
+   myWindow.document.write(response.data);
+});
+```
+
+or better using `$scope.$evalAsync` as:
+
+```javascript
+$scope.$storage.school = theSchool;
+$log.debug("launching and saving the new value" + url);
+$scope.$evalAsync(function(){
    var myWindow = $window.open("", "_self");
    myWindow.document.write(response.data);
 });

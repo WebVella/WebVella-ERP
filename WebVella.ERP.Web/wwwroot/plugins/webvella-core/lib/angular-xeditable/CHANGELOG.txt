@@ -1,6 +1,63 @@
 Angular-xeditable changelog
 =============================
 
+Version 0.6.0 Dec 27, 2016
+
+----------------------------
+[enh #592] Added support to jQuery UI Datepicker for AngularJS (arielcr)
+[enh #590] Support tab for submit=blur (ckosloski)
+[enh #589] Use datepicker's default settings (valexiev)
+[enh #586] Correctly set caret position to end of input (ckosloski)
+[enh #583] Added tests for e-form (ckosloski)
+[bug #573] Fix parsing of combodate options (ckosloski)
+[enh #569] Add option to submit editable textarea on enter (ckosloski)
+[enh #564] Added possibility to set icon_set via attribute (fredrikw)
+[bug #524] Remove optional dependencies from package.json (ckosloski, eugef)
+
+Version 0.5.0 Oct 27, 2016
+
+----------------------------
+[enh #561] Add support for checklist-comparator to editable-checklist (ckosloski)
+[enh #553] Use interpolate begin/end symbol in editableRange and editableRadioList (ckosloski)
+[bug #552] Editable-ui-select names must be unique across the application (roblperry)
+[bug #549] Added fallback to focus on activate (Carnid)
+[enh #544] Added support for Kendo UI attributes (ckosloski)
+
+
+Version 0.4.0 Sep 21, 2016
+
+----------------------------
+[enh #537] Added title and aria-label to form buttons (ckosloski)
+[enh #532] Change radiolist to use ng-value instead of value (ckosloski)
+[bug #282] Fixed text-disable so it watches the actual value of the edit-disabled attribute (jivasquez)
+
+
+Version 0.3.0 Sep 06, 2016
+
+----------------------------
+[enh #530] Added support for ngTagsInput (ckosloski)
+[enh #525] Updated css for editable-popup to work better on phones (ckosloski)
+[bug #520] Remove support for html5 datetime object. (ckosloski)
+[enh #515] Add editable-theme attribute to allow overriding of theme per control. (ckosloski)
+[enh #509] Support styling of the bsdate textbox (ckosloski)
+[enh #504] Wrap checkbox text in a span to allow for styling (ckosloski)
+[bug #500] Vertical Scrollbar in Textarea in IE11 fix (ckosloski)
+
+
+Version 0.2.0 Jun 28, 2016
+
+----------------------------
+[enh #491] Added popover functionality (ckosloski)
+[fix #489] Fix - Memory leak when ending editing by destroying the scope (kenfdev)
+[enh #479] Added ability to add a label to an input (ckosloski)
+[enh #473] Added support for datetime-local input (ckosloski)
+[bug #464] Added ability to add more then one editable-ui-select component on the same page (julia-k)
+[enh #463] Added on-change support for bsdate and placeholder support for editable-select (ckosloski)
+[bug #456] Fixed bsdate warnings with latest ui-bootstrap (ckosloski)
+[bug #454] Fix finding form controller when elements not yet in DOM (bostrom)
+[bug #366] Make 'e-form' publish local $form even if specify object property (hshn)
+
+
 Version 0.1.12 Apr 14, 2016
 ----------------------------
 [enh #448] Add support for ui-select (ckosloski)

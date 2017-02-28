@@ -675,7 +675,7 @@
         };
 
         popupCtrl.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
+            $uibModalInstance.close('dismiss');
         };
 
         //Dropdown or Multiselect
@@ -1033,7 +1033,7 @@
         };
 
         popupCtrl.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
+            $uibModalInstance.close('dismiss');
         };
 
         //Delete field
@@ -1142,7 +1142,7 @@
         };
 
         popupCtrl.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
+            $uibModalInstance.close('dismiss');
         };
 
         /// Aux

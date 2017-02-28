@@ -29,6 +29,7 @@
 		serviceInstance.getAllSprints = getAllSprints;
 		serviceInstance.getProjectSprintDetails = getProjectSprintDetails;
 		serviceInstance.getProjectSprintAllTasks = getProjectSprintAllTasks;
+		serviceInstance.upsertComment = upsertComment;
 		//#endregion
 
 		///
@@ -77,6 +78,11 @@
 		function getProjectSprintAllTasks(sprintId, scope, status, page, pageSize, successCallback, errorCallback) {
 			$http({ method: 'GET', url: "/plugins/webvella-projects/api/sprint/" + sprintId + "/available-tasks?scope=" + scope + "&page=" + page + "&pageSize=" + pageSize  + "&status=" + status}).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
+
+        //////////////////////
+        function upsertComment(submitObj, successCallback, errorCallback) {
+            $http({ method: 'POST', url: "/plugins/webvella-projects/api/comment/upsert", data: submitObj }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+        }
 
 
 		//#region << Global HTTP Error and Success Handlers >>

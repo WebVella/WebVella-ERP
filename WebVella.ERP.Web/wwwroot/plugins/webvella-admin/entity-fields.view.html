@@ -13,8 +13,8 @@
 			<i class="fa fa-fw fa-table fa-2x"></i>
 		</div>
 		<div class="meta-label">
-			<div class="meta-label-aux" translate="{{::'ENTITY_MANAGE_FIELDS'}}"></div>
-			<h4 ng-bind="::ngCtrl.entity.name"></h4>
+			<div class="meta-label-aux">{{'ENTITY' | translate}}<span class="divider"><i class="fa fa-caret-right"></i></span><span ng-bind-html="::ngCtrl.entity.name" title="{{::ngCtrl.entity.name}}"></span></div>
+			<h4>{{'FIELDS' | translate}}</h4>
 		</div>
 	</div>
 </div>
@@ -649,7 +649,7 @@
 									<tr ng-repeat="option in popupCtrl.field.options">
 										<td><input class="form-control" ng-model="option.key" /></td>
 										<td><input class="form-control" ng-model="option.value" /></td>
-										<td><a ng-click="popupCtrl.toggleKeyAsDefault(option.key)" href="javascript:void(0)" class="btn btn-default btn-outline" ng-class="popupCtrl.isKeyDefault(option.key) ? 'btn-success' : 'btn-default go-gray'"><i class="fa fa-fw fa-check"></i></a></td>
+										<td><a ng-click="popupCtrl.toggleKeyAsDefault(option.key)" href="javascript:void(0)" class="btn" ng-class="popupCtrl.isKeyDefault(option.key) ? 'btn-success' : 'btn-default go-gray'"><i class="fa fa-fw fa-check"></i></a></td>
 										<td><a ng-click="popupCtrl.deleteDropdownValue($index)" href="javascript:void(0)" class="btn btn-outline btn-default go-red"><i class="fa fa-fw fa-close"></i></a></td>
 									</tr>
 								</tbody>
@@ -1717,7 +1717,7 @@
 								<tr ng-repeat="option in popupCtrl.field.options track by $index">
 									<td><input class="form-control" ng-model="option.key" /></td>
 									<td><input class="form-control" ng-model="option.value" /></td>
-									<td><a ng-click="popupCtrl.toggleKeyAsDefault(option.key)" href="javascript:void(0)" class="btn btn-outline" ng-class="popupCtrl.isKeyDefault(option.key) ? 'btn-success' : 'btn-default go-gray'"><i class="fa fa-fw fa-check"></i></a></td>
+									<td><a ng-click="popupCtrl.toggleKeyAsDefault(option.key)" href="javascript:void(0)" class="btn" ng-class="popupCtrl.isKeyDefault(option.key) ? 'btn-success' : 'btn-default go-gray'"><i class="fa fa-fw fa-check"></i></a></td>
 									<td><a ng-click="popupCtrl.deleteDropdownValue($index)" href="javascript:void(0)" class="btn btn-outline btn-default go-red"><i class="fa fa-fw fa-close"></i></a></td>
 								</tr>
 							</tbody>

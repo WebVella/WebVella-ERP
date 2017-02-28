@@ -14,8 +14,8 @@
 
 
 	//#region << Configuration  >> ///////////////////////////////////
-	config.$inject = ['$httpProvider', 'wvAppConstants', '$translateProvider','$sceDelegateProvider'];
-	function config($httpProvider, wvAppConstants, $translateProvider,$sceDelegateProvider) {
+	config.$inject = ['$httpProvider', 'wvAppConstants', '$translateProvider','$sceDelegateProvider','$locationProvider','$qProvider'];
+	function config($httpProvider, wvAppConstants, $translateProvider,$sceDelegateProvider,$locationProvider,$qProvider) {
 
 		//#region << Request interceptors >>
 		$httpProvider.interceptors.push(function ($q, $location, ngToast, $cookies, $rootScope, $timeout) {
@@ -91,6 +91,10 @@
 		}
 		//#endregion
 
+
+		//REmove the !(exclamation) after the hash
+		$locationProvider.hashPrefix('');
+
 		//#region << Translation >>
 		$translateProvider.preferredLanguage(GlobalLanguage);
 		switch (GlobalLanguage) {
@@ -109,7 +113,7 @@
 		}
 		$translateProvider.useSanitizeValueStrategy(null);
 		//#endregion
-
+		$qProvider.errorOnUnhandledRejections(false);
 		//#region << Dynamic template providers
 			//$sceDelegateProvider.resourceUrlWhitelist([
 			//	'http://www.refsnesdata.no/**'

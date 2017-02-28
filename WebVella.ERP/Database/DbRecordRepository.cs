@@ -1229,7 +1229,7 @@ namespace WebVella.ERP.Database
                             relationJoinSql = relationJoinSql + "\r\n" + string.Format(FILTER_JOIN,
                                     /*LEFT OUTER JOIN*/ originJoinTable, /* */ originJoinAlias /*ON*/,
                                     targetJoinAlias, /*.*/ "origin_id", /* =  */
-                                    originJoinTable, /*.*/ relationFieldMeta.OriginField.Name);
+									originJoinAlias, /*.*/ relationFieldMeta.OriginField.Name);
 
                             completeFieldName = originJoinAlias + "." + relationFieldName;
                         }

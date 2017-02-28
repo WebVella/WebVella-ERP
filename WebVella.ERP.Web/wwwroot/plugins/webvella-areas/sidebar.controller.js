@@ -46,6 +46,11 @@
         sidebarData.toggleSideNav = function () {
         	sidebarData.$storage.isMiniSidebar = !sidebarData.$storage.isMiniSidebar;
         }
+		sidebarData.setCurrentBreadcrumb = function(hoveredSidebarMenuLabel){
+			if(sidebarData.$storage.isMiniSidebar){
+				$rootScope.hoveredSidebarMenuLabel = hoveredSidebarMenuLabel;
+			}
+		}
 	}
 
 })();

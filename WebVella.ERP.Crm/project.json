@@ -13,8 +13,8 @@
 	},
 
     "dependencies": {
-        "Microsoft.AspNetCore.Mvc.Abstractions": "1.1.0",
-        "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.1.0",
+        "Microsoft.AspNetCore.Mvc.Abstractions": "1.1.1",
+        "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.1.1",
         "WebVella.ERP": "1.0.0-*"
     }
 

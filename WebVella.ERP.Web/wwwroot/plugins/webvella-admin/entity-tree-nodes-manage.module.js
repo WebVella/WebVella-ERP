@@ -173,6 +173,7 @@
 		var resolveLookupRecords = function () {
 			// Initialize
 			var defer = $q.defer();
+			var defaultLookupList = null;
 			// Process
 			function errorCallback(response) {
 				$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
@@ -186,10 +187,13 @@
 			}
 
 			function successCallback(response) {
-				defer.resolve(response.object); //Submitting the whole response to manage the error states
+				var responseObj = {};
+				responseObj.data = response.object;
+				responseObj.meta = defaultLookupList;
+				defer.resolve(responseObj); //Submitting the whole response to manage the error states
 			}
 
-			var defaultLookupList = null;
+
 			//Find the default lookup field if none return null.
 			for (var i = 0; i < ngCtrl.entity.recordLists.length; i++) {
 				if (ngCtrl.entity.recordLists[i].default && ngCtrl.entity.recordLists[i].type == "lookup") {
@@ -288,7 +292,27 @@
 				if (parentSwitched) {
 					changeRecordParentAndRefreshTree(event.source.nodeScope.$modelValue.id, event.dest.nodesScope.$parent.$modelValue.id)
 				}
+			},
+			toggle: function(collapsed, sourceNodeScope){
+				//console.log(collapsed,sourceNodeScope);
 			}
+		}
+
+		ngCtrl.toggleNode = function(scope){
+			if(scope.$modelValue.nodes && scope.$modelValue.nodes.length > 0){
+				scope.toggle();
+			}
+			else {
+				return false;
+			}
+		}
+
+		ngCtrl.collapseAll = function(){
+			$scope.$broadcast('angular-ui-tree:collapse-all');
+		}
+
+		ngCtrl.expandAll = function(){
+			$scope.$broadcast('angular-ui-tree:expand-all');
 		}
 
 		//#endregion
@@ -325,14 +349,17 @@
 		}
 		popupCtrl.submitSearchQuery = function () {
 			function successCallback(response) {
-				popupCtrl.relationLookupList = fastCopy(response.object);
+				popupCtrl.relationLookupList.data = fastCopy(response.object);
 			}
 			function errorCallback(response) { }
-
+			var params = {};
 			if (popupCtrl.searchQuery) {
 				popupCtrl.searchQuery = popupCtrl.searchQuery.trim();
+				params[popupCtrl.relationLookupList.meta.columns[0].meta.name] = popupCtrl.searchQuery
 			}
-			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.ngCtrl.entity.name, 1, null, null, successCallback, errorCallback);
+			
+
+			webvellaCoreService.getRecordsByListMeta(popupCtrl.relationLookupList.meta, popupCtrl.ngCtrl.entity.name, 1, null, params, successCallback, errorCallback);
 		}
 		//#endregion
 
@@ -340,7 +367,7 @@
 		popupCtrl.selectPage = function (page) {
 			// Process
 			function successCallback(response) {
-				popupCtrl.relationLookupList = fastCopy(response.object);
+				popupCtrl.relationLookupList.data = fastCopy(response.object);
 				popupCtrl.currentPage = page;
 			}
 

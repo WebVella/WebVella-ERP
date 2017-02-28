@@ -156,11 +156,10 @@
 		function errorCallback(response) {
 			defer.reject(response.message);
 		}
-		var searchParams = $location.search();
 
 		var list = webvellaCoreService.getEntityRecordListFromEntitiesMetaList($stateParams.listName, $stateParams.entityName, resolvedEntityList);
 
-		webvellaCoreService.getRecordsByListMeta(list, $stateParams.entityName, $stateParams.page, null, searchParams, successCallback, errorCallback);
+		webvellaCoreService.getRecordsByListMeta(list, $stateParams.entityName, $stateParams.page, null, null, successCallback, errorCallback);
 		return defer.promise;
 	}
 
@@ -416,7 +415,7 @@
 				}
 				$location.search(activeFilter, null);
 			}
-			var searchParams = $location.search();
+			var searchParams = $location.search(); //For some reason here are returned params from the previous state so it needs to be inited
 			ngCtrl.filterQuery = {};
 			ngCtrl.listIsFiltered = false;
 			ngCtrl.show_filter = false;
@@ -823,21 +822,40 @@
 		ngCtrl.generateHighlightString = function () {
 			if (ngCtrl.parentView && ngCtrl.parentView.data) {
 				ngCtrl.showPageTitleAuxLabelSecondary = true;
-				return webvellaCoreService.generateHighlightString(ngCtrl.parentView.meta, ngCtrl.parentView.data[0], ngCtrl.stateParams, "title");
+				return webvellaCoreService.generateHighlightString(ngCtrl.list.meta,ngCtrl.parentView.data, ngCtrl.stateParams, "title");
 			}
 			else {
-				return webvellaCoreService.generateHighlightString(ngCtrl.list.meta, null, ngCtrl.stateParams, "title");
+				return webvellaCoreService.generateHighlightString(ngCtrl.list.meta, ngCtrl.list.data[0], ngCtrl.stateParams, "title");
 			}
 		}
 
 		ngCtrl.generateAuxHighlightString = function () {
 			if (ngCtrl.parentView && ngCtrl.parentView.data) {
-				return webvellaCoreService.generateHighlightString(ngCtrl.list.meta, ngCtrl.parentView.data[0], ngCtrl.stateParams, "label");
+				return webvellaCoreService.generateHighlightString(ngCtrl.parentView.meta, ngCtrl.parentView.data[0], ngCtrl.stateParams, "title");
 			}
 			else {
-				return webvellaCoreService.generateHighlightString(ngCtrl.list.meta, null, ngCtrl.stateParams, "label");
+				return webvellaCoreService.generateHighlightString(ngCtrl.list.meta, ngCtrl.list.data[0], ngCtrl.stateParams, "title");
 			}
 		}
+
+		//ngCtrl.generateHighlightString = function () {
+		//	if (ngCtrl.parentView && ngCtrl.parentView.data) {
+		//		ngCtrl.showPageTitleAuxLabelSecondary = true;
+		//		return webvellaCoreService.generateHighlightString(ngCtrl.parentView.meta, ngCtrl.parentView.data[0], ngCtrl.stateParams, "title");
+		//	}
+		//	else {
+		//		return webvellaCoreService.generateHighlightString(ngCtrl.list.meta, null, ngCtrl.stateParams, "title");
+		//	}
+		//}
+
+		//ngCtrl.generateAuxHighlightString = function () {
+		//	if (ngCtrl.parentView && ngCtrl.parentView.data) {
+		//		return webvellaCoreService.generateHighlightString(ngCtrl.list.meta, ngCtrl.parentView.data[0], ngCtrl.stateParams, "label");
+		//	}
+		//	else {
+		//		return webvellaCoreService.generateHighlightString(ngCtrl.list.meta, null, ngCtrl.stateParams, "label");
+		//	}
+		//}
 
 		//#endregion
 
@@ -908,6 +926,10 @@
 		popupCtrl.count = -1;
 		popupCtrl.countHasSize = true;
 		popupCtrl.downloadFilePath = null;
+		popupCtrl.listHasExternalDataSource = false;
+		if(popupCtrl.ngCtrl.list.meta.dataSourceUrl != null && popupCtrl.ngCtrl.list.meta.dataSourceUrl != ""){
+			popupCtrl.listHasExternalDataSource = true;	
+		}
 
 		popupCtrl.count = popupCtrl.ngCtrl.list.meta.pageSize;
 
@@ -929,7 +951,7 @@
 				content: '<span class="go-green">Success </span> Records successfully exported!'
 			});
 			//popupCtrl.downloadFilePath = response.object;
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.close('dismiss');
 
 		}
 		popupCtrl.exportErrorCallback = function (response) {
@@ -957,7 +979,7 @@
 		};
 
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.close('dismiss');
 		};
 	}
 
@@ -1031,11 +1053,11 @@
 		};
 
 		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.close('dismiss');
 		};
 
 		popupCtrl.CloseAfterImport = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.close('dismiss');
 			$state.reload();
 		};
 

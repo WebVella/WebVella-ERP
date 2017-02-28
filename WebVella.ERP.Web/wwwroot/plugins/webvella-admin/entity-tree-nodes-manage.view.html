@@ -5,14 +5,14 @@
 		<div class="meta-icon">
 			<i class="fa fa-fw fa-sitemap fa-2x"></i>
 		</div>
-        <div class="meta-label">
+		<div class="meta-label">
 			<div class="meta-label-aux">
 				<span translate="{{::'RECORD_TREE_MANAGE_NODES'}}"></span>
 				<span class="divider"><i class="fa fa-caret-right"></i></span>
 				<span ng-bind="ngCtrl.entity.name"></span>
 			</div>
-            <h4 ng-bind="::ngCtrl.tree.name"></h4>
-        </div>
+			<h4 ng-bind="::ngCtrl.tree.name"></h4>
+		</div>
 	</div>
 </div>
 <div id="page-body">
@@ -34,8 +34,12 @@
 			<i class="fa fa-fw fa-exclamation go-red"></i>
 			<span translate="{{::'SYSTEM_ITEM_WARNING_TEXT'}}"></span>
 		</div>
+		<p class="btn-group">
+			<a class="btn btn-outline" ng-click="ngCtrl.expandAll()">Expand All</a>
+			<a class="btn btn-outline" ng-click="ngCtrl.collapseAll()">Collapse All</a>
+		</p>
 		<!-- Nested node template -->
-		<div ui-tree ="ngCtrl.treeOptions" ng-if="ngCtrl.tree.data.length > 0">
+		<div ui-tree="ngCtrl.treeOptions" ng-if="ngCtrl.tree.data.length > 0">
 			<ol ui-tree-nodes ng-model="ngCtrl.tree.data" id="tree-root">
 				<li ng-repeat="node in ngCtrl.tree.data track by node.id" ui-tree-node ng-include="'nodes_renderer.html'"
 					ng-class="{parent_li:node.nodes.length > 0, hovered: ngCtrl.attachHoverEffectClass[node.id]}"></li>
@@ -46,17 +50,21 @@
 </div>
 <script type="text/ng-template" id="nodes_renderer.html">
 	<div class="btn-group">
-		<span class="btn btn-default" ui-tree-handle 
+		<span class="btn btn-default" ui-tree-handle
 			  ng-mouseenter="ngCtrl.attachHoverEffectClass[node.id] = true" ng-mouseleave="ngCtrl.attachHoverEffectClass[node.id] = false">
 			<i class="fa fa-fw fa-arrows"></i>
 		</span>
 		<span class="btn btn-default disabled">
-			{{node.label}}
+			<span class="toggle-node" ng-click="ngCtrl.toggleNode(this)">
+				<i class="fa fa-fw fa-caret-right go-gray" ng-if="!node.nodes || node.nodes.length == 0"></i>
+				<i class="fa fa-fw" ng-if="node.nodes && node.nodes.length > 0" ng-class="{'fa-caret-right':this.collapsed,'fa-caret-down':!this.collapsed,}"></i>
+				{{node.label}}
+			</span>
 			<span class="btn btn-default btn-xs add-node" ng-click="ngCtrl.addNodeModal(node)"><i class="fa fa-fw" ng-class="{'fa-plus go-green': !ngCtrl.addButtonLoadingClass[node.id], 'fa-cog fa-spin go-orange': ngCtrl.addButtonLoadingClass[node.id]}"></i></span>
 			<span class="btn btn-default btn-xs delete-node" confirmed-click="ngCtrl.removeNodeModal(node)" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" ng-if="node.parentId != null"><i class="fa fa-fw fa-times-circle go-red"></i></span>
 		</span>
 	</div>
-	<ol ui-tree-nodes ng-model="node.nodes">
+	<ol ui-tree-nodes ng-model="node.nodes" ng-class="{'ng-hide':this.collapsed}">
 		<li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'"
 			ng-class="{parent_li:node.nodes.length > 0, hovered: ngCtrl.attachHoverEffectClass[node.id]}"></li>
 	</ol>
@@ -75,8 +83,8 @@
 				<div class="alert alert-warning">{{popupCtrl.warningMessage}}</div>
 			</div>
 			<div ng-if="!popupCtrl.hasWarning">
-				<!--<form id="filters" class="form-inline">
-					<div class="form-group">
+				<form id="filters" class="form-inline">
+					<div class="form-group" style="padding-left:0">
 						<div class="input-group">
 							<input ng-model="popupCtrl.searchQuery" type="text" class="form-control" placeholder="{{::popupCtrl.relationLookupList.meta.columns[0].meta.label}}" ng-keydown="popupCtrl.checkForSearchEnter($event)">
 							<span class="input-group-btn">
@@ -84,22 +92,22 @@
 							</span>
 						</div>
 					</div>
-				</form>-->
+				</form>
 
 				<table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="popupCtrl.relationLookupList.data.length == 0">
 					<thead>
 						<tr>
-							<th class="actions" style="width:110px;"></th>
+							<th class="actions" style="width:80px;"></th>
 							<th class="wv-{{column.meta.name}}" ng-repeat="column in popupCtrl.relationLookupList.meta.columns  | limitTo: popupCtrl.relationLookupList.meta.visibleColumnsCount">{{column.meta.label}}</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr ng-repeat="record in popupCtrl.relationLookupList.data">
 							<td ng-switch="popupCtrl.canSelectRecord(record)">
-								<a ng-click='popupCtrl.selectSingleRecord(record)' href="javascript:void(0)" ng-switch-when="true">
+								<a ng-click='popupCtrl.selectSingleRecord(record)' href="javascript:void(0)" ng-switch-when="true" class="btn btn-outline btn-sm">
 									select
 								</a>
-								<span class="go-gray"  ng-switch-when="false">
+								<span class="go-gray" ng-switch-when="false">
 									n/a
 								</span>
 							</td>
@@ -112,15 +120,15 @@
 				<div class="alert alert-info" ng-show="popupCtrl.relationLookupList.data.length == 0" translate="{{::'LIST_EMPTY_MESSAGE'}}"></div>
 				<ul class="pager" ng-if="popupCtrl.relationLookupList.meta.pageSize > 0">
 					<!--<li ng-if="popupCtrl.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
-					<li ng-if="popupCtrl.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupCtrl.selectPage(popupCtrl.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> <span  translate="{{::'PREVIOUS'}}"></span></a></li>
-					<li ng-if="popupCtrl.relationLookupList.meta.pageSize <= popupCtrl.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupCtrl.selectPage(popupCtrl.currentPage + 1, $event)"><span  translate="{{::'NEXT'}}"></span> <i class="fa fa-fw fa-chevron-right"></i></a></li>
+					<li ng-if="popupCtrl.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupCtrl.selectPage(popupCtrl.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> <span translate="{{::'PREVIOUS'}}"></span></a></li>
+					<li ng-if="popupCtrl.relationLookupList.meta.pageSize <= popupCtrl.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupCtrl.selectPage(popupCtrl.currentPage + 1, $event)"><span translate="{{::'NEXT'}}"></span> <i class="fa fa-fw fa-chevron-right"></i></a></li>
 					<!--<li ng-if="popupCtrl.relationLookupList.meta.pageSize > popupCtrl.relationLookupList.data.length" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>-->
 				</ul>
 			</div>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupCtrl.saveRelationChanges()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.modalMode == 'multi-selection'"  translate="{{::'SAVE'}}"></button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()"  translate="{{::'CANCEL'}}"></button>
+		<button class="btn btn-primary" ng-click="popupCtrl.saveRelationChanges()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.modalMode == 'multi-selection'" translate="{{::'SAVE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
 	</div>
 </script>

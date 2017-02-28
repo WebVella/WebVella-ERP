@@ -307,26 +307,31 @@
 		<h4 class="modal-title">Export records</h4>
 	</div>
 	<div class="modal-body ng-hide" ng-show="!popupCtrl.downloadFilePath">
-		<div class="alert alert-danger ng-hide" ng-show="popupCtrl.hasError" ng-bind="popupCtrl.errorMessage"></div>
-		<h4>Record fields & order</h4>
-		<ul class="list-inline">
-			<li class="go-green"><i class="fa fa-table"></i> id</li>
-			<li class="go-green" ng-repeat="field in popupCtrl.getExportFields() track by $index"><i class="fa fa-table"></i> {{field}}</li>
-		</ul>
+		<div ng-if="!popupCtrl.listHasExternalDataSource">
+			<div class="alert alert-danger ng-hide" ng-show="popupCtrl.hasError" ng-bind="popupCtrl.errorMessage"></div>
+			<h4>Record fields & order</h4>
+			<ul class="list-inline">
+				<li class="go-green"><i class="fa fa-table"></i> id</li>
+				<li class="go-green" ng-repeat="field in popupCtrl.getExportFields() track by $index"><i class="fa fa-table"></i> {{field}}</li>
+			</ul>
 
-		<h4 style="margin-top:30px;">Records count</h4>
-		<p class="text-muted">This will export a number of records based on the current list filter and sort</p>
-		<div class="row">
-			<div class="col-xs-6">
-				<label class="radio-inline">
-					<input type="radio" name="countOptions" ng-model="popupCtrl.countHasSize" ng-value="true" style="top:6px;"> get the first <input class="form-control" ng-model="popupCtrl.count" style="width:60px;display:inline-block;margin:0 5px;" /> records
-				</label>
+			<h4 style="margin-top:30px;">Records count</h4>
+			<p class="text-muted">This will export a number of records based on the current list filter and sort</p>
+			<div class="row">
+				<div class="col-xs-6">
+					<label class="radio-inline">
+						<input type="radio" name="countOptions" ng-model="popupCtrl.countHasSize" ng-value="true" style="top:6px;"> get the first <input class="form-control" ng-model="popupCtrl.count" style="width:60px;display:inline-block;margin:0 5px;" /> records
+					</label>
+				</div>
+				<div class="col-xs-6" style="padding:6px;">
+					<label class="radio-inline">
+						<input type="radio" name="countOptions" ng-model="popupCtrl.countHasSize" ng-value="false"> get all records
+					</label>
+				</div>
 			</div>
-			<div class="col-xs-6" style="padding:6px;">
-				<label class="radio-inline">
-					<input type="radio" name="countOptions" ng-model="popupCtrl.countHasSize" ng-value="false"> get all records
-				</label>
-			</div>
+		</div>
+		<div ng-if="popupCtrl.listHasExternalDataSource">
+			<div class="alert alert-warning">This list is getting its data by an extarnal data source and its data cannot be exported</div>
 		</div>
 	</div>
 	<div class="modal-body ng-hide" ng-show="popupCtrl.downloadFilePath">
@@ -335,7 +340,7 @@
 		<div class="form" style="margin:15px 0"><a href="{{popupCtrl.downloadFilePath}}"><i class="fa fa-file"></i> click here to download the export file</a></div>
 	</div>
 	<div class="modal-footer">
-		<a href="javascript:void(0)" ng-click="popupCtrl.ok()" class="btn btn-primary ng-hide" ng-show="!popupCtrl.downloadFilePath"><i class="fa fa-fw" ng-class="{'fa-download': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Export</a>
+		<a href="javascript:void(0)" ng-if="!popupCtrl.listHasExternalDataSource" ng-click="popupCtrl.ok()" class="btn btn-primary ng-hide" ng-show="!popupCtrl.downloadFilePath"><i class="fa fa-fw" ng-class="{'fa-download': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Export</a>
 		<a href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default" translate="{{::'CANCEL'}}"></a>
 	</div>
 </script>
@@ -353,9 +358,11 @@
 				The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated.
 				If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones. If "id" does not exists, validation error will be raised
 			</p>
-			<uib-accordion close-others="true" class="accordion">
-				<uib-accordion-group panel-class="panel-accordion" is-open="popupCtrl.accordion.clipboard.active" is-disabled="false">
-					<uib-accordion-heading><div><i class="fa fa-fw" ng-class="{'fa-caret-right': !popupCtrl.accordion.clipboard.active,'fa-caret-down go-red': popupCtrl.accordion.clipboard.active}"></i> 1. Import from <b>clipboard</b></div></uib-accordion-heading>
+			<div uib-accordion close-others="true" class="accordion">
+				<div uib-accordion-group panel-class="panel-accordion" is-open="popupCtrl.accordion.clipboard.active" is-disabled="false">
+					<div uib-accordion-heading>
+						<div><i class="fa fa-fw" ng-class="{'fa-caret-right': !popupCtrl.accordion.clipboard.active,'fa-caret-down go-red': popupCtrl.accordion.clipboard.active}"></i> 1. Import from <b>clipboard</b></div>
+					</div>
 					<div class="form">
 						<div class="editable-field field">
 							<label class="control-label">Clipboard</label>
@@ -365,9 +372,11 @@
 							</div>
 						</div>
 					</div>
-				</uib-accordion-group>
-				<uib-accordion-group panel-class="panel-accordion" is-open="popupCtrl.accordion.file.active" is-disabled="false">
-					<uib-accordion-heading><div><i class="fa fa-fw" ng-class="{'fa-caret-right': !popupCtrl.accordion.file.active,'fa-caret-down go-red': popupCtrl.accordion.file.active}"></i> 2. Import from <b>CSV file</b></div></uib-accordion-heading>
+				</div>
+				<div uib-accordion-group panel-class="panel-accordion" is-open="popupCtrl.accordion.file.active" is-disabled="false">
+					<div uib-accordion-heading>
+						<div><i class="fa fa-fw" ng-class="{'fa-caret-right': !popupCtrl.accordion.file.active,'fa-caret-down go-red': popupCtrl.accordion.file.active}"></i> 2. Import from <b>CSV file</b></div>
+					</div>
 					<div class="form">
 						<div class="editable-field field">
 							<label class="control-label">Uploaded CSV file</label>
@@ -388,8 +397,8 @@
 							</div>
 						</div>
 					</div>
-				</uib-accordion-group>
-			</uib-accordion>
+				</div>
+			</div>
 		</div>
 		<div ng-if="popupCtrl.activeStep == 2">
 			<p>

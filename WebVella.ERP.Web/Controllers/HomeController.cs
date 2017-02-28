@@ -26,12 +26,15 @@ namespace WebVella.ERP.Web.Controllers
 			var moduleJsFileList = new List<string>();
 			//App dependency injections
 			var appDependencyInjections = new List<string>();
+			ViewBag.CacheBreaker = 20160613;
 
 			#region << Get and init plugin data >>
 			foreach(var manifest in pluginService.Plugins) {
 
 				var cacheBreaker = manifest.Version.ToString();
-
+				if(manifest.Name == "webvella-core") {
+					ViewBag.CacheBreaker = cacheBreaker;
+				}
 				foreach(var cssFile in manifest.Libraries.Css) {
 					libraryCssFileList.Add(AppendCacheBreaker(cssFile, cacheBreaker));
 				}
@@ -51,10 +54,11 @@ namespace WebVella.ERP.Web.Controllers
 			#endregion
 
 
-			ViewBag.CacheBreaker = 20160613;
+
 			ViewBag.Lang = Settings.Lang;
 			ViewBag.CompanyName = Settings.CompanyName;
 			ViewBag.CompanyLogo = Settings.CompanyLogo;
+			ViewBag.DevelopmentMode = Settings.DevelopmentMode;
 			ViewBag.LibraryCssFileList = libraryCssFileList;
 			ViewBag.ModuleCssFileList = moduleCssFileList;
 			ViewBag.LibraryJsFileList = libraryJsFileList;

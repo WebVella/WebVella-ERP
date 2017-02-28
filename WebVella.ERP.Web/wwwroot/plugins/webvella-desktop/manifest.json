@@ -2,7 +2,7 @@
 	"name": "webvella-desktop",
 	"url": "http://webvella.com",
 	"description": "WebVella ERP plugin for managing the desktop",
-	"version": 20160613,
+	"version": 20170226,
 	"company": "WebVella",
 	"company_url": "http://webvella.com",
 	"plugin_page_url": "http://webvella.com",
@@ -13,11 +13,11 @@
 	"icon_url": "",
 	"load_priority": 9999,
 	"libraries": {
-		"css": [ ],
-		"js": [ ]
+		"css": [],
+		"js": []
 	},
 	"module": {
-		"css": [ ],
+		"css": [],
 		"js": [
 			"/plugins/webvella-desktop/base.module.js",
 			"/plugins/webvella-desktop/browse.module.js",

@@ -1,6 +1,6 @@
 # Angular-xeditable
 
-[![npm](https://img.shields.io/npm/v/angular-xeditable.svg)]() [![Bower](https://img.shields.io/bower/v/angular-xeditable.svg)]()
+[![npm](https://img.shields.io/npm/v/angular-xeditable.svg)](https://www.npmjs.com/package/angular-xeditable) [![Bower](https://img.shields.io/bower/v/angular-xeditable.svg)](http://bower.io/search/?q=angular-xeditable)
 
 Edit in place for AngularJS
 
@@ -35,18 +35,11 @@ Basically it does not depend on any libraries except [AngularJS](http://angularj
 For themes you may need to include [Twitter Bootstrap](http://getbootstrap.com) CSS.  
 For some extra controls (e.g. datepicker) you may need to include [angular-ui bootstrap](http://angular-ui.github.io/bootstrap/).
 To use ui-select you will need to include [angular-ui ui-select](https://github.com/angular-ui/ui-select/).
+To use ngTagsInput you will need to include [mbenford ngTagsInput](https://github.com/mbenford/ngTagsInput).
+To use ui-date you will need to include [angular-ui ui-date](https://github.com/angular-ui/ui-date).
 
-## jsFiddle / Plunker
-Please use these live templates when creating issues:  
-http://jsfiddle.net/NfPcH/3  
-http://plnkr.co/edit/BjWwXIlYyyLvRnVwO8m8?p=preview
-
-## Roadmap
-
-* [checklist](https://github.com/vitalets/checklist-model)
-* [combodate](https://github.com/vitalets/combodate)
-* popup mode (waiting https://github.com/angular-ui/bootstrap/pull/1391)
-* internally move to [lazy-model](https://github.com/vitalets/lazy-model)
+## Reporting issues and Contributing
+Please read our [Contributor guidelines](CONTRIBUTING.md) before reporting an issue or creating a pull request.
 
 ## License
 [MIT](LICENSE)

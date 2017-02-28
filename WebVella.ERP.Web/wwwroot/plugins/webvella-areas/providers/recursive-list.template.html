@@ -266,10 +266,10 @@
 						</tr>
 						<tr ng-repeat="record in popupCtrl.relationLookupList.data track by record.id" ng-hide="popupCtrl.relationLookupList.data.length == 0">
 							<td>
-								<a ng-click='popupCtrl.instantAttachRecord(record)' href="javascript:void(0)" ng-if="::!popupCtrl.isSelected(record)">
+								<a class="btn btn-default btn-sm" ng-click='popupCtrl.instantAttachRecord(record)' href="javascript:void(0)" ng-if="::!popupCtrl.isSelected(record)">
 									select
 								</a>
-								<span ng-if="::popupCtrl.isSelected(record)" class="go-gray">
+								<span class="btn btn-default btn-sm disabled" ng-if="::popupCtrl.isSelected(record)">
 									selected
 								</span>
 							</td>

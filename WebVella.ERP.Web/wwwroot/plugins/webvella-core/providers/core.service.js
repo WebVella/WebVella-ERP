@@ -217,6 +217,7 @@
         serviceInstance.getFileContent = getFileContent;
         serviceInstance.getFieldTypes = getFieldTypes;
         serviceInstance.currencyMetas = currencyMetas;
+		serviceInstance.generateErrorMessage = generateErrorMessage;
         //#endregion
 
         //#region << Plugins >>
@@ -1098,6 +1099,32 @@
                 "weight": 1,
                 "template": "<a class=\"back clearfix\" href=\"javascript:void(0)\" ng-click=\"sidebarData.goBack()\"><i class=\"fa fa-fw fa-arrow-left\"></i> <span class=\"text\">Back</span></a>"
             };
+            var rvAddNewAction = {
+                "name": "wv_recursive_view_add_new",
+                "menu": "sidebar-top",
+                "weight": 1,
+                "template": "<a href=\"javascript:void(0)\" class=\"btn btn-sm btn-outline\" ng-if=\"::canCreate\" ng-click=\"manageRelatedRecordItem(null)\"><i class=\"fa fa-plus\"></i> Create & Add</a>"
+            };
+            var rvAddExistingAction = {
+                "name": "wv_recursive_view_add_existing",
+                "menu": "recursive-view-title",
+                "weight": 2,
+                "template": "<a href=\"javascript:void(0)\" class=\"btn btn-sm btn-outline\" ng-if=\"::canAddExisting\" ng-click=\"addExistingItem()\"><i class=\"fa fa-download\"></i> Add existing</a>"
+            };
+
+            var rvEditAction = {
+                "name": "wv_recursive_view_edit",
+                "menu": "recursive-list-record-row",
+                "weight": 1,
+                "template": "<a href=\"javascript:void(0)\" title=\"quick edit\" class=\"btn btn-sm btn-outline\" ng-click=\"manageRelatedRecordItem(recordData)\" ng-if=\"::canUpdate\"><i class=\"fa fa-pencil\"></i></a>"
+            };
+            var rvUnrelateAction = {
+                "name": "wv_recursive_view_unrelate",
+                "menu": "recursive-list-record-row",
+                "weight": 2,
+                "template": "<a href=\"javascript:void(0)\" title=\"remove relation\" class=\"btn btn-sm btn-outline\" confirmed-click=\"instantDetachRecord(recordData)\" ng-confirm-click=\"Are you sure that you need this relation removed?\" ng-if=\"::canRemove\"><i class=\"fa fa-times go-red\"></i></a>"
+            };
+
 
             var view = {
                 "id": null,
@@ -1135,6 +1162,10 @@
                 case "general":
                     view.actionItems.push(backButtonAction);
                     view.actionItems.push(deleteAction);
+					view.actionItems.push(rvAddNewAction);
+					view.actionItems.push(rvAddExistingAction);
+					view.actionItems.push(rvEditAction);
+					view.actionItems.push(rvUnrelateAction);
                     break;
                 case "create":
                     view.actionItems.push(backButtonAction);
@@ -1737,6 +1768,36 @@
 						    "menu": "record-row",
 						    "weight": 1,
 						    "template": "<a class=\"btn btn-default btn-outline\" ng-href=\"{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-eye\"></i>\n</a>"
+						},
+						{
+						    "name": "wv_recursive_list_add_existing",
+						    "menu": "recursive-list-title",
+						    "weight": 1,
+						    "template": "<a href=\"javascript:void(0)\" class=\"btn btn-outline btn-sm\" ng-if=\"::canAddExisting\" ng-click=\"addExistingItem()\"><i class=\"fa fa-download\"></i> Add existing</a>"
+						},
+						{
+						    "name": "wv_recursive_list_add_new",
+						    "menu": "recursive-list-title",
+						    "weight": 2,
+						    "template": "<a href=\"javascript:void(0)\" class=\"btn btn-outline btn-sm\" ng-if=\"::canCreate\" ng-click=\"manageRelatedRecordItem(null)\"><i class=\"fa fa-plus\"></i> Create & Add</a>"
+						},
+						{
+						    "name": "wv_recursive_list_view",
+						    "menu": "recursive-list-record-row",
+						    "weight": 1,
+						    "template": "<a href=\"javascript:void(0)\" title=\"quick view this record\" class=\"btn btn-sm btn-outline\" ng-click=\"viewRelatedRecordItem(record)\"><i class=\"fa fa-eye\"></i></a>"
+						},
+						{
+						    "name": "wv_recursive_list_edit",
+						    "menu": "recursive-list-record-row",
+						    "weight": 2,
+						    "template": "<a href=\"javascript:void(0)\" title=\"quick edit this record\" class=\"btn btn-sm btn-outline\" ng-click=\"manageRelatedRecordItem(record)\" ng-if=\"::canUpdate\"><i class=\"fa fa-pencil\"></i></a>"
+						},
+						{
+						    "name": "wv_recursive_list_unrelate",
+						    "menu": "recursive-list-record-row",
+						    "weight": 3,
+						    "template": "<a href=\"javascript:void(0)\" title=\"Detach records relation\" class=\"btn btn-sm btn-outline\" confirmed-click=\"instantDetachRecord(record)\" ng-confirm-click=\"Are you sure that you need this relation removed?\" ng-if=\"::canRemove\"><i class=\"fa fa-times go-red\"></i></a>"
 						}
 				    ],
 				}
@@ -2165,20 +2226,56 @@
             }
             else {
                 var extraParamQueryString = "";
+				var queryParamAux = [];
                 extraParamQueryString = "?";
                 extraParamQueryString += "entityName=" + entityName + "&";
                 extraParamQueryString += "listName=" + viewMeta.name + "&";
                 extraParamQueryString += "recordId=" + recordId;
-                if (stateParams != null) {
-                    if (!isEmpty(stateParams)) {
-						extraParamQueryString += "&";
-                        for (var param in stateParams) {
-                            if (extraParamQueryString.indexOf(param) == -1) {
-                                extraParamQueryString += param + "=" + stateParams[param] + "&";
-                            }
+				//Add stateParams
+                if (stateParams != null && !isEmpty(stateParams)) {
+                    for (var param in stateParams) {
+                        if (stateParams[param] && extraParamQueryString.indexOf(param) == -1) {
+                            queryParamAux.push(param + "=" + stateParams[param]);
                         }
                     }
                 }
+				//Add locationParams with override of stateParams. Can be added to the view URL
+				//IMPORTANT: this is not possible at this state as $location returns the params of the old state. before the change and problems could occur
+				//var locationParams = $location.search();
+				//if(locationParams != null && !isEmpty(locationParams)){
+                //    for (var param in locationParams) {
+                //        if (locationParams[param]) {
+				//			var auxParamFound = _.find(queryParamAux,function(record){
+				//				var index = record.indexOf(param + "=");
+				//				if(index == -1){
+				//					return false;
+				//				}
+				//				else{
+				//					return true;
+				//				}
+				//			});
+				//			if(auxParamFound){
+				//				//Remove the found elements
+				//				_.remove(queryParamAux,function(record){
+				//					var index = record.indexOf(param + "=");
+				//					if(index == -1){
+				//						return false;
+				//					}
+				//					else{
+				//						return true;
+				//					}
+				//				});
+				//			}
+				//			queryParamAux.push(param + "=" + locationParams[param]);
+                //        }
+                //    }					
+				//}
+				if(queryParamAux.length > 0){
+					extraParamQueryString += "&";
+					extraParamQueryString += queryParamAux.join("&");
+				}
+
+
                 $http({ method: 'GET', url: viewMeta.dataSourceUrl + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
             }
         }
@@ -2221,6 +2318,7 @@
             }
             else {
                 var extraParamQueryString = "";
+				var queryParamAux = [];
                 extraParamQueryString = "?";
                 extraParamQueryString += "entityName=" + entityName + "&";
                 extraParamQueryString += "listName=" + listMeta.name + "&";
@@ -2234,17 +2332,51 @@
                         }
                     }
                 }
-                if (stateParams != null) {
-                    if (!isEmpty(stateParams)) {
-                        for (var param in stateParams) {
-                            if (extraParamQueryString.indexOf(param) == -1) {
-                                extraParamQueryString += param + "=" + stateParams[param] + "&";
-                            }
+ 				//Add stateParams
+                if (stateParams != null && !isEmpty(stateParams)) {
+                    for (var param in stateParams) {
+                        if (stateParams[param] && extraParamQueryString.indexOf(param) == -1) {
+                            queryParamAux.push(param + "=" + stateParams[param]);
                         }
                     }
                 }
-                //remove the last &
-                extraParamQueryString = extraParamQueryString.substring(0, extraParamQueryString.length - 1);
+				//Add locationParams with override of stateParams. Can be added to the view URL. 
+				//IMPORTANT: this is not possible at this state as $location returns the params of the old state. before the change and problems could occur
+				//var locationParams = $location.search();
+				//if(locationParams != null && !isEmpty(locationParams)){
+                //    for (var param in locationParams) {
+                //        if (locationParams[param]) {
+				//			var auxParamFound = _.find(queryParamAux,function(record){
+				//				var index = record.indexOf(param + "=");
+				//				if(index == -1){
+				//					return false;
+				//				}
+				//				else{
+				//					return true;
+				//				}
+				//			});
+				//			if(auxParamFound){
+				//				//Remove the found elements
+				//				_.remove(queryParamAux,function(record){
+				//					var index = record.indexOf(param + "=");
+				//					if(index == -1){
+				//						return false;
+				//					}
+				//					else{
+				//						return true;
+				//					}
+				//				});
+				//			}
+				//			queryParamAux.push(param + "=" + locationParams[param]);
+                //        }
+                //    }					
+				//}
+				if(queryParamAux.length > 0){
+					extraParamQueryString += "&";
+					extraParamQueryString += queryParamAux.join("&");
+				}
+
+
                 $http({ method: 'GET', url: listMeta.dataSourceUrl + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
             }
         }
@@ -3423,7 +3555,14 @@
                     }
                     if (data != null) {
                         //Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
-                        data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toDate();
+						var convertedData = data;
+						convertedData = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toISOString();
+						if(convertedData == "Invalid date"){
+							data = moment(data).utc().toISOString();
+						}
+						else{
+							data = convertedData;
+						}
                     }
                     break;
                 case 5: //Datetime
@@ -3431,7 +3570,14 @@
                         return "This is a required field";
                     }
                     if (data != null) {
-                        data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('minute').utc().toDate();
+						var convertedData = data;
+						convertedData = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toISOString();
+						if(convertedData == "Invalid date"){
+							data = moment(data).utc().toISOString();
+						}
+						else{
+							data = convertedData;
+						}
                     }
                     break;
                 case 6: //Email
@@ -3526,7 +3672,7 @@
             function patchFailedCallback(response) {
                 ngToast.create({
                     className: 'error',
-                    content: '<span class="go-red">Error:</span> ' + response.message,
+                    content: generateErrorMessage(response),
                     timeout: 7000
                 });
                 $state.go($state.current, {}, { reload: true });
@@ -3577,6 +3723,23 @@
         //#endregion
 
         //#region << Helpers >>
+		function generateErrorMessage(response){
+			var message = '<span class="go-red">Error:</span> ' + response.message;
+			
+			if(response.errors.length > 0){
+				message += '<ul>';
+				_.forEach(response.errors,function(error){
+					message += '<li>';
+					message += '<b>' + error.key + '</b> - ' + error.message;
+					message += '</li>';
+				});
+				message += '</ul>';
+			}
+
+			return message;
+		}
+
+
         function getFileContent(url, successCallback, errorCallback) {
             $http({ method: 'GET', url: url }).then(function getSuccessCallback(response) { successCallback(response); }, function getErrorCallback(response) { errorCallback(response); });
         }
@@ -4803,7 +4966,6 @@
         function getPluginsList(successCallback, errorCallback) {
             $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'plugin/list/' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
         }
-
         //#endregion
 
         //#endregion
