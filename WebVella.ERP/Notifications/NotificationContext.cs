@@ -11,17 +11,27 @@ using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP.Notifications
 {
-	public class NotificationService : INotificationService
+	public class NotificationContext
 	{
-		private static string SQL_NOTIFICATION_CHANNEL_NAME = "ERP_NOTIFICATIONS_CHANNNEL";
-		private static NpgsqlConnection sqlConnection;
-		private static List<Listener> listeners = new List<Listener>();
+		public static NotificationContext Current { get; private set; }
 
-		public void Initialize(IServiceProvider serviceProvider)
+		private const string SQL_NOTIFICATION_CHANNEL_NAME = "ERP_NOTIFICATIONS_CHANNNEL";
+		private NpgsqlConnection sqlConnection;
+		private List<Listener> listeners = new List<Listener>();
+
+		public static void Initialize()
+		{
+			Current = new NotificationContext();
+		}
+
+		/// <summary>
+		/// Initialize context and register all attribute decorated methods from all loaded assemblies
+		/// </summary>
+		private NotificationContext()
 		{
 			var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-				.Where(a => ! ( a.FullName.ToLowerInvariant().StartsWith("microsoft.") 
-					|| a.FullName.ToLowerInvariant().StartsWith("system.") ) );
+				.Where(a => !(a.FullName.ToLowerInvariant().StartsWith("microsoft.")
+					|| a.FullName.ToLowerInvariant().StartsWith("system.")));
 			foreach (var assembly in assemblies)
 			{
 				foreach (Type type in assembly.GetTypes())
@@ -56,6 +66,45 @@ namespace WebVella.ERP.Notifications
 			ListenForNotifications();
 		}
 
+		/// <summary>
+		/// Registers new notification listener
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="methodName"></param>
+		/// <param name="channel"></param>
+		public void AttachListener(Type type, string methodName, string channel = null)
+		{
+			if (type == null)
+				throw new ArgumentNullException("type");
+
+			if (string.IsNullOrWhiteSpace(methodName))
+				throw new ArgumentException("methodName");
+
+			var methods = from method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly)
+						  where method.IsDefined(typeof(NotificationHandlerAttribute))
+						  select method;
+
+			bool found = false;
+			foreach (MethodInfo method in methods)
+			{
+				if (methodName == method.Name)
+				{
+					found = true;
+					Listener listener = new Listener();
+					listener.Instance = new DynamicObjectCreater(type).CreateInstance();
+					listener.Method = method;
+					listener.Channel = (channel ?? string.Empty).ToLowerInvariant();
+					listeners.Add(listener);
+				}
+			}
+
+			if (!found)
+				throw new Exception($"Trying to register invalid method '{methodName}'.");
+		}
+
+		/// <summary>
+		/// Listens for notifications 
+		/// </summary>
 		private void ListenForNotifications()
 		{
 			sqlConnection = new NpgsqlConnection(Settings.ConnectionString);
@@ -95,9 +144,13 @@ namespace WebVella.ERP.Notifications
 				listenersToNotify = listeners.Where(l => l.Channel.ToLowerInvariant() == notification.Channel.ToLowerInvariant()).ToList();
 
 			foreach (var listener in listenersToNotify)
-				Task.Run(() => { listener.Method.Invoke(listener.Instance, new object[] { notification }); } );
+				Task.Run(() => { listener.Method.Invoke(listener.Instance, new object[] { notification }); });
 		}
 
+		/// <summary>
+		/// Send notification
+		/// </summary>
+		/// <param name="notification"></param>
 		public void SendNotification(Notification notification)
 		{
 			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
@@ -116,6 +169,5 @@ namespace WebVella.ERP.Notifications
 				con.Close();
 			}
 		}
-
 	}
 }

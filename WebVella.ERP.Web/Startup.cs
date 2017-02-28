@@ -41,7 +41,6 @@ namespace WebVella.ERP.Web
 			services.AddScoped<IRequestService, RequestService>();
 			services.AddSingleton<IErpService, ErpService>();
 			services.AddSingleton<IPluginService, PluginService>();
-			services.AddSingleton<INotificationService, NotificationService>();
 			services.AddSingleton<IWebHookService, WebHookService>();
 		}
 
@@ -73,11 +72,8 @@ namespace WebVella.ERP.Web
 				IWebHookService webHookService = app.ApplicationServices.GetService<IWebHookService>();
 				webHookService.Initialize(pluginService);
 
-				INotificationService notificationService = app.ApplicationServices.GetService<INotificationService>();
-				notificationService.Initialize(serviceProvider);
-				//sample test notification 
-				//notificationService.SendNotification(new Notification { Channel = "*", Message = "ERP configuration loaded and completed." });
-
+				NotificationContext.Initialize();
+				NotificationContext.Current.SendNotification(new Notification { Channel = "*", Message = "ERP configuration loaded and completed." });
 			}
 			finally
 			{
