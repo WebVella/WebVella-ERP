@@ -156,11 +156,10 @@
 		function errorCallback(response) {
 			defer.reject(response.message);
 		}
-		var searchParams = $location.search();
 
 		var list = webvellaCoreService.getEntityRecordListFromEntitiesMetaList($stateParams.listName, $stateParams.entityName, resolvedEntityList);
 
-		webvellaCoreService.getRecordsByListMeta(list, $stateParams.entityName, $stateParams.page, null, searchParams, successCallback, errorCallback);
+		webvellaCoreService.getRecordsByListMeta(list, $stateParams.entityName, $stateParams.page, null, null, successCallback, errorCallback);
 		return defer.promise;
 	}
 
@@ -416,7 +415,7 @@
 				}
 				$location.search(activeFilter, null);
 			}
-			var searchParams = $location.search();
+			var searchParams = $location.search(); //For some reason here are returned params from the previous state so it needs to be inited
 			ngCtrl.filterQuery = {};
 			ngCtrl.listIsFiltered = false;
 			ngCtrl.show_filter = false;

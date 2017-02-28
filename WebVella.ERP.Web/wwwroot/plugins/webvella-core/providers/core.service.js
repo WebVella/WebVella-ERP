@@ -2240,35 +2240,36 @@
                     }
                 }
 				//Add locationParams with override of stateParams. Can be added to the view URL
-				var locationParams = $location.search();
-				if(locationParams != null && !isEmpty(locationParams)){
-                    for (var param in locationParams) {
-                        if (locationParams[param]) {
-							var auxParamFound = _.find(queryParamAux,function(record){
-								var index = record.indexOf(param + "=");
-								if(index == -1){
-									return false;
-								}
-								else{
-									return true;
-								}
-							});
-							if(auxParamFound){
-								//Remove the found elements
-								_.remove(queryParamAux,function(record){
-									var index = record.indexOf(param + "=");
-									if(index == -1){
-										return false;
-									}
-									else{
-										return true;
-									}
-								});
-							}
-							queryParamAux.push(param + "=" + locationParams[param]);
-                        }
-                    }					
-				}
+				//IMPORTANT: this is not possible at this state as $location returns the params of the old state. before the change and problems could occur
+				//var locationParams = $location.search();
+				//if(locationParams != null && !isEmpty(locationParams)){
+                //    for (var param in locationParams) {
+                //        if (locationParams[param]) {
+				//			var auxParamFound = _.find(queryParamAux,function(record){
+				//				var index = record.indexOf(param + "=");
+				//				if(index == -1){
+				//					return false;
+				//				}
+				//				else{
+				//					return true;
+				//				}
+				//			});
+				//			if(auxParamFound){
+				//				//Remove the found elements
+				//				_.remove(queryParamAux,function(record){
+				//					var index = record.indexOf(param + "=");
+				//					if(index == -1){
+				//						return false;
+				//					}
+				//					else{
+				//						return true;
+				//					}
+				//				});
+				//			}
+				//			queryParamAux.push(param + "=" + locationParams[param]);
+                //        }
+                //    }					
+				//}
 				if(queryParamAux.length > 0){
 					extraParamQueryString += "&";
 					extraParamQueryString += queryParamAux.join("&");
@@ -2339,36 +2340,37 @@
                         }
                     }
                 }
-				//Add locationParams with override of stateParams. Can be added to the view URL
-				var locationParams = $location.search();
-				if(locationParams != null && !isEmpty(locationParams)){
-                    for (var param in locationParams) {
-                        if (locationParams[param]) {
-							var auxParamFound = _.find(queryParamAux,function(record){
-								var index = record.indexOf(param + "=");
-								if(index == -1){
-									return false;
-								}
-								else{
-									return true;
-								}
-							});
-							if(auxParamFound){
-								//Remove the found elements
-								_.remove(queryParamAux,function(record){
-									var index = record.indexOf(param + "=");
-									if(index == -1){
-										return false;
-									}
-									else{
-										return true;
-									}
-								});
-							}
-							queryParamAux.push(param + "=" + locationParams[param]);
-                        }
-                    }					
-				}
+				//Add locationParams with override of stateParams. Can be added to the view URL. 
+				//IMPORTANT: this is not possible at this state as $location returns the params of the old state. before the change and problems could occur
+				//var locationParams = $location.search();
+				//if(locationParams != null && !isEmpty(locationParams)){
+                //    for (var param in locationParams) {
+                //        if (locationParams[param]) {
+				//			var auxParamFound = _.find(queryParamAux,function(record){
+				//				var index = record.indexOf(param + "=");
+				//				if(index == -1){
+				//					return false;
+				//				}
+				//				else{
+				//					return true;
+				//				}
+				//			});
+				//			if(auxParamFound){
+				//				//Remove the found elements
+				//				_.remove(queryParamAux,function(record){
+				//					var index = record.indexOf(param + "=");
+				//					if(index == -1){
+				//						return false;
+				//					}
+				//					else{
+				//						return true;
+				//					}
+				//				});
+				//			}
+				//			queryParamAux.push(param + "=" + locationParams[param]);
+                //        }
+                //    }					
+				//}
 				if(queryParamAux.length > 0){
 					extraParamQueryString += "&";
 					extraParamQueryString += queryParamAux.join("&");
