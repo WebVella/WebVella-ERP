@@ -81,7 +81,6 @@ namespace WebVella.ERP.Notifications
 				throw new ArgumentException("methodName");
 
 			var methods = from method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly)
-						  where method.IsDefined(typeof(NotificationHandlerAttribute))
 						  select method;
 
 			bool found = false;
