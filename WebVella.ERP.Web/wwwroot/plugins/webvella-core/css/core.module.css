@@ -4540,7 +4540,8 @@ table.editable td {
 	padding: 5px;
 }
 
-.view-manage-section .panel-heading .btn + .btn {
+.view-manage-section .panel-heading .btn + .btn,
+#page-title .aux-actions .btn-wrapper + .btn-wrapper {
 	margin-left: 10px;
 }
 
