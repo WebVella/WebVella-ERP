@@ -4585,7 +4585,9 @@ table.editable td {
 	min-height: 34px;
 }
 
-
+.record-details .image-field {
+	width:100%;
+}
 
 /*
 	New length sizes for the views
