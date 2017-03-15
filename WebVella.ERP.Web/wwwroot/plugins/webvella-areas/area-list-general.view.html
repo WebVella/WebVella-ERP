@@ -17,11 +17,11 @@
 			<h4>
 				<span ng-bind-html="::ngCtrl.generateHighlightString()" title="{{::ngCtrl.generateHighlightString()}}"></span>
 				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalLists.length > 1" dropdown-append-to-body="true">
-					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-default btn-outline btn-sm" style="padding:0 10px;"><i class="fa fa-fw fa-caret-down"></i></a>
+					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-default btn-outline btn-sm" style="padding:0 10px;">more <i class="fa fa-fw fa-caret-down"></i></a>
 					<ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
 						<li ng-repeat="list in ngCtrl.generalLists track by $index">
 							<a href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/list-general/{{::list.name}}/1">
-								<i class="fa fa-fw fa-{{::list.iconName}}"></i> {{::list.label}}
+								<i class="fa fa-fw fa-{{::list.iconName}}"></i> {{::ngCtrl.generateSublistHighlightString(list)}}
 							</a>
 						</li>
 					</ul>

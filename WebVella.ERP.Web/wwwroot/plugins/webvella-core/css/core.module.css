@@ -1405,8 +1405,14 @@ body.hidden-sidebar #page-topnav {
 
 	#page-meta .meta-label .selector {
 		color: #bdbdbd;
-		background: transparent;
+		background: rgba(255,255,255,0.75);
+		margin-left: 10px;
 	}
+
+		#page-meta .meta-label .selector:focus {
+			outline:none;
+			border-color: #ccc;
+		}
 
 		#page-meta .meta-label .selector:hover {
 			color: #555;
