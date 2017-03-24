@@ -30,6 +30,7 @@ using Microsoft.Extensions.Primitives;
 using ImageProcessor.Imaging;
 using System.Drawing;
 using Newtonsoft.Json.Converters;
+using WebVella.ERP.Jobs;
 
 
 
@@ -1560,8 +1561,8 @@ namespace WebVella.ERP.Web.Controllers
 				//Hook for the origin entity
 				dynamic hookFilterObj = new ExpandoObject();
 				hookFilterObj.record = model;
-                hookFilterObj.direction = "origin-target";
-                hookFilterObj.relation = relation;
+				hookFilterObj.direction = "origin-target";
+				hookFilterObj.relation = relation;
 				hookFilterObj.originEntity = originEntity;
 				hookFilterObj.targetEntity = targetEntity;
 				hookFilterObj.controller = this;
@@ -1571,8 +1572,8 @@ namespace WebVella.ERP.Web.Controllers
 				//Hook for the target entity
 				hookFilterObj = new ExpandoObject();
 				hookFilterObj.record = model;
-                hookFilterObj.direction = "origin-target";
-                hookFilterObj.relation = relation;
+				hookFilterObj.direction = "origin-target";
+				hookFilterObj.relation = relation;
 				hookFilterObj.originEntity = originEntity;
 				hookFilterObj.targetEntity = targetEntity;
 				hookFilterObj.controller = this;
@@ -1649,8 +1650,8 @@ namespace WebVella.ERP.Web.Controllers
 				{
 					//Hook for the origin entity
 					dynamic hookFilterObj = new ExpandoObject();
-                    hookFilterObj.direction = "origin-target";
-                    hookFilterObj.attachTargetRecords = attachTargetRecords;
+					hookFilterObj.direction = "origin-target";
+					hookFilterObj.attachTargetRecords = attachTargetRecords;
 					hookFilterObj.detachTargetRecords = detachTargetRecords;
 					hookFilterObj.originRecord = originRecord;
 					hookFilterObj.originEntity = originEntity;
@@ -1663,8 +1664,8 @@ namespace WebVella.ERP.Web.Controllers
 
 					//Hook for the target entity
 					hookFilterObj = new ExpandoObject();
-                    hookFilterObj.direction = "origin-target";
-                    hookFilterObj.attachTargetRecords = attachTargetRecords;
+					hookFilterObj.direction = "origin-target";
+					hookFilterObj.attachTargetRecords = attachTargetRecords;
 					hookFilterObj.detachTargetRecords = detachTargetRecords;
 					hookFilterObj.originRecord = originRecord;
 					hookFilterObj.originEntity = originEntity;
@@ -1798,302 +1799,302 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 
-        // Update an entity record relation records for target record
-        // POST: api/v1/en_US/record/relation/reverse
-        [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/relation/reverse")]
-        public IActionResult UpdateEntityRelationRecordReverse([FromBody]InputEntityRelationRecordReverseUpdateModel model)
-        {
+		// Update an entity record relation records for target record
+		// POST: api/v1/en_US/record/relation/reverse
+		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/relation/reverse")]
+		public IActionResult UpdateEntityRelationRecordReverse([FromBody]InputEntityRelationRecordReverseUpdateModel model)
+		{
 
-            var recMan = new RecordManager();
-            var entMan = new EntityManager();
-            BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+			var recMan = new RecordManager();
+			var entMan = new EntityManager();
+			BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 
-            if (model == null)
-            {
-                response.Errors.Add(new ErrorModel { Message = "Invalid model." });
-                response.Success = false;
-                return DoResponse(response);
-            }
+			if (model == null)
+			{
+				response.Errors.Add(new ErrorModel { Message = "Invalid model." });
+				response.Success = false;
+				return DoResponse(response);
+			}
 
-            EntityRelation relation = null;
-            if (string.IsNullOrWhiteSpace(model.RelationName))
-            {
-                response.Errors.Add(new ErrorModel { Message = "Invalid relation name.", Key = "relationName" });
-                response.Success = false;
-                return DoResponse(response);
-            }
-            else
-            {
-                relation = new EntityRelationManager().Read(model.RelationName).Object;
-                if (relation == null)
-                {
-                    response.Errors.Add(new ErrorModel { Message = "Invalid relation name. No relation with that name.", Key = "relationName" });
-                    response.Success = false;
-                    return DoResponse(response);
-                }
-            }
+			EntityRelation relation = null;
+			if (string.IsNullOrWhiteSpace(model.RelationName))
+			{
+				response.Errors.Add(new ErrorModel { Message = "Invalid relation name.", Key = "relationName" });
+				response.Success = false;
+				return DoResponse(response);
+			}
+			else
+			{
+				relation = new EntityRelationManager().Read(model.RelationName).Object;
+				if (relation == null)
+				{
+					response.Errors.Add(new ErrorModel { Message = "Invalid relation name. No relation with that name.", Key = "relationName" });
+					response.Success = false;
+					return DoResponse(response);
+				}
+			}
 
-            var originEntity = entMan.ReadEntity(relation.OriginEntityId).Object;
-            var targetEntity = entMan.ReadEntity(relation.TargetEntityId).Object;
-            var originField = originEntity.Fields.Single(x => x.Id == relation.OriginFieldId);
-            var targetField = targetEntity.Fields.Single(x => x.Id == relation.TargetFieldId);
+			var originEntity = entMan.ReadEntity(relation.OriginEntityId).Object;
+			var targetEntity = entMan.ReadEntity(relation.TargetEntityId).Object;
+			var originField = originEntity.Fields.Single(x => x.Id == relation.OriginFieldId);
+			var targetField = targetEntity.Fields.Single(x => x.Id == relation.TargetFieldId);
 
-            if (model.DetachOriginFieldRecordIds != null && model.DetachOriginFieldRecordIds.Any() && originField.Required && relation.RelationType != EntityRelationType.ManyToMany)
-            {
-                response.Errors.Add(new ErrorModel { Message = "Cannot detach records, when origin field is required.", Key = "originFieldRecordId" });
-                response.Success = false;
-                return DoResponse(response);
-            }
+			if (model.DetachOriginFieldRecordIds != null && model.DetachOriginFieldRecordIds.Any() && originField.Required && relation.RelationType != EntityRelationType.ManyToMany)
+			{
+				response.Errors.Add(new ErrorModel { Message = "Cannot detach records, when origin field is required.", Key = "originFieldRecordId" });
+				response.Success = false;
+				return DoResponse(response);
+			}
 
-            //////////////////////////////////////////////////////////////////////////////////////
-            //WEBHOOK FILTER << manage_relation_input_filter >>
-            //////////////////////////////////////////////////////////////////////////////////////
-            try
-            {
-                //Hook for the origin entity
-                dynamic hookFilterObj = new ExpandoObject();
-                hookFilterObj.record = model;
-                hookFilterObj.direction = "target-origin";
-                hookFilterObj.relation = relation;
-                hookFilterObj.originEntity = originEntity;
-                hookFilterObj.targetEntity = targetEntity;
-                hookFilterObj.controller = this;
-                hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.ManageRelationInput, originEntity.Name, hookFilterObj);
-                model = hookFilterObj.record;
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK FILTER << manage_relation_input_filter >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			try
+			{
+				//Hook for the origin entity
+				dynamic hookFilterObj = new ExpandoObject();
+				hookFilterObj.record = model;
+				hookFilterObj.direction = "target-origin";
+				hookFilterObj.relation = relation;
+				hookFilterObj.originEntity = originEntity;
+				hookFilterObj.targetEntity = targetEntity;
+				hookFilterObj.controller = this;
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.ManageRelationInput, originEntity.Name, hookFilterObj);
+				model = hookFilterObj.record;
 
-                //Hook for the target entity
-                hookFilterObj = new ExpandoObject();
-                hookFilterObj.record = model;
-                hookFilterObj.direction = "target-origin";
-                hookFilterObj.relation = relation;
-                hookFilterObj.originEntity = originEntity;
-                hookFilterObj.targetEntity = targetEntity;
-                hookFilterObj.controller = this;
-                hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.ManageRelationInput, targetEntity.Name, hookFilterObj);
-                model = hookFilterObj.record;
-            }
-            catch (Exception ex)
-            {
-                return Json(CreateErrorResponse("Plugin error in web hook manage_relation_input_filter: " + ex.Message));
-            }// <<<		
-
-
-            EntityQuery query = new EntityQuery(targetEntity.Name, "id," + targetField.Name, EntityQuery.QueryEQ("id", model.TargetFieldRecordId), null, null, null);
-            QueryResponse result = recMan.Find(query);
-            if (result.Object.Data.Count == 0)
-            {
-                response.Errors.Add(new ErrorModel { Message = "Target record was not found. Id=[" + model.TargetFieldRecordId + "]", Key = "targetFieldRecordId" });
-                response.Success = false;
-                return DoResponse(response);
-            }
-
-            var targetRecord = result.Object.Data[0];
-            object targetValue = targetRecord[targetField.Name];
-
-            var attachOriginRecords = new List<EntityRecord>();
-            var detachOriginRecords = new List<EntityRecord>();
-
-            foreach (var originId in model.AttachOriginFieldRecordIds)
-            {
-                query = new EntityQuery(originEntity.Name, "id," + originField.Name, EntityQuery.QueryEQ("id", originId), null, null, null);
-                result = recMan.Find(query);
-                if (result.Object.Data.Count == 0)
-                {
-                    response.Errors.Add(new ErrorModel { Message = "Attach origin record was not found. Id=[" + originEntity.Id + "]", Key = "originRecordId" });
-                    response.Success = false;
-                    return DoResponse(response);
-                }
-                else if (attachOriginRecords.Any(x => (Guid)x["id"] == originId))
-                {
-                    response.Errors.Add(new ErrorModel { Message = "Attach origin id was duplicated. Id=[" + originEntity.Id + "]", Key = "originRecordId" });
-                    response.Success = false;
-                    return DoResponse(response);
-                }
-                attachOriginRecords.Add(result.Object.Data[0]);
-            }
-
-            foreach (var originId in model.DetachOriginFieldRecordIds)
-            {
-                query = new EntityQuery(originEntity.Name, "id," + originField.Name, EntityQuery.QueryEQ("id", originId), null, null, null);
-                result = recMan.Find(query);
-                if (result.Object.Data.Count == 0)
-                {
-                    response.Errors.Add(new ErrorModel { Message = "Detach origin record was not found. Id=[" + originEntity.Id + "]", Key = "originRecordId" });
-                    response.Success = false;
-                    return DoResponse(response);
-                }
-                else if (detachOriginRecords.Any(x => (Guid)x["id"] == originId))
-                {
-                    response.Errors.Add(new ErrorModel { Message = "Detach origin id was duplicated. Id=[" + originEntity.Id + "]", Key = "originRecordId" });
-                    response.Success = false;
-                    return DoResponse(response);
-                }
-                detachOriginRecords.Add(result.Object.Data[0]);
-            }
-
-            using (var connection = DbContext.Current.CreateConnection())
-            {
-                connection.BeginTransaction();
-
-                //////////////////////////////////////////////////////////////////////////////////////
-                //WEBHOOK FILTER << manage_relation_pre_save_filter >>
-                //////////////////////////////////////////////////////////////////////////////////////
-                try
-                {
-                    //Hook for the origin entity
-                    dynamic hookFilterObj = new ExpandoObject();
-                    hookFilterObj.direction = "target-origin";
-                    hookFilterObj.attachOriginRecords = attachOriginRecords;
-                    hookFilterObj.detachOriginRecords = detachOriginRecords;
-                    hookFilterObj.targetRecord = targetRecord;
-                    hookFilterObj.originEntity = originEntity;
-                    hookFilterObj.targetEntity = targetEntity;
-                    hookFilterObj.relation = relation;
-                    hookFilterObj.controller = this;
-                    hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.ManageRelationPreSave, originEntity.Name, hookFilterObj);
-                    attachOriginRecords = hookFilterObj.attachOriginRecords;
-                    detachOriginRecords = hookFilterObj.detachOriginRecords;
-
-                    //Hook for the target entity
-                    hookFilterObj = new ExpandoObject();
-                    hookFilterObj.direction = "target-origin";
-                    hookFilterObj.attachOriginRecords = attachOriginRecords;
-                    hookFilterObj.detachOriginRecords = detachOriginRecords;
-                    hookFilterObj.targetRecord = targetRecord;
-                    hookFilterObj.originEntity = originEntity;
-                    hookFilterObj.targetEntity = targetEntity;
-                    hookFilterObj.relation = relation;
-                    hookFilterObj.controller = this;
-                    hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.ManageRelationPreSave, targetEntity.Name, hookFilterObj);
-                    attachOriginRecords = hookFilterObj.attachOriginRecords;
-                    detachOriginRecords = hookFilterObj.detachOriginRecords;
-                }
-                catch (Exception ex)
-                {
-                    return Json(CreateErrorResponse("Plugin error in web hook manage_relation_pre_save_filter: " + ex.Message));
-                }// <<<	
+				//Hook for the target entity
+				hookFilterObj = new ExpandoObject();
+				hookFilterObj.record = model;
+				hookFilterObj.direction = "target-origin";
+				hookFilterObj.relation = relation;
+				hookFilterObj.originEntity = originEntity;
+				hookFilterObj.targetEntity = targetEntity;
+				hookFilterObj.controller = this;
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.ManageRelationInput, targetEntity.Name, hookFilterObj);
+				model = hookFilterObj.record;
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook manage_relation_input_filter: " + ex.Message));
+			}// <<<		
 
 
-                try
-                {
-                    switch (relation.RelationType)
-                    {
-                        case EntityRelationType.OneToOne:
-                        case EntityRelationType.OneToMany:
-                            {
-                                foreach (var record in detachOriginRecords)
-                                {
-                                    record[originField.Name] = null;
+			EntityQuery query = new EntityQuery(targetEntity.Name, "id," + targetField.Name, EntityQuery.QueryEQ("id", model.TargetFieldRecordId), null, null, null);
+			QueryResponse result = recMan.Find(query);
+			if (result.Object.Data.Count == 0)
+			{
+				response.Errors.Add(new ErrorModel { Message = "Target record was not found. Id=[" + model.TargetFieldRecordId + "]", Key = "targetFieldRecordId" });
+				response.Success = false;
+				return DoResponse(response);
+			}
 
-                                    var updResult = recMan.UpdateRecord(originEntity, record);
-                                    if (!updResult.Success)
-                                    {
-                                        connection.RollbackTransaction();
-                                        response.Errors = updResult.Errors;
-                                        response.Message = "Origin record id=[" + record["id"] + "] detach operation failed.";
-                                        response.Success = false;
-                                        return DoResponse(response);
-                                    }
-                                }
+			var targetRecord = result.Object.Data[0];
+			object targetValue = targetRecord[targetField.Name];
 
-                                foreach (var record in attachOriginRecords)
-                                {
-                                    var patchObject = new EntityRecord();
-                                    patchObject["id"] = (Guid)record["id"];
-                                    patchObject[originField.Name] = targetValue;
+			var attachOriginRecords = new List<EntityRecord>();
+			var detachOriginRecords = new List<EntityRecord>();
 
-                                    var updResult = recMan.UpdateRecord(originEntity, patchObject);
-                                    if (!updResult.Success)
-                                    {
-                                        connection.RollbackTransaction();
-                                        response.Errors = updResult.Errors;
-                                        response.Message = "Origin record id=[" + record["id"] + "] attach operation failed.";
-                                        response.Success = false;
-                                        return DoResponse(response);
-                                    }
-                                }
-                            }
-                            break;
-                        case EntityRelationType.ManyToMany:
-                            {
-                                foreach (var record in detachOriginRecords)
-                                {
-                                    QueryResponse updResult = recMan.RemoveRelationManyToManyRecord(relation.Id, (Guid)record[originField.Name], (Guid)targetValue );
+			foreach (var originId in model.AttachOriginFieldRecordIds)
+			{
+				query = new EntityQuery(originEntity.Name, "id," + originField.Name, EntityQuery.QueryEQ("id", originId), null, null, null);
+				result = recMan.Find(query);
+				if (result.Object.Data.Count == 0)
+				{
+					response.Errors.Add(new ErrorModel { Message = "Attach origin record was not found. Id=[" + originEntity.Id + "]", Key = "originRecordId" });
+					response.Success = false;
+					return DoResponse(response);
+				}
+				else if (attachOriginRecords.Any(x => (Guid)x["id"] == originId))
+				{
+					response.Errors.Add(new ErrorModel { Message = "Attach origin id was duplicated. Id=[" + originEntity.Id + "]", Key = "originRecordId" });
+					response.Success = false;
+					return DoResponse(response);
+				}
+				attachOriginRecords.Add(result.Object.Data[0]);
+			}
 
-                                    if (!updResult.Success)
-                                    {
-                                        connection.RollbackTransaction();
-                                        response.Errors = updResult.Errors;
-                                        response.Message = "Origin record id=[" + record["id"] + "] detach operation failed.";
-                                        response.Success = false;
-                                        return DoResponse(response);
-                                    }
-                                }
+			foreach (var originId in model.DetachOriginFieldRecordIds)
+			{
+				query = new EntityQuery(originEntity.Name, "id," + originField.Name, EntityQuery.QueryEQ("id", originId), null, null, null);
+				result = recMan.Find(query);
+				if (result.Object.Data.Count == 0)
+				{
+					response.Errors.Add(new ErrorModel { Message = "Detach origin record was not found. Id=[" + originEntity.Id + "]", Key = "originRecordId" });
+					response.Success = false;
+					return DoResponse(response);
+				}
+				else if (detachOriginRecords.Any(x => (Guid)x["id"] == originId))
+				{
+					response.Errors.Add(new ErrorModel { Message = "Detach origin id was duplicated. Id=[" + originEntity.Id + "]", Key = "originRecordId" });
+					response.Success = false;
+					return DoResponse(response);
+				}
+				detachOriginRecords.Add(result.Object.Data[0]);
+			}
 
-                                foreach (var record in attachOriginRecords)
-                                {
-                                    QueryResponse updResult = recMan.CreateRelationManyToManyRecord(relation.Id, (Guid)record[originField.Name], (Guid)targetValue);
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				connection.BeginTransaction();
 
-                                    if (!updResult.Success)
-                                    {
-                                        connection.RollbackTransaction();
-                                        response.Errors = updResult.Errors;
-                                        response.Message = "Origin record id=[" + record["id"] + "] attach  operation failed.";
-                                        response.Success = false;
-                                        return DoResponse(response);
-                                    }
-                                }
-                            }
-                            break;
-                        default:
-                            {
-                                connection.RollbackTransaction();
-                                throw new Exception("Not supported relation type");
-                            }
-                    }
+				//////////////////////////////////////////////////////////////////////////////////////
+				//WEBHOOK FILTER << manage_relation_pre_save_filter >>
+				//////////////////////////////////////////////////////////////////////////////////////
+				try
+				{
+					//Hook for the origin entity
+					dynamic hookFilterObj = new ExpandoObject();
+					hookFilterObj.direction = "target-origin";
+					hookFilterObj.attachOriginRecords = attachOriginRecords;
+					hookFilterObj.detachOriginRecords = detachOriginRecords;
+					hookFilterObj.targetRecord = targetRecord;
+					hookFilterObj.originEntity = originEntity;
+					hookFilterObj.targetEntity = targetEntity;
+					hookFilterObj.relation = relation;
+					hookFilterObj.controller = this;
+					hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.ManageRelationPreSave, originEntity.Name, hookFilterObj);
+					attachOriginRecords = hookFilterObj.attachOriginRecords;
+					detachOriginRecords = hookFilterObj.detachOriginRecords;
 
-                    connection.CommitTransaction();
-                }
-                catch (Exception ex)
-                {
-                    connection.RollbackTransaction();
-
-                    response.Success = false;
-                    response.Message = ex.Message;
-                    return DoResponse(response);
-                }
-            }
-
-            //////////////////////////////////////////////////////////////////////////////////////
-            //WEBHOOK ACTION << manage_relation_success_action >>
-            //////////////////////////////////////////////////////////////////////////////////////
-            try
-            {
-                dynamic hookActionObj = new ExpandoObject();
-                hookActionObj.record = model;
-                hookActionObj.result = result;
-                hookActionObj.relation = relation;
-                hookActionObj.controller = this;
-                hooksService.ProcessActions(SystemWebHookNames.ManageRelationAction, originEntity.Name, hookActionObj);
-                hookActionObj = new ExpandoObject();
-                hookActionObj.record = model;
-                hookActionObj.result = result;
-                hookActionObj.relation = relation;
-                hookActionObj.controller = this;
-                hooksService.ProcessActions(SystemWebHookNames.ManageRelationAction, targetEntity.Name, hookActionObj);
-            }
-            catch (Exception ex)
-            {
-                return Json(CreateErrorResponse("Plugin error in web hook create_record_success_action: " + ex.Message));
-            }// <<<		
-
-            return DoResponse(response);
-        }
+					//Hook for the target entity
+					hookFilterObj = new ExpandoObject();
+					hookFilterObj.direction = "target-origin";
+					hookFilterObj.attachOriginRecords = attachOriginRecords;
+					hookFilterObj.detachOriginRecords = detachOriginRecords;
+					hookFilterObj.targetRecord = targetRecord;
+					hookFilterObj.originEntity = originEntity;
+					hookFilterObj.targetEntity = targetEntity;
+					hookFilterObj.relation = relation;
+					hookFilterObj.controller = this;
+					hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.ManageRelationPreSave, targetEntity.Name, hookFilterObj);
+					attachOriginRecords = hookFilterObj.attachOriginRecords;
+					detachOriginRecords = hookFilterObj.detachOriginRecords;
+				}
+				catch (Exception ex)
+				{
+					return Json(CreateErrorResponse("Plugin error in web hook manage_relation_pre_save_filter: " + ex.Message));
+				}// <<<	
 
 
-        // Get an entity record list
-        // GET: api/v1/en_US/record/{entityName}/list
-        [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
+				try
+				{
+					switch (relation.RelationType)
+					{
+						case EntityRelationType.OneToOne:
+						case EntityRelationType.OneToMany:
+							{
+								foreach (var record in detachOriginRecords)
+								{
+									record[originField.Name] = null;
+
+									var updResult = recMan.UpdateRecord(originEntity, record);
+									if (!updResult.Success)
+									{
+										connection.RollbackTransaction();
+										response.Errors = updResult.Errors;
+										response.Message = "Origin record id=[" + record["id"] + "] detach operation failed.";
+										response.Success = false;
+										return DoResponse(response);
+									}
+								}
+
+								foreach (var record in attachOriginRecords)
+								{
+									var patchObject = new EntityRecord();
+									patchObject["id"] = (Guid)record["id"];
+									patchObject[originField.Name] = targetValue;
+
+									var updResult = recMan.UpdateRecord(originEntity, patchObject);
+									if (!updResult.Success)
+									{
+										connection.RollbackTransaction();
+										response.Errors = updResult.Errors;
+										response.Message = "Origin record id=[" + record["id"] + "] attach operation failed.";
+										response.Success = false;
+										return DoResponse(response);
+									}
+								}
+							}
+							break;
+						case EntityRelationType.ManyToMany:
+							{
+								foreach (var record in detachOriginRecords)
+								{
+									QueryResponse updResult = recMan.RemoveRelationManyToManyRecord(relation.Id, (Guid)record[originField.Name], (Guid)targetValue);
+
+									if (!updResult.Success)
+									{
+										connection.RollbackTransaction();
+										response.Errors = updResult.Errors;
+										response.Message = "Origin record id=[" + record["id"] + "] detach operation failed.";
+										response.Success = false;
+										return DoResponse(response);
+									}
+								}
+
+								foreach (var record in attachOriginRecords)
+								{
+									QueryResponse updResult = recMan.CreateRelationManyToManyRecord(relation.Id, (Guid)record[originField.Name], (Guid)targetValue);
+
+									if (!updResult.Success)
+									{
+										connection.RollbackTransaction();
+										response.Errors = updResult.Errors;
+										response.Message = "Origin record id=[" + record["id"] + "] attach  operation failed.";
+										response.Success = false;
+										return DoResponse(response);
+									}
+								}
+							}
+							break;
+						default:
+							{
+								connection.RollbackTransaction();
+								throw new Exception("Not supported relation type");
+							}
+					}
+
+					connection.CommitTransaction();
+				}
+				catch (Exception ex)
+				{
+					connection.RollbackTransaction();
+
+					response.Success = false;
+					response.Message = ex.Message;
+					return DoResponse(response);
+				}
+			}
+
+			//////////////////////////////////////////////////////////////////////////////////////
+			//WEBHOOK ACTION << manage_relation_success_action >>
+			//////////////////////////////////////////////////////////////////////////////////////
+			try
+			{
+				dynamic hookActionObj = new ExpandoObject();
+				hookActionObj.record = model;
+				hookActionObj.result = result;
+				hookActionObj.relation = relation;
+				hookActionObj.controller = this;
+				hooksService.ProcessActions(SystemWebHookNames.ManageRelationAction, originEntity.Name, hookActionObj);
+				hookActionObj = new ExpandoObject();
+				hookActionObj.record = model;
+				hookActionObj.result = result;
+				hookActionObj.relation = relation;
+				hookActionObj.controller = this;
+				hooksService.ProcessActions(SystemWebHookNames.ManageRelationAction, targetEntity.Name, hookActionObj);
+			}
+			catch (Exception ex)
+			{
+				return Json(CreateErrorResponse("Plugin error in web hook create_record_success_action: " + ex.Message));
+			}// <<<		
+
+			return DoResponse(response);
+		}
+
+
+		// Get an entity record list
+		// GET: api/v1/en_US/record/{entityName}/list
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult GetRecord(Guid recordId, string entityName, string fields = "*")
 		{
 			//////////////////////////////////////////////////////////////////////////////////////
@@ -2408,7 +2409,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/with-relation/{relationName}/{relatedRecordId}")]
-		public IActionResult CreateEntityRecordWithRelation(string entityName,string relationName,Guid relatedRecordId, [FromBody]EntityRecord postObj)
+		public IActionResult CreateEntityRecordWithRelation(string entityName, string relationName, Guid relatedRecordId, [FromBody]EntityRecord postObj)
 		{
 			//////////////////////////////////////////////////////////////////////////////////////
 			//WEBHOOK FILTER << create_record_input_filter >>
@@ -2429,7 +2430,7 @@ namespace WebVella.ERP.Web.Controllers
 			}// <<<
 
 			var validationErrors = new List<ErrorModel>();
-			
+
 			//1.Validate relationName
 			//1.1. Relation exists
 			var relation = relMan.Read().Object.SingleOrDefault(x => x.Name == relationName);
@@ -2437,50 +2438,59 @@ namespace WebVella.ERP.Web.Controllers
 			string targetFieldName = String.Empty;
 			var relatedRecord = new EntityRecord();
 			var relatedRecordResponse = new QueryResponse();
-			if(relation == null) {
+			if (relation == null)
+			{
 				var error = new ErrorModel();
 				error.Key = "relationName";
 				error.Value = relationName;
 				error.Message = "A relation with this name, does not exist";
 				validationErrors.Add(error);
 			}
-			else {
-			//1.2. Relation is correct - entityName is part of this relation
-				if(relation.OriginEntityName != entityName && relation.TargetEntityName != entityName) {
+			else
+			{
+				//1.2. Relation is correct - entityName is part of this relation
+				if (relation.OriginEntityName != entityName && relation.TargetEntityName != entityName)
+				{
 					var error = new ErrorModel();
 					error.Key = "relationName";
 					error.Value = relationName;
-					error.Message = "This is not the correct relation, as it does not include the requested entity: " + entityName;		
-					validationErrors.Add(error);			
-				}			
-				else {
-					if(relation.OriginEntityName == entityName) {
-						relatedRecordResponse = recMan.Find(new EntityQuery(relation.TargetEntityName,"*", EntityQuery.QueryEQ("id",relatedRecordId)));
+					error.Message = "This is not the correct relation, as it does not include the requested entity: " + entityName;
+					validationErrors.Add(error);
+				}
+				else
+				{
+					if (relation.OriginEntityName == entityName)
+					{
+						relatedRecordResponse = recMan.Find(new EntityQuery(relation.TargetEntityName, "*", EntityQuery.QueryEQ("id", relatedRecordId)));
 						targetFieldName = relation.TargetFieldName;
 					}
-					else {
-						relatedRecordResponse = recMan.Find(new EntityQuery(relation.OriginEntityName,"*", EntityQuery.QueryEQ("id",relatedRecordId)));
+					else
+					{
+						relatedRecordResponse = recMan.Find(new EntityQuery(relation.OriginEntityName, "*", EntityQuery.QueryEQ("id", relatedRecordId)));
 						targetFieldName = relation.OriginFieldName;
 					}
 					//2. Validate parentRecordId
 					//2.1. parentRecordId exists
 
-					if(!relatedRecordResponse.Object.Data.Any()) {
+					if (!relatedRecordResponse.Object.Data.Any())
+					{
 						var error = new ErrorModel();
 						error.Key = "parentRecordId";
 						error.Value = relatedRecordId.ToString();
-						error.Message = "There is no parent record with this Id in the entity: " + entityName;	
-						validationErrors.Add(error);						
+						error.Message = "There is no parent record with this Id in the entity: " + entityName;
+						validationErrors.Add(error);
 					}
-					else {
+					else
+					{
 						relatedRecord = relatedRecordResponse.Object.Data.First();
 						//2.2. Record has value in the related field		
-						if(!relatedRecord.Properties.ContainsKey(targetFieldName) || relatedRecord[targetFieldName] == null) {
+						if (!relatedRecord.Properties.ContainsKey(targetFieldName) || relatedRecord[targetFieldName] == null)
+						{
 							var error = new ErrorModel();
 							error.Key = "parentRecordId";
 							error.Value = relatedRecordId.ToString();
-							error.Message = "The parent record does not have field " + targetFieldName + " or its value is null";		
-							validationErrors.Add(error);					
+							error.Message = "The parent record does not have field " + targetFieldName + " or its value is null";
+							validationErrors.Add(error);
 						}
 					}
 				}
@@ -2554,12 +2564,15 @@ namespace WebVella.ERP.Web.Controllers
 					}// <<<
 
 					//Add the relation field value if the relation is 1:1 or 1:N
-					if(relation.RelationType == EntityRelationType.OneToOne || relation.RelationType == EntityRelationType.OneToMany) {
+					if (relation.RelationType == EntityRelationType.OneToOne || relation.RelationType == EntityRelationType.OneToMany)
+					{
 						//if currentEntity is origin -> update the parent record
-						if(relation.OriginEntityName == entityName) {
+						if (relation.OriginEntityName == entityName)
+						{
 							throw new Exception("We need a case to finish this");
 						}
-						else {
+						else
+						{
 							//if currentEntity is target -> get the target field and assing the correct id value of the origin 
 							postObj[relation.TargetFieldName] = relatedRecord[relation.OriginFieldName];
 						}
@@ -2568,20 +2581,25 @@ namespace WebVella.ERP.Web.Controllers
 					result = recMan.CreateRecord(entityName, postObj);
 
 					//Create a relation record if it is N:N
-					if(relation.RelationType == EntityRelationType.ManyToMany) {
+					if (relation.RelationType == EntityRelationType.ManyToMany)
+					{
 						var response = new QueryResponse();
-						if(relation.OriginEntityName == entityName && relation.TargetEntityName == entityName) {
+						if (relation.OriginEntityName == entityName && relation.TargetEntityName == entityName)
+						{
 							throw new Exception("current entity is both target and origin, cannot find relation direction. Probably needs to be extended");
 						}
-						else if(relation.TargetEntityName == entityName) {
+						else if (relation.TargetEntityName == entityName)
+						{
 							//if current is target -> create relation
-							response = recMan.CreateRelationManyToManyRecord(relation.Id,relatedRecordId,(Guid)postObj["id"]);
+							response = recMan.CreateRelationManyToManyRecord(relation.Id, relatedRecordId, (Guid)postObj["id"]);
 						}
-						else {
+						else
+						{
 							//if current is origin -> create relation	
-							response = recMan.CreateRelationManyToManyRecord(relation.Id,(Guid)postObj["id"],relatedRecordId);
+							response = recMan.CreateRelationManyToManyRecord(relation.Id, (Guid)postObj["id"], relatedRecordId);
 						}
-						if(!response.Success) {
+						if (!response.Success)
+						{
 							throw new Exception(response.Message);
 						}
 					}
@@ -3542,6 +3560,198 @@ namespace WebVella.ERP.Web.Controllers
 			responseObj.Timestamp = DateTime.UtcNow;
 			return DoResponse(responseObj);
 		}
+		#endregion
+
+		#region << Jobs >>
+
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/jobs")]
+		public IActionResult GetJobs(DateTime? startFromDate = null, DateTime? startToDate = null, DateTime? finishedFromDate = null,
+			DateTime? finishedToDate = null, string type = null, int? status = null, int? priority = null, int? page = null, int? pageSize = null)
+		{
+			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+
+			try
+			{
+				response.Object = JobManager.Current.GetJobs(startFromDate, startToDate, finishedFromDate, finishedToDate,
+					type, status, priority, page, pageSize);
+			}
+			catch (Exception e)
+			{
+				response.Success = false;
+				response.Message = e.Message + e.StackTrace;
+			}
+
+			return DoResponse(response);
+		}
+
+		#endregion
+
+		#region << SchedulePlans >>
+
+		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/scheduleplan/{id}")]
+		public IActionResult UpdateSchedulePlan(Guid id, [FromBody]JObject postObject)
+		{
+			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+
+			try
+			{
+				SchedulePlan schedulePlan = ScheduleManager.Current.GetSchedulePlan(id);
+
+				if (schedulePlan == null)
+				{
+					response.Errors.Add(new ErrorModel { Message = $"Schedule plan with such id was not found. Id[{id}]." });
+					response.Success = false;
+					return DoResponse(response);
+				}
+
+				if (postObject.IsNullOrEmpty())
+				{
+					response.Errors.Add(new ErrorModel { Message = $"Schedule plan with such id was not found. Id[{id}]." });
+					response.Success = false;
+					return DoResponse(response);
+				}
+
+				#region << Validate >>
+
+				foreach (var prop in postObject.Properties())
+				{
+					switch (prop.Name)
+					{
+						case "name":
+							schedulePlan.Name = postObject["name"].ToString();
+							break;
+						case "type":
+							schedulePlan.Type = (SchedulePlanType)(int)postObject["type"];
+							break;
+						case "start_date":
+							schedulePlan.StartDate = (DateTime)postObject["start_date"];
+							break;
+						case "end_date":
+							schedulePlan.EndDate = (DateTime)postObject["end_date"];
+							break;
+						case "schedule_days":
+							schedulePlan.ScheduledDays = JsonConvert.DeserializeObject<SchedulePlanDaysOfWeek>(postObject["schedule_days"].ToString());
+							break;
+						case "interval_in_minutes":
+							schedulePlan.IntervalInMinutes = (int)postObject["interval_in_minutes"];
+							break;
+						case "start_timespan":
+							schedulePlan.StartTimespan = (int)postObject["start_timespan"];
+							if (schedulePlan.StartTimespan < 0 || schedulePlan.StartTimespan > 1440)
+								response.Errors.Add(new ErrorModel("start_timespan", postObject["start_timespan"].ToString(), "The value of start timespan must be between 0 and 1440."));
+							break;
+						case "end_timespan":
+							schedulePlan.EndTimespan = (int)postObject["end_timespan"];
+							if (schedulePlan.StartTimespan < 0 || schedulePlan.StartTimespan > 1440)
+								response.Errors.Add(new ErrorModel("end_timespan", postObject["end_timespan"].ToString(), "The value of end timespan must be between 0 and 1440."));
+							break;
+						case "enabled":
+							schedulePlan.Enabled = (bool)postObject["enabled"];
+							break;
+					}
+				}
+
+				if (schedulePlan.StartDate >= schedulePlan.EndDate)
+				{
+					if (postObject.Properties().Any(p => p.Name == "start_date"))
+						response.Errors.Add(new ErrorModel("start_date", postObject["start_date"].ToString(), "Start date must be before end date."));
+					else
+						response.Errors.Add(new ErrorModel("end_date", postObject["end_date"].ToString(), "End date must be greater than start date."));
+				}
+
+				if (response.Errors.Count > 0)
+				{
+					response.Success = false;
+					return DoResponse(response);
+				}
+
+				#endregion
+
+				schedulePlan.NextTriggerTime = ScheduleManager.Current.FindSchedulePlanNextTriggerDate(schedulePlan);
+				ScheduleManager.Current.UpdateSchedulePlan(schedulePlan);
+			}
+			catch (Exception e)
+			{
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = e.Message + e.StackTrace;
+			}
+
+			return DoResponse(response);
+		}
+
+		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/scheduleplan/{id}")]
+		public IActionResult TriggerNowSchedulePlan(Guid id)
+		{
+			BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+
+			try
+			{
+				var schedulePlan = ScheduleManager.Current.GetSchedulePlan(id);
+
+				if (schedulePlan == null)
+				{
+					response.Errors.Add(new ErrorModel { Message = $"Schedule plan with such id was not found. Id[{id}]." });
+					response.Success = false;
+					return DoResponse(response);
+				}
+
+				ScheduleManager.Current.TriggerNowSchedulePlan(schedulePlan);
+			}
+			catch (Exception e)
+			{
+				response.Success = false;
+				response.Message = e.Message + e.StackTrace;
+			}
+
+			return DoResponse(response);
+		}
+
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/scheduleplan/")]
+		public IActionResult GetSchedulePlans()
+		{
+			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+
+			try
+			{
+				response.Object = ScheduleManager.Current.GetSchedulePlans();
+			}
+			catch (Exception e)
+			{
+				response.Success = false;
+				response.Message = e.Message + e.StackTrace;
+			}
+
+			return DoResponse(response);
+		}
+
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/scheduleplan/")]
+		public IActionResult GetSchedulePlan(Guid id)
+		{
+			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+
+			try
+			{
+				var schedulePlan = ScheduleManager.Current.GetSchedulePlan(id);
+
+				if (schedulePlan == null)
+				{
+					response.Errors.Add(new ErrorModel { Message = $"Schedule plan with such id was not found. Id[{id}]." });
+					response.Success = false;
+					return DoResponse(response);
+				}
+
+				response.Object = schedulePlan;
+			}
+			catch (Exception e)
+			{
+				response.Success = false;
+				response.Message = e.Message + e.StackTrace;
+			}
+
+			return DoResponse(response);
+		}
+
 		#endregion
 
 	}

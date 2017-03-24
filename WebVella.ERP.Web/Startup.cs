@@ -58,6 +58,7 @@ namespace WebVella.ERP.Web
 				IErpService service = app.ApplicationServices.GetService<IErpService>();
 				AutoMapperConfiguration.Configure();
 				service.InitializeSystemEntities();
+				service.InitializeBackgroundJobs();
 
 				app.UseErpMiddleware();
 
@@ -74,6 +75,8 @@ namespace WebVella.ERP.Web
 
 				NotificationContext.Initialize();
 				NotificationContext.Current.SendNotification(new Notification { Channel = "*", Message = "ERP configuration loaded and completed." });
+
+				service.StartBackgroundJobProcess();
 			}
 			finally
 			{

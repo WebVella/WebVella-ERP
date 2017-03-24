@@ -38,10 +38,11 @@ namespace WebVella.ERP.Api.Models.AutoMapper
 				Mapper.AddProfile(new RecordViewProfile());
 				Mapper.AddProfile(new RecordTreeProfile());
 				Mapper.AddProfile(new EntityRelationOptionsProfile());
-                
-                //Mapper.AddProfile(new RecordViewFieldProfile(service));
+				Mapper.AddProfile(new JobProfile());
 
-                Mapper.CreateMap<EntityRecord, ErpUser>().ConvertUsing(new ErpUserConverter());
+				//Mapper.AddProfile(new RecordViewFieldProfile(service));
+
+				Mapper.CreateMap<EntityRecord, ErpUser>().ConvertUsing(new ErpUserConverter());
                 Mapper.CreateMap<ErpUser, EntityRecord>().ConvertUsing(new ErpUserConverterOposite());
                 Mapper.CreateMap<EntityRecord, ErpRole>().ConvertUsing(new ErpRoleConverter());
             }
