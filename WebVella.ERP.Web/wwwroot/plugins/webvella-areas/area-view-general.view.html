@@ -17,11 +17,11 @@
 			<h4>
 				<span ng-bind-html="::ngCtrl.generateHighlightString()" title="{{::ngCtrl.generateHighlightString()}}"></span>
 				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalViews.length > 1" dropdown-append-to-body="true">
-					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-default btn-outline btn-sm" style="padding:0 10px;"><i class="fa fa-fw fa-caret-down"></i></a>
+					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-default btn-outline btn-sm" style="padding:0 10px;">more <i class="fa fa-fw fa-caret-down"></i></a>
 					<ul class="dropdown-menu" uib-dropdown-menu>
 						<li ng-repeat="view in ngCtrl.generalViews track by $index">
 							<a href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/view-general/sb/{{::view.name}}/{{ngCtrl.stateParams.recordId}}">
-								<i class="fa fa-fw fa-{{view.iconName}}"></i> {{::view.label}}
+								<i class="fa fa-fw fa-{{view.iconName}}"></i> {{::ngCtrl.generateSublistHighlightString(view)}}
 							</a>
 						</li>
 					</ul>
@@ -232,7 +232,7 @@
 												</div>
 											</div>
 											<div class="image-upload" ng-if='viewData[item.dataName]'>
-												<img class="image-field" ng-src="/fs{{viewData[item.dataName] + ngCtrl.cacheBreakers[item.dataName][viewData['id']]}}" style="width:120px" />
+												<img class="image-field" ng-src="/fs{{viewData[item.dataName] + ngCtrl.cacheBreakers[item.dataName][viewData['id']]}}" />
 												<a class="delete-link" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item,viewData['id'])" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
 												<a class="update-link" href='javascript:void(0)' ngf-select="ngCtrl.updateFileUpload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false' accept="image/*"><i class="fa fa-fw fa-refresh"></i></a>
 											</div>

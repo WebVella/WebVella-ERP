@@ -838,6 +838,16 @@
 			}
 		}
 
+		ngCtrl.generateSublistHighlightString = function (listMeta) {
+			if (ngCtrl.parentView && ngCtrl.parentView.data) {
+				ngCtrl.showPageTitleAuxLabelSecondary = true;
+				return webvellaCoreService.generateHighlightString(listMeta,ngCtrl.parentView.data, ngCtrl.stateParams, "title");
+			}
+			else {
+				return webvellaCoreService.generateHighlightString(listMeta, ngCtrl.list.data[0], ngCtrl.stateParams, "title");
+			}
+		}
+
 		//ngCtrl.generateHighlightString = function () {
 		//	if (ngCtrl.parentView && ngCtrl.parentView.data) {
 		//		ngCtrl.showPageTitleAuxLabelSecondary = true;
