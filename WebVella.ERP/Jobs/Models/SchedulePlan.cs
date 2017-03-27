@@ -74,7 +74,7 @@ namespace WebVella.ERP.Jobs
 		public Guid? LastModifiedBy { get; set; }
 
 		[JsonProperty(PropertyName = "last_modified_on")]
-		public DateTime LastModifiedOn { get; set; }
+		public DateTime LastModifiedOn { get; internal set; }
 	}
 
 	[Serializable]
