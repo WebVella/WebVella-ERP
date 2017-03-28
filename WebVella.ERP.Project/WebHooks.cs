@@ -174,6 +174,23 @@ namespace WebVella.ERP.Project
 						{
 							throw new Exception(patchResult.Message);
 						}
+
+						#region << Check if project owner is different than owner and add it in watch list >>
+						{
+						
+							if ((Guid)result.Object.Data[0]["owner_id"] != (Guid)record["owner_id"] && (Guid)result.Object.Data[0]["owner_id"] != (Guid)record["created_by"])
+							{
+								var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
+								var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)result.Object.Data[0]["owner_id"], (Guid)record["id"]);
+								if (!createRelationNtoNResponse.Success)
+								{
+									throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
+								}
+							}
+						}
+						#endregion
+
+
 					}
 				}
 				#endregion
@@ -409,6 +426,21 @@ namespace WebVella.ERP.Project
 						{
 							throw new Exception(patchResult.Message);
 						}
+
+						#region << Check if project owner is different than owner and add it in watch list >>
+						{
+						
+							if ((Guid)result.Object.Data[0]["owner_id"] != (Guid)record["owner_id"] && (Guid)result.Object.Data[0]["owner_id"] != (Guid)record["created_by"])
+							{
+								var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
+								var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)result.Object.Data[0]["owner_id"], (Guid)record["id"]);
+								if (!createRelationNtoNResponse.Success)
+								{
+									throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
+								}
+							}
+						}
+						#endregion
 					}
 				}
 				#endregion

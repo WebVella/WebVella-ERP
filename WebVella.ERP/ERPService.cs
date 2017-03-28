@@ -813,8 +813,8 @@ namespace WebVella.ERP
 								systemFieldIdDictionary["created_by"] = new Guid("43361778-2197-4f41-a7c7-e4b74b241a1f");
 								systemFieldIdDictionary["last_modified_on"] = new Guid("9a0fe7df-1e22-4074-9536-a77fad885105");
 								systemFieldIdDictionary["last_modified_by"] = new Guid("73dc9f66-dd35-4b89-80ae-7710167e31c7");
-								systemFieldIdDictionary["user_log_created_by"] = new Guid("7ca4da74-48e2-43f3-bcbf-5e0b2a2722a1");
-								systemFieldIdDictionary["user_log_modified_by"] = new Guid("70ef01a3-9ef7-4339-adb3-74229519ffd1");
+								systemFieldIdDictionary["user_system_log_created_by"] = new Guid("fd947482-89d9-4908-bdc2-7bf619204a87");
+								systemFieldIdDictionary["user_system_log_modified_by"] = new Guid("9fb4fabb-8eca-4c80-b4dd-bcbccd94d356");
 								entity.Id = new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933");
 								entity.Name = "system_log";
 								entity.Label = "Log";

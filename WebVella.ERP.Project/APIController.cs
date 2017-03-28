@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Database;
@@ -574,7 +575,7 @@ namespace WebVella.ERP.Project
 
 				#region << Get tasks >>
 				{
-					var fields = "id,code,number,subject,start_date,end_date,status,priority,$user_1_n_task_owner.id,$user_1_n_task_owner.image";
+					var fields = "id,code,number,subject,start_date,end_date,status,priority,$user_1_n_task_owner.id,$user_1_n_task_owner.username";
 
 					QueryObject rootFilterSection = null;
 					QueryObject auxFilterSection = null;
@@ -616,6 +617,11 @@ namespace WebVella.ERP.Project
 							case "status":
 								auxRule = new QueryObject();
 								auxRule = EntityQuery.QueryEQ("status", (string)query.Value);
+								auxRulesList.Add(auxRule);
+								break;
+							case "$user_1_n_task_owner.username":
+								auxRule = new QueryObject();
+								auxRule = EntityQuery.QueryContains("$user_1_n_task_owner.username", (string)query.Value);
 								auxRulesList.Add(auxRule);
 								break;
 							case "priority":
@@ -676,13 +682,13 @@ namespace WebVella.ERP.Project
 					record["status"] = (string)task["status"];
 					record["priority"] = (string)task["priority"];
 					var taskOwnerIdList = new List<Guid>();
-					var taskOwnerImageList = new List<string>();
+					var taskUsernameImageList = new List<string>();
 					var taskOwnerId = (Guid)((List<EntityRecord>)task["$user_1_n_task_owner"])[0]["id"];
-					var taskOwnerImage = (string)((List<EntityRecord>)task["$user_1_n_task_owner"])[0]["image"];
+					var taskOwnerUsername = (string)((List<EntityRecord>)task["$user_1_n_task_owner"])[0]["username"];
 					taskOwnerIdList.Add(taskOwnerId);
-					taskOwnerImageList.Add(taskOwnerImage);
+					taskUsernameImageList.Add(taskOwnerUsername);
 					record["$field$user_1_n_task_owner$id"] = taskOwnerIdList;
-					record["$field$user_1_n_task_owner$image"] = taskOwnerImageList;
+					record["$field$user_1_n_task_owner$username"] = taskUsernameImageList;
 					taskList.Add(record);
 				}
 				#endregion
@@ -783,7 +789,7 @@ namespace WebVella.ERP.Project
 
 				#region << Get bugs >>
 				{
-					var fields = "id,code,number,subject,status,priority,$user_1_n_bug_owner.id,$user_1_n_bug_owner.image";
+					var fields = "id,code,number,subject,status,priority,$user_1_n_bug_owner.id,$user_1_n_bug_owner.username";
 
 					QueryObject rootFilterSection = null;
 					QueryObject auxFilterSection = null;
@@ -825,6 +831,11 @@ namespace WebVella.ERP.Project
 							case "status":
 								auxRule = new QueryObject();
 								auxRule = EntityQuery.QueryEQ("status", (string)query.Value);
+								auxRulesList.Add(auxRule);
+								break;
+							case "$user_1_n_bug_owner.username":
+								auxRule = new QueryObject();
+								auxRule = EntityQuery.QueryContains("$user_1_n_bug_owner.username", (string)query.Value);
 								auxRulesList.Add(auxRule);
 								break;
 							case "priority":
@@ -883,13 +894,13 @@ namespace WebVella.ERP.Project
 					record["status"] = (string)bug["status"];
 					record["priority"] = (string)bug["priority"];
 					var bugOwnerIdList = new List<Guid>();
-					var bugOwnerImageList = new List<string>();
+					var bugUsernameImageList = new List<string>();
 					var bugOwnerId = (Guid)((List<EntityRecord>)bug["$user_1_n_bug_owner"])[0]["id"];
-					var bugOwnerImage = (string)((List<EntityRecord>)bug["$user_1_n_bug_owner"])[0]["image"];
+					var bugOwnerUsername = (string)((List<EntityRecord>)bug["$user_1_n_bug_owner"])[0]["username"];
 					bugOwnerIdList.Add(bugOwnerId);
-					bugOwnerImageList.Add(bugOwnerImage);
+					bugUsernameImageList.Add(bugOwnerUsername);
 					record["$field$user_1_n_bug_owner$id"] = bugOwnerIdList;
-					record["$field$user_1_n_bug_owner$image"] = bugOwnerImageList;
+					record["$field$user_1_n_bug_owner$username"] = bugUsernameImageList;
 					bugList.Add(record);
 				}
 				#endregion
@@ -1875,6 +1886,11 @@ namespace WebVella.ERP.Project
 			var response = new ResponseModel();
 			var submitRecord = new EntityRecord();
 			var postRecord = new EntityRecord();
+			postRecord["task_id"] = null;
+			postRecord["bug_id"] = null;
+			var recepients = new List<string>();
+			var task = new EntityRecord();
+			var bug = new EntityRecord();
 			#region << Init Object >>
 			var outGuid = Guid.Empty;
 			var outInt = (int)1;
@@ -2015,7 +2031,8 @@ namespace WebVella.ERP.Project
 						response.Message = "Comment successfully updated";
 					}
 
-					if(submitRecord.Properties.ContainsKey("new_owner_id") && submitRecord["new_owner_id"] != null) {
+					#region << New owner >>
+					if (submitRecord.Properties.ContainsKey("new_owner_id") && submitRecord["new_owner_id"] != null) {
 						//Check the new owner id
 						{
 							var query = EntityQuery.QueryEQ("id",(Guid)submitRecord["new_owner_id"]);
@@ -2063,6 +2080,189 @@ namespace WebVella.ERP.Project
 							}				
 						}
 					}
+					#endregion
+
+					#region << Get newly created record >>
+					if (postRecord["task_id"] != null)
+					{
+						var filterObj = EntityQuery.QueryEQ("id", (Guid)postRecord["task_id"]);
+						var query = new EntityQuery("wv_task", "id,code,subject,status,description,project_id,$$user_n_n_task_watchers.id,$$user_n_n_task_watchers.email,$$project_1_n_task.code", filterObj, null, null, null);
+						var result = recMan.Find(query);
+						if (result.Success)
+						{
+							task = result.Object.Data[0];
+							Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for task [" + task["code"] + "] <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", null, (Guid)task["project_id"], (Guid)task["id"], null);
+							//If status was completed turn it back to in progress
+							if((string)task["status"] == "completed") {
+								var newTask = new EntityRecord();
+								newTask["id"] = (Guid)task["id"];
+								newTask["status"] = "in progress";
+								var updateResult = recMan.UpdateRecord("wv_task",newTask,true);
+								if(!updateResult.Success) {
+									throw new Exception(result.Message);
+								}
+							}
+						}
+						else
+						{
+							throw new Exception(result.Message);
+						}
+					}
+					else if (postRecord["bug_id"] != null)
+					{
+						var filterObj = EntityQuery.QueryEQ("id", (Guid)postRecord["bug_id"]);
+						var query = new EntityQuery("wv_bug", "id,code,subject,status,description,project_id,$$user_n_n_bug_watchers.id,$$user_n_n_bug_watchers.email,$$project_1_n_bug.code", filterObj, null, null, null);
+						var result = recMan.Find(query);
+						if (result.Success)
+						{
+							bug = result.Object.Data[0];
+							Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for bug [" + bug["code"] + "] <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", null, (Guid)bug["project_id"], null, (Guid)bug["id"]);
+							//If status was closed turn it back to reopened
+							if((string)bug["status"] == "closed") {
+								var newBug = new EntityRecord();
+								newBug["id"] = (Guid)bug["id"];
+								newBug["status"] = "reopened";
+								var updateResult = recMan.UpdateRecord("wv_bug",newBug,true);
+								if(!updateResult.Success) {
+									throw new Exception(result.Message);
+								}
+							}
+						}
+						else
+						{
+							throw new Exception(result.Message);
+						}
+					}
+					#endregion
+
+					var commentatorUsername = "";
+					#region << Get username of the commentator>>
+					{
+						EntityQuery query = new EntityQuery("user", "username", EntityQuery.QueryEQ("id", (Guid)postRecord["created_by"]), null, null, null);
+						QueryResponse result = recMan.Find(query);
+						if (!result.Success)
+						{
+							throw new Exception("Cannot get the username of the commentator");
+						}
+						commentatorUsername = (string)result.Object.Data[0]["username"];
+					}
+					#endregion
+
+					#region << Add the comment creator to the watch list if he is not there, Generate recipients list >>
+					{
+						if (postRecord.Properties.ContainsKey("task_id") &&  postRecord["task_id"] != null)
+						{
+							var isCommentatorInWatchList = false;
+							#region << Check if is in watch list already >>
+							foreach (var watcher in (List<EntityRecord>)task["$user_n_n_task_watchers"])
+							{
+								if ((Guid)watcher["id"] == (Guid)postRecord["created_by"])
+								{
+									isCommentatorInWatchList = true;
+								}
+								else
+								{
+									recepients.Add((string)watcher["email"]);
+								}
+							}
+							#endregion
+							if (!isCommentatorInWatchList)
+							{
+								var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
+								var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)postRecord["created_by"], new Guid(postRecord["task_id"].ToString()));
+								if (!createRelationNtoNResponse.Success)
+								{
+									throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
+								}
+							}
+						}
+						else if (postRecord.Properties.ContainsKey("bug_id") &&  postRecord["bug_id"] != null)
+						{
+							var isCommentatorInWatchList = false;
+							#region << Check if is in watch list already >>
+							foreach (var watcher in (List<EntityRecord>)bug["$user_n_n_bug_watchers"])
+							{
+								if ((Guid)watcher["id"] == (Guid)postRecord["created_by"])
+								{
+									isCommentatorInWatchList = true;
+								}
+								else
+								{
+									recepients.Add((string)watcher["email"]);
+								}
+							}
+							#endregion
+							if (!isCommentatorInWatchList)
+							{
+								var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
+								var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)postRecord["created_by"], new Guid(postRecord["bug_id"].ToString()));
+								if (!createRelationNtoNResponse.Success)
+								{
+									throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
+								}
+							}
+						}
+					}
+					#endregion
+					
+					#region << Generate notifications to watch list>>
+					var emailService = new EmailService();
+					if (recepients.Count > 0)
+					{
+						try
+						{
+							if (postRecord["task_id"] != null)
+							{
+								var emailSubjectParameters = new Dictionary<string, string>();
+								emailSubjectParameters["code"] = (string)task["code"];
+								emailSubjectParameters["subject"] = (string)task["subject"];
+
+								var subject = Regex.Replace(EmailTemplates.NewCommentNotificationSubject, @"\{(.+?)\}", m => emailSubjectParameters[m.Groups[1].Value]);
+
+								var emailContentParameters = new Dictionary<string, string>();
+								emailContentParameters["baseUrl"] = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host.Value;
+								emailContentParameters["subject"] = subject;
+								emailContentParameters["type"] = "task";
+								emailContentParameters["creator"] = commentatorUsername;
+								emailContentParameters["taskOrBugUrl"] = emailContentParameters["baseUrl"] + "/#/areas/projects/wv_task/view-general/sb/general/" + postRecord["task_id"];
+								emailContentParameters["commentContent"] = (string)postRecord["content"];
+								emailContentParameters["taskOrBugDescription"] = (string)task["description"];
+
+								var content = Regex.Replace(EmailTemplates.NewCommentNotificationContent, @"\{(.+?)\}", m => emailContentParameters[m.Groups[1].Value]);
+
+								emailService.SendEmail(recepients.ToArray(), subject, content);
+							}
+							else if (postRecord["bug_id"] != null)
+							{
+								var emailSubjectParameters = new Dictionary<string, string>();
+								emailSubjectParameters["code"] = (string)bug["code"];
+								emailSubjectParameters["subject"] = (string)bug["subject"];
+
+								var subject = Regex.Replace(EmailTemplates.NewCommentNotificationSubject, @"\{(.+?)\}", m => emailSubjectParameters[m.Groups[1].Value]);
+
+								var emailContentParameters = new Dictionary<string, string>();
+								emailContentParameters["baseUrl"] = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host.Value;
+								emailContentParameters["subject"] = subject;
+								emailContentParameters["type"] = "bug";
+								emailContentParameters["creator"] = commentatorUsername;
+								emailContentParameters["taskOrBugUrl"] = emailContentParameters["baseUrl"] + "/#/areas/projects/wv_bug/view-general/sb/general/" + postRecord["bug_id"];
+								emailContentParameters["commentContent"] = (string)postRecord["content"];
+								emailContentParameters["taskOrBugDescription"] = (string)bug["description"];
+
+								var content = Regex.Replace(EmailTemplates.NewCommentNotificationContent, @"\{(.+?)\}", m => emailContentParameters[m.Groups[1].Value]);
+
+								emailService.SendEmail(recepients.ToArray(), subject, content);
+							}
+						}
+						catch (Exception ex)
+						{
+							throw ex;
+						}
+					}
+
+					#endregion
+
+
 					connection.CommitTransaction();
 					response.Success = true;
 					response.Timestamp = DateTime.UtcNow;
