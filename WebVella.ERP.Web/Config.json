@@ -6,6 +6,7 @@
 		"Locale": "en-US",
 		"CompanyName": "Webvella ERP",
 		"CompanyLogo": "/plugins/webvella-desktop/assets/logo.png",
-		"DevelopmentMode": "true"
+		"DevelopmentMode": "true",
+		"EnableBackgroungJobs": "false"
 	}
 }

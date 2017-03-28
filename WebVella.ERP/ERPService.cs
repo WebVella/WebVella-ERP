@@ -6,6 +6,8 @@ using WebVella.ERP.Api;
 using System.Linq;
 using WebVella.ERP.Api.Models.AutoMapper;
 using WebVella.ERP.Database;
+using WebVella.ERP.Jobs;
+using System.Dynamic;
 
 namespace WebVella.ERP
 {
@@ -1960,6 +1962,21 @@ namespace WebVella.ERP
 			//recMan.ConvertNtoNRelations();
 		}
 
+		public void InitializeBackgroundJobs()
+		{
+			JobManagerSettings settings = new JobManagerSettings();
+			settings.DbConnectionString = Settings.ConnectionString;
+			settings.Enabled = Settings.EnableBackgroungJobs;
+
+			JobManager.Initialize(settings);
+			ScheduleManager.Initialize(settings);
+		}
+
+		public void StartBackgroundJobProcess()
+		{
+			JobManager.Current.ProcessJobsAsync();
+			ScheduleManager.Current.ProcessSchedulesAsync();
+		}
 
 		private void CheckCreateSystemTables()
 		{
@@ -2047,8 +2064,87 @@ namespace WebVella.ERP
 					DbRepository.CreateIndex("idx_filepath", "files", "filepath", true);
 				}
 
+				bool jobsTableExists = false;
+				command = connection.CreateCommand("SELECT EXISTS (  SELECT 1 FROM   information_schema.tables  WHERE  table_schema = 'public' AND table_name = 'jobs' ) ");
+				using (var reader = command.ExecuteReader())
+				{
+					reader.Read();
+					jobsTableExists = reader.GetBoolean(0);
+					reader.Close();
+				}
 
+				if (!jobsTableExists)
+				{
+					const string jobTableSql = @"CREATE TABLE public.jobs (
+					  id	uuid NOT NULL,
+					  type_id	uuid NOT NULL,
+					  type_name text NOT NULL,
+					  assembly text NOT NULL,
+					  complete_class_name text NOT NULL,
+					  method_name text NOT NULL,
+					  attributes text NOT NULL,
+					  status	integer NOT NULL,
+					  priority	integer NOT NULL,
+					  started_on	timestamp WITHOUT TIME ZONE,
+					  finished_on	timestamp WITHOUT TIME ZONE,
+					  aborted_by	uuid,
+					  canceled_by	uuid,
+					  error_message text,
+					  created_on   timestamp WITHOUT TIME ZONE NOT NULL,
+					  last_modified_on  timestamp WITHOUT TIME ZONE NOT NULL,
+					  created_by   uuid,
+					  last_modified_by  uuid,
+					  /* Keys */
+					  CONSTRAINT jobs_pkey
+						PRIMARY KEY (id)
+					) WITH (
+						OIDS = FALSE
+					  )";
 
+					command = connection.CreateCommand(jobTableSql);
+					command.ExecuteNonQuery();
+				}
+
+				bool schedulePlanTableExists = false;
+				command = connection.CreateCommand("SELECT EXISTS (  SELECT 1 FROM   information_schema.tables  WHERE  table_schema = 'public' AND table_name = 'schedule_plan' ) ");
+				using (var reader = command.ExecuteReader())
+				{
+					reader.Read();
+					schedulePlanTableExists = reader.GetBoolean(0);
+					reader.Close();
+				}
+
+				if (!schedulePlanTableExists)
+				{
+					const string schedulePlanTableSql = @"CREATE TABLE public.schedule_plan (
+					  id	uuid NOT NULL,
+					  name text NOT NULL,
+					  type	integer NOT NULL,
+					  start_date	timestamp WITHOUT TIME ZONE,
+					  end_date	timestamp WITHOUT TIME ZONE,
+					  schedule_days json,
+					  interval_in_minutes integer,
+					  start_timespan	integer,
+					  end_timespan	integer,
+					  last_trigger_time	timestamp WITHOUT TIME ZONE,
+					  next_trigger_time	timestamp WITHOUT TIME ZONE,
+					  job_type_id	uuid NOT NULL,
+					  job_attributes text NOT NULL,
+					  enabled	boolean NOT NULL,
+					  last_started_job_id	uuid,
+					  created_on   timestamp WITHOUT TIME ZONE NOT NULL,
+					  last_modified_on  timestamp WITHOUT TIME ZONE NOT NULL,
+					  last_modified_by  uuid,
+					  /* Keys */
+					  CONSTRAINT schedule_plan_pkey
+						PRIMARY KEY (id)
+					) WITH (
+						OIDS = FALSE
+					  )";
+
+					command = connection.CreateCommand(schedulePlanTableSql);
+					command.ExecuteNonQuery();
+				}
 			}
 		}
 

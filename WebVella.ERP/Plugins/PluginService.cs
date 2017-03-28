@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using WebVella.ERP.Jobs;
 using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP.Plugins
@@ -50,6 +51,7 @@ namespace WebVella.ERP.Plugins
 			}
 
 			plugins = plugins.OrderByDescending(x => x.LoadPriority).ToList();
+			FindAndRegisterJobTypes(serviceProvider);
 			ExecutePluginStart(serviceProvider);
 		}
 
@@ -82,6 +84,41 @@ namespace WebVella.ERP.Plugins
 									 assembly.FullName + ";" + type.Namespace + "." + type.Name + "'", ex);
 								}
 							}
+						}
+					}
+				}
+			}
+		}
+
+		private void FindAndRegisterJobTypes(IServiceProvider serviceProvider)
+		{
+			foreach (var plugin in plugins)
+			{
+				foreach (var assembly in plugin.Assemblies)
+				{
+					if (plugin.Assemblies.Any(x => x.FullName == assembly.FullName))
+					{
+						var methods = assembly.GetTypes()
+						  .SelectMany(t => t.GetMethods())
+						  .Where(m => m.GetCustomAttributes(typeof(JobAttribute), false).Length > 0)
+						  .ToArray();
+
+						foreach(var method in methods)
+						{
+							var methodParams = method.GetParameters();
+							if (methodParams.Length != 1 || methodParams[0].ParameterType.FullName != "WebVella.ERP.Jobs.JobContext")
+								continue;
+
+							var attributes = method.GetCustomAttribute<JobAttribute>();
+							JobType jobType = new JobType();
+							jobType.Id = attributes.Id;
+							jobType.Name = attributes.Name;
+							jobType.DefaultPriority = attributes.DefaultPriority;
+							jobType.Assembly = assembly.GetName().Name;
+							jobType.CompleteClassName = method.ReflectedType.FullName;
+							jobType.MethodName = method.Name;
+
+							JobManager.Current.RegisterType(jobType);
 						}
 					}
 				}

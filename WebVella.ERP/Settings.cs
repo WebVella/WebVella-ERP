@@ -15,6 +15,7 @@ namespace WebVella.ERP
 		public static string CompanyLogo { get; private set; }
 		public static string Lang { get; private set; }
 		public static string DevelopmentMode { get; private set; }
+		public static bool EnableBackgroungJobs { get; private set; }
 
 
 		public static void Initialize(IConfiguration configuration)
@@ -25,6 +26,7 @@ namespace WebVella.ERP
 			CompanyName = configuration["Settings:CompanyName"];
 			Lang = configuration["Settings:Lang"];
 			DevelopmentMode = configuration["Settings:DevelopmentMode"];
+			EnableBackgroungJobs = string.IsNullOrWhiteSpace(configuration["Settings:EnableBackgroungJobs"]) ? false : bool.Parse(configuration["Settings:EnableBackgroungJobs"]);
 		}
-    }
+	}
 }
