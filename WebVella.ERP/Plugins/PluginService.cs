@@ -114,6 +114,7 @@ namespace WebVella.ERP.Plugins
 							jobType.Id = attributes.Id;
 							jobType.Name = attributes.Name;
 							jobType.DefaultPriority = attributes.DefaultPriority;
+							jobType.AllowSingleInstance = attributes.AllowSingleInstance;
 							jobType.Assembly = assembly.GetName().Name;
 							jobType.CompleteClassName = method.ReflectedType.FullName;
 							jobType.MethodName = method.Name;

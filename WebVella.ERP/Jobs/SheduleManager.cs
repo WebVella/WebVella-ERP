@@ -180,7 +180,7 @@ namespace WebVella.ERP.Jobs
 
 						if (startNewJob)
 						{
-							Job job = JobManager.Current.CreateJob(schedulePlan.JobType.Name, schedulePlan.JobAttributes);
+							Job job = JobManager.Current.CreateJob(schedulePlan.JobType.Id, schedulePlan.JobAttributes);
 							schedulePlan.LastStartedJobId = job.Id;
 						}
 						UpdateSchedulePlanShort(schedulePlan);

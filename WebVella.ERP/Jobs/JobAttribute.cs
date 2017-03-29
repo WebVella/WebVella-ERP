@@ -7,12 +7,14 @@ namespace WebVella.ERP.Jobs
 		private Guid id;
 		private string name;
 		private JobPriority defaultPriority;
+		bool allowSingleInstance;
 
 		public JobAttribute(string id, string name)
 		{
 			this.id = new Guid(id);
 			this.name = name;
 			this.defaultPriority = JobPriority.Low;
+			this.allowSingleInstance = false;
 		}
 
 		public virtual Guid Id
@@ -29,6 +31,12 @@ namespace WebVella.ERP.Jobs
 		{
 			get { return defaultPriority; }
 			set { defaultPriority = value; }
+		}
+
+		public virtual bool AllowSingleInstance
+		{
+			get { return allowSingleInstance; }
+			set { allowSingleInstance = value; }
 		}
 	}
 }

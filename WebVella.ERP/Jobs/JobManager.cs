@@ -57,6 +57,7 @@ namespace WebVella.ERP.Jobs
 			//sendEmailType.Assembly = "WebVella.ERP";
 			//sendEmailType.CompleteClassName = "";
 			//sendEmailType.MethodName = "";
+			//sendEmailType.AllowSingleInstance = false;
 
 			//RegisterType(sendEmailType);
 		}
@@ -110,17 +111,17 @@ namespace WebVella.ERP.Jobs
 				RegisterType(type);
 		}
 
-		public Job CreateJob(string typeName, dynamic attributes, JobPriority priority = 0, Guid? creatorId = null)
+		public Job CreateJob(Guid typeId, dynamic attributes, JobPriority priority = 0, Guid? creatorId = null)
 		{
-			JobType type = JobTypes.FirstOrDefault(t => t.Name.ToLowerInvariant() == typeName.ToLowerInvariant());
-			if(type == null)
+			JobType type = JobTypes.FirstOrDefault(t => t.Id == typeId);
+			if (type == null)
 			{
 				Log log = new Log();
-				log.Create(LogType.Error, "Background job", "Create job failed!", $"Type with name '{typeName}' can not be found.");
+				log.Create(LogType.Error, "Background job", "Create job failed!", $"Type with id '{typeId}' can not be found.");
 				return null;
 			}
 
-			if(!Enum.IsDefined(typeof(JobPriority), priority))
+			if (!Enum.IsDefined(typeof(JobPriority), priority))
 				priority = type.DefaultPriority;
 
 			Job job = new Job();
@@ -176,6 +177,9 @@ namespace WebVella.ERP.Jobs
 
 						foreach (var job in pendingJobs)
 						{
+							if (job.Type.AllowSingleInstance && JobPool.Pool.Any(c => c.Type.Id == job.Type.Id))
+								continue;
+
 							JobPool.Current.RunJobAsync(job);
 						}
 					}

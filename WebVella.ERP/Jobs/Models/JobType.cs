@@ -36,5 +36,8 @@ namespace WebVella.ERP.Jobs
 
 		[JsonProperty(PropertyName = "method_name")]
 		public string MethodName { get; set; }
+
+		[JsonProperty(PropertyName = "allow_single_instance")]
+		public bool AllowSingleInstance { get; set; }
 	}
 }

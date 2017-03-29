@@ -375,7 +375,7 @@ namespace WebVella.ERP.Jobs
 		public List<SchedulePlan> GetReadyForExecutionScheduledPlans()
 		{
 			string sql = "SELECT * FROM schedule_plan" +
-				" WHERE next_trigger_time <= @utc_now AND start_date <= @utc_now" +
+				" WHERE enabled = true AND next_trigger_time <= @utc_now AND start_date <= @utc_now" +
 				" AND COALESCE(end_date, @utc_now) >= @utc_now" +
 				" ORDER BY next_trigger_time ASC";
 			List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
