@@ -4587,6 +4587,7 @@ table.editable td {
 
 .record-details .image-field {
 	width:100%;
+	max-width:140px;
 }
 
 /*

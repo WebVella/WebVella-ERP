@@ -2,7 +2,7 @@
 	"name": "webvella-admin",
 	"url": "http://webvella.com",
 	"description": "WebVella ERP plugin for managing the erp Core Administration",
-	"version": 20170226,
+	"version": 20170328,
 	"company": "WebVella",
 	"company_url": "http://webvella.com",
 	"plugin_page_url": "http://webvella.com",
@@ -13,11 +13,11 @@
 	"icon_url": "",
 	"load_priority": 9998,
 	"libraries": {
-		"css": [ ],
-		"js": [ ]
+		"css": [],
+		"js": []
 	},
 	"module": {
-		"css": [ ],
+		"css": [],
 		"js": [
 			"/plugins/webvella-admin/base.module.js",
 			"/plugins/webvella-admin/entities.module.js",

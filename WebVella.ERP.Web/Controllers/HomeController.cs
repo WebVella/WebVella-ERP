@@ -26,7 +26,7 @@ namespace WebVella.ERP.Web.Controllers
 			var moduleJsFileList = new List<string>();
 			//App dependency injections
 			var appDependencyInjections = new List<string>();
-			ViewBag.CacheBreaker = 20160613;
+			ViewBag.CacheBreaker = 20170328;
 
 			#region << Get and init plugin data >>
 			foreach(var manifest in pluginService.Plugins) {
