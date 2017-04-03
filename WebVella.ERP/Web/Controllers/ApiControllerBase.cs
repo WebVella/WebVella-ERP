@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Net;
 using WebVella.ERP.Api.Models;
@@ -23,7 +24,9 @@ namespace WebVella.ERP.Web.Controllers
                     HttpContext.Response.StatusCode = (int)response.StatusCode;
             }
 
-            return Json(response);
+			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto, DateFormatHandling = DateFormatHandling.IsoDateFormat, DateTimeZoneHandling = DateTimeZoneHandling.Utc };
+
+			return Json(response, settings);
         }
 
         public IActionResult DoPageNotFoundResponse()
