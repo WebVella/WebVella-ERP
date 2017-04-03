@@ -1,0 +1,198 @@
+<div id="page-title">
+	<div id="page-meta">
+		<div class="aux-actions">
+			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.plans.length > 0">
+				<div class="left-inner-addon">
+					<i class="fa fa-search"></i>
+					<input ng-model="ngCtrl.search.name" type="text" class="form-control" placeholder="{{::'SCHEDULE_PLAN_NAME' | translate}}" focus-me="true">
+				</div>
+			</div>
+		</div>
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-cogs fa-2x"></i>
+		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux" translate="{{::'SCHEDULE_PLANS'}}"></div>
+            <h4 translate="{{::'CURRENT_SCHEDULE_PLANS'}}"></h4>
+        </div>
+	</div>
+</div>
+<div id="page-body">
+	<div id="page-text">
+		<table class="table table-bordered table-hover table-vertical-align-middle" ng-show="ngCtrl.plans.length > 0">
+			<thead>
+				<tr>
+					<th width="50"></th>
+					<th width="30"></th>
+                    <th translate="{{::'NAME'}}"></th>
+					<th width="100" translate="{{::'TYPE'}}"></th>
+					<th width="140" translate="{{::'SCHEDULE_PLAN_LAST_TRIGGER'}}"></th>
+					<th width="140" translate="{{::'SCHEDULE_PLAN_NEXT_TRIGGER'}}"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="plan in ngCtrl.plans | filter: ngCtrl.search">
+					<td>
+						<a ng-click="ngCtrl.openManageModal(plan)" class="btn btn-default btn-outline">
+							<i class="fa fa-pencil"></i>
+						</a>
+					</td>
+					<td>
+						<span class="label label-danger ng-hide" ng-show="::!plan.enabled">OFF</span>
+						<span class="label label-success ng-hide" ng-show="::plan.enabled">ON</span>
+					</td>
+					<td>
+						<div>{{::plan.name}}</div>
+						<span class="go-gray">{{::'START_DATE' | translate}}</span> <span>{{::plan.start_date || 'n/a' | date: 'dd MMM yyyy HH:mm'}}</span>
+						<span class="divider">|</span>
+						<span class="go-gray" style="text-align:right">{{::'END_DATE' | translate}}</span>
+						<span>{{::plan.end_date || 'n/a' | date: 'dd MMM yyyy HH:mm'}}</span>
+					</td>
+					<td>{{::ngCtrl.getPlanTypeName(plan.type)}}</td>
+					<td>
+						<div>{{::plan.last_trigger_time || 'n/a' | date: 'dd MMM yyyy HH:mm'}}</div>
+					</td>
+					<td>
+						
+						<div style="text-align:right">{{::plan.next_trigger_time || 'n/a' | date: 'dd MMM yyyy HH:mm'}}</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="alert alert-info" ng-show="ngCtrl.plans.length == 0" style="margin-top:2em;" translate="{{::'LIST_EMPTY_MESSAGE'}}"></div>
+	</div>
+</div>
+
+
+
+<script type="text/ng-template" id="manageModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">{{'SCHEDULE_PLAN_UPDATE' | translate}}</h3>
+	</div>
+	<div class="modal-body">
+		<form name="manageForm" class="form">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label" translate="{{::'ENABLED'}}"></label>
+						<div>
+							<label class="radio-inline">
+								<input type="radio" name="enabled" ng-value="true" ng-model="popupCtrl.selectedPlan.enabled"> true
+							</label>
+							<label class="radio-inline">
+								<input type="radio" name="enabled" ng-value="false" ng-model="popupCtrl.selectedPlan.enabled"> false
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label" translate="{{::'ID'}}"></label>
+						<input class="form-control" ng-model="popupCtrl.selectedPlan.id" type="text" disabled />
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group">
+						<label class="control-label" translate="{{::'NAME'}}"></label>
+						<input class="form-control" ng-model="popupCtrl.selectedPlan.name" type="text"/>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label">{{::'START_DATE' | translate}}</label>
+						<div class="input-group">
+							<input type="text" class="form-control" ng-model="popupCtrl.selectedPlan.start_date" name="start_date"
+								   uib-datepicker-popup="yyyy-MMM-dd HH:mm" is-open="popupCtrl.start_date_open"
+								   enable-date="true" enable-time="true" ng-click="popupCtrl.start_date_open = true" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default" ng-click="popupCtrl.start_date_open = true"><i class="fa fa-calendar"></i></button>
+							</span>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label" translate="{{::'END_DATE' | translate}}"></label>
+						<div class="input-group">
+							<input type="text" class="form-control" ng-model="popupCtrl.selectedPlan.end_date" name="end_date"
+								   uib-datepicker-popup="yyyy-MMM-dd HH:mm" is-open="popupCtrl.end_date_open"
+								   enable-date="true" enable-time="true" ng-click="popupCtrl.end_date_open = true" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default" ng-click="popupCtrl.end_date_open = true"><i class="fa fa-calendar"></i></button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label">{{::'TYPE' | translate}}</label>
+						<select class="form-control" ng-model="popupCtrl.selectedPlan.type" ng-options="type.key as type.value for type in popupCtrl.planTypes"></select>
+					</div>
+				</div>
+			</div>
+			<div class="ng-hide" ng-show="popupCtrl.selectedPlan.type == 1 || popupCtrl.selectedPlan.type == 2">
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label class="control-label">{{::'SCHEDULE_PLAN_DAYS' | translate}}</label>
+							<div>
+								<label class="checkbox-inline">
+									<input type="checkbox" ng-value="true" ng-model="popupCtrl.selectedPlan.schedule_days.scheduled_on_monday"> {{::'MONDAY' | translate}}
+								</label>
+								<label class="checkbox-inline">
+									<input type="checkbox" ng-value="true" ng-model="popupCtrl.selectedPlan.schedule_days.scheduled_on_tuesday"> {{::'TUESDAY' | translate}}
+								</label>
+								<label class="checkbox-inline">
+									<input type="checkbox" ng-value="true" ng-model="popupCtrl.selectedPlan.schedule_days.scheduled_on_wednesday"> {{::'WEDNESDAY' | translate}}
+								</label>
+								<label class="checkbox-inline">
+									<input type="checkbox" ng-value="true" ng-model="popupCtrl.selectedPlan.schedule_days.scheduled_on_thursday"> {{::'THURSDAY' | translate}}
+								</label>
+								<label class="checkbox-inline">
+									<input type="checkbox" ng-value="true" ng-model="popupCtrl.selectedPlan.schedule_days.scheduled_on_friday"> {{::'FRIDAY' | translate}}
+								</label>
+								<label class="checkbox-inline">
+									<input type="checkbox" ng-value="true" ng-model="popupCtrl.selectedPlan.schedule_days.scheduled_on_saturday"> {{::'SATURDAY' | translate}}
+								</label>
+								<label class="checkbox-inline">
+									<input type="checkbox" ng-value="true" ng-model="popupCtrl.selectedPlan.schedule_days.scheduled_on_sunday"> {{::'SUNDAY' | translate}}
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ng-hide" ng-show="popupCtrl.selectedPlan.type == 1">
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label">{{::'START_TIMESPAN' | translate}}</label>
+							<div ng-model="popupCtrl.selectedPlan.start_timespan" name="start_timespan"
+									   uib-timepicker  show-meridian="false" ng-model-options="{allowInvalid:true}">
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label">{{::'END_TIMESPAN' | translate}}</label>
+							<div ng-model="popupCtrl.selectedPlan.end_timespan" name="end_timespan"
+								 uib-timepicker show-meridian="false" ng-model-options="{allowInvalid:true}">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<pre>{{popupCtrl.selectedPlan | json}}</pre>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
+	</div>
+</script>

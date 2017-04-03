@@ -9,7 +9,6 @@ namespace WebVella.ERP.Jobs
 	[Serializable]
 	public enum SchedulePlanType
 	{
-		NotSelected = 0,
 		Interval = 1,
 		Daily = 2,
 		Weekly = 3,
