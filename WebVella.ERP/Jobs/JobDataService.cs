@@ -185,7 +185,7 @@ namespace WebVella.ERP.Jobs
 				parameters.Add(new NpgsqlParameter("finished_to", finishedFromDate.Value) { NpgsqlDbType = NpgsqlDbType.Timestamp });
 				sql += " AND finished_on <= @finished_to";
 			}
-			if (string.IsNullOrWhiteSpace(typeName))
+			if (!string.IsNullOrWhiteSpace(typeName))
 			{
 				parameters.Add(new NpgsqlParameter("type_name", typeName) { NpgsqlDbType = NpgsqlDbType.Text });
 				sql += " AND type_name = @type_name";

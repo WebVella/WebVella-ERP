@@ -3725,7 +3725,7 @@ namespace WebVella.ERP.Web.Controllers
 			return DoResponse(response);
 		}
 
-		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/scheduleplan/")]
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/scheduleplan/{id}")]
 		public IActionResult GetSchedulePlan(Guid id)
 		{
 			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
