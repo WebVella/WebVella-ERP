@@ -24,7 +24,7 @@ namespace WebVella.ERP.Web.Controllers
                     HttpContext.Response.StatusCode = (int)response.StatusCode;
             }
 
-			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto, DateFormatHandling = DateFormatHandling.IsoDateFormat, DateTimeZoneHandling = DateTimeZoneHandling.Utc };
+			JsonSerializerSettings settings = new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Utc };
 
 			return Json(response, settings);
         }
