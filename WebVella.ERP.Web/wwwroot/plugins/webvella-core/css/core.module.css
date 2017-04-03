@@ -3681,6 +3681,9 @@ table .btn-xs.btn-link {
 		position: relative;
 	}
 
+	.editable-wrap.editable-checklist .editable-controls{
+		padding-right: 100px;
+	}
 
 	.editable-wrap.editable-text .editable-buttons,
 	.editable-wrap.editable-checkbox .editable-buttons,

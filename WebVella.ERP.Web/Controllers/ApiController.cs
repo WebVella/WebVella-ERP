@@ -3588,25 +3588,25 @@ namespace WebVella.ERP.Web.Controllers
 
 		#region << SchedulePlans >>
 
-		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/scheduleplan/{id}")]
-		public IActionResult UpdateSchedulePlan(Guid id, [FromBody]JObject postObject)
+		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/scheduleplan/{planId}")]
+		public IActionResult UpdateSchedulePlan(Guid planId, [FromBody]JObject postObject)
 		{
 			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 
 			try
 			{
-				SchedulePlan schedulePlan = ScheduleManager.Current.GetSchedulePlan(id);
+				SchedulePlan schedulePlan = ScheduleManager.Current.GetSchedulePlan(planId);
 
 				if (schedulePlan == null)
 				{
-					response.Errors.Add(new ErrorModel { Message = $"Schedule plan with such id was not found. Id[{id}]." });
+					response.Errors.Add(new ErrorModel { Message = $"Schedule plan with such id was not found. Id[{planId}]." });
 					response.Success = false;
 					return DoResponse(response);
 				}
 
 				if (postObject.IsNullOrEmpty())
 				{
-					response.Errors.Add(new ErrorModel { Message = $"Schedule plan with such id was not found. Id[{id}]." });
+					response.Errors.Add(new ErrorModel { Message = $"Schedule plan with such id was not found. Id[{planId}]." });
 					response.Success = false;
 					return DoResponse(response);
 				}
@@ -3677,21 +3677,30 @@ namespace WebVella.ERP.Web.Controllers
 				response.Message = e.Message + e.StackTrace;
 			}
 
+			response.Success = true;
+			response.Timestamp = DateTime.UtcNow;
+			var responseRecord = new EntityRecord();
+			var responseList = new List<SchedulePlan>();
+			responseList.Add(ScheduleManager.Current.GetSchedulePlan(planId));
+			responseRecord["data"] = responseList;
+			response.Object = responseRecord;
+			response.Message = "Schedule plan updated successfully";
+
 			return DoResponse(response);
 		}
 
-		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/scheduleplan/{id}")]
-		public IActionResult TriggerNowSchedulePlan(Guid id)
+		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/scheduleplan/{planId}/trigger")]
+		public IActionResult TriggerNowSchedulePlan(Guid planId)
 		{
 			BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 
 			try
 			{
-				var schedulePlan = ScheduleManager.Current.GetSchedulePlan(id);
+				var schedulePlan = ScheduleManager.Current.GetSchedulePlan(planId);
 
 				if (schedulePlan == null)
 				{
-					response.Errors.Add(new ErrorModel { Message = $"Schedule plan with such id was not found. Id[{id}]." });
+					response.Errors.Add(new ErrorModel { Message = $"Schedule plan with such id was not found. Id[{planId}]." });
 					response.Success = false;
 					return DoResponse(response);
 				}
@@ -3704,17 +3713,22 @@ namespace WebVella.ERP.Web.Controllers
 				response.Message = e.Message + e.StackTrace;
 			}
 
+			response.Success = true;
+			response.Timestamp = DateTime.UtcNow;
+			response.Message = "Schedule plan triggered successfully";
 			return DoResponse(response);
 		}
 
-		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/scheduleplan/")]
-		public IActionResult GetSchedulePlans()
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/scheduleplan/list")]
+		public IActionResult GetSchedulePlansList()
 		{
 			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 
 			try
 			{
-				response.Object = ScheduleManager.Current.GetSchedulePlans();
+				var responseRecord = new EntityRecord();
+				responseRecord["data"] = ScheduleManager.Current.GetSchedulePlans();
+				response.Object = responseRecord;
 			}
 			catch (Exception e)
 			{
@@ -3725,23 +3739,25 @@ namespace WebVella.ERP.Web.Controllers
 			return DoResponse(response);
 		}
 
-		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/scheduleplan/{id}")]
-		public IActionResult GetSchedulePlan(Guid id)
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/scheduleplan/{planId}")]
+		public IActionResult GetSchedulePlan(Guid planId)
 		{
 			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 
 			try
 			{
-				var schedulePlan = ScheduleManager.Current.GetSchedulePlan(id);
+				var schedulePlan = ScheduleManager.Current.GetSchedulePlan(planId);
 
 				if (schedulePlan == null)
 				{
-					response.Errors.Add(new ErrorModel { Message = $"Schedule plan with such id was not found. Id[{id}]." });
+					response.Errors.Add(new ErrorModel { Message = $"Schedule plan with such id was not found. Id[{planId}]." });
 					response.Success = false;
 					return DoResponse(response);
 				}
 
-				response.Object = schedulePlan;
+				var responseRecord = new EntityRecord();
+				responseRecord["data"] = schedulePlan;
+				response.Object = responseRecord;
 			}
 			catch (Exception e)
 			{
@@ -3751,6 +3767,56 @@ namespace WebVella.ERP.Web.Controllers
 
 			return DoResponse(response);
 		}
+
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/scheduleplan/test")]
+		public IActionResult CreateTestSchedulePlan(Guid planId)
+		{
+			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+
+			try
+			{
+					Guid offerSchedulePlanId = Guid.NewGuid();
+				   SchedulePlan offerSchedulePlan = ScheduleManager.Current.GetSchedulePlan(offerSchedulePlanId);
+
+				   if (offerSchedulePlan == null)
+				   {
+					offerSchedulePlan = new SchedulePlan();
+					offerSchedulePlan.Id = offerSchedulePlanId;
+					offerSchedulePlan.Name = "Offer schedule plan Test";
+					offerSchedulePlan.Type = SchedulePlanType.Daily;
+					offerSchedulePlan.StartDate = DateTime.UtcNow;
+					offerSchedulePlan.EndDate = null;
+					offerSchedulePlan.ScheduledDays = new SchedulePlanDaysOfWeek()
+					{
+					 ScheduledOnMonday = true,
+					 ScheduledOnTuesday = true,
+					 ScheduledOnWednesday = true,
+					 ScheduledOnThursday = true,
+					 ScheduledOnFriday = true,
+					 ScheduledOnSaturday = true,
+					 ScheduledOnSunday = true
+					};
+					//offerSchedulePlan.IntervalInMinutes = 1;
+					//offerSchedulePlan.StartTimespan = 0;
+					//offerSchedulePlan.EndTimespan = 1440;
+					offerSchedulePlan.JobTypeId = new Guid("70f06b11-2aee-40d5-b8ef-de1a2d8bbb59");
+					offerSchedulePlan.JobAttributes = null;
+					offerSchedulePlan.Enabled = true;
+					offerSchedulePlan.LastModifiedBy = null;
+
+					ScheduleManager.Current.CreateSchedulePlan(offerSchedulePlan);
+				   }
+					response.Object = offerSchedulePlan;
+			}
+			catch (Exception e)
+			{
+				response.Success = false;
+				response.Message = e.Message + e.StackTrace;
+			}
+
+			return DoResponse(response);
+		}
+
 
 		#endregion
 

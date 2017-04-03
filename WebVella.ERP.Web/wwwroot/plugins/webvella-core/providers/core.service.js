@@ -224,6 +224,14 @@
         serviceInstance.getPluginsList = getPluginsList;
         //#endregion
 
+        //#region << Schedule plans >>
+        serviceInstance.updateSchedulePlan = updateSchedulePlan;
+		serviceInstance.triggerSchedulePlan = triggerSchedulePlan;
+		serviceInstance.getSchedulePlanList = getSchedulePlanList;
+		serviceInstance.getSchedulePlan = triggerSchedulePlan;
+        //#endregion
+
+
         //#endregion
 
 
@@ -4967,6 +4975,26 @@
             $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'plugin/list/' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
         }
         //#endregion
+
+
+        //#region << Schedule plan >>
+        ///////////////////////
+        function updateSchedulePlan(planId,submitObject, successCallback, errorCallback) {
+            $http({ method: 'PUT', url: wvAppConstants.apiBaseUrl + 'scheduleplan/' + planId, data: submitObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+        }
+
+        function triggerSchedulePlan(planId,successCallback, errorCallback) {
+            $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'scheduleplan/'+ planId+ '/trigger' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+        }
+        function getSchedulePlanList(successCallback, errorCallback) {
+            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'scheduleplan/list' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+        }
+        function getSchedulePlan(planId,successCallback, errorCallback) {
+            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'scheduleplan/' + planId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+        }
+
+        //#endregion
+
 
         //#endregion
     }
