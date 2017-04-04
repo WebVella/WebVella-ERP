@@ -78,10 +78,10 @@
 
     //#region << Controller >> ///////////////////////////////
     controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle','$timeout', 
-							'resolvedSchedulePlansList', 'webvellaCoreService','$translate','$uibModal'];
+							'resolvedSchedulePlansList', 'webvellaCoreService','$translate','$uibModal','ngToast'];
     
     function controller($scope, $log, $rootScope, $state, pageTitle,$timeout,
-						resolvedSchedulePlansList, webvellaCoreService,$translate,$uibModal) {
+						resolvedSchedulePlansList, webvellaCoreService,$translate,$uibModal,ngToast) {
 
         
         var ngCtrl = this;
@@ -153,7 +153,32 @@
             });
 
         }
-    }
+    
+		ngCtrl.triggerPlan = function(plan){
+
+
+			function successCallback(response) {
+				ngToast.create({
+					className: 'success',
+					content: '<span class="go-green">Success:</span> ' + "Schedule plan triggered!",
+					timeout: 3000
+				});
+				webvellaCoreService.GoToState($state.current.name, {});
+			}
+
+			function errorCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
+				});
+			}		
+			successCallback();
+			webvellaCoreService.triggerSchedulePlan(plan.id, successCallback, errorCallback);
+
+		}
+	
+	}
     //#endregion
 
 
@@ -163,18 +188,109 @@
     function ManageModalController($uibModalInstance, webvellaCoreService, ngToast, $timeout, $state, $location, parentCtrl,selectedPlan,$translate) {
         
         var popupCtrl = this;
+		popupCtrl.validation = webvellaCoreService.initValidationObject();
         popupCtrl.selectedPlan = fastCopy(selectedPlan);
 		popupCtrl.planTypes = fastCopy(parentCtrl.planTypes);
 
+		popupCtrl.initDate = function(date){
+			if(date != null){
+				return  moment(fastCopy(date)).toDate();
+			}
+			return null;
+		}
+		if(popupCtrl.selectedPlan.start_date){
+			popupCtrl.selectedPlan.start_date = popupCtrl.initDate(popupCtrl.selectedPlan.start_date);
+		}
+		if(popupCtrl.selectedPlan.end_date){
+			popupCtrl.selectedPlan.end_date = popupCtrl.initDate(popupCtrl.selectedPlan.end_date);
+		}
+
+		if(popupCtrl.selectedPlan.start_timespan){
+			popupCtrl.selectedPlan.start_timespan = popupCtrl.initDate(popupCtrl.selectedPlan.start_timespan);
+		}
+		if(popupCtrl.selectedPlan.end_timespan){
+			popupCtrl.selectedPlan.end_timespan = popupCtrl.initDate(popupCtrl.selectedPlan.end_timespan);
+		}
+
+		function validateSubmit(){
+			popupCtrl.validation = webvellaCoreService.initValidationObject();
+			if(isStringNullOrEmptyOrWhiteSpace(popupCtrl.selectedPlan.name)){
+				popupCtrl.validation = webvellaCoreService.setValidationError(popupCtrl.validation,"Validation failed","name","* required field");
+			}
+			if(popupCtrl.selectedPlan.start_date != null  && popupCtrl.selectedPlan.end_date != null && moment(popupCtrl.selectedPlan.end_date).isBefore(moment(popupCtrl.selectedPlan.start_date))){
+				popupCtrl.validation = webvellaCoreService.setValidationError(popupCtrl.validation,"Validation failed","end_date","* end date should be before start date");
+			}
+			if(popupCtrl.selectedPlan.type == 1 && popupCtrl.selectedPlan.interval_in_minutes == null){
+				popupCtrl.validation = webvellaCoreService.setValidationError(popupCtrl.validation,"Validation failed","interval_in_minutes","* required field when type: interval");
+			}
+			if(popupCtrl.selectedPlan.type == 1 &&
+				!popupCtrl.selectedPlan.schedule_days.scheduled_on_monday &&
+				!popupCtrl.selectedPlan.schedule_days.scheduled_on_tuesday &&
+				!popupCtrl.selectedPlan.schedule_days.scheduled_on_wednesday &&
+				!popupCtrl.selectedPlan.schedule_days.scheduled_on_thursday &&
+				!popupCtrl.selectedPlan.schedule_days.scheduled_on_friday &&
+				!popupCtrl.selectedPlan.schedule_days.scheduled_on_saturday &&
+				!popupCtrl.selectedPlan.schedule_days.scheduled_on_sunday){
+				popupCtrl.validation = webvellaCoreService.setValidationError(popupCtrl.validation,"Validation failed","schedule_days","* at least one week day is required when type: interval");
+			}
+			if(popupCtrl.selectedPlan.type == 2 &&
+				!popupCtrl.selectedPlan.schedule_days.scheduled_on_monday &&
+				!popupCtrl.selectedPlan.schedule_days.scheduled_on_tuesday &&
+				!popupCtrl.selectedPlan.schedule_days.scheduled_on_wednesday &&
+				!popupCtrl.selectedPlan.schedule_days.scheduled_on_thursday &&
+				!popupCtrl.selectedPlan.schedule_days.scheduled_on_friday &&
+				!popupCtrl.selectedPlan.schedule_days.scheduled_on_saturday &&
+				!popupCtrl.selectedPlan.schedule_days.scheduled_on_sunday){
+				popupCtrl.validation = webvellaCoreService.setValidationError(popupCtrl.validation,"Validation failed","schedule_days","* at least one week day is required when type: daily");
+			}
+		}
+
+		function createSubmitObject(){
+			var submitObject = {};
+			submitObject.id = popupCtrl.selectedPlan.id;
+			submitObject.enabled = popupCtrl.selectedPlan.enabled;
+			submitObject.name = popupCtrl.selectedPlan.name;
+			submitObject.start_date = popupCtrl.selectedPlan.start_date;
+			submitObject.end_date = popupCtrl.selectedPlan.end_date;
+			submitObject.type = popupCtrl.selectedPlan.type;
+			switch(submitObject.type){
+				case 1:
+					submitObject.interval_in_minutes = popupCtrl.selectedPlan.interval_in_minutes;		
+					submitObject.start_timespan = popupCtrl.selectedPlan.start_timespan;	
+					submitObject.end_timespan = popupCtrl.selectedPlan.end_timespan;
+					submitObject.schedule_days = {};
+					submitObject.schedule_days.scheduled_on_monday = popupCtrl.selectedPlan.schedule_days.scheduled_on_monday;	
+					submitObject.schedule_days.scheduled_on_tuesday = popupCtrl.selectedPlan.schedule_days.scheduled_on_tuesday;	
+					submitObject.schedule_days.scheduled_on_wednesday = popupCtrl.selectedPlan.schedule_days.scheduled_on_wednesday;	
+					submitObject.schedule_days.scheduled_on_thursday = popupCtrl.selectedPlan.schedule_days.scheduled_on_thursday;	
+					submitObject.schedule_days.scheduled_on_friday = popupCtrl.selectedPlan.schedule_days.scheduled_on_friday;	
+					submitObject.schedule_days.scheduled_on_saturday = popupCtrl.selectedPlan.schedule_days.scheduled_on_saturday;	
+					submitObject.schedule_days.scheduled_on_sunday = popupCtrl.selectedPlan.schedule_days.scheduled_on_sunday;	
+					break;
+				case 2:
+					submitObject.schedule_days = {};
+					submitObject.schedule_days.scheduled_on_monday = popupCtrl.selectedPlan.schedule_days.scheduled_on_monday;	
+					submitObject.schedule_days.scheduled_on_tuesday = popupCtrl.selectedPlan.schedule_days.scheduled_on_tuesday;	
+					submitObject.schedule_days.scheduled_on_wednesday = popupCtrl.selectedPlan.schedule_days.scheduled_on_wednesday;	
+					submitObject.schedule_days.scheduled_on_thursday = popupCtrl.selectedPlan.schedule_days.scheduled_on_thursday;	
+					submitObject.schedule_days.scheduled_on_friday = popupCtrl.selectedPlan.schedule_days.scheduled_on_friday;	
+					submitObject.schedule_days.scheduled_on_saturday = popupCtrl.selectedPlan.schedule_days.scheduled_on_saturday;	
+					submitObject.schedule_days.scheduled_on_sunday = popupCtrl.selectedPlan.schedule_days.scheduled_on_sunday;	
+					break;
+				default:
+					break;			
+			}
+
+			return submitObject;
+		}
+
         /// EXIT functions
         popupCtrl.ok = function () {
-        	popupCtrl.validation = {};
-        	if (!popupCtrl.isUpdate) {
-        		webvellaCoreService.createRecord("role",popupCtrl.role, successCallback, errorCallback);
-            }
-            else {
-        		webvellaCoreService.updateRecord(popupCtrl.role.id, "role", popupCtrl.role, successCallback, errorCallback);
-            } 
+			validateSubmit();
+			if(!popupCtrl.validation.isInvalid){
+				var submitObject = createSubmitObject();
+       			//webvellaCoreService.updateSchedulePlan(popupCtrl.selectedPlan.id, submitObject, successCallback, errorCallback);
+			}
         };
 
         popupCtrl.cancel = function () {
@@ -183,23 +299,23 @@
 
         /// Aux
         function successCallback(response) {
-			$translate(['SUCCESS_MESSAGE_LABEL','ROLE_SAVE_SUCCESS_MESSAGE']).then(function (translations) {
-				ngToast.create({
-					className: 'success',
-					content: translations.SUCCESS_MESSAGE_LABEL + " " + translations.ROLE_SAVE_SUCCESS_MESSAGE
-				});
+			ngToast.create({
+				className: 'success',
+				content: '<span class="go-green">Success:</span> ' + "Schedule plan saved!",
+				timeout: 3000
 			});
             $uibModalInstance.close('success');
             webvellaCoreService.GoToState($state.current.name, {});
         }
 
         function errorCallback(response) {
-            var location = $location;
-            //Process the response and generate the validation Messages
-            webvellaCoreService.generateValidationMessages(response, popupCtrl, popupCtrl.user, location);
+			ngToast.create({
+				className: 'error',
+				content: '<span class="go-red">Error:</span> ' + response.message,
+				timeout: 7000
+			});
         }
     };
-
 
 
 })();

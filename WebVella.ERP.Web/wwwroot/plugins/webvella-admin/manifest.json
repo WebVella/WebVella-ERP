@@ -46,6 +46,7 @@
 						"/plugins/webvella-admin/users.module.js",
 						"/plugins/webvella-admin/roles.module.js",
 						"/plugins/webvella-admin/schedule-plans.module.js",
+						"/plugins/webvella-admin/scheduled-jobs.module.js",
 						"/plugins/webvella-admin/plugins.module.js",
 						"/plugins/webvella-admin/codegen.module.js"
 					],

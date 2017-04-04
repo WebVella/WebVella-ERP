@@ -13,16 +13,30 @@
 		</div>
         <div class="meta-label">
 			<div class="meta-label-aux" translate="{{::'SCHEDULE_PLANS'}}"></div>
-            <h4 translate="{{::'CURRENT_SCHEDULE_PLANS'}}"></h4>
+            <h4 translate="{{::'SCHEDULE_PLANS'}}"></h4>
         </div>
 	</div>
 </div>
 <div id="page-body">
 	<div id="page-text">
+		<nav class="navbar navbar-default navbar-erp">
+			<div class="container-fluid">
+				<ul class="nav navbar-nav">
+					<li role="presentation" class="active">
+						<a ui-sref="webvella-admin-schedule-plans">Schedule plans</a>
+					</li>
+					<li role="presentation">
+						<a ui-sref="webvella-admin-scheduled-jobs">Background Jobs</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+
+
 		<table class="table table-bordered table-hover table-vertical-align-middle" ng-show="ngCtrl.plans.length > 0">
 			<thead>
 				<tr>
-					<th width="50"></th>
+					<th width="150"></th>
 					<th width="30"></th>
                     <th translate="{{::'NAME'}}"></th>
 					<th width="100" translate="{{::'TYPE'}}"></th>
@@ -33,9 +47,17 @@
 			<tbody>
 				<tr ng-repeat="plan in ngCtrl.plans | filter: ngCtrl.search">
 					<td>
-						<a ng-click="ngCtrl.openManageModal(plan)" class="btn btn-default btn-outline">
-							<i class="fa fa-pencil"></i>
-						</a>
+						<div class="btn-group">
+							<a ng-click="ngCtrl.openManageModal(plan)" class="btn btn-default btn-outline" title="Manage schedule">
+								<i class="fa fa-pencil"></i>
+							</a>
+							<a class="btn btn-default btn-outline" title="Trigger the plan now"  href="javascript:void(0)" confirmed-click="ngCtrl.triggerPlan(plan)" ng-confirm-click="Are you sure that you want to trigger this plan?">
+								<i class="fa fa-play"></i>
+							</a>
+							<a href="/#/admin/jobs?planId={{plan.id}}" class="btn btn-default btn-outline" title="View triggered jobs">
+								<i class="fa fa-paper-plane-o"></i>
+							</a>
+						</div>
 					</td>
 					<td>
 						<span class="label label-danger ng-hide" ng-show="::!plan.enabled">OFF</span>
@@ -62,8 +84,6 @@
 		<div class="alert alert-info" ng-show="ngCtrl.plans.length == 0" style="margin-top:2em;" translate="{{::'LIST_EMPTY_MESSAGE'}}"></div>
 	</div>
 </div>
-
-
 
 <script type="text/ng-template" id="manageModal.html">
 	<div class="modal-header" id="modal-top">
@@ -95,9 +115,12 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-12">
-					<div class="form-group">
+					<div class="form-group"  ng-class="{ 'has-error' : popupCtrl.validation.errors.name.isInvalid}">
 						<label class="control-label" translate="{{::'NAME'}}"></label>
 						<input class="form-control" ng-model="popupCtrl.selectedPlan.name" type="text"/>
+						<div class="error" ng-show="popupCtrl.validation.errors.name.isInvalid">
+							{{popupCtrl.validation.errors.name.message}}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -116,7 +139,7 @@
 					</div>
 				</div>
 				<div class="col-sm-6">
-					<div class="form-group">
+					<div class="form-group"  ng-class="{ 'has-error' : popupCtrl.validation.errors.end_date.isInvalid}">
 						<label class="control-label" translate="{{::'END_DATE' | translate}}"></label>
 						<div class="input-group">
 							<input type="text" class="form-control" ng-model="popupCtrl.selectedPlan.end_date" name="end_date"
@@ -125,6 +148,9 @@
 							<span class="input-group-btn">
 								<button type="button" class="btn btn-default" ng-click="popupCtrl.end_date_open = true"><i class="fa fa-calendar"></i></button>
 							</span>
+						</div>
+						<div class="error" ng-show="popupCtrl.validation.errors.end_date.isInvalid">
+							{{popupCtrl.validation.errors.end_date.message}}
 						</div>
 					</div>
 				</div>
@@ -136,11 +162,31 @@
 						<select class="form-control" ng-model="popupCtrl.selectedPlan.type" ng-options="type.key as type.value for type in popupCtrl.planTypes"></select>
 					</div>
 				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label" translate="{{::'CURRENT_NEXT_TRIGGER_DATE'}}"></label>
+						<input class="form-control" ng-value="popupCtrl.selectedPlan.next_trigger_time | date:'dd MMM yyyy HH:mm'" type="text" disabled />
+					</div>
+				</div>
+			</div>
+			<div class="row ng-hide"  ng-show="popupCtrl.selectedPlan.type == 1">
+				<div class="col-sm-6"  ng-class="{ 'has-error' : popupCtrl.validation.errors.interval_in_minutes.isInvalid}">
+					<div class="form-group">
+						<label class="control-label">{{::'TRIGGER_EACH' | translate}}</label>
+						<div class="input-group">
+							<input type="number" class="form-control" ng-model="popupCtrl.selectedPlan.interval_in_minutes" />
+							<span class="input-group-addon">{{::'MINUTES' | translate}}</span>
+						</div>
+						<div class="error" ng-show="popupCtrl.validation.errors.interval_in_minutes.isInvalid">
+							{{popupCtrl.validation.errors.interval_in_minutes.message}}
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="ng-hide" ng-show="popupCtrl.selectedPlan.type == 1 || popupCtrl.selectedPlan.type == 2">
 				<div class="row">
 					<div class="col-sm-12">
-						<div class="form-group">
+						<div class="form-group"  ng-class="{ 'has-error' : popupCtrl.validation.errors.schedule_days.isInvalid}">
 							<label class="control-label">{{::'SCHEDULE_PLAN_DAYS' | translate}}</label>
 							<div>
 								<label class="checkbox-inline">
@@ -164,6 +210,9 @@
 								<label class="checkbox-inline">
 									<input type="checkbox" ng-value="true" ng-model="popupCtrl.selectedPlan.schedule_days.scheduled_on_sunday"> {{::'SUNDAY' | translate}}
 								</label>
+							</div>
+							<div class="error" ng-show="popupCtrl.validation.errors.schedule_days.isInvalid">
+								{{popupCtrl.validation.errors.schedule_days.message}}
 							</div>
 						</div>
 					</div>
@@ -190,9 +239,9 @@
 				</div>
 			</div>
 		</form>
-		<pre>{{popupCtrl.selectedPlan | json}}</pre>
 	</div>
 	<div class="modal-footer">
+		<button class="btn btn-default" ng-click="popupCtrl.ok()"><i class="fa fa-save"></i> {{::'SAVE' | translate}}</button>
 		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
 	</div>
 </script>
