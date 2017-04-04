@@ -229,6 +229,7 @@
 		serviceInstance.triggerSchedulePlan = triggerSchedulePlan;
 		serviceInstance.getSchedulePlanList = getSchedulePlanList;
 		serviceInstance.getSchedulePlan = triggerSchedulePlan;
+		serviceInstance.getJobsList = getJobsList;
         //#endregion
 
 
@@ -4992,7 +4993,9 @@
         function getSchedulePlan(planId,successCallback, errorCallback) {
             $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'scheduleplan/' + planId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
         }
-
+        function getJobsList(successCallback, errorCallback) {
+            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'jobs' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+        }
         //#endregion
 
 

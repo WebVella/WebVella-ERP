@@ -19,7 +19,7 @@
         
         var sidebarData = this;
         sidebarData.isMiniSidebar = $rootScope.isMiniSidebar;
-
+		sidebarData.stateName = $state.current.name;
         $rootScope.$on("application-sidebar-mini-toggle", function (event) {
         	sidebarData.isMiniSidebar = $rootScope.isMiniSidebar;
         });

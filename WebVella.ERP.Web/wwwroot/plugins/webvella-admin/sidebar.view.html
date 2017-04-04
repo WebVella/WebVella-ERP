@@ -18,7 +18,7 @@
 	<li role="presentation" ui-sref-active="active">
 		<a ui-sref="webvella-admin-roles" title="Roles"><i class="fa fa-key fa-fw"></i><span class="text" translate="{{::'ROLES'}}"></span></a>
 	</li>
-	<li role="presentation" ui-sref-active="active">
+	<li role="presentation" ui-sref-active="active" ng-class="{'active': sidebarData.stateName == 'webvella-admin-scheduled-jobs'}">
 		<a ui-sref="webvella-admin-schedule-plans" title="Schedule plans"><i class="fa fa-cogs fa-fw"></i><span class="text" translate="{{::'SCHEDULE_PLANS'}}"></span></a>
 	</li>
 	<li role="presentation" ui-sref-active="active">
