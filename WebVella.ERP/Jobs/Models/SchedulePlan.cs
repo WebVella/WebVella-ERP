@@ -99,43 +99,12 @@ namespace WebVella.ERP.Jobs
 
 		[JsonProperty(PropertyName = "scheduled_on_saturday")]
 		public bool ScheduledOnSaturday { get; set; }
+
+		//Check if there is at least one selected day
+		public bool HasOneSelectedDay()
+		{
+			return ScheduledOnSunday || ScheduledOnMonday || ScheduledOnTuesday || ScheduledOnWednesday ||
+				ScheduledOnThursday || ScheduledOnFriday || ScheduledOnSaturday;
+		}
 	}
-
-	//[Serializable]
-	//public class DailySchedulePlan : SchedulePlan
-	//{
-	//	[JsonProperty(PropertyName = "schedule_days")]
-	//	public SchedulePlanDaysOfWeek ScheduledDays { get; set; }
-
-	//}
-
-	//[Serializable]
-	//public class WeeklySchedulePlan : SchedulePlan
-	//{
-
-	//}
-
-	//[Serializable]
-	//public class MonthlySchedulePlan : SchedulePlan
-	//{
-
-	//}
-
-	//[Serializable]
-	//public class IntervalSchedulePlan : SchedulePlan
-	//{
-	//	public int IntervalInMinutes { get; set; }
-
-	//	public SchedulePlanTimespan Timespan { get; set; }
-
-	//	public SchedulePlanDaysOfWeek ScheduledDays { get; set; }
-	//}
-
-	//[Serializable]
-	//public class SchedulePlanTimespan
-	//{
-	//	public int? StartTimespan { get; private set; }
-
-	//	public int? EndTimespan { get; private set; }
-	//}
 }

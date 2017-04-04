@@ -50,16 +50,17 @@ namespace WebVella.ERP.Jobs
 
 		private void LoadDefaultTypes()
 		{
-			//JobType sendEmailType = new JobType();
-			//sendEmailType.Id = new Guid("");
-			//sendEmailType.Name = "Email sender";
-			//sendEmailType.DefaultPriority = JobPriority.Low;
-			//sendEmailType.Assembly = "WebVella.ERP";
-			//sendEmailType.CompleteClassName = "";
-			//sendEmailType.MethodName = "";
-			//sendEmailType.AllowSingleInstance = false;
+			//Test job type
+			JobType sendEmailType = new JobType();
+			sendEmailType.Id = new Guid("70f06b11-2aee-40d5-b8ef-de1a2d8bbb59");
+			sendEmailType.Name = "Email sender";
+			sendEmailType.DefaultPriority = JobPriority.Low;
+			sendEmailType.Assembly = "WebVella.ERP";
+			sendEmailType.CompleteClassName = "WebVella.ERP.Jobs.JobManager";
+			sendEmailType.MethodName = "Test";
+			sendEmailType.AllowSingleInstance = false;
 
-			//RegisterType(sendEmailType);
+			RegisterType(sendEmailType);
 		}
 
 		public bool RegisterType(JobType type)
@@ -111,7 +112,7 @@ namespace WebVella.ERP.Jobs
 				RegisterType(type);
 		}
 
-		public Job CreateJob(Guid typeId, dynamic attributes, JobPriority priority = 0, Guid? creatorId = null)
+		public Job CreateJob(Guid typeId, dynamic attributes, JobPriority priority = 0, Guid? creatorId = null, Guid? schedulePlanId = null)
 		{
 			JobType type = JobTypes.FirstOrDefault(t => t.Id == typeId);
 			if (type == null)
@@ -137,6 +138,7 @@ namespace WebVella.ERP.Jobs
 			job.Attributes = attributes;
 			job.CreatedBy = creatorId;
 			job.LastModifiedBy = creatorId;
+			job.SchedulePlanId = schedulePlanId;
 
 			return JobService.CreateJob(job);
 		}
@@ -147,10 +149,10 @@ namespace WebVella.ERP.Jobs
 		}
 
 		public List<Job> GetJobs(DateTime? startFromDate = null, DateTime? startToDate = null, DateTime? finishedFromDate = null, DateTime? finishedToDate = null,
-			string typeName = null, int? status = null, int? priority = null, int? page = null, int? pageSize = null)
+			string typeName = null, int? status = null, int? priority = null, Guid? schedulePlanId = null, int? page = null, int? pageSize = null)
 		{
 			return JobService.GetJobs(startFromDate, startToDate, finishedFromDate, finishedToDate,
-				typeName, status, priority, page, pageSize);
+				typeName, status, priority, schedulePlanId, page, pageSize);
 		}
 
 		public async void ProcessJobsAsync()
@@ -194,6 +196,12 @@ namespace WebVella.ERP.Jobs
 					Thread.Sleep(12000);
 				}
 			}
+		}
+
+		//Just a test method
+		public void Test(JobContext context)
+		{
+
 		}
 	}
 }

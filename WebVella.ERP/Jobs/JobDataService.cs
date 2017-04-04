@@ -33,7 +33,8 @@ namespace WebVella.ERP.Jobs
 			parameters.Add(new NpgsqlParameter("assembly", job.Assembly) { NpgsqlDbType = NpgsqlDbType.Text });
 			parameters.Add(new NpgsqlParameter("complete_class_name", job.CompleteClassName) { NpgsqlDbType = NpgsqlDbType.Text });
 			parameters.Add(new NpgsqlParameter("method_name", job.MethodName) { NpgsqlDbType = NpgsqlDbType.Text });
-			parameters.Add(new NpgsqlParameter("attributes", JsonConvert.SerializeObject(job.Attributes, settings).ToString()) { NpgsqlDbType = NpgsqlDbType.Text });
+			if (job.Attributes != null)
+				parameters.Add(new NpgsqlParameter("attributes", JsonConvert.SerializeObject(job.Attributes, settings).ToString()) { NpgsqlDbType = NpgsqlDbType.Text });
 			parameters.Add(new NpgsqlParameter("status", job.Status) { NpgsqlDbType = NpgsqlDbType.Integer });
 			parameters.Add(new NpgsqlParameter("priority", job.Priority) { NpgsqlDbType = NpgsqlDbType.Integer });
 			if (job.StartedOn.HasValue)
@@ -46,6 +47,8 @@ namespace WebVella.ERP.Jobs
 				parameters.Add(new NpgsqlParameter("canceled_by", job.CanceledBy) { NpgsqlDbType = NpgsqlDbType.Uuid });
 			if (!string.IsNullOrEmpty(job.ErrorMessage))
 				parameters.Add(new NpgsqlParameter("error_message", job.ErrorMessage) { NpgsqlDbType = NpgsqlDbType.Text });
+			if (job.SchedulePlanId.HasValue)
+				parameters.Add(new NpgsqlParameter("schedule_plan_id", job.SchedulePlanId) { NpgsqlDbType = NpgsqlDbType.Uuid });
 			parameters.Add(new NpgsqlParameter("created_on", DateTime.UtcNow) { NpgsqlDbType = NpgsqlDbType.Timestamp });
 			parameters.Add(new NpgsqlParameter("last_modified_on", DateTime.UtcNow) { NpgsqlDbType = NpgsqlDbType.Timestamp });
 			if (job.CreatedBy.HasValue)
@@ -159,7 +162,7 @@ namespace WebVella.ERP.Jobs
 		}
 
 		public List<Job> GetJobs(DateTime? startFromDate = null, DateTime? startToDate = null, DateTime? finishedFromDate = null,
-			DateTime? finishedToDate = null, string typeName = null, int? status = null, int? priority = null, int? page = null, int? pageSize = null)
+			DateTime? finishedToDate = null, string typeName = null, int? status = null, int? priority = null, Guid? schedulePlanId = null, int? page = null, int? pageSize = null)
 		{
 			List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
 
@@ -199,6 +202,11 @@ namespace WebVella.ERP.Jobs
 			{
 				parameters.Add(new NpgsqlParameter("priority", priority.Value) { NpgsqlDbType = NpgsqlDbType.Integer });
 				sql += " AND priority = @priority";
+			}
+			if (schedulePlanId.HasValue)
+			{
+				parameters.Add(new NpgsqlParameter("schedule_plan_id", schedulePlanId.Value) { NpgsqlDbType = NpgsqlDbType.Uuid });
+				sql += " AND schedule_plan_id = @schedule_plan_id";
 			}
 			if (pageSize.HasValue)
 			{
