@@ -14,6 +14,7 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 		{
 			Mapper.CreateMap<DataRow, Job>().ConvertUsing(source => JobConvert(source));
 			Mapper.CreateMap<DataRow, SchedulePlan>().ConvertUsing(source => SchedulePlanConvert(source));
+			Mapper.CreateMap<SchedulePlan, OutputSchedulePlan>().ConvertUsing(source => OutputSchedulePlanConvert(source));
 		}
 
 		private static Job JobConvert(DataRow src)
@@ -89,6 +90,43 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			schedulePlan.LastModifiedOn = (DateTime)src["last_modified_on"];
 
 			return schedulePlan;
+		}
+
+		private static OutputSchedulePlan OutputSchedulePlanConvert(SchedulePlan src)
+		{
+			if (src == null)
+				return null;
+
+			OutputSchedulePlan outSchedulePlan = new OutputSchedulePlan();
+
+			outSchedulePlan.Id = src.Id;
+			outSchedulePlan.Name = src.Name;
+			outSchedulePlan.Type = src.Type;
+			outSchedulePlan.StartDate = src.StartDate;
+			outSchedulePlan.EndDate = src.EndDate;
+			outSchedulePlan.ScheduledDays = src.ScheduledDays;
+			outSchedulePlan.IntervalInMinutes = src.IntervalInMinutes;
+			if (src.StartTimespan.HasValue)
+			{
+				var startTimespan = new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+				outSchedulePlan.StartTimespan = startTimespan.AddMinutes(src.StartTimespan.Value);
+			}
+			if (src.EndTimespan.HasValue)
+			{
+				var endTimespan = new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+				outSchedulePlan.EndTimespan = endTimespan.AddMinutes(src.EndTimespan.Value);
+			}
+			outSchedulePlan.LastTriggerTime = src.LastTriggerTime;
+			outSchedulePlan.NextTriggerTime = src.NextTriggerTime;
+			outSchedulePlan.JobTypeId = src.JobTypeId;
+			outSchedulePlan.JobAttributes = src.JobAttributes;
+			outSchedulePlan.Enabled = src.Enabled;
+			outSchedulePlan.LastStartedJobId = src.LastStartedJobId;
+			outSchedulePlan.CreatedOn = src.CreatedOn;
+			outSchedulePlan.LastModifiedBy = src.LastModifiedBy;
+			outSchedulePlan.LastModifiedOn = src.LastModifiedOn;
+
+			return outSchedulePlan;
 		}
 	}
 }

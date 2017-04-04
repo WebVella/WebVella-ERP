@@ -3850,7 +3850,7 @@ namespace WebVella.ERP.Web.Controllers
 			try
 			{
 				var responseRecord = new EntityRecord();
-				responseRecord["data"] = ScheduleManager.Current.GetSchedulePlans();
+				responseRecord["data"] = ScheduleManager.Current.GetSchedulePlans().MapTo<OutputSchedulePlan>();
 				response.Object = responseRecord;
 			}
 			catch (Exception e)
@@ -3879,7 +3879,7 @@ namespace WebVella.ERP.Web.Controllers
 				}
 
 				var responseRecord = new EntityRecord();
-				responseRecord["data"] = schedulePlan;
+				responseRecord["data"] = schedulePlan.MapTo<OutputSchedulePlan>();
 				response.Object = responseRecord;
 			}
 			catch (Exception e)
@@ -3929,7 +3929,7 @@ namespace WebVella.ERP.Web.Controllers
 
 					ScheduleManager.Current.CreateSchedulePlan(offerSchedulePlan);
 				}
-				response.Object = offerSchedulePlan;
+				response.Object = offerSchedulePlan.MapTo<OutputSchedulePlan>();
 			}
 			catch (Exception e)
 			{
