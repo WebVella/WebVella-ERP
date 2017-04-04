@@ -208,6 +208,9 @@ namespace WebVella.ERP.Jobs
 				parameters.Add(new NpgsqlParameter("schedule_plan_id", schedulePlanId.Value) { NpgsqlDbType = NpgsqlDbType.Uuid });
 				sql += " AND schedule_plan_id = @schedule_plan_id";
 			}
+
+			sql += " ORDER BY created_on ASC";
+
 			if (pageSize.HasValue)
 			{
 				page = page ?? 1;
@@ -215,10 +218,9 @@ namespace WebVella.ERP.Jobs
 				int skip = (page.Value - 1) * limit;
 
 				parameters.Add(new NpgsqlParameter("limit", limit) { NpgsqlDbType = NpgsqlDbType.Integer });
-				parameters.Add(new NpgsqlParameter("limit", skip) { NpgsqlDbType = NpgsqlDbType.Integer });
+				parameters.Add(new NpgsqlParameter("offset", skip) { NpgsqlDbType = NpgsqlDbType.Integer });
 				sql += " LIMIT @limit OFFSET @offset";
 			}
-			sql += " ORDER BY created_on ASC";
 
 			DataTable dtJobs = ExecuteQuerySqlCommand(sql, parameters);
 
