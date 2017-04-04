@@ -3566,14 +3566,14 @@ namespace WebVella.ERP.Web.Controllers
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/jobs")]
 		public IActionResult GetJobs(DateTime? startFromDate = null, DateTime? startToDate = null, DateTime? finishedFromDate = null,
-			DateTime? finishedToDate = null, string type = null, int? status = null, int? priority = null, int? page = null, int? pageSize = null)
+			DateTime? finishedToDate = null, string type = null, int? status = null, int? priority = null, Guid? schedulePlanId = null, int? page = null, int? pageSize = null)
 		{
 			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 
 			try
 			{
 				response.Object = JobManager.Current.GetJobs(startFromDate, startToDate, finishedFromDate, finishedToDate,
-					type, status, priority, page, pageSize);
+					type, status, priority, schedulePlanId, page, pageSize);
 			}
 			catch (Exception e)
 			{
@@ -3618,35 +3618,152 @@ namespace WebVella.ERP.Web.Controllers
 					switch (prop.Name)
 					{
 						case "name":
-							schedulePlan.Name = postObject["name"].ToString();
+							{
+								if (!string.IsNullOrWhiteSpace((string)postObject["name"]))
+								{
+									schedulePlan.Name = (string)postObject["name"];
+								}
+								else
+								{
+									response.Errors.Add(new ErrorModel("name", (string)postObject["name"], "Name is required field and cannot be empty."));
+								}
+							}
 							break;
 						case "type":
-							schedulePlan.Type = (SchedulePlanType)(int)postObject["type"];
+							{
+								if (!string.IsNullOrWhiteSpace(postObject["type"].ToString()))
+								{
+									int type = 0;
+									if (int.TryParse(postObject["type"].ToString(), out type))
+									{
+										if (type >= 1 && type <= 4)
+											schedulePlan.Type = (SchedulePlanType)type;
+										else
+											response.Errors.Add(new ErrorModel("type", postObject["type"].ToString(), "The value of the type is out of range of valid values."));
+									}
+									else
+										response.Errors.Add(new ErrorModel("type", postObject["type"].ToString(), "Type is invalid integer value."));
+								}
+								else
+								{
+									response.Errors.Add(new ErrorModel("type", postObject["type"].ToString(), "Type is required field and cannot be empty."));
+								}
+							}
+							break;
+						case "job_type_id":
+							{
+								Guid jobTypeId;
+								if (Guid.TryParse(postObject["job_type_id"].ToString(), out jobTypeId))
+								{
+									if (JobManager.JobTypes.Any(t => t.Id == jobTypeId))
+									{
+										schedulePlan.JobTypeId = jobTypeId;
+									}
+									else
+									{
+										response.Errors.Add(new ErrorModel("job_type_id", postObject["job_type_id"].ToString(), "There is no job type with such id."));
+									}
+								}
+								else
+								{
+									response.Errors.Add(new ErrorModel("job_type_id", postObject["job_type_id"].ToString(), "Job type id is not valid."));
+								}
+							}
 							break;
 						case "start_date":
-							schedulePlan.StartDate = (DateTime)postObject["start_date"];
+							{
+								schedulePlan.StartDate = DateTime.UtcNow;
+
+								if (!string.IsNullOrWhiteSpace(postObject["start_date"].ToString()))
+								{
+									DateTime startDate;
+									if (DateTime.TryParse(postObject["start_date"].ToString(), out startDate))
+									{
+										startDate = (DateTime)postObject["start_date"];
+										schedulePlan.StartDate = startDate.ToUniversalTime();
+									}
+									else
+									{
+										response.Errors.Add(new ErrorModel("start_date", postObject["start_date"].ToString(), "The value of start date field is not valid."));
+									}
+								}
+							}
 							break;
 						case "end_date":
-							schedulePlan.EndDate = (DateTime)postObject["end_date"];
+							{
+								if (!string.IsNullOrWhiteSpace(postObject["end_date"].ToString()))
+								{
+									DateTime endDate;
+									if (DateTime.TryParse(postObject["end_date"].ToString(), out endDate))
+									{
+										endDate = (DateTime)postObject["end_date"];
+										schedulePlan.StartDate = endDate.ToUniversalTime();
+									}
+									else
+									{
+										response.Errors.Add(new ErrorModel("end_date", postObject["end_date"].ToString(), "The value of end date field is not valid."));
+									}
+								}
+							}
 							break;
 						case "schedule_days":
-							schedulePlan.ScheduledDays = JsonConvert.DeserializeObject<SchedulePlanDaysOfWeek>(postObject["schedule_days"].ToString());
+							{
+								string days = postObject["schedule_days"].ToString();
+								if (!string.IsNullOrWhiteSpace(days))
+								{
+									schedulePlan.ScheduledDays = JsonConvert.DeserializeObject<SchedulePlanDaysOfWeek>(postObject["schedule_days"].ToString());
+								}
+								else
+								{
+									response.Errors.Add(new ErrorModel("schedule_days", postObject["schedule_days"].ToString(), "Schedule days is required field and cannot be empty."));
+								}
+							}
 							break;
 						case "interval_in_minutes":
-							schedulePlan.IntervalInMinutes = (int)postObject["interval_in_minutes"];
+							{
+								int interval;
+								if (int.TryParse(postObject["interval_in_minutes"].ToString(), out interval))
+								{
+									schedulePlan.IntervalInMinutes = interval;
+								}
+								else
+								{
+									response.Errors.Add(new ErrorModel("interval_in_minutes", postObject["interval_in_minutes"].ToString(), "The value of Interval in minutes field is not valid."));
+								}
+							}
 							break;
 						case "start_timespan":
-							schedulePlan.StartTimespan = (int)postObject["start_timespan"];
-							if (schedulePlan.StartTimespan < 0 || schedulePlan.StartTimespan > 1440)
-								response.Errors.Add(new ErrorModel("start_timespan", postObject["start_timespan"].ToString(), "The value of start timespan must be between 0 and 1440."));
+							{
+								DateTime startTimespan;
+								if (DateTime.TryParse(postObject["start_timespan"].ToString(), out startTimespan))
+								{
+									startTimespan = ((DateTime)postObject["start_timespan"]).ToUniversalTime();
+									schedulePlan.IntervalInMinutes = startTimespan.Hour * 60 + startTimespan.Minute;
+								}
+								else
+								{
+									response.Errors.Add(new ErrorModel("start_timespan", postObject["start_timespan"].ToString(), "The value of start timespan is not valid."));
+								}
+							}
 							break;
 						case "end_timespan":
-							schedulePlan.EndTimespan = (int)postObject["end_timespan"];
-							if (schedulePlan.StartTimespan < 0 || schedulePlan.StartTimespan > 1440)
-								response.Errors.Add(new ErrorModel("end_timespan", postObject["end_timespan"].ToString(), "The value of end timespan must be between 0 and 1440."));
+							{
+								DateTime endTimespan;
+								if (DateTime.TryParse(postObject["end_timespan"].ToString(), out endTimespan))
+								{
+									endTimespan = ((DateTime)postObject["end_timespan"]).ToUniversalTime();
+									schedulePlan.IntervalInMinutes = endTimespan.Hour * 60 + endTimespan.Minute;
+								}
+								else
+								{
+									response.Errors.Add(new ErrorModel("end_timespan", postObject["end_timespan"].ToString(), "The value of end timespan is not valid."));
+								}
+							}
 							break;
 						case "enabled":
-							schedulePlan.Enabled = (bool)postObject["enabled"];
+							{
+								schedulePlan.Enabled = (bool)postObject["enabled"];
+							}
 							break;
 					}
 				}
@@ -3658,6 +3775,12 @@ namespace WebVella.ERP.Web.Controllers
 					else
 						response.Errors.Add(new ErrorModel("end_date", postObject["end_date"].ToString(), "End date must be greater than start date."));
 				}
+
+				if ((schedulePlan.Type == SchedulePlanType.Daily || schedulePlan.Type == SchedulePlanType.Interval) && !schedulePlan.ScheduledDays.HasOneSelectedDay())
+					response.Errors.Add(new ErrorModel("schedule_days", postObject["schedule_days"].ToString(), "At least one day have to be selected for schedule days field."));
+
+				if (schedulePlan.Type == SchedulePlanType.Interval && schedulePlan.IntervalInMinutes <= 0 || schedulePlan.IntervalInMinutes >= 1440)
+					response.Errors.Add(new ErrorModel("interval_in_minutes", postObject["interval_in_minutes"].ToString(), "The value of Interval in minutes field must be greater than 0 and less or  equal than 1440."));
 
 				if (response.Errors.Count > 0)
 				{
@@ -3727,7 +3850,7 @@ namespace WebVella.ERP.Web.Controllers
 			try
 			{
 				var responseRecord = new EntityRecord();
-				responseRecord["data"] = ScheduleManager.Current.GetSchedulePlans();
+				responseRecord["data"] = ScheduleManager.Current.GetSchedulePlans().MapTo<OutputSchedulePlan>();
 				response.Object = responseRecord;
 			}
 			catch (Exception e)
@@ -3756,7 +3879,7 @@ namespace WebVella.ERP.Web.Controllers
 				}
 
 				var responseRecord = new EntityRecord();
-				responseRecord["data"] = schedulePlan;
+				responseRecord["data"] = schedulePlan.MapTo<OutputSchedulePlan>();
 				response.Object = responseRecord;
 			}
 			catch (Exception e)
@@ -3775,11 +3898,11 @@ namespace WebVella.ERP.Web.Controllers
 
 			try
 			{
-					Guid offerSchedulePlanId = Guid.NewGuid();
-				   SchedulePlan offerSchedulePlan = ScheduleManager.Current.GetSchedulePlan(offerSchedulePlanId);
+				Guid offerSchedulePlanId = Guid.NewGuid();
+				SchedulePlan offerSchedulePlan = ScheduleManager.Current.GetSchedulePlan(offerSchedulePlanId);
 
-				   if (offerSchedulePlan == null)
-				   {
+				if (offerSchedulePlan == null)
+				{
 					offerSchedulePlan = new SchedulePlan();
 					offerSchedulePlan.Id = offerSchedulePlanId;
 					offerSchedulePlan.Name = "Offer schedule plan Test";
@@ -3788,13 +3911,13 @@ namespace WebVella.ERP.Web.Controllers
 					offerSchedulePlan.EndDate = null;
 					offerSchedulePlan.ScheduledDays = new SchedulePlanDaysOfWeek()
 					{
-					 ScheduledOnMonday = true,
-					 ScheduledOnTuesday = true,
-					 ScheduledOnWednesday = true,
-					 ScheduledOnThursday = true,
-					 ScheduledOnFriday = true,
-					 ScheduledOnSaturday = true,
-					 ScheduledOnSunday = true
+						ScheduledOnMonday = true,
+						ScheduledOnTuesday = true,
+						ScheduledOnWednesday = true,
+						ScheduledOnThursday = true,
+						ScheduledOnFriday = true,
+						ScheduledOnSaturday = true,
+						ScheduledOnSunday = true
 					};
 					//offerSchedulePlan.IntervalInMinutes = 1;
 					//offerSchedulePlan.StartTimespan = 0;
@@ -3805,8 +3928,8 @@ namespace WebVella.ERP.Web.Controllers
 					offerSchedulePlan.LastModifiedBy = null;
 
 					ScheduleManager.Current.CreateSchedulePlan(offerSchedulePlan);
-				   }
-					response.Object = offerSchedulePlan;
+				}
+				response.Object = offerSchedulePlan.MapTo<OutputSchedulePlan>();
 			}
 			catch (Exception e)
 			{

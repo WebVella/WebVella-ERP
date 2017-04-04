@@ -62,6 +62,9 @@ namespace WebVella.ERP.Jobs
 		[JsonProperty(PropertyName = "error_message")]
 		public string ErrorMessage { get; set; }
 
+		[JsonProperty(PropertyName = "schedule_plan_id")]
+		public Guid? SchedulePlanId { get; set; }
+
 		[JsonProperty(PropertyName = "created_on")]
 		public DateTime CreatedOn { get; set; }
 
