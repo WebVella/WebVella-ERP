@@ -804,7 +804,7 @@ namespace WebVella.ERP
 					{
 						systemSettings.Version = 20170125;
 
-						#region << ***Create entity*** Entity name: log >>
+						#region << ***Create entity*** Entity name: system_log >>
 						{
 							#region << entity >>
 							{
@@ -847,7 +847,7 @@ namespace WebVella.ERP
 						}
 						#endregion
 
-						#region << ***Create field***  Entity: log Field Name: type >>
+						#region << ***Create field***  Entity: system_log Field Name: type >>
 						{
 							InputSelectField dropdownField = new InputSelectField();
 							dropdownField.Id = new Guid("4dd8a502-e6bd-48a0-bf27-69aa47f2d73d");
@@ -881,7 +881,7 @@ namespace WebVella.ERP
 						}
 						#endregion
 
-						#region << ***Create field***  Entity: log Field Name: message >>
+						#region << ***Create field***  Entity: system_log Field Name: message >>
 						{
 							InputTextField textboxField = new InputTextField();
 							textboxField.Id = new Guid("4d2bbc62-af48-44df-a397-f8fd86eef086");
@@ -911,7 +911,7 @@ namespace WebVella.ERP
 						}
 						#endregion
 
-						#region << ***Create field***  Entity: log Field Name: source >>
+						#region << ***Create field***  Entity: system_log Field Name: source >>
 						{
 							InputTextField textboxField = new InputTextField();
 							textboxField.Id = new Guid("d96024cb-adc0-4f0b-a708-cd7e72cb913c");
@@ -941,7 +941,7 @@ namespace WebVella.ERP
 						}
 						#endregion
 
-						#region << ***Create field***  Entity: log Field Name: details >>
+						#region << ***Create field***  Entity: system_log Field Name: details >>
 						{
 							InputTextField textboxField = new InputTextField();
 							textboxField.Id = new Guid("fec5493a-bdc9-4814-afcf-990c97e5abf1");
@@ -971,7 +971,7 @@ namespace WebVella.ERP
 						}
 						#endregion
 
-						#region << ***Create field***  Entity: log Field Name: notification_status >>
+						#region << ***Create field***  Entity: system_log Field Name: notification_status >>
 						{
 							InputSelectField dropdownField = new InputSelectField();
 							dropdownField.Id = new Guid("986e96b9-6ab0-4ed5-92db-91f1faff1faf");
@@ -1007,7 +1007,7 @@ namespace WebVella.ERP
 						}
 						#endregion
 
-						#region << View  Entity: log name: create >>
+						#region << View  Entity: system_log name: create >>
 						{
 							var createViewEntity = entMan.ReadEntity(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933")).Object;
 							var createViewInput = new InputRecordView();
@@ -1164,7 +1164,7 @@ namespace WebVella.ERP
 						}
 						#endregion
 
-						#region << View  Entity: log name: quick_create >>
+						#region << View  Entity: system_log name: quick_create >>
 						{
 							var createViewEntity = entMan.ReadEntity(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933")).Object;
 							var createViewInput = new InputRecordView();
@@ -1321,7 +1321,7 @@ namespace WebVella.ERP
 						}
 						#endregion
 
-						#region << View  Entity: log name: quick_view >>
+						#region << View  Entity: system_log name: quick_view >>
 						{
 							var createViewEntity = entMan.ReadEntity(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933")).Object;
 							var createViewInput = new InputRecordView();
@@ -1469,7 +1469,7 @@ namespace WebVella.ERP
 						}
 						#endregion
 
-						#region << View  Entity: log name: general >>
+						#region << View  Entity: system_log name: general >>
 						{
 							var createViewEntity = entMan.ReadEntity(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933")).Object;
 							var createViewInput = new InputRecordView();
@@ -1617,7 +1617,7 @@ namespace WebVella.ERP
 						}
 						#endregion
 
-						#region << List  Entity: log name: general >>
+						#region << List  Entity: system_log name: general >>
 						{
 							var createListEntity = entMan.ReadEntity(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933")).Object;
 							var createListInput = new InputRecordList();
@@ -1781,7 +1781,7 @@ namespace WebVella.ERP
 						}
 						#endregion
 
-						#region << List  Entity: log name: lookup >>
+						#region << List  Entity: system_log name: lookup >>
 						{
 							var createListEntity = entMan.ReadEntity(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933")).Object;
 							var createListInput = new InputRecordList();
