@@ -190,8 +190,9 @@ namespace WebVella.ERP.Jobs
 			}
 			if (!string.IsNullOrWhiteSpace(typeName))
 			{
-				parameters.Add(new NpgsqlParameter("type_name", typeName) { NpgsqlDbType = NpgsqlDbType.Text });
-				sql += " AND type_name = @type_name";
+				var typeParameter = "%"+typeName+"%";
+				parameters.Add(new NpgsqlParameter("type_name", typeParameter) { NpgsqlDbType = NpgsqlDbType.Text });
+				sql += " AND type_name ILIKE @type_name";
 			}
 			if (status.HasValue)
 			{
