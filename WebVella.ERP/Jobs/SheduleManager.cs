@@ -105,8 +105,7 @@ namespace WebVella.ERP.Jobs
 
 									DateTime startDate = DateTime.UtcNow;
 
-									DateTime? nextActivation = FindIntervalSchedulePlanNextTriggerDate(schedulePlan, startDate.AddMinutes(1),
-										schedulePlan.StartDate.HasValue ? schedulePlan.StartDate.Value : startDate);
+									DateTime? nextActivation = FindIntervalSchedulePlanNextTriggerDate(schedulePlan, startDate, schedulePlan.LastTriggerTime);
 									if (nextActivation.HasValue)
 									{
 										schedulePlan.NextTriggerTime = nextActivation.Value;
@@ -216,7 +215,7 @@ namespace WebVella.ERP.Jobs
 			{
 				case SchedulePlanType.Interval:
 					{
-						return FindIntervalSchedulePlanNextTriggerDate(schedulePlan, nowDateTime, startingDate);
+						return FindIntervalSchedulePlanNextTriggerDate(schedulePlan, nowDateTime, schedulePlan.LastTriggerTime);
 					}
 				case SchedulePlanType.Daily:
 					{
@@ -234,7 +233,7 @@ namespace WebVella.ERP.Jobs
 			return null;
 		}
 
-		private DateTime? FindIntervalSchedulePlanNextTriggerDate(SchedulePlan intervalPlan, DateTime nowDateTime, DateTime startDate)
+		private DateTime? FindIntervalSchedulePlanNextTriggerDate(SchedulePlan intervalPlan, DateTime nowDateTime, DateTime? lastExecution)
 		{
 			if (intervalPlan.ScheduledDays == null)
 				intervalPlan.ScheduledDays = new SchedulePlanDaysOfWeek();
@@ -247,7 +246,7 @@ namespace WebVella.ERP.Jobs
 				return null;
 			}
 
-			DateTime startingDate = startDate;
+			DateTime startingDate = lastExecution.HasValue ? lastExecution.Value.AddMinutes(intervalPlan.IntervalInMinutes.Value) : DateTime.UtcNow;
 			try
 			{
 				while (true)
@@ -260,6 +259,7 @@ namespace WebVella.ERP.Jobs
 							return null;
 						}
 					}
+
 					int timeAsInt = startingDate.Hour * 60 + startingDate.Minute;
 					bool isIntervalConnectedToFirstDay = false;
 					if (intervalPlan.StartTimespan.HasValue)
@@ -268,15 +268,24 @@ namespace WebVella.ERP.Jobs
 															   ((0 < timeAsInt) && (timeAsInt <= intervalPlan.EndTimespan.Value)));
 					}
 
-					DateTime movedTime = startingDate.AddSeconds(10);
-					if (movedTime >= nowDateTime && IsTimeInTimespanInterval(startingDate, intervalPlan.StartTimespan, intervalPlan.EndTimespan) &&
+					if (IsTimeInTimespanInterval(startingDate, intervalPlan.StartTimespan, intervalPlan.EndTimespan) &&
 						IsDayUsedInSchedulePlan(startingDate, daysOfWeek, isIntervalConnectedToFirstDay))
 					{
 						return startingDate;
 					}
 					else //step
 					{
-						startingDate = startingDate.AddMinutes(intervalPlan.IntervalInMinutes.Value);
+						DateTime startTimespan = new DateTime(startingDate.Year, startingDate.Month, startingDate.Day, 0, 0, 0, DateTimeKind.Utc);
+						startTimespan = startTimespan.AddMinutes(intervalPlan.StartTimespan.Value);
+
+						if (nowDateTime <= startTimespan && startingDate <= startTimespan)
+						{
+							startingDate = startTimespan;
+						}
+						else
+						{
+							startingDate = startTimespan.AddDays(1);
+						}
 					}
 				}
 			}
@@ -285,6 +294,58 @@ namespace WebVella.ERP.Jobs
 				return null;
 			}
 		}
+
+		//private DateTime? FindIntervalSchedulePlanNextTriggerDate(SchedulePlan intervalPlan, DateTime nowDateTime, DateTime startDate)
+		//{
+		//	if (intervalPlan.ScheduledDays == null)
+		//		intervalPlan.ScheduledDays = new SchedulePlanDaysOfWeek();
+
+		//	var daysOfWeek = intervalPlan.ScheduledDays;
+
+		//	//if interval is <=0 then can't find match
+		//	if (intervalPlan.IntervalInMinutes <= 0)
+		//	{
+		//		return null;
+		//	}
+
+		//	DateTime startingDate = startDate;
+		//	try
+		//	{
+		//		while (true)
+		//		{
+		//			//check for expired interval
+		//			if (intervalPlan.EndDate.HasValue)
+		//			{
+		//				if (intervalPlan.EndDate.Value < startingDate)
+		//				{
+		//					return null;
+		//				}
+		//			}
+		//			int timeAsInt = startingDate.Hour * 60 + startingDate.Minute;
+		//			bool isIntervalConnectedToFirstDay = false;
+		//			if (intervalPlan.StartTimespan.HasValue)
+		//			{
+		//				isIntervalConnectedToFirstDay = ((intervalPlan.StartTimespan.Value > intervalPlan.EndTimespan.Value) &&
+		//													   ((0 < timeAsInt) && (timeAsInt <= intervalPlan.EndTimespan.Value)));
+		//			}
+
+		//			DateTime movedTime = startingDate.AddSeconds(10);
+		//			if (movedTime >= nowDateTime && IsTimeInTimespanInterval(startingDate, intervalPlan.StartTimespan, intervalPlan.EndTimespan) &&
+		//				IsDayUsedInSchedulePlan(startingDate, daysOfWeek, isIntervalConnectedToFirstDay))
+		//			{
+		//				return startingDate;
+		//			}
+		//			else //step
+		//			{
+		//				startingDate = startingDate.AddMinutes(intervalPlan.IntervalInMinutes.Value);
+		//			}
+		//		}
+		//	}
+		//	catch
+		//	{
+		//		return null;
+		//	}
+		//}
 
 		private DateTime? FindDailySchedulePlanNextTriggerDate(SchedulePlan dailyPlan, DateTime nowDateTime, DateTime startDate)
 		{
