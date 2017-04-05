@@ -12,11 +12,11 @@
         .service('webvellaCoreService', service);
 
     service.$inject = ['$cookies', '$q', '$http', '$log', '$location', 'wvAppConstants', '$rootScope', '$anchorScroll', 'ngToast',
-				'$timeout', 'Upload', '$translate', '$filter', '$state', '$localStorage'];
+				'$timeout', 'Upload', '$translate', '$filter', '$state', '$localStorage','$sce'];
 
 
     function service($cookies, $q, $http, $log, $location, wvAppConstants, $rootScope, $anchorScroll, ngToast,
-				$timeout, Upload, $translate, $filter, $state, $localStorage) {
+				$timeout, Upload, $translate, $filter, $state, $localStorage,$sce) {
         var serviceInstance = this;
 
         //#region << Include functions >> ///////////////////////////////////////////////////////////////////////////////////
@@ -642,11 +642,11 @@
                         htmlString += "<li>" + getHtmlString(data[i], fieldMeta) + "</li>";
                     }
                     htmlString += "</ul>";
-                    return htmlString;
+                    return $sce.trustAsHtml(htmlString);
                 }
             }
             else {
-                return data;
+                return $sce.trustAsHtml(data);
             }
         }
         //9.Image

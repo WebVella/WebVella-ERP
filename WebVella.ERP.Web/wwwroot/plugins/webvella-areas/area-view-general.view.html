@@ -218,7 +218,7 @@
 										<!-- If type 8 - html -->
 										<div ng-switch-when="8" class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
 											 ng-dblclick="ngCtrl.htmlFieldEdit(item,viewData)">
-											<textarea ng-attr-id="{{::'field_' + item.meta.name}}" name="{{item.dataName}}" disabled class="form-control" ng-bind="viewData[item.dataName]"></textarea>
+											<div ng-attr-id="{{::'field_' + item.meta.name}}" name="{{item.dataName}}" disabled class="form-control" ng-bind-html="ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)"></div>
 											<span class="input-group-addon" ng-click="ngCtrl.htmlFieldEdit(item,viewData)"><i class="fa fa-pencil fa-fw"></i></span>
 										</div>
 										<div ng-switch-when="8" class="not-editable fake-input-wrapper" readonly ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-bind-html="::ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)"></div>
