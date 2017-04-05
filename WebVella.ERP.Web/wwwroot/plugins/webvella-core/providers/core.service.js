@@ -4993,8 +4993,57 @@
         function getSchedulePlan(planId,successCallback, errorCallback) {
             $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'scheduleplan/' + planId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
         }
-        function getJobsList(successCallback, errorCallback) {
-            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'jobs' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+        function getJobsList(startFromDate,startToDate,finishedFromDate,finishedToDate,
+			typeName,status,priority,schedulePlanId,page,pageSize,successCallback, errorCallback) {
+			var queryParams = [];
+			if(startFromDate !=null){
+				queryParams.push("startFromDate="+startFromDate);
+			}
+			if(startToDate !=null){
+				queryParams.push("startToDate="+startToDate);
+			}
+			if(finishedFromDate !=null){
+				queryParams.push("finishedFromDate="+finishedFromDate);
+			}
+			if(finishedToDate !=null){
+				queryParams.push("finishedToDate="+finishedToDate);
+			}
+			if(typeName !=null){
+				queryParams.push("typeName="+typeName);
+			}
+			if(status !=null){
+				queryParams.push("status="+status);
+			}
+			if(priority !=null){
+				queryParams.push("priority="+priority);
+			}
+			if(schedulePlanId !=null){
+				queryParams.push("schedulePlanId="+schedulePlanId);
+			}
+			if(page !=null){
+				queryParams.push("page="+page);
+			}
+			else{
+				queryParams.push("page=1");
+			}
+			if(pageSize !=null){
+				queryParams.push("pageSize="+pageSize);
+			}
+			else{
+				queryParams.push("pageSize=10");
+			}
+
+			var queryString = "";
+			if(queryParams.length == 0){}
+			else if(queryParams.length == 1){
+				queryString = "?"+queryParams[0];
+			}
+			else{
+				queryString = "?" + queryParams.join('&');
+			}
+
+
+            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'jobs' + queryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
         }
         //#endregion
 

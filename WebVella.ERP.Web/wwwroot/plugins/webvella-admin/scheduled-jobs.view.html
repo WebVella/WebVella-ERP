@@ -32,76 +32,75 @@
 			</div>
 		</nav>
 
-		<div class="well" style="padding-bottom:0">
+		<form class="well" style="padding-bottom:0" ng-submit="ngCtrl.submitFilter()">
 			<div class="row">
 				<div class="col-sm-3">
 					<div class="form-group">
 						<div class="input-group">
-							<input type="text" class="form-control" ng-model="ngCtrl.search.start_from_date" name="start_from_date"
-								   uib-datepicker-popup="yyyy-MMM-dd HH:mm" is-open="ngCtrl.start_from_date_open" placeholder="start date from"
-								   enable-date="true" enable-time="true" ng-click="ngCtrl.start_from_date_open = true" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
+							<input type="text" class="form-control" ng-model="ngCtrl.search.startFromDate" name="startFromDate"
+								   uib-datepicker-popup="yyyy-MMM-dd HH:mm" is-open="ngCtrl.startFromDate_open" placeholder="start date from"
+								   enable-date="true" enable-time="true" ng-click="ngCtrl.startFromDate_open = true" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
 							<span class="input-group-btn">
-								<button type="button" class="btn btn-default" ng-click="ngCtrl.start_from_date_open = true"><i class="fa fa-calendar"></i></button>
+								<button type="button" class="btn btn-default" ng-click="ngCtrl.startFromDate_open = true"><i class="fa fa-calendar"></i></button>
 							</span>
 						</div>
 					</div>
 					<div class="form-group">
-						<input class="form-control" placeholder="type name" ng-model="ngCtrl.search.type_name" />
+						<input class="form-control" placeholder="type name" ng-model="ngCtrl.search.typeName" />
 					</div>
 				</div>
 				<div class="col-sm-3">
 					<div class="form-group">
 						<div class="input-group">
-							<input type="text" class="form-control" ng-model="ngCtrl.search.start_until_date" name="start_until_date"
-								   uib-datepicker-popup="yyyy-MMM-dd HH:mm" is-open="ngCtrl.start_until_date_open" placeholder="start date until"
-								   enable-date="true" enable-time="true" ng-click="ngCtrl.start_until_date_open = true" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
+							<input type="text" class="form-control" ng-model="ngCtrl.search.startToDate" name="startToDate"
+								   uib-datepicker-popup="yyyy-MMM-dd HH:mm" is-open="ngCtrl.startToDate_open" placeholder="start date until"
+								   enable-date="true" enable-time="true" ng-click="ngCtrl.startToDate_open = true" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
 							<span class="input-group-btn">
-								<button type="button" class="btn btn-default" ng-click="ngCtrl.start_until_date_open = true"><i class="fa fa-calendar"></i></button>
+								<button type="button" class="btn btn-default" ng-click="ngCtrl.startToDate_open = true"><i class="fa fa-calendar"></i></button>
 							</span>
 						</div>
 					</div>
 					<div class="form-group">
-						<select class="form-control" ng-model="ngCtrl.search.priority"></select>
+						<select class="form-control" ng-model="ngCtrl.search.priority" ng-options="option.key as option.value for option in ngCtrl.priorityList"></select>
 					</div>
 				</div>
 				<div class="col-sm-3">
 					<div class="form-group">
 						<div class="input-group">
-							<input type="text" class="form-control" ng-model="ngCtrl.search.finish_from_date" name="finish_from_date"
-								   uib-datepicker-popup="yyyy-MMM-dd HH:mm" is-open="ngCtrl.finish_from_date_open" placeholder="finish date from"
-								   enable-date="true" enable-time="true" ng-click="ngCtrl.finish_from_date_open = true" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
+							<input type="text" class="form-control" ng-model="ngCtrl.search.finishedFromDate" name="finishedFromDate"
+								   uib-datepicker-popup="yyyy-MMM-dd HH:mm" is-open="ngCtrl.finishedFromDate_open" placeholder="finish date from"
+								   enable-date="true" enable-time="true" ng-click="ngCtrl.finishedFromDate_open = true" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
 							<span class="input-group-btn">
-								<button type="button" class="btn btn-default" ng-click="ngCtrl.finish_from_date_open = true"><i class="fa fa-calendar"></i></button>
+								<button type="button" class="btn btn-default" ng-click="ngCtrl.finishedFromDate_open = true"><i class="fa fa-calendar"></i></button>
 							</span>
 						</div>
 					</div>
 					<div class="form-group">
-						<select class="form-control" ng-model="ngCtrl.search.status"></select>
+						<select class="form-control" ng-model="ngCtrl.search.status" ng-options="option.key as option.value for option in ngCtrl.statusList"></select>
 					</div>
 				</div>
 				<div class="col-sm-3">
 					<div class="form-group">
 						<div class="input-group">
-							<input type="text" class="form-control" ng-model="ngCtrl.search.finish_until_date" name="finish_until_date"
-								   uib-datepicker-popup="yyyy-MMM-dd HH:mm" is-open="ngCtrl.finish_until_date_open" placeholder="finish date until"
-								   enable-date="true" enable-time="true" ng-click="ngCtrl.finish_until_date_open = true" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
+							<input type="text" class="form-control" ng-model="ngCtrl.search.finishedToDate" name="finishedToDate"
+								   uib-datepicker-popup="yyyy-MMM-dd HH:mm" is-open="ngCtrl.finishedToDate_open" placeholder="finish date until"
+								   enable-date="true" enable-time="true" ng-click="ngCtrl.finishedToDate_open = true" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
 							<span class="input-group-btn">
-								<button type="button" class="btn btn-default" ng-click="ngCtrl.finish_until_date_open = true"><i class="fa fa-calendar"></i></button>
+								<button type="button" class="btn btn-default" ng-click="ngCtrl.finishedToDate_open = true"><i class="fa fa-calendar"></i></button>
 							</span>
 						</div>
 					</div>
 					<div class="form-group">
-						<a class="btn btn-default" style="width:150px;"><i class="fa fa-filter"></i> Filter</a>
+						<button type="submit" class="btn btn-default" style="width:150px;"><i class="fa fa-filter"></i> Filter</button>
 					</div>
 				</div>
 			</div>
-		</div>
-
-		<table class="table table-bordered table-hover table-vertical-align-middle" ng-show="ngCtrl.jobs.length > 0">
+		</form>
+		<table class="table table-bordered table-hover table-vertical-align-middle">
 			<thead>
 				<tr>
 					<th width="50"></th>
-					<th width="150">created on</th>
+					<th width="150">started on</th>
 					<th width="150">finished on</th>
 					<th>type name</th>
 					<th width="150">method name</th>
@@ -118,7 +117,7 @@
 						</a>
 					</td>
 					<td>
-						{{::job.created_on | date:'dd MMM yyyy HH:mm'}}
+						{{::job.started_on | date:'dd MMM yyyy HH:mm'}}
 					</td>
 					<td>
 						{{::job.finished_on | date:'dd MMM yyyy HH:mm'}}
@@ -141,8 +140,19 @@
 					</td>
 				</tr>
 			</tbody>
+			<tfoot class="ng-hide"  ng-show="ngCtrl.jobs.length == 0">
+				<tr>
+					<td colspan="8">
+						<div class="alert alert-info" translate="{{::'LIST_EMPTY_MESSAGE'}}"></div>
+					</td>
+				</tr>
+			</tfoot>
 		</table>
-		<div class="alert alert-info" ng-show="ngCtrl.jobs.length == 0" style="margin-top:2em;" translate="{{::'LIST_EMPTY_MESSAGE'}}"></div>
+		<ul class="pager ng-hide" ng-hide="ngCtrl.currentPage == 1 && ngCtrl.pageSize > ngCtrl.jobs.length">
+			<li ng-if="ngCtrl.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
+			<li ng-if="ngCtrl.pageSize <= ngCtrl.jobs.length" class="next"><a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
+		</ul>
+
 	</div>
 </div>
 

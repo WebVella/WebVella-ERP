@@ -120,7 +120,7 @@
 			}
 
 			function successCallback(response) {
-				$location.search({ scope: newScope })
+				$location.search("scope",newScope)
 				ngCtrl.scope = newScope;
 				ngCtrl.sprint = response.object;
 				ngCtrl.loading = false;

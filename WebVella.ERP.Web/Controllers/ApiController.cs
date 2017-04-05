@@ -3566,14 +3566,14 @@ namespace WebVella.ERP.Web.Controllers
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/jobs")]
 		public IActionResult GetJobs(DateTime? startFromDate = null, DateTime? startToDate = null, DateTime? finishedFromDate = null,
-			DateTime? finishedToDate = null, string type = null, int? status = null, int? priority = null, Guid? schedulePlanId = null, int? page = null, int? pageSize = null)
+			DateTime? finishedToDate = null, string typeName = null, int? status = null, int? priority = null, Guid? schedulePlanId = null, int? page = null, int? pageSize = null)
 		{
 			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 
 			try
 			{
 				response.Object = JobManager.Current.GetJobs(startFromDate, startToDate, finishedFromDate, finishedToDate,
-					type, status, priority, schedulePlanId, page, pageSize);
+					typeName, status, priority, schedulePlanId, page, pageSize);
 			}
 			catch (Exception e)
 			{
