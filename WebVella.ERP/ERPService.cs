@@ -2064,6 +2064,13 @@ namespace WebVella.ERP
 					DbRepository.CreateIndex("idx_filepath", "files", "filepath", true);
 				}
 
+				//drop unique constraint for object id - to support FS storage (object id is 0 for all files stored on file system)
+				if (!filesTableExists)
+				{
+					DbRepository.DropUniqueConstraint("udx_object_id", "files");
+				}
+
+
 				bool jobsTableExists = false;
 				command = connection.CreateCommand("SELECT EXISTS (  SELECT 1 FROM   information_schema.tables  WHERE  table_schema = 'public' AND table_name = 'jobs' ) ");
 				using (var reader = command.ExecuteReader())

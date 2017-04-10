@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Npgsql;
 using System.Data;
+using System.IO;
+using System.Linq;
 
 namespace WebVella.ERP.Database
 {
@@ -112,15 +114,19 @@ namespace WebVella.ERP.Database
 			{
 				try
 				{
+					uint objectId = 0;
 					connection.BeginTransaction();
 
-					var manager = new NpgsqlLargeObjectManager(connection.connection);
-					uint objectId = manager.Create();
-
-					using (var stream = manager.OpenReadWrite(objectId))
+					if (!Settings.EnableFileSystemStorage)
 					{
-						stream.Write(buffer, 0, buffer.Length);
-						stream.Close();
+						var manager = new NpgsqlLargeObjectManager(connection.connection);
+						objectId = manager.Create();
+
+						using (var stream = manager.OpenReadWrite(objectId))
+						{
+							stream.Write(buffer, 0, buffer.Length);
+							stream.Close();
+						}
 					}
 
 
@@ -129,22 +135,36 @@ namespace WebVella.ERP.Database
 
 					command.Parameters.Add(new NpgsqlParameter("@id", Guid.NewGuid()));
 					command.Parameters.Add(new NpgsqlParameter("@object_id", (decimal)objectId));
-					command.Parameters.Add(new NpgsqlParameter("@filepath", filepath ));
+					command.Parameters.Add(new NpgsqlParameter("@filepath", filepath));
 					var date = createdOn ?? DateTime.UtcNow;
 					command.Parameters.Add(new NpgsqlParameter("@created_on", date));
 					command.Parameters.Add(new NpgsqlParameter("@modified_on", date));
-					command.Parameters.Add(new NpgsqlParameter("@created_by", (object)createdBy ?? DBNull.Value ));
-					command.Parameters.Add(new NpgsqlParameter("@modified_by", (object)createdBy ?? DBNull.Value ));
+					command.Parameters.Add(new NpgsqlParameter("@created_by", (object)createdBy ?? DBNull.Value));
+					command.Parameters.Add(new NpgsqlParameter("@modified_by", (object)createdBy ?? DBNull.Value));
 
 					command.ExecuteNonQuery();
 
 					var result = Find(filepath);
 
+					if (Settings.EnableFileSystemStorage)
+					{
+						var path = GetFileSystemPath(result);
+						var folderPath = Path.GetDirectoryName(path);
+						if (!Directory.Exists(folderPath))
+							Directory.CreateDirectory(folderPath);
+						using (Stream stream = File.Open(path, FileMode.CreateNew, FileAccess.ReadWrite))
+						{
+							stream.Write(buffer, 0, buffer.Length);
+							stream.Close();
+						}
+					}
+
 					connection.CommitTransaction();
 				}
-				catch( Exception )
+				catch (Exception ex)
 				{
 					connection.RollbackTransaction();
+					throw ex;
 				}
 			}
 
@@ -181,7 +201,7 @@ namespace WebVella.ERP.Database
 		/// </summary>
 		/// <param name="sourceFilepath"></param>
 		/// <param name="destinationFilepath"></param>
-		/// <param name="overwrite"></param>
+		/// <param name="overwrite"></param> 
 		/// <returns></returns>
 		public DbFile Copy(string sourceFilepath, string destinationFilepath, bool overwrite = false)
 		{
@@ -279,6 +299,19 @@ namespace WebVella.ERP.Database
 					command.Parameters.Add(new NpgsqlParameter("@filepath", destinationFilepath));
 					command.ExecuteNonQuery();
 
+					if (Settings.EnableFileSystemStorage)
+					{
+						var srcFileName = Path.GetFileName(sourceFilepath);
+						var destFileName = Path.GetFileName(destinationFilepath);
+						if (srcFileName != destFileName)
+						{
+							var fsSrcFilePath = GetFileSystemPath(srcFile);
+							srcFile.FilePath = destinationFilepath;
+							var fsDestFilePath = GetFileSystemPath(srcFile);
+							File.Move(fsSrcFilePath, fsDestFilePath);
+						}
+					}
+
 					connection.CommitTransaction();
 					return Find(destinationFilepath);
 				}
@@ -316,7 +349,15 @@ namespace WebVella.ERP.Database
 				{
 					connection.BeginTransaction();
 
-					new NpgsqlLargeObjectManager(connection.connection).Unlink(file.ObjectId);
+					if (Settings.EnableFileSystemStorage && file.ObjectId == 0)
+					{
+						var path = GetFileSystemPath(file);
+						File.Delete(path);
+					}
+					else
+					{
+						new NpgsqlLargeObjectManager(connection.connection).Unlink(file.ObjectId);
+					}
 
 					var command = connection.CreateCommand(@"DELETE FROM files WHERE id = @id");
 					command.Parameters.Add(new NpgsqlParameter("@id", file.Id));
@@ -349,7 +390,7 @@ namespace WebVella.ERP.Database
 
 			string section = Guid.NewGuid().ToString().Replace("-", "").ToLowerInvariant();
 			var tmpFilePath = FOLDER_SEPARATOR + TMP_FOLDER_NAME + FOLDER_SEPARATOR + section + FOLDER_SEPARATOR + filename + extension ?? string.Empty;
-			return Create(tmpFilePath, buffer, DateTime.UtcNow, null );
+			return Create(tmpFilePath, buffer, DateTime.UtcNow, null);
 		}
 
 		/// <summary>
@@ -370,6 +411,15 @@ namespace WebVella.ERP.Database
 
 			foreach (DataRow row in table.Rows)
 				Delete((string)row["filepath"]);
+		}
+
+		internal static string GetFileSystemPath(DbFile file)
+		{
+			var guidIinitialPart = file.Id.ToString().Split(new[] { '-' })[0];
+			var fileName = file.FilePath.Split(new[] { '/' }).Last();
+			var depth1Folder = guidIinitialPart.Substring(0, 3);
+			var depth2Folder = guidIinitialPart.Substring(3, 3);
+			return Path.Combine(Settings.FileSystemStorageFolder, depth1Folder, depth2Folder, file.Id.ToString(), fileName);
 		}
 
 	}

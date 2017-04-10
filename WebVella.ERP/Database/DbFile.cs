@@ -34,8 +34,19 @@ namespace WebVella.ERP.Database
 
 		private Stream GetContentStream(DbConnection connection)
 		{
-			var manager = new NpgsqlLargeObjectManager(connection.connection);
-			return manager.OpenReadWrite(ObjectId);
+			if (Settings.EnableFileSystemStorage && ObjectId == 0)
+			{
+				var path = DbFileRepository.GetFileSystemPath(this);
+				if (File.Exists(path))
+					return File.Open(path, FileMode.Open, FileAccess.ReadWrite);
+
+				throw new Exception($"File '{path}' was not found.");
+			}
+			else
+			{
+				var manager = new NpgsqlLargeObjectManager(connection.connection);
+				return manager.OpenReadWrite(ObjectId);
+			}
 		}
 
 		public byte[] GetBytes(DbConnection connection)

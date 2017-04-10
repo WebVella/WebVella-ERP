@@ -7,6 +7,8 @@
 		"CompanyName": "Webvella ERP",
 		"CompanyLogo": "/plugins/webvella-desktop/assets/logo.png",
 		"DevelopmentMode": "true",
-		"EnableBackgroungJobs": "false"
+		"EnableBackgroungJobs": "false",
+		"EnableFileSystemStorage": "false",
+		"FileSystemStorageFolder": "\\\\192.168.0.2\\Share\\erp-files"
 	}
 }
