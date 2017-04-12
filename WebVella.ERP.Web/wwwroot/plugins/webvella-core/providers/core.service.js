@@ -824,7 +824,12 @@
                 }
             }
             else {
-                return phoneUtils.formatInternational(data);
+				try{
+					return phoneUtils.formatInternational(data,fieldMeta.format);
+				}
+				catch(err){
+					return "wrong number or format error";
+				}
             }
 
         }
