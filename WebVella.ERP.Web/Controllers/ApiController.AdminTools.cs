@@ -7105,6 +7105,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			response +=
 			$"\t\t\t\t\t\tviewItemFromRelation.FieldRequired = {(listItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = \"{listItem.FieldLookupList}\";\n" +
+			$"\t\t\t\t\t\tviewItemFromRelation.FieldManageView = \"{listItem.FieldManageView}\";\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.RelationId = new Guid(\"{listItem.RelationId}\");\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.Type = \"listFromRelation\";\n" +
@@ -7716,9 +7717,19 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			{
 				hasUpdate = true;
 			}
-			if (currentView.ServiceCode != oldView.ServiceCode)
-			{
-				hasUpdate = true;
+
+			//Because of the \r\n <> \n problem we will need to artificially add \r to the new view templates and test again
+			if(!String.IsNullOrWhiteSpace(oldView.ServiceCode)) {
+				var fixedServiceCode = oldView.ServiceCode.Replace("\n", "\r\n");
+				if (currentView.ServiceCode != fixedServiceCode)
+				{
+					hasUpdate = true;
+				}
+			}else {
+				if (currentView.ServiceCode != oldView.ServiceCode)
+				{
+					hasUpdate = true;
+				}			
 			}
 
 			if (JsonConvert.SerializeObject(currentView.Regions) != JsonConvert.SerializeObject(oldView.Regions))
@@ -7839,7 +7850,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 
 			if (list.IconName == null)
 			{
-				response += $"\tcreateListInput.IconName = string.IsNullOrEmpty(\"{list.IconName}\") ? string.Empty : \"{list.IconName}\";\n";
+				response += $"\tcreateListInput.IconName = null;\n";
 			}
 			else
 			{
@@ -8314,6 +8325,14 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			{
 				response += $"\t\t\tlistItemFromRelation.FieldLookupList = \"{recordListItem.FieldLookupList}\";\n";
 			}
+			if (recordListItem.FieldManageView == null)
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldManageView = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldManageView = \"{recordListItem.FieldManageView}\";\n";
+			}
 			response +=
 			$"\t\t\tlistItemFromRelation.RelationId = new Guid(\"{recordListItem.RelationId}\");\n" +
 			$"\t\t\tlistItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
@@ -8738,10 +8757,20 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			{
 				hasUpdate = true;
 			}
-			if (currentList.ServiceCode != oldList.ServiceCode)
-			{
-				hasUpdate = true;
+			//Because of the \r\n <> \n problem we will need to artificially add \r to the new view templates and test again
+			if(!String.IsNullOrWhiteSpace(oldList.ServiceCode)) {
+				var fixedServiceCode = oldList.ServiceCode.Replace("\n", "\r\n");
+				if (currentList.ServiceCode != fixedServiceCode)
+				{
+					hasUpdate = true;
+				}
+			}else {
+				if (currentList.ServiceCode != oldList.ServiceCode)
+				{
+					hasUpdate = true;
+				}			
 			}
+
 			if (JsonConvert.SerializeObject(currentList.RelationOptions) != JsonConvert.SerializeObject(oldList.RelationOptions))
 			{
 				hasUpdate = true;
@@ -9174,8 +9203,15 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 				$"\tvar targetField = targetEntity.Fields.SingleOrDefault(x => x.Name == \"{targetField.Name}\");\n" +
 				$"\trelation.Id = new Guid(\"{relationRecord.Id}\");\n" +
 				$"\trelation.Name =  \"{relationRecord.Name}\";\n" +
-				$"\trelation.Label = \"{relationRecord.Label}\";\n" +
-				$"\trelation.Description = \"{relationRecord.Description}\";\n" +
+				$"\trelation.Label = \"{relationRecord.Label}\";\n";
+				if(relationRecord.Description == null) {
+					response += $"\trelation.Description = null;\n";
+				}
+				else {
+					response += $"\trelation.Description = \"{relationRecord.Description}\";\n";
+				}
+
+				response +=
 				$"\trelation.System =  {(relationRecord.System).ToString().ToLowerInvariant()};\n";
 			if (relationRecord.RelationType == EntityRelationType.OneToOne)
 			{
