@@ -6580,8 +6580,14 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			   $"\tcreateViewInput.Id = new Guid(\"{view.Id}\");\n" +
 			   $"\tcreateViewInput.Type = \"{view.Type}\";\n" +
 			   $"\tcreateViewInput.Name = \"{view.Name}\";\n" +
-			   $"\tcreateViewInput.Label = \"{view.Label}\";\n" +
-			   $"\tcreateViewInput.Title = \"{view.Title}\";\n" +
+			   $"\tcreateViewInput.Label = \"{view.Label}\";\n";
+			   if(view.Title == null) {
+				response += $"\tcreateViewInput.Title = null;\n";
+			   }
+			   else {
+			   response += $"\tcreateViewInput.Title = \"{view.Title}\";\n";
+			   }
+			   response +=
 			   $"\tcreateViewInput.Default = {(view.Default).ToString().ToLowerInvariant()};\n" +
 			   $"\tcreateViewInput.System = {(view.System).ToString().ToLowerInvariant()};\n";
 			if (view.Weight == null)
