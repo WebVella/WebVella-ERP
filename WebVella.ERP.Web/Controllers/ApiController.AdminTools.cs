@@ -5896,8 +5896,10 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(currentField.EnableSecurity) {
+					// Permissions change check
+					hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				}
 			}
 			#endregion
 
@@ -7032,8 +7034,23 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{recordViewItem.FieldHelpText}\";\n";
 			}
 			response +=
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldRequired = {(recordViewItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = \"{recordViewItem.FieldLookupList}\";\n" +
+			$"\t\t\t\t\t\tviewItemFromRelation.FieldRequired = {(recordViewItem.FieldRequired).ToString().ToLowerInvariant()};\n";
+
+			if(recordViewItem.FieldLookupList == null) {
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = null;\n";
+			}
+			else {
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = \"{recordViewItem.FieldLookupList}\";\n";
+			}
+
+			if(recordViewItem.FieldManageView == null) {
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldManageView = null;\n";
+			}
+			else {
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldManageView = \"{recordViewItem.FieldManageView}\";\n";
+			}
+
+			response +=
 			$"\t\t\t\t\t\tviewItemFromRelation.RelationId = new Guid(\"{recordViewItem.RelationId}\");\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.Type = \"viewFromRelation\";\n" +
@@ -7103,9 +7120,24 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{listItem.FieldHelpText}\";\n";
 			}
 			response +=
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldRequired = {(listItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = \"{listItem.FieldLookupList}\";\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldManageView = \"{listItem.FieldManageView}\";\n" +
+			$"\t\t\t\t\t\tviewItemFromRelation.FieldRequired = {(listItem.FieldRequired).ToString().ToLowerInvariant()};\n";
+
+			if(listItem.FieldLookupList == null) {
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = null;\n";
+			}
+			else {
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = \"{listItem.FieldLookupList}\";\n";
+			}
+
+			
+			if(listItem.FieldManageView == null) {
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldManageView = null;\n";
+			}
+			else {
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldManageView = \"{listItem.FieldManageView}\";\n";
+			}
+			
+			response +=
 			$"\t\t\t\t\t\tviewItemFromRelation.RelationId = new Guid(\"{listItem.RelationId}\");\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.Type = \"listFromRelation\";\n" +
@@ -7685,7 +7717,9 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			{
 				hasUpdate = true;
 			}
-			if (currentView.Title != oldView.Title)
+			if (currentView.Title != oldView.Title &&
+				!(currentView.Title == null && oldView.Title == "") &&
+				!(currentView.Title == "" && oldView.Title == null))
 			{
 				hasUpdate = true;
 			}
@@ -8882,7 +8916,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				response += $"\tcreateTreeInput.NodeIdFieldId = Guid.Parse(\"{tree.NodeParentIdFieldId}\");\n";
+				response += $"\tcreateTreeInput.NodeIdFieldId = Guid.Parse(\"{tree.NodeIdFieldId}\");\n";
 			}
 			if (tree.NodeIdFieldId == null)
 			{
@@ -8890,7 +8924,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				response += $"\tcreateTreeInput.NodeParentIdFieldId = Guid.Parse(\"{tree.NodeIdFieldId}\");\n";
+				response += $"\tcreateTreeInput.NodeParentIdFieldId = Guid.Parse(\"{tree.NodeParentIdFieldId}\");\n";
 			}
 			if (tree.NodeNameFieldId == null)
 			{
@@ -9049,7 +9083,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				code += $"\tupdateTreeInput.NodeIdFieldId = Guid.Parse(\"{currentTree.NodeParentIdFieldId}\");\n";
+				code += $"\tupdateTreeInput.NodeIdFieldId = Guid.Parse(\"{currentTree.NodeIdFieldId}\");\n";
 			}
 			if (currentTree.NodeIdFieldId == null)
 			{
@@ -9057,7 +9091,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				code += $"\tupdateTreeInput.NodeParentIdFieldId = Guid.Parse(\"{currentTree.NodeIdFieldId}\");\n";
+				code += $"\tupdateTreeInput.NodeParentIdFieldId = Guid.Parse(\"{currentTree.NodeParentIdFieldId}\");\n";
 			}
 			if (currentTree.NodeNameFieldId == null)
 			{
@@ -9310,7 +9344,9 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			code += $"\trelation.Label = \"{currentRelation.Label}\";\n";
 
 			//description
-			if (currentRelation.Description != oldRelation.Description)
+			if (currentRelation.Description != oldRelation.Description && 
+				!(currentRelation.Description == null && oldRelation.Description == "") && 
+				!(currentRelation.Description == "" && oldRelation.Description == null))
 			{
 				hasUpdate = true;
 				response.ChangeList.Add($"<span class='go-green label-block'>description</span>  from <span class='go-red'>{oldRelation.Description}</span> to <span class='go-red'>{currentRelation.Description}</span>");
