@@ -777,10 +777,10 @@
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
 								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{::'DEFAULT_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
-									   ng-required="popupCtrl.field.required" pattern="^[+-]?[0-9]{1,20}(?:\.[0-9]{1,20})?$" ng-model-options="{allowInvalid:true}" />
+									   ng-required="popupCtrl.field.required" ng-model-options="{allowInvalid:true}" />
+								<div class="form-description">should be positive decimal between 0 and 1</div>
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
 									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></small>
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupCtrl.defaultValueError" translate="{{::'VALIDATION_POSITIVE_INTEGER'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 										{{popupCtrl.defaultValueMessage}}
 									</small>
@@ -1846,9 +1846,9 @@
 							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{::'DEFAULT_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
 								   ng-required="popupCtrl.field.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}" />
+							<div class="form-description">should be positive decimal between 0 and 1</div>
 							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
 								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{::'VALIDATION_REQUIRED_FIELD'}}"></small>
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.pattern && !popupCtrl.defaultValueError" translate="{{::'VALIDATION_POSITIVE_INTEGER'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 									{{popupCtrl.defaultValueMessage}}
 								</small>
