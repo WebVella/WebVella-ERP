@@ -17,7 +17,15 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
             dest.Id = (Guid)src["id"];
 			dest.Username = (string)src["username"];
 			dest.Email = (string)src["email"];
-            dest.Password = (string)src["password"];
+
+            try
+            {
+                dest.Password = src["password"] != null ? (string)src["password"] : "";
+            }
+            catch 
+            {   
+            }
+            
             dest.FirstName = (string)src["first_name"];
             dest.LastName = (string)src["last_name"];
             dest.Image = (string)src["image"];

@@ -68,5 +68,31 @@ namespace WebVella.ERP.Api
             storageRecordData.Add(new KeyValuePair<string, object>("last_logged_in", DateTime.UtcNow ));
             DbContext.Current.RecordRepository.Update("user", storageRecordData);
         }
+
+        public List<ErpUser> GetUsers(params Guid[] roleIds)
+        {
+            const string fieldsToQuery = @"id,username,email,first_name,last_name,image,created_on,created_by,last_modified_on,last_modified_by, last_logged_in,enabled, $user_role.id, $user_role.name";
+            QueryObject query = null;
+            if (roleIds.Count() > 0)
+            {
+                List<QueryObject> list = new List<QueryObject>();
+                foreach (var roleId in roleIds)
+                {
+                    list.Add(EntityQuery.QueryEQ("$user_role.id", roleId));
+                }
+                
+                query = EntityQuery.QueryOR(list.ToArray());
+            }
+
+            var result = new RecordManager(true).Find(new EntityQuery("user", fieldsToQuery, query));
+
+            if (!result.Success)
+                throw new Exception(result.Message);
+            
+            if (result.Object.Data != null && result.Object.Data.Any())
+                return result.Object.Data.MapTo<ErpUser>();
+
+            return new List<ErpUser>();
+        }
     }
 }
