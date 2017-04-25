@@ -3942,6 +3942,65 @@ namespace WebVella.ERP.Web.Controllers
 
 		#endregion
 
+		#region << System log >>
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/system-log")]
+		public IActionResult GetSystemLog(DateTime? fromDate = null, DateTime? untilDate = null,string type = "",
+			string source = "",string message = "",string notificationStatus = "",int page = 1, int pageSize = 15)
+		{
+			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+			var recMan = new RecordManager();
+			var skipRecords = (page-1)*pageSize;
+			try
+			{
+				//Filters
+				var filterList = new List<QueryObject>();
+				if(fromDate != null) {
+					filterList.Add(EntityQuery.QueryGT("created_on", fromDate));
+				}
+				if(untilDate != null) {
+					filterList.Add(EntityQuery.QueryLT("created_on", untilDate));
+				}
+				if(!String.IsNullOrWhiteSpace(type)) {
+					filterList.Add(EntityQuery.QueryEQ("type", type));
+				}
+				if(!String.IsNullOrWhiteSpace(source)) {
+					filterList.Add(EntityQuery.QueryContains("source", source));
+				}
+				if(!String.IsNullOrWhiteSpace(message)) {
+					filterList.Add(EntityQuery.QueryContains("message", message));
+				}
+				if(!String.IsNullOrWhiteSpace(notificationStatus)) {
+					filterList.Add(EntityQuery.QueryEQ("notificationStatus", notificationStatus));
+				}
+
+				var selectFilters = EntityQuery.QueryAND(filterList.ToArray());
+
+				//Sort
+				var sortList = new List<QuerySortObject>();
+				sortList.Add(new QuerySortObject("created_on", QuerySortType.Descending));
+
+				//Fields
+				var columns = "*";
+
+				//Query
+				var query = new EntityQuery("system_log", columns, selectFilters, sortList.ToArray(),skipRecords,pageSize);
+				var queryResponse = recMan.Find(query);
+				if (!queryResponse.Success)
+				{
+					throw new Exception("Error getting the records: " + queryResponse.Message);
+				}
+				response.Object = queryResponse.Object.Data;
+			}
+			catch (Exception e)
+			{
+				response.Success = false;
+				response.Message = e.Message + e.StackTrace;
+			}
+
+			return DoResponse(response);
+		}
+		#endregion
+
 	}
 }
 
