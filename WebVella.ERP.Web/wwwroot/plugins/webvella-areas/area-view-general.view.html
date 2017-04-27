@@ -72,7 +72,7 @@
 				{{::section.label}}
 			</a>
 		</div>
-		<div class="panel-body ng-hide" ng-hide="section.collapsed && section.showLabel">
+		<div class="panel-body" ng-if="!(section.collapsed && section.showLabel)">
 			<div class="form">
 				<div class="row" ng-repeat="row in section.rows track by row.id">
 					<div class="col-sm-{{::column.gridColCount}}" ng-repeat="column in row.columns">
@@ -218,7 +218,7 @@
 										<!-- If type 8 - html -->
 										<div ng-switch-when="8" class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
 											 ng-dblclick="ngCtrl.htmlFieldEdit(item,viewData)">
-											<textarea ng-attr-id="{{::'field_' + item.meta.name}}" name="{{item.dataName}}" disabled class="form-control" ng-bind="viewData[item.dataName]"></textarea>
+											<div ng-attr-id="{{::'field_' + item.meta.name}}" name="{{item.dataName}}" disabled class="form-control" ng-bind-html="ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)"></div>
 											<span class="input-group-addon" ng-click="ngCtrl.htmlFieldEdit(item,viewData)"><i class="fa fa-pencil fa-fw"></i></span>
 										</div>
 										<div ng-switch-when="8" class="not-editable fake-input-wrapper" readonly ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-bind-html="::ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)"></div>

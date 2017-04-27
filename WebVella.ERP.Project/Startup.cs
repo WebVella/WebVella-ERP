@@ -150,7 +150,6 @@ namespace WebVella.ERP.Project
 							}
 							catch (Exception ex)
 							{
-								var exception = ex;
 								throw ex;
 							}
 						}
@@ -164,7 +163,6 @@ namespace WebVella.ERP.Project
 							}
 							catch (Exception ex)
 							{
-								var exception = ex;
 								throw ex;
 							}
 						}
@@ -178,7 +176,6 @@ namespace WebVella.ERP.Project
 							}
 							catch (Exception ex)
 							{
-								var exception = ex;
 								throw ex;
 							}
 						}
@@ -192,7 +189,6 @@ namespace WebVella.ERP.Project
 							}
 							catch (Exception ex)
 							{
-								var exception = ex;
 								throw ex;
 							}
 						}
@@ -206,7 +202,6 @@ namespace WebVella.ERP.Project
 							}
 							catch (Exception ex)
 							{
-								var exception = ex;
 								throw ex;
 							}
 						}
@@ -220,7 +215,6 @@ namespace WebVella.ERP.Project
 							}
 							catch (Exception ex)
 							{
-								var exception = ex;
 								throw ex;
 							}
 						}
@@ -248,7 +242,6 @@ namespace WebVella.ERP.Project
 							}
 							catch (Exception ex)
 							{
-								var exception = ex;
 								throw ex;
 							}
 						}
@@ -262,7 +255,6 @@ namespace WebVella.ERP.Project
 							}
 							catch (Exception ex)
 							{
-								var exception = ex;
 								throw ex;
 							}
 						}

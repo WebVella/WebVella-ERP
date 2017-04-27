@@ -159,7 +159,7 @@
 
 		var list = webvellaCoreService.getEntityRecordListFromEntitiesMetaList($stateParams.listName, $stateParams.entityName, resolvedEntityList);
 
-		webvellaCoreService.getRecordsByListMeta(list, $stateParams.entityName, $stateParams.page, null, null, successCallback, errorCallback);
+		webvellaCoreService.getRecordsByListMeta(list, $stateParams.entityName, $stateParams.page, $stateParams, $location.search(), successCallback, errorCallback);
 		return defer.promise;
 	}
 
@@ -171,7 +171,7 @@
 		// Process
 		function successCallback(response) {
 			if (response.object === null) {
-				alert("error in response!");
+			    alert("error in response!" + response.message);
 			}
 			else if (response.object === null) {
 				alert("The view with name: " + $stateParams.parentViewName + " does not exist");
@@ -182,7 +182,7 @@
 
 		function errorCallback(response) {
 			if (response.object === null) {
-				alert("error in response!");
+			    alert("error in response!" + response.message);
 			}
 			else {
 				ngToast.create({
@@ -201,7 +201,7 @@
 		}
 
 		var parentView = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
-		webvellaCoreService.getRecordByViewMeta($stateParams.recordId, parentView, $stateParams.entityName, null, successCallback, errorCallback);
+		webvellaCoreService.getRecordByViewMeta($stateParams.recordId, parentView, $stateParams.entityName, $stateParams, successCallback, errorCallback);
 
 		return defer.promise;
 	}
@@ -215,7 +215,7 @@
 		var getListMeta = webvellaCoreService.getEntityRecordListFromEntitiesMetaList(safeListNameAndEntity.listName, safeListNameAndEntity.entityName, resolvedEntityList);
 		if (getListMeta.dataSourceUrl != null && getListMeta.dataSourceUrl != "") {
 			//This list has a dynamicSourceUrl defined
-			webvellaCoreService.getRecordsByListMeta(getListMeta, safeListNameAndEntity.entityName, 1, $stateParams, null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListMeta(getListMeta, safeListNameAndEntity.entityName, 1, $stateParams, $location.search(), successCallback, errorCallback);
 		}
 		else {
 			//No dynamicSourceUrl defined

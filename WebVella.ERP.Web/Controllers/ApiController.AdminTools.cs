@@ -14,6 +14,7 @@ namespace WebVella.ERP.Web.Controllers
 {
 	public partial class ApiController
 	{
+		public string ViewListTreeCode = "";	
 
 		#region << Admin Tools >>
 		[AcceptVerbs(new[] { "POST" }, Route = "/admin/tools/evaluate-changes")]
@@ -214,7 +215,11 @@ namespace WebVella.ERP.Web.Controllers
 							changeRow.Type = "created";
 							changeRow.Name = entity.Name;
 							response.Changes.Add(changeRow);
-							response.Code += CreateEntityCode(entity, relationsNameDictionary);
+							string entityCode = "";
+							string viewListTreeCode = "";
+							CreateEntityCode(entity, relationsNameDictionary,out entityCode,out viewListTreeCode);
+							response.Code += entityCode;
+							ViewListTreeCode += viewListTreeCode;
 						}
 						else
 						{
@@ -405,6 +410,9 @@ namespace WebVella.ERP.Web.Controllers
 
 					#endregion
 				}
+
+				response.Code += ViewListTreeCode;
+
 				return Json(response);
 
 			}
@@ -658,9 +666,10 @@ $"#region << ***Update area***  Area name: {(string)currentArea["name"]} >>\n" +
 		#region << Entity >>
 
 
-		private string CreateEntityCode(DbEntity entity, Dictionary<string, DbEntityRelation> relationsNameDictionary)
+		private void CreateEntityCode(DbEntity entity, Dictionary<string, DbEntityRelation> relationsNameDictionary,out string entityResponse, out string viewListTreeResponse)
 		{
-
+			entityResponse = "";
+			viewListTreeResponse = "";
 			//escape some possible quotes
 			if (entity.Label != null)
 				entity.Label = entity.Label.Replace("\"", "\\\"");
@@ -742,23 +751,23 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 			//foreach view generate create view and add
 			foreach (var view in entity.RecordViews)
 			{
-				response += CreateViewCode(view, entity.Id, entity.Name);
+				viewListTreeResponse += CreateViewCode(view, entity.Id, entity.Name);
 			}
 
 			//foreach list generate createList and add
 			foreach (var list in entity.RecordLists)
 			{
-				response += CreateListCode(list, entity.Id, entity.Name);
+				viewListTreeResponse += CreateListCode(list, entity.Id, entity.Name);
 			}
 
 			//foreach tree generate createTree and add
 			foreach (var tree in entity.RecordTrees)
 			{
-				response += CreateTreeCode(tree, entity.Id, entity.Name);
+				viewListTreeResponse += CreateTreeCode(tree, entity.Id, entity.Name);
 			}
 
 
-			return response;
+			entityResponse = response;
 		}
 
 		private UpdateCheckResponse UpdateEntityCode(DbEntity currentEntity, DbEntity oldEntity)
@@ -851,7 +860,8 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 					/////////////////////////////////////////////////////
 					response.HasUpdate = true;
 					response.ChangeList.Add($"<span class='go-green label-block'>view</span>  new view <span class='go-red'>{view.Name}</span> was created.</span>");
-					response.Code += CreateViewCode(view, currentEntity.Id, currentEntity.Name);
+					//response.Code += CreateViewCode(view, currentEntity.Id, currentEntity.Name);
+					ViewListTreeCode += CreateViewCode(view, currentEntity.Id, currentEntity.Name);
 				}
 				else
 				{
@@ -865,7 +875,8 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 						{
 							response.ChangeList.Add(change);
 						}
-						response.Code += changeCheckResponse.Code;
+						//response.Code += changeCheckResponse.Code;
+						ViewListTreeCode += changeCheckResponse.Code;
 					}
 
 					// MARK ID AS PROCESSED
@@ -882,7 +893,8 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 					/////////////////////////////////////////////////////
 					response.HasUpdate = true;
 					response.ChangeList.Add($"<span class='go-green label-block'>view</span>  view <span class='go-red'>{view.Name}</span> was deleted.</span>");
-					response.Code += DeleteViewCode(view, currentEntity.Id, currentEntity.Name);
+					//response.Code += DeleteViewCode(view, currentEntity.Id, currentEntity.Name);
+					ViewListTreeCode += DeleteViewCode(view, currentEntity.Id, currentEntity.Name);
 				}
 			}
 
@@ -905,7 +917,8 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 					/////////////////////////////////////////////////////
 					response.HasUpdate = true;
 					response.ChangeList.Add($"<span class='go-green label-block'>list</span>  new list <span class='go-red'>{list.Name}</span> was created.</span>");
-					response.Code += CreateListCode(list, currentEntity.Id, currentEntity.Name);
+					//response.Code += CreateListCode(list, currentEntity.Id, currentEntity.Name);
+					ViewListTreeCode += CreateListCode(list, currentEntity.Id, currentEntity.Name);
 				}
 				else
 				{
@@ -919,7 +932,8 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 						{
 							response.ChangeList.Add(change);
 						}
-						response.Code += changeCheckResponse.Code;
+						//response.Code += changeCheckResponse.Code;
+						ViewListTreeCode += changeCheckResponse.Code;
 					}
 
 					// MARK ID AS PROCESSED
@@ -936,7 +950,8 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 					/////////////////////////////////////////////////////
 					response.HasUpdate = true;
 					response.ChangeList.Add($"<span class='go-green label-block'>list</span>  list <span class='go-red'>{list.Name}</span> was deleted.</span>");
-					response.Code += DeleteListCode(list, currentEntity.Id, currentEntity.Name);
+					//response.Code += DeleteListCode(list, currentEntity.Id, currentEntity.Name);
+					ViewListTreeCode  += DeleteListCode(list, currentEntity.Id, currentEntity.Name);
 				}
 			}
 
@@ -959,7 +974,8 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 					/////////////////////////////////////////////////////
 					response.HasUpdate = true;
 					response.ChangeList.Add($"<span class='go-green label-block'>tree</span>  new tree <span class='go-red'>{tree.Name}</span> was created.</span>");
-					response.Code += CreateTreeCode(tree, currentEntity.Id, currentEntity.Name);
+					//response.Code += CreateTreeCode(tree, currentEntity.Id, currentEntity.Name);
+					ViewListTreeCode += CreateTreeCode(tree, currentEntity.Id, currentEntity.Name);
 				}
 				else
 				{
@@ -973,7 +989,8 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 						{
 							response.ChangeList.Add(change);
 						}
-						response.Code += changeCheckResponse.Code;
+						//response.Code += changeCheckResponse.Code;
+						ViewListTreeCode += changeCheckResponse.Code;
 					}
 
 					// MARK ID AS PROCESSED
@@ -990,7 +1007,8 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 					/////////////////////////////////////////////////////
 					response.HasUpdate = true;
 					response.ChangeList.Add($"<span class='go-green label-block'>tree</span>  tree <span class='go-red'>{tree.Name}</span> was deleted.</span>");
-					response.Code += DeleteTreeCode(tree, currentEntity.Id, currentEntity.Name);
+					//response.Code += DeleteTreeCode(tree, currentEntity.Id, currentEntity.Name);
+					ViewListTreeCode += DeleteTreeCode(tree, currentEntity.Id, currentEntity.Name);
 				}
 			}
 
@@ -2797,7 +2815,7 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 			else
 			{
-				response += $"\ttextboxField.DefaultValue = \"{field.DefaultValue}\";\n";
+				response += $"\ttextboxField.DefaultValue = \"{field.DefaultValue?.Replace("\"","\\\"")}\";\n";
 			}
 			if (field.MaxLength == null)
 			{
@@ -5878,8 +5896,10 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(currentField.EnableSecurity) {
+					// Permissions change check
+					hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				}
 			}
 			#endregion
 
@@ -6562,8 +6582,14 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			   $"\tcreateViewInput.Id = new Guid(\"{view.Id}\");\n" +
 			   $"\tcreateViewInput.Type = \"{view.Type}\";\n" +
 			   $"\tcreateViewInput.Name = \"{view.Name}\";\n" +
-			   $"\tcreateViewInput.Label = \"{view.Label}\";\n" +
-			   $"\tcreateViewInput.Title = \"{view.Title}\";\n" +
+			   $"\tcreateViewInput.Label = \"{view.Label}\";\n";
+			   if(view.Title == null) {
+				response += $"\tcreateViewInput.Title = null;\n";
+			   }
+			   else {
+			   response += $"\tcreateViewInput.Title = \"{view.Title}\";\n";
+			   }
+			   response +=
 			   $"\tcreateViewInput.Default = {(view.Default).ToString().ToLowerInvariant()};\n" +
 			   $"\tcreateViewInput.System = {(view.System).ToString().ToLowerInvariant()};\n";
 			if (view.Weight == null)
@@ -6612,7 +6638,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				response += $"\tcreateViewInput.ServiceCode = \"{view.ServiceCode}\";\n";
+				response += $"\tcreateViewInput.ServiceCode = @\"{view.ServiceCode.Replace("\"","\"\"")}\";\n";
 			}
 
 			response += $"\t#endregion\n\n" +
@@ -6632,7 +6658,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			$"\tcreateViewInput.RelationOptions = new List<EntityRelationOptionsItem>();\n";
 			foreach (var relationOption in view.RelationOptions)
 			{
-				response += CreateRelationOptionCode(relationOption, entityId, entityName);
+				response += CreateRelationOptionCode(relationOption, entityId, entityName,"view");
 			}
 			response += "\t}\n" +
 			$"\t#endregion\n\n";
@@ -7008,8 +7034,23 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{recordViewItem.FieldHelpText}\";\n";
 			}
 			response +=
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldRequired = {(recordViewItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = \"{recordViewItem.FieldLookupList}\";\n" +
+			$"\t\t\t\t\t\tviewItemFromRelation.FieldRequired = {(recordViewItem.FieldRequired).ToString().ToLowerInvariant()};\n";
+
+			if(recordViewItem.FieldLookupList == null) {
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = null;\n";
+			}
+			else {
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = \"{recordViewItem.FieldLookupList}\";\n";
+			}
+
+			if(recordViewItem.FieldManageView == null) {
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldManageView = null;\n";
+			}
+			else {
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldManageView = \"{recordViewItem.FieldManageView}\";\n";
+			}
+
+			response +=
 			$"\t\t\t\t\t\tviewItemFromRelation.RelationId = new Guid(\"{recordViewItem.RelationId}\");\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.Type = \"viewFromRelation\";\n" +
@@ -7079,8 +7120,24 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldHelpText = \"{listItem.FieldHelpText}\";\n";
 			}
 			response +=
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldRequired = {(listItem.FieldRequired).ToString().ToLowerInvariant()};\n" +
-			$"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = \"{listItem.FieldLookupList}\";\n" +
+			$"\t\t\t\t\t\tviewItemFromRelation.FieldRequired = {(listItem.FieldRequired).ToString().ToLowerInvariant()};\n";
+
+			if(listItem.FieldLookupList == null) {
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = null;\n";
+			}
+			else {
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = \"{listItem.FieldLookupList}\";\n";
+			}
+
+			
+			if(listItem.FieldManageView == null) {
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldManageView = null;\n";
+			}
+			else {
+				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldManageView = \"{listItem.FieldManageView}\";\n";
+			}
+			
+			response +=
 			$"\t\t\t\t\t\tviewItemFromRelation.RelationId = new Guid(\"{listItem.RelationId}\");\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.Type = \"listFromRelation\";\n" +
@@ -7469,7 +7526,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 		}
 
 		//Relation option
-		private string CreateRelationOptionCode(DbEntityRelationOptions relationOption, Guid entityId, string entityName)
+		private string CreateRelationOptionCode(DbEntityRelationOptions relationOption, Guid entityId, string entityName, string type = "view")
 		{
 			var response = string.Empty;
 			response +=
@@ -7477,10 +7534,18 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			"{\n" +
 			"\tvar relationOption = new EntityRelationOptionsItem();\n" +
 			$"\trelationOption.RelationName = \"{relationOption.RelationName}\";\n" +
-			$"\trelationOption.RelationId = \"{relationOption.RelationId}\";\n" +
-			$"\trelationOption.Direction = \"{relationOption.Direction}\";\n" +
-			$"\tcreateViewInput.RelationOptions.Add(relationOption);\n" +
-			"}\n" +
+			$"\trelationOption.RelationId = new Guid(\"{relationOption.RelationId}\");\n" +
+			$"\trelationOption.Direction = \"{relationOption.Direction}\";\n";
+			switch(type) {
+				case "list":
+					response += $"\tcreateListInput.RelationOptions.Add(relationOption);\n";
+					break;
+				default:
+					response += $"\tcreateViewInput.RelationOptions.Add(relationOption);\n";
+					break;
+			}
+			
+			response += "}\n" +
 			"#endregion\n";
 			return response;
 		}
@@ -7590,7 +7655,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				code += $"\tcreateViewInput.ServiceCode = \"{currentView.ServiceCode}\";\n";
+				code += $"\tcreateViewInput.ServiceCode = @\"{currentView.ServiceCode.Replace("\"","\"\"")}\";\n";
 			}
 
 			code +=
@@ -7611,7 +7676,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			$"\tcreateViewInput.RelationOptions = new List<EntityRelationOptionsItem>();\n";
 			foreach (var relationOption in currentView.RelationOptions)
 			{
-				code += CreateRelationOptionCode(relationOption, currentEntity.Id, currentEntity.Name);
+				code += CreateRelationOptionCode(relationOption, currentEntity.Id, currentEntity.Name,"view");
 			}
 			code += "\t}\n" +
 			$"\t#endregion\n\n";
@@ -7652,7 +7717,9 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			{
 				hasUpdate = true;
 			}
-			if (currentView.Title != oldView.Title)
+			if (currentView.Title != oldView.Title &&
+				!(currentView.Title == null && oldView.Title == "") &&
+				!(currentView.Title == "" && oldView.Title == null))
 			{
 				hasUpdate = true;
 			}
@@ -7684,9 +7751,19 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			{
 				hasUpdate = true;
 			}
-			if (currentView.ServiceCode != oldView.ServiceCode)
-			{
-				hasUpdate = true;
+
+			//Because of the \r\n <> \n problem we will need to artificially add \r to the new view templates and test again
+			if(!String.IsNullOrWhiteSpace(oldView.ServiceCode)) {
+				var fixedServiceCode = oldView.ServiceCode.Replace("\n", "\r\n");
+				if (currentView.ServiceCode != fixedServiceCode)
+				{
+					hasUpdate = true;
+				}
+			}else {
+				if (currentView.ServiceCode != oldView.ServiceCode)
+				{
+					hasUpdate = true;
+				}			
 			}
 
 			if (JsonConvert.SerializeObject(currentView.Regions) != JsonConvert.SerializeObject(oldView.Regions))
@@ -7807,7 +7884,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 
 			if (list.IconName == null)
 			{
-				response += $"\tcreateListInput.IconName = string.IsNullOrEmpty(\"{list.IconName}\") ? string.Empty : \"{list.IconName}\";\n";
+				response += $"\tcreateListInput.IconName = null;\n";
 			}
 			else
 			{
@@ -7848,7 +7925,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				response += $"\tcreateListInput.ServiceCode = \"{list.ServiceCode}\";\n";
+				response += $"\tcreateListInput.ServiceCode = @\"{list.ServiceCode.Replace("\"","\"\"")}\";\n";
 			}
 
 			response +=
@@ -7861,7 +7938,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			$"\tcreateListInput.RelationOptions = new List<EntityRelationOptionsItem>();\n";
 			foreach (var relationOption in list.RelationOptions)
 			{
-				response += CreateRelationOptionCode(relationOption, entityId, entityName);
+				response += CreateRelationOptionCode(relationOption, entityId, entityName,"list");
 			}
 			response += "\t}\n" +
 			$"\t#endregion\n\n";
@@ -8282,6 +8359,14 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			{
 				response += $"\t\t\tlistItemFromRelation.FieldLookupList = \"{recordListItem.FieldLookupList}\";\n";
 			}
+			if (recordListItem.FieldManageView == null)
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldManageView = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldManageView = \"{recordListItem.FieldManageView}\";\n";
+			}
 			response +=
 			$"\t\t\tlistItemFromRelation.RelationId = new Guid(\"{recordListItem.RelationId}\");\n" +
 			$"\t\t\tlistItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
@@ -8533,7 +8618,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				code += $"\tcreateListInput.ServiceCode = \"{currentList.ServiceCode}\";\n";
+				code += $"\tcreateListInput.ServiceCode = @\"{currentList.ServiceCode.Replace("\"","\"\"")}\";\n";
 			}
 
 			code +=
@@ -8547,7 +8632,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			$"\tcreateListInput.RelationOptions = new List<EntityRelationOptionsItem>();\n";
 			foreach (var relationOption in currentList.RelationOptions)
 			{
-				code += CreateRelationOptionCode(relationOption, currentEntity.Id, currentEntity.Name);
+				code += CreateRelationOptionCode(relationOption, currentEntity.Id, currentEntity.Name,"list");
 			}
 			code += "\t}\n" +
 			$"\t#endregion\n\n";
@@ -8706,10 +8791,20 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			{
 				hasUpdate = true;
 			}
-			if (currentList.ServiceCode != oldList.ServiceCode)
-			{
-				hasUpdate = true;
+			//Because of the \r\n <> \n problem we will need to artificially add \r to the new view templates and test again
+			if(!String.IsNullOrWhiteSpace(oldList.ServiceCode)) {
+				var fixedServiceCode = oldList.ServiceCode.Replace("\n", "\r\n");
+				if (currentList.ServiceCode != fixedServiceCode)
+				{
+					hasUpdate = true;
+				}
+			}else {
+				if (currentList.ServiceCode != oldList.ServiceCode)
+				{
+					hasUpdate = true;
+				}			
 			}
+
 			if (JsonConvert.SerializeObject(currentList.RelationOptions) != JsonConvert.SerializeObject(oldList.RelationOptions))
 			{
 				hasUpdate = true;
@@ -8821,7 +8916,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				response += $"\tcreateTreeInput.NodeIdFieldId = Guid.Parse(\"{tree.NodeParentIdFieldId}\");\n";
+				response += $"\tcreateTreeInput.NodeIdFieldId = Guid.Parse(\"{tree.NodeIdFieldId}\");\n";
 			}
 			if (tree.NodeIdFieldId == null)
 			{
@@ -8829,7 +8924,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				response += $"\tcreateTreeInput.NodeParentIdFieldId = Guid.Parse(\"{tree.NodeIdFieldId}\");\n";
+				response += $"\tcreateTreeInput.NodeParentIdFieldId = Guid.Parse(\"{tree.NodeParentIdFieldId}\");\n";
 			}
 			if (tree.NodeNameFieldId == null)
 			{
@@ -8988,7 +9083,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				code += $"\tupdateTreeInput.NodeIdFieldId = Guid.Parse(\"{currentTree.NodeParentIdFieldId}\");\n";
+				code += $"\tupdateTreeInput.NodeIdFieldId = Guid.Parse(\"{currentTree.NodeIdFieldId}\");\n";
 			}
 			if (currentTree.NodeIdFieldId == null)
 			{
@@ -8996,7 +9091,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				code += $"\tupdateTreeInput.NodeParentIdFieldId = Guid.Parse(\"{currentTree.NodeIdFieldId}\");\n";
+				code += $"\tupdateTreeInput.NodeParentIdFieldId = Guid.Parse(\"{currentTree.NodeParentIdFieldId}\");\n";
 			}
 			if (currentTree.NodeNameFieldId == null)
 			{
@@ -9142,8 +9237,15 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 				$"\tvar targetField = targetEntity.Fields.SingleOrDefault(x => x.Name == \"{targetField.Name}\");\n" +
 				$"\trelation.Id = new Guid(\"{relationRecord.Id}\");\n" +
 				$"\trelation.Name =  \"{relationRecord.Name}\";\n" +
-				$"\trelation.Label = \"{relationRecord.Label}\";\n" +
-				$"\trelation.Description = \"{relationRecord.Description}\";\n" +
+				$"\trelation.Label = \"{relationRecord.Label}\";\n";
+				if(relationRecord.Description == null) {
+					response += $"\trelation.Description = null;\n";
+				}
+				else {
+					response += $"\trelation.Description = \"{relationRecord.Description}\";\n";
+				}
+
+				response +=
 				$"\trelation.System =  {(relationRecord.System).ToString().ToLowerInvariant()};\n";
 			if (relationRecord.RelationType == EntityRelationType.OneToOne)
 			{
@@ -9242,7 +9344,9 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			code += $"\trelation.Label = \"{currentRelation.Label}\";\n";
 
 			//description
-			if (currentRelation.Description != oldRelation.Description)
+			if (currentRelation.Description != oldRelation.Description && 
+				!(currentRelation.Description == null && oldRelation.Description == "") && 
+				!(currentRelation.Description == "" && oldRelation.Description == null))
 			{
 				hasUpdate = true;
 				response.ChangeList.Add($"<span class='go-green label-block'>description</span>  from <span class='go-red'>{oldRelation.Description}</span> to <span class='go-red'>{currentRelation.Description}</span>");

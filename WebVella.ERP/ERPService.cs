@@ -1946,6 +1946,116 @@ namespace WebVella.ERP
 						#endregion
 					}
 
+					if (currentVersion < 20170425)
+					{
+						systemSettings.Version = 20170425;
+
+						#region << ***Update field***  Entity: system_log Field Name: notification_status >>
+						{
+							var currentEntity = entMan.ReadEntity(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933")).Object;
+							InputSelectField dropdownField = new InputSelectField();
+							dropdownField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == "notification_status").Id;
+							dropdownField.Name = "notification_status";
+							dropdownField.Label = "Notification Status";
+							dropdownField.PlaceholderText = "";
+							dropdownField.Description = "";
+							dropdownField.HelpText = "";
+							dropdownField.Required = true;
+							dropdownField.Unique = false;
+							dropdownField.Searchable = true;
+							dropdownField.Auditable = false;
+							dropdownField.System = true;
+							dropdownField.DefaultValue = "1";
+							dropdownField.Options = new List<SelectFieldOption>
+							{
+								new SelectFieldOption() { Key = "1", Value = "Do not notify"},
+								new SelectFieldOption() { Key = "2", Value = "Not notified"},
+								new SelectFieldOption() { Key = "3", Value = "Notified"},
+								new SelectFieldOption() { Key = "4", Value = "Notification failed"}
+							};
+							dropdownField.EnableSecurity = false;
+							dropdownField.Permissions = new FieldPermissions();
+							dropdownField.Permissions.CanRead = new List<Guid>();
+							dropdownField.Permissions.CanUpdate = new List<Guid>();
+							//READ
+							//UPDATE
+							{
+								var response = entMan.UpdateField(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933"), dropdownField);
+								if (!response.Success)
+									throw new Exception("System error 10060. Entity: system_log Field: notification_status Message:" + response.Message);
+							}
+						}
+						#endregion
+
+						#region << ***Update field***  Entity: system_log Field Name: type >>
+						{
+							var currentEntity = entMan.ReadEntity(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933")).Object;
+							InputSelectField dropdownField = new InputSelectField();
+							dropdownField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == "type").Id;
+							dropdownField.Name = "type";
+							dropdownField.Label = "Type";
+							dropdownField.PlaceholderText = "";
+							dropdownField.Description = "";
+							dropdownField.HelpText = "";
+							dropdownField.Required = true;
+							dropdownField.Unique = false;
+							dropdownField.Searchable = true;
+							dropdownField.Auditable = false;
+							dropdownField.System = true;
+							dropdownField.DefaultValue = "1";
+							dropdownField.Options = new List<SelectFieldOption>
+							{
+								new SelectFieldOption() { Key = "1", Value = "error"},
+								new SelectFieldOption() { Key = "2", Value = "info"}
+							};
+							dropdownField.EnableSecurity = false;
+							dropdownField.Permissions = new FieldPermissions();
+							dropdownField.Permissions.CanRead = new List<Guid>();
+							dropdownField.Permissions.CanUpdate = new List<Guid>();
+							//READ
+							//UPDATE
+							{
+								var response = entMan.UpdateField(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933"), dropdownField);
+								if (!response.Success)
+									throw new Exception("System error 10060. Entity: system_log Field: type Message:" + response.Message);
+							}
+						}
+						#endregion
+
+						#region << ***Update field***  Entity: system_log Field Name: created_on >>
+						{
+							var currentEntity = entMan.ReadEntity(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933")).Object;
+							InputDateTimeField datetimeField = new InputDateTimeField();
+							datetimeField.Id =  currentEntity.Fields.SingleOrDefault(x => x.Name == "created_on").Id;
+							datetimeField.Name = "created_on";
+							datetimeField.Label = "Created On";
+							datetimeField.PlaceholderText = "";
+							datetimeField.Description = "";
+							datetimeField.HelpText = "";
+							datetimeField.Required = false;
+							datetimeField.Unique = false;
+							datetimeField.Searchable = true;
+							datetimeField.Auditable = false;
+							datetimeField.System = true;
+							datetimeField.DefaultValue = null;
+							datetimeField.Format = "dd MMM yyyy HH:mm";
+							datetimeField.UseCurrentTimeAsDefaultValue = true;
+							datetimeField.EnableSecurity = false;
+							datetimeField.Permissions = new FieldPermissions();
+							datetimeField.Permissions.CanRead = new List<Guid>();
+							datetimeField.Permissions.CanUpdate = new List<Guid>();
+							//READ
+							//UPDATE
+							{
+								var response = entMan.UpdateField(new Guid("8ded30ad-32d5-4d7f-937f-9ed380a30933"), datetimeField);
+								if (!response.Success)
+									throw new Exception("System error 10060. Entity: system_log Field: created_on Message:" + response.Message);
+							}
+						}
+						#endregion
+
+					}
+
 					new DbSystemSettingsRepository().Save(new DbSystemSettings { Id = systemSettings.Id, Version = systemSettings.Version });
 
 					connection.CommitTransaction();
@@ -2063,6 +2173,13 @@ namespace WebVella.ERP
 
 					DbRepository.CreateIndex("idx_filepath", "files", "filepath", true);
 				}
+
+				//drop unique constraint for object id - to support FS storage (object id is 0 for all files stored on file system)
+				if (!filesTableExists)
+				{
+					DbRepository.DropUniqueConstraint("udx_object_id", "files");
+				}
+
 
 				bool jobsTableExists = false;
 				command = connection.CreateCommand("SELECT EXISTS (  SELECT 1 FROM   information_schema.tables  WHERE  table_schema = 'public' AND table_name = 'jobs' ) ");

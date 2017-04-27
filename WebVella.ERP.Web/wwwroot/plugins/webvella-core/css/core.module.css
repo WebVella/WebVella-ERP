@@ -1419,6 +1419,10 @@ body.hidden-sidebar #page-topnav {
 			background: rgba(0,0,0,0.08);
 		}
 
+.query-filter-row {
+	background:#ddd;
+}
+
 .query-filter-row .form-group {
 	margin-bottom: 0;
 }

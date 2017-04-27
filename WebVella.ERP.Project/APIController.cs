@@ -1891,6 +1891,7 @@ namespace WebVella.ERP.Project
 			var recepients = new List<string>();
 			var task = new EntityRecord();
 			var bug = new EntityRecord();
+			var upsertResultRecord = new EntityRecord();
 			#region << Init Object >>
 			var outGuid = Guid.Empty;
 			var outInt = (int)1;
@@ -2016,19 +2017,21 @@ namespace WebVella.ERP.Project
 					//Upset comment
 					if(submitRecord["id"] == null) {
 						//create
-						var createResponse = recMan.CreateRecord("wv_project_comment",postRecord,true);
+						var createResponse = recMan.CreateRecord("wv_project_comment",postRecord);
 						if(!createResponse.Success) {
 							throw new Exception(createResponse.Message);
 						}
 						response.Message = "Comment successfully created";
+						upsertResultRecord = createResponse.Object.Data.First();
 					}
 					else {
 						//update
-						var updateResponse = recMan.UpdateRecord("wv_project_comment",postRecord,true);
+						var updateResponse = recMan.UpdateRecord("wv_project_comment",postRecord);
 						if(!updateResponse.Success) {
 							throw new Exception(updateResponse.Message);
 						}
 						response.Message = "Comment successfully updated";
+						upsertResultRecord = updateResponse.Object.Data.First();
 					}
 
 					#region << New owner >>
@@ -2138,7 +2141,7 @@ namespace WebVella.ERP.Project
 					var commentatorUsername = "";
 					#region << Get username of the commentator>>
 					{
-						EntityQuery query = new EntityQuery("user", "username", EntityQuery.QueryEQ("id", (Guid)postRecord["created_by"]), null, null, null);
+						EntityQuery query = new EntityQuery("user", "username", EntityQuery.QueryEQ("id", (Guid)upsertResultRecord["created_by"]), null, null, null);
 						QueryResponse result = recMan.Find(query);
 						if (!result.Success)
 						{
@@ -2156,7 +2159,7 @@ namespace WebVella.ERP.Project
 							#region << Check if is in watch list already >>
 							foreach (var watcher in (List<EntityRecord>)task["$user_n_n_task_watchers"])
 							{
-								if ((Guid)watcher["id"] == (Guid)postRecord["created_by"])
+								if ((Guid)watcher["id"] == (Guid)upsertResultRecord["created_by"])
 								{
 									isCommentatorInWatchList = true;
 								}
@@ -2169,7 +2172,7 @@ namespace WebVella.ERP.Project
 							if (!isCommentatorInWatchList)
 							{
 								var targetRelation = relMan.Read("user_n_n_task_watchers").Object;
-								var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)postRecord["created_by"], new Guid(postRecord["task_id"].ToString()));
+								var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)upsertResultRecord["created_by"], new Guid(postRecord["task_id"].ToString()));
 								if (!createRelationNtoNResponse.Success)
 								{
 									throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);
@@ -2182,7 +2185,7 @@ namespace WebVella.ERP.Project
 							#region << Check if is in watch list already >>
 							foreach (var watcher in (List<EntityRecord>)bug["$user_n_n_bug_watchers"])
 							{
-								if ((Guid)watcher["id"] == (Guid)postRecord["created_by"])
+								if ((Guid)watcher["id"] == (Guid)upsertResultRecord["created_by"])
 								{
 									isCommentatorInWatchList = true;
 								}
@@ -2195,7 +2198,7 @@ namespace WebVella.ERP.Project
 							if (!isCommentatorInWatchList)
 							{
 								var targetRelation = relMan.Read("user_n_n_bug_watchers").Object;
-								var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)postRecord["created_by"], new Guid(postRecord["bug_id"].ToString()));
+								var createRelationNtoNResponse = recMan.CreateRelationManyToManyRecord(targetRelation.Id, (Guid)upsertResultRecord["created_by"], new Guid(postRecord["bug_id"].ToString()));
 								if (!createRelationNtoNResponse.Success)
 								{
 									throw new Exception("Could not create watch relation" + createRelationNtoNResponse.Message);

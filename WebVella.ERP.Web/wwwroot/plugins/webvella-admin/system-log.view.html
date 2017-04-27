@@ -1,0 +1,150 @@
+<div id="page-title">
+	<div id="page-meta">
+		<div class="aux-actions">
+		</div>
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-history fa-2x"></i>
+		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux">System log</div>
+            <h4>Logged records</h4>
+        </div>
+	</div>
+</div>
+<div id="page-body">
+	<div id="page-text">
+		<form class="well" ng-submit="ngCtrl.submitFilter()" style="padding-bottom:0">
+			<div class="row">
+				<div class="col-sm-2">
+					<div class="form-group">
+						<div class="input-group">
+							<input type="text" class="form-control" ng-model="ngCtrl.fromDate" name="fromDate"
+								   uib-datepicker-popup="yyyy-MMM-dd HH:mm" is-open="ngCtrl.fromDate_open" placeholder="date from"
+								   enable-date="true" enable-time="true" ng-click="ngCtrl.fromDate_open = true" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default" ng-click="ngCtrl.fromDate_open = true"><i class="fa fa-calendar"></i></button>
+							</span>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-2">
+					<div class="form-group">
+						<div class="input-group">
+							<input type="text" class="form-control" ng-model="ngCtrl.untilDate" name="untilDate"
+								   uib-datepicker-popup="yyyy-MMM-dd HH:mm" is-open="ngCtrl.untilDate_open" placeholder="date from"
+								   enable-date="true" enable-time="true" ng-click="ngCtrl.untilDate_open = true" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default" ng-click="ngCtrl.untilDate_open = true"><i class="fa fa-calendar"></i></button>
+							</span>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-2">
+					<div class="form-group">
+						<select class="form-control" ng-model="ngCtrl.type">
+							<option value="">All types</option>
+							<option value="1">Error</option>
+							<option value="2">Info</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-sm-2">
+					<div class="form-group">
+						<input class="form-control" ng-model="ngCtrl.source" placeholder="source"/>
+					</div>
+				</div>
+				<div class="col-sm-2">
+					<div class="form-group">
+						<input class="form-control" ng-model="ngCtrl.message" placeholder="message" />
+					</div>
+				</div>
+				<div class="col-sm-2">
+					<div class="form-group" style="padding-right:150px;position:relative;">
+						<select class="form-control" ng-model="ngCtrl.notificationStatus">
+							<option value="">All statuses</option>
+							<option value="1">Do not notify</option>
+							<option value="2">Not notified</option>
+							<option value="3">Notified</option>
+							<option value="4">Notification failed</option>
+						</select>
+						<div class="btn-group" style="position:absolute;right:0;top:0;">
+							<button type="submit" class="btn btn-default" style="width:100px;"><i class="fa fa-search"></i> Filter</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+
+		<table class="table table-bordered table-hover table-vertical-align-middle">
+			<thead>
+				<tr>
+					<th width="60"></th>
+                    <th width="150">date</th>
+					<th width="40">type</th>
+					<th width="80">source</th>
+					<th>message</th>
+					<th width="50">status</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="record in ngCtrl.records">
+					<td>
+						<a ng-click="ngCtrl.openModal(record)" class="btn btn-default btn-outline" title="View details">
+							<i class="fa fa-eye"></i>
+						</a>
+					</td>
+					<td>
+						{{record.created_on | date: 'dd MMM yyyy HH:mm'}}
+					</td>
+					<td style="text-align:center;">
+						<div ng-switch="record.type">
+							<i ng-switch-when="1" class="fa fa-exclamation-circle go-red" title="error"></i>
+							<i ng-switch-when="2" class="fa fa-info-circle go-light-blue" title="info"></i>
+						</div>
+					</td>
+					<td>
+						{{record.source}}
+					</td>					
+					<td>
+						{{record.message}}
+					</td>	
+					<td style="text-align:center;">
+						<div ng-switch="record.notification_status">
+							<i ng-switch-when="1" class="fa fa-lock go-gray" title="Do not notify"></i>
+							<i ng-switch-when="2" class="fa fa-spinner fa-spin go-light-blue" title="Not notified"></i>
+							<i ng-switch-when="3" class="fa fa-check go-green" title="Notified"></i>
+							<i ng-switch-when="4" class="fa fa-exclamation-circle go-red" title="Notification failed"></i>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr class="ng-hide" ng-show="ngCtrl.records.length == 0">
+					<td colspan="6">
+						<div class="alert alert-info" style="margin:0;">No system log records</div>						
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+		<ul class="pager ng-hide" ng-hide="ngCtrl.page == 1 && ngCtrl.pageSize > ngCtrl.records.length">
+			<li ng-if="ngCtrl.page != 1" class="previous">
+				<a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.page - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a>
+			</li>
+			<li ng-if="ngCtrl.pageSize <= ngCtrl.records.length" class="next">
+				<a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.page + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<script type="text/ng-template" id="detailsModal.html">
+	<div class="modal-header" id="modal-top">
+		<h3 class="modal-title">System log details</h3>
+	</div>
+	<div class="modal-body">
+		<pre>{{popupCtrl.selectedRecord | json}}</pre>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{::'CANCEL'}}"></button>
+	</div>
+</script>

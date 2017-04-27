@@ -17,7 +17,17 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
             dest.Id = (Guid)src["id"];
 			dest.Username = (string)src["username"];
 			dest.Email = (string)src["email"];
-            dest.Password = (string)src["password"];
+
+            try
+            {
+                dest.Password = (string)src["password"];
+            }
+            catch (KeyNotFoundException)
+            {
+                //set password to null if it is not selected from DB
+                dest.Password = null;
+            }
+
             dest.FirstName = (string)src["first_name"];
             dest.LastName = (string)src["last_name"];
             dest.Image = (string)src["image"];

@@ -12,11 +12,11 @@
         .service('webvellaCoreService', service);
 
     service.$inject = ['$cookies', '$q', '$http', '$log', '$location', 'wvAppConstants', '$rootScope', '$anchorScroll', 'ngToast',
-				'$timeout', 'Upload', '$translate', '$filter', '$state', '$localStorage'];
+				'$timeout', 'Upload', '$translate', '$filter', '$state', '$localStorage','$sce'];
 
 
     function service($cookies, $q, $http, $log, $location, wvAppConstants, $rootScope, $anchorScroll, ngToast,
-				$timeout, Upload, $translate, $filter, $state, $localStorage) {
+				$timeout, Upload, $translate, $filter, $state, $localStorage,$sce) {
         var serviceInstance = this;
 
         //#region << Include functions >> ///////////////////////////////////////////////////////////////////////////////////
@@ -232,6 +232,9 @@
 		serviceInstance.getJobsList = getJobsList;
         //#endregion
 
+        //#region << System log >>
+		serviceInstance.getSystemLog = getSystemLog;
+        //#endregion
 
         //#endregion
 
@@ -642,11 +645,11 @@
                         htmlString += "<li>" + getHtmlString(data[i], fieldMeta) + "</li>";
                     }
                     htmlString += "</ul>";
-                    return htmlString;
+                    return $sce.trustAsHtml(htmlString);
                 }
             }
             else {
-                return data;
+                return $sce.trustAsHtml(data);
             }
         }
         //9.Image
@@ -824,7 +827,12 @@
                 }
             }
             else {
-                return phoneUtils.formatInternational(data);
+				try{
+					return phoneUtils.formatInternational(data,fieldMeta.format);
+				}
+				catch(err){
+					return "wrong number or format error";
+				}
             }
 
         }
@@ -5046,6 +5054,53 @@
             $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'jobs' + queryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
         }
         //#endregion
+
+		//#region << System log >>
+        function getSystemLog(fromDate,untilDate,type,source,message,notificationStatus,page,pageSize,successCallback, errorCallback) {
+			var queryParams = [];
+			if(fromDate !=null){
+				queryParams.push("fromDate="+fromDate);
+			}
+			if(untilDate !=null){
+				queryParams.push("untilDate="+untilDate);
+			}
+			if(type !=null){
+				queryParams.push("type="+type);
+			}
+			if(source !=null){
+				queryParams.push("source="+source);
+			}
+			if(message !=null){
+				queryParams.push("message="+message);
+			}
+			if(notificationStatus !=null){
+				queryParams.push("notificationStatus="+notificationStatus);
+			}
+			if(page !=null){
+				queryParams.push("page="+page);
+			}
+			else{
+				queryParams.push("page="+1);
+			}
+			if(pageSize !=null){
+				queryParams.push("pageSize="+pageSize);
+			}
+			else{
+				queryParams.push("pageSize="+15);
+			}
+
+
+			var queryString = "";
+			if(queryParams.length == 0){}
+			else if(queryParams.length == 1){
+				queryString = "?"+queryParams[0];
+			}
+			else{
+				queryString = "?" + queryParams.join('&');
+			}
+            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'system-log' + queryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+        }
+		//#endregion
 
 
         //#endregion
