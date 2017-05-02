@@ -629,6 +629,11 @@ namespace WebVella.ERP.Project
 								auxRule = EntityQuery.QueryEQ("priority", (string)query.Value);
 								auxRulesList.Add(auxRule);
 								break;
+							case "fts":
+								auxRule = new QueryObject();
+								auxRule = EntityQuery.QueryFTS("fts", (string)query.Value);
+								auxRulesList.Add(auxRule);
+								break;
 							case "sortby":
 								var sortRule = new QuerySortObject((string)query.Value, QuerySortType.Descending);
 								if (!queryKeyValueList.ContainsKey("sortOrder") || (string)queryKeyValueList["sortOrder"] == "ascending")
@@ -841,6 +846,11 @@ namespace WebVella.ERP.Project
 							case "priority":
 								auxRule = new QueryObject();
 								auxRule = EntityQuery.QueryEQ("priority", (string)query.Value);
+								auxRulesList.Add(auxRule);
+								break;
+							case "fts":
+								auxRule = new QueryObject();
+								auxRule = EntityQuery.QueryFTS("fts", (string)query.Value);
 								auxRulesList.Add(auxRule);
 								break;
 							case "sortby":

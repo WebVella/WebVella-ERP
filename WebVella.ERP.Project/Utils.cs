@@ -389,7 +389,7 @@ namespace WebVella.ERP.Project
 
 		public static void RegenAndUpdateTaskFts(EntityRecord record, RecordManager recMan)
 		{
-			
+			try {
 			EntityRecord oldTaskObject = null;
 			if(record != null && record["id"] != null) {
 				#region << Get the old task object >>
@@ -443,13 +443,13 @@ namespace WebVella.ERP.Project
 			else if(oldTaskObject != null){
 				ftsString += " " + oldTaskObject["number"];
 			}
-			if(record.Properties.ContainsKey("description")) {
+			if(record.Properties.ContainsKey("description") && record["description"] != null) {
 				var cleanString = Regex.Replace((string)record["description"], "<.*?>", string.Empty);
 				cleanString = cleanString.Replace(System.Environment.NewLine, " ");
 				cleanString = cleanString.Replace("\n", " ");
 				ftsString += " " + cleanString;
 			}
-			else if(oldTaskObject != null){
+			else if(oldTaskObject != null && oldTaskObject["description"] != null){
 				var cleanString = Regex.Replace((string)oldTaskObject["description"], "<.*?>", string.Empty);
 				cleanString = cleanString.Replace(System.Environment.NewLine, " ");
 				cleanString = cleanString.Replace("\n", " ");
@@ -518,6 +518,10 @@ namespace WebVella.ERP.Project
 			if (!patchResult.Success)
 			{
 				throw new Exception(patchResult.Message);
+			}
+			}
+			catch(Exception ex) {
+				var boz = ex;
 			}
 		}
 
@@ -808,13 +812,13 @@ namespace WebVella.ERP.Project
 			else if(oldBugObject != null){
 				ftsString += " " + oldBugObject["number"];
 			}
-			if(record.Properties.ContainsKey("description")) {
+			if(record.Properties.ContainsKey("description") && record["description"] != null) {
 				var cleanString = Regex.Replace((string)record["description"], "<.*?>", string.Empty);
 				cleanString = cleanString.Replace(System.Environment.NewLine, " ");
 				cleanString = cleanString.Replace("\n", " ");
 				ftsString += " " + cleanString;
 			}
-			else if(oldBugObject != null){
+			else if(oldBugObject != null && oldBugObject["description"] != null){
 				var cleanString = Regex.Replace((string)oldBugObject["description"], "<.*?>", string.Empty);
 				cleanString = cleanString.Replace(System.Environment.NewLine, " ");
 				cleanString = cleanString.Replace("\n", " ");

@@ -26,7 +26,7 @@ namespace WebVella.ERP.Project
 	textboxField.HelpText = "";
 	textboxField.Required = false;
 	textboxField.Unique = false;
-	textboxField.Searchable = true;
+	textboxField.Searchable = false;
 	textboxField.Auditable = false;
 	textboxField.System = false;
 	textboxField.DefaultValue = null;
@@ -56,7 +56,7 @@ namespace WebVella.ERP.Project
 	textboxField.HelpText = "";
 	textboxField.Required = false;
 	textboxField.Unique = false;
-	textboxField.Searchable = true;
+	textboxField.Searchable = false;
 	textboxField.Auditable = false;
 	textboxField.System = false;
 	textboxField.DefaultValue = null;
