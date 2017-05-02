@@ -30,17 +30,6 @@ namespace WebVella.ERP.Project
 
 		#region << Create >>
 
-		//[WebHook("create_record_validation_errors_filter", "wv_task")] //<<<< UNCOMMENT TO HOOK
-		public dynamic TaskCreateValidateFilter(dynamic data)
-		{
-			var errors = (List<ErrorModel>)data.errors;
-			var record = (EntityRecord)data.record;
-			var recordId = (Guid)data.recordId;
-			var newErrorsList = Utils.ValidateTask(errors, record, recordId);
-			data.errors = newErrorsList;
-			return data;
-		}
-
 		[WebHook("create_record_pre_save_filter", "wv_task")]
 		public dynamic TaskCreateRecordPreSave(dynamic data)
 		{
@@ -87,6 +76,7 @@ namespace WebVella.ERP.Project
 				}
 			}
 			#endregion
+
 
 			using (SecurityContext.OpenSystemScope())
 			{
@@ -169,6 +159,7 @@ namespace WebVella.ERP.Project
 						patchObject = new EntityRecord();
 						patchObject["id"] = (Guid)createdRecord["id"];
 						patchObject["code"] = result.Object.Data[0]["code"] + "-T" + createdRecord["number"];
+						record["code"] = (string)patchObject["code"]; // for use in regenerating the fts
 						var patchResult = recMan.UpdateRecord("wv_task", patchObject);
 						if (!patchResult.Success)
 						{
@@ -248,22 +239,14 @@ namespace WebVella.ERP.Project
 			}
 			#endregion
 
+			#region << Regen FTS >>
+			Utils.RegenAndUpdateTaskFts((EntityRecord)record,recMan);
+			#endregion
 		}
 
 		#endregion
 
 		#region << Update >>
-
-		//[WebHook("update_record_validation_errors_filter", "wv_task")] //<<<< UNCOMMENT TO HOOK
-		public dynamic TaskUpdateValidateFilter(dynamic data)
-		{
-			var errors = (List<ErrorModel>)data.errors;
-			var record = (EntityRecord)data.record;
-			var recordId = (Guid)data.recordId;
-			var newErrorsList = Utils.ValidateTask(errors, record, recordId);
-			data.errors = newErrorsList;
-			return data;
-		}
 
 		[WebHook("update_record_pre_save_filter", "wv_task")]
 		public dynamic TaskUpdateRecordPreSave(dynamic data)
@@ -272,30 +255,15 @@ namespace WebVella.ERP.Project
 			return data;
 		}
 
-		#endregion
-
-		#region << Patch >>
-
-		//[WebHook("patch_record_validation_errors_filter", "wv_task")] //<<<< UNCOMMENT TO HOOK
-		public dynamic TaskPatchValidateFilter(dynamic data)
+		[WebHook("update_record_success_action", "wv_task")]
+		public void TaskUpdateRecordAction(dynamic data)
 		{
-			var errors = (List<ErrorModel>)data.errors;
-			var record = (EntityRecord)data.record;
-			var recordId = (Guid)data.recordId;
-			var newErrorsList = Utils.ValidateTask(errors, record, recordId);
-			data.errors = newErrorsList;
-			return data;
-		}
-
-		[WebHook("patch_record_pre_save_filter", "wv_task")]
-		public dynamic TaskPatchRecordPreSave(dynamic data)
-		{
-			data = Utils.UpdateTask(data, recMan);
-			return data;
+			#region << Regen FTS >>
+			Utils.RegenAndUpdateTaskFts((EntityRecord)data.record,recMan);
+			#endregion
 		}
 
 		#endregion
-
 
 		#endregion
 
@@ -498,6 +466,9 @@ namespace WebVella.ERP.Project
 			}
 			#endregion
 
+			#region << Regen FTS >>
+			Utils.RegenAndUpdateBugFts((EntityRecord)record,recMan);
+			#endregion
 		}
 		#endregion
 
@@ -509,14 +480,13 @@ namespace WebVella.ERP.Project
 			data = Utils.UpdateBug(data, recMan);
 			return data;
 		}
-		#endregion
 
-		#region << Patch >>
-		[WebHook("patch_record_pre_save_filter", "wv_bug")]
-		public dynamic BugPatchRecordPreSave(dynamic data)
+		[WebHook("update_record_success_action", "wv_bug")]
+		public void BugUpdateRecordAction(dynamic data)
 		{
-			data = Utils.UpdateBug(data, recMan);
-			return data;
+			#region << Regen FTS >>
+			Utils.RegenAndUpdateBugFts((EntityRecord)data.record,recMan);
+			#endregion
 		}
 		#endregion
 
@@ -810,6 +780,12 @@ namespace WebVella.ERP.Project
 						var content = Regex.Replace(EmailTemplates.NewCommentNotificationContent, @"\{(.+?)\}", m => emailContentParameters[m.Groups[1].Value]);
 
 						emailService.SendEmail(recepients.ToArray(), subject, content);
+
+						#region << Regen FTS >>
+						var regenRecord = new EntityRecord();
+						regenRecord["id"] = (Guid)createdRecord["task_id"];
+						Utils.RegenAndUpdateTaskFts((EntityRecord)regenRecord,recMan);
+						#endregion
 					}
 					else if (createdRecord["bug_id"] != null)
 					{
@@ -831,6 +807,12 @@ namespace WebVella.ERP.Project
 						var content = Regex.Replace(EmailTemplates.NewCommentNotificationContent, @"\{(.+?)\}", m => emailContentParameters[m.Groups[1].Value]);
 
 						emailService.SendEmail(recepients.ToArray(), subject, content);
+
+						#region << Regen FTS >>
+						var regenRecord = new EntityRecord();
+						regenRecord["id"] = (Guid)createdRecord["bug_id"];
+						Utils.RegenAndUpdateBugFts((EntityRecord)regenRecord,recMan);
+						#endregion
 					}
 				}
 				catch (Exception ex)
@@ -877,6 +859,22 @@ namespace WebVella.ERP.Project
 			{
 				throw new Exception(createResponse.Message);
 			}
+
+			#region << Regen FTS >>
+			var regenRecord = new EntityRecord();
+			if (record.Properties.ContainsKey("$task_1_n_attachment.id") && record["$task_1_n_attachment.id"] != null)
+			{
+				regenRecord["id"] = new Guid(record["$task_1_n_attachment.id"].ToString());
+				Utils.RegenAndUpdateTaskFts((EntityRecord)regenRecord,recMan);
+			}
+			else if (record.Properties.ContainsKey("$bug_1_n_attachment.id") && record["$bug_1_n_attachment.id"] != null)
+			{
+				regenRecord["id"] = new Guid(record["$bug_1_n_attachment.id"].ToString());
+				Utils.RegenAndUpdateBugFts((EntityRecord)regenRecord,recMan);
+			}
+			#endregion
+
+
 		}
 		#endregion
 		#endregion

@@ -37,12 +37,6 @@ namespace WebVella.ERP.Api
 		public const string UpdateRecordValidationErrors = "update_record_validation_errors_filter";
 		public const string UpdateRecordPreSave = "update_record_pre_save_filter";
 
-		//Intentionally now patch events are equal to update events
-		public const string PatchRecordAction = "update_record_success_action";
-		public const string PatchRecordInput = "update_record_input_filter";
-		public const string PatchRecordValidationErrors = "update_record_validation_errors_filter";
-		public const string PatchRecordPreSave = "update_record_pre_save_filter";
-
 		public const string DeleteRecordAction = "delete_record_success_action";
 		public const string DeleteRecordInput = "delete_record_input_filter";
 		public const string DeleteRecordValidationErrors = "delete_record_validation_errors_filter";

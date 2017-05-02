@@ -7800,14 +7800,9 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 					else
 					{
 						var correspondingActionItem = oldActionsDictionary[dictionaryKey];
-						var newTemplateWithoutRs = item.Template;
-						var newTemplateWithRs = item.Template.Replace("\n", "\r\n");
-						if (newTemplateWithoutRs == correspondingActionItem.Template || newTemplateWithRs == correspondingActionItem.Template)
-						{
-							//Do nothing as both templates are considered equal
-						}
-						else
-						{
+						var newTemplateWithoutNewLines = item.Template.Replace("\r\n", "").Replace("\n", "");
+						var oldTemplateWithoutNewLines = correspondingActionItem.Template.Replace("\r\n", "").Replace("\n", "");
+						if (newTemplateWithoutNewLines != oldTemplateWithoutNewLines) {
 							differenceInTemplateFound = true;
 						}
 					}
@@ -8833,14 +8828,9 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 					else
 					{
 						var correspondingActionItem = oldActionsDictionary[dictionaryKey];
-						var newTemplateWithoutRs = item.Template;
-						var newTemplateWithRs = item.Template.Replace("\n", "\r\n");
-						if (newTemplateWithoutRs == correspondingActionItem.Template || newTemplateWithRs == correspondingActionItem.Template)
-						{
-							//Do nothing as both templates are considered equal
-						}
-						else
-						{
+						var newTemplateWithoutNewLines = item.Template.Replace("\r\n", "").Replace("\n", "");
+						var oldTemplateWithoutNewLines = correspondingActionItem.Template.Replace("\r\n", "").Replace("\n", "");
+						if (newTemplateWithoutNewLines != oldTemplateWithoutNewLines) {
 							differenceInTemplateFound = true;
 						}
 					}

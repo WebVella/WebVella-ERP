@@ -2790,7 +2790,7 @@ namespace WebVella.ERP.Web.Controllers
 				hookFilterObj.record = postObj;
 				hookFilterObj.recordId = recordId;
 				hookFilterObj.controller = this;
-				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.PatchRecordInput, entityName, hookFilterObj);
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordInput, entityName, hookFilterObj);
 				postObj = hookFilterObj.record;
 			}
 			catch (Exception ex)
@@ -2813,7 +2813,7 @@ namespace WebVella.ERP.Web.Controllers
 				hookFilterObj.record = postObj;
 				hookFilterObj.recordId = recordId;
 				hookFilterObj.controller = this;
-				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.PatchRecordValidationErrors, entityName, hookFilterObj);
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordValidationErrors, entityName, hookFilterObj);
 				validationErrors = hookFilterObj.errors;
 			}
 			catch (Exception ex)
@@ -2854,7 +2854,7 @@ namespace WebVella.ERP.Web.Controllers
 						hookFilterObj.record = postObj;
 						hookFilterObj.recordId = recordId;
 						hookFilterObj.controller = this;
-						hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.PatchRecordPreSave, entityName, hookFilterObj);
+						hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordPreSave, entityName, hookFilterObj);
 						postObj = hookFilterObj.record;
 					}
 					catch (Exception ex)
@@ -2887,7 +2887,7 @@ namespace WebVella.ERP.Web.Controllers
 				hookActionObj.result = result;
 				hookActionObj.recordId = recordId;
 				hookActionObj.controller = this;
-				hooksService.ProcessActions(SystemWebHookNames.PatchRecordAction, entityName, hookActionObj);
+				hooksService.ProcessActions(SystemWebHookNames.UpdateRecordAction, entityName, hookActionObj);
 			}
 			catch (Exception ex)
 			{
