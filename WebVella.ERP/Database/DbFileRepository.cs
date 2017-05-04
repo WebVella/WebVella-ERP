@@ -356,7 +356,8 @@ namespace WebVella.ERP.Database
 					}
 					else
 					{
-						new NpgsqlLargeObjectManager(connection.connection).Unlink(file.ObjectId);
+						if( file.ObjectId != 0 )
+							new NpgsqlLargeObjectManager(connection.connection).Unlink(file.ObjectId);
 					}
 
 					var command = connection.CreateCommand(@"DELETE FROM files WHERE id = @id");
