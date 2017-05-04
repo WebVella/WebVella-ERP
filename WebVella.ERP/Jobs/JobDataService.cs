@@ -210,7 +210,7 @@ namespace WebVella.ERP.Jobs
 				sql += " AND schedule_plan_id = @schedule_plan_id";
 			}
 
-			sql += " ORDER BY created_on ASC";
+			sql += " ORDER BY created_on DESC";
 
 			if (pageSize.HasValue)
 			{
