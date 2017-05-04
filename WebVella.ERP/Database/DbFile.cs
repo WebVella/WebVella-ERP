@@ -44,6 +44,9 @@ namespace WebVella.ERP.Database
 			}
 			else
 			{
+				if (ObjectId == 0)
+					throw new Exception("Trying to get content of a file from database, but it was uploaded to file system. Check FileSystem support configuration.");
+
 				var manager = new NpgsqlLargeObjectManager(connection.connection);
 				return manager.OpenReadWrite(ObjectId);
 			}
