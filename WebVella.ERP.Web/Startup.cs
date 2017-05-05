@@ -51,11 +51,12 @@ namespace WebVella.ERP.Web
 			CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 			Settings.Initialize(Configuration);
 
+			IErpService service = null;
 			try
 			{
 				DbContext.CreateContext(Settings.ConnectionString);
 
-				IErpService service = app.ApplicationServices.GetService<IErpService>();
+				service = app.ApplicationServices.GetService<IErpService>();
 				AutoMapperConfiguration.Configure();
 				service.InitializeSystemEntities();
 				service.InitializeBackgroundJobs();
@@ -82,6 +83,9 @@ namespace WebVella.ERP.Web
 			{
 				DbContext.CloseContext();
 			}
+
+			if (service != null)
+				service.StartBackgroundJobProcess();
 
 			//Enable CORS
 			//app.Use((context, next) =>

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using WebVella.ERP.Api;
+using WebVella.ERP.Database;
 using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP.Jobs
@@ -79,8 +81,19 @@ namespace WebVella.ERP.Jobs
 				if (method == null)
 					throw new Exception($"Method with name '{context.Type.MethodName}' does not exist in assembly {assembly.FullName}");
 
-				//execute job method
-				method.Invoke(new DynamicObjectCreater(type).CreateInstance(), new object[] { context });
+				using (var secCtx = SecurityContext.OpenSystemScope())
+				{
+					try
+					{
+						DbContext.CreateContext(Settings.ConnectionString);
+						//execute job method
+						method.Invoke(new DynamicObjectCreater(type).CreateInstance(), new object[] { context });
+					}
+					finally
+					{
+						DbContext.CloseContext();
+					}
+				}
 
 				job.FinishedOn = DateTime.UtcNow;
 				job.Status = JobStatus.Finished;
