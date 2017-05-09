@@ -4,6 +4,8 @@ using System.Dynamic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using WebVella.ERP.Api;
+using WebVella.ERP.Database;
 using WebVella.ERP.Diagnostics;
 
 namespace WebVella.ERP.Jobs
@@ -188,8 +190,20 @@ namespace WebVella.ERP.Jobs
 				}
 				catch (Exception ex)
 				{
-					Log log = new Log();
-					log.Create(LogType.Error, "Background job", ex.Message, ex.StackTrace);
+					using (var secCtx = SecurityContext.OpenSystemScope())
+					{
+						try
+						{
+							DbContext.CreateContext(ERP.Settings.ConnectionString);
+
+							Log log = new Log();
+							log.Create(LogType.Error, "Background job", ex.Message, ex.StackTrace);
+						}
+						finally
+						{
+							DbContext.CloseContext();
+						}
+					}
 				}
 				finally
 				{

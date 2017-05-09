@@ -24,7 +24,7 @@ namespace WebVella.ERP.Jobs
 
 		public Job CreateJob(Job job)
 		{
-			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
 
 			List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
 			parameters.Add(new NpgsqlParameter("id", job.Id) { NpgsqlDbType = NpgsqlDbType.Uuid });
@@ -190,7 +190,7 @@ namespace WebVella.ERP.Jobs
 			}
 			if (!string.IsNullOrWhiteSpace(typeName))
 			{
-				var typeParameter = "%"+typeName+"%";
+				var typeParameter = "%" + typeName + "%";
 				parameters.Add(new NpgsqlParameter("type_name", typeParameter) { NpgsqlDbType = NpgsqlDbType.Text });
 				sql += " AND type_name ILIKE @type_name";
 			}
@@ -234,7 +234,7 @@ namespace WebVella.ERP.Jobs
 
 		public bool CreateSchedule(SchedulePlan schedulePlan)
 		{
-			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
 
 			List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
 			parameters.Add(new NpgsqlParameter("id", schedulePlan.Id) { NpgsqlDbType = NpgsqlDbType.Uuid });
@@ -283,7 +283,7 @@ namespace WebVella.ERP.Jobs
 
 		public bool UpdateSchedule(SchedulePlan schedulePlan)
 		{
-			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
 
 			List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
 			parameters.Add(new NpgsqlParameter("id", schedulePlan.Id) { NpgsqlDbType = NpgsqlDbType.Uuid });

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebVella.ERP.Api;
 using WebVella.ERP.Database;
+using WebVella.ERP.Diagnostics;
 using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP.Jobs
@@ -74,7 +75,7 @@ namespace WebVella.ERP.Jobs
 				}
 
 				Type type = assembly.GetType(context.Type.CompleteClassName);
-				if(type == null)
+				if (type == null)
 					throw new Exception($"Type with name '{context.Type.CompleteClassName}' does not exist in assembly {assembly.FullName}");
 
 				var method = type.GetMethod(context.Type.MethodName);
@@ -101,10 +102,26 @@ namespace WebVella.ERP.Jobs
 			}
 			catch (Exception ex)
 			{
-				job.FinishedOn = DateTime.UtcNow;
-				job.Status = JobStatus.Failed;
-				job.ErrorMessage = ex.Message;
-				jobService.UpdateJob(job);
+				using (var secCtx = SecurityContext.OpenSystemScope())
+				{
+					try
+					{
+						DbContext.CreateContext(Settings.ConnectionString);
+
+						Log log = new Log();
+						string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+						log.Create(LogType.Error, "Background job process", message, ex.StackTrace);
+
+						job.FinishedOn = DateTime.UtcNow;
+						job.Status = JobStatus.Failed;
+						job.ErrorMessage = message;
+						jobService.UpdateJob(job);
+					}
+					finally
+					{
+						DbContext.CloseContext();
+					}
+				}
 			}
 			finally
 			{

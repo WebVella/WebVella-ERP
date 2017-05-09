@@ -16,7 +16,7 @@ namespace WebVella.ERP.Jobs
 
 	[Serializable]
 	public class Job
-    {
+	{
 		[JsonProperty(PropertyName = "id")]
 		public Guid Id { get; set; }
 
