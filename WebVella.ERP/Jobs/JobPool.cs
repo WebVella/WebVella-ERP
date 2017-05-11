@@ -33,7 +33,7 @@ namespace WebVella.ERP.Jobs
 			Current = new JobPool();
 		}
 
-		public async void RunJobAsync(Job job)
+		public void RunJobAsync(Job job)
 		{
 			//Get pool count and if it is < of max_thread_pool_count create new context and start execute the job in new thread
 
@@ -48,7 +48,7 @@ namespace WebVella.ERP.Jobs
 				context.Attributes = job.Attributes;
 				context.Type = job.Type;
 
-				await Task.Run(() => Process(context));
+				Task.Run(() => Process(context));
 			}
 		}
 

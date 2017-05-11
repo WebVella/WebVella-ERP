@@ -157,9 +157,9 @@ namespace WebVella.ERP.Jobs
 				typeName, status, priority, schedulePlanId, page, pageSize);
 		}
 
-		public async void ProcessJobsAsync()
+		public void ProcessJobsAsync()
 		{
-			await Task.Run(() => Process());
+			Task.Run(() => Process());
 		}
 
 		private void Process()

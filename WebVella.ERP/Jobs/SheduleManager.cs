@@ -70,9 +70,9 @@ namespace WebVella.ERP.Jobs
 			UpdateSchedulePlanShort(schedulePlan);
 		}
 
-		public async void ProcessSchedulesAsync()
+		public void ProcessSchedulesAsync()
 		{
-			await Task.Run(() => Process());
+			Task.Run(() => Process());
 		}
 
 		public void Process()
