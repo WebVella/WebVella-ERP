@@ -109,12 +109,12 @@ namespace WebVella.ERP.Jobs
 						DbContext.CreateContext(Settings.ConnectionString);
 
 						Log log = new Log();
-						string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-						log.Create(LogType.Error, "Background job process", message, ex.StackTrace);
+						Exception exeption = ex.InnerException != null ? ex.InnerException : ex;
+						log.Create(LogType.Error, "Background job process", exeption.Message, exeption.StackTrace);
 
 						job.FinishedOn = DateTime.UtcNow;
 						job.Status = JobStatus.Failed;
-						job.ErrorMessage = message;
+						job.ErrorMessage = exeption.Message;
 						jobService.UpdateJob(job);
 					}
 					finally

@@ -197,7 +197,8 @@ namespace WebVella.ERP.Jobs
 							DbContext.CreateContext(ERP.Settings.ConnectionString);
 
 							Log log = new Log();
-							log.Create(LogType.Error, "Background job", ex.Message, ex.StackTrace);
+							Exception exeption = ex.InnerException != null ? ex.InnerException : ex;
+							log.Create(LogType.Error, "Background job", exeption.Message, exeption.StackTrace);
 						}
 						finally
 						{
