@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebVella.ERP.Api;
 using WebVella.ERP.Database;
+using WebVella.ERP.Diagnostics;
 using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP.Jobs
@@ -32,7 +33,7 @@ namespace WebVella.ERP.Jobs
 			Current = new JobPool();
 		}
 
-		public async void RunJobAsync(Job job)
+		public void RunJobAsync(Job job)
 		{
 			//Get pool count and if it is < of max_thread_pool_count create new context and start execute the job in new thread
 
@@ -47,7 +48,7 @@ namespace WebVella.ERP.Jobs
 				context.Attributes = job.Attributes;
 				context.Type = job.Type;
 
-				await Task.Run(() => Process(context));
+				Task.Run(() => Process(context));
 			}
 		}
 
@@ -74,7 +75,7 @@ namespace WebVella.ERP.Jobs
 				}
 
 				Type type = assembly.GetType(context.Type.CompleteClassName);
-				if(type == null)
+				if (type == null)
 					throw new Exception($"Type with name '{context.Type.CompleteClassName}' does not exist in assembly {assembly.FullName}");
 
 				var method = type.GetMethod(context.Type.MethodName);
@@ -101,10 +102,26 @@ namespace WebVella.ERP.Jobs
 			}
 			catch (Exception ex)
 			{
-				job.FinishedOn = DateTime.UtcNow;
-				job.Status = JobStatus.Failed;
-				job.ErrorMessage = ex.Message;
-				jobService.UpdateJob(job);
+				using (var secCtx = SecurityContext.OpenSystemScope())
+				{
+					try
+					{
+						DbContext.CreateContext(Settings.ConnectionString);
+
+						Log log = new Log();
+						Exception exeption = ex.InnerException != null ? ex.InnerException : ex;
+						log.Create(LogType.Error, "Background job process", exeption.Message, exeption.StackTrace);
+
+						job.FinishedOn = DateTime.UtcNow;
+						job.Status = JobStatus.Failed;
+						job.ErrorMessage = exeption.Message;
+						jobService.UpdateJob(job);
+					}
+					finally
+					{
+						DbContext.CloseContext();
+					}
+				}
 			}
 			finally
 			{

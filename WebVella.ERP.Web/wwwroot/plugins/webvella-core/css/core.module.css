@@ -1308,7 +1308,7 @@ body.hidden-sidebar #page-topnav {
 
 #content {
 	margin-left: 220px;
-	background-color: #fff;
+	background-color: #f7f7f7;
 }
 
 .no-sidebar #content {
@@ -2562,7 +2562,7 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 
 .form-control {
 	border-color: #ccc;
-	background-color: #fafafa;
+	background-color: #fff;
 }
 
 div.form-control {
@@ -3086,6 +3086,14 @@ table .btn-xs.btn-link {
 	background-color: #eee !important;
 }
 
+.go-black {
+	color: #333 !important;
+}
+
+.go-black-bkg {
+	color: #333 !important;
+}
+
 /*#endregion */
 
 /*#region << Vertical tabs >> */
@@ -3603,7 +3611,7 @@ table .btn-xs.btn-link {
 
 	.editable-wrapper .form-control,
 	.editable-combodate .combodate select{
-		background-color: #fafafa;
+		background-color: #fff;
 		color: #333;
 		box-shadow: none;
 		min-height: 34px;

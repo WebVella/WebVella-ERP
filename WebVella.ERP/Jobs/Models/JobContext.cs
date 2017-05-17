@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace WebVella.ERP.Jobs
 {
-    public class JobContext
-    {
+	public class JobContext
+	{
 		[JsonProperty(PropertyName = "job_id")]
 		public Guid JobId { get; set; }
 

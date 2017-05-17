@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace WebVella.ERP.Jobs
 {
-    public class JobManagerSettings
-    {
+	public class JobManagerSettings
+	{
 		[JsonProperty(PropertyName = "db_connection_string")]
 		public string DbConnectionString { get; set; }
 
