@@ -4320,7 +4320,9 @@ table.editable td {
 	border-bottom: 1px solid #ccc;
 	padding: 10px;
 }
-
+.active .tab-content {
+	background:#fff;
+}
 .nav-tabs {
 	margin-bottom: 0;
 }
