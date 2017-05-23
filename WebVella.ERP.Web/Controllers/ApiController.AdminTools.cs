@@ -7754,8 +7754,9 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 
 			//Because of the \r\n <> \n problem we will need to artificially add \r to the new view templates and test again
 			if(!String.IsNullOrWhiteSpace(oldView.ServiceCode)) {
-				var fixedServiceCode = oldView.ServiceCode.Replace("\n", "\r\n");
-				if (currentView.ServiceCode != fixedServiceCode)
+				var fixedServiceCode = oldView.ServiceCode.Replace("\n", "").Replace("\r", "");
+				var fixedCurrrentServiceCode = currentView.ServiceCode.Replace("\n", "").Replace("\r", "");
+				if (fixedCurrrentServiceCode != fixedServiceCode)
 				{
 					hasUpdate = true;
 				}
@@ -7800,9 +7801,10 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 					else
 					{
 						var correspondingActionItem = oldActionsDictionary[dictionaryKey];
-						var newTemplateWithoutNewLines = item.Template.Replace("\r\n", "").Replace("\n", "");
-						var oldTemplateWithoutNewLines = correspondingActionItem.Template.Replace("\r\n", "").Replace("\n", "");
-						if (newTemplateWithoutNewLines != oldTemplateWithoutNewLines) {
+						var oldTemplateFixed = correspondingActionItem.Template.Replace("\n", "").Replace("\r", "");
+						var newTemplateFixed = item.Template.Replace("\n", "").Replace("\r", "");
+						if (oldTemplateFixed != newTemplateFixed)
+						{
 							differenceInTemplateFound = true;
 						}
 					}
@@ -8788,8 +8790,10 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			//Because of the \r\n <> \n problem we will need to artificially add \r to the new view templates and test again
 			if(!String.IsNullOrWhiteSpace(oldList.ServiceCode)) {
-				var fixedServiceCode = oldList.ServiceCode.Replace("\n", "\r\n");
-				if (currentList.ServiceCode != fixedServiceCode)
+				//Remove all \r and \n and test the lists as there is often a problem with that
+				var fixedServiceCode = oldList.ServiceCode.Replace("\n", "").Replace("\r", "");
+				var fixedCurrrentServiceCode = currentList.ServiceCode.Replace("\n", "").Replace("\r", "");
+				if (fixedCurrrentServiceCode != fixedServiceCode)
 				{
 					hasUpdate = true;
 				}
@@ -8828,9 +8832,10 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 					else
 					{
 						var correspondingActionItem = oldActionsDictionary[dictionaryKey];
-						var newTemplateWithoutNewLines = item.Template.Replace("\r\n", "").Replace("\n", "");
-						var oldTemplateWithoutNewLines = correspondingActionItem.Template.Replace("\r\n", "").Replace("\n", "");
-						if (newTemplateWithoutNewLines != oldTemplateWithoutNewLines) {
+						var oldTemplateFixed = correspondingActionItem.Template.Replace("\n", "").Replace("\r", "");
+						var newTemplateFixed = item.Template.Replace("\n", "").Replace("\r", "");
+						if (oldTemplateFixed != newTemplateFixed)
+						{
 							differenceInTemplateFound = true;
 						}
 					}
