@@ -193,9 +193,10 @@
 							break;
 						case 7: //File
 							ngCtrl.progress[availableViewFields[j].meta.name] = 0;
-							if (availableViewFields[j].meta.required) {
-								ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
-							}
+							//Should not be initialized as the default path could not be accessible from here
+							//if (availableViewFields[j].meta.required) {
+							//	ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+							//}
 							break;
 						case 8: //HTML
 							if (availableViewFields[j].meta.required) {
@@ -204,9 +205,10 @@
 							break;
 						case 9: //Image
 							ngCtrl.progress[availableViewFields[j].meta.name] = 0;
-							if (availableViewFields[j].meta.required) {
-								ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
-							}
+							//Should not be initialized as the default path could not be accessible from here
+							//if (availableViewFields[j].meta.required) {
+							//	ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+							//}
 							break;
 						case 10: //TextArea
 							if (availableViewFields[j].meta.required) {
