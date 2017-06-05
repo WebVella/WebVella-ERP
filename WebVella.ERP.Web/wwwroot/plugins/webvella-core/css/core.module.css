@@ -4319,6 +4319,7 @@ table.editable td {
 	border-right: 1px solid #ccc;
 	border-bottom: 1px solid #ccc;
 	padding: 10px;
+	background:#fff;
 }
 .active .tab-content {
 	background:#fff;
