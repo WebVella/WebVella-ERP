@@ -13,7 +13,7 @@
 		    "apiBaseUrl": "/api/v1/en_US/",
 		    "locale": "en_US",
 		    "authTokenKey": "erp-auth",
-		    "htmlCacheBreaker": 20170405
+		    "htmlCacheBreaker": 20170525
 		});
 })();
 
@@ -177,7 +177,7 @@ function checkEmail(data) {
         return response;
     }
     var regex = new RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
-    if (!regex.test(data.toString())) {
+    if (!regex.test(_.toLower(data.toString()))) {
         response.success = false;
         response.message = "Invalid email format";
         return response;
