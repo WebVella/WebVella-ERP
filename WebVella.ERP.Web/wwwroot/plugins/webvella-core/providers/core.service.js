@@ -2612,6 +2612,7 @@
 			if (fieldName != null) {
 			    validationObj.errors[fieldName] = {};
 			    validationObj.errors[fieldName].isInvalid = true;
+				validationObj.errors[fieldName].key = fieldName;
 			    validationObj.errors[fieldName].message = fieldMessage;
 			}
 
