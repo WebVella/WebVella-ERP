@@ -121,7 +121,7 @@
 		// Process
 		function successCallback(response) {
 			if (response.object === null) {
-				alert("error in response!");
+			    alert("error in response! " + response.message);
 			}
 			else if (response.object.meta === null) {
 				alert("The view with name: " + $stateParams.parentViewName + " does not exist");
@@ -132,7 +132,7 @@
 
 		function errorCallback(response) {
 			if (response.object === null) {
-				alert("error in response!");
+			    alert("error in response! " + response.message);
 			}
 			else {
 				defer.reject(response.message);
@@ -200,7 +200,7 @@
 		// Process
 		function successCallback(response) {
 			if (response.object === null) {
-				alert("error in response!");
+			    alert("error in response! " + response.message);
 			}
 			else if (response.object.meta === null) {
 				alert("The view with name: " + $stateParams.viewName + " does not exist");
@@ -211,7 +211,7 @@
 
 		function errorCallback(response) {
 			if (response.object === null) {
-				alert("error in response!");
+			    alert("error in response! " + response.message);
 			}
 			else {
 				defer.reject(response.message);
@@ -655,6 +655,24 @@
 			return moment(fastCopy(date)).toDate();
 		}
 
+		ngCtrl.initInlineEdit = function(fieldType,item,$this,viewData){
+			switch(fieldType){
+				case 4:
+					if(viewData[item.dataName] == null){
+						viewData[item.dataName] = moment().toDate();
+					}
+					ngCtrl['fieldForm_' + item.dataName] = $this['fieldForm_' + item.dataName];
+					$this['fieldForm_' + item.dataName].$show(); 
+					break;
+				case 5:
+					if(viewData[item.dataName] == null){
+						viewData[item.dataName] = moment().toDate();
+					}
+					ngCtrl['fieldForm_' + item.dataName] = $this['fieldForm_' + item.dataName];
+					$this['fieldForm_' + item.dataName].$show(); 
+					break;
+			}
+		}
 
 		ngCtrl.headerRegion = [];
 		ngCtrl.activeRegion = [];
