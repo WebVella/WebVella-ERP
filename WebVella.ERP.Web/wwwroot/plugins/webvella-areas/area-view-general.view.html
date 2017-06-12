@@ -237,7 +237,10 @@
 												<a class="update-link" href='javascript:void(0)' ngf-select="ngCtrl.updateFileUpload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false' accept="image/*"><i class="fa fa-fw fa-refresh"></i></a>
 											</div>
 										</div>
-										<img ng-switch-when="9" class="image-field" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-src="/fs{{viewData[item.dataName]}}" />
+										<div ng-switch-when="9" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+											<img class="image-field" ng-src="/fs{{viewData[item.dataName]}}" ng-if="viewData[item.dataName]"/>
+											<p class="form-control-static" ng-if="!viewData[item.dataName]">No image attached</p>
+										</div>
 										<!-- If type 10 - textarea -->
 										<div class="editable-wrapper input-group editable-updatable textarea" ng-switch-when="10" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
 											 ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">
