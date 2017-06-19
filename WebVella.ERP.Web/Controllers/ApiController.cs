@@ -3737,8 +3737,8 @@ namespace WebVella.ERP.Web.Controllers
 								DateTime startTimespan;
 								if (DateTime.TryParse(postObject["start_timespan"].ToString(), out startTimespan))
 								{
-									startTimespan = ((DateTime)postObject["start_timespan"]).ToUniversalTime();
-									schedulePlan.IntervalInMinutes = startTimespan.Hour * 60 + startTimespan.Minute;
+									startTimespan = ((DateTime)postObject["start_timespan"]);
+									schedulePlan.StartTimespan = startTimespan.Hour * 60 + startTimespan.Minute;
 								}
 								else
 								{
@@ -3751,8 +3751,10 @@ namespace WebVella.ERP.Web.Controllers
 								DateTime endTimespan;
 								if (DateTime.TryParse(postObject["end_timespan"].ToString(), out endTimespan))
 								{
-									endTimespan = ((DateTime)postObject["end_timespan"]).ToUniversalTime();
-									schedulePlan.IntervalInMinutes = endTimespan.Hour * 60 + endTimespan.Minute;
+									endTimespan = ((DateTime)postObject["end_timespan"]);
+									schedulePlan.EndTimespan = endTimespan.Hour * 60 + endTimespan.Minute;
+									if (schedulePlan.EndTimespan == 0) //that's mean 12PM
+										schedulePlan.EndTimespan = 1440;
 								}
 								else
 								{

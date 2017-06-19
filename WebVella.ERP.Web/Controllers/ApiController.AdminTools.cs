@@ -8273,6 +8273,16 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 				response += $"\t\t\tlistItemFromRelation.FieldLookupList = \"{recordListItem.FieldLookupList}\";\n";
 			}
 
+			if (recordListItem.FieldManageView == null)
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldManageView = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldManageView = \"{recordListItem.FieldManageView}\";\n";
+			}
+
+
 			response +=
 			$"\t\t\tlistItemFromRelation.RelationId = new Guid(\"{recordListItem.RelationId}\");\n" +
 			$"\t\t\tlistItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +

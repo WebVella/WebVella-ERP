@@ -289,7 +289,7 @@
 			validateSubmit();
 			if(!popupCtrl.validation.isInvalid){
 				var submitObject = createSubmitObject();
-       			//webvellaCoreService.updateSchedulePlan(popupCtrl.selectedPlan.id, submitObject, successCallback, errorCallback);
+       			webvellaCoreService.updateSchedulePlan(popupCtrl.selectedPlan.id, submitObject, successCallback, errorCallback);
 			}
         };
 
