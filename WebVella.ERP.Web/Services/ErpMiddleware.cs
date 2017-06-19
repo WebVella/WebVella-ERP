@@ -30,19 +30,15 @@ namespace WebVella.ERP.Web.Services
 			this.next = next;
 		}
 
-		public async Task Invoke(HttpContext context, IRequestService requestService)
+		public async Task Invoke(HttpContext context)
 		{
 			IDisposable dbCtx = DbContext.CreateContext(Settings.ConnectionString);
 			IDisposable secCtx = null;
-			//requestService.AddObjectToDispose(dbCtx);
 
 			WebSecurityUtil.Authenticate(context);
 			var identity = (context.User as ErpPrincipal)?.Identity as ErpIdentity;
 			if (identity != null)
-			{
 				secCtx = SecurityContext.OpenScope(identity.User);
-				//requestService.AddObjectToDispose(securityContext);
-			}
 
 			await next(context);
 			await Task.Run(() => {
