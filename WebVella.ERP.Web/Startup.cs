@@ -38,7 +38,6 @@ namespace WebVella.ERP.Web
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddMvc().AddCrmPlugins(hostingEnviroment);
-			services.AddScoped<IRequestService, RequestService>();
 			services.AddSingleton<IErpService, ErpService>();
 			services.AddSingleton<IPluginService, PluginService>();
 			services.AddSingleton<IWebHookService, WebHookService>();
