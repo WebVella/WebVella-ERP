@@ -3541,7 +3541,7 @@
                 success: true,
                 message: "successful validation"
             };
-            if (data != null) {
+            if (data !== '[object Array]' && (typeof data === 'string' || data instanceof String) && data != null) {
                 data = data.toString().trim();
             }
             switch (item.meta.fieldType) {
@@ -3610,10 +3610,6 @@
                 case 11: // Multiselect
                     if (!data && item.meta.required) {
                         return "This is a required field";
-                    }
-                    //We need to convert data which is "2,3" comma separated string to string array
-                    if (data !== '[object Array]') {
-                        data = data.split(',');
                     }
                     break;
                     //Number
