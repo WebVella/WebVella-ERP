@@ -420,9 +420,9 @@
 									<div class="form-group">
 										<div class="input-group">
 											<span class="input-group-addon">
-												<i ng-show="::!popupCtrl.columnHasError[key] && !popupCtrl.columnHasWarning[key]" class="fa fa-fw fa-check go-green ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="no warnings or errors in this column" popover-trigger="mouseenter"></i>
-												<i ng-show="::popupCtrl.columnHasError[key]" class="fa fa-fw fa-exclamation-circle go-red ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="this column has errors. Check the fields below" popover-trigger="mouseenter"></i>
-												<i ng-show="::popupCtrl.columnHasWarning[key]" class="fa fa-fw fa-warning go-orange ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="this column has warnings. Check the fields below" popover-trigger="mouseenter"></i>
+												<i ng-show="::!popupCtrl.columnHasError[key] && !popupCtrl.columnHasWarning[key]" class="fa fa-fw fa-check go-green ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="no warnings or errors in this column" popover-trigger="'mouseenter'"></i>
+												<i ng-show="::popupCtrl.columnHasError[key]" class="fa fa-fw fa-exclamation-circle go-red ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="this column has errors. Check the fields below" popover-trigger="'mouseenter'"></i>
+												<i ng-show="::popupCtrl.columnHasWarning[key]" class="fa fa-fw fa-warning go-orange ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="this column has warnings. Check the fields below" popover-trigger="'mouseenter'"></i>
 											</span>
 											<select class="form-control" ng-model="popupCtrl.evaluationResult.commands[key].command"
 													ng-options="option.key as option.value for option in popupCtrl.importTypes"
@@ -486,7 +486,7 @@
 								</div>
 								<div ng-if="popupCtrl.evaluationResult.commands[key].command == 'to_create'">
 									<div class="input-group" style="margin-bottom:5px;">
-										<span class="input-group-addon" popover-placement="top" popover-append-to-body="true" uib-popover="{{popupCtrl.getFieldTypeDescription(popupCtrl.newFieldType['field' + $index])}}" popover-trigger="mouseenter">
+										<span class="input-group-addon" popover-placement="top" popover-append-to-body="true" uib-popover="{{popupCtrl.getFieldTypeDescription(popupCtrl.newFieldType['field' + $index])}}" popover-trigger="'mouseenter'">
 											<i class="fa fa-fw fa-info-circle go-gray"></i>
 										</span>
 										<select class="form-control" ng-init="popupCtrl.newFieldType['field' + $index] = 18" ng-model="popupCtrl.newFieldType['field' + $index]" ng-options="::option.id as option.label for option in popupCtrl.fieldTypes"></select>
@@ -510,12 +510,12 @@
 					<tbody>
 						<tr ng-repeat="record in popupCtrl.evaluationResult.records track by $index">
 							<td class="id-field">
-								<span ng-if="record.id">{{record.id}} <i class="fa fa-refresh fa-fw go-orange" uib-popover="Existing record will be updated" popover-trigger="mouseenter"></i></span>
-								<span ng-if="!record.id" class="noid">this row does not have id data provided <i class="fa fa-plus-circle fa-fw go-green" uib-popover="A new record will be created" popover-trigger="mouseenter"></i></span>
+								<span ng-if="record.id">{{record.id}} <i class="fa fa-refresh fa-fw go-orange" uib-popover="Existing record will be updated" popover-trigger="'mouseenter'"></i></span>
+								<span ng-if="!record.id" class="noid">this row does not have id data provided <i class="fa fa-plus-circle fa-fw go-green" uib-popover="A new record will be created" popover-trigger="'mouseenter'"></i></span>
 							</td>
 							<td ng-repeat="(key, value) in record" ng-if="key != 'id'" ng-class="{'to_create': popupCtrl.evaluationResult.commands[key].command == 'to_create','to_update': popupCtrl.evaluationResult.commands[key].command == 'to_update','no_import': popupCtrl.evaluationResult.commands[key].command == 'no_import'}">
-								<i ng-show="::popupCtrl.evaluationResult.errors[key][$parent.$parent.$index] != null" class="fa fa-exclamation-circle go-red ng-hide" uib-popover="{{::popupCtrl.evaluationResult.errors[key][$parent.$parent.$index]}}" popover-trigger="mouseenter" style="margin-right:5px;"></i>
-								<i ng-show="::popupCtrl.evaluationResult.warnings[key][$parent.$parent.$index] != null" class="fa fa-warning go-orange ng-hide" uib-popover="{{::popupCtrl.evaluationResult.warnings[key][$parent.$parent.$index]}}" popover-trigger="mouseenter" style="margin-right:5px;"></i>
+								<i ng-show="::popupCtrl.evaluationResult.errors[key][$parent.$parent.$index] != null" class="fa fa-exclamation-circle go-red ng-hide" uib-popover="{{::popupCtrl.evaluationResult.errors[key][$parent.$parent.$index]}}" popover-trigger="'mouseenter'" style="margin-right:5px;"></i>
+								<i ng-show="::popupCtrl.evaluationResult.warnings[key][$parent.$parent.$index] != null" class="fa fa-warning go-orange ng-hide" uib-popover="{{::popupCtrl.evaluationResult.warnings[key][$parent.$parent.$index]}}" popover-trigger="'mouseenter'" style="margin-right:5px;"></i>
 								{{record[key]}}
 							</td>
 						</tr>
