@@ -276,7 +276,7 @@
                     errorCallback(data);
                     break;
                 default:
-                    alert("An API call finished with error: " + status);
+                    console.log("An API call finished with error: " + status);
                     break;
             }
         }
