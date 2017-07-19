@@ -114,6 +114,11 @@ span.divider {
 	margin-bottom: 10px !important;
 }
 
+.panel-white .panel-heading {
+	font-weight:bold;
+	padding: 5px 10px;
+}
+
 .panel-white .panel-body {
 	padding: 0 10px;
 }
@@ -2391,6 +2396,11 @@ body #loading-bar-spinner {
 	border-width: 3px;
 }
 
+#loading-bar-spinner .spinner-icon.go-gray {
+	border-top-color: #ccc;
+	border-left-color: #ccc;
+}
+
 body.mini-sidebar #loading-bar-spinner .spinner-icon {
 	width: 2em;
 	height: 2em;
@@ -3085,6 +3095,18 @@ table .btn-xs.btn-link {
 .go-bkg-grey-light {
 	background-color: #eee !important;
 }
+
+.go-gray-dark,
+.go-grey-dark {
+	color: #999 !important;
+}
+
+.go-bkg-gray-dark,
+.go-bkg-grey-dark {
+	background-color: #999 !important;
+}
+
+
 
 .go-black {
 	color: #333 !important;
