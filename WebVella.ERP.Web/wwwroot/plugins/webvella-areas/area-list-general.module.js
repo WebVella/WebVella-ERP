@@ -171,7 +171,7 @@
 		// Process
 		function successCallback(response) {
 			if (response.object === null) {
-			    alert("error in response!" + response.message);
+			    alert("error in response! " + response.message);
 			}
 			else if (response.object === null) {
 				alert("The view with name: " + $stateParams.parentViewName + " does not exist");
@@ -182,7 +182,7 @@
 
 		function errorCallback(response) {
 			if (response.object === null) {
-			    alert("error in response!" + response.message);
+			    alert("error in response! " + response.message);
 			}
 			else {
 				ngToast.create({
@@ -206,8 +206,8 @@
 		return defer.promise;
 	}
 
-	resolveRecordListDataFromView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedParentViewData', 'resolvedEntityList', 'resolvedEntityRelationsList', 'ngToast'];
-	function resolveRecordListDataFromView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedParentViewData, resolvedEntityList, resolvedEntityRelationsList, ngToast) {
+	resolveRecordListDataFromView.$inject = ['$q','$location', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedParentViewData', 'resolvedEntityList', 'resolvedEntityRelationsList', 'ngToast'];
+	function resolveRecordListDataFromView($q, $location,$log, webvellaCoreService, $stateParams, $state, $timeout, resolvedParentViewData, resolvedEntityList, resolvedEntityRelationsList, ngToast) {
 		//Temporary method will be replaced when the proper API is ready
 		// Initialize
 		var defer = $q.defer();
