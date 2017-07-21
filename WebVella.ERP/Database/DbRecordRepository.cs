@@ -1055,6 +1055,9 @@ namespace WebVella.ERP.Database
                 if (!query.FieldName.Contains(RELATION_NAME_RESULT_SEPARATOR))
                 {
                     field = entity.Fields.SingleOrDefault(x => x.Name == query.FieldName);
+					if(field == null) {
+						throw new Exception("Queried field '" + query.FieldName + "' does not exist");
+					}
                     fieldType = field.GetFieldType();
                     string entityTablePrefix = GetTableNameForEntity(entity) + ".";
                     completeFieldName = entityTablePrefix + query.FieldName;
