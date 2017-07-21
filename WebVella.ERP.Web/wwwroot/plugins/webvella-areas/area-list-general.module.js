@@ -288,6 +288,7 @@
 		ngCtrl.currentUser = resolvedCurrentUser;
 		ngCtrl.$sessionStorage = $sessionStorage;
 		ngCtrl.stateParams = $stateParams;
+		ngCtrl.$sessionStorage["last-list-params"] = fastCopy($stateParams);
 		ngCtrl.parentView = {};
 		ngCtrl.parentView.data = null;
 		ngCtrl.parentView.meta = null;
@@ -673,10 +674,6 @@
 			//Get the entity of the current list or view
 			var listEntity = webvellaCoreService.getEntityMetaFromEntityList(safeListNameAndEntityName.entityName, resolvedEntityList);
 			return webvellaCoreService.userHasRecordPermissions(listEntity, permissionsCsv);
-		}
-
-		ngCtrl.saveStateParamsToSessionStorage = function () {
-			ngCtrl.$sessionStorage["last-list-params"] = $stateParams;
 		}
 
 		//#region << Sort >>
