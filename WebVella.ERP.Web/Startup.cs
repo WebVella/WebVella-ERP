@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Internal;
 using WebVella.ERP.Web.Services;
 using WebVella.ERP.Notifications;
+using Microsoft.AspNetCore.ResponseCompression;
+using System.IO.Compression;
 
 namespace WebVella.ERP.Web
 {
@@ -37,6 +39,13 @@ namespace WebVella.ERP.Web
 
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.Configure<GzipCompressionProviderOptions>
+				(options => options.Level = CompressionLevel.Optimal);
+			services.AddResponseCompression(options =>
+			{
+				options.Providers.Add<GzipCompressionProvider>();
+			});
+
 			services.AddMvc().AddCrmPlugins(hostingEnviroment);
 			services.AddSingleton<IErpService, ErpService>();
 			services.AddSingleton<IPluginService, PluginService>();
@@ -121,7 +130,10 @@ namespace WebVella.ERP.Web
             //TODO Check what was done here in RC1
 			//app.UseIISPlatformHandler(options => options.AutomaticAuthentication = false);
 
-			// Add static files to the request pipeline.
+			//Should be before Static files
+			app.UseResponseCompression();
+
+			// Add static files to the request pipeline. Should be last middleware.
 			app.UseStaticFiles();
 
 			// Add MVC to the request pipeline.
