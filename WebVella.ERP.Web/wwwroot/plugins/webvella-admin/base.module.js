@@ -113,7 +113,7 @@
 
 				});
 			});
-			defer.reject("No access");
+			defer.reject("Admin > No access. You do not have access to the administration area!");
 		}
 		return defer.promise;
 	}

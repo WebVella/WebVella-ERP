@@ -2383,7 +2383,7 @@ body.mini-sidebar #loading-bar-spinner {
 body #loading-bar-spinner {
 	top: 5px;
 	left: 15px;
-	display: none;
+	/*display: none;*/
 }
 
 #loading-bar-spinner .spinner-icon {

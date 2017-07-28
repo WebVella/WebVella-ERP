@@ -137,7 +137,7 @@
 				content: messageContent,
 				timeout: 7000
 			});
-			defer.reject("No access");
+			defer.reject("Area > No access. You do not have access to this area!");
 		}
 		return defer.promise;
 	}
