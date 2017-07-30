@@ -2242,9 +2242,12 @@
                 $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewMeta.name + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
             }
             else {
-                var extraParamQueryString = "";
+                var extraParamQueryString = "?";
 				var queryParamAux = [];
-                extraParamQueryString = "?";
+				//if data source already contains ?
+				if(viewMeta.dataSourceUrl.indexOf("?") !== -1){
+                extraParamQueryString = "&";
+				}
                 extraParamQueryString += "entityName=" + entityName + "&";
                 extraParamQueryString += "listName=" + viewMeta.name + "&";
                 extraParamQueryString += "recordId=" + recordId;
@@ -2334,9 +2337,12 @@
                 $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listMeta.name + '/' + page + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
             }
             else {
-                var extraParamQueryString = "";
+                var extraParamQueryString = "?";
 				var queryParamAux = [];
-                extraParamQueryString = "?";
+				//if data source already contains ?
+				if(listMeta.dataSourceUrl.indexOf("?") !== -1){
+                extraParamQueryString = "&";
+				}
                 extraParamQueryString += "entityName=" + entityName + "&";
                 extraParamQueryString += "listName=" + listMeta.name + "&";
                 extraParamQueryString += "page=" + page + "&";
