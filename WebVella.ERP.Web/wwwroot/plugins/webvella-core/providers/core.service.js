@@ -3558,7 +3558,9 @@
                     break;
                     //Checkbox
                 case 2:
-                    data = (data === "true"); // convert string to boolean
+					if(typeof data === 'string' || data instanceof String){
+						data = (data === "true"); // convert string to boolean
+					}
                     break;
                     //Auto increment number
                 case 3: //Currency
