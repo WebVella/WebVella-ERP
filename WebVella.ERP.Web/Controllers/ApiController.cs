@@ -13,23 +13,17 @@ using System.IO;
 using WebVella.ERP.Api.Models.AutoMapper;
 using WebVella.ERP.Web.Security;
 using Newtonsoft.Json;
-using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
-using CsvHelper;
 using Microsoft.AspNetCore.StaticFiles;
 using WebVella.ERP.Utilities;
 using System.Dynamic;
 using WebVella.ERP.Plugins;
 using WebVella.ERP.WebHooks;
-using System.Diagnostics;
-using Npgsql;
 using System.Data;
-using Microsoft.AspNetCore.Hosting;
 using ImageProcessor;
 using Microsoft.Extensions.Primitives;
 using ImageProcessor.Imaging;
 using System.Drawing;
-using Newtonsoft.Json.Converters;
 using WebVella.ERP.Jobs;
 
 
@@ -2790,7 +2784,7 @@ namespace WebVella.ERP.Web.Controllers
 				hookFilterObj.record = postObj;
 				hookFilterObj.recordId = recordId;
 				hookFilterObj.controller = this;
-				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordInput, entityName, hookFilterObj);
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.PatchRecordInput, entityName, hookFilterObj);
 				postObj = hookFilterObj.record;
 			}
 			catch (Exception ex)
@@ -2813,7 +2807,7 @@ namespace WebVella.ERP.Web.Controllers
 				hookFilterObj.record = postObj;
 				hookFilterObj.recordId = recordId;
 				hookFilterObj.controller = this;
-				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordValidationErrors, entityName, hookFilterObj);
+				hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.PatchRecordValidationErrors, entityName, hookFilterObj);
 				validationErrors = hookFilterObj.errors;
 			}
 			catch (Exception ex)
@@ -2854,7 +2848,7 @@ namespace WebVella.ERP.Web.Controllers
 						hookFilterObj.record = postObj;
 						hookFilterObj.recordId = recordId;
 						hookFilterObj.controller = this;
-						hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordPreSave, entityName, hookFilterObj);
+						hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.PatchRecordPreSave, entityName, hookFilterObj);
 						postObj = hookFilterObj.record;
 					}
 					catch (Exception ex)
@@ -2887,7 +2881,7 @@ namespace WebVella.ERP.Web.Controllers
 				hookActionObj.result = result;
 				hookActionObj.recordId = recordId;
 				hookActionObj.controller = this;
-				hooksService.ProcessActions(SystemWebHookNames.UpdateRecordAction, entityName, hookActionObj);
+				hooksService.ProcessActions(SystemWebHookNames.PatchRecordAction, entityName, hookActionObj);
 			}
 			catch (Exception ex)
 			{
@@ -3326,6 +3320,232 @@ namespace WebVella.ERP.Web.Controllers
 			return DoResponse(response);
 		}
 
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/quick-search")]
+		public IActionResult GetQuickSearch(string query = "", string entityName = "", string lookupFieldsCsv = "", string sortField = "", string sortType = "ascending", string returnFieldsCsv = "",
+				string matchMethod = "EQ", bool matchAllFields = false, int skipRecords = 0, int limitRecords = 5, string findType = "records", string forceFiltersCsv = "")
+		{
+			//forceFiltersCsv -> should be in the format "fieldName1:dataType1:eqValue1,fieldName2:dataType2:eqValue2"
+			var response = new ResponseModel();
+			var responseObject = new EntityRecord();
+			try
+			{
+				if (String.IsNullOrWhiteSpace(entityName) || String.IsNullOrWhiteSpace(lookupFieldsCsv) || String.IsNullOrWhiteSpace(query) || String.IsNullOrWhiteSpace(returnFieldsCsv))
+				{
+					throw new Exception("missing params. All params are required");
+				}
+
+				var lookupFieldsList = new List<string>();
+				foreach (var field in lookupFieldsCsv.Split(','))
+				{
+					lookupFieldsList.Add(field);
+				}
+
+				QueryObject matchesFilter = null;
+				#region <<Generate filters >>
+				switch (matchMethod.ToLowerInvariant())
+				{
+					case "contains":
+						if (lookupFieldsList.Count > 1)
+						{
+							var filterList = new List<QueryObject>();
+							foreach (var field in lookupFieldsList)
+							{
+								filterList.Add(EntityQuery.QueryContains(field, query));
+							}
+							if (matchAllFields)
+							{
+								matchesFilter = EntityQuery.QueryAND(filterList.ToArray());
+							}
+							else
+							{
+								matchesFilter = EntityQuery.QueryOR(filterList.ToArray());
+							}
+
+						}
+						else
+						{
+							matchesFilter = EntityQuery.QueryContains(lookupFieldsList[0], query);
+						}
+						break;
+					case "startswith":
+						if (lookupFieldsList.Count > 1)
+						{
+							var filterList = new List<QueryObject>();
+							foreach (var field in lookupFieldsList)
+							{
+								filterList.Add(EntityQuery.QueryStartsWith(field, query));
+							}
+							if (matchAllFields)
+							{
+								matchesFilter = EntityQuery.QueryAND(filterList.ToArray());
+							}
+							else
+							{
+								matchesFilter = EntityQuery.QueryOR(filterList.ToArray());
+							}
+
+						}
+						else
+						{
+							matchesFilter = EntityQuery.QueryStartsWith(lookupFieldsList[0], query);
+						}
+						break;
+					case "fts":
+						if (lookupFieldsList.Count > 1)
+						{
+							var filterList = new List<QueryObject>();
+							foreach (var field in lookupFieldsList)
+							{
+								filterList.Add(EntityQuery.QueryFTS(field, query));
+							}
+							if (matchAllFields)
+							{
+								matchesFilter = EntityQuery.QueryAND(filterList.ToArray());
+							}
+							else
+							{
+								matchesFilter = EntityQuery.QueryOR(filterList.ToArray());
+							}
+
+						}
+						else
+						{
+							matchesFilter = EntityQuery.QueryFTS(lookupFieldsList[0], query);
+						}
+						break;
+					default: // EQ
+						if (lookupFieldsList.Count > 1)
+						{
+							var filterList = new List<QueryObject>();
+							foreach (var field in lookupFieldsList)
+							{
+								filterList.Add(EntityQuery.QueryEQ(field, query));
+							}
+							if (matchAllFields)
+							{
+								matchesFilter = EntityQuery.QueryAND(filterList.ToArray());
+							}
+							else
+							{
+								matchesFilter = EntityQuery.QueryOR(filterList.ToArray());
+							}
+
+						}
+						else
+						{
+							matchesFilter = EntityQuery.QueryEQ(lookupFieldsList[0], query);
+						}
+						break;
+
+				}
+				#endregion
+
+				#region << Generate force filters >>
+				var forceFilters = new List<QueryObject>();
+				if (!String.IsNullOrWhiteSpace(forceFiltersCsv))
+				{
+					foreach (var forceFilter in forceFiltersCsv.Split(','))
+					{
+						var filterArray = forceFilter.Split(':');
+						if (filterArray.Length == 3)
+						{
+							switch (filterArray[1].ToLowerInvariant())
+							{
+								case "guid":
+									var filterValueGuid = new Guid(filterArray[2]);
+									forceFilters.Add(EntityQuery.QueryEQ(filterArray[0], filterValueGuid));
+									break;
+								case "bool":
+									if (filterArray[2] == "true")
+									{
+										forceFilters.Add(EntityQuery.QueryEQ(filterArray[0], true));
+									}
+									else
+									{
+										forceFilters.Add(EntityQuery.QueryEQ(filterArray[0], false));
+									}
+									break;
+								case "datetime":
+									var filterValueDate = Convert.ToDateTime(filterArray[2]);
+									forceFilters.Add(EntityQuery.QueryEQ(filterArray[0], filterValueDate));
+									break;
+								case "int":
+									var filterValueInt = Convert.ToInt64(filterArray[2]);
+									forceFilters.Add(EntityQuery.QueryEQ(filterArray[0], filterValueInt));
+									break;
+								case "string":
+									forceFilters.Add(EntityQuery.QueryEQ(filterArray[0], filterArray[2]));
+									break;
+								default:
+									break;
+
+							}
+						}
+					}
+
+				}
+
+				if (forceFilters.Count > 0)
+				{
+					var forceFilterQuery = EntityQuery.QueryAND(forceFilters.ToArray());
+					matchesFilter = EntityQuery.QueryAND(forceFilterQuery, matchesFilter);
+				}
+
+				#endregion
+
+
+				var sortsList = new List<QuerySortObject>();
+				#region << Generate Sorts >>
+				if (!String.IsNullOrWhiteSpace(sortField))
+				{
+					if (sortType.ToLowerInvariant() == "descending")
+					{
+						sortsList.Add(new QuerySortObject(sortField, QuerySortType.Descending));
+					}
+					else
+					{
+						sortsList.Add(new QuerySortObject(sortField, QuerySortType.Ascending));
+					}
+				}
+
+				#endregion
+
+				if (findType.ToLowerInvariant() == "records" || findType.ToLowerInvariant() == "records-and-count" || findType.ToLowerInvariant() == "records&count")
+				{
+					var matchQueryResponse = recMan.Find(new EntityQuery(entityName, returnFieldsCsv, matchesFilter, sortsList.ToArray(), skipRecords, limitRecords));
+					if (!matchQueryResponse.Success)
+					{
+						throw new Exception(matchQueryResponse.Message);
+					}
+					responseObject["records"] = matchQueryResponse.Object.Data;
+				}
+
+				if (findType.ToLowerInvariant() == "count" || findType.ToLowerInvariant() == "records-and-count" || findType.ToLowerInvariant() == "records&count")
+				{
+					var matchQueryResponse = recMan.Count(new EntityQuery(entityName, returnFieldsCsv, matchesFilter));
+					if (!matchQueryResponse.Success)
+					{
+						throw new Exception(matchQueryResponse.Message);
+					}
+					responseObject["count"] = matchQueryResponse.Object;
+				}
+
+
+
+				response.Success = true;
+				response.Message = "Quick search success";
+				response.Object = responseObject;
+				return Json(response);
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Message = ex.Message;
+				response.Object = null;
+				return Json(response);
+			}
+		}
+
 		#endregion
 
 		#region << Files >>
@@ -3583,6 +3803,8 @@ namespace WebVella.ERP.Web.Controllers
 
 			return DoResponse(response);
 		}
+
+
 
 		#endregion
 
@@ -3946,32 +4168,38 @@ namespace WebVella.ERP.Web.Controllers
 
 		#region << System log >>
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/system-log")]
-		public IActionResult GetSystemLog(DateTime? fromDate = null, DateTime? untilDate = null,string type = "",
-			string source = "",string message = "",string notificationStatus = "",int page = 1, int pageSize = 15)
+		public IActionResult GetSystemLog(DateTime? fromDate = null, DateTime? untilDate = null, string type = "",
+			string source = "", string message = "", string notificationStatus = "", int page = 1, int pageSize = 15)
 		{
 			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 			var recMan = new RecordManager();
-			var skipRecords = (page-1)*pageSize;
+			var skipRecords = (page - 1) * pageSize;
 			try
 			{
 				//Filters
 				var filterList = new List<QueryObject>();
-				if(fromDate != null) {
+				if (fromDate != null)
+				{
 					filterList.Add(EntityQuery.QueryGT("created_on", fromDate));
 				}
-				if(untilDate != null) {
+				if (untilDate != null)
+				{
 					filterList.Add(EntityQuery.QueryLT("created_on", untilDate));
 				}
-				if(!String.IsNullOrWhiteSpace(type)) {
+				if (!String.IsNullOrWhiteSpace(type))
+				{
 					filterList.Add(EntityQuery.QueryEQ("type", type));
 				}
-				if(!String.IsNullOrWhiteSpace(source)) {
+				if (!String.IsNullOrWhiteSpace(source))
+				{
 					filterList.Add(EntityQuery.QueryContains("source", source));
 				}
-				if(!String.IsNullOrWhiteSpace(message)) {
+				if (!String.IsNullOrWhiteSpace(message))
+				{
 					filterList.Add(EntityQuery.QueryContains("message", message));
 				}
-				if(!String.IsNullOrWhiteSpace(notificationStatus)) {
+				if (!String.IsNullOrWhiteSpace(notificationStatus))
+				{
 					filterList.Add(EntityQuery.QueryEQ("notificationStatus", notificationStatus));
 				}
 
@@ -3985,7 +4213,7 @@ namespace WebVella.ERP.Web.Controllers
 				var columns = "*";
 
 				//Query
-				var query = new EntityQuery("system_log", columns, selectFilters, sortList.ToArray(),skipRecords,pageSize);
+				var query = new EntityQuery("system_log", columns, selectFilters, sortList.ToArray(), skipRecords, pageSize);
 				var queryResponse = recMan.Find(query);
 				if (!queryResponse.Success)
 				{
