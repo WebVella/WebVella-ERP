@@ -3078,32 +3078,32 @@ table .btn-xs.btn-link {
 
 .go-gray,
 .go-grey {
-	color: #BDBDBD !important;
+	color: #999 !important;
 }
 
 .go-bkg-gray,
 .go-bkg-grey {
-	background-color: #BDBDBD !important;
+	background-color: #999 !important;
 }
 
 .go-gray-light,
 .go-grey-light {
-	color: #eee !important;
+	color: #ccc !important;
 }
 
 .go-bkg-gray-light,
 .go-bkg-grey-light {
-	background-color: #eee !important;
+	background-color: #ccc !important;
 }
 
 .go-gray-dark,
 .go-grey-dark {
-	color: #999 !important;
+	color: #666 !important;
 }
 
 .go-bkg-gray-dark,
 .go-bkg-grey-dark {
-	background-color: #999 !important;
+	background-color: #666 !important;
 }
 
 
