@@ -70,7 +70,7 @@ namespace WebVella.ERP.Jobs
 			if (JobTypes.Any(t => t.Name.ToLowerInvariant() == type.Name.ToLowerInvariant()))
 			{
 				Log log = new Log();
-				log.Create(LogType.Error, "Background job", "Register type failed!", $"Type with name '{type.Name}' already exists.");
+				log.Create(LogType.Error, "JobManager.RegisterType", "Register type failed!", $"Type with name '{type.Name}' already exists.", saveDetailsAsJson: true);
 				return false;
 			}
 
@@ -81,7 +81,7 @@ namespace WebVella.ERP.Jobs
 			{
 				//log error "Assembly can not be found!"
 				Log log = new Log();
-				log.Create(LogType.Error, "Background job", "Register type failed!", $"Assembly with name '{type.Assembly}' can not be found.");
+				log.Create(LogType.Error, "JobManager.RegisterType", "Register type failed!", $"Assembly with name '{type.Assembly}' can not be found.", saveDetailsAsJson: true);
 				return false;
 			}
 
@@ -89,7 +89,7 @@ namespace WebVella.ERP.Jobs
 			if (assemblyType == null)
 			{
 				Log log = new Log();
-				log.Create(LogType.Error, "Background job", "Register type failed!", $"Type with name '{type.CompleteClassName}' does not exist in assembly {assembly.FullName}.");
+				log.Create(LogType.Error, "JobManager.RegisterType", "Register type failed!", $"Type with name '{type.CompleteClassName}' does not exist in assembly {assembly.FullName}.", saveDetailsAsJson: true);
 				return false;
 			}
 
@@ -97,7 +97,7 @@ namespace WebVella.ERP.Jobs
 			if (method == null)
 			{
 				Log log = new Log();
-				log.Create(LogType.Error, "Background job", "Register type failed!", $"Method with name '{type.MethodName}' does not exist in assembly {assembly.FullName}.");
+				log.Create(LogType.Error, "JobManager.RegisterType", "Register type failed!", $"Method with name '{type.MethodName}' does not exist in assembly {assembly.FullName}.", saveDetailsAsJson: true);
 				return false;
 			}
 
@@ -120,7 +120,7 @@ namespace WebVella.ERP.Jobs
 			if (type == null)
 			{
 				Log log = new Log();
-				log.Create(LogType.Error, "Background job", "Create job failed!", $"Type with id '{typeId}' can not be found.");
+				log.Create(LogType.Error, "JobManager.CreateJob", "Create job failed!", $"Type with id '{typeId}' can not be found.", saveDetailsAsJson: true);
 				return null;
 			}
 
@@ -148,6 +148,11 @@ namespace WebVella.ERP.Jobs
 		public bool UpdateJob(Job job)
 		{
 			return JobService.UpdateJob(job);
+		}
+
+		public Job GetJob(Guid jobId)
+		{
+			return JobService.GetJob(jobId);
 		}
 
 		public List<Job> GetJobs(DateTime? startFromDate = null, DateTime? startToDate = null, DateTime? finishedFromDate = null, DateTime? finishedToDate = null,
@@ -183,7 +188,7 @@ namespace WebVella.ERP.Jobs
 						{
 							try
 							{
-								if (job.Type.AllowSingleInstance && JobPool.Pool.Any(c => c.Type.Id == job.Type.Id))
+								if (job.Type.AllowSingleInstance && JobPool.Current.HasJobFromTypeInThePool(job.Type.Id))
 									continue;
 
 								JobPool.Current.RunJobAsync(job);
@@ -200,7 +205,7 @@ namespace WebVella.ERP.Jobs
 										Exception exeption = ex.InnerException != null ? ex.InnerException : ex;
 										string jobId = job != null ? job.Id.ToString() : "null";
 										string jobType = job != null && job.Type != null ? job.Type.Name : "null";
-										log.Create(LogType.Error, "Background job", $"Start job with id[{jobId}] and type [{jobType}] failed! ", exeption.Message);
+										log.Create(LogType.Error, "JobManager.Process", $"Start job with id[{jobId}] and type [{jobType}] failed! ", exeption.Message);
 									}
 									finally
 									{
@@ -221,7 +226,7 @@ namespace WebVella.ERP.Jobs
 
 							Log log = new Log();
 							Exception exeption = ex.InnerException != null ? ex.InnerException : ex;
-							log.Create(LogType.Error, "Background job", exeption.Message, exeption.StackTrace);
+							log.Create(LogType.Error, "JobManager.Process", exeption);
 						}
 						finally
 						{
@@ -234,12 +239,6 @@ namespace WebVella.ERP.Jobs
 					Thread.Sleep(12000);
 				}
 			}
-		}
-
-		//Just a test method
-		public void Test(JobContext context)
-		{
-
 		}
 	}
 }
