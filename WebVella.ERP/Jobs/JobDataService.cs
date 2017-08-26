@@ -152,6 +152,8 @@ namespace WebVella.ERP.Jobs
 			parameters.Add(new NpgsqlParameter("status", status) { NpgsqlDbType = NpgsqlDbType.Integer });
 			if (limit.HasValue)
 			{
+				if (limit.Value < 0)
+					limit = 0;
 				parameters.Add(new NpgsqlParameter("limit", limit) { NpgsqlDbType = NpgsqlDbType.Integer });
 				sql += " LIMIT @limit";
 			}

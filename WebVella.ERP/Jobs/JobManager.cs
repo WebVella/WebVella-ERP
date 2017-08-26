@@ -181,10 +181,33 @@ namespace WebVella.ERP.Jobs
 
 						foreach (var job in pendingJobs)
 						{
-							if (job.Type.AllowSingleInstance && JobPool.Pool.Any(c => c.Type.Id == job.Type.Id))
-								continue;
+							try
+							{
+								if (job.Type.AllowSingleInstance && JobPool.Pool.Any(c => c.Type.Id == job.Type.Id))
+									continue;
 
-							JobPool.Current.RunJobAsync(job);
+								JobPool.Current.RunJobAsync(job);
+							}
+							catch (Exception ex)
+							{
+								using (var secCtx = SecurityContext.OpenSystemScope())
+								{
+									try
+									{
+										DbContext.CreateContext(ERP.Settings.ConnectionString);
+
+										Log log = new Log();
+										Exception exeption = ex.InnerException != null ? ex.InnerException : ex;
+										string jobId = job != null ? job.Id.ToString() : "null";
+										string jobType = job != null && job.Type != null ? job.Type.Name : "null";
+										log.Create(LogType.Error, "Background job", $"Start job with id[{jobId}] and type [{jobType}] failed! ", exeption.Message);
+									}
+									finally
+									{
+										DbContext.CloseContext();
+									}
+								}
+							}
 						}
 					}
 				}
