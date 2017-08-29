@@ -117,6 +117,14 @@ namespace WebVella.ERP.Jobs
 						//execute job method
 						method.Invoke(new DynamicObjectCreater(type).CreateInstance(), new object[] { context });
 					}
+					catch (TargetInvocationException ex)
+					{
+						throw ex.InnerException;
+					}
+					catch (Exception ex)
+					{
+						throw ex;
+					}
 					finally
 					{
 						DbContext.CloseContext();
@@ -136,12 +144,11 @@ namespace WebVella.ERP.Jobs
 						DbContext.CreateContext(Settings.ConnectionString);
 
 						Log log = new Log();
-						Exception exeption = ex.InnerException != null ? ex.InnerException : ex;
-						log.Create(LogType.Error, "JobPool.Process", exeption);
+						log.Create(LogType.Error, "JobPool.Process", ex);
 
 						job.FinishedOn = DateTime.UtcNow;
 						job.Status = JobStatus.Failed;
-						job.ErrorMessage = exeption.Message;
+						job.ErrorMessage = ex.Message;
 						jobService.UpdateJob(job);
 					}
 					finally

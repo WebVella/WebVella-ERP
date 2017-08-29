@@ -114,7 +114,7 @@ namespace WebVella.ERP.Jobs
 				RegisterType(type);
 		}
 
-		public Job CreateJob(Guid typeId, dynamic attributes, JobPriority priority = 0, Guid? creatorId = null, Guid? schedulePlanId = null)
+		public Job CreateJob(Guid typeId, dynamic attributes, JobPriority priority = 0, Guid? creatorId = null, Guid? schedulePlanId = null, Guid? jobId = null)
 		{
 			JobType type = JobTypes.FirstOrDefault(t => t.Id == typeId);
 			if (type == null)
@@ -128,7 +128,7 @@ namespace WebVella.ERP.Jobs
 				priority = type.DefaultPriority;
 
 			Job job = new Job();
-			job.Id = Guid.NewGuid();
+			job.Id = jobId.HasValue ? jobId.Value : Guid.NewGuid();
 			job.TypeId = type.Id;
 			job.Type = type;
 			job.TypeName = type.Name;
@@ -202,10 +202,9 @@ namespace WebVella.ERP.Jobs
 										DbContext.CreateContext(ERP.Settings.ConnectionString);
 
 										Log log = new Log();
-										Exception exeption = ex.InnerException != null ? ex.InnerException : ex;
 										string jobId = job != null ? job.Id.ToString() : "null";
 										string jobType = job != null && job.Type != null ? job.Type.Name : "null";
-										log.Create(LogType.Error, "JobManager.Process", $"Start job with id[{jobId}] and type [{jobType}] failed! ", exeption.Message);
+										log.Create(LogType.Error, "JobManager.Process", $"Start job with id[{jobId}] and type [{jobType}] failed! ", ex.Message);
 									}
 									finally
 									{
@@ -225,8 +224,7 @@ namespace WebVella.ERP.Jobs
 							DbContext.CreateContext(ERP.Settings.ConnectionString);
 
 							Log log = new Log();
-							Exception exeption = ex.InnerException != null ? ex.InnerException : ex;
-							log.Create(LogType.Error, "JobManager.Process", exeption);
+							log.Create(LogType.Error, "JobManager.Process", ex);
 						}
 						finally
 						{
