@@ -14,8 +14,8 @@
 
 
 	//#region << Configuration  >> ///////////////////////////////////
-	config.$inject = ['$httpProvider', 'wvAppConstants', '$translateProvider','$sceDelegateProvider','$locationProvider','$qProvider'];
-	function config($httpProvider, wvAppConstants, $translateProvider,$sceDelegateProvider,$locationProvider,$qProvider) {
+	config.$inject = ['$httpProvider', 'wvAppConstants', '$translateProvider', '$sceDelegateProvider', '$locationProvider', '$qProvider', '$provide'];
+	function config($httpProvider, wvAppConstants, $translateProvider, $sceDelegateProvider, $locationProvider, $qProvider, $provide) {
 
 		//#region << Request interceptors >>
 		$httpProvider.interceptors.push(function ($q, $location, ngToast, $cookies, $rootScope, $timeout) {
@@ -119,6 +119,33 @@
 			//	'http://www.refsnesdata.no/**'
 			//]);
 		//#endregion
+
+		//one second delay for clicks
+		$provide.decorator('ngClickDirective', ['$delegate', '$timeout', function ($delegate, $timeout) {
+			var original = $delegate[0].compile;
+			var delay = 1000;
+			$delegate[0].compile = function (element, attrs, transclude) {
+
+				var disabled = false;
+				function onClick(evt) {
+					if (disabled) {
+						evt.preventDefault();
+						evt.stopImmediatePropagation();
+					} else {
+						disabled = true;
+						$timeout(function () {
+							disabled = false;
+						}, delay, false);
+					}
+				}
+				//   scope.$on('$destroy', function () { iElement.off('click', onClick); });
+				element.on('click', onClick);
+
+				return original(element, attrs, transclude);
+			};
+			return $delegate;
+		}]);
+
 	}
 	//#endregion
 

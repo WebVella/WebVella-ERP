@@ -103,8 +103,18 @@ namespace WebVella.ERP.WebHooks
 					{
 						dynamic result = args;
 						foreach (var whi in hooksList.OrderByDescending(x => x.Priority))
-							result = whi.Method.Invoke(whi.Instance, new object[] { result });
-
+							try
+							{
+								result = whi.Method.Invoke(whi.Instance, new object[] { result });
+							}
+							catch (TargetInvocationException ex)
+							{
+								throw ex.InnerException;
+							}
+							catch (Exception ex)
+							{
+								throw ex;
+							}
 						return result;
 					}
 				}
@@ -130,7 +140,18 @@ namespace WebVella.ERP.WebHooks
 					if (hooksList != null && hooksList.Count > 0)
 					{
 						foreach (var whi in hooksList.OrderByDescending(x => x.Priority))
-							whi.Method.Invoke(whi.Instance, new object[] { args });
+							try
+							{
+								whi.Method.Invoke(whi.Instance, new object[] { args });
+							}
+							catch (TargetInvocationException ex)
+							{
+								throw ex.InnerException;
+							}
+							catch (Exception ex)
+							{
+								throw ex;
+							}
 					}
 				}
 			}

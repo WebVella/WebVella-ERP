@@ -292,7 +292,7 @@
 			<!--</div>-->
 
 
-			<ul class="pager ng-hide" ng-hide="ngCtrl.currentPage == 1 && ngCtrl.list.meta.pageSize > ngCtrl.list.data.length" ng-if="::ngCtrl.list.meta.pageSize != 0">
+			<ul class="pager ng-hide" ng-hide="ngCtrl.currentPage == 1 && ngCtrl.list.meta.pageSize > ngCtrl.list.data.length" ng-if="::ngCtrl.list.meta.pageSize != 0 && ngCtrl.list.meta.pageSize != -1">
 				<li ng-if="ngCtrl.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
 				<li ng-if="ngCtrl.list.meta.pageSize <= ngCtrl.list.data.length" class="next"><a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
 			</ul>
