@@ -39,7 +39,7 @@ namespace WebVella.ERP.Diagnostics
 			Create(LogType.Error, source, message, details, notificationStatus);
 		}
 
-		public string MakeDetailsJson(string details, Exception ex = null, HttpRequest request = null)
+		public static string MakeDetailsJson(string details, Exception ex = null, HttpRequest request = null)
 		{
 			if (string.IsNullOrWhiteSpace(details) && ex == null && request == null)
 				return null;
@@ -62,8 +62,8 @@ namespace WebVella.ERP.Diagnostics
 				if (ex.InnerException != null)
 				{
 					EntityRecord ieRecord = new EntityRecord();
-					ieRecord["message"] = ex.Message;
-					ieRecord["stack_trace"] = ex.StackTrace;
+					ieRecord["message"] = ex.InnerException.Message;
+					ieRecord["stack_trace"] = ex.InnerException.StackTrace;
 					eRecord["inner_exception"] = ieRecord;
 				}
 			}
