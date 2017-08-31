@@ -9,7 +9,7 @@ namespace WebVella.ERP.Diagnostics
 {
 	public class Log
 	{
-		public void Create(LogType type, string source, string message, string details, LogNotificationStatus notificationStatus = LogNotificationStatus.NotNotified, bool saveDetailsAsJson = true)
+		public void Create(LogType type, string source, string message, string details, LogNotificationStatus notificationStatus = LogNotificationStatus.NotNotified, bool saveDetailsAsJson = false)
 		{
 			EntityRecord logRecord = new EntityRecord();
 			logRecord["id"] = Guid.NewGuid();
