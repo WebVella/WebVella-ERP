@@ -14,7 +14,7 @@ namespace WebVella.ERP.Web.Controllers
 {
 	public partial class ApiController
 	{
-		public string ViewListTreeCode = "";	
+		public string ViewListTreeCode = "";
 
 		#region << Admin Tools >>
 		[AcceptVerbs(new[] { "POST" }, Route = "/admin/tools/evaluate-changes")]
@@ -217,7 +217,7 @@ namespace WebVella.ERP.Web.Controllers
 							response.Changes.Add(changeRow);
 							string entityCode = "";
 							string viewListTreeCode = "";
-							CreateEntityCode(entity, relationsNameDictionary,out entityCode,out viewListTreeCode);
+							CreateEntityCode(entity, relationsNameDictionary, out entityCode, out viewListTreeCode);
 							response.Code += entityCode;
 							ViewListTreeCode += viewListTreeCode;
 						}
@@ -666,7 +666,7 @@ $"#region << ***Update area***  Area name: {(string)currentArea["name"]} >>\n" +
 		#region << Entity >>
 
 
-		private void CreateEntityCode(DbEntity entity, Dictionary<string, DbEntityRelation> relationsNameDictionary,out string entityResponse, out string viewListTreeResponse)
+		private void CreateEntityCode(DbEntity entity, Dictionary<string, DbEntityRelation> relationsNameDictionary, out string entityResponse, out string viewListTreeResponse)
 		{
 			entityResponse = "";
 			viewListTreeResponse = "";
@@ -951,7 +951,7 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 					response.HasUpdate = true;
 					response.ChangeList.Add($"<span class='go-green label-block'>list</span>  list <span class='go-red'>{list.Name}</span> was deleted.</span>");
 					//response.Code += DeleteListCode(list, currentEntity.Id, currentEntity.Name);
-					ViewListTreeCode  += DeleteListCode(list, currentEntity.Id, currentEntity.Name);
+					ViewListTreeCode += DeleteListCode(list, currentEntity.Id, currentEntity.Name);
 				}
 			}
 
@@ -2815,7 +2815,7 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 			else
 			{
-				response += $"\ttextboxField.DefaultValue = \"{field.DefaultValue?.Replace("\"","\\\"")}\";\n";
+				response += $"\ttextboxField.DefaultValue = \"{field.DefaultValue?.Replace("\"", "\\\"")}\";\n";
 			}
 			if (field.MaxLength == null)
 			{
@@ -5037,15 +5037,15 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 					}
 				}
 
-				var oldOptionsDictionary = new Dictionary<string, bool>();
+				var oldOptionsDictionary = new Dictionary<string, string>();
 				//create dictionary
 				foreach (var value in oldField.Options.ToList())
 				{
-					oldOptionsDictionary[value.Key] = true;
+					oldOptionsDictionary[value.Key] = value.Value;
 				}
 				foreach (var value in currentField.Options.ToList())
 				{
-					if (!oldOptionsDictionary.ContainsKey(value.Key))
+					if (!oldOptionsDictionary.ContainsKey(value.Key) || oldOptionsDictionary[value.Key] != value.Value)
 					{
 						hasUpdate = true;
 					}
@@ -5896,7 +5896,8 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				if(currentField.EnableSecurity) {
+				if (currentField.EnableSecurity)
+				{
 					// Permissions change check
 					hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 				}
@@ -6062,6 +6063,25 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
+				var oldOptionsDictionary = new Dictionary<string, string>();
+				//create dictionary
+				foreach (var value in oldField.Options.ToList())
+				{
+					oldOptionsDictionary[value.Key] = value.Value;
+				}
+				foreach (var value in currentField.Options.ToList())
+				{
+					if (!oldOptionsDictionary.ContainsKey(value.Key) || oldOptionsDictionary[value.Key] != value.Value)
+					{
+						hasUpdate = true;
+					}
+				}
+
+
+				if (currentField.EnableSecurity != oldField.EnableSecurity)
+				{
+					hasUpdate = true;
+				}
 				// Permissions change check
 				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
@@ -6583,15 +6603,17 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			   $"\tcreateViewInput.Type = \"{view.Type}\";\n" +
 			   $"\tcreateViewInput.Name = \"{view.Name}\";\n" +
 			   $"\tcreateViewInput.Label = \"{view.Label}\";\n";
-			   if(view.Title == null) {
+			if (view.Title == null)
+			{
 				response += $"\tcreateViewInput.Title = null;\n";
-			   }
-			   else {
-			   response += $"\tcreateViewInput.Title = \"{view.Title}\";\n";
-			   }
-			   response +=
-			   $"\tcreateViewInput.Default = {(view.Default).ToString().ToLowerInvariant()};\n" +
-			   $"\tcreateViewInput.System = {(view.System).ToString().ToLowerInvariant()};\n";
+			}
+			else
+			{
+				response += $"\tcreateViewInput.Title = \"{view.Title}\";\n";
+			}
+			response +=
+			$"\tcreateViewInput.Default = {(view.Default).ToString().ToLowerInvariant()};\n" +
+			$"\tcreateViewInput.System = {(view.System).ToString().ToLowerInvariant()};\n";
 			if (view.Weight == null)
 			{
 				response += $"\tcreateViewInput.Weight = null;\n";
@@ -6638,7 +6660,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				response += $"\tcreateViewInput.ServiceCode = @\"{view.ServiceCode.Replace("\"","\"\"")}\";\n";
+				response += $"\tcreateViewInput.ServiceCode = @\"{view.ServiceCode.Replace("\"", "\"\"")}\";\n";
 			}
 
 			response += $"\t#endregion\n\n" +
@@ -6658,7 +6680,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			$"\tcreateViewInput.RelationOptions = new List<EntityRelationOptionsItem>();\n";
 			foreach (var relationOption in view.RelationOptions)
 			{
-				response += CreateRelationOptionCode(relationOption, entityId, entityName,"view");
+				response += CreateRelationOptionCode(relationOption, entityId, entityName, "view");
 			}
 			response += "\t}\n" +
 			$"\t#endregion\n\n";
@@ -7036,17 +7058,21 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			response +=
 			$"\t\t\t\t\t\tviewItemFromRelation.FieldRequired = {(recordViewItem.FieldRequired).ToString().ToLowerInvariant()};\n";
 
-			if(recordViewItem.FieldLookupList == null) {
+			if (recordViewItem.FieldLookupList == null)
+			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = null;\n";
 			}
-			else {
+			else
+			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = \"{recordViewItem.FieldLookupList}\";\n";
 			}
 
-			if(recordViewItem.FieldManageView == null) {
+			if (recordViewItem.FieldManageView == null)
+			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldManageView = null;\n";
 			}
-			else {
+			else
+			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldManageView = \"{recordViewItem.FieldManageView}\";\n";
 			}
 
@@ -7122,21 +7148,25 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			response +=
 			$"\t\t\t\t\t\tviewItemFromRelation.FieldRequired = {(listItem.FieldRequired).ToString().ToLowerInvariant()};\n";
 
-			if(listItem.FieldLookupList == null) {
+			if (listItem.FieldLookupList == null)
+			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = null;\n";
 			}
-			else {
+			else
+			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldLookupList = \"{listItem.FieldLookupList}\";\n";
 			}
 
-			
-			if(listItem.FieldManageView == null) {
+
+			if (listItem.FieldManageView == null)
+			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldManageView = null;\n";
 			}
-			else {
+			else
+			{
 				response += $"\t\t\t\t\t\tviewItemFromRelation.FieldManageView = \"{listItem.FieldManageView}\";\n";
 			}
-			
+
 			response +=
 			$"\t\t\t\t\t\tviewItemFromRelation.RelationId = new Guid(\"{listItem.RelationId}\");\n" +
 			$"\t\t\t\t\t\tviewItemFromRelation.RelationName = \"{currentRelation.Name}\";\n" +
@@ -7536,7 +7566,8 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			$"\trelationOption.RelationName = \"{relationOption.RelationName}\";\n" +
 			$"\trelationOption.RelationId = new Guid(\"{relationOption.RelationId}\");\n" +
 			$"\trelationOption.Direction = \"{relationOption.Direction}\";\n";
-			switch(type) {
+			switch (type)
+			{
 				case "list":
 					response += $"\tcreateListInput.RelationOptions.Add(relationOption);\n";
 					break;
@@ -7544,7 +7575,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 					response += $"\tcreateViewInput.RelationOptions.Add(relationOption);\n";
 					break;
 			}
-			
+
 			response += "}\n" +
 			"#endregion\n";
 			return response;
@@ -7655,7 +7686,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				code += $"\tcreateViewInput.ServiceCode = @\"{currentView.ServiceCode.Replace("\"","\"\"")}\";\n";
+				code += $"\tcreateViewInput.ServiceCode = @\"{currentView.ServiceCode.Replace("\"", "\"\"")}\";\n";
 			}
 
 			code +=
@@ -7676,7 +7707,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			$"\tcreateViewInput.RelationOptions = new List<EntityRelationOptionsItem>();\n";
 			foreach (var relationOption in currentView.RelationOptions)
 			{
-				code += CreateRelationOptionCode(relationOption, currentEntity.Id, currentEntity.Name,"view");
+				code += CreateRelationOptionCode(relationOption, currentEntity.Id, currentEntity.Name, "view");
 			}
 			code += "\t}\n" +
 			$"\t#endregion\n\n";
@@ -7753,18 +7784,21 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 
 			//Because of the \r\n <> \n problem we will need to artificially add \r to the new view templates and test again
-			if(!String.IsNullOrWhiteSpace(oldView.ServiceCode)) {
+			if (!String.IsNullOrWhiteSpace(oldView.ServiceCode))
+			{
 				var fixedServiceCode = oldView.ServiceCode.Replace("\n", "").Replace("\r", "");
 				var fixedCurrrentServiceCode = currentView.ServiceCode.Replace("\n", "").Replace("\r", "");
 				if (fixedCurrrentServiceCode != fixedServiceCode)
 				{
 					hasUpdate = true;
 				}
-			}else {
+			}
+			else
+			{
 				if (currentView.ServiceCode != oldView.ServiceCode)
 				{
 					hasUpdate = true;
-				}			
+				}
 			}
 
 			if (JsonConvert.SerializeObject(currentView.Regions) != JsonConvert.SerializeObject(oldView.Regions))
@@ -7922,7 +7956,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				response += $"\tcreateListInput.ServiceCode = @\"{list.ServiceCode.Replace("\"","\"\"")}\";\n";
+				response += $"\tcreateListInput.ServiceCode = @\"{list.ServiceCode.Replace("\"", "\"\"")}\";\n";
 			}
 
 			response +=
@@ -7935,7 +7969,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			$"\tcreateListInput.RelationOptions = new List<EntityRelationOptionsItem>();\n";
 			foreach (var relationOption in list.RelationOptions)
 			{
-				response += CreateRelationOptionCode(relationOption, entityId, entityName,"list");
+				response += CreateRelationOptionCode(relationOption, entityId, entityName, "list");
 			}
 			response += "\t}\n" +
 			$"\t#endregion\n\n";
@@ -8625,7 +8659,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				code += $"\tcreateListInput.ServiceCode = @\"{currentList.ServiceCode.Replace("\"","\"\"")}\";\n";
+				code += $"\tcreateListInput.ServiceCode = @\"{currentList.ServiceCode.Replace("\"", "\"\"")}\";\n";
 			}
 
 			code +=
@@ -8639,7 +8673,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			$"\tcreateListInput.RelationOptions = new List<EntityRelationOptionsItem>();\n";
 			foreach (var relationOption in currentList.RelationOptions)
 			{
-				code += CreateRelationOptionCode(relationOption, currentEntity.Id, currentEntity.Name,"list");
+				code += CreateRelationOptionCode(relationOption, currentEntity.Id, currentEntity.Name, "list");
 			}
 			code += "\t}\n" +
 			$"\t#endregion\n\n";
@@ -8799,7 +8833,8 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 				hasUpdate = true;
 			}
 			//Because of the \r\n <> \n problem we will need to artificially add \r to the new view templates and test again
-			if(!String.IsNullOrWhiteSpace(oldList.ServiceCode)) {
+			if (!String.IsNullOrWhiteSpace(oldList.ServiceCode))
+			{
 				//Remove all \r and \n and test the lists as there is often a problem with that
 				var fixedServiceCode = oldList.ServiceCode.Replace("\n", "").Replace("\r", "");
 				var fixedCurrrentServiceCode = currentList.ServiceCode.Replace("\n", "").Replace("\r", "");
@@ -8807,11 +8842,13 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 				{
 					hasUpdate = true;
 				}
-			}else {
+			}
+			else
+			{
 				if (currentList.ServiceCode != oldList.ServiceCode)
 				{
 					hasUpdate = true;
-				}			
+				}
 			}
 
 			if (JsonConvert.SerializeObject(currentList.RelationOptions) != JsonConvert.SerializeObject(oldList.RelationOptions))
@@ -9243,15 +9280,17 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 				$"\trelation.Id = new Guid(\"{relationRecord.Id}\");\n" +
 				$"\trelation.Name =  \"{relationRecord.Name}\";\n" +
 				$"\trelation.Label = \"{relationRecord.Label}\";\n";
-				if(relationRecord.Description == null) {
-					response += $"\trelation.Description = null;\n";
-				}
-				else {
-					response += $"\trelation.Description = \"{relationRecord.Description}\";\n";
-				}
+			if (relationRecord.Description == null)
+			{
+				response += $"\trelation.Description = null;\n";
+			}
+			else
+			{
+				response += $"\trelation.Description = \"{relationRecord.Description}\";\n";
+			}
 
-				response +=
-				$"\trelation.System =  {(relationRecord.System).ToString().ToLowerInvariant()};\n";
+			response +=
+			$"\trelation.System =  {(relationRecord.System).ToString().ToLowerInvariant()};\n";
 			if (relationRecord.RelationType == EntityRelationType.OneToOne)
 			{
 				response += $"\trelation.RelationType = EntityRelationType.OneToOne;\n";
@@ -9349,8 +9388,8 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			code += $"\trelation.Label = \"{currentRelation.Label}\";\n";
 
 			//description
-			if (currentRelation.Description != oldRelation.Description && 
-				!(currentRelation.Description == null && oldRelation.Description == "") && 
+			if (currentRelation.Description != oldRelation.Description &&
+				!(currentRelation.Description == null && oldRelation.Description == "") &&
 				!(currentRelation.Description == "" && oldRelation.Description == null))
 			{
 				hasUpdate = true;
@@ -9541,10 +9580,12 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 			var response = false;
 
 			#region << Fast check based on count >>
-			if(oldFieldPermissions.CanRead.Count != currentFieldPermissions.CanRead.Count) {
+			if (oldFieldPermissions.CanRead.Count != currentFieldPermissions.CanRead.Count)
+			{
 				return true;
 			}
-			if(oldFieldPermissions.CanUpdate.Count != currentFieldPermissions.CanUpdate.Count) {
+			if (oldFieldPermissions.CanUpdate.Count != currentFieldPermissions.CanUpdate.Count)
+			{
 				return true;
 			}
 			#endregion
