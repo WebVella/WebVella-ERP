@@ -5021,9 +5021,14 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			{
 				hasUpdate = true;
 			}
+			else if (currentField.Options.Count != oldField.Options.Count)
+			{
+				hasUpdate = true;
+			}
 			else
 			{
 				var oldDefaultValuesDictionary = new Dictionary<string, bool>();
+				var newOptionsDictionary = new Dictionary<string, string>();
 				//create dictionary
 				foreach (var value in oldField.DefaultValue.ToList())
 				{
@@ -5045,15 +5050,18 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 				}
 				foreach (var value in currentField.Options.ToList())
 				{
+					newOptionsDictionary[value.Key] = value.Value;
 					if (!oldOptionsDictionary.ContainsKey(value.Key) || oldOptionsDictionary[value.Key] != value.Value)
 					{
 						hasUpdate = true;
 					}
 				}
-
-				if (currentField.EnableSecurity != oldField.EnableSecurity)
+				foreach (var value in oldField.Options.ToList())
 				{
-					hasUpdate = true;
+					if (!newOptionsDictionary.ContainsKey(value.Key) || newOptionsDictionary[value.Key] != value.Value)
+					{
+						hasUpdate = true;
+					}
 				}
 
 				// Permissions change check
@@ -6061,9 +6069,18 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			{
 				hasUpdate = true;
 			}
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.Options.Count != oldField.Options.Count)
+			{
+				hasUpdate = true;
+			}
 			else
 			{
 				var oldOptionsDictionary = new Dictionary<string, string>();
+				var newOptionsDictionary = new Dictionary<string, string>();
 				//create dictionary
 				foreach (var value in oldField.Options.ToList())
 				{
@@ -6071,17 +6088,20 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 				}
 				foreach (var value in currentField.Options.ToList())
 				{
+					newOptionsDictionary[value.Key] = value.Value;
 					if (!oldOptionsDictionary.ContainsKey(value.Key) || oldOptionsDictionary[value.Key] != value.Value)
 					{
 						hasUpdate = true;
 					}
 				}
-
-
-				if (currentField.EnableSecurity != oldField.EnableSecurity)
+				foreach (var value in oldField.Options.ToList())
 				{
-					hasUpdate = true;
+					if (!newOptionsDictionary.ContainsKey(value.Key) || newOptionsDictionary[value.Key] != value.Value)
+					{
+						hasUpdate = true;
+					}
 				}
+
 				// Permissions change check
 				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
