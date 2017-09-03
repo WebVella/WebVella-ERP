@@ -611,7 +611,7 @@ namespace WebVella.ERP.Database
                 }
 
                 //paging 
-                if (query.Limit != null || query.Skip != null)
+                if ((query.Limit != 0 && query.Limit != null) || query.Skip != null)
                 {
                     string pagingSql = "LIMIT ";
                     if (query.Limit.HasValue)
@@ -994,7 +994,7 @@ namespace WebVella.ERP.Database
                 }
 
                 //paging 
-                if (query.Limit != null || query.Skip != null)
+                if ((query.Limit != 0 && query.Limit != null) || query.Skip != null)
                 {
                     string pagingSql = "LIMIT ";
                     if (query.Limit.HasValue)
