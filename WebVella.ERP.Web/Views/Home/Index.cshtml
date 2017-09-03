@@ -6,6 +6,11 @@
 	var moduleJsFileList = (List<string>)ViewBag.ModuleJsFileList;
 	var appDependencyInjections = (List<string>)ViewBag.AppDependencyInjections;
 	var languageFile = "/plugins/webvella-core/lang/" + ViewBag.Lang + ".js?v=" + ViewBag.CacheBreaker;
+	var devCssClass = "";
+	if (ViewBag.DevelopmentMode == "true")
+	{
+		devCssClass = "debug";
+	}
 }
 
 
@@ -14,8 +19,8 @@
 <html lang="en" ng-app="wvApp" ng-controller="ApplicationController as appData">
 <head>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="referrer" content="origin" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title ng-bind="appData.pageTitle"></title>
 	<!-- library > css -->
 	@foreach (var cssFile in libraryCssFileList)
@@ -28,13 +33,8 @@
 	<link href="@cssFile" rel="stylesheet" />
 	}
 </head>
-<body class="theme-{{appData.bodyColor}}" ng-cloak ng-class="{'mini-sidebar':appData.$storage.isMiniSidebar}">
+<body class="theme-{{appData.bodyColor}} @devCssClass" ng-cloak ng-class="{'mini-sidebar':appData.$storage.isMiniSidebar}">
 	<toast></toast>
-	@if (ViewBag.DevelopmentMode == "true")
-	{
-		<div style="border-radius:0;margin-bottom:0;padding:0;text-align:center;background:#EEFF41;color:rgba(255,255,255,0.8);height:5px;"></div>
-	}
-
 
 	<div ui-view="rootView"></div>
 	<!-- library > js -->

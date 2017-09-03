@@ -4,6 +4,15 @@ body {
 	background: #151517;
 }
 
+	body.debug {
+		background:#650c0c;
+	}
+
+		body.debug #sidebar-switcher,
+		body.debug .navbar.desktop {
+			background:#461212;
+		}
+
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
 	display: none !important;
 	visibility: hidden !important;
