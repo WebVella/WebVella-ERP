@@ -56,6 +56,7 @@ namespace WebVella.ERP.Web.Controllers
 
 		[AllowAnonymous]
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/user/login")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult Login([FromBody]JObject submitObj)
 		{
 			string email = (string)submitObj["email"];
@@ -105,6 +106,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/user/logout")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult Logout()
 		{
 			WebSecurityUtil.Logout(HttpContext);
@@ -117,6 +119,7 @@ namespace WebVella.ERP.Web.Controllers
 
 		[AllowAnonymous]
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/user/permissions")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult CurrentUserPermissions()
 		{
 			var responseObj = new ResponseModel();
@@ -131,6 +134,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Get all entity definitions
 		// GET: api/v1/en_US/meta/entity/list/
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/list")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetEntityMetaList(string hash = null)
 		{
 			var bo = entMan.ReadEntities();
@@ -145,6 +149,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Get entity meta
 		// GET: api/v1/en_US/meta/entity/id/{entityId}/
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/id/{entityId}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetEntityMetaById(Guid entityId)
 		{
 			return DoResponse(entMan.ReadEntity(entityId));
@@ -153,6 +158,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Get entity meta
 		// GET: api/v1/en_US/meta/entity/{name}/
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetEntityMeta(string Name)
 		{
 			return DoResponse(entMan.ReadEntity(Name));
@@ -162,6 +168,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Create an entity
 		// POST: api/v1/en_US/meta/entity
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult CreateEntity([FromBody]InputEntity submitObj)
 		{
 			var entity = new InputEntity();
@@ -179,6 +186,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Create an entity
 		// POST: api/v1/en_US/meta/entity
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{StringId}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult PatchEntity(string StringId, [FromBody]JObject submitObj)
 		{
 			FieldResponse response = new FieldResponse();
@@ -245,6 +253,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Delete an entity
 		// DELETE: api/v1/en_US/meta/entity/{id}
 		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{StringId}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult DeleteEntity(string StringId)
 		{
 			EntityResponse response = new EntityResponse();
@@ -270,6 +279,7 @@ namespace WebVella.ERP.Web.Controllers
 		#region << Entity Fields >>
 
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Id}/field")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult CreateField(string Id, [FromBody]JObject submitObj)
 		{
 			FieldResponse response = new FieldResponse();
@@ -295,6 +305,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Id}/field/{FieldId}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult UpdateField(string Id, string FieldId, [FromBody]JObject submitObj)
 		{
 			FieldResponse response = new FieldResponse();
@@ -347,6 +358,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{Id}/field/{FieldId}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult PatchField(string Id, string FieldId, [FromBody]JObject submitObj)
 		{
 			FieldResponse response = new FieldResponse();
@@ -634,6 +646,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{Id}/field/{FieldId}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult DeleteField(string Id, string FieldId)
 		{
 			FieldResponse response = new FieldResponse();
@@ -660,6 +673,7 @@ namespace WebVella.ERP.Web.Controllers
 		#region << Record Lists >>
 
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Name}/list")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult CreateRecordListByName(string Name, [FromBody]JObject submitObj)
 		{
 			RecordListResponse response = new RecordListResponse();
@@ -678,6 +692,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult UpdateRecordListByName(string Name, string ListName, [FromBody]JObject submitObj)
 		{
 			RecordListResponse response = new RecordListResponse();
@@ -709,6 +724,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult PatchRecordListByName(string Name, string ListName, [FromBody]JObject submitObj)
 		{
 			RecordListResponse response = new RecordListResponse();
@@ -801,24 +817,28 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult DeleteRecordListByName(string Name, string ListName)
 		{
 			return DoResponse(entMan.DeleteRecordList(Name, ListName));
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetRecordListByName(string Name, string ListName)
 		{
 			return DoResponse(entMan.ReadRecordList(Name, ListName));
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/list")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetRecordListsByName(string Name)
 		{
 			return DoResponse(entMan.ReadRecordLists(Name));
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}/service.js")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetRecordListServiceJSByName(string Name, string ListName, bool defaultScript = false)
 		{
 
@@ -842,6 +862,7 @@ namespace WebVella.ERP.Web.Controllers
 		#region << Record Views >>
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{entityName}/getEntityViewLibrary")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetEntityLibrary(string entityName)
 		{
 			var result = new EntityLibraryItemsResponse() { Success = true, Timestamp = DateTime.UtcNow };
@@ -1061,6 +1082,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		//[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Id}/view")]
+		//[ResponseCache(NoStore = true, Duration = 0)]
 		//public IActionResult CreateRecordView(Guid Id, [FromBody]JObject submitObj)
 		//{
 		//	RecordViewResponse response = new RecordViewResponse();
@@ -1080,6 +1102,7 @@ namespace WebVella.ERP.Web.Controllers
 
 
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Name}/view")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult CreateRecordViewByName(string Name, [FromBody]JObject submitObj)
 		{
 			RecordViewResponse response = new RecordViewResponse();
@@ -1098,6 +1121,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}/service.js")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetRecordViewServiceJSByName(string Name, string ViewName, bool defaultScript = false)
 		{
 			var view = entMan.ReadRecordView(Name, ViewName);
@@ -1116,6 +1140,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult UpdateRecordViewByName(string Name, string ViewName, [FromBody]JObject submitObj)
 		{
 			RecordViewResponse response = new RecordViewResponse();
@@ -1148,6 +1173,7 @@ namespace WebVella.ERP.Web.Controllers
 
 
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult PatchRecordViewByName(string Name, string ViewName, [FromBody]JObject submitObj)
 		{
 			RecordViewResponse response = new RecordViewResponse();
@@ -1232,18 +1258,21 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		//[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{Id}/view/{ViewId}")]
+		//		[ResponseCache(NoStore = true, Duration = 0)]
 		//public IActionResult DeleteRecordView(Guid Id, Guid ViewId)
 		//{
 		//    return DoResponse(entityManager.DeleteRecordView(Id, ViewId));
 		//}
 
 		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult DeleteRecordViewByName(string Name, string ViewName)
 		{
 			return DoResponse(entMan.DeleteRecordView(Name, ViewName));
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetRecordViewByName(string Name, string ViewName)
 		{
 			return DoResponse(entMan.ReadRecordView(Name, ViewName));
@@ -1256,6 +1285,7 @@ namespace WebVella.ERP.Web.Controllers
 		//      }
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/view")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetRecordViewsByName(string Name)
 		{
 			return DoResponse(entMan.ReadRecordViews(Name));
@@ -1266,6 +1296,7 @@ namespace WebVella.ERP.Web.Controllers
 		#region << Record Trees >>
 
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{entityName}/tree")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult CreateRecordTreeByName(string entityName, [FromBody]JObject submitObj)
 		{
 			RecordListResponse response = new RecordListResponse();
@@ -1284,6 +1315,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{entityName}/tree/{treeName}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult UpdateRecordTreeByName(string entityName, string treeName, [FromBody]JObject submitObj)
 		{
 			RecordListResponse response = new RecordListResponse();
@@ -1315,6 +1347,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{entityName}/tree/{treeName}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult PatchRecordTreeByName(string entityName, string treeName, [FromBody]JObject submitObj)
 		{
 			RecordTreeResponse response = new RecordTreeResponse();
@@ -1392,18 +1425,21 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{entityName}/tree/{treeName}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult DeleteRecordTreeByName(string entityName, string treeName)
 		{
 			return DoResponse(entMan.DeleteRecordTree(entityName, treeName));
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{entityName}/tree/{treeName}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetRecordTreeByName(string entityName, string treeName)
 		{
 			return DoResponse(entMan.ReadRecordTree(entityName, treeName));
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{entityName}/tree")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetRecordTreesByEntityName(string entityName)
 		{
 			return DoResponse(entMan.ReadRecordTrees(entityName));
@@ -1415,6 +1451,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Get all entity relation definitions
 		// GET: api/v1/en_US/meta/relation/list/
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/relation/list")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetEntityRelationMetaList(string hash = null)
 		{
 			var response = new EntityRelationManager().Read();
@@ -1429,6 +1466,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Get entity relation meta
 		// GET: api/v1/en_US/meta/relation/{name}/
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/relation/{name}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetEntityRelationMeta(string name)
 		{
 			return DoResponse(new EntityRelationManager().Read(name));
@@ -1438,6 +1476,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Create an entity relation
 		// POST: api/v1/en_US/meta/relation
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/relation")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult CreateEntityRelation([FromBody]JObject submitObj)
 		{
 			try
@@ -1456,6 +1495,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Update an entity relation
 		// PUT: api/v1/en_US/meta/relation/id
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/relation/{RelationIdString}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult UpdateEntityRelation(string RelationIdString, [FromBody]JObject submitObj)
 		{
 			FieldResponse response = new FieldResponse();
@@ -1481,6 +1521,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Delete an entity relation
 		// DELETE: api/v1/en_US/meta/relation/{idToken}
 		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/relation/{idToken}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult DeleteEntityRelation(string idToken)
 		{
 			Guid newGuid;
@@ -1503,6 +1544,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Update an entity record relation records for origin record
 		// POST: api/v1/en_US/record/relation
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/relation")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult UpdateEntityRelationRecord([FromBody]InputEntityRelationRecordUpdateModel model)
 		{
 
@@ -1796,6 +1838,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Update an entity record relation records for target record
 		// POST: api/v1/en_US/record/relation/reverse
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/relation/reverse")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult UpdateEntityRelationRecordReverse([FromBody]InputEntityRelationRecordReverseUpdateModel model)
 		{
 
@@ -2089,6 +2132,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Get an entity record list
 		// GET: api/v1/en_US/record/{entityName}/list
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetRecord(Guid recordId, string entityName, string fields = "*")
 		{
 			//////////////////////////////////////////////////////////////////////////////////////
@@ -2156,6 +2200,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Get an entity record list
 		// GET: api/v1/en_US/record/{entityName}/list
 		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult DeleteRecord(Guid recordId, string entityName)
 		{
 			//////////////////////////////////////////////////////////////////////////////////////
@@ -2266,6 +2311,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Get an entity records by field and regex
 		// GET: api/v1/en_US/record/{entityName}/regex
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/regex/{fieldName}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetRecordsByFieldAndRegex(string fieldName, string entityName, [FromBody]EntityRecord patternObj)
 		{
 
@@ -2283,6 +2329,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Create an entity record
 		// POST: api/v1/en_US/record/{entityName}
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult CreateEntityRecord(string entityName, [FromBody]EntityRecord postObj)
 		{
 			//Find and change properties starting with _$ to $$ - angular does not post $$ propery names
@@ -2403,6 +2450,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/with-relation/{relationName}/{relatedRecordId}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult CreateEntityRecordWithRelation(string entityName, string relationName, Guid relatedRecordId, [FromBody]EntityRecord postObj)
 		{
 			//////////////////////////////////////////////////////////////////////////////////////
@@ -2637,6 +2685,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Update an entity record
 		// PUT: api/v1/en_US/record/{entityName}/{recordId}
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult UpdateEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
 			//Find and change properties starting with _$ to $$ - angular does not post $$ propery names
@@ -2773,6 +2822,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Patch an entity record
 		// PATCH: api/v1/en_US/record/{entityName}/{recordId}
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult PatchEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
 			//////////////////////////////////////////////////////////////////////////////////////
@@ -2894,6 +2944,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Get an entity record list
 		// GET: api/v1/en_US/record/{entityName}/list
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/{page}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetRecordListByEntityName(string entityName, string listName, int page, int? pageSize = null,
 				Guid? relationId = null, Guid? relatedRecordId = null, string direction = "origin-target")
 		{
@@ -2993,6 +3044,7 @@ namespace WebVella.ERP.Web.Controllers
 
 		// GET: api/v1/en_US/record/{entityName}/list
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetRecordsByEntityName(string entityName, string ids = "", string fields = "", int? limit = null)
 		{
 			var response = new QueryResponse();
@@ -3157,6 +3209,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/view/{viewName}/{id}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetRecordWithView(string entityName, string viewName, Guid id)
 		{
 			EntityListResponse entitiesResponse = entMan.ReadEntities();
@@ -3184,6 +3237,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/tree/{treeName}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetTreeRecords(string entityName, string treeName)
 		{
 			List<Entity> entities = entMan.ReadEntities().Object;
@@ -3257,6 +3311,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Export list records to csv
 		// POST: api/v1/en_US/record/{entityName}/list/{listName}/export
 		[AcceptVerbs(new[] { "GET", "POST" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/export")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult ExportListRecordsToCsv(string entityName, string listName, int count = 10)
 		{
 			var random = new Random().Next(10, 99);
@@ -3292,6 +3347,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Import list records to csv
 		// POST: api/v1/en_US/record/{entityName}/list/{listName}/import
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/import")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult ImportEntityRecordsFromCsv(string entityName, [FromBody]JObject postObject)
 		{
 			string fileTempPath = "";
@@ -3312,6 +3368,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Import list records to csv
 		// POST: api/v1/en_US/record/{entityName}/list/{listName}/import
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/import-evaluate")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult EvaluateImportEntityRecordsFromCsv(string entityName, [FromBody]JObject postObject)
 		{
 			ImportExportManager ieManager = new ImportExportManager(this.hooksService);
@@ -3321,6 +3378,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/quick-search")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetQuickSearch(string query = "", string entityName = "", string lookupFieldsCsv = "", string sortField = "", string sortType = "ascending", string returnFieldsCsv = "",
 				string matchMethod = "EQ", bool matchAllFields = false, int skipRecords = 0, int limitRecords = 5, string findType = "records", string forceFiltersCsv = "")
 		{
@@ -3442,15 +3500,11 @@ namespace WebVella.ERP.Web.Controllers
 
 				#region << Generate force filters >>
 				var forceFilters = new List<QueryObject>();
-				if (!String.IsNullOrWhiteSpace(forceFiltersCsv))
-				{
-					foreach (var forceFilter in forceFiltersCsv.Split(','))
-					{
+				if (!String.IsNullOrWhiteSpace(forceFiltersCsv)) {
+					foreach (var forceFilter in forceFiltersCsv.Split(',')) {
 						var filterArray = forceFilter.Split(':');
-						if (filterArray.Length == 3)
-						{
-							switch (filterArray[1].ToLowerInvariant())
-							{
+						if (filterArray.Length == 3) {
+							switch(filterArray[1].ToLowerInvariant()) {
 								case "guid":
 									var filterValueGuid = new Guid(filterArray[2]);
 									forceFilters.Add(EntityQuery.QueryEQ(filterArray[0], filterValueGuid));
@@ -3460,8 +3514,7 @@ namespace WebVella.ERP.Web.Controllers
 									{
 										forceFilters.Add(EntityQuery.QueryEQ(filterArray[0], true));
 									}
-									else
-									{
+									else {
 										forceFilters.Add(EntityQuery.QueryEQ(filterArray[0], false));
 									}
 									break;
@@ -3482,11 +3535,10 @@ namespace WebVella.ERP.Web.Controllers
 							}
 						}
 					}
-
+				
 				}
 
-				if (forceFilters.Count > 0)
-				{
+				if (forceFilters.Count > 0) {
 					var forceFilterQuery = EntityQuery.QueryAND(forceFilters.ToArray());
 					matchesFilter = EntityQuery.QueryAND(forceFilterQuery, matchesFilter);
 				}
@@ -3707,6 +3759,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "POST" }, Route = "/fs/upload/")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult UploadFile([FromForm] IFormFile file)
 		{
 
@@ -3719,6 +3772,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "POST" }, Route = "/fs/move/")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult MoveFile([FromBody]JObject submitObj)
 		{
 			string source = submitObj["source"].Value<string>();
@@ -3741,6 +3795,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "DELETE" }, Route = "{*filepath}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult DeleteFile([FromRoute] string filepath)
 		{
 			filepath = filepath.ToLowerInvariant();
@@ -3772,6 +3827,7 @@ namespace WebVella.ERP.Web.Controllers
 
 		#region << Plugins >>
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/plugin/list")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetPlugins()
 		{
 			var responseObj = new ResponseModel();
@@ -3785,6 +3841,7 @@ namespace WebVella.ERP.Web.Controllers
 		#region << Jobs >>
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/jobs")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetJobs(DateTime? startFromDate = null, DateTime? startToDate = null, DateTime? finishedFromDate = null,
 			DateTime? finishedToDate = null, string typeName = null, int? status = null, int? priority = null, Guid? schedulePlanId = null, int? page = null, int? pageSize = null)
 		{
@@ -4037,6 +4094,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/scheduleplan/{planId}/trigger")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult TriggerNowSchedulePlan(Guid planId)
 		{
 			BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
@@ -4067,6 +4125,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/scheduleplan/list")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetSchedulePlansList()
 		{
 			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
@@ -4087,6 +4146,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/scheduleplan/{planId}")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetSchedulePlan(Guid planId)
 		{
 			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
@@ -4116,6 +4176,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/scheduleplan/test")]
+		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult CreateTestSchedulePlan(Guid planId)
 		{
 			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
@@ -4168,38 +4229,33 @@ namespace WebVella.ERP.Web.Controllers
 
 		#region << System log >>
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/system-log")]
-		public IActionResult GetSystemLog(DateTime? fromDate = null, DateTime? untilDate = null, string type = "",
-			string source = "", string message = "", string notificationStatus = "", int page = 1, int pageSize = 15)
+		[ResponseCache(NoStore = true, Duration = 0)]
+		public IActionResult GetSystemLog(DateTime? fromDate = null, DateTime? untilDate = null,string type = "",
+			string source = "",string message = "",string notificationStatus = "",int page = 1, int pageSize = 15)
 		{
 			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 			var recMan = new RecordManager();
-			var skipRecords = (page - 1) * pageSize;
+			var skipRecords = (page-1)*pageSize;
 			try
 			{
 				//Filters
 				var filterList = new List<QueryObject>();
-				if (fromDate != null)
-				{
+				if(fromDate != null) {
 					filterList.Add(EntityQuery.QueryGT("created_on", fromDate));
 				}
-				if (untilDate != null)
-				{
+				if(untilDate != null) {
 					filterList.Add(EntityQuery.QueryLT("created_on", untilDate));
 				}
-				if (!String.IsNullOrWhiteSpace(type))
-				{
+				if(!String.IsNullOrWhiteSpace(type)) {
 					filterList.Add(EntityQuery.QueryEQ("type", type));
 				}
-				if (!String.IsNullOrWhiteSpace(source))
-				{
+				if(!String.IsNullOrWhiteSpace(source)) {
 					filterList.Add(EntityQuery.QueryContains("source", source));
 				}
-				if (!String.IsNullOrWhiteSpace(message))
-				{
+				if(!String.IsNullOrWhiteSpace(message)) {
 					filterList.Add(EntityQuery.QueryContains("message", message));
 				}
-				if (!String.IsNullOrWhiteSpace(notificationStatus))
-				{
+				if(!String.IsNullOrWhiteSpace(notificationStatus)) {
 					filterList.Add(EntityQuery.QueryEQ("notificationStatus", notificationStatus));
 				}
 
@@ -4213,7 +4269,7 @@ namespace WebVella.ERP.Web.Controllers
 				var columns = "*";
 
 				//Query
-				var query = new EntityQuery("system_log", columns, selectFilters, sortList.ToArray(), skipRecords, pageSize);
+				var query = new EntityQuery("system_log", columns, selectFilters, sortList.ToArray(),skipRecords,pageSize);
 				var queryResponse = recMan.Find(query);
 				if (!queryResponse.Success)
 				{
