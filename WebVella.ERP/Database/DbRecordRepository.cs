@@ -610,22 +610,22 @@ namespace WebVella.ERP.Database
                         sql.AppendLine(sortSql);
                 }
 
-                //paging 
-                if ((query.Limit != 0 && query.Limit != null) || query.Skip != null)
-                {
-                    string pagingSql = "LIMIT ";
-                    if (query.Limit.HasValue)
-                        pagingSql = pagingSql + query.Limit + " ";
-                    else
-                        pagingSql = pagingSql + "ALL ";
+				//paging 
+				if (query.Limit != null || query.Skip != null)
+				{
+					string pagingSql = "LIMIT ";
+					if (query.Limit.HasValue && query.Limit != 0)
+						pagingSql = pagingSql + query.Limit + " ";
+					else
+						pagingSql = pagingSql + "ALL ";
 
-                    if (query.Skip.HasValue)
-                        pagingSql = pagingSql + " OFFSET " + query.Skip;
+					if (query.Skip.HasValue)
+						pagingSql = pagingSql + " OFFSET " + query.Skip;
 
-                    sql.AppendLine(pagingSql);
-                }
+					sql.AppendLine(pagingSql);
+				}
 
-                using (var conn = DbContext.Current.CreateConnection())
+				using (var conn = DbContext.Current.CreateConnection())
                 {
                     List<EntityRecord> result = new List<EntityRecord>();
                     NpgsqlCommand command = conn.CreateCommand(sql.ToString());

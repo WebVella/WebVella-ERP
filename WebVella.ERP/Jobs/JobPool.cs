@@ -144,7 +144,7 @@ namespace WebVella.ERP.Jobs
 						DbContext.CreateContext(Settings.ConnectionString);
 
 						Log log = new Log();
-						log.Create(LogType.Error, "JobPool.Process", ex);
+						log.Create(LogType.Error, $"JobPool.Process.{context.Type.Name}", ex);
 
 						job.FinishedOn = DateTime.UtcNow;
 						job.Status = JobStatus.Failed;
