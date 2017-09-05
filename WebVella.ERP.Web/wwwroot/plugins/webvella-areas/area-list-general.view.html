@@ -1,5 +1,5 @@
 ﻿<div id="page-title">
-	<div ng-if="ngCtrl.generalLists.length > 1 && ngCtrl.list.meta.type =='general' && (ngCtrl.parentView == 'undefined' || ngCtrl.parentView == null)" class="btn-group btn-group-sm alternatives">
+	<div ng-if="ngCtrl.generalLists.length > 1 && ngCtrl.list.meta.type =='general' && ngCtrl.parentView.meta == null" class="btn-group btn-group-sm alternatives">
 		<a ng-repeat="list in ngCtrl.generalLists track by $index" class="btn btn-default" ng-class="{'active':list.name == ngCtrl.list.meta.name}" href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/list-general/{{::list.name}}/1">
 			<i class="fa fa-fw fa-{{::list.iconName}}"></i> {{::ngCtrl.generateSublistHighlightString(list)}}
 		</a>
