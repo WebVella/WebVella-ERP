@@ -3637,7 +3637,8 @@ namespace WebVella.ERP.Web.Controllers
 			}
 
 			HttpContext.Response.Headers.Add("last-modified", file.LastModificationDate.ToString());
-
+			const int durationInSeconds = 60 * 60 * 24 * 30; //30 days caching of these resources
+			HttpContext.Response.Headers[HeaderNames.CacheControl] = "public,max-age=" + durationInSeconds;
 
 			string mimeType;
 			var extension = Path.GetExtension(filepath).ToLowerInvariant();

@@ -18,6 +18,7 @@ using WebVella.ERP.Web.Services;
 using WebVella.ERP.Notifications;
 using Microsoft.AspNetCore.ResponseCompression;
 using System.IO.Compression;
+using Microsoft.Net.Http.Headers;
 
 namespace WebVella.ERP.Web
 {
@@ -134,7 +135,15 @@ namespace WebVella.ERP.Web
 			app.UseResponseCompression();
 
 			// Add static files to the request pipeline. Should be last middleware.
-			app.UseStaticFiles();
+			app.UseStaticFiles(new StaticFileOptions  
+			{
+				OnPrepareResponse = ctx =>
+				{
+					const int durationInSeconds = 60 * 60 * 24 * 30; //30 days caching of these resources
+					ctx.Context.Response.Headers[HeaderNames.CacheControl] =
+						"public,max-age=" + durationInSeconds;
+				}
+			});
 
 			// Add MVC to the request pipeline.
 			app.UseMvc(routes =>
