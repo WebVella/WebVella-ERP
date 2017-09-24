@@ -2568,6 +2568,22 @@ namespace WebVella.ERP
 					command = connection.CreateCommand(schedulePlanTableSql);
 					command.ExecuteNonQuery();
 				}
+
+				//added result column into system table jobs
+				bool jobsResultColumnExists = false;
+				command = connection.CreateCommand("SELECT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='jobs' AND column_name='result')");
+				using (var reader = command.ExecuteReader())
+				{
+					reader.Read();
+					jobsResultColumnExists = reader.GetBoolean(0);
+					reader.Close();
+				}
+
+				if( !jobsResultColumnExists)
+				{
+					command = connection.CreateCommand("ALTER TABLE public.jobs  ADD COLUMN result text");
+					command.ExecuteNonQuery();
+				}
 			}
 		}
 
@@ -3175,6 +3191,6 @@ namespace WebVella.ERP
             return recordViewList;
         }
         */
-		#endregion
-	}
-}
+#endregion
+			}
+		}

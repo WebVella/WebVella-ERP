@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -35,7 +36,7 @@ namespace WebVella.ERP.Jobs
 		{
 			get
 			{
-				lock (lockObj)
+				lock(lockObj)
 				{
 					return MAX_THREADS_POOL_COUNT - Pool.Count;
 				}
@@ -102,7 +103,7 @@ namespace WebVella.ERP.Jobs
 				}
 
 				Type type = assembly.GetType(context.Type.CompleteClassName);
-				if (type == null)
+				if(type == null)
 					throw new Exception($"Type with name '{context.Type.CompleteClassName}' does not exist in assembly {assembly.FullName}");
 
 				var method = type.GetMethod(context.Type.MethodName);
@@ -131,7 +132,10 @@ namespace WebVella.ERP.Jobs
 					}
 				}
 
-				job.FinishedOn = DateTime.UtcNow;
+                if (context.Result != null)
+                    job.Result = context.Result;
+
+                job.FinishedOn = DateTime.UtcNow;
 				job.Status = JobStatus.Finished;
 				jobService.UpdateJob(job);
 			}

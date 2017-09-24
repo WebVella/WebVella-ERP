@@ -150,10 +150,10 @@ namespace WebVella.ERP.Jobs
 			return JobService.UpdateJob(job);
 		}
 
-		public Job GetJob(Guid jobId)
-		{
-			return JobService.GetJob(jobId);
-		}
+        public Job GetJob(Guid jobId)
+        {
+            return JobService.GetJob(jobId);
+        }
 
 		public List<Job> GetJobs(DateTime? startFromDate = null, DateTime? startToDate = null, DateTime? finishedFromDate = null, DateTime? finishedToDate = null,
 			string typeName = null, int? status = null, int? priority = null, Guid? schedulePlanId = null, int? page = null, int? pageSize = null)
@@ -204,7 +204,7 @@ namespace WebVella.ERP.Jobs
 										Log log = new Log();
 										string jobId = job != null ? job.Id.ToString() : "null";
 										string jobType = job != null && job.Type != null ? job.Type.Name : "null";
-										log.Create(LogType.Error, "JobManager.Process", $"Start job with id[{jobId}] and type [{jobType}] failed! ", ex.Message);
+										log.Create(LogType.Error, "JobManager.Process", $"Start job with id[{jobId}] and type [{jobType}] failed! " , ex.Message);
 									}
 									finally
 									{
