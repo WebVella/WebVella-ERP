@@ -8282,7 +8282,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			response +=
 			$"\t\t#region << View: {currentView.Name} >>\n" +
 			"\t\t{\n" +
-			"\t\t\tvar listItem = new InputRecordListlistItem();\n" +
+			"\t\t\tvar listItem = new InputRecordListViewItem();\n" +
 			$"\t\t\tlistItem.EntityId = new Guid(\"{entityId}\");\n" +
 			$"\t\t\tlistItem.EntityName = \"{entityName}\";\n" +
 			$"\t\t\tlistItem.ViewId = new Guid(\"{recordListItem.ViewId}\");\n" +
