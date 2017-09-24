@@ -25,6 +25,8 @@ using Microsoft.Extensions.Primitives;
 using ImageProcessor.Imaging;
 using System.Drawing;
 using WebVella.ERP.Jobs;
+using WebVella.ERP.Web.Services;
+using System.Web;
 
 
 
@@ -4286,6 +4288,159 @@ namespace WebVella.ERP.Web.Controllers
 
 			return DoResponse(response);
 		}
+		#endregion
+
+
+		#region << UserFile >>
+
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/user_file")]
+		[ResponseCache(NoStore = true, Duration = 0)]
+		public IActionResult GetUserFileList(string type = "", string search = "",  int sort = 1, int page = 1, int pageSize = 30)
+		{
+			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+
+			try
+			{
+				response.Object = new UserFileService().GetFilesList(type,search,sort,page,pageSize);
+			}
+			catch (Exception e)
+			{
+				response.Success = false;
+				response.Message = e.Message + e.StackTrace;
+			}
+
+			return DoResponse(response);
+		}
+
+		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/user_file")]
+		[ResponseCache(NoStore = true, Duration = 0)]
+		public IActionResult UploadUserFile([FromBody]JObject submitObj)
+		{
+			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+			var filePath = "";
+			var fileAlt = "";
+			var fileCaption = "";
+			#region << Init SubmitObj >>
+			foreach (var prop in submitObj.Properties())
+			{
+				switch (prop.Name.ToLower())
+				{
+					case "path":
+						if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
+							filePath = prop.Value.ToString();
+						else
+						{
+							throw new Exception("File path is required");
+						}
+						break;
+					case "alt":
+						if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
+							fileAlt = prop.Value.ToString();
+						else
+						{
+							fileAlt = null;
+						}
+						break;
+					case "caption":
+						if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
+							fileCaption = prop.Value.ToString();
+						else
+						{
+							fileCaption = null;
+						}
+						break;
+				}
+			}
+
+			#endregion
+			try
+			{
+				response.Object = new UserFileService().CreateUserFile(filePath,fileAlt,fileCaption);
+			}
+			catch (Exception e)
+			{
+				response.Success = false;
+				response.Message = e.Message + e.StackTrace;
+			}
+
+			return DoResponse(response);
+		}
+
+
+		[AcceptVerbs(new[] { "POST" }, Route = "/ckeditor/drop-upload-url")]
+		[ResponseCache(NoStore = true, Duration = 0)]
+		public IActionResult UploadDropCKEditor(IFormFile upload)
+		{
+			var response = new EntityRecord();
+			byte[] fileBytes = null;
+			try
+			{
+				if(upload!=null)
+				{
+					using (var ms = new MemoryStream())
+					{
+					  upload.CopyTo(ms);
+					  fileBytes = ms.ToArray();
+					}
+					var tempPath = "tmp/" + Guid.NewGuid() + "/" + upload.FileName;
+					var tempFile = new DbFileRepository().Create(tempPath,fileBytes,null,null);
+
+					var newFile = new UserFileService().CreateUserFile(tempFile.FilePath,null,null);
+
+					string url = "/fs" + newFile.Path;
+
+					response["uploaded"] = 1;
+					response["fileName"] = upload.FileName;
+					response["url"] = url;
+					return Json(response);
+
+				}
+				else {
+					return Json(response);
+				}
+			}
+			catch (Exception ex)
+			{
+				response["uploaded"] = 0;
+				response["error"] =new EntityRecord();
+				var message = new EntityRecord();
+				message["message"] = ex.Message;
+				response["error"] = message;
+				return Json(response);
+			}
+
+		}
+
+
+		[AcceptVerbs(new[] { "POST" }, Route = "/ckeditor/image-upload-url")]
+		[ResponseCache(NoStore = true, Duration = 0)]
+		public IActionResult UploadFileManagerCKEditor(IFormFile upload)
+		{
+			byte[] fileBytes = null;
+			string CKEditorFuncNum = HttpContext.Request.Query["CKEditorFuncNum"].ToString();
+			try { 
+				using (var ms = new MemoryStream())
+				{
+				  upload.CopyTo(ms);
+				  fileBytes = ms.ToArray();
+				}
+				var tempPath = "tmp/" + Guid.NewGuid() + "/" + upload.FileName;
+				var tempFile = new DbFileRepository().Create(tempPath,fileBytes,null,null);
+
+				var newFile = new UserFileService().CreateUserFile(tempFile.FilePath,null,null);
+
+				string url = "/fs" + newFile.Path;
+				string vMessage = "";
+				var vOutput = @"<html><body><script>window.parent.CKEDITOR.tools.callFunction(" + CKEditorFuncNum + ", \"" + url + "\", \"" + vMessage + "\");</script></body></html>";
+
+				return Content(vOutput, "text/html");
+			}
+			catch (Exception ex) {
+				var vOutput = @"<html><body><script>window.parent.CKEDITOR.tools.callFunction(" + CKEditorFuncNum + ", \"\", \"" + ex.Message + "\");</script></body></html>";
+				return Content(vOutput, "text/html");
+			}
+		}
+
 		#endregion
 
 	}

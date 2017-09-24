@@ -5887,3 +5887,86 @@ a.link-icon.link[href]:before {
     color: #444;
 }
 /*#endregion << Alert messages <<*/
+
+/*#region << File library >>*/
+
+.file-manager ul {
+	margin:0;
+	margin-bottom:10px;
+}
+
+.file-manager li {
+	width:164px;
+	padding-top:10px;
+	padding-left:10px;
+}
+
+.file-manager .block {
+	position: relative;
+	background: #fff;
+	cursor: pointer;
+	margin-bottom:0;
+	height:150px;
+	width:150px;
+	padding:5px;
+	outline:1px solid #aaa;
+	text-align:center;
+}
+
+	.file-manager .block:hover {
+		outline: 2px solid #5b9dd9;
+	}
+
+	.file-manager .block.image {
+		padding:0;
+		overflow:hidden;
+	}
+
+	.file-manager .block.image img{
+		vertical-align:top;
+	}
+
+.file-manager .centered {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	-webkit-transform: translate(50%,50%);
+	-ms-transform: translate(50%,50%);
+	transform: translate(50%,50%);
+}
+
+	.file-manager .centered img,
+	.file-manager .centered .fa {
+		position:absolute;
+		top:0;
+		left:0;
+		-webkit-transform: translate(-50%,-50%);
+		-ms-transform: translate(-50%,-50%);
+		transform: translate(-50%,-50%);
+		color:#aaa;
+	}
+
+
+.file-manager .filename {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	overflow: hidden;
+	max-height: 100%;
+	word-wrap: break-word;
+	text-align: center;
+	font-weight: 600;
+	background: rgba(255,255,255,.8);
+	-webkit-box-shadow: inset 0 0 0 1px rgba(0,0,0,.15);
+	box-shadow: inset 0 0 0 1px rgba(0,0,0,.15);
+}
+
+.file-manager .filename div {
+	padding: 5px 10px;
+	font-size:11px;
+	color:#444;
+}
+/*#endregion*/

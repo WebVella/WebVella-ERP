@@ -1034,7 +1034,7 @@
 					}, 0);
 				}
 
-				webvellaCoreService.uploadFileToTemp(file, file.name, popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
+				webvellaCoreService.uploadFileToTemp(file, popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
 
 			}
 		}

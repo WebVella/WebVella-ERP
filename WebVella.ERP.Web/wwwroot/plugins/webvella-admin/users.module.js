@@ -231,7 +231,7 @@
         				popupCtrl.progress.image= parseInt(100.0 * response.loaded / response.total);
         			}, 0);
         		}
-        		webvellaCoreService.uploadFileToTemp(file, "image", popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
+        		webvellaCoreService.uploadFileToTemp(file, popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
         	}
         };
         popupCtrl.deleteImage = function () {

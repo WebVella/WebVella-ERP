@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using WebVella.ERP.Api;
@@ -508,7 +509,6 @@ namespace WebVella.ERP.Utilities
 			}
 		}
 
-
 		public static EntityRecord FixDoubleDollarSignProblem(EntityRecord record) {
 			var keysForRemoval = new List<string>();
 			var recordKeyList = new List<string>();
@@ -531,6 +531,16 @@ namespace WebVella.ERP.Utilities
 				record.Properties.Remove(key);
 			}
 			return record;
+		}
+
+		public static EntityRecord GetImageDimension(byte[] imageContent)
+		{
+			Stream stream = new MemoryStream(imageContent);
+			System.Drawing.Image image = System.Drawing.Image.FromStream(stream);
+			var response = new EntityRecord();
+			response["height"] = (decimal)image.Height;
+			response["width"] = (decimal)image.Width;
+			return response;
 		}
 
 	}
