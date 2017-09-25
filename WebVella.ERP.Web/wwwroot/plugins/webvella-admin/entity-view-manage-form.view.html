@@ -536,7 +536,7 @@
 
 <script type="text/ng-template" id="dataBindTemplate.html">
 	<div class="tooltip-description" translate="{{::'FIELD_DATABIND_NOTE_1'}}"></div>
-	<div class="tooltip-databind"><span>{</span>{templateData.{{item.dataName}}<span>}</span>}</div>
+	<div class="tooltip-databind"><span>{</span>{ngCtrl.view.data.{{item.dataName}}<span>}</span>}</div>
 	<div class="tooltip-description" translate="{{::'FIELD_DATABIND_NOTE_2'}}"></div>
-	<div class="tooltip-databind"><span>{</span>{templateMeta<span>}</span>}</div>
+	<div class="tooltip-databind"><span>{</span>{ngCtrl.view.meta<span>}</span>}</div>
 </script>

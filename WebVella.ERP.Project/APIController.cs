@@ -1904,7 +1904,6 @@ namespace WebVella.ERP.Project
 			var upsertResultRecord = new EntityRecord();
 			#region << Init Object >>
 			var outGuid = Guid.Empty;
-			var outInt = (int)1;
 			foreach (var prop in submitObj.Properties())
 			{
 				switch (prop.Name.ToLower())

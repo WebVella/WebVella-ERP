@@ -2056,6 +2056,311 @@ namespace WebVella.ERP
 
 					}
 
+					if (currentVersion < 20170924)
+					{
+						systemSettings.Version = 20170924;
+
+							#region << ***Create entity*** Entity name: user_file >>
+							{
+								#region << entity >>
+								{
+									var entity = new InputEntity();
+									var systemFieldIdDictionary = new Dictionary<string,Guid>();
+									systemFieldIdDictionary["id"] = new Guid("3df98e7c-af26-47a4-8f6c-cdbbf752d147");
+									systemFieldIdDictionary["created_on"] = new Guid("7bc7c1a2-93aa-40bc-8374-fd350cdc7fac");
+									systemFieldIdDictionary["created_by"] = new Guid("5637340f-0c1b-445f-9890-1715a02d8fea");
+									systemFieldIdDictionary["last_modified_on"] = new Guid("e456bbf8-e609-4405-b420-75424ad6112b");
+									systemFieldIdDictionary["last_modified_by"] = new Guid("6fefe57b-a162-4ab6-a9ce-905a4f990b29");
+									systemFieldIdDictionary["user_user_file_created_by"] = new Guid("909aa55e-300b-40f0-8afd-f01c4d223ea5");
+									systemFieldIdDictionary["user_user_file_modified_by"] = new Guid("19d03f1c-52cf-41c8-9d29-1ec8061f7db9");
+									entity.Id = new Guid("5c666c54-9e76-4327-ac7a-55851037810c");
+									entity.Name = "user_file";
+									entity.Label = "User File";
+									entity.LabelPlural = "User Files";
+									entity.System = true;
+									entity.IconName = "folder";
+									entity.Weight = (decimal)100.0;
+									entity.RecordPermissions = new RecordPermissions();
+									entity.RecordPermissions.CanCreate = new List<Guid>();
+									entity.RecordPermissions.CanRead = new List<Guid>();
+									entity.RecordPermissions.CanUpdate = new List<Guid>();
+									entity.RecordPermissions.CanDelete = new List<Guid>();
+									//Create
+									entity.RecordPermissions.CanCreate.Add(new Guid("bdc56420-caf0-4030-8a0e-d264938e0cda"));
+									entity.RecordPermissions.CanCreate.Add(new Guid("f16ec6db-626d-4c27-8de0-3e7ce542c55f"));
+									//READ
+									entity.RecordPermissions.CanRead.Add(new Guid("bdc56420-caf0-4030-8a0e-d264938e0cda"));
+									entity.RecordPermissions.CanRead.Add(new Guid("f16ec6db-626d-4c27-8de0-3e7ce542c55f"));
+									//UPDATE
+									entity.RecordPermissions.CanUpdate.Add(new Guid("bdc56420-caf0-4030-8a0e-d264938e0cda"));
+									entity.RecordPermissions.CanUpdate.Add(new Guid("f16ec6db-626d-4c27-8de0-3e7ce542c55f"));
+									//DELETE
+									entity.RecordPermissions.CanDelete.Add(new Guid("bdc56420-caf0-4030-8a0e-d264938e0cda"));
+									entity.RecordPermissions.CanDelete.Add(new Guid("f16ec6db-626d-4c27-8de0-3e7ce542c55f"));
+									{
+										var response = entMan.CreateEntity(entity, false, false,systemFieldIdDictionary);
+										if (!response.Success)
+											throw new Exception("System error 10050. Entity: user_file creation Message: " + response.Message);
+									}
+								}
+								#endregion
+							}
+							#endregion
+
+							#region << ***Create field***  Entity: user_file Field Name: alt >>
+							{
+								InputTextField textboxField = new InputTextField();
+								textboxField.Id = new Guid("168a9777-a156-4b0b-9b18-909fec043ce5");
+								textboxField.Name = "alt";
+								textboxField.Label = "Alt";
+								textboxField.PlaceholderText = "";
+								textboxField.Description = "";
+								textboxField.HelpText = "";
+								textboxField.Required = false;
+								textboxField.Unique = false;
+								textboxField.Searchable = true;
+								textboxField.Auditable = false;
+								textboxField.System = true;
+								textboxField.DefaultValue = null;
+								textboxField.MaxLength = null;
+								textboxField.EnableSecurity = false;
+								textboxField.Permissions = new FieldPermissions();
+								textboxField.Permissions.CanRead = new List<Guid>();
+								textboxField.Permissions.CanUpdate = new List<Guid>();
+								//READ
+								//UPDATE
+								{
+									var response = entMan.CreateField(new Guid("5c666c54-9e76-4327-ac7a-55851037810c"), textboxField, false);
+									if (!response.Success)
+										throw new Exception("System error 10060. Entity: user_file Field: alt Message:" + response.Message);
+								}
+							}
+							#endregion
+
+							#region << ***Create field***  Entity: user_file Field Name: caption >>
+							{
+								InputTextField textboxField = new InputTextField();
+								textboxField.Id = new Guid("6796c578-22f4-4b07-8568-99f9d6600294");
+								textboxField.Name = "caption";
+								textboxField.Label = "Caption";
+								textboxField.PlaceholderText = "";
+								textboxField.Description = "";
+								textboxField.HelpText = "";
+								textboxField.Required = false;
+								textboxField.Unique = false;
+								textboxField.Searchable = true;
+								textboxField.Auditable = false;
+								textboxField.System = true;
+								textboxField.DefaultValue = null;
+								textboxField.MaxLength = null;
+								textboxField.EnableSecurity = false;
+								textboxField.Permissions = new FieldPermissions();
+								textboxField.Permissions.CanRead = new List<Guid>();
+								textboxField.Permissions.CanUpdate = new List<Guid>();
+								//READ
+								//UPDATE
+								{
+									var response = entMan.CreateField(new Guid("5c666c54-9e76-4327-ac7a-55851037810c"), textboxField, false);
+									if (!response.Success)
+										throw new Exception("System error 10060. Entity: user_file Field: caption Message:" + response.Message);
+								}
+							}
+							#endregion
+
+							#region << ***Create field***  Entity: user_file Field Name: height >>
+							{
+								InputNumberField numberField = new InputNumberField();
+								numberField.Id = new Guid("a7a06f28-5893-4890-a8a7-fd794c741cf9");
+								numberField.Name = "height";
+								numberField.Label = "Height";
+								numberField.PlaceholderText = "";
+								numberField.Description = "";
+								numberField.HelpText = "";
+								numberField.Required = true;
+								numberField.Unique = false;
+								numberField.Searchable = false;
+								numberField.Auditable = false;
+								numberField.System = true;
+								numberField.DefaultValue = Decimal.Parse("0.0");
+								numberField.MinValue = null;
+								numberField.MaxValue = null;
+								numberField.DecimalPlaces = byte.Parse("0");
+								numberField.EnableSecurity = false;
+								numberField.Permissions = new FieldPermissions();
+								numberField.Permissions.CanRead = new List<Guid>();
+								numberField.Permissions.CanUpdate = new List<Guid>();
+								//READ
+								//UPDATE
+								{
+									var response = entMan.CreateField(new Guid("5c666c54-9e76-4327-ac7a-55851037810c"), numberField, false);
+									if (!response.Success)
+										throw new Exception("System error 10060. Entity: user_file Field: height Message:" + response.Message);
+								}
+							}
+							#endregion
+
+							#region << ***Create field***  Entity: user_file Field Name: name >>
+							{
+								InputTextField textboxField = new InputTextField();
+								textboxField.Id = new Guid("cc2730d3-7711-4d8a-bdc2-1d11c3eae5c2");
+								textboxField.Name = "name";
+								textboxField.Label = "Name";
+								textboxField.PlaceholderText = "";
+								textboxField.Description = "";
+								textboxField.HelpText = "";
+								textboxField.Required = true;
+								textboxField.Unique = false;
+								textboxField.Searchable = true;
+								textboxField.Auditable = false;
+								textboxField.System = true;
+								textboxField.DefaultValue = "file-name";
+								textboxField.MaxLength = null;
+								textboxField.EnableSecurity = false;
+								textboxField.Permissions = new FieldPermissions();
+								textboxField.Permissions.CanRead = new List<Guid>();
+								textboxField.Permissions.CanUpdate = new List<Guid>();
+								//READ
+								//UPDATE
+								{
+									var response = entMan.CreateField(new Guid("5c666c54-9e76-4327-ac7a-55851037810c"), textboxField, false);
+									if (!response.Success)
+										throw new Exception("System error 10060. Entity: user_file Field: name Message:" + response.Message);
+								}
+							}
+							#endregion
+
+							#region << ***Create field***  Entity: user_file Field Name: size >>
+							{
+								InputNumberField numberField = new InputNumberField();
+								numberField.Id = new Guid("6a66fbd8-fb5a-4e48-882f-b760475bf2f0");
+								numberField.Name = "size";
+								numberField.Label = "Size";
+								numberField.PlaceholderText = "";
+								numberField.Description = "";
+								numberField.HelpText = "";
+								numberField.Required = true;
+								numberField.Unique = false;
+								numberField.Searchable = false;
+								numberField.Auditable = false;
+								numberField.System = true;
+								numberField.DefaultValue = Decimal.Parse("0.0");
+								numberField.MinValue = null;
+								numberField.MaxValue = null;
+								numberField.DecimalPlaces = byte.Parse("0");
+								numberField.EnableSecurity = false;
+								numberField.Permissions = new FieldPermissions();
+								numberField.Permissions.CanRead = new List<Guid>();
+								numberField.Permissions.CanUpdate = new List<Guid>();
+								//READ
+								//UPDATE
+								{
+									var response = entMan.CreateField(new Guid("5c666c54-9e76-4327-ac7a-55851037810c"), numberField, false);
+									if (!response.Success)
+										throw new Exception("System error 10060. Entity: user_file Field: size Message:" + response.Message);
+								}
+							}
+							#endregion
+
+							#region << ***Create field***  Entity: user_file Field Name: type >>
+							{
+								InputSelectField dropdownField = new InputSelectField();
+								dropdownField.Id = new Guid("e856b229-ab8c-440c-8b6d-f817cc2776f0");
+								dropdownField.Name = "type";
+								dropdownField.Label = "Type";
+								dropdownField.PlaceholderText = "";
+								dropdownField.Description = "";
+								dropdownField.HelpText = "";
+								dropdownField.Required = true;
+								dropdownField.Unique = false;
+								dropdownField.Searchable = true;
+								dropdownField.Auditable = false;
+								dropdownField.System = true;
+								dropdownField.DefaultValue = "image";
+								dropdownField.Options = new List<SelectFieldOption>
+								{
+									new SelectFieldOption() { Key = "image", Value = "image"},
+									new SelectFieldOption() { Key = "document", Value = "document"},
+									new SelectFieldOption() { Key = "audio", Value = "audio"},
+									new SelectFieldOption() { Key = "video", Value = "video"},
+									new SelectFieldOption() { Key = "other", Value = "other"}
+								};
+								dropdownField.EnableSecurity = false;
+								dropdownField.Permissions = new FieldPermissions();
+								dropdownField.Permissions.CanRead = new List<Guid>();
+								dropdownField.Permissions.CanUpdate = new List<Guid>();
+								//READ
+								//UPDATE
+								{
+									var response = entMan.CreateField(new Guid("5c666c54-9e76-4327-ac7a-55851037810c"), dropdownField, false);
+									if (!response.Success)
+										throw new Exception("System error 10060. Entity: user_file Field: type Message:" + response.Message);
+								}
+							}
+							#endregion
+
+							#region << ***Create field***  Entity: user_file Field Name: width >>
+							{
+								InputNumberField numberField = new InputNumberField();
+								numberField.Id = new Guid("c2b8fee6-81a4-4cb0-adac-f19f734f6380");
+								numberField.Name = "width";
+								numberField.Label = "Width";
+								numberField.PlaceholderText = "";
+								numberField.Description = "";
+								numberField.HelpText = "";
+								numberField.Required = true;
+								numberField.Unique = false;
+								numberField.Searchable = false;
+								numberField.Auditable = false;
+								numberField.System = true;
+								numberField.DefaultValue = Decimal.Parse("0.0");
+								numberField.MinValue = null;
+								numberField.MaxValue = null;
+								numberField.DecimalPlaces = byte.Parse("0");
+								numberField.EnableSecurity = false;
+								numberField.Permissions = new FieldPermissions();
+								numberField.Permissions.CanRead = new List<Guid>();
+								numberField.Permissions.CanUpdate = new List<Guid>();
+								//READ
+								//UPDATE
+								{
+									var response = entMan.CreateField(new Guid("5c666c54-9e76-4327-ac7a-55851037810c"), numberField, false);
+									if (!response.Success)
+										throw new Exception("System error 10060. Entity: user_file Field: width Message:" + response.Message);
+								}
+							}
+							#endregion
+
+							#region << ***Create field***  Entity: user_file Field Name: path >>
+							{
+								InputFileField fileField = new InputFileField();
+								fileField.Id = new Guid("3f4e8056-6e94-4304-8fd7-8f151c81bc19");
+								fileField.Name = "path";
+								fileField.Label = "File";
+								fileField.PlaceholderText = "";
+								fileField.Description = "";
+								fileField.HelpText = "";
+								fileField.Required = true;
+								fileField.Unique = true;
+								fileField.Searchable = true;
+								fileField.Auditable = false;
+								fileField.System = false;
+								fileField.DefaultValue ="no-file-error.txt";
+								fileField.EnableSecurity = false;
+								fileField.Permissions = new FieldPermissions();
+								fileField.Permissions.CanRead = new List<Guid>();
+								fileField.Permissions.CanUpdate = new List<Guid>();
+								//READ
+								//UPDATE
+								{
+									var response = entMan.CreateField(new Guid("5c666c54-9e76-4327-ac7a-55851037810c"), fileField, false);
+									if (!response.Success)
+										throw new Exception("System error 10060. Entity: user_file Field: path Message:" + response.Message);
+								}
+							}
+							#endregion
+
+					}
+
 					new DbSystemSettingsRepository().Save(new DbSystemSettings { Id = systemSettings.Id, Version = systemSettings.Version });
 
 					connection.CommitTransaction();
@@ -2261,6 +2566,22 @@ namespace WebVella.ERP
 					  )";
 
 					command = connection.CreateCommand(schedulePlanTableSql);
+					command.ExecuteNonQuery();
+				}
+
+				//added result column into system table jobs
+				bool jobsResultColumnExists = false;
+				command = connection.CreateCommand("SELECT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='jobs' AND column_name='result')");
+				using (var reader = command.ExecuteReader())
+				{
+					reader.Read();
+					jobsResultColumnExists = reader.GetBoolean(0);
+					reader.Close();
+				}
+
+				if( !jobsResultColumnExists)
+				{
+					command = connection.CreateCommand("ALTER TABLE public.jobs  ADD COLUMN result text");
 					command.ExecuteNonQuery();
 				}
 			}
@@ -2870,6 +3191,6 @@ namespace WebVella.ERP
             return recordViewList;
         }
         */
-		#endregion
-	}
-}
+#endregion
+			}
+		}

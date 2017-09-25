@@ -36,6 +36,13 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 				JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
 				job.Attributes = JsonConvert.DeserializeObject<ExpandoObject>((string)src["attributes"], settings);
 			}
+
+			if (!string.IsNullOrWhiteSpace(src["result"].ToString()))
+			{
+				JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+				job.Result = JsonConvert.DeserializeObject<ExpandoObject>((string)src["result"], settings);
+			}
+
 			job.Status = (JobStatus)(int)src["status"];
 			job.Priority = (JobPriority)(int)src["priority"];
 			if (src["started_on"] != DBNull.Value)

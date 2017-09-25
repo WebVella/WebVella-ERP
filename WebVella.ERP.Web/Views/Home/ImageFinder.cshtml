@@ -1,0 +1,319 @@
+﻿
+@{
+	Layout = "~/Views/Shared/_PopupLayout.cshtml";
+}
+
+<div ng-controller="ImageFinderViewController as pluginCtrl" ng-cloak>
+	<div class="panel panel-white" style="margin:0;padding:10px">
+		<div class="panel-body" style="overflow:hidden">
+			<div class="row">
+				<div class="col-xs-4">
+					<a class="btn btn-default" ng-click="pluginCtrl.uploadFile()">
+						<i class="fa fa-upload"></i>
+						@if ((string)ViewBag.FinderType == "image")
+						{
+							<span>Качи снимка</span>
+						}
+						else
+						{
+							<span>Качи файл</span>
+						}
+					</a>
+				</div>
+				<div class="col-xs-4">
+					<form class="form" name="submitForm" ng-submit="pluginCtrl.searchFiles()" style="margin:0;">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-search"></i></span>
+							<input class="form-control" ng-model="pluginCtrl.search" />
+						</div>
+						<button type="submit" class="ng-hide">Find</button>
+					</form>
+				</div>
+				<div class="col-xs-4 text-right">
+					<div class="btn-group">
+						<a class="btn btn-default" ng-click="pluginCtrl.changeSort(1)" ng-class="{'active': pluginCtrl.sort == 1}" title="сортирай по дата на качване"><i class="fa fa-fw fa-clock-o"></i></a>
+						<a class="btn btn-default" ng-click="pluginCtrl.changeSort(2)" ng-class="{'active': pluginCtrl.sort == 2}" title="сортирай по азбучен ред имената"><i class="fa fa-fw fa-sort-alpha-asc"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-default loading-bar ng-hide" ng-show="pluginCtrl.loading" style="margin-top:15px;">
+		<div class="panel-body">
+			<i class="fa fa-loading fa-spin"></i>
+		</div>
+	</div>
+	<div ng-show="pluginCtrl.errorMessage" class="alert alert-danger ng-hide" style="margin-top:15px;">
+		{{pluginCtrl.errorMessag}}
+	</div>
+	<div class="file-manager ng-hide" ng-show="!pluginCtrl.loading && !pluginCtrl.errorMessage">
+		<ul class="list-inline">
+			<li style="" ng-repeat="file in pluginCtrl.files track by file.id">
+				<a ng-click="pluginCtrl.selectFile(file)">
+					<!--"-->
+					<div class="block image" ng-if="file.type == 'image'">
+						<div class="centered">
+							<img ng-src="/fs{{file.path}}?width=150&height=150&action=resize&mode=boxpad" />
+						</div>
+						<div class="filename">
+							<div ng-bind="file.name"></div>
+						</div>
+					</div>
+					<div class="block image" ng-if="file.type == 'document'">
+						<div class="centered">
+							<i class="fa fa-file-text-o fa-4x"></i>
+						</div>
+						<div class="filename">
+							<div ng-bind="file.name"></div>
+						</div>
+					</div>
+					<div class="block image" ng-if="file.type == 'audio'">
+						<div class="centered">
+							<i class="fa fa-volume-up fa-4x"></i>
+						</div>
+						<div class="filename">
+							<div ng-bind="file.name"></div>
+						</div>
+					</div>
+					<div class="block image" ng-if="file.type == 'video'">
+						<div class="centered">
+							<i class="fa fa-video-camera fa-4x"></i>
+						</div>
+						<div class="filename">
+							<div ng-bind="file.name"></div>
+						</div>
+					</div>
+				</a>
+			</li>
+		</ul>
+		<div class="alert alert-info ng-hide" ng-show="pluginCtrl.files.length == 0">No files are found matching your search criteria</div>
+	</div>
+</div>
+<script type="text/ng-template" id="uploadFileModal.html">
+	<div class="modal-header">
+		@if ((string)ViewBag.FinderType == "image")
+		{
+			<span>Качи снимка</span>
+		}
+		else
+		{
+			<span>Качи файл</span>
+		}
+	</div>
+	<div class="modal-body">
+		<div class="form-group" ng-class="{'has-error':popupCtrl.validation.errors.path.isInvalid}">
+			<label class="control-label">File</label>
+			<div>
+				<a ng-if="!popupCtrl.file.path && popupCtrl.progress == 0" href="javascript:void(0)" class="btn btn-default btn-outline" ngf-select="upload(popupCtrl.uploadedFile)" ngf-max-size="20MB" ngf-multiple='false' ng-model="popupCtrl.uploadedFile" translate="{{::'BROWSE'}}"></a>
+				<div class="progress" ng-if="!popupCtrl.file.path && popupCtrl.progress > 0 && popupCtrl.progress <= 100">
+					<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" ng-style="{'width': popupCtrl.progress +'%'}">
+						<span ng-if="popupCtrl.progress < 100">{{popupCtrl.progress || '0'}}%</span>
+						<span ng-if="popupCtrl.progress == 100" translate="{{::'FILE_UPLOAD_ALMOST_DONE'}}"></span>
+					</div>
+				</div>
+				<div class="editable-wrapper input-group file-upload" ng-if='popupCtrl.file.path'>
+					<span class="form-control" ng-bind-html="popupCtrl.renderFieldValue()"></span>
+					<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFile()" ng-confirm-click="{{'DELETE_CONFIRMATION_ALERT_MESSAGE' | translate}}" title="{{'DELETE_FILE' | translate}}"><i class="fa fa-fw fa-trash-o"></i></a>
+				</div>
+			</div>
+			<div class="go-red" ng-if="popupCtrl.validation.errors.path.isInvalid">{{popupCtrl.validation.errors.path.message}}</div>
+		</div>		
+	</div>
+	<div class="modal-footer" style="text-align:center;">
+		<button class="btn btn-primary" type="button" ng-click="popupCtrl.save()" ng-class="{'disabled':popupCtrl.loading}"><i class="fa fa-fw" ng-class="{'fa-upload':!popupCtrl.loading,'fa-spin fa-spinner':popupCtrl.loading}"></i> Качи файла</button>
+		<button class="btn btn-default" type="button" ng-click="popupCtrl.cancel()">Откажи</button>
+	</div>
+</script>
+
+@section PageScripts{
+	<script>
+		var FilesServerLoad = @Html.Raw(ViewBag.JsonFiles);
+		var CurrentType = 	"@Html.Raw((string)ViewBag.FinderType)";
+		var CurrentSort = 	@Html.Raw((int)ViewBag.CurrentSort);
+		var CurrentPage = 	@Html.Raw((int)ViewBag.CurrentPage);
+		var CurrentPageSize = 	@Html.Raw((int)ViewBag.CurrentPageSize);
+	</script>
+	<script>
+		angular.module('webvellaAdmin').controller('ImageFinderViewController', ImageFinderViewController);
+
+		ImageFinderViewController.$inject = ['$scope', '$uibModal', '$http','$location'];
+		function ImageFinderViewController($scope, $uibModal,  $http, $location) {
+			$scope.pluginCtrl = {};
+			$scope.pluginCtrl.files = fastCopy(FilesServerLoad);
+			$scope.pluginCtrl.type = CurrentType;
+			$scope.pluginCtrl.sort = CurrentSort;
+			$scope.pluginCtrl.page = CurrentPage;
+			$scope.pluginCtrl.pageSize = CurrentPageSize;
+			$scope.pluginCtrl.search = null;
+			$scope.pluginCtrl.loading = false;
+			$scope.pluginCtrl.errorMessage = null;
+			$scope.pluginCtrl.searchFiles = function(){
+				$scope.pluginCtrl.page = 1;
+				loadFiles();
+			}
+
+			$scope.pluginCtrl.changeSort = function(sort){
+				$scope.pluginCtrl.sort = sort;
+				loadFiles();
+			}
+
+			function loadFiles(){
+				$scope.pluginCtrl.loading = true;
+				$scope.pluginCtrl.errorMessage = null;
+				var paramsObject = {};
+				if($scope.pluginCtrl.page){paramsObject.page = $scope.pluginCtrl.page};
+				if($scope.pluginCtrl.pageSize){paramsObject.pageSize = $scope.pluginCtrl.pageSize};
+				if($scope.pluginCtrl.type){paramsObject.type = $scope.pluginCtrl.type};
+				if($scope.pluginCtrl.sort){paramsObject.sort = $scope.pluginCtrl.sort};
+				if($scope.pluginCtrl.search){paramsObject.search = $scope.pluginCtrl.search};
+				$http({
+					url:'/api/v1/en_US/user_file',
+					method:"GET",
+					params: paramsObject
+				})
+				.then(function(res){
+					//success
+					$scope.pluginCtrl.files = res.data.object;
+					$scope.pluginCtrl.loading = false;
+				},
+				function(res){
+					//error
+					$scope.pluginCtrl.errorMessage = res.data.message;
+					$scope.pluginCtrl.loading = false;
+				});
+			}
+
+			function getUrlParam( paramName ) {
+				var reParam = new RegExp( '(?:[\?&]|&)' + paramName + '=([^&]+)', 'i' );
+				var match = window.location.search.match( reParam );
+
+				return ( match && match.length > 1 ) ? match[1] : null;
+			}
+
+			$scope.pluginCtrl.selectFile = function(selectedFile){
+				var funcNum = getUrlParam( 'CKEditorFuncNum' );
+				window.opener.CKEDITOR.tools.callFunction( funcNum, "/fs" + selectedFile.path );
+				window.close();
+			}
+
+
+			$scope.pluginCtrl.uploadFile = function(){
+				var modalInstance = $uibModal.open({
+					animation: true,
+					templateUrl: 'uploadFileModal.html',
+					windowClass: "centered ",
+					controller: function ($scope, $sce, $filter,$state, $uibModalInstance,webvellaCoreService,parentCtrl,ngToast,$timeout) {
+					$scope.popupCtrl = {};
+					$scope.popupCtrl.validation = webvellaCoreService.initValidationObject();
+					$scope.popupCtrl.loading = false;
+					$scope.popupCtrl.file = {};
+					$scope.popupCtrl.file.alt = null;
+					$scope.popupCtrl.file.caption = null;
+					$scope.popupCtrl.file.path = null;
+					$scope.popupCtrl.uploadedFile = null;
+					$scope.popupCtrl.progress = 0;
+					$scope.popupCtrl.uploadedFileName = "";
+					$scope.upload = function (file) {
+        				if (file != null) {
+							$scope.popupCtrl.validation = webvellaCoreService.initValidationObject();
+        					$scope.popupCtrl.uploadSuccessCallback = function (response) {
+        						$scope.popupCtrl.file.path = response.object.url;
+        						$scope.popupCtrl.uploadedFileName = response.object.filename;
+        					}
+        					$scope.popupCtrl.uploadErrorCallback = function (response) {
+        						ngToast.create({
+        							className: 'error',
+        							content: '<span class="go-red">Error:</span> ' + response.message,
+        							timeout: 7000
+        						});
+        					}
+        					$scope.popupCtrl.uploadProgressCallback = function (response) {
+        						$timeout(function () {
+        							$scope.popupCtrl.progress= parseInt(100.0 * response.loaded / response.total);
+        						}, 0);
+        					}
+        					webvellaCoreService.uploadFileToTemp(file, $scope.popupCtrl.uploadProgressCallback, $scope.popupCtrl.uploadSuccessCallback, $scope.popupCtrl.uploadErrorCallback);
+        				}
+					};
+					$scope.popupCtrl.deleteFile = function () {
+        				var filePath = $scope.popupCtrl.file.path;
+
+        				function deleteSuccessCallback(response) {
+        					$timeout(function () {
+								$scope.popupCtrl.file.path = null;
+								$scope.popupCtrl.uploadedFile = null;
+								$scope.popupCtrl.progress = 0;
+								$scope.popupCtrl.uploadedFileName = "";
+        					}, 0);
+        					return true;
+        				}
+
+        				function deleteFailedCallback(response) {
+        					ngToast.create({
+        						className: 'error',
+        						content: '<span class="go-red">Error:</span> ' + response.message,
+        						timeout: 7000
+        					});
+        					return "validation error";
+        				}
+
+        				webvellaCoreService.deleteFileFromFS(filePath, deleteSuccessCallback, deleteFailedCallback);
+
+					}
+
+					$scope.popupCtrl.renderFieldValue = function(){
+						return webvellaCoreService.renderFieldValue($scope.popupCtrl.file.path,{fieldType:7});
+					}
+
+					$scope.popupCtrl.save = function(){
+        				function uploadSuccessCallback(response) {
+        					$timeout(function () {
+								$scope.popupCtrl.file.path = null;
+								$scope.popupCtrl.uploadedFile = null;
+								$scope.popupCtrl.progress = 0;
+								$scope.popupCtrl.uploadedFileName = "";
+								parentCtrl.files.unshift(response.object);
+								$scope.popupCtrl.loading = false;
+								$uibModalInstance.close('dismiss'); 
+        					}, 0);
+        					return true;
+        				}
+
+        				function uploadFailedCallback(response) {
+        					ngToast.create({
+        						className: 'error',
+        						content: '<span class="go-red">Error:</span> ' + response.message,
+        						timeout: 7000
+        					});
+							$scope.popupCtrl.loading = false;
+        					return "validation error";
+        				}
+
+						$scope.popupCtrl.validation = webvellaCoreService.initValidationObject();
+						if(isStringNullOrEmptyOrWhiteSpace($scope.popupCtrl.file.path)){
+							$scope.popupCtrl.validation = webvellaCoreService.setValidationError($scope.popupCtrl.validation,"Validation error","path","* required");
+						}
+						if(!$scope.popupCtrl.validation.isInvalid){
+							$scope.popupCtrl.loading = true;
+							var submitObject = {};
+							submitObject.path = $scope.popupCtrl.file.path;
+							submitObject.caption = $scope.popupCtrl.file.caption;
+							submitObject.alt = $scope.popupCtrl.file.alt;
+							webvellaCoreService.uploadUserFile(submitObject, uploadSuccessCallback, uploadFailedCallback);
+						}
+					};
+
+					$scope.popupCtrl.cancel = function () { $uibModalInstance.close('dismiss'); };
+
+					},
+					resolve: {
+						parentCtrl: function () {
+							return $scope.pluginCtrl;
+						}
+					}
+				});
+			}
+
+		}
+	</script>
+}

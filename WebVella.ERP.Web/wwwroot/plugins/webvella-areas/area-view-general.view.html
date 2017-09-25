@@ -1,4 +1,9 @@
 <div id="page-title">
+	<div ng-if="ngCtrl.generalViews.length > 1 && ngCtrl.view.meta.type == 'general' && ngCtrl.parentView.meta == null" class="btn-group btn-group-sm alternatives">
+		<a ng-repeat="view in ngCtrl.generalViews track by $index" class="btn btn-default" ng-class="{'active':view.name == ngCtrl.parentView.meta.name}" href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/view-general/sb/{{::view.name}}/{{ngCtrl.stateParams.recordId}}">
+			<i class="fa fa-fw fa-{{::view.iconName}}"></i> {{::ngCtrl.generateSublistHighlightString(view)}}
+		</a>
+	</div>
 	<div id="page-meta">
 		<div class="aux-actions">
 			<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageTitleActions track by actionItem.name" class="btn-wrapper"></span>
@@ -16,7 +21,7 @@
 			<div class="meta-label-aux">{{::ngCtrl.entity.label}} <span class="ng-hide" ng-show="ngCtrl.showPageTitleAuxLabelSecondary"><span class="divider"><i class="fa fa-caret-right"></i></span> <span ng-bind-html="::ngCtrl.generateAuxHighlightString()" title="{{::ngCtrl.generateAuxHighlightString()}}"></span></span></div>
 			<h4>
 				<span ng-bind-html="::ngCtrl.generateHighlightString()" title="{{::ngCtrl.generateHighlightString()}}"></span>
-				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalViews.length > 1" dropdown-append-to-body="true">
+				<!--<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalViews.length > 1" dropdown-append-to-body="true">
 					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-default btn-outline btn-sm" style="padding:0 10px;">more <i class="fa fa-fw fa-caret-down"></i></a>
 					<ul class="dropdown-menu" uib-dropdown-menu>
 						<li ng-repeat="view in ngCtrl.generalViews track by $index">
@@ -25,7 +30,7 @@
 							</a>
 						</li>
 					</ul>
-				</span>
+				</span>-->
 			</h4>
 		</div>
 	</div>
@@ -57,7 +62,7 @@
 	</div>
 
 	<div id="page-text" ng-if='::ngCtrl.view.meta.dynamicHtmlTemplate'>
-		<div ng-include="::ngCtrl.view.meta.dynamicHtmlTemplate"></div>
+		<div ng-include="ngCtrl.view.meta.dynamicHtmlTemplate"></div>
 		<div class="page-bottom-actions" dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageBottomActions track by actionItem.name"></div>
 	</div>
 
@@ -238,7 +243,7 @@
 											</div>
 										</div>
 										<div ng-switch-when="9" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
-											<img class="image-field" ng-src="/fs{{viewData[item.dataName]}}" ng-if="viewData[item.dataName]"/>
+											<img class="image-field" ng-src="/fs{{viewData[item.dataName]}}" ng-if="viewData[item.dataName]" />
 											<p class="form-control-static" ng-if="!viewData[item.dataName]">No image attached</p>
 										</div>
 										<!-- If type 10 - textarea -->

@@ -16,7 +16,7 @@ namespace WebVella.ERP.Jobs
 
 	[Serializable]
 	public class Job
-	{
+    {
 		[JsonProperty(PropertyName = "id")]
 		public Guid Id { get; set; }
 
@@ -41,7 +41,10 @@ namespace WebVella.ERP.Jobs
 		[JsonProperty(PropertyName = "attributes")]
 		public dynamic Attributes { get; set; }
 
-		[JsonProperty(PropertyName = "status")]
+        [JsonProperty(PropertyName = "result")]
+        public dynamic Result { get; set; }
+
+        [JsonProperty(PropertyName = "status")]
 		public JobStatus Status { get; set; }
 
 		[JsonProperty(PropertyName = "priority")]

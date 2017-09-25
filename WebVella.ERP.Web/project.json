@@ -65,7 +65,8 @@
         "Microsoft.AspNetCore.Mvc": "1.1.1",
         "Microsoft.AspNetCore.Mvc.Abstractions": "1.1.1",
         "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.1.1",
-        "morelinq": "2.1.0"
+        "morelinq": "2.1.0",
+        "Microsoft.AspNetCore.ResponseCompression": "1.0.2"
     },
 
 	"commands": {

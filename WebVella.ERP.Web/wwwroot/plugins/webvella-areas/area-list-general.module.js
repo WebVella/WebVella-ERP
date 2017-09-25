@@ -288,7 +288,6 @@
 		ngCtrl.currentUser = resolvedCurrentUser;
 		ngCtrl.$sessionStorage = $sessionStorage;
 		ngCtrl.stateParams = $stateParams;
-		ngCtrl.$sessionStorage["last-list-params"] = fastCopy($stateParams);
 		ngCtrl.parentView = {};
 		ngCtrl.parentView.data = null;
 		ngCtrl.parentView.meta = null;
@@ -296,7 +295,9 @@
 			ngCtrl.parentView.data = resolvedParentViewData;
 			ngCtrl.parentView.meta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
 		}
-
+		else{
+			ngCtrl.$sessionStorage["last-list-params"] = fastCopy($stateParams);		
+		}
 		//#endregion
 
 		//#region << Set Page meta >>
@@ -1033,7 +1034,7 @@
 					}, 0);
 				}
 
-				webvellaCoreService.uploadFileToTemp(file, file.name, popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
+				webvellaCoreService.uploadFileToTemp(file, popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
 
 			}
 		}
