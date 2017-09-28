@@ -86,7 +86,6 @@ namespace WebVella.ERP.Web
 				NotificationContext.Initialize();
 				NotificationContext.Current.SendNotification(new Notification { Channel = "*", Message = "ERP configuration loaded and completed." });
 
-				service.StartBackgroundJobProcess();
 			}
 			finally
 			{
