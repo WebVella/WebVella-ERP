@@ -560,7 +560,10 @@ namespace WebVella.ERP.Api
 								if (field is AutoNumberField && pair.Value == null)
 									continue;
 
-								storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
+								if (field.Required && pair.Value == null)
+									storageRecordData.Add(new KeyValuePair<string, object>(field.Name, field.GetDefaultValue()));
+								else
+									storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
 							}
 						}
 						catch (Exception ex)
