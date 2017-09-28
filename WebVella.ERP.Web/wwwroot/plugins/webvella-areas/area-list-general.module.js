@@ -932,7 +932,7 @@
 		popupCtrl.hasError = false;
 		popupCtrl.errorMessage = "";
 		popupCtrl.count = -1;
-		popupCtrl.countHasSize = true;
+		popupCtrl.countHasSize = false;
 		popupCtrl.downloadFilePath = null;
 		popupCtrl.listHasExternalDataSource = false;
 		if(popupCtrl.ngCtrl.list.meta.dataSourceUrl != null && popupCtrl.ngCtrl.list.meta.dataSourceUrl != ""){
