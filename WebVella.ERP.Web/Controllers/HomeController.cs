@@ -69,7 +69,7 @@ namespace WebVella.ERP.Web.Controllers
 			var currentType = "image";
 			var currentSort = 1;
 			var currentPage = 1;
-			var currentPageSize = 15;
+			var currentPageSize = 30;
 			
 			ViewBag.FinderType = currentType;
 			ViewBag.CurrentSort = currentSort;
@@ -142,9 +142,9 @@ namespace WebVella.ERP.Web.Controllers
 			if( url.StartsWith("/") )
 			{
 				if( !url.Contains("?"))
-					return $"{url}?{cacheBreaker}";
+					return $"{url}?v={cacheBreaker}";
 
-				return $"{url}&{cacheBreaker}";
+				return $"{url}&v={cacheBreaker}";
 			}
 			return url;
 		}
