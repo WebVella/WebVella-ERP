@@ -945,7 +945,7 @@
 			var columnsForExport = [];
 			for (var i = 0; i < popupCtrl.ngCtrl.list.meta.columns.length; i++) {
 				var currentColumnMeta = popupCtrl.ngCtrl.list.meta.columns[i];
-				if (currentColumnMeta.type == "field" || currentColumnMeta == "fieldFromRelation") {
+				if (currentColumnMeta.type == "field" || currentColumnMeta.type == "fieldFromRelation") {
 					columnsForExport.push(currentColumnMeta.fieldName);
 				}
 			}
