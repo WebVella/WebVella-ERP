@@ -96,15 +96,21 @@ namespace WebVella.ERP.Api
 
 				int page = 1;
 				int pageSize = 100;
-				int offset = 0;
+				int recordsLmit = 0;
 
 				while (true)
 				{
 					var stream = new MemoryStream();
 
-					if (count > 0 && count < (pageSize * page))
+					if (count > 0)
 					{
-						pageSize = count < pageSize ? count : (count - (pageSize * (page - 1)));
+						if (count < pageSize)
+							pageSize = count;
+						else if (count < (pageSize * page))
+						{
+							recordsLmit = (count - (pageSize * (page - 1)));
+						}
+
 					}
 
 					List<EntityRecord> records = null;
@@ -115,7 +121,7 @@ namespace WebVella.ERP.Api
 						pageSize = recordsCount > 0 ? recordsCount : 0;
 					}
 					else
-						records = recMan.GetListRecords(entities, entity, listName, page, queryObj, pageSize, true);
+						records = recMan.GetListRecords(entities, entity, listName, page, queryObj, pageSize, true, recordsLmit: recordsLmit);
 
 					if (records.Count > 0)
 					{
@@ -196,11 +202,10 @@ namespace WebVella.ERP.Api
 					}
 
 					byte[] buffer = stream.ToArray();
-					exportStream.Write(buffer, offset, buffer.Length);
-					offset += buffer.Length;
+					exportStream.Write(buffer, 0, buffer.Length);
 					exportStream.Flush();
 
-					if (records.Count <= pageSize)
+					if (records.Count <= pageSize && count <= (page * pageSize))
 						break;
 
 					page++;
