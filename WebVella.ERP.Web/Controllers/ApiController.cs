@@ -3321,10 +3321,6 @@ namespace WebVella.ERP.Web.Controllers
 			string time = dt.Year.ToString() + dt.Month.ToString() + dt.Day.ToString() + dt.Hour.ToString() + dt.Minute.ToString() + dt.Second.ToString() + dt.Millisecond.ToString();
 			string fileName = $"{entityName.Replace('_', '-').Trim().ToLowerInvariant()}-{time}{random}.csv"; //"goro-test-report.csv";
 
-			Response.ContentType = "application/octet-stream;charset=utf-8";
-			Response.Headers.Add("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-			//Response.Headers.Add("Content-Length", fileResp.ContentLength.ToString());
-
 			Dictionary<string, string> urlQueries = new Dictionary<string, string>();
 			if (Request.Query.Count > 0)
 			{
@@ -3336,14 +3332,12 @@ namespace WebVella.ERP.Web.Controllers
 			}
 
 			ImportExportManager ieManager = new ImportExportManager(this.hooksService);
-			ResponseModel response = ieManager.ExportListRecordsToCsv(entityName, listName, Response.Body, urlQueries, count);
-
-			Response.Body.Close();
+			ResponseModel response = ieManager.ExportListRecordsToCsv(entityName, listName, urlQueries, count);
 
 			if (!response.Success)
 				return DoResponse(response);
 
-			return new EmptyResult();
+			return File((byte[])response.Object, "application/octet-stream", fileName);
 		}
 
 		// Import list records to csv
