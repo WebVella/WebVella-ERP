@@ -5,117 +5,117 @@
 */
 
 (function () {
-    'use strict';
-    angular
+	'use strict';
+	angular
 		.module('wvApp')
 		.constant('wvAppConstants', {
-		    "debugEnabled": false,
-		    "apiBaseUrl": "/api/v1/en_US/",
-		    "locale": "en_US",
-		    "authTokenKey": "erp-auth",
-		    "htmlCacheBreaker": 20170405
+			"debugEnabled": false,
+			"apiBaseUrl": "/api/v1/en_US/",
+			"locale": "en_US",
+			"authTokenKey": "erp-auth",
+			"htmlCacheBreaker": 20170827
 		});
 })();
 
 if (!String.prototype.startsWith) {
-    String.prototype.startsWith = function (searchString, position) {
-        position = position || 0;
-        return this.substr(position, searchString.length) === searchString;
-    };
+	String.prototype.startsWith = function (searchString, position) {
+		position = position || 0;
+		return this.substr(position, searchString.length) === searchString;
+	};
 }
 
 function isStringNullOrEmptyOrWhiteSpace(str) {
-    return (!str || str.length === 0 || /^\s*$/.test(str))
+	return (!str || str.length === 0 || /^\s*$/.test(str))
 }
 
 function isEmpty(obj) {
-    for (var key in obj) {
-        if (obj.hasOwnProperty(key))
-            return false;
-    }
-    return true;
+	for (var key in obj) {
+		if (obj.hasOwnProperty(key))
+			return false;
+	}
+	return true;
 }
 
 function findInArray(arr, propName, propValue) {
-    for (var i = 0; i < arr.length; i++)
-        if (arr[i][propName] == propValue)
-            return arr[i];
+	for (var i = 0; i < arr.length; i++)
+		if (arr[i][propName] == propValue)
+			return arr[i];
 
-    // will return undefined if not found; you could return a default instead
+	// will return undefined if not found; you could return a default instead
 }
 
 function arraysEqual(array1, array2) {
-    var is_same = (array1.length == array2.length) && array1.every(function (element, index) {
-        return element === array2[index];
-    });
+	var is_same = (array1.length == array2.length) && array1.every(function (element, index) {
+		return element === array2[index];
+	});
 
-    return is_same;
+	return is_same;
 }
 
 function checkInt(data) {
-    var response = {
-        success: true,
-        message: "It is integer"
-    }
-    if (!data) {
-        response.message = "Empty value is OK";
-        return response;
-    }
-    if (!isNumeric(data)) {
-        response.success = false;
-        response.message = "Only integer is accepted";
-        return response;
-    }
+	var response = {
+		success: true,
+		message: "It is integer"
+	}
+	if (!data) {
+		response.message = "Empty value is OK";
+		return response;
+	}
+	if (!isNumeric(data)) {
+		response.success = false;
+		response.message = "Only integer is accepted";
+		return response;
+	}
 
-    if (data.toString().indexOf(",") > -1 || data.toString().indexOf(".") > -1) {
-        response.success = false;
-        response.message = "Only integer is accepted";
-        return response;
-    }
+	if (data.toString().indexOf(",") > -1 || data.toString().indexOf(".") > -1) {
+		response.success = false;
+		response.message = "Only integer is accepted";
+		return response;
+	}
 
-    if (data == parseInt(data, 10)) {
-        return response;
-    }
-    else {
-        response.success = false;
-        response.message = "Only integer is accepted";
-        return response;
-    }
+	if (data == parseInt(data, 10)) {
+		return response;
+	}
+	else {
+		response.success = false;
+		response.message = "Only integer is accepted";
+		return response;
+	}
 
 }
 
 function checkDecimal(data) {
-    var response = {
-        success: true,
-        message: "It is decimal"
-    }
-    if (!data) {
-        response.message = "Empty value is OK";
-        return response;
-    }
-    if (data.toString().indexOf(",") > -1) {
-        response.success = false;
-        response.message = "Comma is not allowed. Use '.' for decimal separator";
-        return response;
-    }
+	var response = {
+		success: true,
+		message: "It is decimal"
+	}
+	if (!data) {
+		response.message = "Empty value is OK";
+		return response;
+	}
+	if (data.toString().indexOf(",") > -1) {
+		response.success = false;
+		response.message = "Comma is not allowed. Use '.' for decimal separator";
+		return response;
+	}
 
-    if (!isNumeric(data)) {
-        response.success = false;
-        response.message = "Only decimal is accepted";
-        return response;
-    }
+	if (!isNumeric(data)) {
+		response.success = false;
+		response.message = "Only decimal is accepted";
+		return response;
+	}
 
-    return response;
+	return response;
 }
 
 function isNumeric(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
+	return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 function decimalPlaces(num) {
-    var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-    if (!match) { return 0; }
-    return Math.max(
+	var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+	if (!match) { return 0; }
+	return Math.max(
 		 0,
 		 // Number of digits right of decimal point.
 		 (match[1] ? match[1].length : 0)
@@ -124,67 +124,67 @@ function decimalPlaces(num) {
 }
 
 function checkPercent(data) {
-    var response = {
-        success: true,
-        message: "It is decimal"
-    }
-    if (!data) {
-        response.message = "Empty value is OK";
-        return response;
-    }
-    if (data.toString().indexOf(",") > -1) {
-        response.success = false;
-        response.message = "Comma is not allowed. Use '.' for decimal separator";
-        return response;
-    }
-    if (!isNumeric(data)) {
-        response.success = false;
-        response.message = "Only decimal is accepted";
-        return response;
-    }
+	var response = {
+		success: true,
+		message: "It is decimal"
+	}
+	if (!data) {
+		response.message = "Empty value is OK";
+		return response;
+	}
+	if (data.toString().indexOf(",") > -1) {
+		response.success = false;
+		response.message = "Comma is not allowed. Use '.' for decimal separator";
+		return response;
+	}
+	if (!isNumeric(data)) {
+		response.success = false;
+		response.message = "Only decimal is accepted";
+		return response;
+	}
 
-    if (data > 1) {
-        response.success = false;
-        response.message = "Only decimal values between 0 and 1 are accepted";
-        return response;
-    }
+	if (data > 1) {
+		response.success = false;
+		response.message = "Only decimal values between 0 and 1 are accepted";
+		return response;
+	}
 
-    return response;
+	return response;
 }
 
 function checkPhone(data) {
-    var response = {
-        success: true,
-        message: "It is decimal"
-    }
-    if (!phoneUtils.isValidNumber(data)) {
-        response.success = false,
+	var response = {
+		success: true,
+		message: "It is decimal"
+	}
+	if (!phoneUtils.isValidNumber(data)) {
+		response.success = false,
 		response.message = "Not a valid phone. Should start with + followed by the country code digits";
-        return response;
-    }
+		return response;
+	}
 
 
-    return response;
+	return response;
 }
 
 function checkEmail(data) {
-    var response = {
-        success: true,
-        message: "It is email"
-    }
-    if (!data) {
-        response.message = "Empty value is OK";
-        return response;
-    }
-    var regex = new RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
-    if (!regex.test(data.toString())) {
-        response.success = false;
-        response.message = "Invalid email format";
-        return response;
-    }
+	var response = {
+		success: true,
+		message: "It is email"
+	}
+	if (!data) {
+		response.message = "Empty value is OK";
+		return response;
+	}
+	var regex = new RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
+	if (!regex.test(_.toLower(data.toString()))) {
+		response.success = false;
+		response.message = "Invalid email format";
+		return response;
+	}
 
 
-    return response;
+	return response;
 }
 
 function isArray(object){
@@ -196,30 +196,30 @@ function isArray(object){
 
 
 function getFontAwesomeIconNames() {
-    //Extracting the font-awesome icon names from rawJSON
-    //1. Get the raw json from the amazing work here https://github.com/Smartik89/SMK-Font-Awesome-PHP-JSON/blob/master/font-awesome/json/font-awesome-data.json
+	//Extracting the font-awesome icon names from rawJSON
+	//1. Get the raw json from the amazing work here https://github.com/Smartik89/SMK-Font-Awesome-PHP-JSON/blob/master/font-awesome/json/font-awesome-data.json
 
-    //2. Paste the raw json in the object below
-    //baseCtrl.faRaw = {}
+	//2. Paste the raw json in the object below
+	//baseCtrl.faRaw = {}
 
-    //3. Execute the following script
-    //var iconNames = [];
-    //for (var name in baseCtrl.faRaw) {
-    //	iconNames.push(name);
-    //}
-    //$log.info(iconNames);
+	//3. Execute the following script
+	//var iconNames = [];
+	//for (var name in baseCtrl.faRaw) {
+	//	iconNames.push(name);
+	//}
+	//$log.info(iconNames);
 
-    //4. Copy the json from the console following this steps
-    ////// 1 - Right-click the object and select "Store as global variable"
-    ////// 2 - The console will print the new variable's name, for example: temp1
-    ////// 3 - Type: copy(temp1)  
-    ////// The object is now available in your clipboard.
-    ////// Tested in Chrome
+	//4. Copy the json from the console following this steps
+	////// 1 - Right-click the object and select "Store as global variable"
+	////// 2 - The console will print the new variable's name, for example: temp1
+	////// 3 - Type: copy(temp1)  
+	////// The object is now available in your clipboard.
+	////// Tested in Chrome
 
-    //5. Remove the "" to get the icon name
+	//5. Remove the "" to get the icon name
 
 
-    var iconNames = [
+	var iconNames = [
 	  "500px",
 	  "adjust",
 	  "adn",
@@ -825,42 +825,42 @@ function getFontAwesomeIconNames() {
 	  "youtube",
 	  "youtube-play",
 	  "youtube-square"
-    ]
-    return iconNames;
+	]
+	return iconNames;
 }
 
 function fastCopy(object) {
-    return angular.fromJson(angular.toJson(object))
+	return angular.fromJson(angular.toJson(object))
 }
 
 function newGuid() {
-    var d = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = (d + Math.random() * 16) % 16 | 0;
-        d = Math.floor(d / 16);
-        return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-    });
-    return uuid;
+	var d = new Date().getTime();
+	var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+		var r = (d + Math.random() * 16) % 16 | 0;
+		d = Math.floor(d / 16);
+		return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+	});
+	return uuid;
 };
 
 function multiplyDecimals(val1, val2, decimalPlaces) {
-    var helpNumber = 100;
-    for (var i = 0; i < decimalPlaces; i++) {
-        helpNumber = helpNumber * 10;
-    }
-    var temp1 = $scope.Math.round(val1 * helpNumber);
-    var temp2 = $scope.Math.round(val2 * helpNumber);
-    return (temp1 * temp2) / (helpNumber * helpNumber);
+	var helpNumber = 100;
+	for (var i = 0; i < decimalPlaces; i++) {
+		helpNumber = helpNumber * 10;
+	}
+	var temp1 = $scope.Math.round(val1 * helpNumber);
+	var temp2 = $scope.Math.round(val2 * helpNumber);
+	return (temp1 * temp2) / (helpNumber * helpNumber);
 }
 
 function htmlToPlaintext(text) {
-    return text ? String(text).replace(/<[^>]+>/gm, '') : '';
+	return text ? String(text).replace(/<[^>]+>/gm, '') : '';
 }
 
 function escapeHtml(unsafe) {
-    return unsafe
-         //.replace(/&/g, "&amp;")
-         .replace(/<div/g, "&lt;div")
+	return unsafe.toString()
+		 //.replace(/&/g, "&amp;")
+		 .replace(/<div/g, "&lt;div")
 		 .replace(/<span/g, "&lt;span")
 		 .replace(/<a/g, "&lt;a")
 		 .replace(/<em/g, "&lt;em")
@@ -871,9 +871,9 @@ function escapeHtml(unsafe) {
 		 .replace(/<ul/g, "&lt;ul")
 		 .replace(/<p/g, "&lt;p")
 		 .replace(/<table/g, "&lt;table")
-    //.replace(/>/g, "&gt;")
-    //.replace(/"/g, "&quot;")
-    //.replace(/'/g, "&#039;");
+	//.replace(/>/g, "&gt;")
+	//.replace(/"/g, "&quot;")
+	//.replace(/'/g, "&#039;");
 }
 
 
@@ -882,82 +882,82 @@ function escapeHtml(unsafe) {
 // Thanks to http://stackoverflow.com/questions/6913512/how-to-sort-an-array-of-objects-by-multiple-fields
 var sort_by;
 (function () {
-    // utility functions
-    var default_cmp = function (a, b) {
-        if (a == b) return 0;
-        return a < b ? -1 : 1;
-    },
-        getCmpFunc = function (primer, reverse) {
-            var dfc = default_cmp, // closer in scope
-                cmp = default_cmp;
-            if (primer) {
-                cmp = function (a, b) {
-                    return dfc(primer(a), primer(b));
-                };
-            }
-            if (reverse) {
-                return function (a, b) {
-                    return -1 * cmp(a, b);
-                };
-            }
-            return cmp;
-        };
+	// utility functions
+	var default_cmp = function (a, b) {
+		if (a == b) return 0;
+		return a < b ? -1 : 1;
+	},
+		getCmpFunc = function (primer, reverse) {
+			var dfc = default_cmp, // closer in scope
+				cmp = default_cmp;
+			if (primer) {
+				cmp = function (a, b) {
+					return dfc(primer(a), primer(b));
+				};
+			}
+			if (reverse) {
+				return function (a, b) {
+					return -1 * cmp(a, b);
+				};
+			}
+			return cmp;
+		};
 
-    // actual implementation
-    sort_by = function () {
-        var fields = [],
-            n_fields = arguments.length,
-            field, name, reverse, cmp;
+	// actual implementation
+	sort_by = function () {
+		var fields = [],
+			n_fields = arguments.length,
+			field, name, reverse, cmp;
 
-        // preprocess sorting options
-        for (var i = 0; i < n_fields; i++) {
-            field = arguments[i];
-            if (typeof field === 'string') {
-                name = field;
-                cmp = default_cmp;
-            }
-            else {
-                name = field.name;
-                cmp = getCmpFunc(field.primer, field.reverse);
-            }
-            fields.push({
-                name: name,
-                cmp: cmp
-            });
-        }
+		// preprocess sorting options
+		for (var i = 0; i < n_fields; i++) {
+			field = arguments[i];
+			if (typeof field === 'string') {
+				name = field;
+				cmp = default_cmp;
+			}
+			else {
+				name = field.name;
+				cmp = getCmpFunc(field.primer, field.reverse);
+			}
+			fields.push({
+				name: name,
+				cmp: cmp
+			});
+		}
 
-        // final comparison function
-        return function (A, B) {
-            var a, b, name, result;
-            for (var i = 0; i < n_fields; i++) {
-                result = 0;
-                field = fields[i];
-                name = field.name;
+		// final comparison function
+		return function (A, B) {
+			var a, b, name, result;
+			for (var i = 0; i < n_fields; i++) {
+				result = 0;
+				field = fields[i];
+				name = field.name;
 
-                result = field.cmp(A[name], B[name]);
-                if (result !== 0) break;
-            }
-            return result;
-        }
-    }
+				result = field.cmp(A[name], B[name]);
+				if (result !== 0) break;
+			}
+			return result;
+		}
+	}
 }());
 
 //load js file
 function loadjscssfile(filename, filetype) {
-    if (filetype == "js") {
-        // if filename is a external JavaScript file
-        var fileref = document.createElement('script');
-        fileref.setAttribute("type", "text/javascript");
-        fileref.setAttribute("src", filename);
-    }
-    else if (filetype == "css") {
-        //if filename is an external CSS file
-        var fileref = document.createElement("link");
-        fileref.setAttribute("rel", "stylesheet");
-        fileref.setAttribute("type", "text/css")
-        fileref.setAttribute("href", filename)
-    }
-    if (typeof fileref != "undefined") {
-        document.getElementsByTagName("head")[0].appendChild(fileref)
-    }
+	if (filetype == "js") {
+		// if filename is a external JavaScript file
+		var fileref = document.createElement('script');
+		fileref.setAttribute("type", "text/javascript");
+		fileref.setAttribute("src", filename);
+	}
+	else if (filetype == "css") {
+		//if filename is an external CSS file
+		var fileref = document.createElement("link");
+		fileref.setAttribute("rel", "stylesheet");
+		fileref.setAttribute("type", "text/css")
+		fileref.setAttribute("href", filename)
+	}
+	if (typeof fileref != "undefined") {
+		document.getElementsByTagName("head")[0].appendChild(fileref)
+	}
 }

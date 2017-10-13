@@ -193,9 +193,10 @@
 							break;
 						case 7: //File
 							ngCtrl.progress[availableViewFields[j].meta.name] = 0;
-							if (availableViewFields[j].meta.required) {
-								ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
-							}
+							//Should not be initialized as the default path could not be accessible from here
+							//if (availableViewFields[j].meta.required) {
+							//	ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+							//}
 							break;
 						case 8: //HTML
 							if (availableViewFields[j].meta.required) {
@@ -204,9 +205,10 @@
 							break;
 						case 9: //Image
 							ngCtrl.progress[availableViewFields[j].meta.name] = 0;
-							if (availableViewFields[j].meta.required) {
-								ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
-							}
+							//Should not be initialized as the default path could not be accessible from here
+							//if (availableViewFields[j].meta.required) {
+							//	ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+							//}
 							break;
 						case 10: //TextArea
 							if (availableViewFields[j].meta.required) {
@@ -299,7 +301,7 @@
 						ngCtrl.progress[ngCtrl.uploadedFileName] = parseInt(100.0 * response.loaded / response.total);
 					}, 1);
 				}
-				webvellaCoreService.uploadFileToTemp(file, item.meta.name, ngCtrl.uploadProgressCallback, ngCtrl.uploadSuccessCallback, ngCtrl.uploadErrorCallback);
+				webvellaCoreService.uploadFileToTemp(file, ngCtrl.uploadProgressCallback, ngCtrl.uploadSuccessCallback, ngCtrl.uploadErrorCallback);
 			}
 		};
 
@@ -331,11 +333,14 @@
 		// << Html >>
 		//Should use scope as it is not working with ngCtrl
 		$scope.editorOptions = {
+			filebrowserImageBrowseUrl: '/ckeditor/image-finder',
+			filebrowserImageUploadUrl: '/ckeditor/image-upload-url',
+			uploadUrl :'/ckeditor/drop-upload-url',
 			language: GlobalLanguage,
-			skin: 'moono',
+			skin: 'moono-lisa',
 			height: '160',
 			contentsCss: '/plugins/webvella-core/css/editor.css',
-			extraPlugins: "sourcedialog,colorbutton,colordialog,panel,font",
+			extraPlugins: "sourcedialog,colorbutton,colordialog,panel,font,uploadimage,clipboard",
 			allowedContent: true,
 			colorButton_colors: '333333,FFFFFF,F44336,E91E63,9C27B0,673AB7,3F51B5,2196F3,03A9F4,00BCD4,009688,4CAF50,8BC34A,CDDC39,FFEB3B,FFC107,FF9800,FF5722,795548,607D8B,999999',
 			colorButton_enableAutomatic: false,

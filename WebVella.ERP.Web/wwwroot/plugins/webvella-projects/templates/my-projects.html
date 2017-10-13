@@ -14,7 +14,7 @@
 	</thead>
 	<tbody>
 		<tr ng-repeat="record in ngCtrl.list.data">
-			<td class="td-action"><a class="btn btn-outline btn-default" ng-href="{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"><i class="fa fa-fw fa-eye"></i></a></td>
+			<td class="td-action"><a class="btn btn-outline btn-default btn-sm" ng-href="{{::ngCtrl.getRecordDetailsUrl(record, ngCtrl)}}"><i class="fa fa-fw fa-eye"></i></a></td>
 			<td class="td-code">{{record.code}}</td>
 			<td class="td-name">{{record.name}}</td>
 			<td class="td-owner">
@@ -27,21 +27,21 @@
 				<span class="counter pull-left" ng-bind="{{record.tasks_completed_count}}"></span>
 				<span class="counter pull-right" ng-bind="{{record.tasks_not_started_count + record.tasks_in_progress_count}}"></span>
 				<div class="progress">
-					<div class="progress-bar progress-bar-success" ng-style="width: {{record.tasks_completed_percentage}}%"></div>
+					<div class="progress-bar progress-bar-success" ng-style="{width: {{record.tasks_completed_percentage}} + '%'}"></div>
 				</div>
 			</td>
 			<td class="td-milestones" title="{{record.milestones_completed_count}} completed - {{record.milestones_opened_count}} opened">
 				<span class="counter pull-left" ng-bind="{{record.milestones_completed_count}}"></span>
 				<span class="counter pull-right" ng-bind="{{record.milestones_opened_count}}"></span>
 				<div class="progress">
-					<div class="progress-bar progress-bar-success" ng-style="width: {{record.milestones_completed_percentage}}%"></div>
+					<div class="progress-bar progress-bar-success" ng-style="{width: {{record.milestones_completed_percentage}} + '%'}"></div>
 				</div>
 			</td>
 			<td class="td-bugs" title="{{record.bugs_closed_count}} closed - {{record.bugs_opened_count}} opened - {{record.bugs_reopened_count}} reopened">
 				<span class="counter pull-left" ng-bind="{{record.bugs_closed_count}}"></span>
 				<span class="counter pull-right" ng-bind="{{record.bugs_opened_count + record.bugs_reopened_count}}"></span>
 				<div class="progress">
-					<div class="progress-bar progress-bar-success" ng-style="width: {{record.bugs_closed_percentage}}%"></div>
+					<div class="progress-bar progress-bar-success" ng-style="{width: {{record.bugs_closed_percentage}} + '%'}"></div>
 				</div>
 			</td>
 			<td class="td-start-date">{{(record.start_date | date: 'dd MMM yyyy') || "-"}}</td>

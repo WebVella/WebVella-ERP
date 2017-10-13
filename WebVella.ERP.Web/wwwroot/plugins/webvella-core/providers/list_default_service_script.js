@@ -23,7 +23,7 @@
 (function () {
 	'use strict';
 	angular
-    .module('webvellaAreas')
+	.module('webvellaAreas')
 	.service('webvellaDefaultListActionService', service); // <<<<< CHANGE THE NAME TO COMPLY WITH THE FORMAT "entityName_listName_list_service"
 	service.$inject = ['$log', '$http', 'wvAppConstants', '$timeout', 'ngToast', '$filter', 'webvellaCoreService'];
 	function service($log, $http, wvAppConstants, $timeout, ngToast, $filter, webvellaCoreService) {

@@ -1,4 +1,9 @@
 ﻿<div id="page-title">
+	<div ng-if="ngCtrl.generalLists.length > 1 && ngCtrl.list.meta.type =='general' && ngCtrl.parentView.meta == null" class="btn-group btn-group-sm alternatives">
+		<a ng-repeat="list in ngCtrl.generalLists track by $index" class="btn btn-default" ng-class="{'active':list.name == ngCtrl.list.meta.name}" href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/list-general/{{::list.name}}/1">
+			<i class="fa fa-fw fa-{{::list.iconName}}"></i> {{::ngCtrl.generateSublistHighlightString(list)}}
+		</a>
+	</div>
 	<div id="page-meta">
 		<div class="aux-actions">
 			<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageTitleActions track by actionItem.name" class="btn-wrapper"></span>
@@ -16,7 +21,7 @@
 			<div class="meta-label-aux">{{::ngCtrl.entity.label}} <span class="ng-hide" ng-show="ngCtrl.showPageTitleAuxLabelSecondary"><span class="divider"><i class="fa fa-caret-right"></i></span> <span ng-bind-html="::ngCtrl.generateAuxHighlightString()" title="{{::ngCtrl.generateAuxHighlightString()}}"></span></span></div>
 			<h4>
 				<span ng-bind-html="::ngCtrl.generateHighlightString()" title="{{::ngCtrl.generateHighlightString()}}"></span>
-				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalLists.length > 1" dropdown-append-to-body="true">
+				<!--<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalLists.length > 1" dropdown-append-to-body="true">
 					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-default btn-outline btn-sm" style="padding:0 10px;">more <i class="fa fa-fw fa-caret-down"></i></a>
 					<ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
 						<li ng-repeat="list in ngCtrl.generalLists track by $index">
@@ -25,7 +30,7 @@
 							</a>
 						</li>
 					</ul>
-				</span>
+				</span>-->
 			</h4>
 		</div>
 	</div>
@@ -286,13 +291,13 @@
 					</tr>
 				</tbody>
 			</table>
-			<div ng-if="ngCtrl.list.meta.dynamicHtmlTemplate">
+			<div ng-if="::ngCtrl.list.meta.dynamicHtmlTemplate">
 				<div ng-include="ngCtrl.list.meta.dynamicHtmlTemplate"></div>
 			</div>
 			<!--</div>-->
 
 
-			<ul class="pager ng-hide" ng-hide="ngCtrl.currentPage == 1 && ngCtrl.list.meta.pageSize > ngCtrl.list.data.length" ng-if="::ngCtrl.list.meta.pageSize != 0">
+			<ul class="pager ng-hide" ng-hide="ngCtrl.currentPage == 1 && ngCtrl.list.meta.pageSize > ngCtrl.list.data.length" ng-if="::ngCtrl.list.meta.pageSize != 0 && ngCtrl.list.meta.pageSize != -1">
 				<li ng-if="ngCtrl.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
 				<li ng-if="ngCtrl.list.meta.pageSize <= ngCtrl.list.data.length" class="next"><a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
 			</ul>
@@ -420,9 +425,9 @@
 									<div class="form-group">
 										<div class="input-group">
 											<span class="input-group-addon">
-												<i ng-show="::!popupCtrl.columnHasError[key] && !popupCtrl.columnHasWarning[key]" class="fa fa-fw fa-check go-green ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="no warnings or errors in this column" popover-trigger="mouseenter"></i>
-												<i ng-show="::popupCtrl.columnHasError[key]" class="fa fa-fw fa-exclamation-circle go-red ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="this column has errors. Check the fields below" popover-trigger="mouseenter"></i>
-												<i ng-show="::popupCtrl.columnHasWarning[key]" class="fa fa-fw fa-warning go-orange ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="this column has warnings. Check the fields below" popover-trigger="mouseenter"></i>
+												<i ng-show="::!popupCtrl.columnHasError[key] && !popupCtrl.columnHasWarning[key]" class="fa fa-fw fa-check go-green ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="no warnings or errors in this column" popover-trigger="'mouseenter'"></i>
+												<i ng-show="::popupCtrl.columnHasError[key]" class="fa fa-fw fa-exclamation-circle go-red ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="this column has errors. Check the fields below" popover-trigger="'mouseenter'"></i>
+												<i ng-show="::popupCtrl.columnHasWarning[key]" class="fa fa-fw fa-warning go-orange ng-hide" popover-placement="top" popover-append-to-body="true" uib-popover="this column has warnings. Check the fields below" popover-trigger="'mouseenter'"></i>
 											</span>
 											<select class="form-control" ng-model="popupCtrl.evaluationResult.commands[key].command"
 													ng-options="option.key as option.value for option in popupCtrl.importTypes"
@@ -486,7 +491,7 @@
 								</div>
 								<div ng-if="popupCtrl.evaluationResult.commands[key].command == 'to_create'">
 									<div class="input-group" style="margin-bottom:5px;">
-										<span class="input-group-addon" popover-placement="top" popover-append-to-body="true" uib-popover="{{popupCtrl.getFieldTypeDescription(popupCtrl.newFieldType['field' + $index])}}" popover-trigger="mouseenter">
+										<span class="input-group-addon" popover-placement="top" popover-append-to-body="true" uib-popover="{{popupCtrl.getFieldTypeDescription(popupCtrl.newFieldType['field' + $index])}}" popover-trigger="'mouseenter'">
 											<i class="fa fa-fw fa-info-circle go-gray"></i>
 										</span>
 										<select class="form-control" ng-init="popupCtrl.newFieldType['field' + $index] = 18" ng-model="popupCtrl.newFieldType['field' + $index]" ng-options="::option.id as option.label for option in popupCtrl.fieldTypes"></select>
@@ -510,12 +515,12 @@
 					<tbody>
 						<tr ng-repeat="record in popupCtrl.evaluationResult.records track by $index">
 							<td class="id-field">
-								<span ng-if="record.id">{{record.id}} <i class="fa fa-refresh fa-fw go-orange" uib-popover="Existing record will be updated" popover-trigger="mouseenter"></i></span>
-								<span ng-if="!record.id" class="noid">this row does not have id data provided <i class="fa fa-plus-circle fa-fw go-green" uib-popover="A new record will be created" popover-trigger="mouseenter"></i></span>
+								<span ng-if="record.id">{{record.id}} <i class="fa fa-refresh fa-fw go-orange" uib-popover="Existing record will be updated" popover-trigger="'mouseenter'"></i></span>
+								<span ng-if="!record.id" class="noid">this row does not have id data provided <i class="fa fa-plus-circle fa-fw go-green" uib-popover="A new record will be created" popover-trigger="'mouseenter'"></i></span>
 							</td>
 							<td ng-repeat="(key, value) in record" ng-if="key != 'id'" ng-class="{'to_create': popupCtrl.evaluationResult.commands[key].command == 'to_create','to_update': popupCtrl.evaluationResult.commands[key].command == 'to_update','no_import': popupCtrl.evaluationResult.commands[key].command == 'no_import'}">
-								<i ng-show="::popupCtrl.evaluationResult.errors[key][$parent.$parent.$index] != null" class="fa fa-exclamation-circle go-red ng-hide" uib-popover="{{::popupCtrl.evaluationResult.errors[key][$parent.$parent.$index]}}" popover-trigger="mouseenter" style="margin-right:5px;"></i>
-								<i ng-show="::popupCtrl.evaluationResult.warnings[key][$parent.$parent.$index] != null" class="fa fa-warning go-orange ng-hide" uib-popover="{{::popupCtrl.evaluationResult.warnings[key][$parent.$parent.$index]}}" popover-trigger="mouseenter" style="margin-right:5px;"></i>
+								<i ng-show="::popupCtrl.evaluationResult.errors[key][$parent.$parent.$index] != null" class="fa fa-exclamation-circle go-red ng-hide" uib-popover="{{::popupCtrl.evaluationResult.errors[key][$parent.$parent.$index]}}" popover-trigger="'mouseenter'" style="margin-right:5px;"></i>
+								<i ng-show="::popupCtrl.evaluationResult.warnings[key][$parent.$parent.$index] != null" class="fa fa-warning go-orange ng-hide" uib-popover="{{::popupCtrl.evaluationResult.warnings[key][$parent.$parent.$index]}}" popover-trigger="'mouseenter'" style="margin-right:5px;"></i>
 								{{record[key]}}
 							</td>
 						</tr>

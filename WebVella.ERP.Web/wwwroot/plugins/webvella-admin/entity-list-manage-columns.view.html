@@ -238,9 +238,9 @@
 
 <script type="text/ng-template" id="dataBindTemplate.html">
 	<div class="tooltip-description" translate="{{::'FIELD_DATABIND_NOTE_1'}}"></div>
-	<div class="tooltip-databind"><span>{</span>{templateData[0].{{item.dataName}}<span>}</span>}</div>
+	<div class="tooltip-databind"><span>{</span>{ngCtrl.list.data.{{item.dataName}}<span>}</span>}</div>
 	<div class="tooltip-description" translate="{{::'FIELD_DATABIND_NOTE_2'}}"></div>
-	<div class="tooltip-databind"><span>{</span>{templateMeta<span>}</span>}</div>
+	<div class="tooltip-databind"><span>{</span>{ngCtrl.list.meta<span>}</span>}</div>
 </script>
 
 <script type="text/ng-template" id="manageFromRelationModal.html">

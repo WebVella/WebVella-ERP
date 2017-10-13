@@ -28,21 +28,21 @@ namespace WebVella.ERP.Api
         private List<ErrorModel> ValidateRelation(EntityRelation relation, ValidationType validationType)
         {
             List<ErrorModel> errors = new List<ErrorModel>();
-
+			var entMan = new EntityManager();
             if (validationType == ValidationType.Update)
             {
                 //we cannot update relation with missing Id (Guid.Empty means id is missing)
                 //of if there is no relation with this id already                
                 if (relation.Id == Guid.Empty)
                     errors.Add(new ErrorModel("id", null, "Id is required!"));
-                else if (DbContext.Current.RelationRepository.Read(relation.Id) == null)
+                else if (Read(relation.Id).Object == null)
                     errors.Add(new ErrorModel("id", relation.Id.ToString(), "Entity relation with such Id does not exist!"));
             }
             else if (validationType == ValidationType.Create)
             {
                 //if id is null, them we later will assing one before create process
                 //otherwise check if relation with same id already exists
-                if (relation.Id != Guid.Empty && (DbContext.Current.RelationRepository.Read(relation.Id) != null))
+                if (relation.Id != Guid.Empty && (Read(relation.Id).Object != null))
                     errors.Add(new ErrorModel("id", relation.Id.ToString(), "Entity relation with such Id already exist!"));
 
             }
@@ -52,7 +52,7 @@ namespace WebVella.ERP.Api
                 //this case is here only for readability
             }
 
-            DbEntityRelation existingRelation = null;
+            EntityRelation existingRelation = null;
             if (validationType == ValidationType.Create || validationType == ValidationType.Update)
             {
                 //validate name
@@ -63,7 +63,7 @@ namespace WebVella.ERP.Api
                     errors.AddRange(nameValidationErrors);
                 else
                 {
-                    existingRelation = DbContext.Current.RelationRepository.Read(relation.Name);
+                    existingRelation = Read(relation.Name).Object;
                     if (validationType == ValidationType.Create)
                     {
                         //if relation with same name alfready exists
@@ -86,10 +86,10 @@ namespace WebVella.ERP.Api
 
             errors.AddRange(ValidationUtility.ValidateLabel(relation.Label));
 
-            DbEntity originEntity = DbContext.Current.EntityRepository.Read(relation.OriginEntityId);
-            DbEntity targetEntity = DbContext.Current.EntityRepository.Read(relation.TargetEntityId);
-            DbBaseField originField = null;
-            DbBaseField targetField = null;
+            Entity originEntity = entMan.ReadEntity(relation.OriginEntityId).Object;
+            Entity targetEntity = entMan.ReadEntity(relation.TargetEntityId).Object;
+            Field originField = null;
+            Field targetField = null;
 
             if (originEntity == null)
                 errors.Add(new ErrorModel("originEntity", relation.OriginEntityId.ToString(), "The origin entity do not exist."));
@@ -98,7 +98,7 @@ namespace WebVella.ERP.Api
                 originField = originEntity.Fields.SingleOrDefault(x => x.Id == relation.OriginFieldId);
                 if (originField == null)
                     errors.Add(new ErrorModel("originField", relation.OriginFieldId.ToString(), "The origin field do not exist."));
-                if (!(originField is DbGuidField))
+                if (!(originField is GuidField))
                     errors.Add(new ErrorModel("originField", relation.OriginFieldId.ToString(), "The origin field should be Unique Identifier (GUID) field."));
             }
 
@@ -109,7 +109,7 @@ namespace WebVella.ERP.Api
                 targetField = targetEntity.Fields.SingleOrDefault(x => x.Id == relation.TargetFieldId);
                 if (targetField == null)
                     errors.Add(new ErrorModel("targetField", relation.TargetFieldId.ToString(), "The target field do not exist."));
-                if (!(targetField is DbGuidField))
+                if (!(targetField is GuidField))
                     errors.Add(new ErrorModel("targetField", relation.TargetFieldId.ToString(), "The target field should be Unique Identifier (GUID) field."));
             }
 
@@ -151,7 +151,7 @@ namespace WebVella.ERP.Api
                         errors.Add(new ErrorModel("", "", "The origin and target fields cannot be the same."));
 
                     //validate there is no other already existing relation with same parameters
-                    foreach (var rel in DbContext.Current.RelationRepository.Read())
+                    foreach (var rel in Read().Object)
                     {
                         if (rel.OriginEntityId == relation.OriginEntityId && rel.TargetEntityId == relation.TargetEntityId &&
                             rel.OriginFieldId == relation.OriginFieldId && rel.TargetFieldId == relation.TargetFieldId)
@@ -315,7 +315,7 @@ namespace WebVella.ERP.Api
         }
 
 
-        public EntityRelationListResponse Read()
+        public EntityRelationListResponse Read(List<DbEntity> storageEntityList = null)
         {
             EntityRelationListResponse response = new EntityRelationListResponse();
             response.Timestamp = DateTime.UtcNow;
@@ -334,7 +334,11 @@ namespace WebVella.ERP.Api
 				}
 
 				relations = DbContext.Current.RelationRepository.Read().Select(x => x.MapTo<EntityRelation>()).ToList();
-				List<DbEntity> dbEntities = new DbEntityRepository().Read();
+
+				List<DbEntity> dbEntities = storageEntityList;
+				if(dbEntities == null) {
+					dbEntities = new DbEntityRepository().Read();
+				}
 				foreach( EntityRelation relation in relations )
 				{
 					var originEntity = dbEntities.Single(x => x.Id == relation.OriginEntityId);
@@ -389,7 +393,7 @@ namespace WebVella.ERP.Api
                     storageRelation.Id = Guid.NewGuid();
 
                 var success = DbContext.Current.RelationRepository.Create(storageRelation);
-
+				Cache.ClearRelations();
                 if (success)
                 {
                     response.Success = true;
@@ -406,6 +410,7 @@ namespace WebVella.ERP.Api
             }
             catch (Exception e)
             {
+				Cache.ClearRelations();
                 response.Success = false;
                 response.Object = relation;
                 response.Timestamp = DateTime.UtcNow;
@@ -435,7 +440,7 @@ namespace WebVella.ERP.Api
             {
                 var storageRelation = relation.MapTo<DbEntityRelation>();
                 var success = DbContext.Current.RelationRepository.Update(storageRelation);
-
+				Cache.ClearRelations();
                 if (success)
                 {
                     response.Success = true;
@@ -452,7 +457,8 @@ namespace WebVella.ERP.Api
             }
             catch (Exception e)
             {
-                response.Success = false;
+                Cache.ClearRelations();
+				response.Success = false;
                 response.Object = relation;
                 response.Timestamp = DateTime.UtcNow;
 #if DEBUG
@@ -475,6 +481,7 @@ namespace WebVella.ERP.Api
             {
 
                 var storageRelation = DbContext.Current.RelationRepository.Read(relationId);
+				Cache.ClearRelations();
                 if (storageRelation != null)
                 {
 					DbContext.Current.RelationRepository.Delete(relationId);
@@ -491,6 +498,7 @@ namespace WebVella.ERP.Api
             }
             catch (Exception e)
             {
+				Cache.ClearRelations();
 #if DEBUG
                 response.Message = string.Format("Relation ID: {0}, /r/nMessage:{1}/r/nStackTrace:{2}", relationId, e.Message, e.StackTrace);
 #else

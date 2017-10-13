@@ -1,4 +1,9 @@
 <div id="page-title">
+	<div ng-if="ngCtrl.generalViews.length > 1 && ngCtrl.view.meta.type == 'general' && ngCtrl.parentView.meta == null" class="btn-group btn-group-sm alternatives">
+		<a ng-repeat="view in ngCtrl.generalViews track by $index" class="btn btn-default" ng-class="{'active':view.name == ngCtrl.parentView.meta.name}" href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/view-general/sb/{{::view.name}}/{{ngCtrl.stateParams.recordId}}">
+			<i class="fa fa-fw fa-{{::view.iconName}}"></i> {{::ngCtrl.generateSublistHighlightString(view)}}
+		</a>
+	</div>
 	<div id="page-meta">
 		<div class="aux-actions">
 			<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageTitleActions track by actionItem.name" class="btn-wrapper"></span>
@@ -16,7 +21,7 @@
 			<div class="meta-label-aux">{{::ngCtrl.entity.label}} <span class="ng-hide" ng-show="ngCtrl.showPageTitleAuxLabelSecondary"><span class="divider"><i class="fa fa-caret-right"></i></span> <span ng-bind-html="::ngCtrl.generateAuxHighlightString()" title="{{::ngCtrl.generateAuxHighlightString()}}"></span></span></div>
 			<h4>
 				<span ng-bind-html="::ngCtrl.generateHighlightString()" title="{{::ngCtrl.generateHighlightString()}}"></span>
-				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalViews.length > 1" dropdown-append-to-body="true">
+				<!--<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalViews.length > 1" dropdown-append-to-body="true">
 					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-default btn-outline btn-sm" style="padding:0 10px;">more <i class="fa fa-fw fa-caret-down"></i></a>
 					<ul class="dropdown-menu" uib-dropdown-menu>
 						<li ng-repeat="view in ngCtrl.generalViews track by $index">
@@ -25,7 +30,7 @@
 							</a>
 						</li>
 					</ul>
-				</span>
+				</span>-->
 			</h4>
 		</div>
 	</div>
@@ -57,7 +62,7 @@
 	</div>
 
 	<div id="page-text" ng-if='::ngCtrl.view.meta.dynamicHtmlTemplate'>
-		<div ng-include="::ngCtrl.view.meta.dynamicHtmlTemplate"></div>
+		<div ng-include="ngCtrl.view.meta.dynamicHtmlTemplate"></div>
 		<div class="page-bottom-actions" dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageBottomActions track by actionItem.name"></div>
 	</div>
 
@@ -125,14 +130,14 @@
 										</div>
 										<!-- If type 4 - date -->
 										<div class="editable-wrapper input-group editable-updatable" ng-switch-when="4" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
-											 ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">
+											 ng-dblclick="ngCtrl.initInlineEdit(item.meta.fieldType,item,this,viewData)">
 											<input type="text" class="form-control" disabled editable-bsdate="viewData[item.dataName]"
 												   e-datepicker-popup="{{item.meta.format || 'yyyy-MMM-dd'}}" e-is-open="ngCtrl.opened[item.dataName]" e-init-date="false"
 												   onshow="ngCtrl.open(item.dataName,true)" onhide="ngCtrl.open(item.dataName,false)"
 												   value='{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}'
 												   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}"
 												   ng-init="ngCtrl.initDate(viewData[item.dataName])">
-											<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];"
+											<span class="input-group-addon" ng-click="ngCtrl.initInlineEdit(item.meta.fieldType,item,this,viewData)"
 												  ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-calendar fa-fw"></i></span>
 										</div>
 										<div class="editable-wrapper input-group editable-readonly" ng-switch-when="4" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
@@ -142,13 +147,13 @@
 										<!-- If type 5 - datetime -->
 										<div ng-switch-when="5">
 											<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
-												 ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">
+												 ng-dblclick="ngCtrl.initInlineEdit(item.meta.fieldType,item,this,viewData)">
 												<input type="text" class="form-control" disabled editable-combodate="viewData[item.dataName]"
 													   e-init-date="false" e-min-year="1950" e-max-year="2050"
 													   value='{{ngCtrl.renderFieldValue(viewData[item.dataName],{fieldType:5})}}'
 													   onbeforesave="ngCtrl.fieldUpdate(item, $data, viewData['id'])" e-form="{{::'fieldForm_' + item.dataName}}"
 													   ng-init="ngCtrl.initDate(viewData[item.dataName])">
-												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-calendar fa-fw"></i></span>
+												<span class="input-group-addon" ng-click="ngCtrl.initInlineEdit(item.meta.fieldType,item,this,viewData)" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-calendar fa-fw"></i></span>
 											</div>
 											<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
 												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}">
@@ -237,7 +242,10 @@
 												<a class="update-link" href='javascript:void(0)' ngf-select="ngCtrl.updateFileUpload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false' accept="image/*"><i class="fa fa-fw fa-refresh"></i></a>
 											</div>
 										</div>
-										<img ng-switch-when="9" class="image-field" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-src="/fs{{viewData[item.dataName]}}" />
+										<div ng-switch-when="9" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+											<img class="image-field" ng-src="/fs{{viewData[item.dataName]}}" ng-if="viewData[item.dataName]" />
+											<p class="form-control-static" ng-if="!viewData[item.dataName]">No image attached</p>
+										</div>
 										<!-- If type 10 - textarea -->
 										<div class="editable-wrapper input-group editable-updatable textarea" ng-switch-when="10" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
 											 ng-dblclick="this['fieldForm_' + item.dataName].$show(); ngCtrl['fieldForm_' + item.dataName] = this['fieldForm_' + item.dataName];">

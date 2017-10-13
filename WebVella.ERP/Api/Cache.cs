@@ -115,6 +115,11 @@ namespace WebVella.ERP.Api
 			RemoveObjectFromCache(KEY_ENTITIES_HASH);
 		}
 
+		public static void ClearRelations()
+		{
+			RemoveObjectFromCache(KEY_RELATIONS);
+			RemoveObjectFromCache(KEY_RELATIONS_HASH);
+		}
 		
 	}
 }

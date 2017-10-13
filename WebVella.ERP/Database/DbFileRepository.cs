@@ -352,11 +352,13 @@ namespace WebVella.ERP.Database
 					if (Settings.EnableFileSystemStorage && file.ObjectId == 0)
 					{
 						var path = GetFileSystemPath(file);
-						File.Delete(path);
+						if( File.Exists(path))
+							File.Delete(path);
 					}
 					else
 					{
-						new NpgsqlLargeObjectManager(connection.connection).Unlink(file.ObjectId);
+						if( file.ObjectId != 0 )
+							new NpgsqlLargeObjectManager(connection.connection).Unlink(file.ObjectId);
 					}
 
 					var command = connection.CreateCommand(@"DELETE FROM files WHERE id = @id");
@@ -417,9 +419,13 @@ namespace WebVella.ERP.Database
 		{
 			var guidIinitialPart = file.Id.ToString().Split(new[] { '-' })[0];
 			var fileName = file.FilePath.Split(new[] { '/' }).Last();
-			var depth1Folder = guidIinitialPart.Substring(0, 3);
-			var depth2Folder = guidIinitialPart.Substring(3, 3);
-			return Path.Combine(Settings.FileSystemStorageFolder, depth1Folder, depth2Folder, file.Id.ToString(), fileName);
+			var depth1Folder = guidIinitialPart.Substring(0, 2);
+			var depth2Folder = guidIinitialPart.Substring(2, 2);
+			string filenameExt = Path.GetExtension(fileName);
+			if (!string.IsNullOrWhiteSpace(filenameExt))
+				return Path.Combine(Settings.FileSystemStorageFolder, depth1Folder, depth2Folder, file.Id + "." + filenameExt);
+			else
+				return Path.Combine(Settings.FileSystemStorageFolder, depth1Folder, depth2Folder, file.Id.ToString());
 		}
 
 	}

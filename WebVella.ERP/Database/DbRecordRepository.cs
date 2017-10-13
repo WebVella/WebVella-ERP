@@ -191,9 +191,9 @@ namespace WebVella.ERP.Database
             string tableName = RECORD_COLLECTION_PREFIX + entityName;
             using (DbConnection con = DbContext.Current.CreateConnection())
             {
-                string sql = $"SELECT COUNT( id ) FROM {tableName} ";
+                string sql = $"SELECT COUNT( {tableName}.id ) FROM {tableName} ";
                 if(ContainsRelationalQuery(query))
-                    sql = $"SELECT COUNT( DISTINCT id ) FROM {tableName} ";
+                    sql = $"SELECT COUNT( DISTINCT {tableName}.id ) FROM {tableName} ";
 
                 string whereSql = string.Empty;
                 string whereJoinSql = string.Empty;
@@ -610,22 +610,22 @@ namespace WebVella.ERP.Database
                         sql.AppendLine(sortSql);
                 }
 
-                //paging 
-                if (query.Limit != null || query.Skip != null)
-                {
-                    string pagingSql = "LIMIT ";
-                    if (query.Limit.HasValue)
-                        pagingSql = pagingSql + query.Limit + " ";
-                    else
-                        pagingSql = pagingSql + "ALL ";
+				//paging 
+				if (query.Limit != null || query.Skip != null)
+				{
+					string pagingSql = "LIMIT ";
+					if (query.Limit.HasValue && query.Limit != 0)
+						pagingSql = pagingSql + query.Limit + " ";
+					else
+						pagingSql = pagingSql + "ALL ";
 
-                    if (query.Skip.HasValue)
-                        pagingSql = pagingSql + " OFFSET " + query.Skip;
+					if (query.Skip.HasValue)
+						pagingSql = pagingSql + " OFFSET " + query.Skip;
 
-                    sql.AppendLine(pagingSql);
-                }
+					sql.AppendLine(pagingSql);
+				}
 
-                using (var conn = DbContext.Current.CreateConnection())
+				using (var conn = DbContext.Current.CreateConnection())
                 {
                     List<EntityRecord> result = new List<EntityRecord>();
                     NpgsqlCommand command = conn.CreateCommand(sql.ToString());
@@ -994,7 +994,7 @@ namespace WebVella.ERP.Database
                 }
 
                 //paging 
-                if (query.Limit != null || query.Skip != null)
+                if ((query.Limit != 0 && query.Limit != null) || query.Skip != null)
                 {
                     string pagingSql = "LIMIT ";
                     if (query.Limit.HasValue)
@@ -1055,6 +1055,9 @@ namespace WebVella.ERP.Database
                 if (!query.FieldName.Contains(RELATION_NAME_RESULT_SEPARATOR))
                 {
                     field = entity.Fields.SingleOrDefault(x => x.Name == query.FieldName);
+					if(field == null) {
+						throw new Exception("Queried field '" + query.FieldName + "' does not exist");
+					}
                     fieldType = field.GetFieldType();
                     string entityTablePrefix = GetTableNameForEntity(entity) + ".";
                     completeFieldName = entityTablePrefix + query.FieldName;

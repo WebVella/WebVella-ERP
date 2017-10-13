@@ -53,7 +53,7 @@
 		</tbody>
 	</table>
 
-	<!--<div ng-show="::listData.length == 0" class="ng-hide"  ng-if="::!hasError">No items</div>-->
+	<div class="alert alert-info" ng-if="!hasError && listData.length == 0">No records</div>
 
 	<div ng-if="::hasError" ng-bind="errorMessage" class="go-red"></div>
 </div>

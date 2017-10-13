@@ -1,24 +1,47 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
+using WebVella.ERP.Api;
+using WebVella.ERP.Database;
+using WebVella.ERP.Diagnostics;
 using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP.Jobs
 {
 	public class JobPool
 	{
+		private static object lockObj = new Object();
+
 		private int MAX_THREADS_POOL_COUNT = 20;
 
 		public static JobPool Current { get; private set; }
 
-		public static List<JobContext> Pool { get; private set; }
+		private static List<JobContext> Pool { get; set; }
 
-		public bool HasFreeThreads { get { return Pool.Count < MAX_THREADS_POOL_COUNT; } }
+		public bool HasFreeThreads
+		{
+			get
+			{
+				lock (lockObj)
+				{
+					return Pool.Count < MAX_THREADS_POOL_COUNT;
+				}
+			}
+		}
 
-		public int FreeThreadsCount { get { return MAX_THREADS_POOL_COUNT - Pool.Count; } }
+		public int FreeThreadsCount
+		{
+			get
+			{
+				lock(lockObj)
+				{
+					return MAX_THREADS_POOL_COUNT - Pool.Count;
+				}
+			}
+		}
 
 		private JobPool()
 		{
@@ -30,11 +53,15 @@ namespace WebVella.ERP.Jobs
 			Current = new JobPool();
 		}
 
-		public async void RunJobAsync(Job job)
+		public void RunJobAsync(Job job)
 		{
 			//Get pool count and if it is < of max_thread_pool_count create new context and start execute the job in new thread
-
-			if (!Pool.Any(p => p.JobId == job.Id) && Pool.Count < MAX_THREADS_POOL_COUNT)
+			bool allowed = false;
+			lock (lockObj)
+			{
+				allowed = !Pool.Any(p => p.JobId == job.Id) && Pool.Count < MAX_THREADS_POOL_COUNT;
+			}
+			if (allowed)
 			{
 				//Job does not exists in the pool and the pool has free threads.
 
@@ -45,7 +72,7 @@ namespace WebVella.ERP.Jobs
 				context.Attributes = job.Attributes;
 				context.Type = job.Type;
 
-				await Task.Run(() => Process(context));
+				Task.Run(() => Process(context));
 			}
 		}
 
@@ -60,7 +87,11 @@ namespace WebVella.ERP.Jobs
 			try
 			{
 				jobService.UpdateJob(job);
-				Pool.Add(context);
+
+				lock (lockObj)
+				{
+					Pool.Add(context);
+				}
 
 				var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 				Assembly assembly = assemblies.FirstOrDefault(a => a.GetName().Name == context.Type.Assembly);
@@ -79,32 +110,83 @@ namespace WebVella.ERP.Jobs
 				if (method == null)
 					throw new Exception($"Method with name '{context.Type.MethodName}' does not exist in assembly {assembly.FullName}");
 
-				//execute job method
-				method.Invoke(new DynamicObjectCreater(type).CreateInstance(), new object[] { context });
+				using (var secCtx = SecurityContext.OpenSystemScope())
+				{
+					try
+					{
+						DbContext.CreateContext(Settings.ConnectionString);
+						//execute job method
+						method.Invoke(new DynamicObjectCreater(type).CreateInstance(), new object[] { context });
+					}
+					catch (TargetInvocationException ex)
+					{
+						throw ex.InnerException;
+					}
+					catch (Exception ex)
+					{
+						throw ex;
+					}
+					finally
+					{
+						DbContext.CloseContext();
+					}
+				}
 
-				job.FinishedOn = DateTime.UtcNow;
+                if (context.Result != null)
+                    job.Result = context.Result;
+
+                job.FinishedOn = DateTime.UtcNow;
 				job.Status = JobStatus.Finished;
 				jobService.UpdateJob(job);
 			}
 			catch (Exception ex)
 			{
-				job.FinishedOn = DateTime.UtcNow;
-				job.Status = JobStatus.Failed;
-				job.ErrorMessage = ex.Message;
-				jobService.UpdateJob(job);
+				using (var secCtx = SecurityContext.OpenSystemScope())
+				{
+					try
+					{
+						DbContext.CreateContext(Settings.ConnectionString);
+
+						Log log = new Log();
+						log.Create(LogType.Error, $"JobPool.Process.{context.Type.Name}", ex);
+
+						job.FinishedOn = DateTime.UtcNow;
+						job.Status = JobStatus.Failed;
+						job.ErrorMessage = ex.Message;
+						jobService.UpdateJob(job);
+					}
+					finally
+					{
+						DbContext.CloseContext();
+					}
+				}
 			}
 			finally
 			{
-				Pool.Remove(context);
+				lock (lockObj)
+				{
+					Pool.Remove(context);
+				}
 			}
 		}
 
 		public void AbortJob(Guid jobId)
 		{
-			var context = Pool.FirstOrDefault(j => j.JobId == jobId);
+			lock (lockObj)
+			{
+				var context = Pool.FirstOrDefault(j => j.JobId == jobId);
 
-			if (context != null)
-				context.Aborted = true;
+				if (context != null)
+					context.Aborted = true;
+			}
+		}
+
+		public bool HasJobFromTypeInThePool(Guid typeId)
+		{
+			lock (lockObj)
+			{
+				return Pool.Any(c => c.Type.Id == typeId);
+			}
 		}
 	}
 }

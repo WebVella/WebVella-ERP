@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
@@ -7,7 +9,7 @@ namespace WebVella.ERP.Diagnostics
 {
 	public class Log
 	{
-		public void Create(LogType type, string source, string message, string details, LogNotificationStatus notificationStatus = LogNotificationStatus.NotNotified)
+		public void Create(LogType type, string source, string message, string details, LogNotificationStatus notificationStatus = LogNotificationStatus.NotNotified, bool saveDetailsAsJson = false)
 		{
 			EntityRecord logRecord = new EntityRecord();
 			logRecord["id"] = Guid.NewGuid();
@@ -15,7 +17,7 @@ namespace WebVella.ERP.Diagnostics
 			logRecord["source"] = source;
 			logRecord["message"] = message;
 			logRecord["notification_status"] = ((int)notificationStatus).ToString();
-			logRecord["details"] = details;
+			logRecord["details"] = saveDetailsAsJson ? MakeDetailsJson(details) : details;
 			logRecord["created_by"] = SystemIds.SystemUserId;
 			logRecord["last_modified_by"] = SystemIds.SystemUserId;
 			logRecord["created_on"] = DateTime.UtcNow;
@@ -23,6 +25,53 @@ namespace WebVella.ERP.Diagnostics
 
 			RecordManager recMan = new RecordManager(true);
 			var response = recMan.CreateRecord("system_log", logRecord);
+		}
+
+		public void Create(LogType type, string source, Exception ex, HttpRequest request = null, LogNotificationStatus notificationStatus = LogNotificationStatus.NotNotified)
+		{
+			string details = MakeDetailsJson("", ex, request);
+			Create(LogType.Error, source, ex.Message, details, notificationStatus);
+		}
+
+		public void Create(LogType type, string source, string message, Exception ex, HttpRequest request = null, LogNotificationStatus notificationStatus = LogNotificationStatus.NotNotified)
+		{
+			string details = MakeDetailsJson("", ex, request);
+			Create(LogType.Error, source, message, details, notificationStatus);
+		}
+
+		public static string MakeDetailsJson(string details, Exception ex = null, HttpRequest request = null)
+		{
+			if (string.IsNullOrWhiteSpace(details) && ex == null && request == null)
+				return null;
+
+			EntityRecord eRecord = new EntityRecord();
+			eRecord["message"] = details;
+			eRecord["stack_trace"] = null;
+			eRecord["source"] = null;
+			eRecord["inner_exception"] = null;
+			eRecord["request_url"] = null;
+
+			if (ex != null)
+			{
+				eRecord["message"] = details + ex.Message;
+				eRecord["stack_trace"] = ex.StackTrace;
+				eRecord["source"] = ex.Source;
+				eRecord["inner_exception"] = null;
+				eRecord["request_url"] = null;
+
+				if (ex.InnerException != null)
+				{
+					EntityRecord ieRecord = new EntityRecord();
+					ieRecord["message"] = ex.InnerException.Message;
+					ieRecord["stack_trace"] = ex.InnerException.StackTrace;
+					eRecord["inner_exception"] = ieRecord;
+				}
+			}
+
+			if (request != null)
+				eRecord["request_url"] = $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}";
+
+			return JsonConvert.SerializeObject(eRecord);
 		}
 
 		public void UpdateNotificationStatus(Guid id, LogNotificationStatus notificationStatus)

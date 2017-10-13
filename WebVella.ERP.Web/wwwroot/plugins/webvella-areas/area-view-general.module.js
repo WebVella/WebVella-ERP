@@ -8,10 +8,10 @@
 	'use strict';
 
 	angular
-        .module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
-        .config(config)
-        .controller('WebVellaAreaViewGeneralController', controller)
-        .controller('ManageRelationFieldModalController', ManageRelationFieldModalController)
+		.module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
+		.config(config)
+		.controller('WebVellaAreaViewGeneralController', controller)
+		.controller('ManageRelationFieldModalController', ManageRelationFieldModalController)
 		.controller('SelectTreeNodesModalController', SelectTreeNodesModalController);
 
 	// Configuration ///////////////////////////////////
@@ -109,7 +109,7 @@
 				resolvedCurrentViewData: resolveCurrentViewData
 			}
 		});
-	};
+	}
 
 	//#region << Resolve Function >> /////////////////////////
 	resolveParentViewData.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta', 'resolvedEntityList'];
@@ -121,7 +121,7 @@
 		// Process
 		function successCallback(response) {
 			if (response.object === null) {
-				alert("error in response!");
+				alert("error in response! " + response.message);
 			}
 			else if (response.object.meta === null) {
 				alert("The view with name: " + $stateParams.parentViewName + " does not exist");
@@ -132,7 +132,7 @@
 
 		function errorCallback(response) {
 			if (response.object === null) {
-				alert("error in response!");
+				alert("error in response! " + response.message);
 			}
 			else {
 				defer.reject(response.message);
@@ -173,7 +173,7 @@
 		else {
 			//No dynamicSourceUrl defined
 			var parentView = {};
-			if (resolvedParentViewData == null) {
+			if (resolvedParentViewData === null) {
 
 				webvellaCoreService.getRecordByViewMeta($stateParams.recordId, getViewMeta, $stateParams.entityName, null, successCallback, errorCallback);
 			}
@@ -184,7 +184,7 @@
 				if ($stateParams.viewName.startsWith("$view$")) {
 					//View from the same entity
 					parentView.meta.sidebar.items.forEach(function (sidebarItem) {
-						if (sidebarItem.dataName == $stateParams.viewName) {
+						if (sidebarItem.dataName === $stateParams.viewName) {
 							currentViewData = parentView.data[0][$stateParams.viewName];
 						}
 					});
@@ -200,7 +200,7 @@
 		// Process
 		function successCallback(response) {
 			if (response.object === null) {
-				alert("error in response!");
+				alert("error in response! " + response.message);
 			}
 			else if (response.object.meta === null) {
 				alert("The view with name: " + $stateParams.viewName + " does not exist");
@@ -211,7 +211,7 @@
 
 		function errorCallback(response) {
 			if (response.object === null) {
-				alert("error in response!");
+				alert("error in response! " + response.message);
 			}
 			else {
 				defer.reject(response.message);
@@ -225,7 +225,7 @@
 	function loadDependency($ocLazyLoad, $q, $http, $state, $timeout, $stateParams, wvAppConstants, resolvedCurrentEntityMeta, resolvedParentViewData, resolvedEntityRelationsList) {
 		var lazyDeferred = $q.defer();
 		var listServiceJavascriptPath = "";
-		if (resolvedParentViewData == null) {
+		if (resolvedParentViewData === null) {
 			//Parent view is reviewed
 			listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' + $stateParams.entityName + '/view/' + $stateParams.viewName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
 		}
@@ -235,7 +235,7 @@
 			if (dataNameArray.length < 3 || dataNameArray.length > 4) {
 				lazyDeferred.reject("The view dataName is not correct");
 			}
-			else if (dataNameArray.length == 3) {
+			else if (dataNameArray.length === 3) {
 				//it is view from the current entity  e.g. $view$second
 				var realViewName = dataNameArray[2];
 				listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' + $stateParams.entityName + '/view/' + realViewName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
@@ -247,7 +247,7 @@
 				//find the other entity in the relation so we can include it in the request
 				var viewRealEntity = null;
 				resolvedEntityRelationsList.forEach(function (relation) {
-					if (relation.name == dataNameArray[2]) {
+					if (relation.name === dataNameArray[2]) {
 						if (relation.originEntityName == $stateParams.entityName) {
 							viewRealEntity = relation.targetEntityName;
 						}
@@ -292,12 +292,12 @@
 	// Controller ///////////////////////////////
 
 	controller.$inject = ['$filter','$injector', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', '$window', 'pageTitle', 'webvellaCoreService',
-        'resolvedAreas', '$timeout', 'resolvedCurrentViewData', 'ngToast', 'wvAppConstants', 'resolvedEntityList', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
+		'resolvedAreas', '$timeout', 'resolvedCurrentViewData', 'ngToast', 'wvAppConstants', 'resolvedEntityList', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
 		'resolvedCurrentUserEntityPermissions', '$sessionStorage', 'resolvedParentViewData'];
 
 
 	function controller($filter, $injector, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, $window, pageTitle, webvellaCoreService,
-        resolvedAreas, $timeout, resolvedCurrentViewData, ngToast, wvAppConstants, resolvedEntityList, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
+		resolvedAreas, $timeout, resolvedCurrentViewData, ngToast, wvAppConstants, resolvedEntityList, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
 		resolvedCurrentUserEntityPermissions, $sessionStorage, resolvedParentViewData) {
 
 		//#region << ngCtrl initialization >>
@@ -620,7 +620,6 @@
 					else {
 						return false;
 					}
-					break;
 				case "can-create":
 					if (currentEntityPermissions.canUpdate && relatedEntityPermissions.canCreate) {
 						return true;
@@ -628,7 +627,6 @@
 					else {
 						return false;
 					}
-					break;
 				case "can-edit":
 					if (relatedEntityPermissions.canUpdate) {
 						return true;
@@ -636,7 +634,6 @@
 					else {
 						return false;
 					}
-					break;
 				case "can-remove":
 					if (currentEntityPermissions.canUpdate) {
 						return true;
@@ -644,7 +641,6 @@
 					else {
 						return false;
 					}
-					break;
 			}
 		}
 
@@ -655,6 +651,24 @@
 			return moment(fastCopy(date)).toDate();
 		}
 
+		ngCtrl.initInlineEdit = function(fieldType,item,$this,viewData){
+			switch(fieldType){
+				case 4:
+					if(viewData[item.dataName] == null){
+						viewData[item.dataName] = moment().toDate();
+					}
+					ngCtrl['fieldForm_' + item.dataName] = $this['fieldForm_' + item.dataName];
+					$this['fieldForm_' + item.dataName].$show(); 
+					break;
+				case 5:
+					if(viewData[item.dataName] == null){
+						viewData[item.dataName] = moment().toDate();
+					}
+					ngCtrl['fieldForm_' + item.dataName] = $this['fieldForm_' + item.dataName];
+					$this['fieldForm_' + item.dataName].$show(); 
+					break;
+			}
+		}
 
 		ngCtrl.headerRegion = [];
 		ngCtrl.activeRegion = [];
@@ -796,30 +810,33 @@
 						$scope.popupCtrl.selectedValue = fastCopy(selectedViewData[selectedItem.dataName]);
 						$scope.popupCtrl.selectedFieldName = fastCopy(selectedItem.fieldName);
 
-						$scope.editorOptions = {
-							language: GlobalLanguage,
-							skin: 'moono',
-							height: '300',
-							contentsCss: '/plugins/webvella-core/css/editor.css',
-							extraPlugins: "sourcedialog,colorbutton,colordialog,panel,font",
-							allowedContent: true,
-							colorButton_colors: '333333,FFFFFF,F44336,E91E63,9C27B0,673AB7,3F51B5,2196F3,03A9F4,00BCD4,009688,4CAF50,8BC34A,CDDC39,FFEB3B,FFC107,FF9800,FF5722,795548,607D8B,999999',
-							colorButton_enableAutomatic: false,
-							colorButton_enableMore: false,
-							toolbarLocation: 'top',
-							toolbar: 'full',
-							toolbar_full: [
-								{ name: 'basicstyles', items: ['Save', 'Bold', 'Italic', 'Strike', 'Underline'] },
-								{ name: 'colors', items: ['TextColor', 'BGColor'] },
-								{ name: 'styles', items: ['FontSize', 'RemoveFormat'] },
-								{ name: 'editing', items: ['Format'] },
-								{ name: 'links', items: ['Link', 'Unlink'] },
-								{ name: 'pasting', items: ['PasteText', 'PasteFromWord'] },
-								{ name: 'paragraph', items: ['BulletedList', 'NumberedList', 'Blockquote'] },
-								{ name: 'insert', items: ['Image', 'Table', 'SpecialChar'] },
-								{ name: 'tools', items: ['Sourcedialog', 'Maximize'] }, '/'
-							]
-						};
+		$scope.editorOptions = {
+			filebrowserImageBrowseUrl: '/ckeditor/image-finder',
+			filebrowserImageUploadUrl: '/ckeditor/image-upload-url',
+			uploadUrl :'/ckeditor/drop-upload-url',
+			language: GlobalLanguage,
+			skin: 'moono-lisa',
+			height: '160',
+			contentsCss: '/plugins/webvella-core/css/editor.css',
+			extraPlugins: "sourcedialog,colorbutton,colordialog,panel,font,uploadimage",
+			allowedContent: true,
+			colorButton_colors: '333333,FFFFFF,F44336,E91E63,9C27B0,673AB7,3F51B5,2196F3,03A9F4,00BCD4,009688,4CAF50,8BC34A,CDDC39,FFEB3B,FFC107,FF9800,FF5722,795548,607D8B,999999',
+			colorButton_enableAutomatic: false,
+			colorButton_enableMore: false,
+			toolbarLocation: 'top',
+			toolbar: 'full',
+			toolbar_full: [
+				{ name: 'basicstyles', items: ['Save', 'Bold', 'Italic', 'Strike', 'Underline'] },
+				{ name: 'colors', items: ['TextColor', 'BGColor'] },
+				{ name: 'styles', items: ['FontSize', 'RemoveFormat'] },
+				{ name: 'editing', items: ['Format'] },
+				{ name: 'links', items: ['Link', 'Unlink'] },
+				{ name: 'pasting', items: ['PasteText', 'PasteFromWord'] },
+				{ name: 'paragraph', items: ['BulletedList', 'NumberedList', 'Blockquote'] },
+				{ name: 'insert', items: ['Image', 'Table', 'SpecialChar'] },
+				{ name: 'tools', items: ['Sourcedialog', 'Maximize'] }, '/'
+			]
+		};
 
 						//We need to get editor so later to unfocus and destroy it before closing the modal in order not to receive errors
 						$scope.editor = {};
@@ -921,7 +938,7 @@
 					ngCtrl.progress[item.dataName][recordId] = parseInt(100.0 * response.loaded / response.total);
 				}
 
-				webvellaCoreService.uploadFileToTemp(file, ngCtrl.uploadedFileName, ngCtrl.uploadProgressCallback, ngCtrl.uploadSuccessCallback, ngCtrl.uploadErrorCallback);
+				webvellaCoreService.uploadFileToTemp(file, ngCtrl.uploadProgressCallback, ngCtrl.uploadSuccessCallback, ngCtrl.uploadErrorCallback);
 			}
 		};
 
@@ -954,7 +971,7 @@
 				ngCtrl.uploadProgressCallback = function (response) {
 					ngCtrl.progress[item.dataName][recordId] = parseInt(100.0 * response.loaded / response.total);
 				}
-				webvellaCoreService.uploadFileToTemp(file, ngCtrl.uploadedFileName, ngCtrl.uploadProgressCallback, ngCtrl.uploadSuccessCallback, ngCtrl.uploadErrorCallback);
+				webvellaCoreService.uploadFileToTemp(file, ngCtrl.uploadProgressCallback, ngCtrl.uploadSuccessCallback, ngCtrl.uploadErrorCallback);
 			}
 		};
 
@@ -1472,10 +1489,10 @@
 
 	//Test to unify all modals - Single select, multiple select, click to select
 	ManageRelationFieldModalController.$inject = ['ngCtrl', 'viewData', '$uibModalInstance', '$log', '$q', '$stateParams', 'modalMode', 'resolvedLookupRecords',
-        'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$translate'];
+		'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$translate'];
 
 	function ManageRelationFieldModalController(ngCtrl, viewData, $uibModalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
-        selectedDataKind, selectedItem, selectedRelationType, webvellaCoreService, ngToast, $timeout, $state, $translate) {
+		selectedDataKind, selectedItem, selectedRelationType, webvellaCoreService, ngToast, $timeout, $state, $translate) {
 
 		var popupCtrl = this;
 		popupCtrl.currentPage = 1;
@@ -1929,10 +1946,10 @@
 
 
 		//#endregion
-	};
+	}
 
 	SelectTreeNodesModalController.$inject = ['ngCtrl', 'viewData', '$uibModalInstance', '$rootScope', '$scope', '$log', '$q', '$stateParams', 'resolvedTree',
-        'selectedItem', 'resolvedTreeRelation', 'selectedItemData', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$uibModal',
+		'selectedItem', 'resolvedTreeRelation', 'selectedItemData', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$uibModal',
 		'resolvedCurrentUserPermissions'];
 	function SelectTreeNodesModalController(ngCtrl, viewData, $uibModalInstance, $rootScope, $scope, $log, $q, $stateParams, resolvedTree,
 			selectedItem, resolvedTreeRelation, selectedItemData, webvellaCoreService, ngToast, $timeout, $state, $uibModal,

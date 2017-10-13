@@ -361,21 +361,25 @@ namespace WebVella.ERP.Api
 
 									filter = EntityQuery.QueryOR(queries.ToArray());
 								}
-								else if((relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == relation.TargetEntityId && direction == "target-origin") ||
+								else if ((relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == relation.TargetEntityId && direction == "target-origin") ||
 									(relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId != relation.TargetEntityId && relation.OriginEntityId != entity.Id))
 								{
 									List<string> values = new List<string>();
-									if (pair.Value is JArray) {
+									if (pair.Value is JArray)
+									{
 										values = ((JArray)pair.Value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
-										if(values.Count > 0) {
-											var newPair = new KeyValuePair<string,object>(pair.Key,values[0]);
+										if (values.Count > 0)
+										{
+											var newPair = new KeyValuePair<string, object>(pair.Key, values[0]);
 											filter = EntityQuery.QueryEQ(realtionSearchField.Name, ExtractFieldValue(newPair, realtionSearchField, true));
 										}
-										else {
+										else
+										{
 											throw new Exception("Array has not elements");
 										}
 									}
-									else {
+									else
+									{
 										filter = EntityQuery.QueryEQ(realtionSearchField.Name, ExtractFieldValue(pair, realtionSearchField, true));
 									}
 								}
@@ -418,7 +422,7 @@ namespace WebVella.ERP.Api
 						}
 					}
 
-					foreach(var fieldsFromRelation in  fieldsFromRelationList)
+					foreach (var fieldsFromRelation in fieldsFromRelationList)
 					{
 						EntityRecord fieldsFromRelationValue = (EntityRecord)fieldsFromRelation.Value;
 						List<QueryObject> queries = (List<QueryObject>)fieldsFromRelationValue["queries"];
@@ -455,7 +459,7 @@ namespace WebVella.ERP.Api
 
 							if (pair.Key.Contains(RELATION_SEPARATOR))
 							{
-								EntityRecord relationFieldMeta = relationFieldMetaList.FirstOrDefault(f=> f.Key == pair.Key).Value;
+								EntityRecord relationFieldMeta = relationFieldMetaList.FirstOrDefault(f => f.Key == pair.Key).Value;
 
 								if (relationFieldMeta == null)
 									continue;
@@ -560,7 +564,10 @@ namespace WebVella.ERP.Api
 								if (field is AutoNumberField && pair.Value == null)
 									continue;
 
-								storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
+								if (field.Required && pair.Value == null)
+									storageRecordData.Add(new KeyValuePair<string, object>(field.Name, field.GetDefaultValue()));
+								else
+									storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
 							}
 						}
 						catch (Exception ex)
@@ -1734,7 +1741,8 @@ namespace WebVella.ERP.Api
 
 		public List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null,
 					int? pageSize = null, bool export = false, EntityRelation auxRelation = null, Guid? auxRelatedRecordId = null,
-					string auxRelationDirection = "origin-target", List<KeyValuePair<string, string>> overwriteArgs = null, bool returnAllRecords = false)
+					string auxRelationDirection = "origin-target", List<KeyValuePair<string, string>> overwriteArgs = null, bool returnAllRecords = false,
+					int? recordsLmit = null)
 		{
 			if (entity == null)
 				throw new Exception($"Entity '{entity.Name}' do not exist");
@@ -1789,21 +1797,21 @@ namespace WebVella.ERP.Api
 					resultQuery.Query = queryObj;
 				}
 
-                if (auxRelation != null && auxRelatedRecordId != null)
-                {
-                    string relationField = $"${auxRelation.Name}.id";
-                    if (auxRelationDirection == "target-origin")
-                        relationField = "$" + relationField;
+				if (auxRelation != null && auxRelatedRecordId != null)
+				{
+					string relationField = $"${auxRelation.Name}.id";
+					if (auxRelationDirection == "target-origin")
+						relationField = "$" + relationField;
 
-                    var auxRelQuery = EntityQuery.QueryEQ(relationField, auxRelatedRecordId);
-                    if (resultQuery.Query != null)
-                        resultQuery.Query = EntityQuery.QueryAND(resultQuery.Query, auxRelQuery);
-                    else
-                        resultQuery.Query = auxRelQuery;
+					var auxRelQuery = EntityQuery.QueryEQ(relationField, auxRelatedRecordId);
+					if (resultQuery.Query != null)
+						resultQuery.Query = EntityQuery.QueryAND(resultQuery.Query, auxRelQuery);
+					else
+						resultQuery.Query = auxRelQuery;
 
-                }
+				}
 
-                string queryFields = "id,";
+				string queryFields = "id,";
 				if (list.Columns != null)
 				{
 					foreach (var column in list.Columns)
@@ -1984,6 +1992,11 @@ namespace WebVella.ERP.Api
 						if (page != null && page > 0)
 							resultQuery.Skip = (page - 1) * resultQuery.Limit;
 					}
+				}
+
+				if (recordsLmit.HasValue && recordsLmit.Value > 0)
+				{
+					resultQuery.Limit = recordsLmit;
 				}
 			}
 

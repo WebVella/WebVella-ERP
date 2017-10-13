@@ -24,7 +24,7 @@ namespace WebVella.ERP.Jobs
 
 		public Job CreateJob(Job job)
 		{
-			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
 
 			List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
 			parameters.Add(new NpgsqlParameter("id", job.Id) { NpgsqlDbType = NpgsqlDbType.Uuid });
@@ -91,7 +91,15 @@ namespace WebVella.ERP.Jobs
 				parameters.Add(new NpgsqlParameter("canceled_by", job.CanceledBy) { NpgsqlDbType = NpgsqlDbType.Uuid });
 			if (!string.IsNullOrWhiteSpace(job.ErrorMessage))
 				parameters.Add(new NpgsqlParameter("error_message", job.ErrorMessage) { NpgsqlDbType = NpgsqlDbType.Text });
-			parameters.Add(new NpgsqlParameter("last_modified_on", DateTime.UtcNow) { NpgsqlDbType = NpgsqlDbType.Timestamp });
+            
+            if (job.Result != null)
+            {
+                JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+                string result = JsonConvert.SerializeObject(job.Result, settings);
+                parameters.Add(new NpgsqlParameter("result", result) { NpgsqlDbType = NpgsqlDbType.Text });
+            }
+
+            parameters.Add(new NpgsqlParameter("last_modified_on", DateTime.UtcNow) { NpgsqlDbType = NpgsqlDbType.Timestamp });
 			if (job.LastModifiedBy.HasValue)
 				parameters.Add(new NpgsqlParameter("last_modified_by", job.LastModifiedBy) { NpgsqlDbType = NpgsqlDbType.Uuid });
 
@@ -152,6 +160,8 @@ namespace WebVella.ERP.Jobs
 			parameters.Add(new NpgsqlParameter("status", status) { NpgsqlDbType = NpgsqlDbType.Integer });
 			if (limit.HasValue)
 			{
+				if (limit.Value < 0)
+					limit = 0;
 				parameters.Add(new NpgsqlParameter("limit", limit) { NpgsqlDbType = NpgsqlDbType.Integer });
 				sql += " LIMIT @limit";
 			}
@@ -210,7 +220,7 @@ namespace WebVella.ERP.Jobs
 				sql += " AND schedule_plan_id = @schedule_plan_id";
 			}
 
-			sql += " ORDER BY created_on ASC";
+			sql += " ORDER BY created_on DESC";
 
 			if (pageSize.HasValue)
 			{
@@ -234,7 +244,7 @@ namespace WebVella.ERP.Jobs
 
 		public bool CreateSchedule(SchedulePlan schedulePlan)
 		{
-			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
 
 			List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
 			parameters.Add(new NpgsqlParameter("id", schedulePlan.Id) { NpgsqlDbType = NpgsqlDbType.Uuid });
@@ -283,7 +293,7 @@ namespace WebVella.ERP.Jobs
 
 		public bool UpdateSchedule(SchedulePlan schedulePlan)
 		{
-			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
 
 			List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
 			parameters.Add(new NpgsqlParameter("id", schedulePlan.Id) { NpgsqlDbType = NpgsqlDbType.Uuid });

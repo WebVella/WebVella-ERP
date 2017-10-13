@@ -11,10 +11,10 @@
 		<div class="meta-icon">
 			<i class="fa fa-fw fa-cogs fa-2x"></i>
 		</div>
-        <div class="meta-label">
+		<div class="meta-label">
 			<div class="meta-label-aux" translate="{{::'SCHEDULE_PLANS'}}"></div>
-            <h4>Background jobs</h4>
-        </div>
+			<h4>Background jobs</h4>
+		</div>
 	</div>
 </div>
 <div id="page-body">
@@ -100,6 +100,7 @@
 			<thead>
 				<tr>
 					<th width="50"></th>
+					<th width="150">created on</th>
 					<th width="150">started on</th>
 					<th width="150">finished on</th>
 					<th>type name</th>
@@ -115,6 +116,9 @@
 						<a ng-click="ngCtrl.openDetailsModal(job)" class="btn btn-default btn-outline" title="View job details">
 							<i class="fa fa-eye"></i>
 						</a>
+					</td>
+					<td>
+						{{::job.created_on | date:'dd MMM yyyy HH:mm'}}
 					</td>
 					<td>
 						{{::job.started_on | date:'dd MMM yyyy HH:mm'}}
@@ -140,7 +144,7 @@
 					</td>
 				</tr>
 			</tbody>
-			<tfoot class="ng-hide"  ng-show="ngCtrl.jobs.length == 0">
+			<tfoot class="ng-hide" ng-show="ngCtrl.jobs.length == 0">
 				<tr>
 					<td colspan="8">
 						<div class="alert alert-info" translate="{{::'LIST_EMPTY_MESSAGE'}}"></div>
@@ -258,7 +262,7 @@
 				<div class="col-sm-6">
 					<div class="form-group">
 						<label class="control-label">Finished by</label>
-						<div class="form-control form-control-static"  ng-bind="popupCtrl.selectedJob.finished_on | date:'dd MMM yyyy HH:mm'" />
+						<div class="form-control form-control-static" ng-bind="popupCtrl.selectedJob.finished_on | date:'dd MMM yyyy HH:mm'" />
 					</div>
 				</div>
 			</div>
@@ -280,7 +284,7 @@
 				<div class="col-sm-12">
 					<div class="form-group">
 						<label class="control-label">Attributes</label>
-						<pre class="form-control form-control-static">{{popupCtrl.selectedJob.attributes | json}}</pre>
+						<pre class="form-control form-control-static" style="height:180px">{{popupCtrl.selectedJob.attributes | json}}</pre>
 					</div>
 				</div>
 			</div>
@@ -288,7 +292,7 @@
 				<div class="col-sm-12">
 					<div class="form-group">
 						<label class="control-label">Error</label>
-						<pre class="form-control form-control-static">{{popupCtrl.selectedJob.error}}</pre>
+						<pre class="form-control form-control-static" style="height:180px">{{popupCtrl.selectedJob.error}}</pre>
 					</div>
 				</div>
 			</div>

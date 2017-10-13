@@ -54,7 +54,6 @@ Current translation status:
 ## Contact
 #### Developer/Company
 * Homepage: [webvella.com](http://webvella.com)
-* e-mail: [office@webvella.com](office@webvella.com)
 * Twitter: [@webvella](https://twitter.com/webvella "webvella on twitter")
 
 

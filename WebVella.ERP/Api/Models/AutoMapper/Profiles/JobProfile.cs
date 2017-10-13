@@ -31,8 +31,18 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			job.Assembly = (string)src["assembly"];
 			job.CompleteClassName = (string)src["complete_class_name"];
 			job.MethodName = (string)src["method_name"];
-			if (!string.IsNullOrWhiteSpace((string)src["attributes"]))
-				job.Attributes = JsonConvert.DeserializeObject<ExpandoObject>((string)src["attributes"]);
+			if (!string.IsNullOrWhiteSpace(src["attributes"].ToString()))
+			{
+				JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+				job.Attributes = JsonConvert.DeserializeObject<ExpandoObject>((string)src["attributes"], settings);
+			}
+
+			if (!string.IsNullOrWhiteSpace(src["result"].ToString()))
+			{
+				JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+				job.Result = JsonConvert.DeserializeObject<ExpandoObject>((string)src["result"], settings);
+			}
+
 			job.Status = (JobStatus)(int)src["status"];
 			job.Priority = (JobPriority)(int)src["priority"];
 			if (src["started_on"] != DBNull.Value)
@@ -57,6 +67,8 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			if (src == null)
 				return null;
 
+			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+
 			SchedulePlan schedulePlan = new SchedulePlan();
 
 			schedulePlan.Id = (Guid)src["id"];
@@ -66,7 +78,7 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 				schedulePlan.StartDate = (DateTime)src["start_date"];
 			if (src["end_date"] != DBNull.Value)
 				schedulePlan.EndDate = (DateTime)src["end_date"];
-			schedulePlan.ScheduledDays = JsonConvert.DeserializeObject<SchedulePlanDaysOfWeek>((string)src["schedule_days"]);
+			schedulePlan.ScheduledDays = JsonConvert.DeserializeObject<SchedulePlanDaysOfWeek>((string)src["schedule_days"], settings);
 			if (src["interval_in_minutes"] != DBNull.Value)
 				schedulePlan.IntervalInMinutes = (int)src["interval_in_minutes"];
 			if (src["start_timespan"] != DBNull.Value)
@@ -80,7 +92,8 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			schedulePlan.JobTypeId = (Guid)src["job_type_id"];
 			if (JobManager.JobTypes.Any(t => t.Id == schedulePlan.JobTypeId))
 				schedulePlan.JobType = JobManager.JobTypes.FirstOrDefault(t => t.Id == schedulePlan.JobTypeId);
-			schedulePlan.JobAttributes = JsonConvert.DeserializeObject<ExpandoObject>((string)src["job_attributes"]);
+			if (!string.IsNullOrWhiteSpace(src["job_attributes"].ToString()))
+				schedulePlan.JobAttributes = JsonConvert.DeserializeObject<ExpandoObject>((string)src["job_attributes"], settings);
 			schedulePlan.Enabled = (bool)src["enabled"];
 			if (src["last_started_job_id"] != DBNull.Value)
 				schedulePlan.LastStartedJobId = (Guid)src["last_started_job_id"];

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
@@ -11,12 +12,6 @@ namespace WebVella.ERP.Project
 	public class Utils
 	{
 
-		public static List<ErrorModel> ValidateTask(List<ErrorModel> currentErrors, EntityRecord taskObject, Guid recordId)
-		{
-			var errorList = currentErrors;
-
-			return errorList;
-		}
 
 		public static dynamic UpdateTask(dynamic data, RecordManager recMan)
 		{
@@ -392,6 +387,144 @@ namespace WebVella.ERP.Project
 			}
 		}
 
+		public static void RegenAndUpdateTaskFts(EntityRecord record, RecordManager recMan)
+		{
+			try {
+			EntityRecord oldTaskObject = null;
+			if(record != null && record["id"] != null) {
+				#region << Get the old task object >>
+			{
+				var filterObj = EntityQuery.QueryEQ("id", (Guid)record["id"]);
+				var query = new EntityQuery("wv_task", "*,$task_1_n_comment.content,$$project_1_n_task.name,$$project_1_n_task.code,$$user_1_n_task_owner.username,$$user_wv_task_created_by.username", filterObj, null, null, null);
+				var result = recMan.Find(query);
+				if (!result.Success)
+				{
+
+					throw new Exception("Error getting the updated task: " + result.Message);
+				}
+				else if (result.Object == null || result.Object.Data == null || !result.Object.Data.Any())
+				{
+					throw new Exception("Task not found");
+				}
+				oldTaskObject = result.Object.Data[0];
+			}
+			#endregion
+			}
+			var ftsString = "";
+
+			#region << Add task properties >>
+			if (record.Properties.ContainsKey("subject")) {
+				ftsString += " " + record["subject"];
+			}
+			else if(oldTaskObject != null){
+				ftsString += " " + oldTaskObject["subject"];
+			}
+			if(record.Properties.ContainsKey("status")) {
+				ftsString += " " + record["status"];
+			}
+			else if(oldTaskObject != null){
+				ftsString += " " + oldTaskObject["status"];
+			}
+			if(record.Properties.ContainsKey("priority")) {
+				ftsString += " " + record["priority"];
+			}
+			else if(oldTaskObject != null){
+				ftsString += " " + oldTaskObject["priority"];
+			}
+			if(record.Properties.ContainsKey("code")) {
+				ftsString += " " + record["code"];
+			}
+			else if(oldTaskObject != null){
+				ftsString += " " + oldTaskObject["code"];
+			}
+			if(record.Properties.ContainsKey("number")) {
+				ftsString += " " + record["number"];
+			}
+			else if(oldTaskObject != null){
+				ftsString += " " + oldTaskObject["number"];
+			}
+			if(record.Properties.ContainsKey("description") && record["description"] != null) {
+				var cleanString = Regex.Replace((string)record["description"], "<.*?>", string.Empty);
+				cleanString = cleanString.Replace(System.Environment.NewLine, " ");
+				cleanString = cleanString.Replace("\n", " ");
+				ftsString += " " + cleanString;
+			}
+			else if(oldTaskObject != null && oldTaskObject["description"] != null){
+				var cleanString = Regex.Replace((string)oldTaskObject["description"], "<.*?>", string.Empty);
+				cleanString = cleanString.Replace(System.Environment.NewLine, " ");
+				cleanString = cleanString.Replace("\n", " ");
+				ftsString += " " + cleanString;
+			}
+			#endregion
+
+			#region << Add comments content>>
+			if(oldTaskObject != null) {
+				var comments = (List<EntityRecord>)oldTaskObject["$task_1_n_comment"];
+				foreach (var comment in comments)
+				{
+					var cleanString = Regex.Replace((string)comment["content"], "<.*?>", string.Empty);
+					cleanString = cleanString.Replace(System.Environment.NewLine, " ");
+					cleanString = cleanString.Replace("\n", " ");
+					ftsString += " " + cleanString;					
+				}
+			}
+			#endregion
+
+			#region << Add project properties>>
+			if(oldTaskObject != null) {
+				var projects = (List<EntityRecord>)oldTaskObject["$project_1_n_task"];
+				if(projects.Any()) {
+					var project = projects[0];
+					if (project.Properties.ContainsKey("name")) {
+						ftsString += " " + project["name"];
+					}			
+					if (project.Properties.ContainsKey("code")) {
+						ftsString += " " + project["code"];
+					}					
+				}	
+			}
+			#endregion
+
+			#region << Add creator properties>>
+			if(oldTaskObject != null) {
+				var users = (List<EntityRecord>)oldTaskObject["$user_wv_task_created_by"];
+				if(users.Any()) {
+					var user = users[0];
+					if (user.Properties.ContainsKey("username")) {
+						ftsString += " " + user["username"];
+					}			
+				}
+			}
+			#endregion
+
+			#region << Add owner properties>>
+			if(oldTaskObject != null) {
+				var users = (List<EntityRecord>)oldTaskObject["$user_1_n_task_owner"];
+				if(users.Any()) {
+					var user = users[0];
+					if (user.Properties.ContainsKey("username")) {
+						ftsString += " " + user["username"];
+					}			
+				}
+				
+			}
+			#endregion
+
+			var patchObject = new EntityRecord();
+			patchObject["id"] = (Guid)record["id"];
+			patchObject["fts"] = ftsString;
+
+			var patchResult = recMan.UpdateRecord("wv_task", patchObject);
+			if (!patchResult.Success)
+			{
+				throw new Exception(patchResult.Message);
+			}
+			}
+			catch(Exception ex) {
+				var boz = ex;
+			}
+		}
+
 		public static dynamic UpdateBug(dynamic data, RecordManager recMan)
 		{
 			#region << Bug activities to be logged >>
@@ -622,6 +755,141 @@ namespace WebVella.ERP.Project
 			#endregion
 			return data;
 		}
+
+		public static void RegenAndUpdateBugFts(EntityRecord record, RecordManager recMan)
+		{
+			
+			EntityRecord oldBugObject = null;
+			if(record != null && record["id"] != null) {
+				#region << Get the old task object >>
+			{
+				var filterObj = EntityQuery.QueryEQ("id", (Guid)record["id"]);
+				var query = new EntityQuery("wv_bug", "*,$bug_1_n_comment.content,$$project_1_n_bug.name,$$project_1_n_bug.code,$$user_1_n_bug_owner.username,$$user_wv_bug_created_by.username", filterObj, null, null, null);
+				var result = recMan.Find(query);
+				if (!result.Success)
+				{
+
+					throw new Exception("Error getting the updated bug: " + result.Message);
+				}
+				else if (result.Object == null || result.Object.Data == null || !result.Object.Data.Any())
+				{
+					throw new Exception("Bug not found");
+				}
+				oldBugObject = result.Object.Data[0];
+			}
+			#endregion
+			}
+			var ftsString = "";
+
+			#region << Add bug properties >>
+			if (record.Properties.ContainsKey("subject")) {
+				ftsString += " " + record["subject"];
+			}
+			else if(oldBugObject != null){
+				ftsString += " " + oldBugObject["subject"];
+			}
+			if(record.Properties.ContainsKey("status")) {
+				ftsString += " " + record["status"];
+			}
+			else if(oldBugObject != null){
+				ftsString += " " + oldBugObject["status"];
+			}
+			if(record.Properties.ContainsKey("priority")) {
+				ftsString += " " + record["priority"];
+			}
+			else if(oldBugObject != null){
+				ftsString += " " + oldBugObject["priority"];
+			}
+			if(record.Properties.ContainsKey("code")) {
+				ftsString += " " + record["code"];
+			}
+			else if(oldBugObject != null){
+				ftsString += " " + oldBugObject["code"];
+			}
+			if(record.Properties.ContainsKey("number")) {
+				ftsString += " " + record["number"];
+			}
+			else if(oldBugObject != null){
+				ftsString += " " + oldBugObject["number"];
+			}
+			if(record.Properties.ContainsKey("description") && record["description"] != null) {
+				var cleanString = Regex.Replace((string)record["description"], "<.*?>", string.Empty);
+				cleanString = cleanString.Replace(System.Environment.NewLine, " ");
+				cleanString = cleanString.Replace("\n", " ");
+				ftsString += " " + cleanString;
+			}
+			else if(oldBugObject != null && oldBugObject["description"] != null){
+				var cleanString = Regex.Replace((string)oldBugObject["description"], "<.*?>", string.Empty);
+				cleanString = cleanString.Replace(System.Environment.NewLine, " ");
+				cleanString = cleanString.Replace("\n", " ");
+				ftsString += " " + cleanString;
+			}
+			#endregion
+
+			#region << Add comments content>>
+			if(oldBugObject != null) {
+				var comments = (List<EntityRecord>)oldBugObject["$bug_1_n_comment"];
+				foreach (var comment in comments)
+				{
+					var cleanString = Regex.Replace((string)comment["content"], "<.*?>", string.Empty);
+					cleanString = cleanString.Replace(System.Environment.NewLine, " ");
+					cleanString = cleanString.Replace("\n", " ");
+					ftsString += " " + cleanString;					
+				}
+			}
+			#endregion
+
+			#region << Add project properties>>
+			if(oldBugObject != null) {
+				var projects = (List<EntityRecord>)oldBugObject["$project_1_n_bug"];
+				if(projects.Any()) {
+					var project = projects[0];
+					if (project.Properties.ContainsKey("name")) {
+						ftsString += " " + project["name"];
+					}			
+					if (project.Properties.ContainsKey("code")) {
+						ftsString += " " + project["code"];
+					}					
+				}	
+			}
+			#endregion
+
+			#region << Add creator properties>>
+			if(oldBugObject != null) {
+				var users = (List<EntityRecord>)oldBugObject["$user_wv_bug_created_by"];
+				if(users.Any()) {
+					var user = users[0];
+					if (user.Properties.ContainsKey("username")) {
+						ftsString += " " + user["username"];
+					}			
+				}
+			}
+			#endregion
+
+			#region << Add owner properties>>
+			if(oldBugObject != null) {
+				var users = (List<EntityRecord>)oldBugObject["$user_1_n_bug_owner"];
+				if(users.Any()) {
+					var user = users[0];
+					if (user.Properties.ContainsKey("username")) {
+						ftsString += " " + user["username"];
+					}			
+				}
+				
+			}
+			#endregion
+
+			var patchObject = new EntityRecord();
+			patchObject["id"] = (Guid)record["id"];
+			patchObject["fts"] = ftsString;
+
+			var patchResult = recMan.UpdateRecord("wv_bug", patchObject);
+			if (!patchResult.Success)
+			{
+				throw new Exception(patchResult.Message);
+			}
+		}
+
 
 		public static dynamic ManageRelationWithProject(dynamic data, RecordManager recMan, string itemType)
 		{

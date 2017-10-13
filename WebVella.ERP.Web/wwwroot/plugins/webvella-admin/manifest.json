@@ -31,6 +31,7 @@
 						"/plugins/webvella-admin/entity-view-manage-actions.module.js",
 						"/plugins/webvella-admin/entity-view-manage-sidebar.module.js",
 						"/plugins/webvella-admin/entity-view-manage-data.module.js",
+						"/plugins/webvella-admin/file-manager.module.js",
 						"/plugins/webvella-admin/entity-fields.module.js",
 						"/plugins/webvella-admin/entity-views.module.js",
 						"/plugins/webvella-admin/entity-lists.module.js",

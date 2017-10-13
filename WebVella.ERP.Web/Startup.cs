@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Internal;
 using WebVella.ERP.Web.Services;
 using WebVella.ERP.Notifications;
+using Microsoft.AspNetCore.ResponseCompression;
+using System.IO.Compression;
+using Microsoft.Net.Http.Headers;
 
 namespace WebVella.ERP.Web
 {
@@ -37,8 +40,14 @@ namespace WebVella.ERP.Web
 
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.Configure<GzipCompressionProviderOptions>
+				(options => options.Level = CompressionLevel.Optimal);
+			services.AddResponseCompression(options =>
+			{
+				options.Providers.Add<GzipCompressionProvider>();
+			});
+
 			services.AddMvc().AddCrmPlugins(hostingEnviroment);
-			services.AddScoped<IRequestService, RequestService>();
 			services.AddSingleton<IErpService, ErpService>();
 			services.AddSingleton<IPluginService, PluginService>();
 			services.AddSingleton<IWebHookService, WebHookService>();
@@ -51,11 +60,12 @@ namespace WebVella.ERP.Web
 			CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 			Settings.Initialize(Configuration);
 
+			IErpService service = null;
 			try
 			{
 				DbContext.CreateContext(Settings.ConnectionString);
 
-				IErpService service = app.ApplicationServices.GetService<IErpService>();
+				service = app.ApplicationServices.GetService<IErpService>();
 				AutoMapperConfiguration.Configure();
 				service.InitializeSystemEntities();
 				service.InitializeBackgroundJobs();
@@ -76,12 +86,14 @@ namespace WebVella.ERP.Web
 				NotificationContext.Initialize();
 				NotificationContext.Current.SendNotification(new Notification { Channel = "*", Message = "ERP configuration loaded and completed." });
 
-				service.StartBackgroundJobProcess();
 			}
 			finally
 			{
 				DbContext.CloseContext();
 			}
+
+			if (service != null)
+				service.StartBackgroundJobProcess();
 
 			//Enable CORS
 			//app.Use((context, next) =>
@@ -118,8 +130,19 @@ namespace WebVella.ERP.Web
             //TODO Check what was done here in RC1
 			//app.UseIISPlatformHandler(options => options.AutomaticAuthentication = false);
 
-			// Add static files to the request pipeline.
-			app.UseStaticFiles();
+			//Should be before Static files
+			app.UseResponseCompression();
+
+			// Add static files to the request pipeline. Should be last middleware.
+			app.UseStaticFiles(new StaticFileOptions  
+			{
+				OnPrepareResponse = ctx =>
+				{
+					const int durationInSeconds = 60 * 60 * 24 * 30; //30 days caching of these resources
+					ctx.Context.Response.Headers[HeaderNames.CacheControl] =
+						"public,max-age=" + durationInSeconds;
+				}
+			});
 
 			// Add MVC to the request pipeline.
 			app.UseMvc(routes =>

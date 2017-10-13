@@ -210,9 +210,9 @@
 				if (sidebarData.$sessionStorage["last-list-params"]) {
 					//Check if the entity and the list name are the same
 					var storedParams = sidebarData.$sessionStorage["last-list-params"];
-					if (storedParams.areaName == sidebarData.stateParams.areaName && storedParams.entityName == sidebarData.stateParams.entityName) {
+					//if (storedParams.areaName == sidebarData.stateParams.areaName && storedParams.entityName == sidebarData.stateParams.entityName) {
 						useSessionBackUrl = true;
-					}
+					//}
 				}
 
 				if (useSessionBackUrl) {

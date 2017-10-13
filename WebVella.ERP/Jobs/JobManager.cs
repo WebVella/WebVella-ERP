@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using WebVella.ERP.Api;
+using WebVella.ERP.Database;
 using WebVella.ERP.Diagnostics;
 
 namespace WebVella.ERP.Jobs
@@ -51,16 +53,16 @@ namespace WebVella.ERP.Jobs
 		private void LoadDefaultTypes()
 		{
 			//Test job type
-			JobType sendEmailType = new JobType();
-			sendEmailType.Id = new Guid("70f06b11-2aee-40d5-b8ef-de1a2d8bbb59");
-			sendEmailType.Name = "Email sender";
-			sendEmailType.DefaultPriority = JobPriority.Low;
-			sendEmailType.Assembly = "WebVella.ERP";
-			sendEmailType.CompleteClassName = "WebVella.ERP.Jobs.JobManager";
-			sendEmailType.MethodName = "Test";
-			sendEmailType.AllowSingleInstance = false;
+			//JobType sendEmailType = new JobType();
+			//sendEmailType.Id = new Guid("70f06b11-2aee-40d5-b8ef-de1a2d8bbb59");
+			//sendEmailType.Name = "Email sender";
+			//sendEmailType.DefaultPriority = JobPriority.Low;
+			//sendEmailType.Assembly = "WebVella.ERP";
+			//sendEmailType.CompleteClassName = "WebVella.ERP.Jobs.JobManager";
+			//sendEmailType.MethodName = "Test";
+			//sendEmailType.AllowSingleInstance = false;
 
-			RegisterType(sendEmailType);
+			//RegisterType(sendEmailType);
 		}
 
 		public bool RegisterType(JobType type)
@@ -68,7 +70,7 @@ namespace WebVella.ERP.Jobs
 			if (JobTypes.Any(t => t.Name.ToLowerInvariant() == type.Name.ToLowerInvariant()))
 			{
 				Log log = new Log();
-				log.Create(LogType.Error, "Background job", "Register type failed!", $"Type with name '{type.Name}' already exists.");
+				log.Create(LogType.Error, "JobManager.RegisterType", "Register type failed!", $"Type with name '{type.Name}' already exists.", saveDetailsAsJson: true);
 				return false;
 			}
 
@@ -79,7 +81,7 @@ namespace WebVella.ERP.Jobs
 			{
 				//log error "Assembly can not be found!"
 				Log log = new Log();
-				log.Create(LogType.Error, "Background job", "Register type failed!", $"Assembly with name '{type.Assembly}' can not be found.");
+				log.Create(LogType.Error, "JobManager.RegisterType", "Register type failed!", $"Assembly with name '{type.Assembly}' can not be found.", saveDetailsAsJson: true);
 				return false;
 			}
 
@@ -87,7 +89,7 @@ namespace WebVella.ERP.Jobs
 			if (assemblyType == null)
 			{
 				Log log = new Log();
-				log.Create(LogType.Error, "Background job", "Register type failed!", $"Type with name '{type.CompleteClassName}' does not exist in assembly {assembly.FullName}.");
+				log.Create(LogType.Error, "JobManager.RegisterType", "Register type failed!", $"Type with name '{type.CompleteClassName}' does not exist in assembly {assembly.FullName}.", saveDetailsAsJson: true);
 				return false;
 			}
 
@@ -95,7 +97,7 @@ namespace WebVella.ERP.Jobs
 			if (method == null)
 			{
 				Log log = new Log();
-				log.Create(LogType.Error, "Background job", "Register type failed!", $"Method with name '{type.MethodName}' does not exist in assembly {assembly.FullName}.");
+				log.Create(LogType.Error, "JobManager.RegisterType", "Register type failed!", $"Method with name '{type.MethodName}' does not exist in assembly {assembly.FullName}.", saveDetailsAsJson: true);
 				return false;
 			}
 
@@ -112,13 +114,13 @@ namespace WebVella.ERP.Jobs
 				RegisterType(type);
 		}
 
-		public Job CreateJob(Guid typeId, dynamic attributes, JobPriority priority = 0, Guid? creatorId = null, Guid? schedulePlanId = null)
+		public Job CreateJob(Guid typeId, dynamic attributes, JobPriority priority = 0, Guid? creatorId = null, Guid? schedulePlanId = null, Guid? jobId = null)
 		{
 			JobType type = JobTypes.FirstOrDefault(t => t.Id == typeId);
 			if (type == null)
 			{
 				Log log = new Log();
-				log.Create(LogType.Error, "Background job", "Create job failed!", $"Type with id '{typeId}' can not be found.");
+				log.Create(LogType.Error, "JobManager.CreateJob", "Create job failed!", $"Type with id '{typeId}' can not be found.", saveDetailsAsJson: true);
 				return null;
 			}
 
@@ -126,7 +128,7 @@ namespace WebVella.ERP.Jobs
 				priority = type.DefaultPriority;
 
 			Job job = new Job();
-			job.Id = Guid.NewGuid();
+			job.Id = jobId.HasValue ? jobId.Value : Guid.NewGuid();
 			job.TypeId = type.Id;
 			job.Type = type;
 			job.TypeName = type.Name;
@@ -148,6 +150,11 @@ namespace WebVella.ERP.Jobs
 			return JobService.UpdateJob(job);
 		}
 
+        public Job GetJob(Guid jobId)
+        {
+            return JobService.GetJob(jobId);
+        }
+
 		public List<Job> GetJobs(DateTime? startFromDate = null, DateTime? startToDate = null, DateTime? finishedFromDate = null, DateTime? finishedToDate = null,
 			string typeName = null, int? status = null, int? priority = null, Guid? schedulePlanId = null, int? page = null, int? pageSize = null)
 		{
@@ -155,9 +162,9 @@ namespace WebVella.ERP.Jobs
 				typeName, status, priority, schedulePlanId, page, pageSize);
 		}
 
-		public async void ProcessJobsAsync()
+		public void ProcessJobsAsync()
 		{
-			await Task.Run(() => Process());
+			Task.Run(() => Process());
 		}
 
 		private void Process()
@@ -179,29 +186,57 @@ namespace WebVella.ERP.Jobs
 
 						foreach (var job in pendingJobs)
 						{
-							if (job.Type.AllowSingleInstance && JobPool.Pool.Any(c => c.Type.Id == job.Type.Id))
-								continue;
+							try
+							{
+								if (job.Type.AllowSingleInstance && JobPool.Current.HasJobFromTypeInThePool(job.Type.Id))
+									continue;
 
-							JobPool.Current.RunJobAsync(job);
+								JobPool.Current.RunJobAsync(job);
+							}
+							catch (Exception ex)
+							{
+								using (var secCtx = SecurityContext.OpenSystemScope())
+								{
+									try
+									{
+										DbContext.CreateContext(ERP.Settings.ConnectionString);
+
+										Log log = new Log();
+										string jobId = job != null ? job.Id.ToString() : "null";
+										string jobType = job != null && job.Type != null ? job.Type.Name : "null";
+										log.Create(LogType.Error, "JobManager.Process", $"Start job with id[{jobId}] and type [{jobType}] failed! " , ex.Message);
+									}
+									finally
+									{
+										DbContext.CloseContext();
+									}
+								}
+							}
 						}
 					}
 				}
 				catch (Exception ex)
 				{
-					Log log = new Log();
-					log.Create(LogType.Error, "Background job", ex.Message, ex.StackTrace);
+					using (var secCtx = SecurityContext.OpenSystemScope())
+					{
+						try
+						{
+							DbContext.CreateContext(ERP.Settings.ConnectionString);
+
+							Log log = new Log();
+							log.Create(LogType.Error, "JobManager.Process", ex);
+						}
+						finally
+						{
+							DbContext.CloseContext();
+						}
+					}
 				}
 				finally
 				{
 					Thread.Sleep(12000);
 				}
 			}
-		}
-
-		//Just a test method
-		public void Test(JobContext context)
-		{
-
 		}
 	}
 }

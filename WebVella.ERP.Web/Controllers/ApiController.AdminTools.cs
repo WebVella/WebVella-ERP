@@ -3434,7 +3434,9 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			else
 			{
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -3571,7 +3573,9 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			else
 			{
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -3747,7 +3751,9 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			else
 			{
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -3914,7 +3920,9 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			else
 			{
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -4081,7 +4089,9 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			else
 			{
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -4239,7 +4249,9 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			else
 			{
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -4386,7 +4398,9 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			{
 
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -4532,7 +4546,9 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			else
 			{
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -4678,7 +4694,9 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			else
 			{
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -4851,7 +4869,9 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			else
 			{
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -5021,9 +5041,14 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			{
 				hasUpdate = true;
 			}
+			else if (currentField.Options.Count != oldField.Options.Count)
+			{
+				hasUpdate = true;
+			}
 			else
 			{
 				var oldDefaultValuesDictionary = new Dictionary<string, bool>();
+				var newOptionsDictionary = new Dictionary<string, string>();
 				//create dictionary
 				foreach (var value in oldField.DefaultValue.ToList())
 				{
@@ -5037,27 +5062,32 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 					}
 				}
 
-				var oldOptionsDictionary = new Dictionary<string, bool>();
+				var oldOptionsDictionary = new Dictionary<string, string>();
 				//create dictionary
 				foreach (var value in oldField.Options.ToList())
 				{
-					oldOptionsDictionary[value.Key] = true;
+					oldOptionsDictionary[value.Key] = value.Value;
 				}
 				foreach (var value in currentField.Options.ToList())
 				{
-					if (!oldOptionsDictionary.ContainsKey(value.Key))
+					newOptionsDictionary[value.Key] = value.Value;
+					if (!oldOptionsDictionary.ContainsKey(value.Key) || oldOptionsDictionary[value.Key] != value.Value)
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var value in oldField.Options.ToList())
+				{
+					if (!newOptionsDictionary.ContainsKey(value.Key) || newOptionsDictionary[value.Key] != value.Value)
 					{
 						hasUpdate = true;
 					}
 				}
 
-				if (currentField.EnableSecurity != oldField.EnableSecurity)
-				{
+				// Permissions change check
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
 					hasUpdate = true;
 				}
-
-				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
 			}
 			#endregion
 
@@ -5232,7 +5262,9 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			else
 			{
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -5398,7 +5430,9 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			else
 			{
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -5573,7 +5607,9 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			else
 			{
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -5745,7 +5781,9 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			else
 			{
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -5896,9 +5934,8 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			else
 			{
-				if(currentField.EnableSecurity) {
-					// Permissions change check
-					hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
 				}
 			}
 			#endregion
@@ -6060,10 +6097,42 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			{
 				hasUpdate = true;
 			}
+			else if (currentField.EnableSecurity != oldField.EnableSecurity)
+			{
+				hasUpdate = true;
+			}
+			else if (currentField.Options.Count != oldField.Options.Count) {
+				hasUpdate = true;
+			}
 			else
 			{
+				var oldOptionsDictionary = new Dictionary<string, string>();
+				var newOptionsDictionary = new Dictionary<string, string>();
+				//create dictionary
+				foreach (var value in oldField.Options.ToList())
+				{
+					oldOptionsDictionary[value.Key] = value.Value;
+				}
+				foreach (var value in currentField.Options.ToList())
+				{
+					newOptionsDictionary[value.Key] = value.Value;
+					if (!oldOptionsDictionary.ContainsKey(value.Key) || oldOptionsDictionary[value.Key] != value.Value)
+					{
+						hasUpdate = true;
+					}
+				}
+				foreach (var value in oldField.Options.ToList())
+				{
+					if (!newOptionsDictionary.ContainsKey(value.Key) || newOptionsDictionary[value.Key] != value.Value)
+					{
+						hasUpdate = true;
+					}
+				}
+
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -6224,7 +6293,9 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			else
 			{
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) { 
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -6388,7 +6459,9 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			else
 			{
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -6550,7 +6623,9 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			else
 			{
 				// Permissions change check
-				hasUpdate = CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions);
+				if(CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions)) {
+					hasUpdate = true;
+				}
 			}
 			#endregion
 
@@ -7754,8 +7829,9 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 
 			//Because of the \r\n <> \n problem we will need to artificially add \r to the new view templates and test again
 			if(!String.IsNullOrWhiteSpace(oldView.ServiceCode)) {
-				var fixedServiceCode = oldView.ServiceCode.Replace("\n", "\r\n");
-				if (currentView.ServiceCode != fixedServiceCode)
+				var fixedServiceCode = oldView.ServiceCode.Replace("\n", "").Replace("\r", "");
+				var fixedCurrrentServiceCode = currentView.ServiceCode.Replace("\n", "").Replace("\r", "");
+				if (fixedCurrrentServiceCode != fixedServiceCode)
 				{
 					hasUpdate = true;
 				}
@@ -7800,13 +7876,9 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 					else
 					{
 						var correspondingActionItem = oldActionsDictionary[dictionaryKey];
-						var newTemplateWithoutRs = item.Template;
-						var newTemplateWithRs = item.Template.Replace("\n", "\r\n");
-						if (newTemplateWithoutRs == correspondingActionItem.Template || newTemplateWithRs == correspondingActionItem.Template)
-						{
-							//Do nothing as both templates are considered equal
-						}
-						else
+						var oldTemplateFixed = correspondingActionItem.Template.Replace("\n", "").Replace("\r", "");
+						var newTemplateFixed = item.Template.Replace("\n", "").Replace("\r", "");
+						if (oldTemplateFixed != newTemplateFixed)
 						{
 							differenceInTemplateFound = true;
 						}
@@ -8210,7 +8282,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			response +=
 			$"\t\t#region << View: {currentView.Name} >>\n" +
 			"\t\t{\n" +
-			"\t\t\tvar listItem = new InputRecordListlistItem();\n" +
+			"\t\t\tvar listItem = new InputRecordListViewItem();\n" +
 			$"\t\t\tlistItem.EntityId = new Guid(\"{entityId}\");\n" +
 			$"\t\t\tlistItem.EntityName = \"{entityName}\";\n" +
 			$"\t\t\tlistItem.ViewId = new Guid(\"{recordListItem.ViewId}\");\n" +
@@ -8275,6 +8347,16 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			{
 				response += $"\t\t\tlistItemFromRelation.FieldLookupList = \"{recordListItem.FieldLookupList}\";\n";
 			}
+
+			if (recordListItem.FieldManageView == null)
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldManageView = null;\n";
+			}
+			else
+			{
+				response += $"\t\t\tlistItemFromRelation.FieldManageView = \"{recordListItem.FieldManageView}\";\n";
+			}
+
 
 			response +=
 			$"\t\t\tlistItemFromRelation.RelationId = new Guid(\"{recordListItem.RelationId}\");\n" +
@@ -8793,8 +8875,10 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			}
 			//Because of the \r\n <> \n problem we will need to artificially add \r to the new view templates and test again
 			if(!String.IsNullOrWhiteSpace(oldList.ServiceCode)) {
-				var fixedServiceCode = oldList.ServiceCode.Replace("\n", "\r\n");
-				if (currentList.ServiceCode != fixedServiceCode)
+				//Remove all \r and \n and test the lists as there is often a problem with that
+				var fixedServiceCode = oldList.ServiceCode.Replace("\n", "").Replace("\r", "");
+				var fixedCurrrentServiceCode = currentList.ServiceCode.Replace("\n", "").Replace("\r", "");
+				if (fixedCurrrentServiceCode != fixedServiceCode)
 				{
 					hasUpdate = true;
 				}
@@ -8833,13 +8917,9 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 					else
 					{
 						var correspondingActionItem = oldActionsDictionary[dictionaryKey];
-						var newTemplateWithoutRs = item.Template;
-						var newTemplateWithRs = item.Template.Replace("\n", "\r\n");
-						if (newTemplateWithoutRs == correspondingActionItem.Template || newTemplateWithRs == correspondingActionItem.Template)
-						{
-							//Do nothing as both templates are considered equal
-						}
-						else
+						var oldTemplateFixed = correspondingActionItem.Template.Replace("\n", "").Replace("\r", "");
+						var newTemplateFixed = item.Template.Replace("\n", "").Replace("\r", "");
+						if (oldTemplateFixed != newTemplateFixed)
 						{
 							differenceInTemplateFound = true;
 						}

@@ -11,22 +11,25 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
+      "launchUrl": "http://localhost:2202/",
       "environmentVariables": {
         "DNX_IIS_RUNTIME_FRAMEWORK": "DNX46",
-        "ASPNET_ENV": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "Kestrel": {
+      "commandName": "Project",
+      "launchUrl": "http://localhost:5202",
+      "environmentVariables": {
+        "ASPNETCORE_URLS": "http://0.0.0.0:5202",
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "web": {
       "commandName": "web",
-      "launchUrl": "http://erp.com",
       "environmentVariables": {
-        "Hosting:Environment": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
-    },
-    "temp-web": {
-      "commandName": "temp-web",
-      "launchBrowser": true,
-      "launchUrl": "http://erp.com"
     }
   }
 }

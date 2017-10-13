@@ -20,7 +20,10 @@ namespace WebVella.ERP.Jobs
 		[JsonProperty(PropertyName = "attributes")]
 		public dynamic Attributes { get; set; }
 
-		[JsonProperty(PropertyName = "type")]
+        [JsonProperty(PropertyName = "result")]
+        public dynamic Result { get; set; }
+
+        [JsonProperty(PropertyName = "type")]
 		public JobType Type { get; set; }
 
 		internal JobContext()

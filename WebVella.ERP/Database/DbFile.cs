@@ -32,26 +32,38 @@ namespace WebVella.ERP.Database
 				LastModifiedBy = (Guid?)row["modified_by"];
 		}
 
-		private Stream GetContentStream(DbConnection connection)
+		private Stream GetContentStream(DbConnection connection, FileAccess fileAccess = FileAccess.ReadWrite)
 		{
 			if (Settings.EnableFileSystemStorage && ObjectId == 0)
 			{
 				var path = DbFileRepository.GetFileSystemPath(this);
 				if (File.Exists(path))
-					return File.Open(path, FileMode.Open, FileAccess.ReadWrite);
+					return File.Open(path, FileMode.Open, fileAccess);
 
 				throw new Exception($"File '{path}' was not found.");
 			}
 			else
 			{
+				if (ObjectId == 0)
+					throw new Exception("Trying to get content of a file from database, but it was uploaded to file system. Check FileSystem support configuration.");
+
 				var manager = new NpgsqlLargeObjectManager(connection.connection);
+				switch (fileAccess)
+				{
+					case FileAccess.Read:
+						return manager.OpenRead(ObjectId);
+					case FileAccess.Write:
+						return manager.OpenRead(ObjectId);
+					case FileAccess.ReadWrite:
+						return manager.OpenReadWrite(ObjectId);
+				}
 				return manager.OpenReadWrite(ObjectId);
 			}
 		}
 
 		public byte[] GetBytes(DbConnection connection)
 		{
-			using (var contentStream = GetContentStream(connection))
+			using (var contentStream = GetContentStream(connection, FileAccess.Read))
 			{
 				return contentStream.Length == 0 ? null : new BinaryReader(contentStream).ReadBytes((int)contentStream.Length);
 			}
@@ -59,6 +71,12 @@ namespace WebVella.ERP.Database
 
 		public byte[] GetBytes()
 		{
+			if (Settings.EnableFileSystemStorage && ObjectId == 0)
+			{
+				//no need for database connection and any transaction
+				return GetBytes(null);
+			}
+
 			using (DbConnection connection = DbContext.Current.CreateConnection())
 			{
 				try

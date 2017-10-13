@@ -35,13 +35,13 @@ namespace WebVella.ERP.Database
 				parameterJson.Type = NpgsqlDbType.Json;
 				parameters.Add(parameterJson);
 
-				List<DbEntity> entities = DbContext.Current.EntityRepository.Read();
+				var entities = new EntityManager().ReadEntities().Object;
 
-				DbEntity originEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
-				DbEntity targetEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
+				Entity originEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
+				Entity targetEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
 
-				DbBaseField originField = originEntity.Fields.FirstOrDefault(f => f.Id == relation.OriginFieldId);
-				DbBaseField targetField = targetEntity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
+				Field originField = originEntity.Fields.FirstOrDefault(f => f.Id == relation.OriginFieldId);
+				Field targetField = targetEntity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
 
 				string originTableName = $"rec_{originEntity.Name}";
 				string targetTableName = $"rec_{targetEntity.Name}";
@@ -170,13 +170,13 @@ namespace WebVella.ERP.Database
 				throw new StorageException("There is no record with specified relation id.");
 			}
 
-			List<DbEntity> entities = DbContext.Current.EntityRepository.Read();
+			List<Entity> entities =  new EntityManager().ReadEntities().Object;
 
-			DbEntity originEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
-			DbEntity targetEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
+			Entity originEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
+			Entity targetEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
 
-			DbBaseField originField = originEntity.Fields.FirstOrDefault(f => f.Id == relation.OriginFieldId);
-			DbBaseField targetField = targetEntity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
+			Field originField = originEntity.Fields.FirstOrDefault(f => f.Id == relation.OriginFieldId);
+			Field targetField = targetEntity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
 
 			string originTableName = $"rec_{originEntity.Name}";
 			string targetTableName = $"rec_{targetEntity.Name}";

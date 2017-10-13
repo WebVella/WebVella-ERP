@@ -629,6 +629,11 @@ namespace WebVella.ERP.Project
 								auxRule = EntityQuery.QueryEQ("priority", (string)query.Value);
 								auxRulesList.Add(auxRule);
 								break;
+							case "fts":
+								auxRule = new QueryObject();
+								auxRule = EntityQuery.QueryFTS("fts", (string)query.Value);
+								auxRulesList.Add(auxRule);
+								break;
 							case "sortby":
 								var sortRule = new QuerySortObject((string)query.Value, QuerySortType.Descending);
 								if (!queryKeyValueList.ContainsKey("sortOrder") || (string)queryKeyValueList["sortOrder"] == "ascending")
@@ -841,6 +846,11 @@ namespace WebVella.ERP.Project
 							case "priority":
 								auxRule = new QueryObject();
 								auxRule = EntityQuery.QueryEQ("priority", (string)query.Value);
+								auxRulesList.Add(auxRule);
+								break;
+							case "fts":
+								auxRule = new QueryObject();
+								auxRule = EntityQuery.QueryFTS("fts", (string)query.Value);
 								auxRulesList.Add(auxRule);
 								break;
 							case "sortby":
@@ -1894,7 +1904,6 @@ namespace WebVella.ERP.Project
 			var upsertResultRecord = new EntityRecord();
 			#region << Init Object >>
 			var outGuid = Guid.Empty;
-			var outInt = (int)1;
 			foreach (var prop in submitObj.Properties())
 			{
 				switch (prop.Name.ToLower())
@@ -2265,7 +2274,17 @@ namespace WebVella.ERP.Project
 
 					#endregion
 
-
+					#region << Regen FTS >>
+					var regenRecord = new EntityRecord();
+					if(submitRecord.Properties.ContainsKey("task_id") && submitRecord["task_id"] != null) {
+						regenRecord["id"] = new Guid(submitRecord["task_id"].ToString());
+						Utils.RegenAndUpdateTaskFts((EntityRecord)regenRecord,recMan);
+					}
+					else if(submitRecord.Properties.ContainsKey("bug_id") && submitRecord["bug_id"] != null) {
+						regenRecord["id"] = new Guid(submitRecord["bug_id"].ToString());
+						Utils.RegenAndUpdateBugFts((EntityRecord)regenRecord,recMan);
+					}
+					#endregion
 					connection.CommitTransaction();
 					response.Success = true;
 					response.Timestamp = DateTime.UtcNow;
@@ -2280,6 +2299,74 @@ namespace WebVella.ERP.Project
 					response.Object = null;
 					return Json(response);
 				}
+			}
+		}
+
+		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/fts/regen")]
+		public IActionResult RegenBugAndTaskFTS()
+		{
+			var response = new ResponseModel();
+			try
+			{
+				var tasks = new List<EntityRecord>();
+				#region << get tasks >>
+				{
+					var query = new EntityQuery("wv_task", "*,$task_1_n_comment.content,$$project_1_n_task.name,$$project_1_n_task.code,$$user_1_n_task_owner.username,$$user_wv_task_created_by.username");
+					var result = recMan.Find(query);
+					if (!result.Success)
+					{
+
+						throw new Exception("Error getting the updated tasks: " + result.Message);
+					}
+					else if (result.Object == null || result.Object.Data == null || !result.Object.Data.Any())
+					{
+						throw new Exception("Bug not found");
+					}
+					tasks = result.Object.Data;
+				}
+				#endregion
+
+				var bugs = new List<EntityRecord>();
+				#region << get bugs >>
+				{
+					var query = new EntityQuery("wv_bug", "*,$bug_1_n_comment.content,$$project_1_n_bug.name,$$project_1_n_bug.code,$$user_1_n_bug_owner.username,$$user_wv_bug_created_by.username");
+					var result = recMan.Find(query);
+					if (!result.Success)
+					{
+
+						throw new Exception("Error getting the updated bugs: " + result.Message);
+					}
+					else if (result.Object == null || result.Object.Data == null || !result.Object.Data.Any())
+					{
+						throw new Exception("Bug not found");
+					}
+					bugs = result.Object.Data;
+				}
+				#endregion
+
+				foreach (var task in tasks)
+				{
+					Utils.RegenAndUpdateTaskFts(task,recMan);
+				}
+
+				foreach (var bug in bugs)
+				{
+					Utils.RegenAndUpdateBugFts(bug,recMan);
+				}
+
+				response.Success = true;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = "FTS regeneration success";
+				response.Object = null;
+				return Json(response);
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = "Error: " + ex.Message;
+				response.Object = null;
+				return Json(response);
 			}
 		}
 	}

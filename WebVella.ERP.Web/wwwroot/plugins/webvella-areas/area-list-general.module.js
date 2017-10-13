@@ -171,7 +171,7 @@
 		// Process
 		function successCallback(response) {
 			if (response.object === null) {
-			    alert("error in response!" + response.message);
+			    alert("error in response! " + response.message);
 			}
 			else if (response.object === null) {
 				alert("The view with name: " + $stateParams.parentViewName + " does not exist");
@@ -182,7 +182,7 @@
 
 		function errorCallback(response) {
 			if (response.object === null) {
-			    alert("error in response!" + response.message);
+			    alert("error in response! " + response.message);
 			}
 			else {
 				ngToast.create({
@@ -206,8 +206,8 @@
 		return defer.promise;
 	}
 
-	resolveRecordListDataFromView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedParentViewData', 'resolvedEntityList', 'resolvedEntityRelationsList', 'ngToast'];
-	function resolveRecordListDataFromView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedParentViewData, resolvedEntityList, resolvedEntityRelationsList, ngToast) {
+	resolveRecordListDataFromView.$inject = ['$q','$location', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedParentViewData', 'resolvedEntityList', 'resolvedEntityRelationsList', 'ngToast'];
+	function resolveRecordListDataFromView($q, $location,$log, webvellaCoreService, $stateParams, $state, $timeout, resolvedParentViewData, resolvedEntityList, resolvedEntityRelationsList, ngToast) {
 		//Temporary method will be replaced when the proper API is ready
 		// Initialize
 		var defer = $q.defer();
@@ -295,7 +295,9 @@
 			ngCtrl.parentView.data = resolvedParentViewData;
 			ngCtrl.parentView.meta = webvellaCoreService.getEntityRecordViewFromEntitiesMetaList($stateParams.parentViewName, $stateParams.entityName, resolvedEntityList);
 		}
-
+		else{
+			ngCtrl.$sessionStorage["last-list-params"] = fastCopy($stateParams);		
+		}
 		//#endregion
 
 		//#region << Set Page meta >>
@@ -675,10 +677,6 @@
 			return webvellaCoreService.userHasRecordPermissions(listEntity, permissionsCsv);
 		}
 
-		ngCtrl.saveStateParamsToSessionStorage = function () {
-			ngCtrl.$sessionStorage["last-list-params"] = $stateParams;
-		}
-
 		//#region << Sort >>
 		ngCtrl.sortObject = {}; // dataName = order // no property, "ascending" "descending"
 
@@ -934,7 +932,7 @@
 		popupCtrl.hasError = false;
 		popupCtrl.errorMessage = "";
 		popupCtrl.count = -1;
-		popupCtrl.countHasSize = true;
+		popupCtrl.countHasSize = false;
 		popupCtrl.downloadFilePath = null;
 		popupCtrl.listHasExternalDataSource = false;
 		if(popupCtrl.ngCtrl.list.meta.dataSourceUrl != null && popupCtrl.ngCtrl.list.meta.dataSourceUrl != ""){
@@ -947,7 +945,7 @@
 			var columnsForExport = [];
 			for (var i = 0; i < popupCtrl.ngCtrl.list.meta.columns.length; i++) {
 				var currentColumnMeta = popupCtrl.ngCtrl.list.meta.columns[i];
-				if (currentColumnMeta.type == "field" || currentColumnMeta == "fieldFromRelation") {
+				if (currentColumnMeta.type == "field" || currentColumnMeta.type == "fieldFromRelation") {
 					columnsForExport.push(currentColumnMeta.fieldName);
 				}
 			}
@@ -1036,7 +1034,7 @@
 					}, 0);
 				}
 
-				webvellaCoreService.uploadFileToTemp(file, file.name, popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
+				webvellaCoreService.uploadFileToTemp(file, popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
 
 			}
 		}
