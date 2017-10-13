@@ -1,5 +1,4 @@
 ﻿using CsvHelper;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -7,7 +6,6 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Database;
 using WebVella.ERP.WebHooks;
@@ -33,7 +31,7 @@ namespace WebVella.ERP.Api
 			this.hooksService = hooksService;
 		}
 
-		public ResponseModel ExportListRecordsToCsv(string entityName, string listName, Stream exportStream, Dictionary<string, string> queries, int count = 10)
+		public ResponseModel ExportListRecordsToCsv(string entityName, string listName, Dictionary<string, string> queries, int count = 10)
 		{
 			ResponseModel response = new ResponseModel();
 			response.Message = "Records successfully exported";
@@ -94,117 +92,94 @@ namespace WebVella.ERP.Api
 						queryObj = EntityQuery.QueryAND(queryObjList.ToArray());
 				}
 
-				int page = 1;
-				int pageSize = 100;
-				int offset = 0;
+				var stream = new MemoryStream();
+				var textWriter = new StreamWriter(stream);
 
-				while (true)
+				List<EntityRecord> records = null;
+				if (count == -1)
+					records = recMan.GetListRecords(entities, entity, listName, null, queryObj, null, true, returnAllRecords: true);
+				else
+					records = recMan.GetListRecords(entities, entity, listName, 1, queryObj, count, true);
+
+				if (records.Count > 0)
 				{
-					var stream = new MemoryStream();
+					var csv = new CsvWriter(textWriter);
+					csv.Configuration.QuoteAllFields = true;
 
-					if (count > 0 && count < (pageSize * page))
+					//write header
+					foreach (var prop in records[0].Properties)
 					{
-						pageSize = count < pageSize ? count : (count - (pageSize * (page - 1)));
-					}
-
-					List<EntityRecord> records = null;
-					if (count == -1)
-					{
-						records = recMan.GetListRecords(entities, entity, listName, null, queryObj, null, true, returnAllRecords: true);
-						int recordsCount = records.Count();
-						pageSize = recordsCount > 0 ? recordsCount : 0;
-					}
-					else
-						records = recMan.GetListRecords(entities, entity, listName, page, queryObj, pageSize, true);
-
-					if (records.Count > 0)
-					{
-						var textWriter = new StreamWriter(stream);
-						var csv = new CsvWriter(textWriter);
-						csv.Configuration.QuoteAllFields = true;
-
-						if (page == 1)
+						var listItem = listMeta.Columns.FirstOrDefault(c => c.DataName == prop.Key);
+						if (prop.Key.StartsWith("$field") && listItem == null)
+							continue;// remove id field from relation that are not inserted as columns
+						string name = prop.Key;
+						if (prop.Key.StartsWith("$field$"))
 						{
-							foreach (var prop in records[0].Properties)
-							{
-								var listItem = listMeta.Columns.FirstOrDefault(c => c.DataName == prop.Key);
-								if (prop.Key.StartsWith("$field") && listItem == null)
-									continue;// remove id field from relation that are not inserted as columns
-								string name = prop.Key;
-								if (prop.Key.StartsWith("$field$"))
-								{
-									name = prop.Key.Remove(0, 7);
-									name = "$" + name.Replace('$', '.');
-								}
-								csv.WriteField(name);
-							}
-							csv.NextRecord();
+							name = prop.Key.Remove(0, 7);
+							name = "$" + name.Replace('$', '.');
 						}
+						csv.WriteField(name);
+					}
+					csv.NextRecord();
 
-						foreach (var record in records)
+
+					foreach (var record in records)
+					{
+						foreach (var prop in record.Properties)
 						{
-							foreach (var prop in record.Properties)
+							if (prop.Value != null)
 							{
-								if (prop.Value != null)
+								if (prop.Value is List<object>)
 								{
-									if (prop.Value is List<object>)
+									var listItem = (RecordListRelationFieldItem)listMeta.Columns.FirstOrDefault(c => c.DataName == prop.Key);
+									if (prop.Key.StartsWith("$field") && listItem == null)
 									{
-										var listItem = (RecordListRelationFieldItem)listMeta.Columns.FirstOrDefault(c => c.DataName == prop.Key);
-										if (prop.Key.StartsWith("$field") && listItem == null)
-										{
-											continue;// remove id field from relation that are not inserted as columns
-										}
-										var type = listItem != null ? listItem.Meta.GetFieldType() : FieldType.GuidField;
-										if (prop.Key.StartsWith("$field"))
-										{
-											var relationData = prop.Key.Split('$').Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
-											var relation = relations.FirstOrDefault(r => r.Name == relationData[1]);
-											if (relation.RelationType == EntityRelationType.ManyToMany ||
-												(relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == entity.Id))
-												csv.WriteField(JsonConvert.SerializeObject(prop.Value).ToString());
-											else if (((List<object>)prop.Value).Count > 0)
-												csv.WriteField(((List<object>)prop.Value)[0] ?? "");
-											else
-												csv.WriteField("");
-										}
-										else if (type != FieldType.MultiSelectField && type != FieldType.TreeSelectField)
-										{
-											if (((List<object>)prop.Value).Count > 0)
-												csv.WriteField(((List<object>)prop.Value)[0]);
-											else
-												csv.WriteField("");
-										}
-										else
-										{
+										continue;// remove id field from relation that are not inserted as columns
+									}
+									var type = listItem != null ? listItem.Meta.GetFieldType() : FieldType.GuidField;
+									if (prop.Key.StartsWith("$field"))
+									{
+										var relationData = prop.Key.Split('$').Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+										var relation = relations.FirstOrDefault(r => r.Name == relationData[1]);
+										if (relation.RelationType == EntityRelationType.ManyToMany ||
+											(relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == entity.Id))
 											csv.WriteField(JsonConvert.SerializeObject(prop.Value).ToString());
-										}
+										else if (((List<object>)prop.Value).Count > 0)
+											csv.WriteField(((List<object>)prop.Value)[0] ?? "");
+										else
+											csv.WriteField("");
+									}
+									else if (type != FieldType.MultiSelectField && type != FieldType.TreeSelectField)
+									{
+										if (((List<object>)prop.Value).Count > 0)
+											csv.WriteField(((List<object>)prop.Value)[0]);
+										else
+											csv.WriteField("");
 									}
 									else
 									{
-										csv.WriteField(prop.Value);
+										csv.WriteField(JsonConvert.SerializeObject(prop.Value).ToString());
 									}
 								}
 								else
-									csv.WriteField("");
+								{
+									csv.WriteField(prop.Value);
+								}
 							}
-							csv.NextRecord();
-
-							textWriter.Flush();
+							else
+								csv.WriteField("");
 						}
-
-						textWriter.Close();
+						csv.NextRecord();
+						textWriter.Flush();
 					}
-
-					byte[] buffer = stream.ToArray();
-					exportStream.Write(buffer, offset, buffer.Length);
-					offset += buffer.Length;
-					exportStream.Flush();
-
-					if (records.Count <= pageSize)
-						break;
-
-					page++;
 				}
+
+				byte[] buffer = stream.ToArray();
+
+				response.Object = buffer;
+
+				textWriter.Close();
+				stream.Close();
 			}
 			catch (Exception ex)
 			{
@@ -213,8 +188,6 @@ namespace WebVella.ERP.Api
 				response.Message = ex.Message;
 				return response;
 			}
-
-			//exportStream.Close();
 
 			return response;
 		}
