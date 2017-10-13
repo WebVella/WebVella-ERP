@@ -21,13 +21,13 @@ namespace WebVella.ERP.Diagnostics
 			logRecord["created_on"] = DateTime.UtcNow;
 			logRecord["last_modified_on"] = DateTime.UtcNow;
 
-			RecordManager recMan = new RecordManager();
+			RecordManager recMan = new RecordManager(true);
 			var response = recMan.CreateRecord("system_log", logRecord);
 		}
 
 		public void UpdateNotificationStatus(Guid id, LogNotificationStatus notificationStatus)
 		{
-			RecordManager recMan = new RecordManager();
+			RecordManager recMan = new RecordManager(true);
 
 			var response = recMan.Find(new EntityQuery("system_log", "*", EntityQuery.QueryEQ("id", id)));
 
