@@ -5,7 +5,7 @@
 
 	"dependencies": {
 		"AutoMapper": "3.3.1",
-		"CsvHelper": "2.16.3",
+    "CsvHelper": "3.4.0",
 		"Microsoft.AspNetCore.Authentication.Cookies": "1.1.0",
 		"Microsoft.AspNetCore.Diagnostics": "1.1.0",
 		"Microsoft.AspNetCore.Mvc": "1.1.1",
