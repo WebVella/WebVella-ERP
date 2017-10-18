@@ -3,9 +3,9 @@ using AutoMapper;
 
 namespace WebVella.ERP.Api.Models.AutoMapper.Resolvers
 {
-    public class StringToGuidConverter : TypeConverter<string, Guid>
+    public class StringToGuidConverter : ITypeConverter<string, Guid>
     {
-        protected override Guid ConvertCore(string source)
+        public Guid Convert(string source, Guid destination, ResolutionContext context)
         {
             Guid guid;
             if (Guid.TryParse(source, out guid) == false)
@@ -14,9 +14,9 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Resolvers
         }
     }
 
-    public class StringToNullableGuidConverter : TypeConverter<string, Guid?>
+    public class StringToNullableGuidConverter : ITypeConverter<string, Guid?>
     {
-        protected override Guid? ConvertCore(string source)
+        public Guid? Convert(string source, Guid? destination, ResolutionContext context)
         {
             Guid guid;
             if (Guid.TryParse(source, out guid) == false)

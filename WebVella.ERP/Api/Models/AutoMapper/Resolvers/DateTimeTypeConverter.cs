@@ -3,9 +3,9 @@ using AutoMapper;
 
 namespace WebVella.ERP.Api.Models.AutoMapper.Resolvers
 {
-    public class DateTimeTypeConverter : TypeConverter<DateTimeOffset, DateTime>
+    public class DateTimeTypeConverter : ITypeConverter<DateTimeOffset, DateTime>
     {
-        protected override DateTime ConvertCore(DateTimeOffset source)
+        public DateTime Convert(DateTimeOffset source, DateTime destination, ResolutionContext context)
         {
             return source.DateTime;
         }

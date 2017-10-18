@@ -5,10 +5,10 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 {
 	internal class RecordPermissionsProfile : Profile
 	{
-		protected override void Configure()
+		public RecordPermissionsProfile()
 		{
-			Mapper.CreateMap<RecordPermissions, DbRecordPermissions>();
-			Mapper.CreateMap<DbRecordPermissions, RecordPermissions>();
+			CreateMap<RecordPermissions, DbRecordPermissions>();
+			CreateMap<DbRecordPermissions, RecordPermissions>();
 		}
 	}
 }

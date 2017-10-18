@@ -8,9 +8,9 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 {
 	public class UserFileProfile : Profile
 	{
-		protected override void Configure()
+		public UserFileProfile()
 		{
-			Mapper.CreateMap<EntityRecord, UserFile>().ConvertUsing(source => EntityRecordConvert(source));
+			CreateMap<EntityRecord, UserFile>().ConvertUsing(source => EntityRecordConvert(source));
 		}
 
 		private static UserFile EntityRecordConvert(EntityRecord inputObj)

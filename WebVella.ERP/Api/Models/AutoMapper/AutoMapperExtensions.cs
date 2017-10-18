@@ -48,33 +48,33 @@ namespace WebVella.ERP.Api.Models.AutoMapper
 			return (TResult)Mapper.Map(self, value, self.GetType(), typeof(TResult));
 		}
 
-		public static TResult DynamicMapTo<TResult>(this object self)
-		{
-			if (self == null)
-				return default(TResult); //throw new ArgumentNullException();
+		//public static TResult DynamicMapTo<TResult>(this object self)
+		//{
+		//	if (self == null)
+		//		return default(TResult); //throw new ArgumentNullException();
 
-			return (TResult)Mapper.DynamicMap(self, self.GetType(), typeof(TResult));
-		}
+		//	return (TResult)Mapper.DynamicMap(self, self.GetType(), typeof(TResult));
+		//}
 
-		public static List<TResult> DynamicMapTo<TResult>(this IEnumerable self)
-		{
-			if (self == null)
-				return default(List<TResult>); //throw new ArgumentNullException();
+		//public static List<TResult> DynamicMapTo<TResult>(this IEnumerable self)
+		//{
+		//	if (self == null)
+		//		return default(List<TResult>); //throw new ArgumentNullException();
 
-			return (List<TResult>)Mapper.DynamicMap(self, self.GetType(), typeof(List<TResult>));
-		}
+		//	return (List<TResult>)Mapper.DynamicMap(self, self.GetType(), typeof(List<TResult>));
+		//}
 
-		public static IMappingExpression<TSource, TDestination> IgnoreAllNonExisting<TSource, TDestination>(this IMappingExpression<TSource, TDestination> expression)
-		{
-			var sourceType = typeof(TSource);
-			var destinationType = typeof(TDestination);
-			var existingMaps = Mapper.GetAllTypeMaps().First(x => x.SourceType.Equals(sourceType)
-				&& x.DestinationType.Equals(destinationType));
-			foreach (var property in existingMaps.GetUnmappedPropertyNames())
-			{
-				expression.ForMember(property, opt => opt.Ignore());
-			}
-			return expression;
-		}
+		//public static IMappingExpression<TSource, TDestination> IgnoreAllNonExisting<TSource, TDestination>(this IMappingExpression<TSource, TDestination> expression)
+		//{
+		//	var sourceType = typeof(TSource);
+		//	var destinationType = typeof(TDestination);
+		//	var existingMaps = Mapper.GetAllTypeMaps().First(x => x.SourceType.Equals(sourceType)
+		//		&& x.DestinationType.Equals(destinationType));
+		//	foreach (var property in existingMaps.GetUnmappedPropertyNames())
+		//	{
+		//		expression.ForMember(property, opt => opt.Ignore());
+		//	}
+		//	return expression;
+		//}
 	}
 }

@@ -6,10 +6,10 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 {
     internal class FieldPermissionsProfile : Profile
 	{
-		protected override void Configure()
+		public FieldPermissionsProfile()
 		{
-			Mapper.CreateMap<FieldPermissions, DbFieldPermissions>();
-			Mapper.CreateMap<DbFieldPermissions, FieldPermissions>();
+			CreateMap<FieldPermissions, DbFieldPermissions>();
+			CreateMap<DbFieldPermissions, FieldPermissions>();
 		}
 	}
 }
