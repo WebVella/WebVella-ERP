@@ -27,8 +27,6 @@ namespace WebVella.ERP.Api
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			List<DbEntity> entities = DbContext.Current.EntityRepository.Read();
-
 			if (entity.Id == Guid.Empty)
 				errorList.Add(new ErrorModel("id", null, "Id is required!"));
 
@@ -37,7 +35,7 @@ namespace WebVella.ERP.Api
 				//update
 				if (entity.Id != Guid.Empty)
 				{
-					DbEntity verifiedEntity = DbContext.Current.EntityRepository.Read(entity.Id);
+					Entity verifiedEntity = ReadEntity(entity.Id).Object;
 
 					if (verifiedEntity == null)
 						errorList.Add(new ErrorModel("id", entity.Id.ToString(), "Entity with such Id does not exist!"));
@@ -53,7 +51,7 @@ namespace WebVella.ERP.Api
 
 			if (!string.IsNullOrWhiteSpace(entity.Name))
 			{
-				DbEntity verifiedEntity = DbContext.Current.EntityRepository.Read(entity.Name);
+				Entity verifiedEntity = ReadEntity(entity.Name).Object;
 
 				if (verifiedEntity != null && verifiedEntity.Id != entity.Id)
 					errorList.Add(new ErrorModel("name", entity.Name, "Entity with such Name exists already!"));
@@ -88,8 +86,7 @@ namespace WebVella.ERP.Api
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
-			Entity entity = storageEntity.MapTo<Entity>();
+			Entity entity = ReadEntity(entityId).Object;
 
 			if (fields.Count == 0)
 			{
@@ -374,8 +371,7 @@ namespace WebVella.ERP.Api
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
-			Entity entity = storageEntity.MapTo<Entity>();
+			Entity entity = ReadEntity(entityId).Object;
 
 			foreach (var recordList in recordLists)
 			{
@@ -389,12 +385,11 @@ namespace WebVella.ERP.Api
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
-			List<Entity> entities = storageEntityList.MapTo<Entity>();
+			List<Entity> entities = ReadEntities().Object;
 
 			//EntityRelationManager relationManager = new EntityRelationManager(Storage);
 			//EntityRelationListResponse relationListResponse = relationManager.Read();
-			List<DbEntityRelation> relationList = DbContext.Current.RelationRepository.Read();
+			List<EntityRelation> relationList = new EntityRelationManager().Read().Object;
 			//if (relationListResponse.Object != null)
 			//	relationList = relationListResponse.Object;
 
@@ -596,7 +591,7 @@ namespace WebVella.ERP.Api
 						}
 						else
 						{
-							DbEntityRelation relation = null;
+							EntityRelation relation = null;
 							if (string.IsNullOrWhiteSpace(inputColumn.RelationName))
 								relation = relationList.SingleOrDefault(x => x.Id == inputColumn.RelationId);
 							else
@@ -630,7 +625,7 @@ namespace WebVella.ERP.Api
 								errorList.Add(new ErrorModel("columns.fieldName", null, "There is already an item with such field name!"));
 							else
 							{
-								DbEntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputColumn.RelationId.Value);
+								EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputColumn.RelationId.Value);
 
 								if (relation != null)
 								{
@@ -660,7 +655,7 @@ namespace WebVella.ERP.Api
 					}
 					else if (column is InputRecordListRelationTreeItem)
 					{
-						DbEntityRelation relation = null;
+						EntityRelation relation = null;
 						InputRecordListRelationTreeItem inputColumn = (InputRecordListRelationTreeItem)column;
 						if (string.IsNullOrWhiteSpace(inputColumn.RelationName) && inputColumn.RelationId == null)
 						{
@@ -723,7 +718,7 @@ namespace WebVella.ERP.Api
 					}
 					else if (column is InputRecordListRelationListItem)
 					{
-						DbEntityRelation relation = null;
+						EntityRelation relation = null;
 						InputRecordListRelationListItem inputColumn = (InputRecordListRelationListItem)column;
 						if (string.IsNullOrWhiteSpace(inputColumn.RelationName) && inputColumn.RelationId == null)
 						{
@@ -787,7 +782,7 @@ namespace WebVella.ERP.Api
 					else if (column is InputRecordListRelationViewItem)
 					{
 						InputRecordListRelationViewItem inputColumn = (InputRecordListRelationViewItem)column;
-						DbEntityRelation relation = null;
+						EntityRelation relation = null;
 						if (string.IsNullOrWhiteSpace(inputColumn.RelationName) && inputColumn.RelationId == null)
 						{
 							errorList.Add(new ErrorModel("columns.relationName", null, "Relation name or id is required!"));
@@ -917,8 +912,7 @@ namespace WebVella.ERP.Api
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
-			Entity entity = storageEntity.MapTo<Entity>();
+			Entity entity = ReadEntity(entityId).Object;
 
 			foreach (var recordView in recordViewList)
 			{
@@ -932,12 +926,11 @@ namespace WebVella.ERP.Api
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
-			List<Entity> entities = storageEntityList.MapTo<Entity>();
+			List<Entity> entities = ReadEntities().Object;
 
 			//EntityRelationManager relationManager = new EntityRelationManager(Storage);
 			//EntityRelationListResponse relationListResponse = relationManager.Read();
-			List<DbEntityRelation> relationList = DbContext.Current.RelationRepository.Read();
+			List<EntityRelation> relationList = new EntityRelationManager().Read().Object;
 			//if (relationListResponse.Object != null)
 			//	relationList = relationListResponse.Object;
 
@@ -1157,7 +1150,7 @@ namespace WebVella.ERP.Api
 													}
 													else if (item is InputRecordViewRelationFieldItem)
 													{
-														DbEntityRelation relation = null;
+														EntityRelation relation = null;
 
 														InputRecordViewRelationFieldItem inputItem = (InputRecordViewRelationFieldItem)item;
 														if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null)
@@ -1232,7 +1225,7 @@ namespace WebVella.ERP.Api
 													}
 													else if (item is InputRecordViewRelationTreeItem)
 													{
-														DbEntityRelation relation = null;
+														EntityRelation relation = null;
 														InputRecordViewRelationTreeItem inputItem = (InputRecordViewRelationTreeItem)item;
 														if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null)
 														{
@@ -1289,7 +1282,7 @@ namespace WebVella.ERP.Api
 													}
 													else if (item is InputRecordViewRelationListItem)
 													{
-														DbEntityRelation relation = null;
+														EntityRelation relation = null;
 														InputRecordViewRelationListItem inputItem = (InputRecordViewRelationListItem)item;
 														if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null)
 														{
@@ -1347,7 +1340,7 @@ namespace WebVella.ERP.Api
 													}
 													else if (item is InputRecordViewRelationViewItem)
 													{
-														DbEntityRelation relation = null;
+														EntityRelation relation = null;
 														InputRecordViewRelationViewItem inputItem = (InputRecordViewRelationViewItem)item;
 														if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null)
 														{
@@ -1486,7 +1479,7 @@ namespace WebVella.ERP.Api
 						}
 						else if (item is InputRecordViewSidebarRelationListItem)
 						{
-							DbEntityRelation relation = null;
+							EntityRelation relation = null;
 							InputRecordViewSidebarRelationListItem inputItem = (InputRecordViewSidebarRelationListItem)item;
 							if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null)
 							{
@@ -1550,7 +1543,7 @@ namespace WebVella.ERP.Api
 						}
 						else if (item is InputRecordViewSidebarRelationTreeItem)
 						{
-							DbEntityRelation relation = null;
+							EntityRelation relation = null;
 							InputRecordViewSidebarRelationTreeItem inputItem = (InputRecordViewSidebarRelationTreeItem)item;
 							if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null)
 							{
@@ -1614,7 +1607,7 @@ namespace WebVella.ERP.Api
 						}
 						else if (item is InputRecordViewSidebarRelationViewItem)
 						{
-							DbEntityRelation relation = null;
+							EntityRelation relation = null;
 							InputRecordViewSidebarRelationViewItem inputItem = (InputRecordViewSidebarRelationViewItem)item;
 							if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null)
 							{
@@ -1807,7 +1800,7 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entity.Id);
+				Entity storageEntity = ReadEntity(entity.Id).Object;
 
 				storageEntity.Label = entity.Label;
 				storageEntity.LabelPlural = entity.LabelPlural;
@@ -1819,7 +1812,7 @@ namespace WebVella.ERP.Api
 				storageEntity.RecordPermissions.CanUpdate = entity.RecordPermissions.CanUpdate;
 				storageEntity.RecordPermissions.CanDelete = entity.RecordPermissions.CanDelete;
 
-				bool result = DbContext.Current.EntityRepository.Update(storageEntity);
+				bool result = DbContext.Current.EntityRepository.Update(storageEntity.MapTo<DbEntity>());
 
 				if (!result)
 				{
@@ -1999,9 +1992,11 @@ namespace WebVella.ERP.Api
 				List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
 				entities = storageEntityList.MapTo<Entity>();
 
+				List<EntityRelation> relationList = new EntityRelationManager().Read(storageEntityList).Object;
+
+
 				//EntityRelationManager relationManager = new EntityRelationManager(Storage);
 				//EntityRelationListResponse relationListResponse = relationManager.Read();
-				List<DbEntityRelation> relationList = DbContext.Current.RelationRepository.Read();
 				//if (relationListResponse.Object != null)
 				//	relationList = relationListResponse.Object;
 
@@ -5848,7 +5843,7 @@ namespace WebVella.ERP.Api
 			if (entity.RecordTrees.Any(f => f.Id != recordTree.Id && f.Label.ToLowerInvariant() == recordTree.Label.ToLowerInvariant()))
 				errorList.Add(new ErrorModel("label", null, "There is already a tree with same label!"));
 
-			DbEntityRelation relation = null;
+			EntityRelation relation = null;
 			if (recordTree.RelationId == null || recordTree.RelationId == Guid.Empty)
 			{
 				errorList.Add(new ErrorModel("relationId", null, "Relation is required!"));
@@ -5856,7 +5851,7 @@ namespace WebVella.ERP.Api
 			}
 			else
 			{
-				relation = DbContext.Current.RelationRepository.Read(recordTree.RelationId);
+				relation =  new EntityRelationManager().Read(recordTree.RelationId).Object;
 			}
 
 			if (relation == null)
