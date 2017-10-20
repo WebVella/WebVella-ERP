@@ -67,7 +67,7 @@ namespace WebVella.ERP.Web
 
 				service = app.ApplicationServices.GetService<IErpService>();
 
-                var cfg = new AutoMapper.Configuration.MapperConfigurationExpression();
+                var cfg = AutoMapperConfiguration.MappingExpressions; // new AutoMapper.Configuration.MapperConfigurationExpression();
                 AutoMapperConfiguration.Configure(cfg);
                 AutoMapper.Mapper.Initialize(cfg);
 

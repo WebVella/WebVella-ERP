@@ -13,6 +13,9 @@ namespace WebVella.ERP.Api.Models.AutoMapper
 {
     public class AutoMapperConfiguration
     {
+        //Global object to store mapping exspressions
+        public static MapperConfigurationExpression MappingExpressions = new MapperConfigurationExpression();
+
         private static object lockObj = new object();
         private static bool alreadyConfigured = false;
 
