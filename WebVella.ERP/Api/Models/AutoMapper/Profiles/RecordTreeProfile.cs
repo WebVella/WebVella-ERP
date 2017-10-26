@@ -7,14 +7,14 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 {
 	internal class RecordTreeProfile : Profile
 	{
-		protected override void Configure()
+		public RecordTreeProfile()
 		{
-			Mapper.CreateMap<RecordTree, InputRecordTree>();
-			Mapper.CreateMap<InputRecordTree, RecordTree>()
+			CreateMap<RecordTree, InputRecordTree>();
+			CreateMap<InputRecordTree, RecordTree>()
 				.ForMember(x => x.Id, opt => opt.MapFrom(y => (y.Id.HasValue) ? y.Id.Value : Guid.Empty));
-			Mapper.CreateMap<RecordTree, DbRecordTree>()
+			CreateMap<RecordTree, DbRecordTree>()
 				.ForMember(x => x.RootNodes, opt => opt.MapFrom(y => PopulateRootNodesToStorage(y)));
-			Mapper.CreateMap<DbRecordTree, RecordTree>()
+			CreateMap<DbRecordTree, RecordTree>()
 				.ForMember(x => x.RootNodes, opt => opt.MapFrom(y => PopulateRootNodes(y)));
 		}
 

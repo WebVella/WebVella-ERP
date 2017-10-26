@@ -5,9 +5,9 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 {
     internal class ErpRoleConverter : ITypeConverter<EntityRecord, ErpRole>
     {
-        public ErpRole Convert(ResolutionContext context)
+        public ErpRole Convert(EntityRecord source, ErpRole destination, ResolutionContext context)
         {
-            var src = (EntityRecord)context.SourceValue;
+            var src = source;
 
             if (src == null)
                 return null;

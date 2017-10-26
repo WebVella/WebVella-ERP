@@ -10,11 +10,11 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 {
 	public class JobProfile : Profile
 	{
-		protected override void Configure()
+		public JobProfile()
 		{
-			Mapper.CreateMap<DataRow, Job>().ConvertUsing(source => JobConvert(source));
-			Mapper.CreateMap<DataRow, SchedulePlan>().ConvertUsing(source => SchedulePlanConvert(source));
-			Mapper.CreateMap<SchedulePlan, OutputSchedulePlan>().ConvertUsing(source => OutputSchedulePlanConvert(source));
+			CreateMap<DataRow, Job>().ConvertUsing(source => JobConvert(source));
+			CreateMap<DataRow, SchedulePlan>().ConvertUsing(source => SchedulePlanConvert(source));
+			CreateMap<SchedulePlan, OutputSchedulePlan>().ConvertUsing(source => OutputSchedulePlanConvert(source));
 		}
 
 		private static Job JobConvert(DataRow src)

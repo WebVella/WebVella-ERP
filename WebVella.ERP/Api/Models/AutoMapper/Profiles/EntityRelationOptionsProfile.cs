@@ -5,10 +5,10 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 {
 	internal class EntityRelationOptionsProfile : Profile
 	{
-		protected override void Configure()
+		public EntityRelationOptionsProfile()
 		{
-			Mapper.CreateMap<EntityRelationOptionsItem, DbEntityRelationOptions>();
-			Mapper.CreateMap<DbEntityRelationOptions, EntityRelationOptionsItem>();
+			CreateMap<EntityRelationOptionsItem, DbEntityRelationOptions>();
+			CreateMap<DbEntityRelationOptions, EntityRelationOptionsItem>();
 		}
 	}
 }

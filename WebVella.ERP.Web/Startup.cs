@@ -66,8 +66,12 @@ namespace WebVella.ERP.Web
 				DbContext.CreateContext(Settings.ConnectionString);
 
 				service = app.ApplicationServices.GetService<IErpService>();
-				AutoMapperConfiguration.Configure();
-				service.InitializeSystemEntities();
+
+                var cfg = AutoMapperConfiguration.MappingExpressions; // new AutoMapper.Configuration.MapperConfigurationExpression();
+                AutoMapperConfiguration.Configure(cfg);
+                AutoMapper.Mapper.Initialize(cfg);
+
+                service.InitializeSystemEntities();
 				service.InitializeBackgroundJobs();
 
 				app.UseErpMiddleware();

@@ -27,7 +27,7 @@ namespace WebVella.ERP.Api
                 return null;
 
             var record = result.Object.Data.Single();
-            return record.DynamicMapTo<ErpUser>();
+            return record.MapTo<ErpUser>();
 
         }
 
@@ -43,7 +43,7 @@ namespace WebVella.ERP.Api
                 return null;
 
             var record = result.Object.Data.Single();
-            return record.DynamicMapTo<ErpUser>();
+            return record.MapTo<ErpUser>();
         }
 
         public ErpUser GetUser(string email, string password)
@@ -56,7 +56,7 @@ namespace WebVella.ERP.Api
 
             ErpUser user = null;
             if (result.Object.Data != null && result.Object.Data.Any())
-                user = result.Object.Data[0].DynamicMapTo<ErpUser>();
+                user = result.Object.Data[0].MapTo<ErpUser>();
 
             return user;
         }

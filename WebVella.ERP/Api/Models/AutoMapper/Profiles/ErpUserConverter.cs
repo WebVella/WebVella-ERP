@@ -6,17 +6,17 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 {
     internal class ErpUserConverter : ITypeConverter<EntityRecord, ErpUser>
     {
-        public ErpUser Convert(ResolutionContext context)
+        public ErpUser Convert(EntityRecord source, ErpUser destination, ResolutionContext context)
         {
-            var src = (EntityRecord)context.SourceValue;
+            var src = source;
 
             if (src == null)
                 return null;
 
             ErpUser dest = new ErpUser();
             dest.Id = (Guid)src["id"];
-			dest.Username = (string)src["username"];
-			dest.Email = (string)src["email"];
+            dest.Username = (string)src["username"];
+            dest.Email = (string)src["email"];
 
             try
             {
@@ -37,7 +37,7 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
             dest.ModifiedBy = (Guid?)src["last_modified_by"];
             dest.LastLoggedIn = (DateTime?)src["last_logged_in"];
             dest.Enabled = (bool)src["enabled"];
-            
+
             dest.Roles = new List<ErpRole>();
             if (src.Properties.ContainsKey("$user_role") && src["$user_role"] != null)
                 ((List<EntityRecord>)src["$user_role"]).ForEach(x => dest.Roles.Add(x.MapTo<ErpRole>()));
@@ -48,17 +48,17 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 
     internal class ErpUserConverterOposite : ITypeConverter<ErpUser, EntityRecord>
     {
-        public EntityRecord Convert(ResolutionContext context)
+        public EntityRecord Convert(ErpUser source, EntityRecord destination, ResolutionContext context)
         {
-            var src = (ErpUser)context.SourceValue;
+            var src = source;
 
             if (src == null)
                 return null;
 
             EntityRecord dest = new EntityRecord();
             dest["id"] = src.Id;
-			dest["username"] = src.Username;
-			dest["email"] = src.Email;
+            dest["username"] = src.Username;
+            dest["email"] = src.Email;
             dest["password"] = src.Password;
             dest["first_name"] = src.FirstName;
             dest["last_name"] = src.LastName;

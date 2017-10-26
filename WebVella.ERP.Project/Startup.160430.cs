@@ -9941,7 +9941,7 @@ namespace WebVella.ERP.Project
 				var viewItemFromRelation = new InputRecordViewRelationFieldItem();
 
 				//Convert recordList to recordListInput
-				updateViewInput = updateView.DynamicMapTo<InputRecordView>();
+				updateViewInput = updateView.MapTo<InputRecordView>();
 				updateViewInput.DynamicHtmlTemplate = "/plugins/webvella-projects/templates/project-dashboard.html";
 
 				#region << Get the header Region >>
@@ -10090,7 +10090,7 @@ namespace WebVella.ERP.Project
 				//General view fields
 
 				//Convert recordList to recordListInput
-				updateViewInput = updateView.DynamicMapTo<InputRecordView>();
+				updateViewInput = updateView.MapTo<InputRecordView>();
 
 				#region << Get the header Region >>
 				var headerRegion = new InputRecordViewRegion();
@@ -10228,7 +10228,7 @@ namespace WebVella.ERP.Project
 				//General view fields
 
 				//Convert recordList to recordListInput
-				updateViewInput = updateView.DynamicMapTo<InputRecordView>();
+				updateViewInput = updateView.MapTo<InputRecordView>();
 
 				#region << Details >>
 				updateViewInput.Label = "[{code}] {subject}";

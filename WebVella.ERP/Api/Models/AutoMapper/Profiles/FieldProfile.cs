@@ -5,206 +5,210 @@ using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 {
-	public class FieldProfile : Profile
-	{
-		protected override void Configure()
-		{
-			Mapper.CreateMap<AutoNumberField, InputAutoNumberField>();
-			Mapper.CreateMap<InputAutoNumberField, AutoNumberField>();
-			Mapper.CreateMap<AutoNumberField, DbAutoNumberField>();
-			Mapper.CreateMap<DbAutoNumberField, AutoNumberField>();
+    public class FieldProfile : Profile
+    {
+        public FieldProfile()
+        {
+            CreateMap<Field, InputField>()
+                .Include<AutoNumberField, InputAutoNumberField>()
+                .Include<CheckboxField, InputCheckboxField>()
+                .Include<CurrencyField, InputCurrencyField>()
+                .Include<DateField, InputDateField>()
+                .Include<DateTimeField, InputDateTimeField>()
+                .Include<EmailField, InputEmailField>()
+                .Include<FileField, InputFileField>()
+                .Include<GuidField, InputGuidField>()
+                .Include<HtmlField, InputHtmlField>()
+                .Include<ImageField, InputImageField>()
+                .Include<MultiSelectField, InputMultiSelectField>()
+                .Include<NumberField, InputNumberField>()
+                .Include<PasswordField, InputPasswordField>()
+                .Include<PercentField, InputPercentField>()
+                .Include<PhoneField, InputPhoneField>()
+                .Include<SelectField, InputSelectField>()
+                .Include<TextField, InputTextField>()
+                .Include<UrlField, InputUrlField>()
+                .Include<TreeSelectField, InputTreeSelectField>();
+            CreateMap<InputField, Field>()
+                .Include<InputAutoNumberField, AutoNumberField>()
+                .Include<InputCheckboxField, CheckboxField>()
+                .Include<InputCurrencyField, CurrencyField>()
+                .Include<InputDateField, DateField>()
+                .Include<InputDateTimeField, DateTimeField>()
+                .Include<InputEmailField, EmailField>()
+                .Include<InputFileField, FileField>()
+                .Include<InputGuidField, GuidField>()
+                .Include<InputHtmlField, HtmlField>()
+                .Include<InputImageField, ImageField>()
+                .Include<InputMultiSelectField, MultiSelectField>()
+                .Include<InputNumberField, NumberField>()
+                .Include<InputPasswordField, PasswordField>()
+                .Include<InputPercentField, PercentField>()
+                .Include<InputPhoneField, PhoneField>()
+                .Include<InputSelectField, SelectField>()
+                .Include<InputTextField, TextField>()
+                .Include<InputUrlField, UrlField>()
+                .Include<InputTreeSelectField, TreeSelectField>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(y => (y.Id.HasValue) ? y.Id.Value : Guid.Empty))
+                .ForMember(x => x.System, opt => opt.MapFrom(y => (y.System.HasValue) ? y.System.Value : false))
+                .ForMember(x => x.Required, opt => opt.MapFrom(y => (y.Required.HasValue) ? y.Required.Value : false))
+                .ForMember(x => x.Unique, opt => opt.MapFrom(y => (y.Unique.HasValue) ? y.Unique.Value : false))
+                .ForMember(x => x.Searchable, opt => opt.MapFrom(y => (y.Searchable.HasValue) ? y.Searchable.Value : false))
+                .ForMember(x => x.Auditable, opt => opt.MapFrom(y => (y.Auditable.HasValue) ? y.Auditable.Value : false));
 
-			Mapper.CreateMap<CheckboxField, InputCheckboxField>();
-			Mapper.CreateMap<InputCheckboxField, CheckboxField>();
-			Mapper.CreateMap<CheckboxField, DbCheckboxField>();
-			Mapper.CreateMap<DbCheckboxField, CheckboxField>();
+            CreateMap<Field, DbBaseField>()
+                .Include<AutoNumberField, DbAutoNumberField>()
+                .Include<CheckboxField, DbCheckboxField>()
+                .Include<CurrencyField, DbCurrencyField>()
+                .Include<DateField, DbDateField>()
+                .Include<DateTimeField, DbDateTimeField>()
+                .Include<EmailField, DbEmailField>()
+                .Include<FileField, DbFileField>()
+                .Include<GuidField, DbGuidField>()
+                .Include<HtmlField, DbHtmlField>()
+                .Include<ImageField, DbImageField>()
+                .Include<MultiLineTextField, DbMultiLineTextField>()
+                .Include<MultiSelectField, DbMultiSelectField>()
+                .Include<NumberField, DbNumberField>()
+                .Include<PasswordField, DbPasswordField>()
+                .Include<PercentField, DbPercentField>()
+                .Include<PhoneField, DbPhoneField>()
+                .Include<SelectField, DbSelectField>()
+                .Include<TextField, DbTextField>()
+                .Include<UrlField, DbUrlField>()
+                .Include<TreeSelectField, DbTreeSelectField>();
+            CreateMap<DbBaseField, Field>()
+                .Include<DbAutoNumberField, AutoNumberField>()
+                .Include<DbCurrencyField, CurrencyField>()
+                .Include<DbCheckboxField, CheckboxField>()
+                .Include<DbDateField, DateField>()
+                .Include<DbDateTimeField, DateTimeField>()
+                .Include<DbEmailField, EmailField>()
+                .Include<DbFileField, FileField>()
+                .Include<DbGuidField, GuidField>()
+                .Include<DbHtmlField, HtmlField>()
+                .Include<DbImageField, ImageField>()
+                .Include<DbMultiLineTextField, MultiLineTextField>()
+                .Include<DbMultiSelectField, MultiSelectField>()
+                .Include<DbNumberField, NumberField>()
+                .Include<DbPasswordField, PasswordField>()
+                .Include<DbPercentField, PercentField>()
+                .Include<DbPhoneField, PhoneField>()
+                .Include<DbSelectField, SelectField>()
+                .Include<DbTextField, TextField>()
+                .Include<DbUrlField, UrlField>()
+                .Include<DbTreeSelectField, TreeSelectField>();
 
-			Mapper.CreateMap<CurrencyField, InputCurrencyField>();
-			Mapper.CreateMap<InputCurrencyField, CurrencyField>();
-			Mapper.CreateMap<CurrencyField, DbCurrencyField>();
-			Mapper.CreateMap<DbCurrencyField, CurrencyField>();
+            CreateMap<AutoNumberField, InputAutoNumberField>();
+            CreateMap<InputAutoNumberField, AutoNumberField>();
+            CreateMap<AutoNumberField, DbAutoNumberField>();
+            CreateMap<DbAutoNumberField, AutoNumberField>();
 
-			Mapper.CreateMap<DateField, InputDateField>();
-			Mapper.CreateMap<InputDateField, DateField>();
-			Mapper.CreateMap<DateField, DbDateField>();
-			Mapper.CreateMap<DbDateField, DateField>();
+            CreateMap<CheckboxField, InputCheckboxField>();
+            CreateMap<InputCheckboxField, CheckboxField>();
+            CreateMap<CheckboxField, DbCheckboxField>();
+            CreateMap<DbCheckboxField, CheckboxField>();
 
-			Mapper.CreateMap<DateTimeField, InputDateTimeField>();
-			Mapper.CreateMap<InputDateTimeField, DateTimeField>();
-			Mapper.CreateMap<DateTimeField, DbDateTimeField>();
-			Mapper.CreateMap<DbDateTimeField, DateTimeField>();
+            CreateMap<CurrencyField, InputCurrencyField>();
+            CreateMap<InputCurrencyField, CurrencyField>();
+            CreateMap<CurrencyField, DbCurrencyField>();
+            CreateMap<DbCurrencyField, CurrencyField>();
 
-			Mapper.CreateMap<EmailField, InputEmailField>();
-			Mapper.CreateMap<InputEmailField, EmailField>();
-			Mapper.CreateMap<EmailField, DbEmailField>();
-			Mapper.CreateMap<DbEmailField, EmailField>();
+            CreateMap<DateField, InputDateField>();
+            CreateMap<InputDateField, DateField>();
+            CreateMap<DateField, DbDateField>();
+            CreateMap<DbDateField, DateField>();
 
-			Mapper.CreateMap<FileField, InputFileField>();
-			Mapper.CreateMap<InputFileField, FileField>();
-			Mapper.CreateMap<FileField, DbFileField>();
-			Mapper.CreateMap<DbFileField, FileField>();
+            CreateMap<DateTimeField, InputDateTimeField>();
+            CreateMap<InputDateTimeField, DateTimeField>();
+            CreateMap<DateTimeField, DbDateTimeField>();
+            CreateMap<DbDateTimeField, DateTimeField>();
 
-			Mapper.CreateMap<GuidField, InputGuidField>();
-			Mapper.CreateMap<InputGuidField, GuidField>();
-			Mapper.CreateMap<GuidField, DbGuidField>();
-			Mapper.CreateMap<DbGuidField, GuidField>();
+            CreateMap<EmailField, InputEmailField>();
+            CreateMap<InputEmailField, EmailField>();
+            CreateMap<EmailField, DbEmailField>();
+            CreateMap<DbEmailField, EmailField>();
 
-			Mapper.CreateMap<HtmlField, InputHtmlField>();
-			Mapper.CreateMap<InputHtmlField, HtmlField>();
-			Mapper.CreateMap<HtmlField, DbHtmlField>();
-			Mapper.CreateMap<DbHtmlField, HtmlField>();
+            CreateMap<FileField, InputFileField>();
+            CreateMap<InputFileField, FileField>();
+            CreateMap<FileField, DbFileField>();
+            CreateMap<DbFileField, FileField>();
 
-			Mapper.CreateMap<ImageField, InputImageField>();
-			Mapper.CreateMap<InputImageField, ImageField>();
-			Mapper.CreateMap<ImageField, DbImageField>();
-			Mapper.CreateMap<DbImageField, ImageField>();
+            CreateMap<GuidField, InputGuidField>();
+            CreateMap<InputGuidField, GuidField>();
+            CreateMap<GuidField, DbGuidField>();
+            CreateMap<DbGuidField, GuidField>();
 
-			Mapper.CreateMap<MultiLineTextField, InputMultiLineTextField>();
-			Mapper.CreateMap<InputMultiLineTextField, MultiLineTextField>();
-			Mapper.CreateMap<MultiLineTextField, DbMultiLineTextField>();
-			Mapper.CreateMap<DbMultiLineTextField, MultiLineTextField>();
+            CreateMap<HtmlField, InputHtmlField>();
+            CreateMap<InputHtmlField, HtmlField>();
+            CreateMap<HtmlField, DbHtmlField>();
+            CreateMap<DbHtmlField, HtmlField>();
 
-			Mapper.CreateMap<MultiSelectField, InputMultiSelectField>();
-			Mapper.CreateMap<InputMultiSelectField, MultiSelectField>();
-			Mapper.CreateMap<MultiSelectField, DbMultiSelectField>();
-			Mapper.CreateMap<DbMultiSelectField, MultiSelectField>();
+            CreateMap<ImageField, InputImageField>();
+            CreateMap<InputImageField, ImageField>();
+            CreateMap<ImageField, DbImageField>();
+            CreateMap<DbImageField, ImageField>();
 
-			Mapper.CreateMap<NumberField, InputNumberField>();
-			Mapper.CreateMap<InputNumberField, NumberField>();
-			Mapper.CreateMap<NumberField, DbNumberField>();
-			Mapper.CreateMap<DbNumberField, NumberField>();
+            CreateMap<MultiLineTextField, InputMultiLineTextField>();
+            CreateMap<InputMultiLineTextField, MultiLineTextField>();
+            CreateMap<MultiLineTextField, DbMultiLineTextField>();
+            CreateMap<DbMultiLineTextField, MultiLineTextField>();
 
-			Mapper.CreateMap<PasswordField, InputPasswordField>();
-			Mapper.CreateMap<InputPasswordField, PasswordField>();
-			Mapper.CreateMap<PasswordField, DbPasswordField>();
-			Mapper.CreateMap<DbPasswordField, PasswordField>();
+            CreateMap<MultiSelectField, InputMultiSelectField>();
+            CreateMap<InputMultiSelectField, MultiSelectField>();
+            CreateMap<MultiSelectField, DbMultiSelectField>();
+            CreateMap<DbMultiSelectField, MultiSelectField>();
 
-			Mapper.CreateMap<PercentField, InputPercentField>();
-			Mapper.CreateMap<InputPercentField, PercentField>();
-			Mapper.CreateMap<PercentField, DbPercentField>();
-			Mapper.CreateMap<DbPercentField, PercentField>();
+            CreateMap<NumberField, InputNumberField>();
+            CreateMap<InputNumberField, NumberField>();
+            CreateMap<NumberField, DbNumberField>();
+            CreateMap<DbNumberField, NumberField>();
 
-			Mapper.CreateMap<PhoneField, InputPhoneField>();
-			Mapper.CreateMap<InputPhoneField, PhoneField>();
-			Mapper.CreateMap<PhoneField, DbPhoneField>();
-			Mapper.CreateMap<DbPhoneField, PhoneField>();
+            CreateMap<PasswordField, InputPasswordField>();
+            CreateMap<InputPasswordField, PasswordField>();
+            CreateMap<PasswordField, DbPasswordField>();
+            CreateMap<DbPasswordField, PasswordField>();
 
-			Mapper.CreateMap<SelectField, InputSelectField>();
-			Mapper.CreateMap<InputSelectField, SelectField>();
-			Mapper.CreateMap<SelectField, DbSelectField>();
-			Mapper.CreateMap<DbSelectField, SelectField>();
+            CreateMap<PercentField, InputPercentField>();
+            CreateMap<InputPercentField, PercentField>();
+            CreateMap<PercentField, DbPercentField>();
+            CreateMap<DbPercentField, PercentField>();
 
-			Mapper.CreateMap<TextField, InputTextField>();
-			Mapper.CreateMap<InputTextField, TextField>();
-			Mapper.CreateMap<TextField, DbTextField>();
-			Mapper.CreateMap<DbTextField, TextField>();
+            CreateMap<PhoneField, InputPhoneField>();
+            CreateMap<InputPhoneField, PhoneField>();
+            CreateMap<PhoneField, DbPhoneField>();
+            CreateMap<DbPhoneField, PhoneField>();
 
-			Mapper.CreateMap<UrlField, InputUrlField>();
-			Mapper.CreateMap<InputUrlField, UrlField>();
-			Mapper.CreateMap<UrlField, DbUrlField>();
-			Mapper.CreateMap<DbUrlField, UrlField>();
+            CreateMap<SelectField, InputSelectField>();
+            CreateMap<InputSelectField, SelectField>();
+            CreateMap<SelectField, DbSelectField>();
+            CreateMap<DbSelectField, SelectField>();
 
-			Mapper.CreateMap<TreeSelectField, InputTreeSelectField>();
-			Mapper.CreateMap<InputTreeSelectField, TreeSelectField>();
-			Mapper.CreateMap<TreeSelectField, DbTreeSelectField>();
-			Mapper.CreateMap<DbTreeSelectField, TreeSelectField>();
+            CreateMap<TextField, InputTextField>();
+            CreateMap<InputTextField, TextField>();
+            CreateMap<TextField, DbTextField>();
+            CreateMap<DbTextField, TextField>();
 
-			Mapper.CreateMap<SelectFieldOption, DbSelectFieldOption>();
-			Mapper.CreateMap<DbSelectFieldOption, SelectFieldOption>();
+            CreateMap<UrlField, InputUrlField>();
+            CreateMap<InputUrlField, UrlField>();
+            CreateMap<UrlField, DbUrlField>();
+            CreateMap<DbUrlField, UrlField>();
 
-			Mapper.CreateMap<MultiSelectFieldOption, DbMultiSelectFieldOption>();
-			Mapper.CreateMap<DbMultiSelectFieldOption, MultiSelectFieldOption>();
+            CreateMap<TreeSelectField, InputTreeSelectField>();
+            CreateMap<InputTreeSelectField, TreeSelectField>();
+            CreateMap<TreeSelectField, DbTreeSelectField>();
+            CreateMap<DbTreeSelectField, TreeSelectField>();
 
-			Mapper.CreateMap<CurrencyType, DbCurrencyType>();
-			Mapper.CreateMap<DbCurrencyType, CurrencyType>();
+            CreateMap<SelectFieldOption, DbSelectFieldOption>();
+            CreateMap<DbSelectFieldOption, SelectFieldOption>();
 
-			Mapper.CreateMap<Field, InputField>()
-				.Include<AutoNumberField, InputAutoNumberField>()
-				.Include<CheckboxField, InputCheckboxField>()
-				.Include<CurrencyField, InputCurrencyField>()
-				.Include<DateField, InputDateField>()
-				.Include<DateTimeField, InputDateTimeField>()
-				.Include<EmailField, InputEmailField>()
-				.Include<FileField, InputFileField>()
-				.Include<GuidField, InputGuidField>()
-				.Include<HtmlField, InputHtmlField>()
-				.Include<ImageField, InputImageField>()
-				.Include<MultiSelectField, InputMultiSelectField>()
-				.Include<NumberField, InputNumberField>()
-				.Include<PasswordField, InputPasswordField>()
-				.Include<PercentField, InputPercentField>()
-				.Include<PhoneField, InputPhoneField>()
-				.Include<SelectField, InputSelectField>()
-				.Include<TextField, InputTextField>()
-				.Include<UrlField, InputUrlField>()
-				.Include<TreeSelectField, InputTreeSelectField>();
-			Mapper.CreateMap<InputField, Field>()
-				.Include<InputAutoNumberField, AutoNumberField>()
-				.Include<InputCheckboxField, CheckboxField>()
-				.Include<InputCurrencyField, CurrencyField>()
-				.Include<InputDateField, DateField>()
-				.Include<InputDateTimeField, DateTimeField>()
-				.Include<InputEmailField, EmailField>()
-				.Include<InputFileField, FileField>()
-				.Include<InputGuidField, GuidField>()
-				.Include<InputHtmlField, HtmlField>()
-				.Include<InputImageField, ImageField>()
-				.Include<InputMultiSelectField, MultiSelectField>()
-				.Include<InputNumberField, NumberField>()
-				.Include<InputPasswordField, PasswordField>()
-				.Include<InputPercentField, PercentField>()
-				.Include<InputPhoneField, PhoneField>()
-				.Include<InputSelectField, SelectField>()
-				.Include<InputTextField, TextField>()
-				.Include<InputUrlField, UrlField>()
-				.Include<InputTreeSelectField, TreeSelectField>()
-				.ForMember(x => x.Id, opt => opt.MapFrom(y => (y.Id.HasValue) ? y.Id.Value : Guid.Empty))
-				.ForMember(x => x.System, opt => opt.MapFrom(y => (y.System.HasValue) ? y.System.Value : false))
-				.ForMember(x => x.Required, opt => opt.MapFrom(y => (y.Required.HasValue) ? y.Required.Value : false))
-				.ForMember(x => x.Unique, opt => opt.MapFrom(y => (y.Unique.HasValue) ? y.Unique.Value : false))
-				.ForMember(x => x.Searchable, opt => opt.MapFrom(y => (y.Searchable.HasValue) ? y.Searchable.Value : false))
-				.ForMember(x => x.Auditable, opt => opt.MapFrom(y => (y.Auditable.HasValue) ? y.Auditable.Value : false));
+            CreateMap<MultiSelectFieldOption, DbMultiSelectFieldOption>();
+            CreateMap<DbMultiSelectFieldOption, MultiSelectFieldOption>();
 
-			Mapper.CreateMap<Field, DbBaseField>()
-				.Include<AutoNumberField, DbAutoNumberField>()
-				.Include<CheckboxField, DbCheckboxField>()
-				.Include<CurrencyField, DbCurrencyField>()
-				.Include<DateField, DbDateField>()
-				.Include<DateTimeField, DbDateTimeField>()
-				.Include<EmailField, DbEmailField>()
-				.Include<FileField, DbFileField>()
-				.Include<GuidField, DbGuidField>()
-				.Include<HtmlField, DbHtmlField>()
-				.Include<ImageField, DbImageField>()
-				.Include<MultiSelectField, DbMultiSelectField>()
-				.Include<NumberField, DbNumberField>()
-				.Include<PasswordField, DbPasswordField>()
-				.Include<PercentField, DbPercentField>()
-				.Include<PhoneField, DbPhoneField>()
-				.Include<SelectField, DbSelectField>()
-				.Include<TextField, DbTextField>()
-				.Include<UrlField, DbUrlField>()
-				.Include<TreeSelectField, DbTreeSelectField>();
-			Mapper.CreateMap<DbBaseField, Field>()
-				.Include<DbAutoNumberField, AutoNumberField>()
-				.Include<DbCurrencyField, CurrencyField>()
-				.Include<DbCheckboxField, CheckboxField>()
-				.Include<DbDateField, DateField>()
-				.Include<DbDateTimeField, DateTimeField>()
-				.Include<DbEmailField, EmailField>()
-				.Include<DbFileField, FileField>()
-				.Include<DbGuidField, GuidField>()
-				.Include<DbHtmlField, HtmlField>()
-				.Include<DbImageField, ImageField>()
-				.Include<DbMultiSelectField, MultiSelectField>()
-				.Include<DbNumberField, NumberField>()
-				.Include<DbPasswordField, PasswordField>()
-				.Include<DbPercentField, PercentField>()
-				.Include<DbPhoneField, PhoneField>()
-				.Include<DbSelectField, SelectField>()
-				.Include<DbTextField, TextField>()
-				.Include<DbUrlField, UrlField>()
-				.Include<DbTreeSelectField, TreeSelectField>();
-		}
-	}
+            CreateMap<CurrencyType, DbCurrencyType>();
+            CreateMap<DbCurrencyType, CurrencyType>();
+
+
+        }
+    }
 }
