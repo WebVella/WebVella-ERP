@@ -5049,8 +5049,11 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			{
 				var oldDefaultValuesDictionary = new Dictionary<string, bool>();
 				var newOptionsDictionary = new Dictionary<string, string>();
-				//create dictionary
-				foreach (var value in oldField.DefaultValue.ToList())
+
+                if (oldField.DefaultValue == null)
+                    oldField.DefaultValue = new List<string>();
+                //create dictionary
+                foreach (var value in oldField.DefaultValue.ToList())
 				{
 					oldDefaultValuesDictionary[value] = true;
 				}
