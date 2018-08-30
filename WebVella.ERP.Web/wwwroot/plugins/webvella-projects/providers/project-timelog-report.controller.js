@@ -132,7 +132,15 @@
 			{
 				key: 2017,
 				value: "2017"
-			}			
+			},
+			{
+				key: 2018,
+				value: "2018"
+			},
+			{
+				key: 2019,
+				value: "2019"
+			}
 		];
 		ngCtrl.selectedMonth = moment().subtract(1, 'months').month() + 1;	//moment returns from 0 to 11
 		ngCtrl.selectedYear = moment().year();

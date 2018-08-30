@@ -443,9 +443,7 @@
 				var putObject = fastCopy(managedRelation);
 				putObject.label = popupCtrl.relation.label;
 				putObject.description = popupCtrl.relation.description;
-				if (!managedRelation.system) {
-					putObject.system = popupCtrl.relation.system;
-				}
+				putObject.system = popupCtrl.relation.system;
 
 				webvellaCoreService.updateRelation(putObject, successCallback, errorCallback)
 			}
