@@ -272,6 +272,32 @@ namespace WebVella.ERP.Project
 							}
 						}
 
+						if (currentPluginSettings.Version < 20180912)
+						{
+							try
+							{
+								currentPluginSettings.Version = 20180912;
+								Patch20180912(entMan, relMan, recMan, createSampleRecords);
+							}
+							catch (Exception ex)
+							{
+								throw ex;
+							}
+						}
+
+						if (currentPluginSettings.Version < 20180913)
+						{
+							try
+							{
+								currentPluginSettings.Version = 20180913;
+								Patch20180913(entMan, relMan, recMan, createSampleRecords);
+							}
+							catch (Exception ex)
+							{
+								throw ex;
+							}
+						}
+
 						#endregion
 
 						#region << 4. Save needed changes to the plugin setting data >>
@@ -296,6 +322,8 @@ namespace WebVella.ERP.Project
 						throw ex;
 					}
 				}
+
+				StartupExtensions.SetSchedulePlans();
 			}
 		}
 	}

@@ -939,10 +939,10 @@ namespace WebVella.ERP.Project
 			var response = new ResponseModel();
 			try
 			{
-				//var queryString = HttpContext.Request.QueryString;
-				#region << Can user read activities >>
 				//Get current user
 				ErpUser user = SecurityContext.CurrentUser;
+				//var queryString = HttpContext.Request.QueryString;
+				#region << Can user read activities >>
 				//Get entity meta
 				var entity = entMan.ReadEntity("wv_project_activity").Object;
 				//check if user role has permissions
@@ -960,55 +960,52 @@ namespace WebVella.ERP.Project
 				}
 				#endregion
 
+				var userAsOwnerOpenTaskIds = new List<Guid>();
+				var userAsOwnerOpenBugIds = new List<Guid>();
 				var activityQueryResponse = new QueryResponse();
-				var userCanSeeProjectIds = new List<Guid>();
-				#region << Generate list of projects user can see >>
+
+				#region << userAsOwnerOpenTaskIds >>
 				{
-					var requestedFields = "id,$user_1_n_project_owner.id,$role_n_n_project_team.id,$role_n_n_project_customer.id";
-					//QueryObject filterObj = EntityQuery.QueryEQ("id", recordId);
-					QueryObject filterObj = null;
-					EntityQuery resultQuery = new EntityQuery("wv_project", requestedFields, filterObj, null, null, null, null);
-					QueryResponse result = recMan.Find(resultQuery);
-					var resultRecordsList = new List<EntityRecord>();
-					if (!result.Success)
+					var requestedFields = "id";
+					var rootFilter = EntityQuery.QueryAND(EntityQuery.QueryEQ("owner_id", user.Id), EntityQuery.QueryNOT("status", "completed"));
+					var searchQuery = new EntityQuery("wv_task", requestedFields, rootFilter);
+					var searchResponse = recMan.Find(searchQuery);
+					if (!searchResponse.Success)
 					{
 						response.Success = false;
 						response.Timestamp = DateTime.UtcNow;
-						response.Message = result.Message;
+						response.Message = searchResponse.Message;
 						response.Object = null;
 						return Json(response);
 					}
-					foreach (var record in result.Object.Data)
+					foreach (var record in searchResponse.Object.Data)
 					{
-						//Check if user can view the object
-						var userIsPM = false;
-						var userIsStaff = false;
-						var userIsCustomer = false;
-						#region << Check user roles >>
-						foreach (var userRole in user.Roles)
-						{
-							if (!userIsPM)
-							{
-								userIsPM = ((List<EntityRecord>)record["$user_1_n_project_owner"]).Any(z => (Guid)z["id"] == user.Id);
-							}
-							if (!userIsStaff)
-							{
-								userIsStaff = ((List<EntityRecord>)record["$role_n_n_project_team"]).Any(z => (Guid)z["id"] == userRole.Id);
-							}
-							if (!userIsCustomer)
-							{
-								userIsCustomer = ((List<EntityRecord>)record["$role_n_n_project_customer"]).Any(z => (Guid)z["id"] == userRole.Id);
-							}
-						}
-						#endregion
-
-						if (userIsPM || userIsStaff || userIsCustomer)
-						{
-							userCanSeeProjectIds.Add((Guid)record["id"]);
-						}
+						userAsOwnerOpenTaskIds.Add((Guid)record["id"]);
 					}
 				}
 				#endregion
+
+				#region << userAsOwnerOpenBugIds >>
+				{
+					var requestedFields = "id";
+					var rootFilter = EntityQuery.QueryAND(EntityQuery.QueryEQ("owner_id", user.Id), EntityQuery.QueryNOT("status", "closed"));
+					var searchQuery = new EntityQuery("wv_bug", requestedFields, rootFilter);
+					var searchResponse = recMan.Find(searchQuery);
+					if (!searchResponse.Success)
+					{
+						response.Success = false;
+						response.Timestamp = DateTime.UtcNow;
+						response.Message = searchResponse.Message;
+						response.Object = null;
+						return Json(response);
+					}
+					foreach (var record in searchResponse.Object.Data)
+					{
+						userAsOwnerOpenBugIds.Add((Guid)record["id"]);
+					}
+				}
+				#endregion
+
 
 				#region << Get activities >>
 				{
@@ -1017,29 +1014,42 @@ namespace WebVella.ERP.Project
 					"$project_1_n_activity.name";
 
 					QueryObject rootFilterSection = null;
-					QueryObject auxFilterSection = null;
-					QueryObject projectIdFilterSection = null;
+					var ownedFilterList = new List<QueryObject>();;
 
-					#region << project id filters >>
-					var projectIdRulesList = new List<QueryObject>();
-					foreach (var projectId in userCanSeeProjectIds)
+					#region << ownedTasksFilterSection >>
 					{
-						var projectIdRule = EntityQuery.QueryEQ("project_id", projectId);
-						projectIdRulesList.Add(projectIdRule);
+						foreach (var recordId in userAsOwnerOpenTaskIds)
+						{
+							var recordIdRule = EntityQuery.QueryEQ("task_id", recordId);
+							ownedFilterList.Add(recordIdRule);
+						}
 					}
-					projectIdFilterSection = EntityQuery.QueryOR(projectIdRulesList.ToArray());
+
 					#endregion
 
-					#region << Aux filters & Sort>>
-					var auxRulesList = new List<QueryObject>();
-					QueryObject auxRule = new QueryObject();
-					if (label != "all")
+					#region << ownedBugsFilterSection >>
 					{
-						auxRule = EntityQuery.QueryEQ("label", label);
-						auxRulesList.Add(auxRule);
+						foreach (var recordId in userAsOwnerOpenBugIds)
+						{
+							var recordIdRule = EntityQuery.QueryEQ("bug_id", recordId);
+							ownedFilterList.Add(recordIdRule);
+						}
 					}
 
-					auxFilterSection = EntityQuery.QueryAND(auxRulesList.ToArray());
+					#endregion
+
+
+					if(ownedFilterList.Count == 0) {
+						//Does not own any items
+						response.Success = true;
+						response.Message = "";
+						response.Object = new List<EntityRecord>();
+						response.Timestamp = DateTime.UtcNow;
+						return Json(response); 
+					}
+
+					#region << Aux filters & Sort>>
+
 					//Add default sort by created_on
 					var sortRulesList = new List<QuerySortObject>();
 					var defaultSortRule = new QuerySortObject("created_on", QuerySortType.Descending);
@@ -1047,7 +1057,15 @@ namespace WebVella.ERP.Project
 
 					#endregion
 
-					rootFilterSection = EntityQuery.QueryAND(projectIdFilterSection, auxFilterSection);
+					var notCreatedByUserRule = EntityQuery.QueryOR(EntityQuery.QueryNOT("user_id",user.Id),EntityQuery.QueryEQ("user_id",null));
+
+					if(ownedFilterList.Count == 1) {
+						rootFilterSection = EntityQuery.QueryAND(notCreatedByUserRule,ownedFilterList[0]);
+					}
+					else { 
+						rootFilterSection = EntityQuery.QueryAND(notCreatedByUserRule,EntityQuery.QueryOR(ownedFilterList.ToArray()));					
+					}
+
 
 					//Calculate page
 					var pageSize = 10;
@@ -1703,18 +1721,21 @@ namespace WebVella.ERP.Project
 					//Check if the current user can see the sprint
 					var userRoles = SecurityContext.CurrentUser.Roles;
 					var userCanAccessSprint = false;
-					foreach(var role in sprintRoleRecords) {
-						if(userRoles.Any(x => x.Id == (Guid)role["id"])) {
+					foreach (var role in sprintRoleRecords)
+					{
+						if (userRoles.Any(x => x.Id == (Guid)role["id"]))
+						{
 							userCanAccessSprint = true;
 							break;
 						}
 					}
-					if(!userCanAccessSprint) {
+					if (!userCanAccessSprint)
+					{
 						response.Success = true;
 						response.Timestamp = DateTime.UtcNow;
 						response.Message = "no access";
-						response.Object = null;	
-						return Json(response);					
+						response.Object = null;
+						return Json(response);
 					}
 
 				}
@@ -1760,8 +1781,8 @@ namespace WebVella.ERP.Project
 						processedSprintObject["logged"] = (decimal)processedSprintObject["logged"] + (decimal)proccessedTask["logged"];
 					}
 				}
-				processedSprintObject["estimation"] = Math.Round((decimal)processedSprintObject["estimation"],2);
-				processedSprintObject["logged"] = Math.Round((decimal)processedSprintObject["logged"],2);
+				processedSprintObject["estimation"] = Math.Round((decimal)processedSprintObject["estimation"], 2);
+				processedSprintObject["logged"] = Math.Round((decimal)processedSprintObject["logged"], 2);
 				response.Success = true;
 				response.Timestamp = DateTime.UtcNow;
 				response.Message = "My projects successfully read";
@@ -2006,15 +2027,20 @@ namespace WebVella.ERP.Project
 
 			#endregion
 
-			if(submitRecord.Properties.ContainsKey("id") && submitRecord["id"] != null) {
+			if (submitRecord.Properties.ContainsKey("id") && submitRecord["id"] != null)
+			{
 				postRecord["id"] = (Guid)submitRecord["id"];
-			}else {
-				postRecord["id"] = Guid.NewGuid();			
 			}
-			if(submitRecord.Properties.ContainsKey("task_id") && submitRecord["task_id"] != null) {
+			else
+			{
+				postRecord["id"] = Guid.NewGuid();
+			}
+			if (submitRecord.Properties.ContainsKey("task_id") && submitRecord["task_id"] != null)
+			{
 				postRecord["task_id"] = (Guid)submitRecord["task_id"];
 			}
-			if(submitRecord.Properties.ContainsKey("bug_id") && submitRecord["bug_id"] != null) {
+			if (submitRecord.Properties.ContainsKey("bug_id") && submitRecord["bug_id"] != null)
+			{
 				postRecord["bug_id"] = (Guid)submitRecord["bug_id"];
 			}
 			postRecord["content"] = (string)submitRecord["content"];
@@ -2024,19 +2050,23 @@ namespace WebVella.ERP.Project
 				{
 					connection.BeginTransaction();
 					//Upset comment
-					if(submitRecord["id"] == null) {
+					if (submitRecord["id"] == null)
+					{
 						//create
-						var createResponse = recMan.CreateRecord("wv_project_comment",postRecord);
-						if(!createResponse.Success) {
+						var createResponse = recMan.CreateRecord("wv_project_comment", postRecord);
+						if (!createResponse.Success)
+						{
 							throw new Exception(createResponse.Message);
 						}
 						response.Message = "Comment successfully created";
 						upsertResultRecord = createResponse.Object.Data.First();
 					}
-					else {
+					else
+					{
 						//update
-						var updateResponse = recMan.UpdateRecord("wv_project_comment",postRecord);
-						if(!updateResponse.Success) {
+						var updateResponse = recMan.UpdateRecord("wv_project_comment", postRecord);
+						if (!updateResponse.Success)
+						{
 							throw new Exception(updateResponse.Message);
 						}
 						response.Message = "Comment successfully updated";
@@ -2044,52 +2074,63 @@ namespace WebVella.ERP.Project
 					}
 
 					#region << New owner >>
-					if (submitRecord.Properties.ContainsKey("new_owner_id") && submitRecord["new_owner_id"] != null) {
+					if (submitRecord.Properties.ContainsKey("new_owner_id") && submitRecord["new_owner_id"] != null)
+					{
 						//Check the new owner id
 						{
-							var query = EntityQuery.QueryEQ("id",(Guid)submitRecord["new_owner_id"]);
-							var queryResponse = recMan.Find(new EntityQuery("user","*",query));
-							if(!queryResponse.Success) {
+							var query = EntityQuery.QueryEQ("id", (Guid)submitRecord["new_owner_id"]);
+							var queryResponse = recMan.Find(new EntityQuery("user", "*", query));
+							if (!queryResponse.Success)
+							{
 								throw new Exception(queryResponse.Message);
 							}
-							if(queryResponse.Object.Data == null || !queryResponse.Object.Data.Any()) {
+							if (queryResponse.Object.Data == null || !queryResponse.Object.Data.Any())
+							{
 								throw new Exception("cannot find user with the provided new owner id");
-							}						
+							}
 						}
 						//Change task/bug owner if needed
-						if(submitRecord.Properties.ContainsKey("task_id") && submitRecord["task_id"] != null) {
+						if (submitRecord.Properties.ContainsKey("task_id") && submitRecord["task_id"] != null)
+						{
 							var patchRecord = new EntityRecord();
-							var query = EntityQuery.QueryEQ("id",(Guid)submitRecord["task_id"]);
-							var queryResponse = recMan.Find(new EntityQuery("wv_task","*",query));
-							if(!queryResponse.Success) {
+							var query = EntityQuery.QueryEQ("id", (Guid)submitRecord["task_id"]);
+							var queryResponse = recMan.Find(new EntityQuery("wv_task", "*", query));
+							if (!queryResponse.Success)
+							{
 								throw new Exception(queryResponse.Message);
 							}
-							if(queryResponse.Object.Data == null || !queryResponse.Object.Data.Any()) {
+							if (queryResponse.Object.Data == null || !queryResponse.Object.Data.Any())
+							{
 								throw new Exception("cannot find task with the provided id");
 							}
 							patchRecord["id"] = (Guid)submitRecord["task_id"];
 							patchRecord["owner_id"] = (Guid)submitRecord["new_owner_id"];
-							var patchRecordResponse = recMan.UpdateRecord("wv_task",patchRecord);
-							if(!patchRecordResponse.Success) {
+							var patchRecordResponse = recMan.UpdateRecord("wv_task", patchRecord);
+							if (!patchRecordResponse.Success)
+							{
 								throw new Exception(patchRecordResponse.Message);
 							}
 						}
-						else if(submitRecord.Properties.ContainsKey("bug_id") && submitRecord["bug_id"] != null) {
+						else if (submitRecord.Properties.ContainsKey("bug_id") && submitRecord["bug_id"] != null)
+						{
 							var patchRecord = new EntityRecord();
-							var query = EntityQuery.QueryEQ("id",(Guid)submitRecord["bug_id"]);
-							var queryResponse = recMan.Find(new EntityQuery("wv_bug","*",query));
-							if(!queryResponse.Success) {
+							var query = EntityQuery.QueryEQ("id", (Guid)submitRecord["bug_id"]);
+							var queryResponse = recMan.Find(new EntityQuery("wv_bug", "*", query));
+							if (!queryResponse.Success)
+							{
 								throw new Exception(queryResponse.Message);
 							}
-							if(queryResponse.Object.Data == null || !queryResponse.Object.Data.Any()) {
+							if (queryResponse.Object.Data == null || !queryResponse.Object.Data.Any())
+							{
 								throw new Exception("cannot find bug with the provided id");
 							}
 							patchRecord["id"] = (Guid)submitRecord["bug_id"];
 							patchRecord["owner_id"] = (Guid)submitRecord["new_owner_id"];
-							var patchRecordResponse = recMan.UpdateRecord("wv_bug",patchRecord);
-							if(!patchRecordResponse.Success) {
+							var patchRecordResponse = recMan.UpdateRecord("wv_bug", patchRecord);
+							if (!patchRecordResponse.Success)
+							{
 								throw new Exception(patchRecordResponse.Message);
-							}				
+							}
 						}
 					}
 					#endregion
@@ -2103,14 +2144,18 @@ namespace WebVella.ERP.Project
 						if (result.Success)
 						{
 							task = result.Object.Data[0];
-							Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for task [" + task["code"] + "] <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", null, (Guid)task["project_id"], (Guid)task["id"], null);
+							var activityDescription = Utils.RemoveHtml((string)postRecord["content"]);
+							activityDescription = Utils.TextLength(activityDescription, "short");
+							Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for task</br></br>[" + task["code"] + "] <a href='/#/areas/projects/wv_task/view-general/sb/general/" + task["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)task["subject"]) + "</a>", activityDescription, (Guid)task["project_id"],SecurityContext.CurrentUser.Id, (Guid)task["id"], null);
 							//If status was completed turn it back to in progress
-							if((string)task["status"] == "completed") {
+							if ((string)task["status"] == "completed")
+							{
 								var newTask = new EntityRecord();
 								newTask["id"] = (Guid)task["id"];
 								newTask["status"] = "in progress";
-								var updateResult = recMan.UpdateRecord("wv_task",newTask,true);
-								if(!updateResult.Success) {
+								var updateResult = recMan.UpdateRecord("wv_task", newTask, true);
+								if (!updateResult.Success)
+								{
 									throw new Exception(result.Message);
 								}
 							}
@@ -2128,14 +2173,18 @@ namespace WebVella.ERP.Project
 						if (result.Success)
 						{
 							bug = result.Object.Data[0];
-							Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for bug [" + bug["code"] + "] <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", null, (Guid)bug["project_id"], null, (Guid)bug["id"]);
+							var activityDescription = Utils.RemoveHtml((string)postRecord["content"]);
+							activityDescription = Utils.TextLength(activityDescription, "short");
+							Utils.CreateActivity(recMan, "commented", "created a <i class='fa fa-fw fa-comment-o go-blue'></i> comment for bug</br></br>[" + bug["code"] + "] <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + bug["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)bug["subject"]) + "</a>", activityDescription, (Guid)bug["project_id"],SecurityContext.CurrentUser.Id, null, (Guid)bug["id"]);
 							//If status was closed turn it back to reopened
-							if((string)bug["status"] == "closed") {
+							if ((string)bug["status"] == "closed")
+							{
 								var newBug = new EntityRecord();
 								newBug["id"] = (Guid)bug["id"];
 								newBug["status"] = "reopened";
-								var updateResult = recMan.UpdateRecord("wv_bug",newBug,true);
-								if(!updateResult.Success) {
+								var updateResult = recMan.UpdateRecord("wv_bug", newBug, true);
+								if (!updateResult.Success)
+								{
 									throw new Exception(result.Message);
 								}
 							}
@@ -2162,7 +2211,7 @@ namespace WebVella.ERP.Project
 
 					#region << Add the comment creator to the watch list if he is not there, Generate recipients list >>
 					{
-						if (postRecord.Properties.ContainsKey("task_id") &&  postRecord["task_id"] != null)
+						if (postRecord.Properties.ContainsKey("task_id") && postRecord["task_id"] != null)
 						{
 							var isCommentatorInWatchList = false;
 							#region << Check if is in watch list already >>
@@ -2188,7 +2237,7 @@ namespace WebVella.ERP.Project
 								}
 							}
 						}
-						else if (postRecord.Properties.ContainsKey("bug_id") &&  postRecord["bug_id"] != null)
+						else if (postRecord.Properties.ContainsKey("bug_id") && postRecord["bug_id"] != null)
 						{
 							var isCommentatorInWatchList = false;
 							#region << Check if is in watch list already >>
@@ -2216,7 +2265,7 @@ namespace WebVella.ERP.Project
 						}
 					}
 					#endregion
-					
+
 					#region << Generate notifications to watch list>>
 					var emailService = new EmailService();
 					if (recepients.Count > 0)
@@ -2276,13 +2325,15 @@ namespace WebVella.ERP.Project
 
 					#region << Regen FTS >>
 					var regenRecord = new EntityRecord();
-					if(submitRecord.Properties.ContainsKey("task_id") && submitRecord["task_id"] != null) {
+					if (submitRecord.Properties.ContainsKey("task_id") && submitRecord["task_id"] != null)
+					{
 						regenRecord["id"] = new Guid(submitRecord["task_id"].ToString());
-						Utils.RegenAndUpdateTaskFts((EntityRecord)regenRecord,recMan);
+						Utils.RegenAndUpdateTaskFts((EntityRecord)regenRecord, recMan);
 					}
-					else if(submitRecord.Properties.ContainsKey("bug_id") && submitRecord["bug_id"] != null) {
+					else if (submitRecord.Properties.ContainsKey("bug_id") && submitRecord["bug_id"] != null)
+					{
 						regenRecord["id"] = new Guid(submitRecord["bug_id"].ToString());
-						Utils.RegenAndUpdateBugFts((EntityRecord)regenRecord,recMan);
+						Utils.RegenAndUpdateBugFts((EntityRecord)regenRecord, recMan);
 					}
 					#endregion
 					connection.CommitTransaction();
@@ -2346,12 +2397,12 @@ namespace WebVella.ERP.Project
 
 				foreach (var task in tasks)
 				{
-					Utils.RegenAndUpdateTaskFts(task,recMan);
+					Utils.RegenAndUpdateTaskFts(task, recMan);
 				}
 
 				foreach (var bug in bugs)
 				{
-					Utils.RegenAndUpdateBugFts(bug,recMan);
+					Utils.RegenAndUpdateBugFts(bug, recMan);
 				}
 
 				response.Success = true;
@@ -2365,6 +2416,77 @@ namespace WebVella.ERP.Project
 				response.Success = false;
 				response.Timestamp = DateTime.UtcNow;
 				response.Message = "Error: " + ex.Message;
+				response.Object = null;
+				return Json(response);
+			}
+		}
+
+
+		[AcceptVerbs(new[] { "GET" }, Route = "/plugins/webvella-projects/api/search")]
+		public IActionResult GetTop1000SearchResults(string query)
+		{
+			var response = new ResponseModel();
+			if (String.IsNullOrWhiteSpace(query))
+			{
+				response.Success = true;
+				response.Object = new List<EntityRecord>();
+				return Json(response);
+			}
+			query = query.ToLowerInvariant().Trim();
+			try
+			{
+				ErpUser user = SecurityContext.CurrentUser;
+				var allowedProjects = SearchService.ProjectsUserCanAccess(user);
+				var requestedFields = "*";
+				var sortRulesList = new List<QuerySortObject>();
+				sortRulesList.Add(new QuerySortObject("created_on", QuerySortType.Descending));
+
+				var indexQuery = EntityQuery.QueryContains("index", query);
+
+
+				var rootFilter = new QueryObject();
+				if (allowedProjects.Count == 0)
+				{
+					response.Success = true;
+					response.Object = new List<EntityRecord>();
+					return Json(response);
+				}
+				else if (allowedProjects.Count == 1)
+				{
+					rootFilter = EntityQuery.QueryAND(indexQuery, EntityQuery.QueryEQ("project_id", allowedProjects[0]));
+				}
+				else
+				{
+					var projectsFilter = new List<QueryObject>();
+					foreach (var projectId in allowedProjects)
+					{
+						projectsFilter.Add(EntityQuery.QueryEQ("project_id", projectId));
+					}
+					rootFilter = EntityQuery.QueryAND(indexQuery, EntityQuery.QueryOR(projectsFilter.ToArray()));
+				}
+
+
+				var searchQuery = new EntityQuery("search", requestedFields, rootFilter, sortRulesList.ToArray(), 0, 250, null);
+
+				var searchResponse = recMan.Find(searchQuery);
+				if (!searchResponse.Success)
+				{
+					response.Success = false;
+					response.Timestamp = DateTime.UtcNow;
+					response.Message = searchResponse.Message;
+					response.Object = null;
+					return Json(response);
+				}
+				response.Success = true;
+				response.Message = "Search successful";
+				response.Object = searchResponse.Object.Data;
+				return Json(response);
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Timestamp = DateTime.UtcNow;
+				response.Message = ex.Message;
 				response.Object = null;
 				return Json(response);
 			}

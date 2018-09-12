@@ -1,0 +1,50 @@
+﻿<div id="page-title">
+	<div id="page-meta">
+		<div class="aux-actions">
+			<a class="btn btn-default btn-outline hidden-xs" ng-href="/#/areas/projects/wv_task/view-create/create?returnUrl=%2Fareas%2Fprojects%2Fwv_project%2Fdashboard">
+				<i class="fa fa-tasks"></i>
+				Create Task
+			</a>
+			<a class="btn btn-default btn-outline hidden-xs" ng-href="/#/areas/projects/wv_bug/view-create/create?returnUrl=%2Fareas%2Fprojects%2Fwv_project%2Fdashboard">
+				<i class="fa fa-bug"></i>
+				Report Bug
+			</a>
+		</div>
+		<div class="meta-icon">
+			<i class="fa fa-fw fa-tachometer fa-2x"></i>
+		</div>
+        <div class="meta-label">
+			<div class="meta-label-aux">My projects</div>
+            <h4>Search</h4>
+        </div>
+	</div>
+</div>
+<div id="page-body">
+	<div id="page-text">
+
+		<div class="well">
+				<form name="search" class="form" ng-submit="ngCtrl.submitSearch()">
+					<div class="form-group" style="margin-bottom:0;">
+						<div class="input-group">
+							<input class="form-control" ng-model="ngCtrl.query" />
+							<div class="input-group-btn">
+								<button type="submit" class="btn btn-default">Search</button>
+							</div>
+						</div>
+					</div>
+				</form>
+		</div>
+
+		<div class="alert alert-info ng-hide" ng-show="ngCtrl.results == 0 && ngCtrl.query">No results found for query <strong>{{ngCtrl.query}}</strong></div>
+		<div class="search-result" ng-repeat="result in ngCtrl.results">
+			<a class="title" target="_blank" ng-href="{{result.url}}">
+				<i class="fa fa-tasks fa-fw ng-hide go-teal" ng-show="result.entity === 'task'"></i> 
+				<i class="fa fa-bug fa-fw ng-hide go-red" ng-show="result.entity === 'bug'"></i> 
+				{{result.title}}
+			</a>
+			<a class="url" target="_blank" ng-href="{{result.url}}">{{result.url}}</a>
+			<div class="snippet">{{result.snippet}}</div>
+		</div>
+
+	</div>
+</div>

@@ -399,12 +399,12 @@
 				}
 
 		.timeline-centered .timeline-entry.collapsed .timeline-entry-inner .timeline-label h2 {
-			margin-bottom: 0;
+			margin-bottom: 5px;
 		}
 
 
 		.timeline-centered .timeline-entry .timeline-entry-inner .timeline-label h2 .username {
-			font-weight:bold;
+			/*font-weight:bold;*/
 		}
 
 .timeline-label.with-action {
@@ -544,3 +544,28 @@
 	}
 
 /*#endregion*/
+
+.search-result{
+	margin-bottom:30px;
+}
+
+.search-result .title{
+	color:rgb(26, 13, 171);
+	font-size:18px;
+	line-height:22px;
+	display:block;
+}
+
+.search-result .url{
+	color:rgb(0, 102, 33);
+	font-size:14px;
+	line-height:17px;
+	display:block;
+}
+
+.search-result .snippet{
+	color:rgb(84, 84, 84);
+	font-size:13px;
+	line-height:18px;
+
+}

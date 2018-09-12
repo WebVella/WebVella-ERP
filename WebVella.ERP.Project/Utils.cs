@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WebVella.ERP.Api;
@@ -26,7 +27,7 @@ namespace WebVella.ERP.Project
 				newTaskObject = (EntityRecord)data.record;
 				var recordId = (Guid)data.recordId;
 
-				if (!newTaskObject.Properties.ContainsKey("status") && !newTaskObject.Properties.ContainsKey("project_id") && !newTaskObject.Properties.ContainsKey("milestone_id"))
+				if (!newTaskObject.Properties.ContainsKey("status") && !newTaskObject.Properties.ContainsKey("project_id") && !newTaskObject.Properties.ContainsKey("milestone_id") && !newTaskObject.Properties.ContainsKey("priority"))
 				{
 					return data;
 				}
@@ -78,11 +79,18 @@ namespace WebVella.ERP.Project
 				var isProjectChanged = false;
 				var isMilestoneChanged = false;
 				var isStatusChanged = false;
+				var isPriorityChanged = false;
 				#region << Check what is changed >>
 				var oldStatus = (string)oldTaskObject["status"];
 				if (newTaskObject.Properties.ContainsKey("status") && oldStatus != (string)newTaskObject["status"])
 				{
 					isStatusChanged = true;
+				}
+
+				var oldPriority = (string)oldTaskObject["priority"];
+				if (newTaskObject.Properties.ContainsKey("priority") && oldPriority != (string)newTaskObject["priority"])
+				{
+					isPriorityChanged = true;
 				}
 
 				var oldProjectId = (Guid?)oldTaskObject["project_id"];
@@ -102,7 +110,7 @@ namespace WebVella.ERP.Project
 				}
 
 				//If none of the properties of interest is changed, just return
-				if (!isStatusChanged && !isProjectChanged && !isMilestoneChanged)
+				if (!isStatusChanged && !isProjectChanged && !isMilestoneChanged && !isPriorityChanged)
 				{
 					return data;
 				}
@@ -371,12 +379,20 @@ namespace WebVella.ERP.Project
 					#endregion
 				}
 				#region << Create update activity >>
-				var priorityString = "";
-				if ((string)oldTaskObject["priority"] == "high")
-				{
-					priorityString = "<span class='go-red'> [high] </span>";
+				var activityDescription = "";
+				if(isProjectChanged) {
+					activityDescription += $"<p>Project was changed from <b>[</b>{oldTaskProject["code"]}<b>]</b> to <b>[</b>{newTaskProject["code"]}<b>]</b></p>";
 				}
-				Utils.CreateActivity(recMan, "updated", "updated a <i class='fa fa-fw fa-tasks go-purple'></i> task [" + oldTaskObject["code"] + priorityString + "] <a href='/#/areas/projects/wv_task/view-general/sb/general/" + oldTaskObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldTaskObject["subject"]) + "</a>", null, (Guid)oldTaskObject["project_id"], (Guid)oldTaskObject["id"], null);
+				if(isMilestoneChanged) {
+					activityDescription += $"<p>Project was changed from <b>[</b>{oldTaskMilestone["name"]}<b>]</b> to <b>[</b>{newTaskMilestone["name"]}<b>]</b></p>";
+				}
+				if(isStatusChanged) {
+					activityDescription += $"<p>Project was changed from <b>[</b>{oldTaskObject["status"]}<b>]</b> to <b>[</b>{newTaskObject["status"]}<b>]</b></p>";
+				}
+				if(isPriorityChanged) {
+					activityDescription += $"<p>priority was changed from {Utils.GetActivityStrings("priority",(string)oldTaskObject["priority"])} to {Utils.GetActivityStrings("priority",(string)newTaskObject["priority"])}</p>";
+				}
+				Utils.CreateActivity(recMan, "updated", "updated a <i class='fa fa-fw fa-tasks go-purple'></i> task</br></br>[" + oldTaskObject["code"] + "] <a href='/#/areas/projects/wv_task/view-general/sb/general/" + oldTaskObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldTaskObject["subject"]) + "</a>", activityDescription, (Guid)oldTaskObject["project_id"],SecurityContext.CurrentUser.Id, (Guid)oldTaskObject["id"], null);
 				#endregion
 				return data;
 			}
@@ -536,7 +552,7 @@ namespace WebVella.ERP.Project
 			newBugObject = (EntityRecord)data.record;
 			var recordId = (Guid)data.recordId;
 
-			if (!newBugObject.Properties.ContainsKey("status") && !newBugObject.Properties.ContainsKey("project_id"))
+			if (!newBugObject.Properties.ContainsKey("status") && !newBugObject.Properties.ContainsKey("project_id") && !newBugObject.Properties.ContainsKey("priority"))
 			{
 				return data;
 			}
@@ -579,6 +595,7 @@ namespace WebVella.ERP.Project
 
 			var isProjectChanged = false;
 			var isStatusChanged = false;
+			var isPriorityChanged = false;
 			#region << Check what is changed >>
 			var oldStatus = (string)oldBugObject["status"];
 			if (newBugObject.Properties.ContainsKey("status") && oldStatus != (string)newBugObject["status"])
@@ -595,7 +612,7 @@ namespace WebVella.ERP.Project
 			}
 
 			//If none of the properties of interest is changed, just return
-			if (!isStatusChanged && !isProjectChanged)
+			if (!isStatusChanged && !isProjectChanged && !isPriorityChanged)
 			{
 				return data;
 			}
@@ -746,12 +763,18 @@ namespace WebVella.ERP.Project
 				#endregion
 			}
 			#region << Update activity >>
-			var priorityString = "";
-			if ((string)oldBugObject["priority"] == "high")
-			{
-				priorityString = "<span class='go-red'> [high] </span>";
-			}
-			Utils.CreateActivity(recMan, "updated", "updated a <i class='fa fa-fw fa-bug go-red'></i> bug [" + oldBugObject["code"] + priorityString + "] <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + oldBugObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldBugObject["subject"]) + "</a>", null, (Guid)oldBugObject["project_id"], null, (Guid)oldBugObject["id"]);
+				var activityDescription = "";
+				if(isProjectChanged) {
+					activityDescription += $"<p>Project was changed from <b>[</b>{oldBugObject["code"]}<b>]</b> to <b>[</b>{newBugObject["code"]}<b>]</b></p>";
+				}
+
+				if(isStatusChanged) {
+					activityDescription += $"<p>Project was changed from <b>[</b>{oldBugObject["status"]}<b>]</b> to <b>[</b>{newBugObject["status"]}<b>]</b></p>";
+				}
+				if(isPriorityChanged) {
+					activityDescription += $"<p>priority was changed from {Utils.GetActivityStrings("priority",(string)oldBugObject["priority"])} to {Utils.GetActivityStrings("priority",(string)newBugObject["priority"])}</p>";
+				}
+			Utils.CreateActivity(recMan, "updated", "updated a <i class='fa fa-fw fa-bug go-red'></i> bug</br></br>[" + oldBugObject["code"] + "] <a href='/#/areas/projects/wv_bug/view-general/sb/general/" + oldBugObject["id"] + "'>" + System.Net.WebUtility.HtmlEncode((string)oldBugObject["subject"]) + "</a>", activityDescription, (Guid)oldBugObject["project_id"], SecurityContext.CurrentUser.Id, null, (Guid)oldBugObject["id"]);
 			#endregion
 			return data;
 		}
@@ -991,10 +1014,11 @@ namespace WebVella.ERP.Project
 			return targetObject;
 		}
 
-		public static void CreateActivity(RecordManager recMan, string label, string subject, string description, Guid projectId, Guid? taskId, Guid? bugId)
+		public static void CreateActivity(RecordManager recMan, string label, string subject, string description, Guid projectId, Guid userId, Guid? taskId, Guid? bugId)
 		{
 			var activityObj = new EntityRecord();
 			activityObj["id"] = Guid.NewGuid();
+			activityObj["user_id"] = userId;
 			activityObj["project_id"] = projectId;
 			activityObj["task_id"] = taskId;
 			activityObj["bug_id"] = bugId;
@@ -1113,5 +1137,63 @@ namespace WebVella.ERP.Project
 
 			return data;
 		}
+
+		public static string RemoveHtml(string htmlContents) {
+			var result = "";
+			if(String.IsNullOrWhiteSpace(htmlContents)) {
+				return result;
+			}
+			result = WebUtility.HtmlDecode(Regex.Replace(htmlContents, "<[^>]*(>|$)", string.Empty));
+			result = Regex.Replace(result, @"[\s\r\n]+", " ");
+			result = result.Trim();
+			return result;
+		}
+
+		public static string TextLength(string text, string type) {
+			if(String.IsNullOrWhiteSpace(text)) {
+				return "";
+			}
+			var originalLength = text.Length;
+			switch(type) {
+				case "short":
+					var cutLength = 120;
+					if(originalLength > cutLength) {
+						text = text.Substring(0,120);
+					}
+					break;
+			}
+			if(originalLength > text.Length) {
+				text += "...";
+			}
+
+			return text;
+		}
+
+		public static string GetActivityStrings(string type, string value) {
+			var result = "";
+
+			switch(type) {
+				case "priority":
+					switch(value){
+						case "low":
+							result += $"<b>[</b><span><i class=\"fa fa-fw fa-arrow-circle-down go-blue\"></i>low</span><b>]</b>";
+							break;
+						case "medium":
+							result += $"<b>[</b><span><i class=\"fa fa-fw fa-minus-circle go-green\"></i>medium</span><b>]</b>";
+							break;
+						case "high":
+							result += $"<b>[</b><span><i class=\"fa fa-fw fa-arrow-circle-up go-red\"></i>high</span><b>]</b>";
+							break;
+					}
+
+					break;
+				default:
+					break;
+			}
+
+
+			return result;
+		}
+
 	}
 }

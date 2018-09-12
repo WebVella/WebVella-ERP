@@ -2,7 +2,7 @@
 	"name": "webvella-projects",
 	"url": "http://webvella.com",
 	"description": "Project management plugin for WebVella ERP",
-	"version": 20170405,
+	"version": 20180911,
 	"company": "WebVella",
 	"company_url": "http://webvella.com",
 	"plugin_page_url": "http://webvella.com",
@@ -25,6 +25,7 @@
 		"js": [
 			"/plugins/webvella-projects/base.module.js",
 			"/plugins/webvella-projects/user-dashboard.module.js",
+			"/plugins/webvella-projects/search.module.js",
 			"/plugins/webvella-projects/user-sprints.module.js",
 			"/plugins/webvella-projects/providers/projects.service.js",
 			"/plugins/webvella-projects/template-controllers.js",

@@ -172,7 +172,11 @@ namespace WebVella.ERP.Jobs
 			if (!Settings.Enabled)
 				return;
 
+			#if DEBUG
+			Thread.Sleep(1000); //Initial sleep time
+			#else
 			Thread.Sleep(120000); //Initial sleep time
+			#endif
 
 			while (true)
 			{

@@ -24,9 +24,11 @@
 		<div class="row">
 			<div class="col-sm-7">
 				<div class="timeline-heading">
+					<h4>Activity on open items I own</h4>
+					<!--
 					<div class="row">
 						<div class="col-sm-8">
-							<h4>Activity on projects I participate</h4>
+							<h4>Activity on items I follow</h4>
 						</div>
 						<div class="col-sm-4">
 							<div class="form-group form-group-sm">
@@ -40,6 +42,7 @@
 							</div>
 						</div>
 					</div>
+					-->
 				</div>
 				<div class="timeline-wrapper" ng-if="ngCtrl.activities.length > 0">
 					<div class="timeline-centered">
@@ -65,29 +68,15 @@
 											<span ng-switch-when="false" class="image-wrapper"><img ng-src="/plugins/webvella-core/assets/avatar.png" /></span>
 										</div>
 										<h2>
-											<div class="form-description" title="{{::activity.created_on | date: 'dd MMM yyyy HH:mm'}}">
+											<span class="form-description" title="{{::activity.created_on | date: 'dd MMM yyyy HH:mm'}}">
 												<i class="fa fa-fw fa-clock-o"></i> 
 												<span ng-bind="::ngCtrl.getTimeHumanizedString(activity.created_on)"></span>
-											</div>
+											</span>
 											<span class="username" ng-bind="::activity.$user_wv_project_activity_created_by[0].username"></span> <span ng-bind-html="::activity.subject"></span>
 										</h2>
-										<!--<div class="ng-hide" ng-show="ngCtrl.show[activity.id]">
-											<div class="form">
-												<div class="form-group">
-													<label class="control-label">Project name</label>
-													<div>
-														<a ng-href="/#/areas/projects/wv_project/view-general/sb/dashboard/{{activity.$project_1_n_activity[0].id}}" ng-bind="::activity.$project_1_n_activity[0].name"></a>
-													</div>
-												</div>
-												<div class="form-group">
-													<label class="control-label">Description</label>
-													<div ng-bind-html="::activity.description || '<i class=&quot;go-gray&quot;>no description</i>'"></div>
-												</div>
-											</div>
-										</div>-->
-										<!--<div class="timeline-action" ng-click="ngCtrl.showActivityInfo(activity)" >
-											<i class="fa fa-fw fa-eye"></i>
-										</div>-->
+										<div>
+											<i ng-bind-html="::activity.description || '<span class=&quot;go-gray&quot;>no description</span>'"></i>
+										</div>
 									</div>
 								</div>
 							</article>
