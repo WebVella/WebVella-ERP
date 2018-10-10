@@ -967,7 +967,7 @@ namespace WebVella.ERP.Project
 				#region << userAsOwnerOpenTaskIds >>
 				{
 					var requestedFields = "id";
-					var rootFilter = EntityQuery.QueryAND(EntityQuery.QueryEQ("owner_id", user.Id), EntityQuery.QueryNOT("status", "completed"));
+					var rootFilter = EntityQuery.QueryOR(EntityQuery.QueryEQ("owner_id", user.Id), EntityQuery.QueryEQ("$user_n_n_task_watchers.id", user.Id));
 					var searchQuery = new EntityQuery("wv_task", requestedFields, rootFilter);
 					var searchResponse = recMan.Find(searchQuery);
 					if (!searchResponse.Success)
@@ -988,7 +988,7 @@ namespace WebVella.ERP.Project
 				#region << userAsOwnerOpenBugIds >>
 				{
 					var requestedFields = "id";
-					var rootFilter = EntityQuery.QueryAND(EntityQuery.QueryEQ("owner_id", user.Id), EntityQuery.QueryNOT("status", "closed"));
+					var rootFilter = EntityQuery.QueryOR(EntityQuery.QueryEQ("owner_id", user.Id), EntityQuery.QueryEQ("$user_n_n_bug_watchers.id", user.Id));
 					var searchQuery = new EntityQuery("wv_bug", requestedFields, rootFilter);
 					var searchResponse = recMan.Find(searchQuery);
 					if (!searchResponse.Success)
@@ -1057,13 +1057,15 @@ namespace WebVella.ERP.Project
 
 					#endregion
 
-					var notCreatedByUserRule = EntityQuery.QueryOR(EntityQuery.QueryNOT("user_id",user.Id),EntityQuery.QueryEQ("user_id",null));
+					//var notCreatedByUserRule = EntityQuery.QueryOR(EntityQuery.QueryNOT("user_id",user.Id),EntityQuery.QueryEQ("user_id",null));
 
 					if(ownedFilterList.Count == 1) {
-						rootFilterSection = EntityQuery.QueryAND(notCreatedByUserRule,ownedFilterList[0]);
+						//rootFilterSection = EntityQuery.QueryAND(notCreatedByUserRule,ownedFilterList[0]);
+						rootFilterSection = EntityQuery.QueryAND(ownedFilterList[0]);
 					}
 					else { 
-						rootFilterSection = EntityQuery.QueryAND(notCreatedByUserRule,EntityQuery.QueryOR(ownedFilterList.ToArray()));					
+						//rootFilterSection = EntityQuery.QueryAND(notCreatedByUserRule,EntityQuery.QueryOR(ownedFilterList.ToArray()));					
+						rootFilterSection = EntityQuery.QueryOR(ownedFilterList.ToArray());		
 					}
 
 
