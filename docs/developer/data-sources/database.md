@@ -13,7 +13,7 @@ To create a database datasource you need to:
 
 ##### Step 3: Press the "Add Data Source" button on the top right corner
 
-![Create Data Source](doc-images/sdk-datasource-create.png)
+![Create Data Source](/doc-images/sdk-datasource-create.png)
 
 ##### Step 4: Press the "Add Data Source" button
 

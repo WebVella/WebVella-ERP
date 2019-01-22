@@ -7,6 +7,6 @@ From technical perspective, the application is like a lense selecting a specific
 
 All available applications are presented on the platform's home page:
 
-![sdk home](doc-images/sdk-home.png)
+![sdk home](/doc-images/sdk-home.png)
 
 

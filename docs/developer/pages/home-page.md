@@ -5,4 +5,4 @@ The home page of the platform is presented on the site's root - `/`. You can hav
 
 You can visit the home page by clicking on the "home" icon as presented bellow.
 
-![sdk home page shortcut](doc-images/sdk-home-shortcut.png)
+![sdk home page shortcut](/doc-images/sdk-home-shortcut.png)

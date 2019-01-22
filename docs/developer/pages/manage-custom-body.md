@@ -14,11 +14,11 @@ The manage the generated page body you need to:
 
 You can navigate to the page management screen by opening the SDK application > Page List > Page details or by using the shortcut while on the page as presented on the next image.
 
-![sdk page manage shortcut](doc-images/sdk-page-manage-shortcut.png)
+![sdk page manage shortcut](/doc-images/sdk-page-manage-shortcut.png)
 
 
 ##### Step2: Click on the "custom body" tab
 
-![sdk page custom body](doc-images/sdk-page-custom-body.png)
+![sdk page custom body](/doc-images/sdk-page-custom-body.png)
 
 Do not forget to start the Razor code with a `@page` declaration, which is required when a custom body is used.
