@@ -32,6 +32,9 @@ namespace WebVella.Erp.Web.TagHelpers
 		[HtmlAttributeName("class")]
 		public string Class { get; set; } = null;
 
+		[HtmlAttributeName("width")]
+		public string Width { get; set; } = "";
+
 		public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
 
@@ -39,7 +42,6 @@ namespace WebVella.Erp.Web.TagHelpers
 			if (VerticalAlign == VerticalAlignmentType.None && context.Items.ContainsKey(typeof(VerticalAlignmentType))) {
 				VerticalAlign = (VerticalAlignmentType)context.Items[typeof(VerticalAlignmentType)];
 			}
-
 			#endregion
 
 			#region << Render >>
@@ -82,6 +84,11 @@ namespace WebVella.Erp.Web.TagHelpers
 					break;
 				default:
 					break;
+			}
+
+			if (!String.IsNullOrEmpty(Width))
+			{
+				styleList.Add($"width:{Width}");
 			}
 
 			if (styleList.Count > 0) {

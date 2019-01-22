@@ -21,73 +21,85 @@
 		<wv-grid-row>
 			@if (options.VisibleColumns > 0)
 			{
-				<wv-grid-column class="@options.Container1Class" vertical-align="@options.Container1VerticalAlign" horizontal-align="@options.Container1HorizontalAlign">
+				var columnWidth = options.HasThead ? "" : columns[0].Width;
+				<wv-grid-column width="@columnWidth" class="@options.Container1Class" vertical-align="@options.Container1VerticalAlign" horizontal-align="@options.Container1HorizontalAlign">
 					<wv-pb-node-container parent-node-id="@node.Id" container-id="@options.Container1Id"></wv-pb-node-container>
 				</wv-grid-column>
 			}
 			@if (options.VisibleColumns > 1)
 			{
-				<wv-grid-column class="@options.Container2Class" vertical-align="@options.Container2VerticalAlign" horizontal-align="@options.Container2HorizontalAlign">
+				var columnWidth = options.HasThead ? "" : columns[1].Width;
+				<wv-grid-column width="@columnWidth" class="@options.Container2Class" vertical-align="@options.Container2VerticalAlign" horizontal-align="@options.Container2HorizontalAlign">
 					<wv-pb-node-container parent-node-id="@node.Id" container-id="@options.Container2Id"></wv-pb-node-container>
 				</wv-grid-column>
 			}
 			@if (options.VisibleColumns > 2)
 			{
-				<wv-grid-column class="@options.Container3Class" vertical-align="@options.Container3VerticalAlign" horizontal-align="@options.Container3HorizontalAlign">
+				var columnWidth = options.HasThead ? "" : columns[2].Width;
+				<wv-grid-column width="@columnWidth" class="@options.Container3Class" vertical-align="@options.Container3VerticalAlign" horizontal-align="@options.Container3HorizontalAlign">
 					<wv-pb-node-container parent-node-id="@node.Id" container-id="@options.Container3Id"></wv-pb-node-container>
 				</wv-grid-column>
 			}
 			@if (options.VisibleColumns > 3)
 			{
-				<wv-grid-column class="@options.Container4Class" vertical-align="@options.Container4VerticalAlign" horizontal-align="@options.Container4HorizontalAlign">
+				var columnWidth = options.HasThead ? "" : columns[3].Width;
+				<wv-grid-column width="@columnWidth" class="@options.Container4Class" vertical-align="@options.Container4VerticalAlign" horizontal-align="@options.Container4HorizontalAlign">
 					<wv-pb-node-container parent-node-id="@node.Id" container-id="@options.Container4Id"></wv-pb-node-container>
 				</wv-grid-column>
 			}
 			@if (options.VisibleColumns > 4)
 			{
-				<wv-grid-column class="@options.Container5Class" vertical-align="@options.Container5VerticalAlign" horizontal-align="@options.Container5HorizontalAlign">
+				var columnWidth = options.HasThead ? "" : columns[4].Width;
+				<wv-grid-column width="@columnWidth" class="@options.Container5Class" vertical-align="@options.Container5VerticalAlign" horizontal-align="@options.Container5HorizontalAlign">
 					<wv-pb-node-container parent-node-id="@node.Id" container-id="@options.Container5Id"></wv-pb-node-container>
 				</wv-grid-column>
 			}
 			@if (options.VisibleColumns > 5)
 			{
-				<wv-grid-column class="@options.Container6Class" vertical-align="@options.Container6VerticalAlign" horizontal-align="@options.Container6HorizontalAlign">
+				var columnWidth = options.HasThead ? "" : columns[5].Width;
+				<wv-grid-column width="@columnWidth" class="@options.Container6Class" vertical-align="@options.Container6VerticalAlign" horizontal-align="@options.Container6HorizontalAlign">
 					<wv-pb-node-container parent-node-id="@node.Id" container-id="@options.Container6Id"></wv-pb-node-container>
 				</wv-grid-column>
 			}
 			@if (options.VisibleColumns > 6)
 			{
-				<wv-grid-column class="@options.Container7Class" vertical-align="@options.Container7VerticalAlign" horizontal-align="@options.Container7HorizontalAlign">
+				var columnWidth = options.HasThead ? "" : columns[6].Width;
+				<wv-grid-column width="@columnWidth" class="@options.Container7Class" vertical-align="@options.Container7VerticalAlign" horizontal-align="@options.Container7HorizontalAlign">
 					<wv-pb-node-container parent-node-id="@node.Id" container-id="@options.Container7Id"></wv-pb-node-container>
 				</wv-grid-column>
 			}
 			@if (options.VisibleColumns > 7)
 			{
-				<wv-grid-column class="@options.Container8Class" vertical-align="@options.Container8VerticalAlign" horizontal-align="@options.Container8HorizontalAlign">
+				var columnWidth = options.HasThead ? "" : columns[7].Width;
+				<wv-grid-column width="@columnWidth" class="@options.Container8Class" vertical-align="@options.Container8VerticalAlign" horizontal-align="@options.Container8HorizontalAlign">
 					<wv-pb-node-container parent-node-id="@node.Id" container-id="@options.Container8Id"></wv-pb-node-container>
 				</wv-grid-column>
 			}
 			@if (options.VisibleColumns > 8)
 			{
-				<wv-grid-column class="@options.Container9Class" vertical-align="@options.Container9VerticalAlign" horizontal-align="@options.Container9HorizontalAlign">
+				var columnWidth = options.HasThead ? "" : columns[8].Width;
+				<wv-grid-column width="@columnWidth" class="@options.Container9Class" vertical-align="@options.Container9VerticalAlign" horizontal-align="@options.Container9HorizontalAlign">
 					<wv-pb-node-container parent-node-id="@node.Id" container-id="@options.Container9Id"></wv-pb-node-container>
 				</wv-grid-column>
 			}
 			@if (options.VisibleColumns > 9)
 			{
-				<wv-grid-column class="@options.Container10Class" vertical-align="@options.Container10VerticalAlign" horizontal-align="@options.Container10HorizontalAlign">
+				var columnWidth = options.HasThead ? "" : columns[9].Width;
+				<wv-grid-column width="@columnWidth" class="@options.Container10Class" vertical-align="@options.Container10VerticalAlign" horizontal-align="@options.Container10HorizontalAlign">
 					<wv-pb-node-container parent-node-id="@node.Id" container-id="@options.Container10Id"></wv-pb-node-container>
 				</wv-grid-column>
 			}
 			@if (options.VisibleColumns > 10)
 			{
-				<wv-grid-column class="@options.Container11Class" vertical-align="@options.Container11VerticalAlign" horizontal-align="@options.Container11HorizontalAlign">
+				var columnWidth = options.HasThead ? "" : columns[10].Width;
+				<wv-grid-column width="@columnWidth" class="@options.Container11Class" vertical-align="@options.Container11VerticalAlign" horizontal-align="@options.Container11HorizontalAlign">
 					<wv-pb-node-container parent-node-id="@node.Id" container-id="@options.Container11Id"></wv-pb-node-container>
 				</wv-grid-column>
 			}
 			@if (options.VisibleColumns > 11)
 			{
-				<wv-grid-column class="@options.Container12Class" vertical-align="@options.Container12VerticalAlign" horizontal-align="@options.Container12HorizontalAlign">
+				var columnWidth = options.HasThead ? "" : columns[11].Width;
+				<wv-grid-column width="@columnWidth" class="@options.Container12Class" vertical-align="@options.Container12VerticalAlign" horizontal-align="@options.Container12HorizontalAlign">
 					<wv-pb-node-container parent-node-id="@node.Id" container-id="@options.Container12Id"></wv-pb-node-container>
 				</wv-grid-column>
 			}
