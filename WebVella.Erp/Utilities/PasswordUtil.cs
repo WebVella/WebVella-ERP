@@ -10,6 +10,9 @@ namespace WebVella.Erp.Utilities
 
         internal static string GetMd5Hash(string input)
         {
+			if (string.IsNullOrWhiteSpace(input))
+				return string.Empty;
+
             byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
 
             StringBuilder sBuilder = new StringBuilder();
