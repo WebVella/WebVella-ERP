@@ -449,7 +449,7 @@ namespace WebVella.Erp
 							user["password"] = Guid.NewGuid().ToString();
 							user["email"] = "system@webvella.com";
 							user["username"] = "system";
-							user["created_on"] = DateTime.UtcNow;
+							user["created_on"] = new DateTime( 2010, 10, 10);
 							user["enabled"] = true;
 
 							QueryResponse result = recMan.CreateRecord("user", user);
@@ -465,7 +465,7 @@ namespace WebVella.Erp
 							user["password"] = "erp";
 							user["email"] = "erp@webvella.com";
 							user["username"] = "administrator";
-							user["created_on"] = DateTime.UtcNow;
+							user["created_on"] = new DateTime(2010, 10, 10);
 							user["enabled"] = true;
 
 							QueryResponse result = recMan.CreateRecord("user", user);

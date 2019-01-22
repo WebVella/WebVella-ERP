@@ -49,9 +49,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Tools
 
 		public List<SelectOption> EntitySelectOptions { get; set; } = new List<SelectOption>();
 
-		public void OnGet()
+		private void InitEntitySelectOptions()
 		{
-			Init();
 			var entities = new EntityManager().ReadEntities().Object;
 			entities = entities.OrderBy(x => x.Name).ToList();
 			foreach (var entity in entities)
@@ -60,10 +59,17 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Tools
 			}
 		}
 
+		public void OnGet()
+		{
+			Init();
+			InitEntitySelectOptions();
+		}
+
 		public IActionResult OnPost()
 		{
 			if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
 			Init();
+			InitEntitySelectOptions();
 
 			try
 			{
@@ -84,7 +90,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Tools
 				}	
 				
 				var cgService = new CodeGenService();
-				var result = cgService.EvaluateMetaChanges(conString, IncludeMeta, IncludeEntityRelations, IncludeUserRoles, IncludeApplications);
+				var result = cgService.EvaluateMetaChanges(conString, IncludeRecordsEntityIdList, IncludeMeta, IncludeEntityRelations, IncludeUserRoles, IncludeApplications);
 				Code = result.Code;
 				Changes = result.Changes;
 				ShowResults = true;

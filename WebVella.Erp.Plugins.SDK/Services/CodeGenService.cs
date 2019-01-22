@@ -16,11 +16,13 @@ namespace WebVella.Erp.Plugins.SDK.Services
 {
 	public class CodeGenService
 	{
-		EntityManager entMan = new EntityManager();
+		private EntityManager entMan = new EntityManager();
+		private RecordManager recMan = new RecordManager();
 		private string OldDbConnectionString;
+		
 
-		public MetaChangeResponseModel EvaluateMetaChanges(string connectionString, bool includeEntityMeta,
-								bool includeEntityRelations, bool includeRoles, bool includeApplications)
+		public MetaChangeResponseModel EvaluateMetaChanges(string connectionString, List<string> entityRecordsToCompare, 
+					bool includeEntityMeta,bool includeEntityRelations, bool includeRoles, bool includeApplications)
 		{
 			ValidationException valEx = new ValidationException();
 
@@ -809,6 +811,62 @@ namespace WebVella.Erp.Plugins.SDK.Services
 
 				#endregion
 			}
+
+			if( entityRecordsToCompare != null && entityRecordsToCompare.Count > 0 )
+			{
+				
+				foreach(var id in entityRecordsToCompare )
+				{
+					//compare only if entity exists in both databases
+					Guid entityId = new Guid(id);
+					if( oldEntityDictionary.ContainsKey(entityId) && currentEntityList.Any(x=>x.Id == entityId) )
+					{
+						List<EntityRecord> recordsToCreate = new List<EntityRecord>();
+						List<EntityRecord> recordsToUpdate = new List<EntityRecord>();
+						List<EntityRecord> recordsToDelete = new List<EntityRecord>();
+
+						DbEntity oldEntity = oldEntityDictionary[entityId];
+						DbEntity currentEntity = currentEntityList.First( x=>x.Id == entityId );
+						CompareEntityRecords(oldEntity, currentEntity, recordsToCreate, recordsToUpdate, recordsToDelete);
+
+						foreach(var rec in recordsToCreate )
+						{
+							changeRow = new MetaChangeModel();
+							changeRow.Element = "record";
+							changeRow.Type = "created";
+							changeRow.Name = $"{rec["id"]} ({currentEntity.Name})";
+							response.Changes.Add(changeRow);
+							response.Code += CreateRecordCode(rec,currentEntity);
+						}
+
+						foreach (var rec in recordsToUpdate)
+						{
+							changeRow = new MetaChangeModel();
+							changeRow.Element = "record";
+							changeRow.Type = "updated";
+							changeRow.Name = $"{rec["id"]} ({currentEntity.Name})";
+							response.Changes.Add(changeRow);
+							response.Code += UpdateRecordCode(rec,currentEntity);
+						}
+
+						foreach (var rec in recordsToDelete)
+						{
+							changeRow = new MetaChangeModel();
+							changeRow.Element = "record";
+							changeRow.Type = "deleted";
+							changeRow.Name = $"{rec["id"]} ({currentEntity.Name})";
+							response.Changes.Add(changeRow);
+							response.Code += DeleteRecordCode(rec,currentEntity);
+						}
+					}
+					else if( !oldEntityDictionary.ContainsKey(entityId) && currentEntityList.Any(x => x.Id == entityId) )
+					{
+
+					}
+
+
+				}
+			}
 			return response;
 		}
 
@@ -871,6 +929,26 @@ namespace WebVella.Erp.Plugins.SDK.Services
 						reader.Close();
 						return relations;
 					}
+				}
+				finally
+				{
+					con.Close();
+				}
+			}
+		}
+
+		private List<EntityRecord> ReadOldEntityRecords( string entityName )
+		{
+			using (NpgsqlConnection con = new NpgsqlConnection(OldDbConnectionString))
+			{
+				try
+				{
+					con.Open();
+					NpgsqlCommand command = new NpgsqlCommand($"SELECT * FROM rec_{entityName};", con);
+					NpgsqlDataAdapter adapter = new NpgsqlDataAdapter(command);
+					DataTable table = new DataTable();
+					adapter.Fill(table);
+					return table.AsRecordList();
 				}
 				finally
 				{
@@ -8213,7 +8291,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 					$"\tGuid pageId = new Guid(\"{currentNode.PageId}\");\n" +
 					(currentNode.ComponentName != null ? $"\tvar componentName = \"{currentNode.ComponentName}\";\n" : "\tstring componentName = null;\n") +
 					(currentNode.ContainerId != null ? $"\tvar containerId = \"{currentNode.ContainerId}\";\n" : "\tstring containerId = null;\n") +
-					(currentNode.Options != null ? $"\tvar options = \"{currentNode.Options.EscapeMultiline()}\";\n" : "\tstring options = null;\n") +
+					(currentNode.Options != null ? $"\tvar options = @\"{currentNode.Options.EscapeMultiline()}\";\n" : "\tstring options = null;\n") +
 					$"\tvar weight = {currentNode.Weight};\n" +
 					"\n\tnew WebVella.Erp.Web.Services.PageService().UpdatePageBodyNode(id,parentId,pageId,nodeId,weight,componentName,containerId,options,WebVella.Erp.Database.DbContext.Current.Transaction);\n" +
 				"}\n" +
@@ -8432,6 +8510,105 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 						$"\n\tnew WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Delete(new Guid(\"{ds.Id}\"),WebVella.Erp.Database.DbContext.Current.Transaction);\n" +
 					"}\n" +
 					"#endregion\n\n";
+		}
+		#endregion
+
+		#region << Entity Records >>
+
+		private void CompareEntityRecords(DbEntity oldEntity, DbEntity currentEntity, List<EntityRecord> recordsToCreate, List<EntityRecord> recordsToUpdate, List<EntityRecord> recordsToDelete )
+		{
+			List<string> fieldsToRemoveFromOldEntity = new List<string>();
+			foreach(var field in oldEntity.Fields)
+			{
+				if (!currentEntity.Fields.Any(x => x.Id == field.Id))
+					fieldsToRemoveFromOldEntity.Add(field.Name);
+			}
+
+			var oldRecordLists = ReadOldEntityRecords(oldEntity.Name);
+
+			//if any, cleanup old records from fields which don't exist in new entity meta 
+			if (fieldsToRemoveFromOldEntity.Any())
+			{
+				foreach (var rec in oldRecordLists)
+				{
+					foreach (var fieldName in fieldsToRemoveFromOldEntity)
+						rec.Properties.Remove(fieldName);
+				}
+			}
+
+
+			var oldRecordsDict = oldRecordLists.AsRecordDictionary();
+			var currentRecordsDict = recMan.Find(new EntityQuery(currentEntity.Name)).Object.Data.AsRecordDictionary();
+
+			foreach(var key in currentRecordsDict.Keys )			
+			{
+				if( !oldRecordsDict.ContainsKey(key) )
+				{
+					var currentRec = currentRecordsDict[key];
+					recordsToCreate.Add(currentRec);
+				}
+				else
+				{
+					var currentRec = currentRecordsDict[key];
+					var oldRec = oldRecordsDict[key];
+					var currentRecJson = JsonConvert.SerializeObject(currentRec);
+					var oldRecJson = JsonConvert.SerializeObject(oldRec);
+					if( currentRecJson != oldRecJson )
+						recordsToUpdate.Add(currentRec);
+				}
+			}
+
+			foreach (var key in oldRecordsDict.Keys)
+			{
+				if (!currentRecordsDict.ContainsKey(key))
+				{
+					var oldRec = oldRecordsDict[key];
+					recordsToDelete.Add(oldRec);
+				}
+			}
+		}
+
+		private string CreateRecordCode(EntityRecord rec, DbEntity currentEntity)
+		{
+			
+			var response = $"#region << ***Create record*** Id: {rec["id"]} ({currentEntity.Name}) >>\n" +
+			"{\n" +
+				$"\tvar json = @\"{JsonConvert.SerializeObject(rec, Formatting.Indented, new JsonSerializerSettings{ TypeNameHandling = TypeNameHandling.All }).EscapeMultiline()}\";\n" +
+				$"\tEntityRecord rec = JsonConvert.DeserializeObject<EntityRecord>(json);\n" +
+				$"\tvar result = recMan.CreateRecord(\"{currentEntity.Name}\", rec);\n" +
+				$"\tif( !result.Success ) throw new Exception(result.Message);\n" +
+			"}\n" +
+			"#endregion\n\n";
+
+			return response;
+		}
+
+		private string UpdateRecordCode(EntityRecord rec, DbEntity currentEntity)
+		{
+
+			var response = $"#region << ***Update record*** Id: {rec["id"]} ({currentEntity.Name}) >>\n" +
+			"{\n" +
+				$"\tvar json = @\"{JsonConvert.SerializeObject(rec, Formatting.Indented, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All }).EscapeMultiline()}\";\n" +
+				$"\tEntityRecord rec = JsonConvert.DeserializeObject<EntityRecord>(json);\n" +
+				$"\tvar result = recMan.UpdateRecord(\"{currentEntity.Name}\", rec);\n" +
+				$"\tif( !result.Success ) throw new Exception(result.Message);\n" +
+			"}\n" +
+			"#endregion\n\n";
+
+			return response;
+		}
+
+		private string DeleteRecordCode(EntityRecord rec, DbEntity currentEntity)
+		{
+			var response = $"#region << ***Delete record*** Id: {rec["id"]} ({currentEntity.Name}) >>\n" +
+			"{\n" +
+				$"\tvar id = new Guid(\"{rec["id"]}\");\n" +
+				$"\tvar result = recMan.DeleteRecord(\"{currentEntity.Name}\", id);\n" +
+				$"\tif( !result ) throw new Exception(\"Failed delete record {rec["id"]}\");\n" +
+			"}\n" +
+			"#endregion\n\n";
+
+			return response;
 		}
 		#endregion
 	}
