@@ -1,1 +1,0 @@
-export * from '../esm/es2017/wv-datasource-manage.define.js';

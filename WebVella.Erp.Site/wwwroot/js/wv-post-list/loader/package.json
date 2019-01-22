@@ -1,6 +1,0 @@
-{
-  "name": "loader",
-  "typings": "./index.d.ts",
-  "module": "./index.js",
-  "es2017": "./index.es2017.js"
-}
