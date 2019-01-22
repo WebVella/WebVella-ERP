@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
-using WebVella.ERP.Database;
+using WebVella.Erp.Database;
 
-namespace WebVella.ERP.Api.Models
+namespace WebVella.Erp.Api.Models
 {
     public class SystemSettings
     {

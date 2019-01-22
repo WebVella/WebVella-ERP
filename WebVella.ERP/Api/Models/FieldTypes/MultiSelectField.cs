@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using WebVella.ERP.Database;
+using WebVella.Erp.Database;
 
-namespace WebVella.ERP.Api.Models
+namespace WebVella.Erp.Api.Models
 {
 	public class InputMultiSelectField : InputField
 	{
@@ -14,7 +14,7 @@ namespace WebVella.ERP.Api.Models
 		public IEnumerable<string> DefaultValue { get; set; }
 
 		[JsonProperty(PropertyName = "options")]
-		public List<MultiSelectFieldOption> Options { get; set; }
+		public List<SelectOption> Options { get; set; }
 	}
 
 	[Serializable]
@@ -27,31 +27,6 @@ namespace WebVella.ERP.Api.Models
 		public IEnumerable<string> DefaultValue { get; set; }
 
 		[JsonProperty(PropertyName = "options")]
-		public List<MultiSelectFieldOption> Options { get; set; }
-	}
-
-	[Serializable]
-	public class MultiSelectFieldOption
-	{
-		[JsonProperty(PropertyName = "key")]
-		public string Key { get; set; }
-
-		[JsonProperty(PropertyName = "value")]
-		public string Value { get; set; }
-
-		public MultiSelectFieldOption()
-		{
-
-		}
-
-		public MultiSelectFieldOption(string key, string value)
-		{
-			Key = key;
-			Value = value;
-		}
-
-		public MultiSelectFieldOption(MultiSelectFieldOption option) : this(option.Key, option.Value)
-		{
-		}
+		public List<SelectOption> Options { get; set; }
 	}
 }

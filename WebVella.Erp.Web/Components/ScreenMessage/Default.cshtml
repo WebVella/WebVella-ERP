@@ -1,0 +1,22 @@
+﻿@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Web.Utils;
+@{
+	var screenMessage = (ScreenMessage)ViewBag.ScreenMessage;
+}
+@if (screenMessage != null)
+{
+	<script>
+	@if (screenMessage != null)
+	{
+		switch (screenMessage.Type)
+		{
+			case ScreenMessageType.Error:
+				@:toastr["error"]("@screenMessage.Message", "@screenMessage.Title", {"positionClass": "toast-top-center","newestOnTop": false,"timeOut": 7000,"extendedTimeOut":7000});
+				break;
+			default:
+				@:toastr["@screenMessage.Type.GetLabel()"]("@screenMessage.Message", "@screenMessage.Title", {"positionClass": "toast-top-center","newestOnTop": false,"timeOut": 3000,"extendedTimeOut":3000});
+				break;
+		}
+	}
+	</script>
+}

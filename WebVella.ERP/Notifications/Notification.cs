@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebVella.ERP.Notifications
+namespace WebVella.Erp.Notifications
 {
     public class Notification
     {

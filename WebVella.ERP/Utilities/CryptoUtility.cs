@@ -7,7 +7,7 @@ using System.Text;
 
 #endregion
 
-namespace WebVella.ERP.Utilities
+namespace WebVella.Erp.Utilities
 {
     public class CryptoUtility
     {
@@ -27,10 +27,10 @@ namespace WebVella.ERP.Utilities
             {
                 if (string.IsNullOrEmpty(cryptKey))
                 {
-                    if (string.IsNullOrWhiteSpace(Settings.EncriptionKey))
+                    if (string.IsNullOrWhiteSpace(ErpSettings.EncriptionKey))
                         cryptKey = defaultCryptKey;
 
-                    cryptKey = Settings.EncriptionKey;
+                    cryptKey = ErpSettings.EncriptionKey;
                 }
                 return cryptKey;
             }
@@ -155,7 +155,9 @@ namespace WebVella.ERP.Utilities
         {
             try
             {
-                return DecryptText(encryptedValue, cookieEncryptProvider);
+                return encryptedValue;
+                //there is a bug in Core 2 library for DES now
+                //return DecryptText(encryptedValue, cookieEncryptProvider);
             }
             catch
             {
@@ -172,7 +174,9 @@ namespace WebVella.ERP.Utilities
         {
             try
             {
-                return EncryptText(value, cookieEncryptProvider);
+                return value;
+                //there is a bug in Core 2 library for DES now
+                //return EncryptText(value, cookieEncryptProvider);
             }
             catch
             {

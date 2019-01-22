@@ -1,0 +1,40 @@
+﻿@page "/sdk/access/role/l/list"
+
+@model WebVella.Erp.Plugins.SDK.Pages.Role.ListModel
+@{
+	Layout = "~/Pages/_AppMaster.cshtml";
+	ViewData["Title"] = "Roles";
+}
+<wv-page-header color="#dc3545" area-label="Roles" title="All roles" 
+	icon-class="fa fa-key" return-url="@Model.ReturnUrl">
+	<wv-page-header-actions>
+		<wv-button type="LinkAsButton" href="@($"/sdk/access/role/c")" color="White" size="Small" icon-class="fa fa-plus fa-fw go-green" text="New role"></wv-button>
+	</wv-page-header-actions>
+</wv-page-header>
+
+	<wv-grid bordered="true" hover="true" columns="Model.Columns" page="Model.Pager" total-count="Model.TotalCount" page-size="Model.PagerSize">
+		@foreach (var record in Model.Records)
+		{
+			<wv-grid-row>
+				<wv-grid-column>
+					@if ((string)record["name"] == "guest" || (string)record["name"] == "regular" || (string)record["name"] == "administrator")
+					{
+					<wv-button type="Button" is-disabled="true" color="White" size="Small" icon-class="fa fa-lock fa-fw"></wv-button>
+					}
+					else
+					{
+					<wv-button type="LinkAsButton" href="@($"/sdk/access/role/m/{(Guid)record["id"]}")" color="White" size="Small" icon-class="fa fa-pencil-alt fa-fw"></wv-button>
+					}
+				</wv-grid-column>
+				<wv-grid-column>@record["name"]</wv-grid-column>
+				<wv-grid-column>@record["description"]</wv-grid-column>
+			</wv-grid-row>
+		}
+		@if (Model.Records.Count == 0) { 
+		<tbody>
+			<tr>
+				<td colspan="@Model.Columns.Count"><div class="alert alert-info">No roles found</div></td>
+			</tr>
+		</tbody>
+		}
+	</wv-grid>

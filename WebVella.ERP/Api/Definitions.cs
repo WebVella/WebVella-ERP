@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace WebVella.ERP.Api
+namespace WebVella.Erp.Api
 {
 	public class SystemIds
 	{
@@ -18,39 +18,6 @@ namespace WebVella.ERP.Api
 
 		public static Guid SystemUserId { get { return new Guid("10000000-0000-0000-0000-000000000000"); } }
 		public static Guid FirstUserId { get { return new Guid("EABD66FD-8DE1-4D79-9674-447EE89921C2"); } }
-	}
-
-
-	public class SystemWebHookNames
-	{
-		public const string CreateRecordAction = "create_record_success_action";
-		public const string CreateRecordInput = "create_record_input_filter";
-		public const string CreateRecordValidationErrors = "create_record_validation_errors_filter";
-		public const string CreateRecordPreSave = "create_record_pre_save_filter";
-
-		public const string GetRecordAction = "get_record_success_action";
-		public const string GetRecordInput = "get_record_input_filter";
-		public const string GetRecordOutput = "get_record_output_filter";
-
-		public const string UpdateRecordAction = "update_record_success_action";
-		public const string UpdateRecordInput = "update_record_input_filter";
-		public const string UpdateRecordValidationErrors = "update_record_validation_errors_filter";
-		public const string UpdateRecordPreSave = "update_record_pre_save_filter";
-
-		//Intentionally now patch events are equal to update events
-		public const string PatchRecordAction = "update_record_success_action";
-		public const string PatchRecordInput = "update_record_input_filter";
-		public const string PatchRecordValidationErrors = "update_record_validation_errors_filter";
-		public const string PatchRecordPreSave = "update_record_pre_save_filter";
-
-		public const string DeleteRecordAction = "delete_record_success_action";
-		public const string DeleteRecordInput = "delete_record_input_filter";
-		public const string DeleteRecordValidationErrors = "delete_record_validation_errors_filter";
-		public const string DeleteRecordPreSave = "delete_record_pre_save_filter";
-
-		public const string ManageRelationAction = "manage_relation_success_action";
-		public const string ManageRelationInput = "manage_relation_input_filter";
-		public const string ManageRelationPreSave = "manage_relation_pre_save_filter";
 	}
 
 	public enum RecordsListTypes
@@ -119,7 +86,7 @@ namespace WebVella.ERP.Api
 		public int Rounding { get; set; }
 
 		[JsonProperty(PropertyName = "symbolPlacement")]
-		public CurrencySymbolPlacement SymbolPlacement { get; set; }
+		public CurrencySymbolPlacement SymbolPlacement { get; set; } = CurrencySymbolPlacement.After;
 	}
 
 	public enum FormulaFieldReturnType

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebVella.ERP.Api.Models
+namespace WebVella.Erp.Api.Models
 {
 	public class UserFile
 	{

@@ -1,98 +1,265 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using WebVella.ERP.Api.Models;
-using WebVella.ERP.Api.Models.AutoMapper;
-using WebVella.ERP.Database;
+using System.Text;
+using WebVella.Erp.Api.Models;
+using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Database;
+using WebVella.Erp.Eql;
+using WebVella.Erp.Exceptions;
+using WebVella.Erp.Utilities;
 
-namespace WebVella.ERP.Api
+namespace WebVella.Erp.Api
 {
-    public class SecurityManager
-    {
-        const string fieldsToQuery = @"id,username,email,password,first_name,last_name,image,created_on,created_by,last_modified_on,last_modified_by, last_logged_in,enabled, $user_role.id, $user_role.name";
+	public class SecurityManager
+	{
+		public SecurityManager()
+		{
+		}
 
-        public SecurityManager()
-        {
-        }
+		public ErpUser GetUser(Guid userId)
+		{
+			var result = new EqlCommand("SELECT *, $user_role.* FROM user WHERE id = @id",
+				new List<EqlParameter> { new EqlParameter("id", userId) }).Execute();
+			if (result.Count != 1)
+				return null;
 
-        public ErpUser GetUser(Guid userId)
-        {
-            RecordManager recMan = new RecordManager(true);
-            EntityQuery query = new EntityQuery("user", fieldsToQuery, EntityQuery.QueryEQ("id", userId), null, null, null);
-            var result = recMan.Find(query);
-            if (!result.Success)
-                throw new Exception(result.Message);
+			return result[0].MapTo<ErpUser>();
+		}
 
-            if (!result.Object.Data.Any())
-                return null;
+		public ErpUser GetUser(string email)
+		{
+			var result = new EqlCommand("SELECT *, $user_role.* FROM user WHERE email = @email",
+				 new List<EqlParameter> { new EqlParameter("email", email) }).Execute();
+			if (result.Count != 1)
+				return null;
 
-            var record = result.Object.Data.Single();
-            return record.MapTo<ErpUser>();
+			return result[0].MapTo<ErpUser>();
+		}
 
-        }
+		public ErpUser GetUserByUsername(string username)
+		{
+			var result = new EqlCommand("SELECT *, $user_role.* FROM user WHERE username = @username",
+				 new List<EqlParameter> { new EqlParameter("username", username) }).Execute();
+			if (result.Count != 1)
+				return null;
 
-        public ErpUser GetUser(string email)
-        {
-            RecordManager recMan = new RecordManager(true);
-            EntityQuery query = new EntityQuery("user", fieldsToQuery, EntityQuery.QueryEQ("email", email), null, null, null);
-            var result = recMan.Find(query);
-            if (!result.Success)
-                throw new Exception(result.Message);
+			return result[0].MapTo<ErpUser>();
+		}
 
-            if (!result.Object.Data.Any())
-                return null;
+		public ErpUser GetUser(string email, string password)
+		{
+			var encryptedPassword = PasswordUtil.GetMd5Hash(password);
+			var result = new EqlCommand("SELECT *, $user_role.* FROM user WHERE email = @email AND password = @password",
+					 new List<EqlParameter> { new EqlParameter("email", email), new EqlParameter("password", encryptedPassword) }).Execute();
+			if (result.Count != 1)
+				return null;
 
-            var record = result.Object.Data.Single();
-            return record.MapTo<ErpUser>();
-        }
+			return result[0].MapTo<ErpUser>();
+		}
 
-        public ErpUser GetUser(string email, string password)
-        {
-            var query = EntityQuery.QueryAND(EntityQuery.QueryEQ("email", email), EntityQuery.QueryEQ("password", password));
-            var result = new RecordManager(true).Find(new EntityQuery("user", fieldsToQuery, query));
+		public List<ErpUser> GetUsers(params Guid[] roleIds)
+		{
+			List<EqlParameter> parameters = new List<EqlParameter>();
+			StringBuilder sbRoles = new StringBuilder();
+			foreach (var id in roleIds)
+			{
+				if (sbRoles.Length > 0)
+					sbRoles.AppendLine(" OR ");
+				else
+					sbRoles.AppendLine(" WHERE ");
 
-            if (!result.Success)
-                throw new Exception(result.Message);
+				var paramName = $"@role_id_{id.ToString().Replace("-", "")}";
+				sbRoles.AppendLine($" $user_role.id = {paramName} ");
+				parameters.Add(new EqlParameter(paramName, id));
+			}
 
-            ErpUser user = null;
-            if (result.Object.Data != null && result.Object.Data.Any())
-                user = result.Object.Data[0].MapTo<ErpUser>();
+			return new EqlCommand("SELECT *, $user_role.* FROM user " + sbRoles, parameters).Execute().MapTo<ErpUser>();
+		}
 
-            return user;
-        }
+		public List<ErpRole> GetAllRoles()
+		{
+			return new EqlCommand("SELECT * FROM role").Execute().MapTo<ErpRole>();
+		}
 
-        public void UpdateUserLastLoginTime(Guid userId)
-        {
-            List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
-            storageRecordData.Add(new KeyValuePair<string, object>("id", userId ));
-            storageRecordData.Add(new KeyValuePair<string, object>("last_logged_in", DateTime.UtcNow ));
-            DbContext.Current.RecordRepository.Update("user", storageRecordData);
-        }
+		public void SaveUser(ErpUser user)
+		{
+			if (user == null)
+				throw new ArgumentNullException(nameof(user));
 
-        public List<ErpUser> GetUsers(params Guid[] roleIds)
-        {
-            const string fieldsToQuery = @"id,username,email,first_name,last_name,image,created_on,created_by,last_modified_on,last_modified_by, last_logged_in,enabled, $user_role.id, $user_role.name";
-            QueryObject query = null;
-            if (roleIds.Count() > 0)
-            {
-                List<QueryObject> list = new List<QueryObject>();
-                foreach (var roleId in roleIds)
-                {
-                    list.Add(EntityQuery.QueryEQ("$user_role.id", roleId));
-                }
-                
-                query = EntityQuery.QueryOR(list.ToArray());
-            }
+			RecordManager recMan = new RecordManager();
+			EntityRelationManager relMan = new EntityRelationManager();
+			EntityRecord record = new EntityRecord();
 
-            var result = new RecordManager(true).Find(new EntityQuery("user", fieldsToQuery, query));
+			ErpUser existingUser = GetUser(user.Id);
+			ValidationException valEx = new ValidationException();
+			if (existingUser != null)
+			{
+				record["id"] = user.Id;
 
-            if (!result.Success)
-                throw new Exception(result.Message);
-            
-            if (result.Object.Data != null && result.Object.Data.Any())
-                return result.Object.Data.MapTo<ErpUser>();
+				if (existingUser.Username != user.Username)
+				{
+					record["username"] = user.Username;
 
-            return new List<ErpUser>();
-        }
-    }
+					if (string.IsNullOrWhiteSpace(user.Username))
+						valEx.AddError("username", "Username is required.");
+					else if (GetUserByUsername(user.Username) != null)
+						valEx.AddError("username", "Username is already registered to another user. It must be unique.");
+				}
+
+				if (existingUser.Email != user.Email)
+				{
+					record["email"] = user.Email;
+
+					if (string.IsNullOrWhiteSpace(user.Email))
+						valEx.AddError("email", "Email is required.");
+					else if (GetUser(user.Email) != null)
+						valEx.AddError("email", "Email is already registered to another user. It must be unique.");
+					else if (!IsValidEmail(user.Email))
+						valEx.AddError("email", "Email is not valid.");
+				}
+
+				if (existingUser.Password != user.Password && !string.IsNullOrWhiteSpace(user.Password))
+					record["password"] = user.Password;
+
+				if (existingUser.Enabled != user.Enabled)
+					record["enabled"] = user.Enabled;
+
+				if (existingUser.Verified != user.Verified)
+					record["verified"] = user.Verified;
+
+				if (existingUser.FirstName != user.FirstName)
+					record["first_name"] = user.FirstName;
+
+				if (existingUser.LastName != user.LastName)
+					record["last_name"] = user.LastName;
+
+				if (existingUser.Image != user.Image)
+					record["image"] = user.Image;
+
+				record["$user_role.id"] = user.Roles.Select(x => x.Id).ToList();
+
+				valEx.CheckAndThrow();
+
+				var response = recMan.UpdateRecord("user", record);
+				if (!response.Success)
+					throw new Exception(response.Message);
+
+			}
+			else
+			{
+				record["id"] = user.Id;
+				record["email"] = user.Email;
+				record["username"] = user.Username;
+				record["first_name"] = user.FirstName;
+				record["last_name"] = user.LastName;
+				record["enabled"] = user.Enabled;
+				record["verified"] = user.Verified;
+				record["image"] = user.Image;
+				record["preferences"] = JsonConvert.SerializeObject(user.Preferences ?? new ErpUserPreferences());
+
+				if (string.IsNullOrWhiteSpace(user.Username))
+					valEx.AddError("username", "Username is required.");
+				else if (GetUserByUsername(user.Username) != null)
+					valEx.AddError("username", "Username is already registered to another user. It must be unique.");
+
+				if (string.IsNullOrWhiteSpace(user.Email))
+					valEx.AddError("email", "Email is required.");
+				else if (GetUser(user.Email) != null)
+					valEx.AddError("email", "Email is already registered to another user. It must be unique.");
+				else if (!IsValidEmail(user.Email))
+					valEx.AddError("email", "Email is not valid.");
+
+				if (string.IsNullOrWhiteSpace(user.Password))
+					valEx.AddError("password", "Password is required.");
+				else
+					record["password"] = user.Password;
+
+				record["$user_role.id"] = user.Roles.Select(x => x.Id).ToList();
+
+				valEx.CheckAndThrow();
+
+				var response = recMan.CreateRecord("user", record);
+				if (!response.Success)
+					throw new Exception(response.Message);
+
+			}
+		}
+
+		public void SaveRole(ErpRole role)
+		{
+			if (role == null)
+				throw new ArgumentNullException(nameof(role));
+
+			RecordManager recMan = new RecordManager();
+			EntityRecord record = new EntityRecord();
+			var allRoles = GetAllRoles();
+			ErpRole existingRole = allRoles.SingleOrDefault(x => x.Id == role.Id);
+			ValidationException valEx = new ValidationException();
+			
+			if (existingRole != null)
+			{
+				record["id"] = role.Id;
+				record["description"] = role.Description;
+
+				if (existingRole.Name != role.Name)
+				{
+					record["name"] = role.Name;
+
+					if (string.IsNullOrWhiteSpace(role.Name))
+						valEx.AddError("name", "Name is required.");
+					else if (allRoles.Any(x => x.Name == role.Name))
+						valEx.AddError("name", "Role with same name already exists");
+				}
+
+				valEx.CheckAndThrow();
+
+				var response = recMan.UpdateRecord("role", record);
+				if (!response.Success)
+					throw new Exception(response.Message);
+
+			}
+			else
+			{
+				record["id"] = role.Id;
+				record["description"] = role.Description;
+				record["name"] = role.Name;
+
+				if (string.IsNullOrWhiteSpace(role.Name))
+					valEx.AddError("name", "Name is required.");
+				else if (allRoles.Any(x => x.Name == role.Name))
+					valEx.AddError("name", "Role with same name already exists");
+
+				valEx.CheckAndThrow();
+
+				var response = recMan.CreateRecord("role", record);
+				if (!response.Success)
+					throw new Exception(response.Message);
+
+			}
+		}
+
+
+		public void UpdateUserLastLoginTime(Guid userId)
+		{
+			List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
+			storageRecordData.Add(new KeyValuePair<string, object>("id", userId));
+			storageRecordData.Add(new KeyValuePair<string, object>("last_logged_in", DateTime.UtcNow));
+			DbContext.Current.RecordRepository.Update("user", storageRecordData);
+		}
+
+		private bool IsValidEmail(string email)
+		{
+			try
+			{
+				var addr = new System.Net.Mail.MailAddress(email);
+				return addr.Address == email;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+	}
 }

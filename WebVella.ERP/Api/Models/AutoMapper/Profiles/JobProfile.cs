@@ -4,9 +4,9 @@ using System;
 using System.Data;
 using System.Dynamic;
 using System.Linq;
-using WebVella.ERP.Jobs;
+using WebVella.Erp.Jobs;
 
-namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
+namespace WebVella.Erp.Api.Models.AutoMapper.Profiles
 {
 	public class JobProfile : Profile
 	{
@@ -28,9 +28,7 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			job.TypeId = (Guid)src["type_id"];
 			job.Type = JobManager.JobTypes.FirstOrDefault(t => t.Id == job.TypeId);
 			job.TypeName = (string)src["type_name"];
-			job.Assembly = (string)src["assembly"];
 			job.CompleteClassName = (string)src["complete_class_name"];
-			job.MethodName = (string)src["method_name"];
 			if (!string.IsNullOrWhiteSpace(src["attributes"].ToString()))
 			{
 				JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
@@ -75,9 +73,9 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			schedulePlan.Name = (string)src["name"];
 			schedulePlan.Type = (SchedulePlanType)src["type"];
 			if (src["start_date"] != DBNull.Value)
-				schedulePlan.StartDate = (DateTime)src["start_date"];
+				schedulePlan.StartDate = DateTime.SpecifyKind((DateTime)src["start_date"], DateTimeKind.Utc);
 			if (src["end_date"] != DBNull.Value)
-				schedulePlan.EndDate = (DateTime)src["end_date"];
+				schedulePlan.EndDate = DateTime.SpecifyKind((DateTime)src["end_date"], DateTimeKind.Utc);
 			schedulePlan.ScheduledDays = JsonConvert.DeserializeObject<SchedulePlanDaysOfWeek>((string)src["schedule_days"], settings);
 			if (src["interval_in_minutes"] != DBNull.Value)
 				schedulePlan.IntervalInMinutes = (int)src["interval_in_minutes"];
@@ -86,9 +84,9 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			if (src["end_timespan"] != DBNull.Value)
 				schedulePlan.EndTimespan = (int)src["end_timespan"];
 			if (src["last_trigger_time"] != DBNull.Value)
-				schedulePlan.LastTriggerTime = (DateTime)src["last_trigger_time"];
+				schedulePlan.LastTriggerTime = DateTime.SpecifyKind((DateTime)src["last_trigger_time"], DateTimeKind.Utc);
 			if (src["next_trigger_time"] != DBNull.Value)
-				schedulePlan.NextTriggerTime = (DateTime)src["next_trigger_time"];
+				schedulePlan.NextTriggerTime = DateTime.SpecifyKind((DateTime)src["next_trigger_time"],DateTimeKind.Utc);
 			schedulePlan.JobTypeId = (Guid)src["job_type_id"];
 			if (JobManager.JobTypes.Any(t => t.Id == schedulePlan.JobTypeId))
 				schedulePlan.JobType = JobManager.JobTypes.FirstOrDefault(t => t.Id == schedulePlan.JobTypeId);
@@ -97,10 +95,10 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			schedulePlan.Enabled = (bool)src["enabled"];
 			if (src["last_started_job_id"] != DBNull.Value)
 				schedulePlan.LastStartedJobId = (Guid)src["last_started_job_id"];
-			schedulePlan.CreatedOn = (DateTime)src["created_on"];
+			schedulePlan.CreatedOn = DateTime.SpecifyKind((DateTime)src["created_on"], DateTimeKind.Utc);
 			if (src["last_modified_by"] != DBNull.Value)
 				schedulePlan.LastModifiedBy = (Guid)src["last_modified_by"];
-			schedulePlan.LastModifiedOn = (DateTime)src["last_modified_on"];
+			schedulePlan.LastModifiedOn = DateTime.SpecifyKind((DateTime)src["last_modified_on"],DateTimeKind.Utc);
 
 			return schedulePlan;
 		}

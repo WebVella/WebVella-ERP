@@ -1,31 +1,35 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
-namespace WebVella.ERP.Api.Models
+namespace WebVella.Erp.Api.Models
 {
 	[Serializable]
 	public enum EntityRelationType
     {
-        /// <summary>
-        /// 1. Origin field should be an unique, required Guid field
-        /// 2. Target field should be an unique, required Guid field
-        /// 3. Target field record values should match one origin record field values
-        /// </summary>
-        OneToOne = 1,
+		/// <summary>
+		/// 1. Origin field should be an unique, required Guid field
+		/// 2. Target field should be an unique, required Guid field
+		/// 3. Target field record values should match one origin record field values
+		/// </summary>
+		[SelectOption(Label = "(1:1) One to One")]
+		OneToOne = 1,
 
-        /// <summary>
-        /// 1. Origin field should be an unique,required Guid field
-        /// 2. Target field should be a Guid field 
-        /// 3. Target field record values should match atleast one origin record field values or null if field value is not required
-        /// </summary>
-        OneToMany = 2,
+		/// <summary>
+		/// 1. Origin field should be an unique,required Guid field
+		/// 2. Target field should be a Guid field 
+		/// 3. Target field record values should match atleast one origin record field values or null if field value is not required
+		/// </summary>
+		[SelectOption(Label = "(1:N) One to Many")]
+		OneToMany = 2,
 
-        /// <summary>
-        /// 1. Origin field should be an unique, required Guid field
-        /// 2. Target field should be an unique, required Guid field
-        /// </summary>
-        ManyToMany = 3
+		/// <summary>
+		/// 1. Origin field should be an unique, required Guid field
+		/// 2. Target field should be an unique, required Guid field
+		/// </summary>
+		[SelectOption(Label = "(N:N) Many to Many")]
+		ManyToMany = 3
     }
 
 	[Serializable]
@@ -72,6 +76,11 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "targetFieldName")]
 		public string TargetFieldName { get; set; }
+
+		public override string ToString()
+		{
+			return $"{Name} org:{OriginEntityName}.{OriginFieldName}  tar:{TargetEntityName}.{TargetFieldName}";
+		}
 	}
 
 	[Serializable]

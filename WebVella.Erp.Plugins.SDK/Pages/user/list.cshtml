@@ -1,0 +1,50 @@
+﻿@page "/sdk/access/user/l/list"
+
+@model WebVella.Erp.Plugins.SDK.Pages.User.ListModel
+@{
+	Layout = "~/Pages/_AppMaster.cshtml";
+	ViewData["Title"] = "Users";
+}
+<wv-page-header color="#dc3545" area-label="Users" title="All users" 
+	icon-class="ti-user" return-url="@Model.ReturnUrl">
+	<wv-page-header-actions>
+		<wv-button type="LinkAsButton" href="@($"/sdk/access/user/c")" color="White" size="Small" icon-class="fa fa-plus fa-fw go-green" text="New user"></wv-button>
+	</wv-page-header-actions>
+</wv-page-header>
+
+	<wv-grid bordered="true" hover="true" columns="Model.Columns" page="Model.Pager" total-count="Model.Records.TotalCount" page-size="Model.PagerSize">
+		@foreach (var record in Model.Records)
+		{
+			<wv-grid-row>
+				<wv-grid-column>
+					@if ((string)record["username"] == "system")
+					{
+					<wv-button type="Button" is-disabled="true" color="White" size="Small" icon-class="fa fa-lock fa-fw"></wv-button>
+					}
+					else
+					{
+					<wv-button type="LinkAsButton" href="@($"/sdk/access/user/m/{(Guid)record["id"]}")" color="White" size="Small" icon-class="fa fa-pencil-alt fa-fw"></wv-button>
+					}
+				</wv-grid-column>
+				<wv-grid-column>@record["username"]</wv-grid-column>
+				<wv-grid-column>@record["email"]</wv-grid-column>
+				<wv-grid-column>
+					@{
+						var roleNameList = new List<string>();
+						foreach (var role in (List<EntityRecord>)(record["$user_role"]))
+						{
+							roleNameList.Add((string)role["name"]);
+						}
+					}
+					<span>@String.Join(", ",roleNameList)</span>
+				</wv-grid-column>
+			</wv-grid-row>
+		}
+		@if (Model.Records.Count == 0) { 
+		<tbody>
+			<tr>
+				<td colspan="@Model.Columns.Count"><div class="alert alert-info">No users found</div></td>
+			</tr>
+		</tbody>
+		}
+	</wv-grid>

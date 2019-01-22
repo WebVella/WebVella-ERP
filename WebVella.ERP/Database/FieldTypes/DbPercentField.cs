@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace WebVella.ERP.Database
+namespace WebVella.Erp.Database
 {
 	public class DbPercentField : DbBaseField
     {

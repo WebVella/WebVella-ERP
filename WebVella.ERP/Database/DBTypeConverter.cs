@@ -1,8 +1,8 @@
 ﻿using System;
 using NpgsqlTypes;
-using WebVella.ERP.Api.Models;
+using WebVella.Erp.Api.Models;
 
-namespace WebVella.ERP.Database
+namespace WebVella.Erp.Database
 {
 	public static class DbTypeConverter
 	{
@@ -66,9 +66,6 @@ namespace WebVella.ERP.Database
 				case FieldType.TextField:
 					pgType = "text";
 					break;
-				case FieldType.TreeSelectField:
-					pgType = "uuid[]";
-					break;
 				case FieldType.UrlField:
 					pgType = "varchar(1000)";
 					break;
@@ -98,7 +95,7 @@ namespace WebVella.ERP.Database
 					pgType = NpgsqlDbType.Date;
 					break;
 				case FieldType.DateTimeField:
-					pgType = NpgsqlDbType.TimestampTZ;
+					pgType = NpgsqlDbType.TimestampTz;
 					break;
 				case FieldType.EmailField:
 					pgType = NpgsqlDbType.Varchar;
@@ -139,9 +136,6 @@ namespace WebVella.ERP.Database
 				case FieldType.TextField:
 					pgType = NpgsqlDbType.Text;
 					break;
-				case FieldType.TreeSelectField:
-					pgType = NpgsqlDbType.Array | NpgsqlDbType.Uuid;
-					break;
 				case FieldType.UrlField:
 					pgType = NpgsqlDbType.Varchar;
 					break;
@@ -171,7 +165,7 @@ namespace WebVella.ERP.Database
 			else if (field is DbDateField)
 				pgType = NpgsqlDbType.Date;
 			else if (field is DbDateTimeField)
-				pgType = NpgsqlDbType.TimestampTZ;
+				pgType = NpgsqlDbType.TimestampTz;
 			else if (field is DbEmailField)
 				pgType = NpgsqlDbType.Varchar;
 			else if (field is DbFileField)

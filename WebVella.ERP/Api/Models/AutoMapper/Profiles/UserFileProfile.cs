@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
+namespace WebVella.Erp.Api.Models.AutoMapper.Profiles
 {
 	public class UserFileProfile : Profile
 	{

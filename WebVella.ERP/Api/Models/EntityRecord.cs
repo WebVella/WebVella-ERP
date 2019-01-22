@@ -1,9 +1,9 @@
 ﻿
 using Newtonsoft.Json;
 using System;
-using WebVella.ERP.Utilities.Dynamic;
+using WebVella.Erp.Utilities.Dynamic;
 
-namespace WebVella.ERP.Api.Models
+namespace WebVella.Erp.Api.Models
 {
 	[Serializable]
 	public class EntityRecord : Expando

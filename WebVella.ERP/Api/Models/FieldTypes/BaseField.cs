@@ -3,9 +3,9 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WebVella.ERP.Api.Models;
+using WebVella.Erp.Api.Models;
 
-namespace WebVella.ERP
+namespace WebVella.Erp
 {
     public abstract class InputField
     {
@@ -139,9 +139,6 @@ namespace WebVella.ERP
                 case FieldType.UrlField:
                     field = inputField.ToObject<InputUrlField>();
                     break;
-				case FieldType.TreeSelectField:
-					field = inputField.ToObject<InputTreeSelectField>();
-					break;
 				default:
 					throw new Exception("Invalid field type.");
             }
@@ -212,9 +209,6 @@ namespace WebVella.ERP
                 case FieldType.UrlField:
                     type = typeof(InputUrlField);
                     break;
-				case FieldType.TreeSelectField:
-					type = typeof(InputTreeSelectField);
-					break;
 				default:
 					throw new Exception("Invalid field type.");
 			}
@@ -265,6 +259,9 @@ namespace WebVella.ERP
         [JsonProperty(PropertyName = "enableSecurity")]
         public bool EnableSecurity { get; set; }
 
+        [JsonProperty(PropertyName = "entityName")]
+        public string EntityName { get; set; }
+
         public Field()
         {
             Required = false;
@@ -292,9 +289,10 @@ namespace WebVella.ERP
             System = field.System;
             Permissions = field.Permissions;
             EnableSecurity = field.EnableSecurity;
+            EntityName = field.EntityName;
         }
 
-        internal object GetDefaultValue()
+        public object GetDefaultValue()
         {
             if (this is AutoNumberField)
                 return ((AutoNumberField)this).DefaultValue;
@@ -305,14 +303,14 @@ namespace WebVella.ERP
             else if (this is DateField)
             {
                 if (((DateField)this).UseCurrentTimeAsDefaultValue.Value)
-                    return DateTime.UtcNow.Date;
+                    return DateTime.Now.Date;
                 else
                     return ((DateField)this).DefaultValue;
             }
             else if (this is DateTimeField)
             {
                 if (((DateTimeField)this).UseCurrentTimeAsDefaultValue.Value)
-                    return DateTime.UtcNow;
+                    return DateTime.Now;
                 else
                     return ((DateTimeField)this).DefaultValue;
             }

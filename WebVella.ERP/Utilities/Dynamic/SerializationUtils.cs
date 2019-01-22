@@ -41,7 +41,7 @@ using System.Xml.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Diagnostics;
 
-namespace WebVella.ERP.Utilities.Dynamic
+namespace WebVella.Erp.Utilities.Dynamic
 {
 
     // Serialization specific code

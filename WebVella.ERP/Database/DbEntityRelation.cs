@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
-using WebVella.ERP.Api.Models;
+using WebVella.Erp.Api.Models;
 
-namespace WebVella.ERP.Database
+namespace WebVella.Erp.Database
 {
     public class DbEntityRelation : DbDocumentBase
     {

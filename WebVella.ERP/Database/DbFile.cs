@@ -3,7 +3,7 @@ using System;
 using System.Data;
 using System.IO;
 
-namespace WebVella.ERP.Database
+namespace WebVella.Erp.Database
 {
 	public class DbFile
 	{
@@ -34,7 +34,7 @@ namespace WebVella.ERP.Database
 
 		private Stream GetContentStream(DbConnection connection, FileAccess fileAccess = FileAccess.ReadWrite)
 		{
-			if (Settings.EnableFileSystemStorage && ObjectId == 0)
+			if (ErpSettings.EnableFileSystemStorage && ObjectId == 0)
 			{
 				var path = DbFileRepository.GetFileSystemPath(this);
 				if (File.Exists(path))
@@ -71,7 +71,7 @@ namespace WebVella.ERP.Database
 
 		public byte[] GetBytes()
 		{
-			if (Settings.EnableFileSystemStorage && ObjectId == 0)
+			if (ErpSettings.EnableFileSystemStorage && ObjectId == 0)
 			{
 				//no need for database connection and any transaction
 				return GetBytes(null);

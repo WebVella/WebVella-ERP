@@ -1,11 +1,11 @@
 ﻿//using AutoMapper;
-//using WebVella.ERP.Database;
+//using WebVella.Erp.Database;
 //using System;
-//using WebVella.ERP;
-//using WebVella.ERP.Api.Models;
-//using WebVella.ERP.Storage;
+//using WebVella.Erp;
+//using WebVella.Erp.Api.Models;
+//using WebVella.Erp.Storage;
 
-//namespace WebVella.ERP.Database.AutoMapper.Profiles
+//namespace WebVella.Erp.Database.AutoMapper.Profiles
 //{
 //	internal class DbRecordsListProfile : Profile
 //	{

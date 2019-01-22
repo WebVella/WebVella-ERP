@@ -2,14 +2,14 @@
 
 //using System;
 //using AutoMapper;
-//using WebVella.ERP.Api.Models.AutoMapper.Resolvers;
-//using WebVella.ERP.Database.AutoMapper.Profiles;
-//using WebVella.ERP;
+//using WebVella.Erp.Api.Models.AutoMapper.Resolvers;
+//using WebVella.Erp.Database.AutoMapper.Profiles;
+//using WebVella.Erp;
 
 //#endregion
 
 
-//namespace WebVella.ERP.Database.AutoMapper
+//namespace WebVella.Erp.Database.AutoMapper
 //{
 //    public class AutoMapperConfiguration
 //    {

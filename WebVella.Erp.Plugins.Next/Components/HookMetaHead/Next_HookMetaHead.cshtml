@@ -1,0 +1,12 @@
+﻿@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Web.Utils;
+@{
+var linkTagsToInclude = (List<LinkTagInclude>)ViewBag.LinkTags;
+}
+@* <link> *@
+@* ================================================= *@
+@foreach (var linkTag in linkTagsToInclude)
+{
+	var tag = PageUtils.GenerateTagsFromObject(linkTag);
+	@:@Html.Raw(tag)
+}

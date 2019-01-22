@@ -1,0 +1,81 @@
+﻿@page "/sdk/objects/entity/r/{ParentRecordId}/rl/relations/r/{RecordId}/{PageName?}"
+
+
+@model WebVella.Erp.Plugins.SDK.Pages.ErpEntity.RelationDetailsModel
+@{
+	Layout = "~/Pages/_AppMaster.cshtml";
+	ViewData["Title"] = "Entity relation details";
+}
+
+<wv-page-header color="@Model.ErpEntity.Color" area-label="Entities" title="@Model.ErpEntity.Name" subtitle="Relation details"
+	icon-class="@Model.ErpEntity.IconName" return-url="@Model.ReturnUrl">
+
+<wv-page-header-actions>
+	@foreach (var action in Model.HeaderActions)
+	{
+		@Html.Raw(action)
+	}
+</wv-page-header-actions>
+
+<wv-page-header-toolbar>
+	@foreach (var action in Model.HeaderToolbar)
+	{
+		@Html.Raw(action)
+	}
+</wv-page-header-toolbar>
+
+	</wv-page-header>
+
+<wv-validation validation="Model.Validation" show-errors="false"></wv-validation>
+
+<wv-form label-mode="Stacked" mode="Display">
+	<wv-section class="mt-4">
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-select label-text="Type" value="@Model.Relation.RelationType" options="@Model.TypeOptions" name="Type" ></wv-field-select>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-guid label-text="Id" value="@Model.Relation.Id"></wv-field-guid>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="Name" value="@Model.Relation.Name"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-checkbox label-text="System" text-true="system relation" text-false="not a system relation" value="@Model.Relation.System"></wv-field-checkbox>
+			</wv-column>
+		</wv-row>
+		@*<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="Label" value="@Model.Relation.Label"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-text label-text="Description" value="@Model.Relation.Description"></wv-field-text>
+			</wv-column>
+		</wv-row>*@
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="Origin Entity" value="@Model.Relation.OriginEntityName"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-text label-text="Origin Field" value="@Model.Relation.OriginFieldName"></wv-field-text>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="Target Entity" value="@Model.Relation.TargetEntityName"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-text label-text="Target Field" value="@Model.Relation.TargetFieldName"></wv-field-text>
+			</wv-column>
+		</wv-row>
+	</wv-section>
+</wv-form>
+
+
+
+@if (!Model.Relation.System)
+{
+<wv-form name="DeleteRecord" id="DeleteRecord"></wv-form>
+}

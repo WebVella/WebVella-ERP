@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WebVella.ERP.Api.Models;
-using WebVella.ERP.Storage;
-using WebVella.ERP.Api.Models.AutoMapper;
-using WebVella.ERP.Database;
+using WebVella.Erp.Api.Models;
+using WebVella.Erp.Storage;
+using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Database;
+using System.Net;
 
-namespace WebVella.ERP.Api
+namespace WebVella.Erp.Api
 {
     public class EntityRelationManager
     {
-        public EntityRelationManager()
-        {
-			//relationRepository = new DbRelationRepository();
-			//entityRepository = new DbEntityRepository();
-        }
 
         #region << Validation >>  
 
@@ -314,7 +310,6 @@ namespace WebVella.ERP.Api
             }
         }
 
-
         public EntityRelationListResponse Read(List<DbEntity> storageEntityList = null)
         {
             EntityRelationListResponse response = new EntityRelationListResponse();
@@ -377,7 +372,18 @@ namespace WebVella.ERP.Api
             EntityRelationResponse response = new EntityRelationResponse();
             response.Timestamp = DateTime.UtcNow;
             response.Object = relation;
-            response.Errors = ValidateRelation(relation, ValidationType.Create);
+
+			bool hasPermisstion = SecurityContext.HasMetaPermission();
+			if (!hasPermisstion)
+			{
+				response.StatusCode = HttpStatusCode.Forbidden;
+				response.Success = false;
+				response.Message = "User have no permissions to manipulate erp meta.";
+				response.Errors.Add(new ErrorModel { Message = "Access denied." });
+				return response;
+			}
+
+			response.Errors = ValidateRelation(relation, ValidationType.Create);
             if (response.Errors.Count > 0)
             {
                 response.Success = false;
@@ -428,7 +434,18 @@ namespace WebVella.ERP.Api
             EntityRelationResponse response = new EntityRelationResponse();
             response.Timestamp = DateTime.UtcNow;
             response.Object = relation;
-            response.Errors = ValidateRelation(relation, ValidationType.Update);
+
+			bool hasPermisstion = SecurityContext.HasMetaPermission();
+			if (!hasPermisstion)
+			{
+				response.StatusCode = HttpStatusCode.Forbidden;
+				response.Success = false;
+				response.Message = "User have no permissions to manipulate erp meta.";
+				response.Errors.Add(new ErrorModel { Message = "Access denied." });
+				return response;
+			}
+
+			response.Errors = ValidateRelation(relation, ValidationType.Update);
             if (response.Errors.Count > 0)
             {
                 response.Success = false;
@@ -477,8 +494,18 @@ namespace WebVella.ERP.Api
             response.Success = false;
             response.Object = null;
 
-            try
-            {
+			bool hasPermisstion = SecurityContext.HasMetaPermission();
+			if (!hasPermisstion)
+			{
+				response.StatusCode = HttpStatusCode.Forbidden;
+				response.Success = false;
+				response.Message = "User have no permissions to manipulate erp meta.";
+				response.Errors.Add(new ErrorModel { Message = "Access denied." });
+				return response;
+			}
+
+			try
+			{
 
                 var storageRelation = DbContext.Current.RelationRepository.Read(relationId);
 				Cache.ClearRelations();

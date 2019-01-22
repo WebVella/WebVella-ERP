@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 
 
-namespace WebVella.ERP.Database
+namespace WebVella.Erp.Database
 {
     public class DbCheckboxField : DbBaseField
     {

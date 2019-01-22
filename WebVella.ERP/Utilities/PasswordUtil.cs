@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace WebVella.ERP.Utilities
+namespace WebVella.Erp.Utilities
 {
     public static class PasswordUtil
     {

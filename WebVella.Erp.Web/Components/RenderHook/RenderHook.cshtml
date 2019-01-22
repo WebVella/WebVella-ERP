@@ -1,0 +1,7 @@
+﻿@if (ViewBag.ComponentNames != null)
+{
+	@foreach (var componentName in ViewBag.ComponentNames)
+	{
+		@await Component.InvokeAsync(componentName, new { pageModel = ViewBag.PageModel })
+	}
+}

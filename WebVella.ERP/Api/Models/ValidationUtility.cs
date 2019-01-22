@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace WebVella.ERP.Api.Models
+namespace WebVella.Erp.Api.Models
 {
 	internal class ValidationUtility
 	{
 		private const string NAME_VALIDATION_PATTERN = @"^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$";
 		private const string VIEW_NAME_VALIDATION_PATTERN = @"^[a-z~](?!.*__)[a-z0-9_~]*[a-z0-9~]$";
 
-		public static List<ErrorModel> ValidateName(string name, int minLen = 2, int maxLen = 50, string key = "name")
+		public static List<ErrorModel> ValidateName(string name, int minLen = 2, int maxLen = 200, string key = "name")
 		{
 			if (!string.IsNullOrEmpty(name))
 				name = name.Trim();
@@ -40,7 +40,7 @@ namespace WebVella.ERP.Api.Models
 			return errors;
 		}
 
-		public static List<ErrorModel> ValidateViewName(string name, int minLen = 2, int maxLen = 50, string key = "name")
+		public static List<ErrorModel> ValidateViewName(string name, int minLen = 2, int maxLen = 200, string key = "name")
 		{
 			if (!string.IsNullOrEmpty(name))
 				name = name.Trim();
@@ -71,7 +71,7 @@ namespace WebVella.ERP.Api.Models
 			return errors;
 		}
 
-		public static List<ErrorModel> ValidateLabel(string label, int minLen = 1, int maxLen = 50, string key = "label")
+		public static List<ErrorModel> ValidateLabel(string label, int minLen = 1, int maxLen = 200, string key = "label")
 		{
 			if (!string.IsNullOrEmpty(label))
 				label = label.Trim();
@@ -98,9 +98,10 @@ namespace WebVella.ERP.Api.Models
 			return errors;
 		}
 
-		public static List<ErrorModel> ValidateLabelPlural(string label, int minLen = 1, int maxLen = 50)
+		public static List<ErrorModel> ValidateLabelPlural(string label, int minLen = 1, int maxLen = 200)
 		{
-			label = label.Trim();
+			if (!string.IsNullOrEmpty(label))
+				label = label.Trim();
 
 			if (maxLen <= 0)
 				throw new ArgumentException("maxLen<=0");

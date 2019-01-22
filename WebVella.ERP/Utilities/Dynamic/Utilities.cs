@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace WebVella.ERP.Utilities.Dynamic
+namespace WebVella.Erp.Utilities.Dynamic
 {
     internal static class Utilities
     {

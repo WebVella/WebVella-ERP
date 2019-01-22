@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using WebVella.ERP.Api;
-using WebVella.ERP.Database;
-using WebVella.ERP.Diagnostics;
-using WebVella.ERP.Utilities.Dynamic;
+using WebVella.Erp.Api;
+using WebVella.Erp.Database;
+using WebVella.Erp.Diagnostics;
+using WebVella.Erp.Utilities.Dynamic;
 
-namespace WebVella.ERP.Jobs
+namespace WebVella.Erp.Jobs
 {
 	public class JobPool
 	{
@@ -36,7 +36,7 @@ namespace WebVella.ERP.Jobs
 		{
 			get
 			{
-				lock(lockObj)
+				lock (lockObj)
 				{
 					return MAX_THREADS_POOL_COUNT - Pool.Count;
 				}
@@ -93,60 +93,46 @@ namespace WebVella.ERP.Jobs
 					Pool.Add(context);
 				}
 
-				var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-				Assembly assembly = assemblies.FirstOrDefault(a => a.GetName().Name == context.Type.Assembly);
+				var instance = (ErpJob)Activator.CreateInstance(context.Type.ErpJobType);
 
-				if (assembly == null)
+
+				try
 				{
-					//log error
-					throw new Exception("Assembly can not be found!");
-				}
-
-				Type type = assembly.GetType(context.Type.CompleteClassName);
-				if(type == null)
-					throw new Exception($"Type with name '{context.Type.CompleteClassName}' does not exist in assembly {assembly.FullName}");
-
-				var method = type.GetMethod(context.Type.MethodName);
-				if (method == null)
-					throw new Exception($"Method with name '{context.Type.MethodName}' does not exist in assembly {assembly.FullName}");
-
-				using (var secCtx = SecurityContext.OpenSystemScope())
-				{
-					try
+					DbContext.CreateContext(ErpSettings.ConnectionString);
+					using (var secCtx = SecurityContext.OpenSystemScope())
 					{
-						DbContext.CreateContext(Settings.ConnectionString);
 						//execute job method
-						method.Invoke(new DynamicObjectCreater(type).CreateInstance(), new object[] { context });
-					}
-					catch (TargetInvocationException ex)
-					{
-						throw ex.InnerException;
-					}
-					catch (Exception ex)
-					{
-						throw ex;
-					}
-					finally
-					{
-						DbContext.CloseContext();
+						instance.Execute(context);
 					}
 				}
+				catch (TargetInvocationException ex)
+				{
+					throw ex.InnerException;
+				}
+				catch (Exception ex)
+				{
+					throw ex;
+				}
+				finally
+				{
+					DbContext.CloseContext();
+				}
 
-                if (context.Result != null)
-                    job.Result = context.Result;
+				if (context.Result != null)
+					job.Result = context.Result;
 
-                job.FinishedOn = DateTime.UtcNow;
+				job.FinishedOn = DateTime.UtcNow;
 				job.Status = JobStatus.Finished;
 				jobService.UpdateJob(job);
 			}
 			catch (Exception ex)
 			{
-				using (var secCtx = SecurityContext.OpenSystemScope())
-				{
-					try
-					{
-						DbContext.CreateContext(Settings.ConnectionString);
 
+				try
+				{
+					DbContext.CreateContext(ErpSettings.ConnectionString);
+					using (var secCtx = SecurityContext.OpenSystemScope())
+					{
 						Log log = new Log();
 						log.Create(LogType.Error, $"JobPool.Process.{context.Type.Name}", ex);
 
@@ -155,11 +141,12 @@ namespace WebVella.ERP.Jobs
 						job.ErrorMessage = ex.Message;
 						jobService.UpdateJob(job);
 					}
-					finally
-					{
-						DbContext.CloseContext();
-					}
 				}
+				finally
+				{
+					DbContext.CloseContext();
+				}
+
 			}
 			finally
 			{
@@ -169,6 +156,7 @@ namespace WebVella.ERP.Jobs
 				}
 			}
 		}
+
 
 		public void AbortJob(Guid jobId)
 		{

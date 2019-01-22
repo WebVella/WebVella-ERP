@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebVella.ERP.Jobs
+namespace WebVella.Erp.Jobs
 {
 	[Serializable]
 	public enum JobPriority
@@ -34,10 +34,10 @@ namespace WebVella.ERP.Jobs
 		[JsonProperty(PropertyName = "complete_class_name")]
 		public string CompleteClassName { get; set; }
 
-		[JsonProperty(PropertyName = "method_name")]
-		public string MethodName { get; set; }
-
 		[JsonProperty(PropertyName = "allow_single_instance")]
 		public bool AllowSingleInstance { get; set; }
+
+		[JsonIgnore]
+		public Type ErpJobType { get; set; }
 	}
 }

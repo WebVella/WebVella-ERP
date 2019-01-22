@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebVella.ERP.Jobs
+namespace WebVella.Erp.Jobs
 {
 	public class JobAttribute : Attribute
 	{
@@ -9,12 +9,12 @@ namespace WebVella.ERP.Jobs
 		private JobPriority defaultPriority;
 		bool allowSingleInstance;
 
-		public JobAttribute(string id, string name)
+		public JobAttribute(string id, string name, bool allowSingleInstance = false, JobPriority defaultPriority = JobPriority.Low )
 		{
 			this.id = new Guid(id);
 			this.name = name;
-			this.defaultPriority = JobPriority.Low;
-			this.allowSingleInstance = false;
+			this.defaultPriority = defaultPriority;
+			this.allowSingleInstance = allowSingleInstance;
 		}
 
 		public virtual Guid Id

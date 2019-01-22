@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace WebVella.ERP.Jobs
+namespace WebVella.Erp.Jobs
 {
 	[Serializable]
 	public enum JobStatus
@@ -29,14 +29,8 @@ namespace WebVella.ERP.Jobs
 		[JsonProperty(PropertyName = "type_name")]
 		public string TypeName { get; set; }
 
-		[JsonProperty(PropertyName = "assembly")]
-		public string Assembly { get; set; }
-
 		[JsonProperty(PropertyName = "complete_class_name")]
 		public string CompleteClassName { get; set; }
-
-		[JsonProperty(PropertyName = "method_name")]
-		public string MethodName { get; set; }
 
 		[JsonProperty(PropertyName = "attributes")]
 		public dynamic Attributes { get; set; }

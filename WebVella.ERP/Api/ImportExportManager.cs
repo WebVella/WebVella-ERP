@@ -6,191 +6,27 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
-using WebVella.ERP.Api.Models;
-using WebVella.ERP.Database;
-using WebVella.ERP.WebHooks;
+using WebVella.Erp.Api.Models;
+using WebVella.Erp.Database;
 
-namespace WebVella.ERP.Api
+namespace WebVella.Erp.Api
 {
-    public class ImportExportManager
-    {
-        private const char RELATION_SEPARATOR = '.';
-        private const char RELATION_NAME_RESULT_SEPARATOR = '$';
-        RecordManager recMan;
-        EntityManager entMan;
-        EntityRelationManager relMan;
-        SecurityManager secMan;
-        IWebHookService hooksService;
+	public class ImportExportManager
+	{
+		private const char RELATION_SEPARATOR = '.';
+		private const char RELATION_NAME_RESULT_SEPARATOR = '$';
+		RecordManager recMan;
+		EntityManager entMan;
+		EntityRelationManager relMan;
+		SecurityManager secMan;
 
-        public ImportExportManager(IWebHookService hooksService)
-        {
-            recMan = new RecordManager();
-            secMan = new SecurityManager();
-            entMan = new EntityManager();
-            relMan = new EntityRelationManager();
-            this.hooksService = hooksService;
-        }
-
-        public ResponseModel ExportListRecordsToCsv(string entityName, string listName, Dictionary<string, string> queries, int count = 10)
-        {
-            ResponseModel response = new ResponseModel();
-            response.Message = "Records successfully exported";
-            response.Timestamp = DateTime.UtcNow;
-            response.Success = true;
-            response.Object = null;
-
-            EntityListResponse entitiesResponse = entMan.ReadEntities();
-            List<Entity> entities = entitiesResponse.Object;
-            Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
-
-            if (entity == null)
-            {
-                response.Timestamp = DateTime.UtcNow;
-                response.Success = false;
-                response.Message = "Export failed! Entity with such name does not exist!";
-                response.Errors.Add(new ErrorModel("entityName", entityName, "Entity with such name does not exist!"));
-                return response;
-            }
-
-            bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Read, entity);
-            if (!hasPermisstion)
-            {
-                response.Success = false;
-                response.Message = "Export failed! Trying to read records from entity '" + entity.Name + "' with no read access.";
-                response.Errors.Add(new ErrorModel { Message = "Access denied." });
-                return response;
-            }
-
-            List<EntityRelation> relations = new List<EntityRelation>();
-            var relationResponse = relMan.Read();
-            if (relationResponse.Success)
-                relations = relationResponse.Object;
-
-            try
-            {
-                RecordList listMeta = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
-
-                QueryObject queryObj = null;
-                if (queries.Count > 0)
-                {
-                    List<QueryObject> queryObjList = new List<QueryObject>();
-
-                    if (listMeta != null)
-                    {
-                        foreach (var query in queries)
-                        {
-                            if (listMeta.Columns.Any(c => c.DataName == query.Key))
-                            {
-                                queryObjList.Add(EntityQuery.QueryContains(query.Key, query.Value));
-                            }
-                        }
-                    }
-
-                    if (queryObjList.Count == 1)
-                        queryObj = queryObjList[0];
-                    else if (queryObjList.Count > 1)
-                        queryObj = EntityQuery.QueryAND(queryObjList.ToArray());
-                }
-
-                var stream = new MemoryStream();
-                var textWriter = new StreamWriter(stream);
-
-                List<EntityRecord> records = null;
-                if (count == -1)
-                    records = recMan.GetListRecords(entities, entity, listName, null, queryObj, null, true, returnAllRecords: true);
-                else
-                    records = recMan.GetListRecords(entities, entity, listName, 1, queryObj, count, true);
-
-                if (records.Count > 0)
-                {
-                    var csv = new CsvWriter(textWriter);
-                    csv.Configuration.QuoteAllFields = true;
-
-                    //write header
-                    foreach (var prop in records[0].Properties)
-                    {
-                        var listItem = listMeta.Columns.FirstOrDefault(c => c.DataName == prop.Key);
-                        if (prop.Key.StartsWith("$field") && listItem == null)
-                            continue;// remove id field from relation that are not inserted as columns
-                        string name = prop.Key;
-                        if (prop.Key.StartsWith("$field$"))
-                        {
-                            name = prop.Key.Remove(0, 7);
-                            name = "$" + name.Replace('$', '.');
-                        }
-                        csv.WriteField(name);
-                    }
-                    csv.NextRecord();
-
-
-                    foreach (var record in records)
-                    {
-                        foreach (var prop in record.Properties)
-                        {
-                            if (prop.Value != null)
-                            {
-                                if (prop.Value is List<object>)
-                                {
-                                    var listItem = (RecordListRelationFieldItem)listMeta.Columns.FirstOrDefault(c => c.DataName == prop.Key);
-                                    if (prop.Key.StartsWith("$field") && listItem == null)
-                                    {
-                                        continue;// remove id field from relation that are not inserted as columns
-                                    }
-                                    var type = listItem != null ? listItem.Meta.GetFieldType() : FieldType.GuidField;
-                                    if (prop.Key.StartsWith("$field"))
-                                    {
-                                        var relationData = prop.Key.Split('$').Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
-                                        var relation = relations.FirstOrDefault(r => r.Name == relationData[1]);
-                                        if (relation.RelationType == EntityRelationType.ManyToMany ||
-                                            (relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == entity.Id))
-                                            csv.WriteField(JsonConvert.SerializeObject(prop.Value).ToString());
-                                        else if (((List<object>)prop.Value).Count > 0)
-                                            csv.WriteField(((List<object>)prop.Value)[0] ?? "");
-                                        else
-                                            csv.WriteField("");
-                                    }
-                                    else if (type != FieldType.MultiSelectField && type != FieldType.TreeSelectField)
-                                    {
-                                        if (((List<object>)prop.Value).Count > 0)
-                                            csv.WriteField(((List<object>)prop.Value)[0]);
-                                        else
-                                            csv.WriteField("");
-                                    }
-                                    else
-                                    {
-                                        csv.WriteField(JsonConvert.SerializeObject(prop.Value).ToString());
-                                    }
-                                }
-                                else
-                                {
-                                    csv.WriteField(prop.Value);
-                                }
-                            }
-                            else
-                                csv.WriteField("");
-                        }
-                        csv.NextRecord();
-                        textWriter.Flush();
-                    }
-                }
-
-                byte[] buffer = stream.ToArray();
-
-                response.Object = buffer;
-
-                textWriter.Close();
-                stream.Close();
-            }
-            catch (Exception ex)
-            {
-                response.Timestamp = DateTime.UtcNow;
-                response.Success = false;
-                response.Message = ex.Message;
-                return response;
-            }
-
-            return response;
-        }
+		public ImportExportManager()
+		{
+			recMan = new RecordManager();
+			secMan = new SecurityManager();
+			entMan = new EntityManager();
+			relMan = new EntityRelationManager();
+		}
 
         public ResponseModel ImportEntityRecordsFromCsv(string entityName, string fileTempPath)
         {
@@ -398,14 +234,6 @@ namespace WebVella.ERP.Api
                                                 newRecord[columnName] = null;
                                         }
                                         break;
-                                    case FieldType.TreeSelectField:
-                                        {
-                                            if (!string.IsNullOrWhiteSpace(value))
-                                                newRecord[columnName] = new List<string>(new string[] { value });
-                                            else
-                                                newRecord[columnName] = null;
-                                        }
-                                        break;
                                     case FieldType.GuidField:
                                         {
                                             Guid gValue;
@@ -470,13 +298,13 @@ namespace WebVella.ERP.Api
             }
         }
 
-        public ResponseModel EvaluateImportEntityRecordsFromCsv(string entityName, JObject postObject, bool enableWebHooks = true, object controller = null)
-        {
-            ResponseModel response = new ResponseModel();
-            response.Message = "Records successfully evaluated";
-            response.Timestamp = DateTime.UtcNow;
-            response.Success = true;
-            response.Object = null;
+		public ResponseModel EvaluateImportEntityRecordsFromCsv(string entityName, JObject postObject, object controller = null)
+		{
+			ResponseModel response = new ResponseModel();
+			response.Message = "Records successfully evaluated";
+			response.Timestamp = DateTime.UtcNow;
+			response.Success = true;
+			response.Object = null;
 
             List<EntityRelation> relations = relMan.Read().Object;
             EntityListResponse entitiesResponse = entMan.ReadEntities();
@@ -735,9 +563,9 @@ namespace WebVella.ERP.Api
                         continue;
                     }
 
-                    if (currentFieldMeta.GetFieldType() == FieldType.MultiSelectField || currentFieldMeta.GetFieldType() == FieldType.TreeSelectField)
+                    if (currentFieldMeta.GetFieldType() == FieldType.MultiSelectField )
                     {
-                        ((List<string>)((EntityRecord)evaluationObj["errors"])[columnName]).Add(string.Format("Invalid relation '{0}'. Fields from Multiselect and Treeselect types can't be used as relation fields.", columnName));
+                        ((List<string>)((EntityRecord)evaluationObj["errors"])[columnName]).Add(string.Format("Invalid relation '{0}'. Fields from Multiselect type can't be used as relation fields.", columnName));
                         ((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
                         continue;
                     }
@@ -1077,16 +905,11 @@ namespace WebVella.ERP.Api
                                         break;
                                     case FieldType.SelectField:
                                         {
-                                            if (!((SelectField)currentFieldMeta).Options.Any(o => o.Key == fieldValue))
+                                            if (!((SelectField)currentFieldMeta).Options.Any(o => o.Value == fieldValue))
                                             {
                                                 errorsList.Add("Value does not exist in select field options!");
                                                 ((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
                                             }
-                                        }
-                                        break;
-                                    case FieldType.TreeSelectField:
-                                        {
-
                                         }
                                         break;
                                     case FieldType.GuidField:
@@ -1118,94 +941,23 @@ namespace WebVella.ERP.Api
                         #endregion
                     }
 
-                    if (enableWebHooks && generalCommand == "evaluate-import")
-                    {
-                        #region << WebHook Filters >>
-
-                        Guid? recordId = null;
-                        if (rowRecord.GetProperties().Any(p => p.Key == "id") && !string.IsNullOrWhiteSpace((string)rowRecord["id"]))
-                        {
-                            Guid id;
-                            if (Guid.TryParse((string)rowRecord["id"], out id))
-                                recordId = id;
-                        }
-                        //////////////////////////////////////////////////////////////////////////////////////
-                        //WEBHOOK FILTERS << create_record_input_filter >> AND << update_record_input_filter >>
-                        //////////////////////////////////////////////////////////////////////////////////////
-                        #region
-                        try
-                        {
-                            dynamic hookFilterObj = new ExpandoObject();
-                            hookFilterObj.record = rowRecord;
-                            hookFilterObj.recordId = recordId;
-                            hookFilterObj.controller = controller;
-                            string webHookName = (!recordId.HasValue || recordId.Value == Guid.Empty) ? SystemWebHookNames.CreateRecordInput : SystemWebHookNames.UpdateRecordInput;
-                            hookFilterObj = hooksService.ProcessFilters(webHookName, entityName, hookFilterObj);
-                            rowRecord = hookFilterObj.record;
-                        }
-                        catch (Exception ex)
-                        {
-                            response.Success = false;
-                            response.Object = evaluationObj;
-                            response.Timestamp = DateTime.UtcNow;
-                            response.Message = (!recordId.HasValue || recordId.Value == Guid.Empty) ?
-                                "Plugin error in web hook create_record_input_filter: " + ex.Message :
-                                "Plugin error in web hook update_record_input_filter: " + ex.Message;
-                            return response;
-                            //throw new Exception("Plugin error in web hook update_record_input_filter: " + ex.Message);
-                        }// <<<	
-                        #endregion
-
-                        var validationErrors = new List<ErrorModel>();
-
-                        //////////////////////////////////////////////////////////////////////////////////////
-                        //WEBHOOK FILTER << update_record_validation_errors_filter >>
-                        //////////////////////////////////////////////////////////////////////////////////////
-                        #region
-                        try
-                        {
-                            dynamic hookFilterObj = new ExpandoObject();
-                            hookFilterObj.errors = validationErrors;
-                            hookFilterObj.record = rowRecord;
-                            hookFilterObj.recordId = recordId;
-                            hookFilterObj.controller = controller;
-                            string webHookName = (!recordId.HasValue || recordId.Value == Guid.Empty) ? SystemWebHookNames.CreateRecordValidationErrors : SystemWebHookNames.UpdateRecordValidationErrors;
-                            hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordValidationErrors, entityName, hookFilterObj);
-                            validationErrors = hookFilterObj.errors;
-                        }
-                        catch (Exception ex)
-                        {
-                            response.Success = false;
-                            response.Object = evaluationObj;
-                            response.Timestamp = DateTime.UtcNow;
-                            response.Message = (!recordId.HasValue || recordId.Value == Guid.Empty) ?
-                                "Plugin error in web hook create_record_validation_errors_filter: " + ex.Message :
-                                "Plugin error in web hook update_record_validation_errors_filter: " + ex.Message;
-                            return response;
-                            //throw new Exception ("Plugin error in web hook update_record_validation_errors_filter: " + ex.Message));
-                        }// <<<
-                        #endregion
-
-                        if (validationErrors.Count > 0)
-                        {
-                            List<string> errorsList = (List<string>)((EntityRecord)evaluationObj["errors"])["id"];
-                            foreach (var validationError in validationErrors)
-                            {
-                                errorsList.Add(validationError.Message);
-                                ((EntityRecord)evaluationObj["stats"])["errors"] = (int)((EntityRecord)evaluationObj["stats"])["errors"] + 1;
-                                continue;
-                            }
-                        }
-
-                        #endregion
-                    }
-                }
-                else
-                {
-                    foreach (var columnName in columnNames)
-                    {
-                        EntityRecord commandRecords = ((EntityRecord)commands[columnName]);
-                        string command = (string)commandRecords["command"];
+					if ( generalCommand == "evaluate-import")
+					{
+						Guid? recordId = null;
+						if (rowRecord.GetProperties().Any(p => p.Key == "id") && !string.IsNullOrWhiteSpace((string)rowRecord["id"]))
+						{
+							Guid id;
+							if (Guid.TryParse((string)rowRecord["id"], out id))
+								recordId = id;
+						}
+					}
+				}
+				else
+				{
+					foreach (var columnName in columnNames)
+					{
+						EntityRecord commandRecords = ((EntityRecord)commands[columnName]);
+						string command = (string)commandRecords["command"];
 
                         string fieldValue = csvReader.GetField<string>(columnName);
                         if (!(command == "no_import" && generalCommand == "evaluate-import"))
@@ -1275,117 +1027,29 @@ namespace WebVella.ERP.Api
                         int successfullyCreatedRecordsCount = 0;
                         int successfullyUpdatedRecordsCount = 0;
 
-                        List<EntityRecord> records = (List<EntityRecord>)evaluationObj["records"];
-                        foreach (EntityRecord record in records)
-                        {
-                            EntityRecord newRecord = record;
-                            QueryResponse result;
-                            if (!newRecord.GetProperties().Any(x => x.Key == "id") || newRecord["id"] == null || string.IsNullOrEmpty(newRecord["id"].ToString()))
-                            {
-                                newRecord["id"] = Guid.NewGuid();
-                                if (enableWebHooks)
-                                {
-                                    //////////////////////////////////////////////////////////////////////////////////////
-                                    //WEBHOOK FILTER << create_record_pre_save_filter >>
-                                    //////////////////////////////////////////////////////////////////////////////////////
-                                    #region
-                                    try
-                                    {
-                                        dynamic hookFilterObj = new ExpandoObject();
-                                        hookFilterObj.record = newRecord;
-                                        hookFilterObj.recordId = (Guid)newRecord["id"];
-                                        hookFilterObj.controller = controller;
-                                        hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.CreateRecordPreSave, entityName, hookFilterObj);
-                                        newRecord = hookFilterObj.record;
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        throw new Exception("Plugin error in web hook create_record_pre_save_filter: " + ex.Message);
-                                    }// <<<
-                                    #endregion
-                                }
-
+						List<EntityRecord> records = (List<EntityRecord>)evaluationObj["records"];
+						foreach (EntityRecord record in records)
+						{
+							EntityRecord newRecord = record;
+							QueryResponse result;
+							if (!newRecord.GetProperties().Any(x => x.Key == "id") || newRecord["id"] == null || string.IsNullOrEmpty(newRecord["id"].ToString()))
+							{
+								newRecord["id"] = Guid.NewGuid();
 
                                 result = recMan.CreateRecord(entityName, newRecord);
 
                                 if (result.Success)
                                     successfullyCreatedRecordsCount++;
 
-                                if (result.Success && enableWebHooks)
-                                {
-                                    //////////////////////////////////////////////////////////////////////////////////////
-                                    //WEBHOOK ACTION << create_record >>
-                                    //////////////////////////////////////////////////////////////////////////////////////
-                                    #region
-                                    try
-                                    {
-                                        dynamic hookActionObj = new ExpandoObject();
-                                        hookActionObj.record = result.Object.Data[0];
-                                        hookActionObj.result = result;
-                                        hookActionObj.controller = controller;
-                                        hooksService.ProcessActions(SystemWebHookNames.CreateRecordAction, entityName, hookActionObj);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        throw new Exception("Plugin error in web hook create_record_success_action: " + ex.Message);
-                                    }// <<<
-                                    #endregion
-                                }
-                            }
-                            else
-                            {
-                                if (enableWebHooks)
-                                {
-                                    Guid id;
-                                    if (Guid.TryParse((string)newRecord["id"], out id))
-                                        newRecord["id"] = id;
-                                    //////////////////////////////////////////////////////////////////////////////////////
-                                    //WEBHOOK FILTER << update_record_pre_save_filter >>
-                                    //////////////////////////////////////////////////////////////////////////////////////
-                                    #region
-                                    try
-                                    {
-                                        dynamic hookFilterObj = new ExpandoObject();
-                                        hookFilterObj.record = newRecord;
-                                        hookFilterObj.recordId = new Guid(newRecord["id"].ToString());
-                                        hookFilterObj.controller = controller;
-                                        hookFilterObj = hooksService.ProcessFilters(SystemWebHookNames.UpdateRecordPreSave, entityName, hookFilterObj);
-                                        newRecord = hookFilterObj.record;
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        throw new Exception("Plugin error in web hook update_record_pre_save_filter: " + ex.Message);
-                                    }// <<<
-                                    #endregion
-                                }
-                                result = recMan.UpdateRecord(entityName, newRecord);
+							}
+							else
+							{
+								result = recMan.UpdateRecord(entityName, newRecord);
 
                                 if (result.Success)
                                     successfullyUpdatedRecordsCount++;
 
-                                if (result.Success && enableWebHooks)
-                                {
-                                    //////////////////////////////////////////////////////////////////////////////////////
-                                    //WEBHOOK ACTION << update_record_success_action >>
-                                    //////////////////////////////////////////////////////////////////////////////////////
-                                    #region
-                                    try
-                                    {
-                                        dynamic hookActionObj = new ExpandoObject();
-                                        hookActionObj.record = result.Object.Data[0];
-                                        hookActionObj.oldRecord = newRecord;
-                                        hookActionObj.result = result;
-                                        hookActionObj.recordId = result.Object.Data[0]["id"];
-                                        hookActionObj.controller = controller;
-                                        hooksService.ProcessActions(SystemWebHookNames.UpdateRecordAction, entityName, hookActionObj);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        throw new Exception("Plugin error in web hook update_record_success_action: " + ex.Message);
-                                    }// <<<
-                                    #endregion
-                                }
-                            }
+							}
 
                             if (!result.Success)
                             {
@@ -1408,7 +1072,7 @@ namespace WebVella.ERP.Api
                     }
                     catch (Exception e)
                     {
-                        //WebVella.ERP.Api.Cache.ClearEntities();
+                        //WebVella.Erp.Api.Cache.ClearEntities();
 
                         connection.RollbackTransaction();
 

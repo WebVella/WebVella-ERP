@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace WebVella.ERP.Database
+namespace WebVella.Erp.Database
 {
 	public class DbSelectField : DbBaseField
     {
@@ -9,15 +9,21 @@ namespace WebVella.ERP.Database
 		public string DefaultValue { get; set; }
 
 		[JsonProperty(PropertyName = "options")]
-		public IList<DbSelectFieldOption> Options { get; set; }
+		public IList<DbSelectOption> Options { get; set; }
     }
 
-    public class DbSelectFieldOption
+    public class DbSelectOption
     {
-		[JsonProperty(PropertyName = "key")]
-		public string Key { get; set; }
+		[JsonProperty(PropertyName = "label")]
+		public string Label { get; set; } = "";
 
 		[JsonProperty(PropertyName = "value")]
-		public string Value { get; set; }
-    }
+		public string Value { get; set; } = "";
+
+		[JsonProperty(PropertyName = "icon_class")]
+		public string IconClass { get; set; } = "";
+
+		[JsonProperty(PropertyName = "color")]
+		public string Color { get; set; } = "";
+	}
 }

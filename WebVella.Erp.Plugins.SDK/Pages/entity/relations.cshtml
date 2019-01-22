@@ -1,0 +1,59 @@
+﻿@page "/sdk/objects/entity/r/{ParentRecordId}/rl/relations/l"
+
+@model WebVella.Erp.Plugins.SDK.Pages.ErpEntity.RelationsModel
+@{
+	Layout = "~/Pages/_AppMaster.cshtml";
+	ViewData["Title"] = "Entity relations";
+	var titleAction = "<a href=\"javascript:void(0)\" class=\"clear-filter-all\">clear all</a>";
+}
+<wv-page-header color="@Model.ErpEntity.Color" area-label="Entities" title="@Model.ErpEntity.Name" subtitle="Relations"
+				icon-class="@Model.ErpEntity.IconName" return-url="@Model.ReturnUrl">
+	<wv-page-header-actions>
+		<a href='/sdk/objects/entity/r/@(Model.ErpEntity.Id)/rl/relations/c/?returnUrl=@Html.Raw(Model.ReturnUrlEncoded)' class='btn btn-white btn-sm'><span class='fa fa-plus go-green'></span> Create Relation</a>
+		<button type='button' onclick="ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcDrawer','open')" class='btn btn-white btn-sm'><span class='fa fa-search'></span> Search</button>
+	</wv-page-header-actions>
+
+	<wv-page-header-toolbar>
+		@foreach (var action in Model.HeaderToolbar)
+		{
+			@Html.Raw(action)
+		}
+	</wv-page-header-toolbar>
+
+</wv-page-header>
+
+<wv-grid bordered="true" hover="true" columns="Model.Columns" page="Model.Pager" total-count="Model.TotalCount" page-size="Model.PagerSize">
+	@foreach (var record in Model.Records)
+	{
+		<wv-grid-row>
+			<wv-grid-column>
+				@Html.Raw(record["action"])
+			</wv-grid-column>
+			<wv-grid-column>
+				@Html.Raw(record["name"])
+			</wv-grid-column>
+			<wv-grid-column>
+				@Html.Raw(record["origin"])
+			</wv-grid-column>
+			<wv-grid-column>
+				@Html.Raw(record["target"])
+			</wv-grid-column>
+		</wv-grid-row>
+	}
+	@if (Model.Records.Count == 0)
+	{
+		<tbody>
+			<tr>
+				<td colspan="@Model.Columns.Count"><div class="alert alert-info">No pages found</div></td>
+			</tr>
+		</tbody>
+	}
+</wv-grid>
+
+<wv-drawer width="550px" title="Search Fields" title-action-html="@titleAction">
+	<form method="get" name="SearchEntities">
+		<wv-filter-text name="name" label="Name" query-type="CONTAINS"></wv-filter-text>
+		<hr class="divider" />
+		<button type="submit" class="btn btn-sm btn-white">Search Fields</button>
+	</form>
+</wv-drawer>

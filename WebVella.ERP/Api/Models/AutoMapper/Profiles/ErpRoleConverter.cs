@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoMapper;
 
-namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
+namespace WebVella.Erp.Api.Models.AutoMapper.Profiles
 {
     internal class ErpRoleConverter : ITypeConverter<EntityRecord, ErpRole>
     {
@@ -15,7 +15,8 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
             ErpRole dest = new ErpRole();
             dest.Id = (Guid)src["id"];
             dest.Name = (string)src["name"];
-            return dest;
+			dest.Description = (string)src["description"];
+			return dest;
         }
     }
 }

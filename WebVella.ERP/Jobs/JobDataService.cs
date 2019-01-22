@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using WebVella.ERP.Api.Models.AutoMapper;
-using WebVella.ERP.Database;
+using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Database;
 
-namespace WebVella.ERP.Jobs
+namespace WebVella.Erp.Jobs
 {
 	internal class JobDataService
 	{
@@ -30,13 +30,11 @@ namespace WebVella.ERP.Jobs
 			parameters.Add(new NpgsqlParameter("id", job.Id) { NpgsqlDbType = NpgsqlDbType.Uuid });
 			parameters.Add(new NpgsqlParameter("type_id", job.Type.Id) { NpgsqlDbType = NpgsqlDbType.Uuid });
 			parameters.Add(new NpgsqlParameter("type_name", job.TypeName) { NpgsqlDbType = NpgsqlDbType.Text });
-			parameters.Add(new NpgsqlParameter("assembly", job.Assembly) { NpgsqlDbType = NpgsqlDbType.Text });
 			parameters.Add(new NpgsqlParameter("complete_class_name", job.CompleteClassName) { NpgsqlDbType = NpgsqlDbType.Text });
-			parameters.Add(new NpgsqlParameter("method_name", job.MethodName) { NpgsqlDbType = NpgsqlDbType.Text });
 			if (job.Attributes != null)
 				parameters.Add(new NpgsqlParameter("attributes", JsonConvert.SerializeObject(job.Attributes, settings).ToString()) { NpgsqlDbType = NpgsqlDbType.Text });
-			parameters.Add(new NpgsqlParameter("status", job.Status) { NpgsqlDbType = NpgsqlDbType.Integer });
-			parameters.Add(new NpgsqlParameter("priority", job.Priority) { NpgsqlDbType = NpgsqlDbType.Integer });
+			parameters.Add(new NpgsqlParameter("status", (int)job.Status) { NpgsqlDbType = NpgsqlDbType.Integer });
+			parameters.Add(new NpgsqlParameter("priority", (int)job.Priority) { NpgsqlDbType = NpgsqlDbType.Integer });
 			if (job.StartedOn.HasValue)
 				parameters.Add(new NpgsqlParameter("started_on", job.StartedOn.HasValue) { NpgsqlDbType = NpgsqlDbType.Timestamp });
 			if (job.FinishedOn.HasValue)
@@ -79,8 +77,8 @@ namespace WebVella.ERP.Jobs
 		{
 			List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
 			parameters.Add(new NpgsqlParameter("id", job.Id) { NpgsqlDbType = NpgsqlDbType.Uuid });
-			parameters.Add(new NpgsqlParameter("status", job.Status) { NpgsqlDbType = NpgsqlDbType.Integer });
-			parameters.Add(new NpgsqlParameter("priority", job.Priority) { NpgsqlDbType = NpgsqlDbType.Integer });
+			parameters.Add(new NpgsqlParameter("status", (int)job.Status) { NpgsqlDbType = NpgsqlDbType.Integer });
+			parameters.Add(new NpgsqlParameter("priority", (int)job.Priority) { NpgsqlDbType = NpgsqlDbType.Integer });
 			if (job.StartedOn.HasValue)
 				parameters.Add(new NpgsqlParameter("started_on", job.StartedOn) { NpgsqlDbType = NpgsqlDbType.Timestamp });
 			if (job.FinishedOn.HasValue)
@@ -157,7 +155,7 @@ namespace WebVella.ERP.Jobs
 		{
 			string sql = "SELECT * FROM jobs WHERE status = @status ORDER BY priority DESC, created_on ASC";
 			List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
-			parameters.Add(new NpgsqlParameter("status", status) { NpgsqlDbType = NpgsqlDbType.Integer });
+			parameters.Add(new NpgsqlParameter("status", (int)status) { NpgsqlDbType = NpgsqlDbType.Integer });
 			if (limit.HasValue)
 			{
 				if (limit.Value < 0)
@@ -238,6 +236,59 @@ namespace WebVella.ERP.Jobs
 			return dtJobs.Rows.MapTo<Job>();
 		}
 
+		internal long GetJobsTotalCount(DateTime? startFromDate = null, DateTime? startToDate = null, DateTime? finishedFromDate = null,
+			DateTime? finishedToDate = null, string typeName = null, int? status = null, int? priority = null, Guid? schedulePlanId = null )
+		{
+			List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
+
+			string sql = "SELECT COUNT(id) FROM jobs WHERE id IS NOT NULL";
+
+			if (startFromDate.HasValue)
+			{
+				parameters.Add(new NpgsqlParameter("started_from", startFromDate.Value) { NpgsqlDbType = NpgsqlDbType.Timestamp });
+				sql += " AND started_on >= @started_from";
+			}
+			if (startToDate.HasValue)
+			{
+				parameters.Add(new NpgsqlParameter("started_to", startToDate.Value) { NpgsqlDbType = NpgsqlDbType.Timestamp });
+				sql += " AND started_on <= @started_to";
+			}
+			if (finishedFromDate.HasValue)
+			{
+				parameters.Add(new NpgsqlParameter("finished_from", finishedFromDate.Value) { NpgsqlDbType = NpgsqlDbType.Timestamp });
+				sql += " AND finished_on <= @finished_from";
+			}
+			if (finishedToDate.HasValue)
+			{
+				parameters.Add(new NpgsqlParameter("finished_to", finishedFromDate.Value) { NpgsqlDbType = NpgsqlDbType.Timestamp });
+				sql += " AND finished_on <= @finished_to";
+			}
+			if (!string.IsNullOrWhiteSpace(typeName))
+			{
+				var typeParameter = "%" + typeName + "%";
+				parameters.Add(new NpgsqlParameter("type_name", typeParameter) { NpgsqlDbType = NpgsqlDbType.Text });
+				sql += " AND type_name ILIKE @type_name";
+			}
+			if (status.HasValue)
+			{
+				parameters.Add(new NpgsqlParameter("status", status.Value) { NpgsqlDbType = NpgsqlDbType.Integer });
+				sql += " AND status = @status";
+			}
+			if (priority.HasValue)
+			{
+				parameters.Add(new NpgsqlParameter("priority", priority.Value) { NpgsqlDbType = NpgsqlDbType.Integer });
+				sql += " AND priority = @priority";
+			}
+			if (schedulePlanId.HasValue)
+			{
+				parameters.Add(new NpgsqlParameter("schedule_plan_id", schedulePlanId.Value) { NpgsqlDbType = NpgsqlDbType.Uuid });
+				sql += " AND schedule_plan_id = @schedule_plan_id";
+			}
+
+			DataTable dtResult = ExecuteQuerySqlCommand(sql, parameters);
+			return (long)dtResult.Rows[0][0];
+		}
+
 		#endregion
 
 		#region << Schedule >>
@@ -249,7 +300,7 @@ namespace WebVella.ERP.Jobs
 			List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
 			parameters.Add(new NpgsqlParameter("id", schedulePlan.Id) { NpgsqlDbType = NpgsqlDbType.Uuid });
 			parameters.Add(new NpgsqlParameter("name", schedulePlan.Name) { NpgsqlDbType = NpgsqlDbType.Text });
-			parameters.Add(new NpgsqlParameter("type", schedulePlan.Type) { NpgsqlDbType = NpgsqlDbType.Integer });
+			parameters.Add(new NpgsqlParameter("type", (int)schedulePlan.Type) { NpgsqlDbType = NpgsqlDbType.Integer });
 			parameters.Add(new NpgsqlParameter("job_type_id", schedulePlan.JobTypeId) { NpgsqlDbType = NpgsqlDbType.Uuid });
 			if (schedulePlan.StartDate.HasValue)
 				parameters.Add(new NpgsqlParameter("start_date", schedulePlan.StartDate) { NpgsqlDbType = NpgsqlDbType.Timestamp });
@@ -298,7 +349,7 @@ namespace WebVella.ERP.Jobs
 			List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
 			parameters.Add(new NpgsqlParameter("id", schedulePlan.Id) { NpgsqlDbType = NpgsqlDbType.Uuid });
 			parameters.Add(new NpgsqlParameter("name", schedulePlan.Name) { NpgsqlDbType = NpgsqlDbType.Text });
-			parameters.Add(new NpgsqlParameter("type", schedulePlan.Type) { NpgsqlDbType = NpgsqlDbType.Integer });
+			parameters.Add(new NpgsqlParameter("type", (int)schedulePlan.Type) { NpgsqlDbType = NpgsqlDbType.Integer });
 			if (schedulePlan.StartDate.HasValue)
 				parameters.Add(new NpgsqlParameter("start_date", schedulePlan.StartDate) { NpgsqlDbType = NpgsqlDbType.Timestamp });
 			if (schedulePlan.EndDate.HasValue)
@@ -313,8 +364,12 @@ namespace WebVella.ERP.Jobs
 				parameters.Add(new NpgsqlParameter("end_timespan", schedulePlan.EndTimespan) { NpgsqlDbType = NpgsqlDbType.Integer });
 			if (schedulePlan.LastTriggerTime.HasValue)
 				parameters.Add(new NpgsqlParameter("last_trigger_time", schedulePlan.LastTriggerTime) { NpgsqlDbType = NpgsqlDbType.Timestamp });
+
 			if (schedulePlan.NextTriggerTime.HasValue)
 				parameters.Add(new NpgsqlParameter("next_trigger_time", schedulePlan.NextTriggerTime) { NpgsqlDbType = NpgsqlDbType.Timestamp });
+			else
+				parameters.Add(new NpgsqlParameter("next_trigger_time", DBNull.Value) { NpgsqlDbType = NpgsqlDbType.Timestamp });
+
 			parameters.Add(new NpgsqlParameter("enabled", schedulePlan.Enabled) { NpgsqlDbType = NpgsqlDbType.Boolean });
 			if (schedulePlan.LastStartedJobId.HasValue)
 				parameters.Add(new NpgsqlParameter("last_started_job_id", schedulePlan.LastStartedJobId) { NpgsqlDbType = NpgsqlDbType.Uuid });
@@ -411,7 +466,7 @@ namespace WebVella.ERP.Jobs
 		{
 			string sql = "SELECT * FROM schedule_plan WHERE type = @type ORDER BY name";
 			List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
-			parameters.Add(new NpgsqlParameter("type", type) { NpgsqlDbType = NpgsqlDbType.Integer });
+			parameters.Add(new NpgsqlParameter("type", (int)type) { NpgsqlDbType = NpgsqlDbType.Integer });
 
 			DataTable dtSchedulePlans = ExecuteQuerySqlCommand(sql, parameters);
 

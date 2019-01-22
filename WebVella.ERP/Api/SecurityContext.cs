@@ -3,32 +3,32 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using WebVella.ERP.Api.Models;
+using WebVella.Erp.Api.Models;
 
-namespace WebVella.ERP.Api
+namespace WebVella.Erp.Api
 {
 
 	public class SecurityContext : IDisposable
 	{
-		private static ErpUser systemUser = null;
+		private static ErpUser systemUser;
 		private static AsyncLocal<SecurityContext> current;
 		private Stack<ErpUser> userStack;
 
+		static SecurityContext()
+		{
+			systemUser = new ErpUser();
+			systemUser.Id = SystemIds.SystemUserId;
+			systemUser.FirstName = "Local";
+			systemUser.LastName = "System";
+			systemUser.Username = "system";
+			systemUser.Email = "system@webvella.com";
+			systemUser.Enabled = true;
+			systemUser.Roles.Add(new ErpRole { Id = SystemIds.AdministratorRoleId, Name = "administrator" });
+		}
 
 		private SecurityContext()
 		{
 			userStack = new Stack<ErpUser>();
-		}
-
-		public static ErpUser SystemUser
-		{
-			get
-			{
-				if (systemUser == null)
-					systemUser = new SecurityManager().GetUser(SystemIds.SystemUserId);
-
-				return systemUser;
-			}
 		}
 
 		public static ErpUser CurrentUser
@@ -106,6 +106,17 @@ namespace WebVella.ERP.Api
 			}
 		}
 
+		public static bool HasMetaPermission(ErpUser user = null)
+		{
+			if (user == null)
+				user = CurrentUser;
+
+			if (user == null)
+				return false;
+
+			return user.Roles.Any(x => x.Id == SystemIds.AdministratorRoleId);
+		}
+
 		public static IDisposable OpenScope(ErpUser user)
 		{
 			if (current == null)
@@ -122,7 +133,7 @@ namespace WebVella.ERP.Api
 
 		public static IDisposable OpenSystemScope()
 		{
-			return OpenScope(SystemUser);
+			return OpenScope(systemUser);
 		}
 
 		private static void CloseScope()

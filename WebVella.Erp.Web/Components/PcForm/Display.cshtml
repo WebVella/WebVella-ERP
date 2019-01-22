@@ -1,0 +1,31 @@
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web.Components;
+@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Web.Utils;
+@using WebVella.Erp.Web;
+@using WebVella.Erp.Exceptions;
+@{
+	var options = (PcForm.PcFormOptions)ViewBag.Options;
+	var node = (PageBodyNode)ViewBag.Node;
+	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
+	var componentContext = (PageComponentContext)ViewBag.ComponentContext;
+	var validation = (ValidationException)ViewBag.Validation;
+	var action = (string)ViewBag.Action;
+}
+<wv-validation show-errors="false" validation="@validation"></wv-validation>
+<wv-form method="@options.Method" id="@options.Id" name="@options.Name" label-mode="@options.LabelMode" mode="@options.Mode" action="@action" validation="@validation">
+	@foreach (var childNode in node.Nodes) {
+		var nodeComponentName = "";
+		if (childNode != null) {
+			var nameArray = childNode.ComponentName.Split('.');
+			nodeComponentName = nameArray[nameArray.Length - 1];
+		}
+		if (!String.IsNullOrWhiteSpace(nodeComponentName))
+		{
+			var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+			var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions,componentContext.Items);
+			@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+		}
+	}
+</wv-form>

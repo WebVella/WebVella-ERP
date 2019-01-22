@@ -1,0 +1,125 @@
+{
+  "tags": [
+    {
+      "label": "wv-create-modal",
+      "description": "",
+      "attributes": []
+    },
+    {
+      "label": "wv-help-modal",
+      "description": "",
+      "attributes": []
+    },
+    {
+      "label": "wv-loading-pane",
+      "description": "",
+      "attributes": []
+    },
+    {
+      "label": "wv-options-modal",
+      "description": "",
+      "attributes": []
+    },
+    {
+      "label": "wv-pb-inspector",
+      "description": "",
+      "attributes": []
+    },
+    {
+      "label": "wv-pb-manager",
+      "description": "",
+      "attributes": [
+        {
+          "label": "library-json",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "page-id",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "page-nodes-json",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "record-id",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "site-root-url",
+          "description": "",
+          "required": false
+        }
+      ]
+    },
+    {
+      "label": "wv-pb-node-container",
+      "description": "",
+      "attributes": [
+        {
+          "label": "container-id",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "parent-node-id",
+          "description": "",
+          "required": false
+        }
+      ]
+    },
+    {
+      "label": "wv-pb-node",
+      "description": "",
+      "attributes": [
+        {
+          "label": "node-id",
+          "description": "",
+          "required": false
+        }
+      ]
+    },
+    {
+      "label": "wv-pb-tree-node",
+      "description": "",
+      "attributes": [
+        {
+          "label": "level",
+          "description": "",
+          "required": false
+        }
+      ]
+    },
+    {
+      "label": "wv-pb-tree",
+      "description": "",
+      "attributes": []
+    },
+    {
+      "label": "wv-show-help",
+      "description": "",
+      "attributes": [
+        {
+          "label": "node-id",
+          "description": "",
+          "required": false
+        }
+      ]
+    },
+    {
+      "label": "wv-show-options",
+      "description": "",
+      "attributes": [
+        {
+          "label": "node-id",
+          "description": "",
+          "required": false
+        }
+      ]
+    }
+  ]
+}

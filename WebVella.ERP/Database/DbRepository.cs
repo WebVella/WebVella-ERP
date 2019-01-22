@@ -2,10 +2,10 @@
 using NpgsqlTypes;
 using System;
 using System.Collections.Generic;
-using WebVella.ERP.Api.Models;
-using WebVella.ERP.Database.Models;
+using WebVella.Erp.Api.Models;
+using WebVella.Erp.Database.Models;
 
-namespace WebVella.ERP.Database
+namespace WebVella.Erp.Database
 {
 	public static class DbRepository
 	{
@@ -273,7 +273,7 @@ namespace WebVella.ERP.Database
 			DeleteTable(relTableName, false);
 		}
 
-		public static void CreateIndex( string indexName, string tableName, string columnName, bool unique = false, bool ascending = true )
+		public static void CreateIndex( string indexName, string tableName, string columnName, bool unique = false, bool ascending = true, bool nullable = false )
 		{
 			if (!TableExists(tableName))
 				return;
@@ -281,18 +281,42 @@ namespace WebVella.ERP.Database
 			using (var connection = DbContext.Current.CreateConnection())
 			{
 				string sql = $"CREATE INDEX IF NOT EXISTS \"{indexName}\" ON \"{tableName}\" (\"{columnName}\"";
-				if ( unique )
+				if (unique)
 					sql = $"CREATE UNIQUE INDEX IF NOT EXISTS \"{indexName}\" ON \"{tableName}\" (\"{columnName}\"";
 
 				if( !ascending )
 					sql = sql + " DESC";
 
-				sql = sql + ");";
+				sql = sql + ")";
+
+				if (nullable)
+				{
+					sql = sql + $" WHERE \"{columnName}\" IS NOT NULL;";
+				}
+				else
+					sql = sql + ";";
+
+
+
 
 				NpgsqlCommand command = connection.CreateCommand(sql);
 				command.ExecuteNonQuery();
 			}
 		}
+
+		public static void CreateFtsIndexIfNotExists(string indexName, string tableName, string columnName )
+		{
+			if (!TableExists(tableName))
+				return;
+
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				string sql = $@"CREATE INDEX IF NOT EXISTS {indexName} ON {tableName} USING gin(to_tsvector('simple', coalesce({columnName}, ' ')));";
+				NpgsqlCommand command = connection.CreateCommand(sql);
+				command.ExecuteNonQuery();
+			}
+		}
+
 
 		public static void DropIndex(string indexName )
 		{

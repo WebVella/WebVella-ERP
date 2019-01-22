@@ -1,0 +1,35 @@
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web.Components;
+@using WebVella.Erp.Api.Models;
+@{
+	var options = (PcTabNav.PcTabNavOptions)ViewBag.Options;
+	var renderTypeOptions = (List<SelectOption>)ViewBag.RenderTypeOptions;
+	var tabId = Guid.NewGuid();
+}
+<wv-row>
+	<wv-column span="6">
+		<wv-field-number min="1" max="7" name="visible_tabs" value="@options.VisibleTabs" label-text="Visible Tabs"></wv-field-number>
+	</wv-column>
+	<wv-column span="6">
+		<wv-field-select name="render_type" value="@options.RenderType" label-text="Render Type" options="renderTypeOptions"></wv-field-select>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="6">
+		<wv-field-text name="css_class" value="@options.CssClass" label-text="CSS Class"></wv-field-text>
+	</wv-column>
+	<wv-column span="6">
+		<wv-field-text name="body_css_class" value="@options.BodyCssClass" label-text="Body CSS Class"></wv-field-text>
+	</wv-column>
+</wv-row>
+<wv-row>
+	@for (int i = 1; i < 8; i++)
+	{
+		var tabLabel = (options.GetType().GetProperty($"Tab{i}Label").GetValue(options, null) ?? "").ToString();
+		<wv-column span="4" class="@(options.VisibleTabs > i-1 ? "" : "d-none")" id="@($"section-column{i}")">
+			<wv-field-text name="@($"tab{i}_label")" value="@tabLabel" label-text="@($"Tab {i} Label")"></wv-field-text>
+		</wv-column>
+	}
+</wv-row>
+

@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WebVella.ERP.Api.Models;
-using WebVella.ERP.Utilities;
+using WebVella.Erp.Api.Models;
+using WebVella.Erp.Utilities;
 using Newtonsoft.Json.Linq;
 using System.Net;
-using WebVella.ERP.Database;
-using WebVella.ERP.Utilities.Dynamic;
+using WebVella.Erp.Database;
+using WebVella.Erp.Utilities.Dynamic;
 using System.Dynamic;
+using WebVella.Erp.Hooks;
 
-namespace WebVella.ERP.Api
+namespace WebVella.Erp.Api
 {
 	public class RecordManager
 	{
@@ -22,18 +23,20 @@ namespace WebVella.ERP.Api
 		private DbRelationRepository relationRepository;
 		private List<EntityRelation> relations = null;
 		private bool ignoreSecurity = false;
+		private bool executeHooks = true;
 
-		public RecordManager() : this(false)
+		public RecordManager() : this(false, true)
 		{
 		}
 
-		internal RecordManager(bool ignoreSecurity = false)
+		public RecordManager(bool ignoreSecurity = false, bool executeHooks = true )
 		{
 			entityCache = new List<Entity>();
 			entityManager = new EntityManager();
 			entityRelationManager = new EntityRelationManager();
 			relationRepository = DbContext.Current.RelationRepository;
 			this.ignoreSecurity = ignoreSecurity;
+			this.executeHooks = executeHooks;
 		}
 
 		public QueryResponse CreateRelationManyToManyRecord(Guid relationId, Guid originValue, Guid targetValue)
@@ -114,7 +117,7 @@ namespace WebVella.ERP.Api
 			}
 		}
 
-		public QueryResponse CreateRecord(string entityName, EntityRecord record, bool skipRecordReturn = false)
+		public QueryResponse CreateRecord(string entityName, EntityRecord record)
 		{
 			if (string.IsNullOrWhiteSpace(entityName))
 			{
@@ -141,10 +144,10 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			return CreateRecord(entity, record, skipRecordReturn);
+			return CreateRecord(entity, record);
 		}
 
-		public QueryResponse CreateRecord(Guid entityId, EntityRecord record, bool skipRecordReturn = false)
+		public QueryResponse CreateRecord(Guid entityId, EntityRecord record)
 		{
 			Entity entity = GetEntity(entityId);
 			if (entity == null)
@@ -159,10 +162,10 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			return CreateRecord(entity, record, skipRecordReturn);
+			return CreateRecord(entity, record);
 		}
 
-		public QueryResponse CreateRecord(Entity entity, EntityRecord record, bool skipRecordReturn = false)
+		public QueryResponse CreateRecord(Entity entity, EntityRecord record)
 		{
 
 			QueryResponse response = new QueryResponse();
@@ -205,7 +208,9 @@ namespace WebVella.ERP.Api
 
 					SetRecordServiceInformation(record, true, ignoreSecurity);
 
-					if (record.Properties.Any(p => p.Key.StartsWith("$")))
+					bool hooksExists = RecordHookManager.ContainsAnyHooksForEntity(entity.Name);
+
+					if (record.Properties.Any(p => p.Key.StartsWith("$")) || hooksExists )
 					{
 						connection.BeginTransaction();
 						isTransactionActive = true;
@@ -216,7 +221,7 @@ namespace WebVella.ERP.Api
 						recordId = Guid.NewGuid();
 					else
 					{
-						//fixes issue with ID comming from webapi request 
+						//fixes issue with ID coming from webapi request 
 						if (record["id"] is string)
 							recordId = new Guid(record["id"] as string);
 						else if (record["id"] is Guid)
@@ -228,6 +233,7 @@ namespace WebVella.ERP.Api
 							throw new Exception("Guid.Empty value cannot be used as valid value for record id.");
 					}
 
+					
 					List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 					List<dynamic> oneToOneRecordData = new List<dynamic>();
 					List<dynamic> oneToManyRecordData = new List<dynamic>();
@@ -321,8 +327,8 @@ namespace WebVella.ERP.Api
 								if (realtionSearchField == null)
 									throw new Exception(string.Format("Invalid relation '{0}'. Field does not exist.", pair.Key));
 
-								if (realtionSearchField.GetFieldType() == FieldType.MultiSelectField || realtionSearchField.GetFieldType() == FieldType.TreeSelectField)
-									throw new Exception(string.Format("Invalid relation '{0}'. Fields from Multiselect and Treeselect types can't be used as relation fields.", pair.Key));
+								if (realtionSearchField.GetFieldType() == FieldType.MultiSelectField )
+									throw new Exception(string.Format("Invalid relation '{0}'. Fields from Multiselect type can't be used as relation fields.", pair.Key));
 
 								if (relation.RelationType == EntityRelationType.OneToOne &&
 									((relation.TargetEntityId == entity.Id && field.Name == "id") || (relation.OriginEntityId == entity.Id && relationField.Name == "id")))
@@ -368,6 +374,19 @@ namespace WebVella.ERP.Api
 									if (pair.Value is JArray)
 									{
 										values = ((JArray)pair.Value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
+										if (values.Count > 0)
+										{
+											var newPair = new KeyValuePair<string, object>(pair.Key, values[0]);
+											filter = EntityQuery.QueryEQ(realtionSearchField.Name, ExtractFieldValue(newPair, realtionSearchField, true));
+										}
+										else
+										{
+											throw new Exception("Array has not elements");
+										}
+									}
+									else if (pair.Value is List<Guid>)
+									{
+										values = ((List<Guid>)pair.Value).Select(x=>x.ToString()).ToList();
 										if (values.Count > 0)
 										{
 											var newPair = new KeyValuePair<string, object>(pair.Key, values[0]);
@@ -449,7 +468,7 @@ namespace WebVella.ERP.Api
 
 						((EntityRecord)fieldsFromRelationList[fieldsFromRelation.Key])["relatedRecordResponse"] = relatedRecordResponse;
 					}
-
+					List<Tuple<Field, string>> fileFields = new List<Tuple<Field, string>>();
 					foreach (var pair in record.GetProperties())
 					{
 						try
@@ -564,10 +583,17 @@ namespace WebVella.ERP.Api
 								if (field is AutoNumberField && pair.Value == null)
 									continue;
 
-								if (field.Required && pair.Value == null)
-									storageRecordData.Add(new KeyValuePair<string, object>(field.Name, field.GetDefaultValue()));
+								if (field is FileField || field is ImageField)
+								{
+									fileFields.Add(new Tuple<Field, string>(field, pair.Value as string));
+								}
 								else
-									storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
+								{
+									if (field.Required && pair.Value == null)
+										storageRecordData.Add(new KeyValuePair<string, object>(field.Name, field.GetDefaultValue()));
+									else
+										storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
+								}
 							}
 						}
 						catch (Exception ex)
@@ -579,36 +605,50 @@ namespace WebVella.ERP.Api
 
 					SetRecordRequiredFieldsDefaultData(entity, storageRecordData);
 
+					if (hooksExists && executeHooks )
+					{
+						List<ErrorModel> errors = new List<ErrorModel>();
+						RecordHookManager.ExecutePreCreateRecordHooks(entity.Name, record, errors);
+						if (errors.Count > 0)
+						{
+							if (isTransactionActive)
+								connection.RollbackTransaction();
+
+							response.Success = false;
+							response.Object = null;
+							response.Errors = errors;
+							response.Timestamp = DateTime.UtcNow;
+							return response;
+						}
+					}
+
+					foreach (var item in fileFields)
+					{
+						Field field = item.Item1;
+						string path = item.Item2;
+						if (!string.IsNullOrWhiteSpace(path) && path.StartsWith("/fs/"))
+							path = path.Substring(3);
+
+						if (!string.IsNullOrWhiteSpace(path) && path.StartsWith("fs/"))
+							path = path.Substring(2);
+
+						DbFileRepository fsRepository = new DbFileRepository();
+
+						if (field.Required && string.IsNullOrWhiteSpace(path))
+							storageRecordData.Add(new KeyValuePair<string, object>(field.Name, field.GetDefaultValue()));
+
+						if (!string.IsNullOrWhiteSpace(path) && path.StartsWith(DbFileRepository.FOLDER_SEPARATOR + DbFileRepository.TMP_FOLDER_NAME))
+						{
+							var fileName = path.Split(new[] { '/' }).Last();
+							string source = path;
+							string target = $"/{field.EntityName}/{record["id"]}/{fileName}";
+							var movedFile = fsRepository.Move(source, target, false);
+
+							storageRecordData.Add(new KeyValuePair<string, object>(field.Name, target));
+						}
+					}
+
 					recRepo.Create(entity.Name, storageRecordData);
-
-					foreach (var ooRelData in oneToOneRecordData)
-					{
-						recRepo.Update(ooRelData.EntityName, ooRelData.RecordData);
-					}
-
-					foreach (var omRelData in oneToManyRecordData)
-					{
-						recRepo.Update(omRelData.EntityName, omRelData.RecordData);
-					}
-
-					foreach (var mmRelData in manyToManyRecordData)
-					{
-						var mmResponse = CreateRelationManyToManyRecord(mmRelData.RelationId, mmRelData.OriginFieldValue, mmRelData.TargetFieldValue);
-
-						if (!mmResponse.Success)
-							throw new Exception(mmResponse.Message);
-					}
-
-					if (skipRecordReturn)
-					{
-						response.Object = null;
-						response.Success = true;
-						response.Message = "Record was created successfully";
-
-						if (isTransactionActive)
-							connection.CommitTransaction();
-						return response;
-					}
 
 					var query = EntityQuery.QueryEQ("id", recordId);
 					var entityQuery = new EntityQuery(entity.Name, "*", query);
@@ -618,12 +658,115 @@ namespace WebVella.ERP.Api
 					response = Find(entityQuery);
 					ignoreSecurity = oldIgnoreSecurity;
 
-					if (response.Object != null && response.Object.Data != null && response.Object.Data.Count > 0)
-						response.Message = "Record was created successfully";
-					else
+					//if not created exit immediately
+					if (! (response.Object != null && response.Object.Data != null && response.Object.Data.Count > 0 ))
 					{
+						if (isTransactionActive)
+							connection.RollbackTransaction();
+
 						response.Success = false;
-						response.Message = "Record was not created successfully";
+						response.Object = null;
+						response.Timestamp = DateTime.UtcNow;
+		                response.Message = "The entity record was not created. An internal error occurred!";
+						return response;
+					}
+
+					foreach (var ooRelData in oneToOneRecordData)
+					{
+						bool ooHooksExists = RecordHookManager.ContainsAnyHooksForEntity(ooRelData.EntityName);
+
+						EntityRecord ooRecord = new EntityRecord();
+						if (ooHooksExists && executeHooks )
+						{
+							//move values from ooRelData.RecordData to entity record
+							var data = (IEnumerable<KeyValuePair<string, object>>)ooRelData.RecordData;
+							foreach (var obj in data)
+								ooRecord[obj.Key] = obj.Value;
+
+							List<ErrorModel> errors = new List<ErrorModel>();
+							RecordHookManager.ExecutePreUpdateRecordHooks(ooRelData.EntityName, ooRecord, errors);
+							if (errors.Count > 0)
+							{
+								if (isTransactionActive)
+									connection.RollbackTransaction();
+
+								response.Success = false;
+								response.Object = null;
+								response.Errors = errors;
+								response.Timestamp = DateTime.UtcNow;
+								return response;
+							}
+							//move values from entity record to ooRelData.RecordData, because they may be changed in pre hooks
+							List<KeyValuePair<string, object>> recordData = new List<KeyValuePair<string, object>>();
+							foreach (var property in ooRecord.Properties)
+								recordData.Add(new KeyValuePair<string, object>(property.Key, property.Value));
+
+							ooRelData.RecordData = recordData;
+						}
+
+						recRepo.Update(ooRelData.EntityName, ooRelData.RecordData);
+
+						if (ooHooksExists && executeHooks )
+							RecordHookManager.ExecutePostUpdateRecordHooks(ooRelData.EntityName, ooRecord);
+					}
+
+					foreach (var omRelData in oneToManyRecordData)
+					{
+						bool ooHooksExists = RecordHookManager.ContainsAnyHooksForEntity(omRelData.EntityName);
+
+						EntityRecord ooRecord = new EntityRecord();
+						if (ooHooksExists && executeHooks )
+						{
+							var data = (IEnumerable<KeyValuePair<string, object>>)omRelData.RecordData;
+							foreach (var obj in data)
+								ooRecord[obj.Key] = obj.Value;
+
+							List<ErrorModel> errors = new List<ErrorModel>();
+							RecordHookManager.ExecutePreUpdateRecordHooks(omRelData.EntityName, ooRecord, errors);
+							if (errors.Count > 0)
+							{
+								if (isTransactionActive)
+									connection.RollbackTransaction();
+
+								response.Success = false;
+								response.Object = null;
+								response.Errors = errors;
+								response.Timestamp = DateTime.UtcNow;
+								return response;
+							}
+
+							//move values from entity record to ooRelData.RecordData, because they may be changed in pre hooks
+							List<KeyValuePair<string, object>> recordData = new List<KeyValuePair<string, object>>();
+							foreach (var property in ooRecord.Properties)
+								recordData.Add(new KeyValuePair<string, object>(property.Key, property.Value));
+
+							omRelData.RecordData = recordData;
+						}
+
+
+
+						recRepo.Update(omRelData.EntityName, omRelData.RecordData);
+
+						if (ooHooksExists && executeHooks)
+							RecordHookManager.ExecutePostUpdateRecordHooks(omRelData.EntityName, ooRecord);
+					}
+
+					//TODO implement hooks
+					foreach (var mmRelData in manyToManyRecordData)
+					{
+						var mmResponse = CreateRelationManyToManyRecord(mmRelData.RelationId, mmRelData.OriginFieldValue, mmRelData.TargetFieldValue);
+
+						if (!mmResponse.Success)
+							throw new Exception(mmResponse.Message);
+					}
+
+					//execute hooks after create related records
+					if (response.Object != null && response.Object.Data != null && response.Object.Data.Count > 0)
+					{
+						response.Message = "Record was created successfully";
+
+						if (hooksExists && executeHooks)
+							RecordHookManager.ExecutePostCreateRecordHooks(entity.Name, response.Object.Data[0]);
 					}
 
 					if (isTransactionActive)
@@ -649,7 +792,7 @@ namespace WebVella.ERP.Api
 			}
 		}
 
-		public QueryResponse UpdateRecord(string entityName, EntityRecord record, bool skipRecordReturn = false)
+		public QueryResponse UpdateRecord(string entityName, EntityRecord record)
 		{
 			if (string.IsNullOrWhiteSpace(entityName))
 			{
@@ -676,10 +819,10 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			return UpdateRecord(entity, record, skipRecordReturn);
+			return UpdateRecord(entity, record);
 		}
 
-		public QueryResponse UpdateRecord(Guid entityId, EntityRecord record, bool skipRecordReturn = false)
+		public QueryResponse UpdateRecord(Guid entityId, EntityRecord record)
 		{
 			Entity entity = GetEntity(entityId);
 			if (entity == null)
@@ -694,10 +837,10 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			return UpdateRecord(entity, record, skipRecordReturn);
+			return UpdateRecord(entity, record);
 		}
 
-		public QueryResponse UpdateRecord(Entity entity, EntityRecord record, bool skipRecordReturn = false)
+		public QueryResponse UpdateRecord(Entity entity, EntityRecord record)
 		{
 
 			QueryResponse response = new QueryResponse();
@@ -742,7 +885,7 @@ namespace WebVella.ERP.Api
 
 					SetRecordServiceInformation(record, false, ignoreSecurity);
 
-					//fixes issue with ID comming from webapi request 
+					//fixes issue with ID coming from webapi request 
 					Guid recordId = Guid.Empty;
 					if (record["id"] is string)
 						recordId = new Guid(record["id"] as string);
@@ -751,7 +894,9 @@ namespace WebVella.ERP.Api
 					else
 						throw new Exception("Invalid record id");
 
-					if (record.Properties.Any(p => p.Key.StartsWith("$")))
+					bool hooksExists = RecordHookManager.ContainsAnyHooksForEntity(entity.Name);
+
+					if (record.Properties.Any(p => p.Key.StartsWith("$")) || hooksExists )
 					{
 						connection.BeginTransaction();
 						isTransactionActive = true;
@@ -860,8 +1005,8 @@ namespace WebVella.ERP.Api
 								if (realtionSearchField == null)
 									throw new Exception(string.Format("Invalid relation '{0}'. Field does not exist.", pair.Key));
 
-								if (realtionSearchField.GetFieldType() == FieldType.MultiSelectField || realtionSearchField.GetFieldType() == FieldType.TreeSelectField)
-									throw new Exception(string.Format("Invalid relation '{0}'. Fields from Multiselect and Treeselect types can't be used as relation fields.", pair.Key));
+								if (realtionSearchField.GetFieldType() == FieldType.MultiSelectField )
+									throw new Exception(string.Format("Invalid relation '{0}'. Fields from Multiselect type can't be used as relation fields.", pair.Key));
 
 								QueryObject filter = null;
 								if ((relation.RelationType == EntityRelationType.OneToMany && relation.OriginEntityId == relation.TargetEntityId && direction == "origin-target") ||
@@ -977,7 +1122,7 @@ namespace WebVella.ERP.Api
 
 						((EntityRecord)fieldsFromRelationList[fieldsFromRelation.Key])["relatedRecordResponse"] = relatedRecordResponse;
 					}
-
+					List<Tuple<Field, string>> fileFields = new List<Tuple<Field, string>>();
 					foreach (var pair in record.GetProperties())
 					{
 						try
@@ -1095,8 +1240,16 @@ namespace WebVella.ERP.Api
 								if (field is AutoNumberField && pair.Value == null)
 									continue;
 
-								if (!storageRecordData.Any(r => r.Key == field.Name))
-									storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
+								if (field is FileField || field is ImageField)
+								{
+									fileFields.Add(new Tuple<Field, string>(field, pair.Value as string));
+								}
+								else
+								{
+									if (!storageRecordData.Any(r => r.Key == field.Name))
+										storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
+								}
+
 							}
 						}
 						catch (Exception ex)
@@ -1107,18 +1260,163 @@ namespace WebVella.ERP.Api
 					}
 
 					var recRepo = DbContext.Current.RecordRepository;
+
+					
+					if (hooksExists && executeHooks )
+					{
+						List<ErrorModel> errors = new List<ErrorModel>();
+						RecordHookManager.ExecutePreUpdateRecordHooks(entity.Name, record, errors);
+						if (errors.Count > 0)
+						{
+							if (isTransactionActive)
+								connection.RollbackTransaction();
+
+							response.Success = false;
+							response.Object = null;
+							response.Errors = errors;
+							response.Timestamp = DateTime.UtcNow;
+							return response;
+						}
+					}
+					DbFileRepository fsRepository = new DbFileRepository();
+					foreach (var item in fileFields)
+					{
+						Field field = item.Item1;
+						string path = item.Item2;
+						var originalRecordResponse = Find(new EntityQuery(field.EntityName, "*", EntityQuery.QueryEQ("id", record["id"])));
+						EntityRecord originalRecord = originalRecordResponse.Object.Data[0];
+						var originalFieldData = originalRecord.GetProperties().First(f => f.Key == field.Name);
+
+						if (string.IsNullOrWhiteSpace(path))
+						{
+							//delete file                            
+							string pathToDelete = (string)originalFieldData.Value;
+							if (!string.IsNullOrWhiteSpace(path))
+								fsRepository.Delete(pathToDelete);
+
+							storageRecordData.Add(new KeyValuePair<string, object>(field.Name, field.GetDefaultValue()));
+						}
+						else
+						{   //update file
+							if (path.StartsWith("/fs/"))
+								path = path.Substring(3);
+
+							if (path.StartsWith("fs/"))
+								path = path.Substring(2);
+
+							if (path.StartsWith(DbFileRepository.FOLDER_SEPARATOR + DbFileRepository.TMP_FOLDER_NAME))
+							{
+								var fileName = path.Split(new[] { '/' }).Last();
+								string source = path;
+								string target = $"/{field.EntityName}/{record["id"]}/{fileName}";
+								var movedFile = fsRepository.Move(source, target, true);
+
+								storageRecordData.Add(new KeyValuePair<string, object>(field.Name, target));
+							}
+							else
+							{
+								storageRecordData.Add(new KeyValuePair<string, object>(field.Name, path));
+							}
+						}
+					}
+
 					recRepo.Update(entity.Name, storageRecordData);
+
+					var query = EntityQuery.QueryEQ("id", recordId);
+					var entityQuery = new EntityQuery(entity.Name, "*", query);
+
+					response = Find(entityQuery);
+					if (!( response.Object != null && response.Object.Data.Count > 0 ))
+					{
+						if (isTransactionActive)
+							connection.RollbackTransaction();
+						response.Success = false;
+						response.Object = null;
+						response.Timestamp = DateTime.UtcNow;
+		                response.Message = "The entity record was not update. An internal error occurred!";
+						return response;
+					}
 
 					foreach (var ooRelData in oneToOneRecordData)
 					{
+						bool ooHooksExists = RecordHookManager.ContainsAnyHooksForEntity(ooRelData.EntityName);
+
+						EntityRecord ooRecord = new EntityRecord();
+						if (ooHooksExists && executeHooks)
+						{
+							var data = (IEnumerable<KeyValuePair<string, object>>)ooRelData.RecordData;
+							foreach (var obj in data)
+								ooRecord[obj.Key] = obj.Value;
+
+							List<ErrorModel> errors = new List<ErrorModel>();
+							RecordHookManager.ExecutePreUpdateRecordHooks(ooRelData.EntityName, ooRecord, errors);
+							if (errors.Count > 0)
+							{
+								if (isTransactionActive)
+									connection.RollbackTransaction();
+
+								response.Success = false;
+								response.Object = null;
+								response.Errors = errors;
+								response.Timestamp = DateTime.UtcNow;
+								return response;
+							}
+
+							//move values from entity record to ooRelData.RecordData, because they may be changed in pre hooks
+							List<KeyValuePair<string, object>> recordData = new List<KeyValuePair<string, object>>();
+							foreach (var property in ooRecord.Properties)
+								recordData.Add(new KeyValuePair<string, object>(property.Key, property.Value));
+
+							ooRelData.RecordData = recordData;
+						}
+
+
 						recRepo.Update(ooRelData.EntityName, ooRelData.RecordData);
+
+						if (ooHooksExists && executeHooks)
+							RecordHookManager.ExecutePostUpdateRecordHooks(ooRelData.EntityName, ooRecord);
 					}
 
 					foreach (var omRelData in oneToManyRecordData)
 					{
+						bool ooHooksExists = RecordHookManager.ContainsAnyHooksForEntity(omRelData.EntityName);
+
+						EntityRecord ooRecord = new EntityRecord();
+						if (ooHooksExists && executeHooks)
+						{
+							var data = (IEnumerable<KeyValuePair<string, object>>)omRelData.RecordData;
+							foreach (var obj in data)
+								ooRecord[obj.Key] = obj.Value;
+
+							List<ErrorModel> errors = new List<ErrorModel>();
+							RecordHookManager.ExecutePreUpdateRecordHooks(omRelData.EntityName, ooRecord, errors);
+							if (errors.Count > 0)
+							{
+								if (isTransactionActive)
+									connection.RollbackTransaction();
+
+								response.Success = false;
+								response.Object = null;
+								response.Errors = errors;
+								response.Timestamp = DateTime.UtcNow;
+								return response;
+							}
+
+							//move values from entity record to ooRelData.RecordData, because they may be changed in pre hooks
+							List<KeyValuePair<string, object>> recordData = new List<KeyValuePair<string, object>>();
+							foreach (var property in ooRecord.Properties)
+								recordData.Add(new KeyValuePair<string, object>(property.Key, property.Value));
+
+							omRelData.RecordData = recordData;
+						}
+
 						recRepo.Update(omRelData.EntityName, omRelData.RecordData);
+
+						if (ooHooksExists && executeHooks)
+							RecordHookManager.ExecutePostUpdateRecordHooks(omRelData.EntityName, ooRecord);
 					}
 
+					//TODO implement hooks
 					foreach (var mmRelData in manyToManyRecordData)
 					{
 						var mmResponse = CreateRelationManyToManyRecord(mmRelData.RelationId, mmRelData.OriginFieldValue, mmRelData.TargetFieldValue);
@@ -1127,31 +1425,18 @@ namespace WebVella.ERP.Api
 							throw new Exception(mmResponse.Message);
 					}
 
-					if (skipRecordReturn)
-					{
-						response.Object = null;
-						response.Success = true;
-						response.Message = "Record was updated successfully";
-
-						if (isTransactionActive)
-							connection.CommitTransaction();
-						return response;
-					}
-
-					var query = EntityQuery.QueryEQ("id", recordId);
-					var entityQuery = new EntityQuery(entity.Name, "*", query);
-
-					response = Find(entityQuery);
+					//execute hooks after update related records
 					if (response.Object != null && response.Object.Data.Count > 0)
-						response.Message = "Record was updated successfully";
-					else
 					{
-						response.Success = false;
-						response.Message = "Record was not updated successfully";
+						response.Message = "Record was updated successfully";
+
+						if (hooksExists && executeHooks)
+							RecordHookManager.ExecutePostUpdateRecordHooks(entity.Name, response.Object.Data[0]);
 					}
 
 					if (isTransactionActive)
 						connection.CommitTransaction();
+
 					return response;
 				}
 				catch (Exception e)
@@ -1258,7 +1543,25 @@ namespace WebVella.ERP.Api
 				response = Find(entityQuery);
 				if (response.Object != null && response.Object.Data.Count == 1)
 				{
+					bool hooksExists = RecordHookManager.ContainsAnyHooksForEntity(entity.Name);
+					if (hooksExists && executeHooks)
+					{
+						List<ErrorModel> errors = new List<ErrorModel>();
+						RecordHookManager.ExecutePreDeleteRecordHooks(entity.Name, response.Object.Data[0], errors);
+						if (errors.Count > 0)
+						{
+							response.Success = false;
+							response.Object = null;
+							response.Errors = errors;
+							response.Timestamp = DateTime.UtcNow;
+							return response;
+						}
+					}
+
 					DbContext.Current.RecordRepository.Delete(entity.Name, id);
+
+					if (hooksExists && executeHooks)
+						RecordHookManager.ExecutePostDeleteRecordHooks(entity.Name, response.Object.Data[0]);
 				}
 				else
 				{
@@ -1391,7 +1694,7 @@ namespace WebVella.ERP.Api
 				//}
 
 				List<Field> fields = DbContext.Current.RecordRepository.ExtractQueryFieldsMeta(query);
-				response.Object = DbContext.Current.RecordRepository.Count(query.EntityName, query.Query);
+				response.Object = DbContext.Current.RecordRepository.Count(query);
 			}
 			catch (Exception ex)
 			{
@@ -1426,7 +1729,11 @@ namespace WebVella.ERP.Api
 					return Convert.ToDecimal(pair.Value);
 				}
 				else if (field is CheckboxField)
+				{
+					if (pair.Value is string)
+						return Convert.ToBoolean(pair.Value as string);
 					return pair.Value as bool?;
+				}
 				else if (field is CurrencyField)
 				{
 					if (pair.Value == null)
@@ -1436,7 +1743,7 @@ namespace WebVella.ERP.Api
 					if (pair.Value is string)
 						decimalValue = decimal.Parse(pair.Value as string);
 					else
-						decimalValue = Convert.ToDecimal(pair.Value);
+						decimalValue = Convert.ToDecimal(Convert.ToString(pair.Value));
 
 					return decimal.Round(decimalValue, ((CurrencyField)field).Currency.DecimalDigits, MidpointRounding.AwayFromZero);
 				}
@@ -1452,7 +1759,21 @@ namespace WebVella.ERP.Api
 						date = pair.Value as DateTime?;
 
 					if (date != null)
-						return new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, DateTimeKind.Utc);
+					{
+						switch (date.Value.Kind)
+						{
+							case DateTimeKind.Utc:
+							case DateTimeKind.Local:
+								date = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(date.Value, ErpSettings.TimeZoneName);
+								date = DateTime.SpecifyKind(date.Value, DateTimeKind.Unspecified);
+								break;
+							case DateTimeKind.Unspecified:
+								//do nothing, it is already in erp timezone
+								break;
+						}
+
+						return new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, DateTimeKind.Unspecified);
+					}
 				}
 				else if (field is DateTimeField)
 				{
@@ -1546,17 +1867,6 @@ namespace WebVella.ERP.Api
 					return pair.Value as string;
 				else if (field is UrlField)
 					return pair.Value as string;
-				else if (field is TreeSelectField)
-				{
-					if (pair.Value == null)
-						return null;
-					else if (pair.Value is JArray)
-						return ((JArray)pair.Value).Select(x => new Guid(((JToken)x).Value<string>())).ToList<Guid>();
-					else if (pair.Value is List<object>)
-						return ((List<object>)pair.Value).Select(x => ((Guid)x)).ToList<Guid>();
-					else
-						return pair.Value as IEnumerable<Guid>;
-				}
 			}
 			else
 			{
@@ -1684,6 +1994,10 @@ namespace WebVella.ERP.Api
 
 		private void SetRecordServiceInformation(EntityRecord record, bool newRecord = true, bool ignoreSecurity = false)
 		{
+
+			//this method is obsolete
+			return;
+
 			if (record == null)
 				return;
 
@@ -1737,941 +2051,6 @@ namespace WebVella.ERP.Api
 					recordData.Add(new KeyValuePair<string, object>(field.Name, defaultValue));
 				}
 			}
-		}
-
-		public List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null,
-					int? pageSize = null, bool export = false, EntityRelation auxRelation = null, Guid? auxRelatedRecordId = null,
-					string auxRelationDirection = "origin-target", List<KeyValuePair<string, string>> overwriteArgs = null, bool returnAllRecords = false,
-					int? recordsLmit = null)
-		{
-			if (entity == null)
-				throw new Exception($"Entity '{entity.Name}' do not exist");
-
-			RecordList list = null;
-			if (entity != null && entity.RecordLists != null)
-				list = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
-
-			if (list == null)
-				throw new Exception($"Entity '{entity.Name}' do not have list named '{listName}'");
-
-			//List<KeyValuePair<string, string>> queryStringOverwriteParameters = new List<KeyValuePair<string, string>>();
-			//foreach (var key in Request.Query.Keys)
-			//	queryStringOverwriteParameters.Add(new KeyValuePair<string, string>(key, Request.Query[key]));
-
-
-			EntityQuery resultQuery = new EntityQuery(entity.Name, "*", queryObj, null, null, null, overwriteArgs);
-			EntityRelationManager relManager = new EntityRelationManager();
-			EntityRelationListResponse relListResponse = relManager.Read();
-			List<EntityRelation> relationList = new List<EntityRelation>();
-			if (relListResponse.Object != null)
-				relationList = relListResponse.Object;
-
-			if (list != null)
-			{
-				List<QuerySortObject> sortList = new List<QuerySortObject>();
-				if (list.Sorts != null && list.Sorts.Count > 0)
-				{
-					foreach (var sort in list.Sorts)
-					{
-						QuerySortType sortType;
-						if (Enum.TryParse<QuerySortType>(sort.SortType, true, out sortType))
-							sortList.Add(new QuerySortObject(sort.FieldName, sortType));
-					}
-					resultQuery.Sort = sortList.ToArray();
-				}
-
-				if (list.Query != null)
-				{
-					var listQuery = RecordListQuery.ConvertQuery(list.Query);
-
-					if (queryObj != null)
-					{
-						//if (queryObj.SubQueries != null && queryObj.SubQueries.Any())
-						//	queryObj.SubQueries.Add(listQuery);
-						//else
-						queryObj = EntityQuery.QueryAND(listQuery, queryObj);
-					}
-					else
-						queryObj = listQuery;
-
-					resultQuery.Query = queryObj;
-				}
-
-				if (auxRelation != null && auxRelatedRecordId != null)
-				{
-					string relationField = $"${auxRelation.Name}.id";
-					if (auxRelationDirection == "target-origin")
-						relationField = "$" + relationField;
-
-					var auxRelQuery = EntityQuery.QueryEQ(relationField, auxRelatedRecordId);
-					if (resultQuery.Query != null)
-						resultQuery.Query = EntityQuery.QueryAND(resultQuery.Query, auxRelQuery);
-					else
-						resultQuery.Query = auxRelQuery;
-
-				}
-
-				string queryFields = "id,";
-				if (list.Columns != null)
-				{
-					foreach (var column in list.Columns)
-					{
-						if (column is RecordListFieldItem)
-						{
-							if (((RecordListFieldItem)column).Meta.Name != "id")
-								queryFields += ((RecordListFieldItem)column).Meta.Name + ", ";
-						}
-						else if (column is RecordListRelationTreeItem)
-						{
-							if (export)
-								continue;
-
-							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationTreeItem)column).RelationId);
-
-							string relName = relation != null ? string.Format("${0}.", relation.Name) : "";
-
-							Guid relEntityId = relation.OriginEntityId;
-							Guid relFieldId = relation.OriginFieldId;
-
-							Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-							Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-							var treeId = (column as RecordListRelationTreeItem).TreeId;
-							RecordTree tree = relEntity.RecordTrees.Single(x => x.Id == treeId);
-
-							var relIdField = relEntity.Fields.Single(x => x.Name == "id");
-
-							List<Guid> fieldIdsToInclude = new List<Guid>();
-							fieldIdsToInclude.AddRange(tree.NodeObjectProperties);
-
-							if (!fieldIdsToInclude.Contains(relIdField.Id))
-								fieldIdsToInclude.Add(relIdField.Id);
-
-							if (!fieldIdsToInclude.Contains(tree.NodeNameFieldId))
-								fieldIdsToInclude.Add(tree.NodeNameFieldId);
-
-							if (!fieldIdsToInclude.Contains(tree.NodeLabelFieldId))
-								fieldIdsToInclude.Add(tree.NodeLabelFieldId);
-
-							if (!fieldIdsToInclude.Contains(relField.Id))
-								fieldIdsToInclude.Add(relField.Id);
-
-							foreach (var fieldId in fieldIdsToInclude)
-							{
-								var f = relEntity.Fields.SingleOrDefault(x => x.Id == fieldId);
-								if (f != null)
-								{
-									string qFieldName = string.Format("{0}{1},", relName, f.Name);
-									if (!queryFields.Contains(qFieldName))
-										queryFields += qFieldName;
-								}
-							}
-
-							//always add target field in query, its value may be required for relative view and list
-							Field field = entity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
-							queryFields += field.Name + ", ";
-						}
-						else if (column is RecordListRelationFieldItem)
-						{
-							string targetOriginPrefix = "";
-							if (list.RelationOptions != null)
-							{
-								var options = list.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordListRelationFieldItem)column).RelationId);
-								if (options != null && options.Direction == "target-origin")
-									targetOriginPrefix = "$";
-							}
-
-							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationFieldItem)column).RelationId);
-							queryFields += string.Format(targetOriginPrefix + "${0}.{1}, ", relation.Name, ((RecordListRelationFieldItem)column).Meta.Name);
-
-							//add ID field automatically if not added
-							if (!queryFields.Contains(string.Format(targetOriginPrefix + "${0}.id", relation.Name)))
-								queryFields += string.Format(targetOriginPrefix + "${0}.id,", relation.Name);
-
-							//always add origin field in query, its value may be required for relative view and list
-							Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
-							Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
-							queryFields += field.Name + ", ";
-						}
-						else if (column is RecordListListItem || column is RecordListViewItem)
-						{
-							if (export)
-								continue;
-
-							if (!queryFields.Contains(" id, ") && !queryFields.StartsWith("id,"))
-								queryFields += "id, ";
-						}
-						else if (column is RecordListRelationListItem)
-						{
-							if (export)
-								continue;
-
-							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationListItem)column).RelationId);
-
-							string targetOriginPrefix = "";
-							if (list.RelationOptions != null)
-							{
-								var options = list.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordListRelationListItem)column).RelationId);
-								if (options != null && options.Direction == "target-origin")
-									targetOriginPrefix = "$";
-							}
-
-							string relName = relation != null ? string.Format(targetOriginPrefix + "${0}.", relation.Name) : "";
-
-							Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
-							Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
-
-							Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-							Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-							string queryFieldName = string.Format("{0}{1}, ", relName, relField.Name);
-
-							if (!queryFields.Contains(queryFieldName))
-								queryFields += queryFieldName;
-
-							//always add origin field in query, its value may be required for relative view and list
-							Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
-							Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
-							queryFields += field.Name + ", ";
-						}
-						else if (column is RecordListRelationViewItem)
-						{
-							if (export)
-								continue;
-
-							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationViewItem)column).RelationId);
-
-							string targetOriginPrefix = "";
-							if (list.RelationOptions != null)
-							{
-								var options = list.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordListRelationViewItem)column).RelationId);
-								if (options != null && options.Direction == "target-origin")
-									targetOriginPrefix = "$";
-							}
-
-							string relName = relation != null ? string.Format(targetOriginPrefix + "${0}.", relation.Name) : "";
-
-							Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
-							Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
-
-							Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-							Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-							string queryFieldName = string.Format("{0}{1}, ", relName, relField.Name);
-
-							if (!queryFields.Contains(queryFieldName))
-								queryFields += queryFieldName;
-
-							//always add origin field in query, its value may be required for relative view and list
-							Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
-							Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
-							queryFields += field.Name + ", ";
-						}
-					}
-
-					if (queryFields.EndsWith(", "))
-						queryFields = queryFields.Remove(queryFields.Length - 2);
-
-					resultQuery.Fields = queryFields;
-
-				}
-
-				if (returnAllRecords)
-				{
-					resultQuery.Skip = null;
-					resultQuery.Limit = null;
-				}
-				else
-				{
-					if (!pageSize.HasValue)
-						pageSize = list.PageSize;
-
-					if (pageSize.Value > 0)
-					{
-						resultQuery.Limit = pageSize.Value;
-						if (page != null && page > 0)
-							resultQuery.Skip = (page - 1) * resultQuery.Limit;
-					}
-				}
-
-				if (recordsLmit.HasValue && recordsLmit.Value > 0)
-				{
-					resultQuery.Limit = recordsLmit;
-				}
-			}
-
-			List<EntityRecord> resultDataList = new List<EntityRecord>();
-
-			QueryResponse result = Find(resultQuery);
-			if (!result.Success)
-				if (result.Errors.Count > 0)
-				{
-					throw new Exception(result.Message + ". Reason: " + result.Errors[0].Message);
-				}
-				else
-				{
-					throw new Exception(result.Message);
-				}
-
-			if (list != null)
-			{
-				foreach (var record in result.Object.Data)
-				{
-					EntityRecord dataRecord = new EntityRecord();
-					//always add id value
-					dataRecord["id"] = record["id"];
-
-					foreach (var column in list.Columns)
-					{
-						if (column is RecordListFieldItem)
-						{
-							dataRecord[column.DataName] = record[((RecordListFieldItem)column).FieldName];
-						}
-						else if (column is RecordListRelationFieldItem)
-						{
-							string propName = string.Format("${0}", ((RecordListRelationFieldItem)column).RelationName);
-							List<EntityRecord> relFieldRecords = (List<EntityRecord>)record[propName];
-
-							string idDataName = "$field" + propName + "$id";
-							if (!dataRecord.Properties.ContainsKey(idDataName))
-							{
-								List<object> idFieldRecord = new List<object>();
-								if (relFieldRecords != null)
-								{
-									foreach (var relFieldRecord in relFieldRecords)
-										idFieldRecord.Add(relFieldRecord["id"]);
-								}
-								dataRecord[idDataName] = idFieldRecord;
-							}
-
-							List<object> resultFieldRecord = new List<object>();
-							if (relFieldRecords != null)
-							{
-								foreach (var relFieldRecord in relFieldRecords)
-								{
-									resultFieldRecord.Add(relFieldRecord[((RecordListRelationFieldItem)column).FieldName]);
-								}
-							}
-							dataRecord[column.DataName] = resultFieldRecord;
-
-
-						}
-						else if (column is RecordListListItem)
-						{
-							if (export)
-								continue;
-
-							dataRecord[column.DataName] = GetListRecords(entities, entity, ((RecordListListItem)column).ListName);
-						}
-						else if (column is RecordListRelationListItem)
-						{
-							if (export)
-								continue;
-
-							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationListItem)column).RelationId);
-							string relName = string.Format("${0}", relation.Name);
-
-							Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
-							Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
-							Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
-							Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
-							Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-							Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
-							List<QueryObject> queries = new List<QueryObject>();
-							foreach (var relatedRecord in relatedRecords)
-								queries.Add(EntityQuery.QueryEQ(relField.Name, relatedRecord[relField.Name]));
-
-							if (queries.Count > 0)
-							{
-								QueryObject subListQueryObj = EntityQuery.QueryOR(queries.ToArray());
-								List<EntityRecord> subListResult = GetListRecords(entities, relEntity, ((RecordListRelationListItem)column).ListName, queryObj: subListQueryObj);
-								dataRecord[((RecordListRelationListItem)column).DataName] = subListResult;
-							}
-							else
-								dataRecord[((RecordListRelationListItem)column).DataName] = new List<object>();
-						}
-						else if (column is RecordListViewItem)
-						{
-							if (export)
-								continue;
-
-							dataRecord[column.DataName] = GetViewRecords(entities, entity, ((RecordListViewItem)column).ViewName, "id", record["id"]);
-						}
-						else if (column is RecordListRelationTreeItem)
-						{
-							if (export)
-								continue;
-
-							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationTreeItem)column).RelationId);
-							string relName = string.Format("${0}", relation.Name);
-
-							Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
-							Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
-							Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
-							Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
-							Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-							Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
-							dataRecord[((RecordListRelationTreeItem)column).DataName] = relatedRecords;
-						}
-						else if (column is RecordListRelationViewItem)
-						{
-							if (export)
-								continue;
-
-							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationViewItem)column).RelationId);
-							string relName = string.Format("${0}", relation.Name);
-
-							Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
-							Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
-							Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
-							Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
-							Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-							Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-							List<EntityRecord> subViewResult = new List<EntityRecord>();
-							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
-							foreach (var relatedRecord in relatedRecords)
-							{
-								subViewResult.AddRange(GetViewRecords(entities, relEntity, ((RecordListRelationViewItem)column).ViewName, relField.Name, relatedRecord[relField.Name]));
-							}
-							dataRecord[((RecordListRelationViewItem)column).DataName] = subViewResult;
-						}
-					}
-
-					resultDataList.Add(dataRecord);
-				}
-			}
-			else
-			{
-				foreach (var record in result.Object.Data)
-				{
-					EntityRecord dataRecord = new EntityRecord();
-					foreach (var prop in record.Properties)
-					{
-						//string propName = "$field" + (prop.Key.StartsWith("$") ? prop.Key : "$" + prop.Key);
-						string propName = prop.Key;
-						dataRecord[propName] = record[prop.Key];
-					}
-
-					resultDataList.Add(dataRecord);
-				}
-			}
-
-			return resultDataList;
-		}
-
-		public List<EntityRecord> GetViewRecords(List<Entity> entities, Entity entity, string viewName, string queryFieldName, object queryFieldValue)
-		{
-			EntityQuery resultQuery = new EntityQuery(entity.Name, "*", EntityQuery.QueryEQ(queryFieldName, queryFieldValue));
-
-			EntityRelationManager relManager = new EntityRelationManager();
-			EntityRelationListResponse relListResponse = relManager.Read();
-			List<EntityRelation> relationList = new List<EntityRelation>();
-			if (relListResponse.Object != null)
-				relationList = relListResponse.Object;
-
-			RecordView view = null;
-			if (entity != null && entity.RecordViews != null)
-				view = entity.RecordViews.FirstOrDefault(v => v.Name == viewName);
-
-			List<EntityRecord> resultDataList = new List<EntityRecord>();
-
-			string queryFields = "id,";
-
-			//List<RecordViewItemBase> items = new List<RecordViewItemBase>();
-			List<object> items = new List<object>();
-
-			if (view != null)
-			{
-
-				if (view.Sidebar.Items.Any())
-					items.AddRange(view.Sidebar.Items);
-
-				foreach (var region in view.Regions)
-				{
-					if (region.Sections == null)
-						continue;
-
-					foreach (var section in region.Sections)
-					{
-						if (section.Rows == null)
-							continue;
-
-						foreach (var row in section.Rows)
-						{
-							if (row.Columns == null)
-								continue;
-
-							foreach (var column in row.Columns)
-							{
-								if (column.Items != null && column.Items.Count > 0)
-									items.AddRange(column.Items);
-							}
-						}
-					}
-				}
-
-				foreach (var item in items)
-				{
-					if (item is RecordViewFieldItem)
-					{
-						if (((RecordViewFieldItem)item).Meta.Name != "id")
-							queryFields += ((RecordViewFieldItem)item).Meta.Name;
-					}
-					else if (item is RecordViewRelationFieldItem)
-					{
-						string targetOriginPrefix = "";
-						if (view.RelationOptions != null)
-						{
-							var options = view.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordViewRelationFieldItem)item).RelationId);
-							if (options != null && options.Direction == "target-origin")
-								targetOriginPrefix = "$";
-
-						}
-						EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationFieldItem)item).RelationId);
-
-						//add ID field automatically if not added
-						if (!queryFields.Contains(string.Format(targetOriginPrefix + "${0}.id", relation.Name)))
-							queryFields += string.Format(targetOriginPrefix + "${0}.id,", relation.Name);
-
-						Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
-						Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
-
-						queryFields += field.Name + ", ";
-						queryFields += string.Format(targetOriginPrefix + "${0}.{1}, ", relation.Name, ((RecordViewRelationFieldItem)item).Meta.Name);
-
-					}
-					else if (item is RecordViewListItem || item is RecordViewViewItem)
-					{
-						if (!queryFields.Contains(" id, ") && !queryFields.StartsWith("id,"))
-							queryFields += "id";
-					}
-					else if (item is RecordViewRelationTreeItem)
-					{
-						EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationTreeItem)item).RelationId);
-
-						string relName = relation != null ? string.Format("${0}.", relation.Name) : "";
-
-						Guid relEntityId = relation.OriginEntityId;
-						Guid relFieldId = relation.OriginFieldId;
-
-						Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-						Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-						var treeId = (item as RecordViewRelationTreeItem).TreeId;
-						RecordTree tree = relEntity.RecordTrees.Single(x => x.Id == treeId);
-
-						var relIdField = relEntity.Fields.Single(x => x.Name == "id");
-
-						List<Guid> fieldIdsToInclude = new List<Guid>();
-						fieldIdsToInclude.AddRange(tree.NodeObjectProperties);
-
-						if (!fieldIdsToInclude.Contains(relIdField.Id))
-							fieldIdsToInclude.Add(relIdField.Id);
-
-						if (!fieldIdsToInclude.Contains(tree.NodeNameFieldId))
-							fieldIdsToInclude.Add(tree.NodeNameFieldId);
-
-						if (!fieldIdsToInclude.Contains(tree.NodeLabelFieldId))
-							fieldIdsToInclude.Add(tree.NodeLabelFieldId);
-
-						if (!fieldIdsToInclude.Contains(relField.Id))
-							fieldIdsToInclude.Add(relField.Id);
-
-						foreach (var fieldId in fieldIdsToInclude)
-						{
-							var f = relEntity.Fields.SingleOrDefault(x => x.Id == fieldId);
-							if (f != null)
-							{
-								string qFieldName = string.Format("{0}{1},", relName, f.Name);
-								if (!queryFields.Contains(qFieldName))
-									queryFields += qFieldName;
-							}
-						}
-
-						//always add target field in query, its value may be required for relative view and list
-						Field field = entity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
-						queryFields += field.Name + ", ";
-					}
-					else if (item is RecordViewRelationListItem)
-					{
-						EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationListItem)item).RelationId);
-
-						string targetOriginPrefix = "";
-						if (view.RelationOptions != null)
-						{
-							var options = view.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordViewRelationListItem)item).RelationId);
-							if (options != null && options.Direction == "target-origin")
-								targetOriginPrefix = "$";
-						}
-
-						string relName = relation != null ? string.Format(targetOriginPrefix + "${0}.", relation.Name) : "";
-
-						Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
-						Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
-
-						Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-						Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-						string qFieldName = string.Format("{0}{1},", relName, relField.Name);
-
-						if (!queryFields.Contains(qFieldName))
-							queryFields += qFieldName;
-
-						//always add origin field in query, its value may be required for relative view and list
-						Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
-						Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
-						queryFields += field.Name + ", ";
-
-					}
-					else if (item is RecordViewRelationViewItem)
-					{
-						EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationViewItem)item).RelationId);
-
-						string targetOriginPrefix = "";
-						if (view.RelationOptions != null)
-						{
-							var options = view.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordViewRelationViewItem)item).RelationId);
-							if (options != null && options.Direction == "target-origin")
-								targetOriginPrefix = "$";
-						}
-
-						string relName = relation != null ? string.Format(targetOriginPrefix + "${0}.", relation.Name) : "";
-
-						Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
-						Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
-
-						Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-						Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-						string qFieldName = string.Format("{0}{1},", relName, relField.Name);
-
-						if (!queryFields.Contains(qFieldName))
-							queryFields += qFieldName;
-
-						//always add origin field in query, its value may be required for relative view and list
-						Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
-						Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
-						queryFields += field.Name + ", ";
-					}
-					else if (item is RecordViewSidebarViewItem)
-					{
-						//nothing to add, just check for record id
-						if (!queryFields.Contains(" id, ") && !queryFields.StartsWith("id,"))
-							queryFields += "id";
-					}
-					else if (item is RecordViewSidebarListItem)
-					{
-						//nothing to add, just check for record id
-						if (!queryFields.Contains(" id, ") && !queryFields.StartsWith("id,"))
-							queryFields += "id";
-					}
-					else if (item is RecordViewSidebarRelationTreeItem)
-					{
-						EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewSidebarRelationTreeItem)item).RelationId);
-
-						string relName = relation != null ? string.Format("${0}.", relation.Name) : "";
-
-						Guid relEntityId = relation.OriginEntityId;
-						Guid relFieldId = relation.OriginFieldId;
-
-						Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-						Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-						string qFieldName = string.Format("{0}{1},", relName, relField.Name);
-
-						if (!queryFields.Contains(qFieldName))
-							queryFields += qFieldName;
-
-						//always add target field in query, its value may be required for relative view and list
-						Field field = entity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
-						queryFields += field.Name + ", ";
-					}
-					else if (item is RecordViewSidebarRelationListItem)
-					{
-						EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewSidebarRelationListItem)item).RelationId);
-
-						string targetOriginPrefix = "";
-						if (view.RelationOptions != null)
-						{
-							var options = view.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordViewSidebarRelationListItem)item).RelationId);
-							if (options != null && options.Direction == "target-origin")
-								targetOriginPrefix = "$";
-						}
-
-						string relName = relation != null ? string.Format(targetOriginPrefix + "${0}.", relation.Name) : "";
-
-						Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
-						Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
-
-						Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-						Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-						string qFieldName = string.Format("{0}{1},", relName, relField.Name);
-
-						if (!queryFields.Contains(qFieldName))
-							queryFields += qFieldName;
-
-						//always add origin field in query, its value may be required for relative view and list
-						Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
-						Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
-						queryFields += field.Name + ", ";
-					}
-					else if (item is RecordViewSidebarRelationViewItem)
-					{
-						EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewSidebarRelationViewItem)item).RelationId);
-
-						string targetOriginPrefix = "";
-						if (view.RelationOptions != null)
-						{
-							var options = view.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordViewSidebarRelationViewItem)item).RelationId);
-							if (options != null && options.Direction == "target-origin")
-								targetOriginPrefix = "$";
-						}
-
-						string relName = relation != null ? string.Format(targetOriginPrefix + "${0}.", relation.Name) : "";
-
-						Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
-						Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
-
-						Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-						Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-						string qFieldName = string.Format("{0}{1},", relName, relField.Name);
-
-						if (!queryFields.Contains(qFieldName))
-							queryFields += qFieldName;
-
-						//always add origin field in query, its value may be required for relative view and list
-						Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
-						Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
-						queryFields += field.Name + ", ";
-					}
-
-					queryFields += ",";
-				}
-
-				queryFields = queryFields.Trim();
-				if (queryFields.EndsWith(","))
-					queryFields = queryFields.Remove(queryFields.Length - 1);
-
-				resultQuery.Fields = queryFields;
-			}
-
-			QueryResponse result = Find(resultQuery);
-			if (!result.Success)
-				return resultDataList;
-
-			if (view != null)
-			{
-				foreach (var record in result.Object.Data)
-				{
-					EntityRecord dataRecord = new EntityRecord();
-					//always add id value
-					dataRecord["id"] = record["id"];
-
-					foreach (var item in items)
-					{
-						if (item is RecordViewFieldItem)
-						{
-							dataRecord[((RecordViewFieldItem)item).DataName] = record[((RecordViewFieldItem)item).FieldName];
-						}
-						else if (item is RecordViewListItem)
-						{
-							dataRecord[((RecordViewListItem)item).DataName] = GetListRecords(entities, entity, ((RecordViewListItem)item).ListName);
-						}
-						else if (item is RecordViewViewItem)
-						{
-							dataRecord[((RecordViewViewItem)item).DataName] = GetViewRecords(entities, entity, ((RecordViewViewItem)item).ViewName, "id", record["id"]);
-						}
-						else if (item is RecordViewRelationFieldItem)
-						{
-							string propName = string.Format("${0}", ((RecordViewRelationFieldItem)item).RelationName);
-							List<EntityRecord> relFieldRecords = (List<EntityRecord>)record[propName];
-
-							string idDataName = "$field" + propName + "$id";
-							if (!dataRecord.Properties.ContainsKey(idDataName))
-							{
-								List<object> idFieldRecord = new List<object>();
-								if (relFieldRecords != null)
-								{
-									foreach (var relFieldRecord in relFieldRecords)
-										idFieldRecord.Add(relFieldRecord["id"]);
-								}
-								dataRecord[idDataName] = idFieldRecord;
-							}
-
-							List<object> resultFieldRecord = new List<object>();
-							if (relFieldRecords != null)
-							{
-								foreach (var relFieldRecord in relFieldRecords)
-								{
-									resultFieldRecord.Add(relFieldRecord[((RecordViewRelationFieldItem)item).FieldName]);
-								}
-							}
-							dataRecord[((RecordViewRelationFieldItem)item).DataName] = resultFieldRecord;
-						}
-						else if (item is RecordViewRelationTreeItem)
-						{
-							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationTreeItem)item).RelationId);
-							string relName = string.Format("${0}", relation.Name);
-
-							Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
-							Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
-							Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
-							Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
-							Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-							Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
-							dataRecord[((RecordViewRelationTreeItem)item).DataName] = relatedRecords;
-						}
-						else if (item is RecordViewRelationListItem)
-						{
-							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationListItem)item).RelationId);
-							string relName = string.Format("${0}", relation.Name);
-
-							Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
-							Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
-							Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
-							Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
-							Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-							Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
-							List<QueryObject> queries = new List<QueryObject>();
-							foreach (var relatedRecord in relatedRecords)
-								queries.Add(EntityQuery.QueryEQ(relField.Name, relatedRecord[relField.Name]));
-
-							if (queries.Count > 0)
-							{
-								QueryObject subListQueryObj = EntityQuery.QueryOR(queries.ToArray());
-								List<EntityRecord> subListResult = GetListRecords(entities, relEntity, ((RecordViewRelationListItem)item).ListName, queryObj: subListQueryObj);
-								dataRecord[((RecordViewRelationListItem)item).DataName] = subListResult;
-							}
-							else
-								dataRecord[((RecordViewRelationListItem)item).DataName] = new List<object>();
-						}
-						else if (item is RecordViewRelationViewItem)
-						{
-							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationViewItem)item).RelationId);
-							string relName = string.Format("${0}", relation.Name);
-
-							Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
-							Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
-							Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
-							Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
-							Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-							Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-							List<EntityRecord> subViewResult = new List<EntityRecord>();
-							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
-							foreach (var relatedRecord in relatedRecords)
-							{
-								subViewResult.AddRange(GetViewRecords(entities, relEntity, ((RecordViewRelationViewItem)item).ViewName, "id", relatedRecord["id"]));
-							}
-							dataRecord[((RecordViewRelationViewItem)item).DataName] = subViewResult;
-
-						}
-						else if (item is RecordViewSidebarViewItem)
-						{
-							List<EntityRecord> subViewResult = GetViewRecords(entities, entity, ((RecordViewSidebarViewItem)item).ViewName, "id", record["id"]);
-							dataRecord[((RecordViewSidebarViewItem)item).DataName] = subViewResult;
-						}
-						else if (item is RecordViewSidebarListItem)
-						{
-							var query = EntityQuery.QueryEQ("id", record["id"]);
-							List<EntityRecord> subListResult = GetListRecords(entities, entity, ((RecordViewSidebarListItem)item).ListName, queryObj: query);
-							dataRecord[((RecordViewSidebarListItem)item).DataName] = subListResult;
-						}
-						else if (item is RecordViewSidebarRelationTreeItem)
-						{
-							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewSidebarRelationTreeItem)item).RelationId);
-							string relName = string.Format("${0}", relation.Name);
-
-							Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
-							Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
-							Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
-							Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
-							Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-							Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
-							dataRecord[((RecordViewSidebarRelationTreeItem)item).DataName] = relatedRecords;
-						}
-						else if (item is RecordViewSidebarRelationListItem)
-						{
-							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewSidebarRelationListItem)item).RelationId);
-							string relName = string.Format("${0}", relation.Name);
-
-							Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
-							Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
-							Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
-							Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
-							Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-							Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
-							List<QueryObject> queries = new List<QueryObject>();
-							foreach (var relatedRecord in relatedRecords)
-								queries.Add(EntityQuery.QueryEQ(relField.Name, relatedRecord[relField.Name]));
-
-							if (queries.Count > 0)
-							{
-								//QueryObject subListQueryObj = EntityQuery.QueryEQ(relField.Name, record[field.Name]);
-								QueryObject subListQueryObj = EntityQuery.QueryOR(queries.ToArray());
-								List<EntityRecord> subListResult = GetListRecords(entities, relEntity, ((RecordViewSidebarRelationListItem)item).ListName, queryObj: subListQueryObj);
-								dataRecord[((RecordViewSidebarRelationListItem)item).DataName] = subListResult;
-							}
-							else
-								dataRecord[((RecordViewSidebarRelationListItem)item).DataName] = new List<object>();
-						}
-						else if (item is RecordViewSidebarRelationViewItem)
-						{
-							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewSidebarRelationViewItem)item).RelationId);
-							string relName = string.Format("${0}", relation.Name);
-
-							Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
-							Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
-							Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
-							Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
-							Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
-							Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
-
-							List<EntityRecord> subViewResult = new List<EntityRecord>();
-							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
-							foreach (var relatedRecord in relatedRecords)
-							{
-								subViewResult.AddRange(GetViewRecords(entities, relEntity, ((RecordViewSidebarRelationViewItem)item).ViewName, "id", relatedRecord["id"]));
-							}
-							dataRecord[((RecordViewSidebarRelationViewItem)item).DataName] = subViewResult;
-						}
-					}
-
-					resultDataList.Add(dataRecord);
-				}
-			}
-			else
-			{
-				foreach (var record in result.Object.Data)
-				{
-					EntityRecord dataRecord = new EntityRecord();
-					foreach (var prop in record.Properties)
-					{
-						//string propName = "$field" + (prop.Key.StartsWith("$") ? prop.Key : "$" + prop.Key);
-						string propName = prop.Key;
-						dataRecord[propName] = record[prop.Key];
-					}
-
-					resultDataList.Add(dataRecord);
-				}
-			}
-
-			return resultDataList;
 		}
 	}
 }

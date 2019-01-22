@@ -4,7 +4,7 @@ using System;
 
 #endregion
 
-namespace WebVella.ERP
+namespace WebVella.Erp
 { 
     public class StorageException : Exception
 	{

@@ -1,0 +1,122 @@
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web.Components;
+@using WebVella.Erp.Api.Models;
+@using WebVella.Erp.Web;
+@{
+	var options = (PcGrid.PcGridOptions)ViewBag.Options;
+	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
+	var cssBreakpoints = (List<SelectOption>)ViewBag.CssBreakpointOptions;
+	var verticalAlignmentOptions = (List<SelectOption>)ViewBag.VerticalAlignmentOptions;
+	var horizontalAlignmentOptions = (List<SelectOption>)ViewBag.HorizontalAlignmentOptions;
+}
+
+<wv-row>
+	<wv-column span="4">
+		<wv-field-number min="1" max="7" name="visible_columns" value="@options.VisibleColumns" label-text="Visible Columns"></wv-field-number>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-datasource name="records" value="@options.Records" label-text="Records" page-id="erpRequest.Page.Id"></wv-field-datasource>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="id" value="@options.Id" label-text="Id"></wv-field-text>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="4">
+		<wv-field-text name="name" value="@options.Name" label-text="Name"></wv-field-text>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="prefix" value="@options.Prefix" label-text="Prefix"></wv-field-text>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="class" value="@options.Class" label-text="Class"></wv-field-text>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="4">
+		<wv-field-checkbox name="striped" value="@options.Striped" label-text="Striped" text-true="is striped"></wv-field-checkbox>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-checkbox name="small" value="@options.Small" label-text="Small" text-true="is small"></wv-field-checkbox>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-checkbox name="bordered" value="@options.Bordered" label-text="Bordered" text-true="is bordered"></wv-field-checkbox>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="4">
+		<wv-field-checkbox name="borderless" value="@options.Borderless" label-text="Borderless" text-true="is borderless"></wv-field-checkbox>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-checkbox name="hover" value="@options.Hover" label-text="Hover" text-true="is hover"></wv-field-checkbox>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-select name="responsive_breakpoint" value="@options.ResponsiveBreakpoint" label-text="ResponsiveBreakpoint" options="@cssBreakpoints"></wv-field-select>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="4">
+		<wv-field-text name="empty_text" value="@options.EmptyText" label-text="Empty Text"></wv-field-text>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-checkbox name="has_thead" value="@options.HasThead" label-text="Header" text-true="show header"></wv-field-checkbox>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-checkbox name="has_tfoot" value="@options.HasTfoot" label-text="Footer" text-true="show footer"></wv-field-checkbox>
+	</wv-column>
+</wv-row>
+
+@for (int i = 1; i <= 12; i++)
+{
+	<div id="@($"section-column{i}")" class="mt-3 @(options.VisibleColumns > i - 1 ? "" : "d-none")">
+		<h4 class="go-teal">@("Column " + i)</h4>
+		<wv-row>
+			@{
+				var columnLabel = (options.GetType().GetProperty($"Container{i}Label").GetValue(options, null) ?? "").ToString();
+				var columnName = (options.GetType().GetProperty($"Container{i}Name").GetValue(options, null) ?? "").ToString();
+				var columnWidth = (options.GetType().GetProperty($"Container{i}Width").GetValue(options, null) ?? "").ToString();
+			}
+			<wv-column span="4">
+				<wv-field-text name="@($"container{i}_label")" value="@columnLabel" label-text="@($"Column {i} Label")"></wv-field-text>
+			</wv-column>
+			<wv-column span="4">
+				<wv-field-text name="@($"container{i}_width")" value="@columnWidth" label-text="@($"Column {i} Width")"></wv-field-text>
+			</wv-column>
+			<wv-column span="4">
+				<wv-field-text name="@($"container{i}_name")" value="@columnName" label-text="@($"Column {i} Name")"></wv-field-text>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			@{
+				var columnSortable = (options.GetType().GetProperty($"Container{i}Sortable").GetValue(options, null) ?? false);
+				var columnSearchable = (options.GetType().GetProperty($"Container{i}Searchable").GetValue(options, null) ?? false);
+				var columnClass = (options.GetType().GetProperty($"Container{i}Class").GetValue(options, null) ?? false);
+				var columnNoWrap = (options.GetType().GetProperty($"Container{i}NoWrap").GetValue(options, null) ?? false);
+			}
+			<wv-column span="4">
+				<wv-field-checkbox name="@($"container{i}_nowrap")" value="@columnNoWrap" label-text="@($"Column {i} Text Wrapping")" text-true="mark as non wrappable"></wv-field-checkbox>
+			</wv-column>
+			<wv-column span="4">
+				<wv-field-checkbox name="@($"container{i}_sortable")" value="@columnSortable" label-text="@($"Column {i} Sortable")" text-true="mark as sortable"></wv-field-checkbox>
+			</wv-column>
+			<wv-column span="4">
+				<wv-field-text name="@($"container{i}_class")" value="@columnClass" label-text="@($"Column {i} Class")"></wv-field-text>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			@{
+				var verticalAlign = (options.GetType().GetProperty($"Container{i}VerticalAlign").GetValue(options, null) ?? false);
+				var horizontalAlign = (options.GetType().GetProperty($"Container{i}HorizontalAlign").GetValue(options, null) ?? false);
+			}
+			<wv-column span="4">
+				<wv-field-select name="@($"container{i}_vertical_align")" value="@verticalAlign" label-text="@($"Column {i} Vertical Align")" options="@verticalAlignmentOptions"></wv-field-select>
+			</wv-column>
+			<wv-column span="4">
+				<wv-field-select name="@($"container{i}_horizontal_align")" value="@horizontalAlign" label-text="@($"Column {i} Horizontal Align")" options="@horizontalAlignmentOptions"></wv-field-select>
+			</wv-column>
+		</wv-row>
+	</div>
+}
+
+

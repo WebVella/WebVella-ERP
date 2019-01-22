@@ -6,8 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Data;
+using System.Text;
 
-namespace WebVella.ERP.Database
+namespace WebVella.Erp.Database
 {
 	public class DbConnection : IDisposable
 	{
@@ -43,7 +44,7 @@ namespace WebVella.ERP.Database
 		/// <param name="code"></param>
 		/// <param name="commandType"></param>
 		/// <returns></returns>
-		public NpgsqlCommand CreateCommand(string code, CommandType commandType = CommandType.Text)
+		public NpgsqlCommand CreateCommand(string code, CommandType commandType = CommandType.Text, List<NpgsqlParameter> parameters = null)
 		{
 			NpgsqlCommand command = null;
 			if (transaction != null)
@@ -52,7 +53,56 @@ namespace WebVella.ERP.Database
 				command = new NpgsqlCommand(code, connection);
 
 			command.CommandType = commandType;
+			if (parameters != null)
+				command.Parameters.AddRange(parameters.ToArray());
+
 			return command;
+		}
+
+		public bool AcquireAdvisoryLock(long key)
+		{
+			NpgsqlCommand command = CreateCommand("SELECT pg_try_advisory_xact_lock(@key);");
+			command.Parameters.Add(new NpgsqlParameter("@key", key));
+			using (var reader = command.ExecuteReader())
+			{
+
+				try
+				{
+					if (reader.Read())
+						return (bool)reader[0];
+					else
+						return false;
+
+				}
+				finally
+				{
+					reader.Close();
+				}
+			}
+		}
+
+		public bool AcquireAdvisoryLock(string key)
+		{
+            Int64 hashCode = 0;
+            if (!string.IsNullOrEmpty(key))
+            {
+                //Unicode Encode Covering all characterset
+                byte[] byteContents = Encoding.Unicode.GetBytes(key);
+                System.Security.Cryptography.SHA256 hash =
+                new System.Security.Cryptography.SHA256CryptoServiceProvider();
+                byte[] hashText = hash.ComputeHash(byteContents);
+                //32Byte hashText separate
+                //hashCodeStart = 0~7  8Byte
+                //hashCodeMedium = 8~23  8Byte
+                //hashCodeEnd = 24~31  8Byte
+                //and Fold
+                Int64 hashCodeStart = BitConverter.ToInt64(hashText, 0);
+                Int64 hashCodeMedium = BitConverter.ToInt64(hashText, 8);
+                Int64 hashCodeEnd = BitConverter.ToInt64(hashText, 24);
+                hashCode = hashCodeStart ^ hashCodeMedium ^ hashCodeEnd;
+            }
+            
+			return AcquireAdvisoryLock(hashCode);
 		}
 
 		/// <summary>
@@ -135,7 +185,7 @@ namespace WebVella.ERP.Database
 				throw new Exception("Trying to close connection with pending transaction. The transaction is rolled back.");
 			}
 
-			if ( transactionStack.Count > 0)
+			if (transactionStack.Count > 0)
 				throw new Exception("Trying to close connection with pending transaction. The transaction is rolled back.");
 
 			DbContext.Current.CloseConnection(this);

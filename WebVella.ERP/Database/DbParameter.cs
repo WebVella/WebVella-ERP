@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebVella.ERP.Database.Models
+namespace WebVella.Erp.Database.Models
 {
     public class DbParameter
     {

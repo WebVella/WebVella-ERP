@@ -1,0 +1,65 @@
+﻿@page "/sdk/objects/application/m/{RecordId}/{PageName?}"
+
+@model WebVella.Erp.Plugins.SDK.Pages.Application.ManageModel
+@{
+	Layout = "~/Pages/_AppMaster.cshtml";
+	ViewData["Title"] = "Manage Application";
+
+}
+<wv-page-header color="@Model.App.Color" area-label="Applications" title="@Model.App.Label" subtitle="Manage"
+				icon-class="@Model.App.IconClass" return-url="@Model.ReturnUrl">
+	<wv-page-header-actions>
+		@foreach (var action in Model.HeaderActions)
+		{
+			@Html.Raw(action)
+		}
+	</wv-page-header-actions>
+
+	<wv-page-header-toolbar>
+		@foreach (var action in Model.HeaderToolbar)
+		{
+			@Html.Raw(action)
+		}
+	</wv-page-header-toolbar>
+</wv-page-header>
+
+<wv-validation validation="Model.Validation" show-errors="false"></wv-validation>
+
+<wv-form name="ManageRecord" validation="Model.Validation" label-mode="Stacked" mode="Form">
+	<wv-section class="mt-4">
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="Name" value="@Model.Name" name="Name" required="true"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-text label-text="Label" value="@Model.Label" name="Label" required="true"></wv-field-text>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="Icon CSS Class" value="@Model.IconClass" name="IconClass"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-color label-text="Color" value="@Model.Color" name="Color"></wv-field-color>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="Author" value="@Model.Author" name="Author"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-number label-text="Weight" decimal-digits="0" value="@Model.Weight" name="Weight"></wv-field-number>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column>
+				<wv-field-textarea label-text="Description" value="@Model.Description" name="Description"></wv-field-textarea>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column>
+				<wv-field-multiselect label-text="Access" value="@Model.Access" name="Access" options="Model.RoleOptions"></wv-field-multiselect>
+			</wv-column>
+		</wv-row>
+	</wv-section>
+</wv-form>

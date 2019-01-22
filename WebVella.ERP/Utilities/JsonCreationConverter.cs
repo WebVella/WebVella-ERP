@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
 
-namespace WebVella.ERP.Utilities
+namespace WebVella.Erp.Utilities
 {
 	public abstract class JsonCreationConverter<T> : JsonConverter
 	{

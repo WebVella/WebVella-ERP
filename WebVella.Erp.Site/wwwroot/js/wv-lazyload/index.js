@@ -1,0 +1,1 @@
+// WvLazyload: CommonJS Main

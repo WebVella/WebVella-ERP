@@ -1,0 +1,42 @@
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web.Components;
+@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Api.Models;
+@{
+	var options = (PcForm.PcFormOptions)ViewBag.Options;
+	var labelRenderModeOptions = (List<SelectOption>)ViewBag.LabelRenderModeOptions;
+	var fieldRenderModeOptions = (List<SelectOption>)ViewBag.FieldRenderModeOptions;
+	var methodOptions = (List<SelectOption>)ViewBag.MethodOptions;
+}
+
+<wv-row>
+	<wv-column span="4">
+		<wv-field-text name="id" value="@options.Id" label-text="Id"></wv-field-text>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="name" value="@options.Name" label-text="Name"></wv-field-text>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="hook_key" value="@options.HookKey" label-text="Custom Hook key" description="if not empty, the standard page POST functionality will not be triggered. Only a Hooks with this key will be looked for and executed."></wv-field-text>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="4">
+		<wv-field-select name="method" value="@options.Method" label-text="Method" options="@methodOptions"></wv-field-select>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-select name="label_mode" value="@options.LabelMode" label-text="Label mode" options="@labelRenderModeOptions"></wv-field-select>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-select name="mode" value="@options.Mode" label-text="Mode" options="@fieldRenderModeOptions"></wv-field-select>
+	</wv-column>
+</wv-row>
+
+
+
+
+
+
+
+

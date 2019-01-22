@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoMapper;
 
-namespace WebVella.ERP.Api.Models.AutoMapper.Resolvers
+namespace WebVella.Erp.Api.Models.AutoMapper.Resolvers
 {
     public class StringToGuidConverter : ITypeConverter<string, Guid>
     {

@@ -4,11 +4,12 @@ using System.Dynamic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using WebVella.ERP.Api;
-using WebVella.ERP.Database;
-using WebVella.ERP.Diagnostics;
+using WebVella.Erp.Api;
+using WebVella.Erp.Database;
+using WebVella.Erp.Diagnostics;
+using WebVella.Erp.Exceptions;
 
-namespace WebVella.ERP.Jobs
+namespace WebVella.Erp.Jobs
 {
 	public class ScheduleManager
 	{
@@ -190,20 +191,22 @@ namespace WebVella.ERP.Jobs
 				}
 				catch (Exception ex)
 				{
-					using (var secCtx = SecurityContext.OpenSystemScope())
-					{
-						try
-						{
-							DbContext.CreateContext(ERP.Settings.ConnectionString);
 
+					try
+					{
+						DbContext.CreateContext(Erp.ErpSettings.ConnectionString);
+
+						using (var secCtx = SecurityContext.OpenSystemScope())
+						{
 							Log log = new Log();
 							log.Create(LogType.Error, "ScheduleManager.Process", ex);
 						}
-						finally
-						{
-							DbContext.CloseContext();
-						}
 					}
+					finally
+					{
+						DbContext.CloseContext();
+					}
+
 				}
 				finally
 				{
@@ -282,10 +285,14 @@ namespace WebVella.ERP.Jobs
 															   ((0 < timeAsInt) && (timeAsInt <= intervalPlan.EndTimespan.Value)));
 					}
 
-					if (IsTimeInTimespanInterval(startingDate, intervalPlan.StartTimespan, intervalPlan.EndTimespan) &&
-						IsDayUsedInSchedulePlan(startingDate, daysOfWeek, isIntervalConnectedToFirstDay))
+					if (IsTimeInTimespanInterval(startingDate, intervalPlan.StartTimespan, intervalPlan.EndTimespan) )
 					{
-						return startingDate;
+						if (IsDayUsedInSchedulePlan(startingDate, daysOfWeek, isIntervalConnectedToFirstDay))
+							return startingDate;
+						else
+							startingDate = startingDate.AddDays(1);
+						
+						continue;
 					}
 					else //step
 					{

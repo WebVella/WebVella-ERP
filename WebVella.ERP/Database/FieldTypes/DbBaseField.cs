@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
-using WebVella.ERP.Api.Models;
+using WebVella.Erp.Api.Models;
 
-namespace WebVella.ERP.Database
+namespace WebVella.Erp.Database
 {
 	public abstract class DbBaseField
 	{
@@ -150,9 +150,10 @@ namespace WebVella.ERP.Database
 				return FieldType.TextField;
 			else if (this is DbUrlField)
 				return FieldType.UrlField;
-			else if (this is DbTreeSelectField)
-				return FieldType.TreeSelectField;
-			return FieldType.GuidField;
+			else if (this is DbGuidField)
+				return FieldType.GuidField;
+
+			throw new Exception("Unknown field type.");
 		}
 	}
 }

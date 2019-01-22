@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
-namespace WebVella.ERP.Api.Models.AutoMapper.Resolvers
+namespace WebVella.Erp.Api.Models.AutoMapper.Resolvers
 {
     public static class SanitizeHtml
     {

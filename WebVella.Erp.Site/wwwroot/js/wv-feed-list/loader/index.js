@@ -1,0 +1,1 @@
+export * from '../esm/es5/wv-feed-list.define.js';

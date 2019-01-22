@@ -6,17 +6,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using WebVella.ERP.Api;
-using WebVella.ERP.Api.Models;
-using WebVella.ERP.Database.Models;
+using WebVella.Erp.Api;
+using WebVella.Erp.Api.Models;
+using WebVella.Erp.Database.Models;
 
-namespace WebVella.ERP.Database
+namespace WebVella.Erp.Database
 {
 	public class DbEntityRepository
 	{
 		internal const string RECORD_COLLECTION_PREFIX = "rec_";
 
-		public bool Create(DbEntity entity, Dictionary<string, Guid> sysldDictionary = null)
+		public bool Create(DbEntity entity, Dictionary<string, Guid> sysldDictionary = null, bool createOnlyIdField = true)
 		{
 			try
 			{
@@ -57,7 +57,7 @@ namespace WebVella.ERP.Database
 						if (!result)
 							throw new Exception("Entity record was not added!");
 
-						if (entity.Id != SystemIds.UserEntityId)
+						if (entity.Id != SystemIds.UserEntityId && createOnlyIdField == false )
 						{
 							DbEntity userEntity = Read(SystemIds.UserEntityId);
 
@@ -106,7 +106,7 @@ namespace WebVella.ERP.Database
 							DbEntityRelation modifiedByRelation = new DbEntityRelation();
 							modifiedByRelation.Id = modifiedByRelationId;
 							modifiedByRelation.Name = modifiedByRelationName;
-							modifiedByRelation.Label = "user<-[1]:[m]->area.last_modified_by";
+							modifiedByRelation.Label = $"user<-[1]:[m]->{entity.Name}.last_modified_by";
 							modifiedByRelation.RelationType = EntityRelationType.OneToMany;
 							modifiedByRelation.OriginEntityId = SystemIds.UserEntityId;
 							modifiedByRelation.OriginFieldId = userEntity.Fields.Single(f => f.Name == "id").Id;
@@ -188,7 +188,13 @@ namespace WebVella.ERP.Database
 				using (NpgsqlDataReader reader = command.ExecuteReader())
 				{
 
-					JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+					JsonSerializerSettings settings = new JsonSerializerSettings
+					{
+						TypeNameHandling = TypeNameHandling.Auto,
+						NullValueHandling = NullValueHandling.Ignore,
+						MissingMemberHandling = MissingMemberHandling.Ignore,
+					};
+					settings.Converters.Add(new DecimalToIntFormatConverter());
 					List<DbEntity> entities = new List<DbEntity>();
 					while (reader.Read())
 					{
@@ -203,6 +209,30 @@ namespace WebVella.ERP.Database
 				}
 			}
 		}
+
+		public class DecimalToIntFormatConverter : JsonConverter
+		{
+			public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+			{
+				throw new NotImplementedException();
+			}
+
+			public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+			{
+				if (objectType == typeof(int))
+				{
+					return Convert.ToInt32(reader.Value.ToString());
+				}
+
+				return reader.Value;
+			}
+
+			public override bool CanConvert(Type objectType)
+			{
+				return objectType == typeof(int);
+			}
+		}
+
 
 		public bool Delete(Guid entityId)
 		{
@@ -220,10 +250,10 @@ namespace WebVella.ERP.Database
 
 						foreach (var relation in entityRelations)
 							relRepository.Delete(relation.Id);
-							
+
 						var entity = Read(entityId);
 
-						NpgsqlCommand command = con.CreateCommand("DELETE FROM entities WHERE id=@id; DROP TABLE rec_" + entity.Name );
+						NpgsqlCommand command = con.CreateCommand("DELETE FROM entities WHERE id=@id; DROP TABLE rec_" + entity.Name);
 
 						var parameterId = command.CreateParameter() as NpgsqlParameter;
 						parameterId.ParameterName = "id";

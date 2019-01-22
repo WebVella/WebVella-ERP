@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebVella.ERP.Api.Models
+namespace WebVella.Erp.Api.Models
 {
     public enum QueryType
     {

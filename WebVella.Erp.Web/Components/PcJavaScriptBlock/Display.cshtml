@@ -1,0 +1,9 @@
+﻿@using WebVella.Erp.Web.Components;
+@using WebVella.Erp.Web.Models;
+@{
+	var options = (PcJavaScriptBlock.PcJavaScriptBlockOptions)ViewBag.Options;
+	var node = (PageBodyNode)ViewBag.Node;
+}
+<script>
+@Html.Raw(options.Script)
+</script>

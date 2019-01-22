@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebVella.ERP.Notifications
+namespace WebVella.Erp.Notifications
 {
 	public class ErpRecordChangeNotification
 	{

@@ -1,0 +1,91 @@
+﻿@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Api.Models;
+@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Plugins.SDK.Model;
+@{
+	var pageSelectionTree = (PageSelectionTree)ViewBag.PageSelectionTree;
+	var mode = (FieldRenderMode)ViewBag.RenderMode;
+	var erpPage = (ErpPage)ViewBag.ErpPage;
+
+	var applicationOptions = (List<SelectOption>)ViewBag.ApplicationOptions;
+	var areaOptions = (List<SelectOption>)ViewBag.AreaOptions;
+	var nodeOptions = (List<SelectOption>)ViewBag.NodeOptions;
+	var entityOptions = (List<SelectOption>)ViewBag.EntityOptions;
+	var entitySelectClass = "d-none";
+	var appSelectClass = "d-none";
+	var areaSelectClass = "d-none";
+	var nodeSelectClass = "d-none";
+	if (erpPage.Type == PageType.RecordCreate || erpPage.Type == PageType.RecordDetails || erpPage.Type == PageType.RecordList || erpPage.Type == PageType.RecordManage)
+	{
+		entitySelectClass = "";
+	}
+	if (erpPage.Type != PageType.Site)
+	{
+		appSelectClass = "";
+		areaSelectClass = "";
+		nodeSelectClass = "";
+	}
+}
+@if (erpPage.Type == PageType.Home)
+{
+	<wv-row>
+		<wv-column span="4">
+		<wv-field-select options="pageSelectionTree.AllTypes" label-text="Type" value="@erpPage.Type" field-id="ViewBag.TypeOptionsFieldId"
+						 name="Type" required="true" mode="@FieldRenderMode.Display"></wv-field-select>
+		</wv-column>
+	</wv-row>
+}
+else
+{
+<wv-row>
+	<wv-column span="4">
+		<wv-field-select options="pageSelectionTree.AllTypes" label-text="Type" value="@erpPage.Type" field-id="ViewBag.TypeOptionsFieldId"
+						 name="Type" required="true" mode="@mode"></wv-field-select>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-select options="applicationOptions" label-text="Application" value="@erpPage.AppId" field-id="ViewBag.AppOptionsFieldId"
+						 name="AppId" required="true" mode="@mode" class="@appSelectClass"></wv-field-select>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-select options="entityOptions" label-text="Entity" value="@erpPage.EntityId" field-id="ViewBag.EntityOptionsFieldId"
+						 name="EntityId" required="true" mode="@mode" class="@entitySelectClass"></wv-field-select>
+	</wv-column>
+</wv-row>
+@if (erpPage.Id != null && erpPage.Id != Guid.Empty)
+{
+	<input type="hidden" value="@erpPage.AreaId" name="AreaId" id="area-hidden-input" />
+	<input type="hidden" value="@erpPage.NodeId" name="NodeId" id="node-hidden-input" />
+	<wv-row>
+		<wv-column span="4">
+			<wv-field-select options="areaOptions" label-text="Area" value="@erpPage.AreaId" field-id="ViewBag.AreaOptionsFieldId"
+							 required="true" mode="Display" class="@areaSelectClass"></wv-field-select>
+		</wv-column>
+		<wv-column span="4">
+			<wv-field-select options="nodeOptions" label-text="Node" value="@erpPage.NodeId" field-id="ViewBag.NodeOptionsFieldId"
+							 required="true" mode="Display" class="@nodeSelectClass"></wv-field-select>
+		</wv-column>
+		<wv-column span="4">
+			@if (erpPage.NodeId != null)
+			{
+				<div class="form-group erp-field display">
+					<div class="form-control-plaintext" style="margin-top:11px;">
+						<wv-button color="White" type="Button" id="detach-btn" size="Small" text="Detach from Node" icon-class="fa fa-times go-red"></wv-button>
+						<div class="d-none" id="detach-btn-message"><i class="fas fa-exclamation-triangle go-orange"></i> submit to apply the change</div>
+					</div>
+				</div>
+			}
+			else if (erpPage.AppId != null)
+			{
+				<div class="form-group erp-field display">
+					<label class="control-label label-stacked">&nbsp;</label>
+					<div class="form-control-plaintext">
+						<a href="@($"/sdk/objects/application/r/{erpPage.AppId.Value}/sitemap")" target="_blank"><i class="fas fa-external-link-alt"></i> manage application sitemap</a>
+					</div>
+				</div>
+			}
+		</wv-column>
+	</wv-row>
+}
+@Html.Raw(ViewBag.EmbededJs)
+
+}

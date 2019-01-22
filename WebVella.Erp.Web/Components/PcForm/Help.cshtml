@@ -1,0 +1,23 @@
+﻿@Html.Raw(ViewBag.GeneralHelpSection)
+
+<h2>Component specific</h2>
+<p>The supported ErpEvent actions by this component are listed bellow.</p>
+<table class="table table-bordered table-sm">
+	<thead>
+		<tr>
+			<th width="240">action</th>
+			<th>description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th width="240"><code>submit</code></th>
+			<td>
+				This action will submit the form. Ex. <code>@("<script>")ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcForm','submit')@("</script>")</code>.
+				If there are one or more forms on the page you need to set the correct <code>htmlId</code> of the form's PageComponent <code>@("<script>")ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcForm',{htmlId:HTML_ID,action:'submit',payload:null})@("</script>")</code>.
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+

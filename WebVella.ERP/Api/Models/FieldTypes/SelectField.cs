@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using WebVella.ERP.Database;
+using WebVella.Erp.Database;
 
-namespace WebVella.ERP.Api.Models
+namespace WebVella.Erp.Api.Models
 {
 	public class InputSelectField : InputField
 	{
@@ -14,7 +14,7 @@ namespace WebVella.ERP.Api.Models
 		public string DefaultValue { get; set; }
 
 		[JsonProperty(PropertyName = "options")]
-		public List<SelectFieldOption> Options { get; set; }
+		public List<SelectOption> Options { get; set; }
 	}
 
 	[Serializable]
@@ -27,30 +27,44 @@ namespace WebVella.ERP.Api.Models
 		public string DefaultValue { get; set; }
 
 		[JsonProperty(PropertyName = "options")]
-		public List<SelectFieldOption> Options { get; set; }
+		public List<SelectOption> Options { get; set; }
 	}
 
 	[Serializable]
-	public class SelectFieldOption
+	public class SelectOption
 	{
-		[JsonProperty(PropertyName = "key")]
-		public string Key { get; set; }
-
 		[JsonProperty(PropertyName = "value")]
-		public string Value { get; set; }
+		public string Value { get; set; } = "";
 
-		public SelectFieldOption()
+		[JsonProperty(PropertyName = "label")]
+		public string Label { get; set; } = "";
+
+		[JsonProperty(PropertyName = "icon_class")]
+		public string IconClass { get; set; } = "";
+
+		[JsonProperty(PropertyName = "color")]
+		public string Color { get; set; } = "";
+
+		public SelectOption()
 		{
 
 		}
 
-		public SelectFieldOption(string key, string value)
+		public SelectOption(string value, string label)
 		{
-			Key = key;
 			Value = value;
+			Label = label;
 		}
 
-		public SelectFieldOption(SelectFieldOption option) : this(option.Key, option.Value)
+		public SelectOption(string value, string label, string iconClass, string color)
+		{
+			Value = value;
+			Label = label;
+			IconClass = iconClass;
+			Color = color;
+		}
+
+		public SelectOption(SelectOption option) : this(option.Value, option.Label)
 		{
 		}
 	}

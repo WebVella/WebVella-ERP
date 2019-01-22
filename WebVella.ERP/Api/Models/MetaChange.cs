@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebVella.ERP.Api.Models
+namespace WebVella.Erp.Api.Models
 {
     public class MetaChangeResponseModel
     {
@@ -42,7 +42,7 @@ namespace WebVella.ERP.Api.Models
 		public string Name { get; set; }
 
 		[JsonProperty(PropertyName = "change_list")]
-		public List<string> ChangeList { get; set; }
+		public List<string> ChangeList { get; set; } = new List<string>();
 
     }
 

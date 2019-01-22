@@ -4,11 +4,11 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using WebVella.ERP.Api;
-using WebVella.ERP.Database;
-using WebVella.ERP.Diagnostics;
+using WebVella.Erp.Api;
+using WebVella.Erp.Database;
+using WebVella.Erp.Diagnostics;
 
-namespace WebVella.ERP.Jobs
+namespace WebVella.Erp.Jobs
 {
 	public class JobManager
 	{
@@ -28,8 +28,6 @@ namespace WebVella.ERP.Jobs
 		{
 			Settings = settings;
 			JobService = new JobDataService(Settings);
-			//Register default job types
-			LoadDefaultTypes();
 
 			//Get all jobs with status running and set them to status abort.
 			var runningJobs = JobService.GetRunningJobs();
@@ -43,29 +41,45 @@ namespace WebVella.ERP.Jobs
 			}
 		}
 
-		public static void Initialize(JobManagerSettings settings)
+		public static void Initialize(JobManagerSettings settings, List<JobType> additionalJobTypes = null)
 		{
 			JobTypes = new List<JobType>();
+			if (additionalJobTypes != null)
+			{
+				foreach (JobType jt in additionalJobTypes)
+					JobTypes.Add(jt);
+			}
 			Current = new JobManager(settings);
 			JobPool.Initialize();
 		}
 
-		private void LoadDefaultTypes()
+		public void RegisterJobTypes(ErpService service)
 		{
-			//Test job type
-			//JobType sendEmailType = new JobType();
-			//sendEmailType.Id = new Guid("70f06b11-2aee-40d5-b8ef-de1a2d8bbb59");
-			//sendEmailType.Name = "Email sender";
-			//sendEmailType.DefaultPriority = JobPriority.Low;
-			//sendEmailType.Assembly = "WebVella.ERP";
-			//sendEmailType.CompleteClassName = "WebVella.ERP.Jobs.JobManager";
-			//sendEmailType.MethodName = "Test";
-			//sendEmailType.AllowSingleInstance = false;
+			foreach (ErpPlugin plugin in service.Plugins)
+			{
+				foreach (var jobType in plugin.GetJobTypes())
+				{
+					if (!jobType.IsSubclassOf(typeof(ErpJob)))
+						throw new Exception($"'{jobType.FullName}' does not inherite ErpJob.");
 
-			//RegisterType(sendEmailType);
+					var attributes = jobType.GetCustomAttributes(typeof(JobAttribute), true);
+					if (attributes.Length != 1)
+						throw new Exception($"'{jobType.FullName}' missing or more than one ErpJobAttribute.");
+
+					var attribute = attributes[0] as JobAttribute;
+					JobType internalJobType = new JobType();
+					internalJobType.Id = attribute.Id;
+					internalJobType.Name = attribute.Name;
+					internalJobType.DefaultPriority = (JobPriority)((int)attribute.DefaultPriority);
+					internalJobType.AllowSingleInstance = attribute.AllowSingleInstance;
+					internalJobType.CompleteClassName = jobType.FullName;
+					internalJobType.ErpJobType = jobType;
+					RegisterJobType(internalJobType);
+				}
+			}
 		}
 
-		public bool RegisterType(JobType type)
+		internal bool RegisterJobType(JobType type)
 		{
 			if (JobTypes.Any(t => t.Name.ToLowerInvariant() == type.Name.ToLowerInvariant()))
 			{
@@ -74,47 +88,13 @@ namespace WebVella.ERP.Jobs
 				return false;
 			}
 
-			var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-			Assembly assembly = assemblies.FirstOrDefault(a => a.GetName().Name == type.Assembly);
-
-			if (assembly == null)
-			{
-				//log error "Assembly can not be found!"
-				Log log = new Log();
-				log.Create(LogType.Error, "JobManager.RegisterType", "Register type failed!", $"Assembly with name '{type.Assembly}' can not be found.", saveDetailsAsJson: true);
-				return false;
-			}
-
-			Type assemblyType = assembly.GetType(type.CompleteClassName);
-			if (assemblyType == null)
-			{
-				Log log = new Log();
-				log.Create(LogType.Error, "JobManager.RegisterType", "Register type failed!", $"Type with name '{type.CompleteClassName}' does not exist in assembly {assembly.FullName}.", saveDetailsAsJson: true);
-				return false;
-			}
-
-			var method = assemblyType.GetMethod(type.MethodName);
-			if (method == null)
-			{
-				Log log = new Log();
-				log.Create(LogType.Error, "JobManager.RegisterType", "Register type failed!", $"Method with name '{type.MethodName}' does not exist in assembly {assembly.FullName}.", saveDetailsAsJson: true);
-				return false;
-			}
-
-
 			if (!JobTypes.Any(t => t.Id == type.Id))
 				JobTypes.Add(type);
 
 			return true;
 		}
 
-		public void RegisterTypes(List<JobType> types)
-		{
-			foreach (var type in types)
-				RegisterType(type);
-		}
-
-		public Job CreateJob(Guid typeId, dynamic attributes, JobPriority priority = 0, Guid? creatorId = null, Guid? schedulePlanId = null, Guid? jobId = null)
+		public Job CreateJob(Guid typeId, dynamic attributes = null, JobPriority priority = 0, Guid? creatorId = null, Guid? schedulePlanId = null, Guid? jobId = null)
 		{
 			JobType type = JobTypes.FirstOrDefault(t => t.Id == typeId);
 			if (type == null)
@@ -132,9 +112,7 @@ namespace WebVella.ERP.Jobs
 			job.TypeId = type.Id;
 			job.Type = type;
 			job.TypeName = type.Name;
-			job.Assembly = type.Assembly;
 			job.CompleteClassName = type.CompleteClassName;
-			job.MethodName = type.MethodName;
 			job.Status = JobStatus.Pending;
 			job.Priority = priority;
 			job.Attributes = attributes;
@@ -150,16 +128,16 @@ namespace WebVella.ERP.Jobs
 			return JobService.UpdateJob(job);
 		}
 
-        public Job GetJob(Guid jobId)
-        {
-            return JobService.GetJob(jobId);
-        }
+		public Job GetJob(Guid jobId)
+		{
+			return JobService.GetJob(jobId);
+		}
 
-		public List<Job> GetJobs(DateTime? startFromDate = null, DateTime? startToDate = null, DateTime? finishedFromDate = null, DateTime? finishedToDate = null,
+		public List<Job> GetJobs( out int totalCount, DateTime? startFromDate = null, DateTime? startToDate = null, DateTime? finishedFromDate = null, DateTime? finishedToDate = null,
 			string typeName = null, int? status = null, int? priority = null, Guid? schedulePlanId = null, int? page = null, int? pageSize = null)
 		{
-			return JobService.GetJobs(startFromDate, startToDate, finishedFromDate, finishedToDate,
-				typeName, status, priority, schedulePlanId, page, pageSize);
+			totalCount = (int)JobService.GetJobsTotalCount(startFromDate, startToDate, finishedFromDate, finishedToDate,	typeName, status, priority, schedulePlanId);
+			return JobService.GetJobs(startFromDate, startToDate, finishedFromDate, finishedToDate,	typeName, status, priority, schedulePlanId, page, pageSize);
 		}
 
 		public void ProcessJobsAsync()
@@ -172,11 +150,7 @@ namespace WebVella.ERP.Jobs
 			if (!Settings.Enabled)
 				return;
 
-			#if DEBUG
-			Thread.Sleep(1000); //Initial sleep time
-			#else
 			Thread.Sleep(120000); //Initial sleep time
-			#endif
 
 			while (true)
 			{
@@ -199,22 +173,22 @@ namespace WebVella.ERP.Jobs
 							}
 							catch (Exception ex)
 							{
-								using (var secCtx = SecurityContext.OpenSystemScope())
+								try
 								{
-									try
+									DbContext.CreateContext(ErpSettings.ConnectionString);
+									using (var secCtx = SecurityContext.OpenSystemScope())
 									{
-										DbContext.CreateContext(ERP.Settings.ConnectionString);
-
 										Log log = new Log();
 										string jobId = job != null ? job.Id.ToString() : "null";
 										string jobType = job != null && job.Type != null ? job.Type.Name : "null";
-										log.Create(LogType.Error, "JobManager.Process", $"Start job with id[{jobId}] and type [{jobType}] failed! " , ex.Message);
-									}
-									finally
-									{
-										DbContext.CloseContext();
+										log.Create(LogType.Error, "JobManager.Process", $"Start job with id[{jobId}] and type [{jobType}] failed! ", ex.Message);
 									}
 								}
+								finally
+								{
+									DbContext.CloseContext();
+								}
+
 							}
 						}
 					}
@@ -225,7 +199,7 @@ namespace WebVella.ERP.Jobs
 					{
 						try
 						{
-							DbContext.CreateContext(ERP.Settings.ConnectionString);
+							DbContext.CreateContext(Erp.ErpSettings.ConnectionString);
 
 							Log log = new Log();
 							log.Create(LogType.Error, "JobManager.Process", ex);

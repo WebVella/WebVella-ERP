@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebVella.ERP.Utilities
+namespace WebVella.Erp.Utilities
 {
 	public static class TextExtensions
 	{

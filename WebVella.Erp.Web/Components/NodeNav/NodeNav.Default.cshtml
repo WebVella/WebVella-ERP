@@ -1,0 +1,79 @@
+﻿@using WebVella.Erp.Web.Models;
+@using System.Linq;
+@{
+	var currentNode = (SitemapNode)ViewBag.CurrentNode;
+	var currentArea = (SitemapArea)ViewBag.CurrentArea;
+	var nodesWithExistingGroups = (List<SitemapNode>)ViewBag.NodesWithExistingGroups;
+	var nodesWithoutExistingGroups = (List<SitemapNode>)ViewBag.NodesWithoutExistingGroups;
+	var ddRenderSpan = (int)ViewBag.DDRenderSpan;
+	var ddWidth = (string)ViewBag.DDWidth;
+}
+
+<!--c:SubAreaNav_Default-->
+@if (currentArea != null && currentNode != null)
+{
+
+	@if (nodesWithExistingGroups.Count > 0 || nodesWithoutExistingGroups.Count > 0)
+	{
+
+		<div id="node-nav">
+			<a href="#" id="node-nav-link" data-navclick-handler
+			   class="pl-1 pr-2 " title="Show application sitemap">
+				<span id="node-label">@currentNode.Label</span>
+				<span id="node-nav-icon" class="ti-angle-right nav-caret"></span>
+			</a>
+		</div>
+		<div class="dropdown-menu" id="node-nav-dropdown">
+			@if (nodesWithExistingGroups.Count == 0 && nodesWithoutExistingGroups.Count > 0)
+			{
+				@foreach (var node in nodesWithoutExistingGroups)
+				{
+					<a class="dropdown-item" href="@node.Url" title="@node.Label"><span class="@node.IconClass icon"></span> @node.Label</a>
+				}
+			}
+			else if (nodesWithExistingGroups.Count > 0)
+			{
+				<div class="row no-gutters" style="width:@ddWidth">
+					@foreach (var group in currentArea.Groups)
+					{
+						var groupNodes = nodesWithExistingGroups.FindAll(x => x.GroupName == group.Name).ToList();
+						if (groupNodes.Count > 0)
+						{
+							<div class="col-12 col-lg-@ddRenderSpan">
+								<h6 class="dropdown-header" title="@group.Label">@group.Label</h6>
+								@foreach (var node in groupNodes)
+								{
+									<a class="dropdown-item" href="@node.Url" title="@node.Label"><span class="@node.IconClass icon"></span> @node.Label</a>
+								}
+							</div>
+						}
+					}
+				</div>
+				@if (nodesWithoutExistingGroups.Count > 0)
+				{
+					<h6 class="dropdown-header" title="Other">Other</h6>
+					<div class="row no-gutters">
+						@foreach (var node in nodesWithoutExistingGroups)
+						{
+							<div class="col-12 col-lg-@ddRenderSpan">
+								<a class="dropdown-item" href="@node.Url" title="@node.Label"><span class="@node.IconClass icon"></span> @node.Label</a>
+							</div>
+						}
+					</div>
+				}
+			}
+			else
+			{
+				<span class="dropdown-item">No items found for this menu</span>
+			}
+		</div>
+	}
+	else { 
+		<div id="node-nav">
+			<span id="node-nav-link" class="pl-1 pr-2 go-gray" title="Show application sitemap">
+				<span id="node-label">@currentNode.Label</span>
+				<span id="node-nav-icon" class="ti-angle-right nav-caret"></span>
+			</span>
+		</div>
+	}
+}

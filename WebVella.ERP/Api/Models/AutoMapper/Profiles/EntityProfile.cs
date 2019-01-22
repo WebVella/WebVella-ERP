@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using System;
-using WebVella.ERP.Database;
+using WebVella.Erp.Database;
 
-namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
+namespace WebVella.Erp.Api.Models.AutoMapper.Profiles
 {
 	internal class EntityProfile : Profile
 	{
@@ -11,8 +11,8 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			CreateMap<Entity, InputEntity>();
 			CreateMap<InputEntity, Entity>()
 				.ForMember(x => x.Id, opt => opt.MapFrom(y => (y.Id.HasValue) ? y.Id.Value : Guid.Empty))
-				.ForMember(x => x.System, opt => opt.MapFrom(y => (y.System.HasValue) ? y.System.Value : false))
-				.ForMember(x => x.Weight, opt => opt.MapFrom(y => (y.Weight.HasValue) ? y.Weight.Value : 1));
+				.ForMember(x => x.System, opt => opt.MapFrom(y => (y.System.HasValue) ? y.System.Value : false));
+				//.ForMember(x => x.Weight, opt => opt.MapFrom(y => (y.Weight.HasValue) ? y.Weight.Value : 1));
 
 			CreateMap<Entity, DbEntity>();
 			CreateMap<DbEntity, Entity>();

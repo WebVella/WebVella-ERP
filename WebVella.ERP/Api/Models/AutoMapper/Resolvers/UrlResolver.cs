@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebVella.ERP.Api.Models.AutoMapper.Resolvers
+namespace WebVella.Erp.Api.Models.AutoMapper.Resolvers
 {
     public class UrlResolver
     {

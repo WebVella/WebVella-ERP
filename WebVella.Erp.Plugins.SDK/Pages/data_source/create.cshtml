@@ -1,0 +1,215 @@
+﻿@page "/sdk/objects/data_source/c/create"
+
+@model WebVella.Erp.Plugins.SDK.Pages.ErpDataSource.CreateModel
+@{
+	Layout = "~/Pages/_AppMaster.cshtml";
+	ViewData["Title"] = "Data source create";
+	var eqlFieldId = new Guid("C6D3791E-7BED-4233-B284-9193F885A263");
+	var modalSqlFieldId = new Guid("0605933E-806F-4467-B831-2539A7720E79");
+	var modalDataFieldId = new Guid("AF4711C0-DD59-4223-9F11-08A21421CF50");
+	var paramsFieldId = new Guid("8D2A7071-9818-47C3-8C3A-0ED579A733C8");
+	var emptyString = "";
+
+
+
+}
+<wv-page-header color="#dc3545" area-label="Data Sources" title="Create a Data source"
+				icon-class="ti-plus" return-url="@Model.ReturnUrl">
+	<wv-page-header-actions>
+		@foreach (var action in Model.HeaderActions)
+		{
+			@Html.Raw(action)
+		}
+	</wv-page-header-actions>
+</wv-page-header>
+
+<wv-row class="mt-4">
+	<wv-column span="12">
+		<wv-icon-card title="Database" class="mb-4" description="SQL Select from the database via the EQL syntax" icon-class="fas fa-fw fa-database" icon-color="Purple"></wv-icon-card>
+	</wv-column>
+</wv-row>
+
+<wv-validation validation="Model.Validation" show-errors="true"></wv-validation>
+<wv-form label-mode="Stacked" mode="Form" name="CreateRecord" id="CreateRecord">
+	<wv-section>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text name="name" label-text="Name" value="@Model.Name" required="true"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-text name="description" label-text="Description" value="@Model.Description"></wv-field-text>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text name="model" label-text="Model" value="@Model.ResultModel" access="ReadOnly"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-text name="weight" label-text="Weight" value="@Model.Weight" required="true"></wv-field-text>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="12">
+				@{
+					var aceLabelText = "EQL Input (templates: <a href='javascript:void(0)' class='ml-1' id='record-details'>record details</a>, <a href='javascript:void(0)' class='ml-1' id='record-list'>record list</a>)";
+				}
+				<wv-field-code field-id="@eqlFieldId" name="eql_input" label-text="@aceLabelText" language="pgsql" value="@Model.EqlInput" required="true"></wv-field-code>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-textarea field-id="@paramsFieldId" height="100px" name="param_defaults" label-text="Param defaults" value="@Model.ParamDefaults"
+								   description="New line separated list of parameter name, data type and value separated by comma.<br/>Data Types are: 'guid'[ext: null, guid.empty], 'int'[ext: null], 'decimal'[ext: null], 'date'[ext: string,utc_now,now,null] , 'text'[ext: null, string.empty] "></wv-field-textarea>
+			</wv-column>
+			<wv-column span="6">
+				@{
+					var viewSQLBtn = @"
+								<a href=""#"" class=""mr-3 test-data-link"" data-target=""#modal-sql-result""><i class=""fa fa-search""></i> SQL Result</a>
+								<a href=""#"" class=""test-data-link"" data-target=""#modal-data-result""><i class=""fa fa-search""></i> Sample Data as JSON</a>
+							";
+				}
+				<wv-field-plaintext label-text="Result" value="@viewSQLBtn"></wv-field-plaintext>
+			</wv-column>
+		</wv-row>
+	</wv-section>
+</wv-form>
+
+<wv-modal title="SQL Result" id="modal-sql-result" size="Large">
+	<wv-modal-body>
+		<div class="result d-none">
+			<wv-field-code field-id="@modalSqlFieldId" mode="Display" label-mode="Hidden" language="pgsql" value="@emptyString" height="400px"></wv-field-code>
+		</div>
+		<div class="error d-none">
+
+		</div>
+	</wv-modal-body>
+	<wv-modal-footer>
+		<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+	</wv-modal-footer>
+</wv-modal>
+
+<wv-modal title="Sample data Result" id="modal-data-result" size="Large">
+	<wv-modal-body>
+		<div class="result d-none">
+			<div class="alert alert-warning">This is a sample query using the default parameter values, converted to JSON.</div>
+			<wv-field-code field-id="@modalDataFieldId" mode="Display" label-mode="Hidden" language="json" value="@emptyString" height="400px"></wv-field-code>
+		</div>
+		<div class="error d-none">
+
+		</div>
+	</wv-modal-body>
+	<wv-modal-footer>
+		<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+	</wv-modal-footer>
+</wv-modal>
+
+<script>
+	var modalSqlResultSel = "#modal-sql-result";
+	var modalDataResultSel = "#modal-data-result";
+	function SuccessCallback(response,resultType) {
+		$(modalSqlResultSel).find(".result").addClass("d-none");
+		$(modalSqlResultSel).find(".error").addClass("d-none");
+		$(modalDataResultSel).find(".result").addClass("d-none");
+		$(modalDataResultSel).find(".error").addClass("d-none");
+
+		if (response.errors.length > 0) {
+			var errorString = "<div class='alert alert-danger'><ul>";
+			for (var i = 0; i < response.errors.length; i++) {
+				errorString += "<li>" + response.errors[i].message + "</li>";
+			}
+			errorString += "</ul></div>";
+			if (resultType === "sql") {
+				$(modalSqlResultSel).find(".error").html(errorString).removeClass("d-none");
+				$(modalSqlResultSel).modal('show');
+			}
+			else {
+				$(modalDataResultSel).find(".error").html(errorString).removeClass("d-none");
+				$(modalDataResultSel).modal('show');
+			}
+		}
+		else {
+			if (resultType === "sql") {
+				var editor = ace.edit("ace-@modalSqlFieldId");
+				editor.setValue(response.sql, -1);
+				$(modalSqlResultSel).find(".result").removeClass("d-none");
+				$(modalSqlResultSel).modal('show');
+			}
+			else {
+				var editor = ace.edit("ace-@modalDataFieldId");
+				editor.setValue(response.data, -1);
+				$(modalDataResultSel).find(".result").removeClass("d-none");
+				$(modalDataResultSel).modal('show');
+			}
+		}
+
+	}
+
+	$(function () {
+		$('.test-data-link').click(function (e) {
+			e.preventDefault();
+			var thisEl = this;
+			var editor = ace.edit("ace-@eqlFieldId");
+			var eql = editor.getValue();
+			var paramsString = $("#textarea-@paramsFieldId").val();
+			var resultType = "sql";
+			if (e.target.attributes["data-target"].value === modalDataResultSel) {
+				resultType = "data";
+			}
+			$(thisEl).find(".icon").removeClass("fa-search").addClass("fa-spin fa-spinner");
+			var postObject = {
+				action:resultType,
+				eql:eql,
+				parameters:paramsString
+			};
+			$.ajax({
+				type: "POST",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				url: "/api/v3.0/datasource/test",
+				data: JSON.stringify(postObject),
+				success: function (response) {
+					SuccessCallback(response,resultType);
+					$(thisEl).find(".icon").removeClass("fa-spin fa-spinner").addClass("fa-search");
+				},
+			  dataType: "json"
+			});
+		})
+
+	});
+
+</script>
+
+<script>
+	var RecordDetailsCode = "SELECT *\n";
+	RecordDetailsCode += "FROM user\n";
+	RecordDetailsCode += "WHERE id = @@recordId\n";
+
+	var RecordDetailsParams = "recordId,guid,00000000-0000-0000-0000-000000000000\n";
+
+	$("#record-details").click(function () {
+		var editor = ace.edit("ace-@eqlFieldId");
+		editor.session.setValue(RecordDetailsCode);
+		$("#textarea-@paramsFieldId").val(RecordDetailsParams);
+	});
+
+
+	var RecordListCode = "SELECT *\n";
+	RecordListCode += "FROM user\n";
+	RecordListCode += "ORDER BY @@sortBy @@sortOrder\n";
+	RecordListCode += "PAGE @@page\n";
+	RecordListCode += "PAGESIZE @@pageSize\n";
+
+	var RecordListParams = "sortBy,text,id\n";
+	RecordListParams += "sortOrder,text,asc\n";
+	RecordListParams += "page,int,1\n";
+	RecordListParams += "pageSize,int,15\n";
+
+	$("#record-list").click(function () {
+		var editor = ace.edit("ace-@eqlFieldId");
+		editor.session.setValue(RecordListCode);
+		$("#textarea-@paramsFieldId").val(RecordListParams);
+	});
+
+</script>

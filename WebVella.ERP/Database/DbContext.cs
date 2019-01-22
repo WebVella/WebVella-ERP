@@ -7,9 +7,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using WebVella.ERP.Api.Models;
+using WebVella.Erp.Api.Models;
 
-namespace WebVella.ERP.Database
+namespace WebVella.Erp.Database
 {
 	public class DbContext : IDisposable
 	{
@@ -21,6 +21,7 @@ namespace WebVella.ERP.Database
 		public DbEntityRepository EntityRepository { get; private set; }
 		public DbRelationRepository RelationRepository { get; private set; }
 		public DbSystemSettingsRepository SettingsRepository { get; private set; }
+		public NpgsqlTransaction Transaction { get { return transaction; } }
 
 		private Stack<DbConnection> connectionStack;
 		private NpgsqlTransaction transaction;

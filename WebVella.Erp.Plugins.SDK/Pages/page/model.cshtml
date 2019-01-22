@@ -1,0 +1,234 @@
+﻿@page "/sdk/objects/page/r/{RecordId}/model"
+
+@model WebVella.Erp.Plugins.SDK.Pages.Page.PageDataModel
+@{
+	Layout = "~/Pages/_AppMaster.cshtml";
+	ViewData["Title"] = "Page model";
+	var eqlFieldId = new Guid("C6D3791E-7BED-4233-B284-9193F885A263");
+	var modalSqlFieldId = new Guid("0605933E-806F-4467-B831-2539A7720E79");
+	var modalDataFieldId = new Guid("AF4711C0-DD59-4223-9F11-08A21421CF50");
+	var paramsFieldId = new Guid("8D2A7071-9818-47C3-8C3A-0ED579A733C8");
+	ModelNode parentNode = null;
+	var pageIconClass = "ti-file";
+	if (!String.IsNullOrWhiteSpace(Model.ErpPage.IconClass)){
+		pageIconClass = Model.ErpPage.IconClass;
+	}
+}
+<link href="/lib/jstree/themes/default/style.min.css" rel="stylesheet" type="text/css">
+<script src="/lib/jstree/jstree.min.js" type="text/javascript"></script>
+<script src="/js/wv-datasource-manage/wv-datasource-manage.js" type="text/javascript"></script>
+
+
+<wv-page-header color="#dc3545" area-label="Pages" title="@Model.ErpPage.Label" subtitle="Model"
+				icon-class="@pageIconClass" return-url="@Model.ReturnUrl">
+
+	<wv-page-header-actions>
+		@if (!String.IsNullOrWhiteSpace(Model.PagePublicUrl))
+		{
+		<a href='@Model.PagePublicUrl' target="_blank" class='btn btn-white btn-sm'><i class='fas fa-external-link-alt'></i> Visit Page</a>
+		}
+		<a href="#" id="add-datasource" class="btn btn-white btn-sm"><i class="fa fa-plus go-green"></i> Add Data Source</a>
+	</wv-page-header-actions>
+
+	<wv-page-header-toolbar>
+		@foreach (var action in Model.HeaderToolbar)
+		{
+			@Html.Raw(action)
+		}
+	</wv-page-header-toolbar>
+
+</wv-page-header>
+
+<wv-validation validation="Model.Validation" show-errors="true"></wv-validation>
+
+<div class="row">
+	<div class="col-12 col-lg-3 col-md-6">
+		<div class="form-group mb-4">
+			<div class="input-group input-group-sm">
+				<div class="input-group-prepend">
+					<span class="input-group-text"><i class="fa fa-search"></i></span>
+				</div>
+				<input class="form-control" id="model-tree-search" />
+			</div>
+		</div>
+	</div>
+	<div class="col-12 col-lg-9 col-md-6">
+		<div class="form-group mb-4">
+			<div class="input-group input-group-sm">
+				<div class="input-group-prepend">
+					<button id="manage-datasource" type="button" class="btn btn-white d-none">
+						<i class="fas fa-pencil-alt go-orange"></i> manage
+					</button>
+					<a id="view-datasource" href="" target="_blank" class="btn btn-white d-none">
+						<i class="fas fa-external-link-alt"></i> template
+					</a>
+					<button id="copy-datasource-inject-string" type="button" class="btn btn-white" data-toggle="tooltip" data-placement="bottom" title="Copy to clipboard"
+							onclick="copyDataSourceValueToClipboard()">
+						copy <i class="ti-cloud-down ml-1"></i>
+					</button>
+				</div>
+				<input class="form-control" readonly value="" id="model-tree-value" />
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="model-tree-wrapper" class="d-none">
+	<ul class="model-tree">
+		@foreach (var childNode in Model.PageModel)
+		{
+			@Html.Partial("RenderModelNode", new { Node = childNode, DataSourceString = "", ParentNode = parentNode })
+		}
+	</ul>
+</div>
+
+@*<button id="model-tree-value-delete" type="button" class="btn btn-danger d-none" onclick="deleteDataSource()">
+	<i class="fas fa-minus-circle"></i> remove</button>*@
+
+
+
+<wv-form name="DeleteDataSource" method="post">
+	<input type="hidden" name="action" value="delete" />
+	<input type="hidden" name="page_datasource_id" id="delete-page-datasource-id-value" value="" />
+</wv-form>
+
+<wv-modal title="Manage Data Source" id="modal-manage-datasource" size="ExtraLarge">
+	<wv-modal-body>
+		<wv-form name="ManageDataSource" method="post">
+			<input type="hidden" name="page_id" value="@Model.ErpPage.Id" />
+			<wv-datasource-manage show="false" datasource-id="" api-root-url="@(Model.ApiUrlRoot)/api/v3.0/p/sdk/datasource/list"></wv-datasource-manage>
+		</wv-form>
+	</wv-modal-body>
+	<wv-modal-footer>
+		<button type="button" class="btn btn-link btn-sm go-red" style="position: absolute;left: 10px;" onclick="deleteDataSource()"><i class="fa fa-trash"></i> remove</button>
+		<button type="button" class="btn btn-primary btn-sm" onclick="submitManageForm()">Save DataSource</button>
+		<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+	</wv-modal-footer>
+</wv-modal>
+
+
+<script>
+
+
+	function copyDataSourceValueToClipboard() {
+		var copyInput = document.getElementById("model-tree-value");
+		copyInput.select();
+		document.execCommand("copy");
+		$('#copy-datasource-inject-string').tooltip('hide')
+			.attr('data-original-title', 'Copied')
+			.tooltip('show');
+		copyInput.blur();
+		if (window.getSelection) { window.getSelection().removeAllRanges(); }
+		else if (document.selection) { document.selection.empty(); }
+
+		window.setTimeout(function () {
+			$('#copy-datasource-inject-string')
+				.attr('data-original-title', 'Copy to clipboard')
+				.attr('data-original-title', 'Copy to clipboard');
+		}, 2000)
+	}
+
+	function submitManageForm() {
+		$('form[name="ManageDataSource"]').submit();
+	}
+
+	function deleteDataSource() {
+		var confirm = window.confirm("Are you sure");
+		if (confirm) {
+			$('form[name="DeleteDataSource"]').submit();
+		}
+	}
+
+	$(function () {
+
+		$('#copy-datasource-inject-string').tooltip();
+
+
+		$('#model-tree-wrapper').jstree({
+			plugins: ["types", "search"],
+			core: {
+				themes: {
+					variant: "large"
+				},
+				animation: 100
+			},
+			search: {
+				show_only_matches: true,
+				show_only_matches_children: true
+			},
+			types: {
+				system: {
+					icon: "fa fa-fw fa-server"
+				},
+				database: {
+					icon: "fa fa-fw fa-database go-purple"
+				},
+				code: {
+					icon: "fa fa-fw fa-code go-pink"
+				},
+				default: {
+					icon: "d-none"
+				},
+				"#": {
+					icon: "d-none"
+				}
+			}
+		});
+		$('#model-tree-wrapper').removeClass("d-none");
+
+		var to = false;
+		$('#model-tree-search').keyup(function () {
+			if (to) { clearTimeout(to); }
+			to = setTimeout(function () {
+				var v = $('#model-tree-search').val();
+				$('#model-tree-wrapper').jstree(true).search(v);
+			}, 250);
+		});
+
+		$('#model-tree-wrapper').on("select_node.jstree", function (e, data) {
+			var dataSourceType = data.node.li_attr["data-node-type"];
+			var dataSourceId = data.node.li_attr["datasource-id"];
+			var pageDataSourceId = data.node.li_attr["page-datasource-id"];
+			var pageDataSourceName = data.node.li_attr["page-datasource-name"];
+			var pageDataSourceParams = data.node.li_attr["page-datasource-params"];
+
+			$('#manage-datasource').addClass("d-none");
+			$('#view-datasource').addClass("d-none");
+			$('#view-datasource').attr("href","");
+			if (dataSourceType === "database" || dataSourceType === "code") {
+				$('#manage-datasource').removeClass("d-none");
+				$('#view-datasource').attr("href","/sdk/objects/data_source/r/" + dataSourceId);
+				$('#view-datasource').removeClass("d-none");
+				$('wv-datasource-manage').attr("datasource-id", dataSourceId);
+				$('wv-datasource-manage').attr("page-datasource-id", pageDataSourceId);
+				$('wv-datasource-manage').attr("page-datasource-name", pageDataSourceName);
+				$('wv-datasource-manage').attr("page-datasource-params", pageDataSourceParams);
+				$('#delete-page-datasource-id-value').val(pageDataSourceId);
+			}
+			$('#model-tree-value').val(data.node.a_attr["datasource-string"]);
+		});
+
+		$('#manage-datasource').click(function () {
+			$('wv-datasource-manage').attr("show", true);
+			$('#modal-manage-datasource').modal('show');
+		});
+
+
+		$('#add-datasource').click(function () {
+			$('wv-datasource-manage').attr("datasource-id", null);
+			$('wv-datasource-manage').attr("page-datasource-id", null);
+			$('#delete-page-datasource-id-value').val(null);
+			$('wv-datasource-manage').attr("page-datasource-name", null);
+			$('wv-datasource-manage').attr("page-datasource-params", "[]");
+			$('wv-datasource-manage').attr("show", true);
+			$('#modal-manage-datasource').modal('show');
+		});
+
+		$('#modal-manage-datasource').on('hidden.bs.modal', function (e) {
+			$('wv-datasource-manage').attr("show", false);
+			FixModalInModalClose();
+		})
+
+	});
+
+</script>

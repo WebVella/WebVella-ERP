@@ -5,12 +5,12 @@ using System.Data;
 using System.IO;
 using System.Linq;
 
-namespace WebVella.ERP.Database
+namespace WebVella.Erp.Database
 {
 	public class DbFileRepository
 	{
-		private const string FOLDER_SEPARATOR = "/";
-		private const string TMP_FOLDER_NAME = "tmp";
+		public const string FOLDER_SEPARATOR = "/";
+		public const string TMP_FOLDER_NAME = "tmp";
 
 		public DbFile Find(string filepath)
 		{
@@ -117,7 +117,7 @@ namespace WebVella.ERP.Database
 					uint objectId = 0;
 					connection.BeginTransaction();
 
-					if (!Settings.EnableFileSystemStorage)
+					if (!ErpSettings.EnableFileSystemStorage)
 					{
 						var manager = new NpgsqlLargeObjectManager(connection.connection);
 						objectId = manager.Create();
@@ -146,7 +146,7 @@ namespace WebVella.ERP.Database
 
 					var result = Find(filepath);
 
-					if (Settings.EnableFileSystemStorage)
+					if (ErpSettings.EnableFileSystemStorage)
 					{
 						var path = GetFileSystemPath(result);
 						var folderPath = Path.GetDirectoryName(path);
@@ -299,7 +299,7 @@ namespace WebVella.ERP.Database
 					command.Parameters.Add(new NpgsqlParameter("@filepath", destinationFilepath));
 					command.ExecuteNonQuery();
 
-					if (Settings.EnableFileSystemStorage)
+					if (ErpSettings.EnableFileSystemStorage)
 					{
 						var srcFileName = Path.GetFileName(sourceFilepath);
 						var destFileName = Path.GetFileName(destinationFilepath);
@@ -349,7 +349,7 @@ namespace WebVella.ERP.Database
 				{
 					connection.BeginTransaction();
 
-					if (Settings.EnableFileSystemStorage && file.ObjectId == 0)
+					if (ErpSettings.EnableFileSystemStorage && file.ObjectId == 0)
 					{
 						var path = GetFileSystemPath(file);
 						if( File.Exists(path))
@@ -423,9 +423,9 @@ namespace WebVella.ERP.Database
 			var depth2Folder = guidIinitialPart.Substring(2, 2);
 			string filenameExt = Path.GetExtension(fileName);
 			if (!string.IsNullOrWhiteSpace(filenameExt))
-				return Path.Combine(Settings.FileSystemStorageFolder, depth1Folder, depth2Folder, file.Id + "." + filenameExt);
+				return Path.Combine(ErpSettings.FileSystemStorageFolder, depth1Folder, depth2Folder, file.Id + "." + filenameExt);
 			else
-				return Path.Combine(Settings.FileSystemStorageFolder, depth1Folder, depth2Folder, file.Id.ToString());
+				return Path.Combine(ErpSettings.FileSystemStorageFolder, depth1Folder, depth2Folder, file.Id.ToString());
 		}
 
 	}

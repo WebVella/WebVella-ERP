@@ -1,0 +1,75 @@
+﻿@page "/sdk/objects/entity/m/{RecordId}/{PageName?}"
+
+@model WebVella.Erp.Plugins.SDK.Pages.ErpEntity.ManageModel
+@{
+	Layout = "~/Pages/_AppMaster.cshtml";
+	ViewData["Title"] = "Entity details";
+}
+
+<wv-page-header color="@Model.ErpEntity.Color" area-label="Entities" title="@Model.ErpEntity.Name" subtitle="Manage"
+				icon-class="@Model.ErpEntity.IconName" return-url="@Model.ReturnUrl">
+	<wv-page-header-actions>
+		@foreach (var action in Model.HeaderActions)
+		{
+			@Html.Raw(action)
+		}
+	</wv-page-header-actions>
+
+	<wv-page-header-toolbar>
+		@foreach (var action in Model.HeaderToolbar)
+		{
+			@Html.Raw(action)
+		}
+	</wv-page-header-toolbar>
+
+</wv-page-header>
+
+<wv-validation validation="Model.Validation" show-errors="false"></wv-validation>
+
+<wv-form label-mode="Stacked" mode="Form" name="ManageRecord" validation="Model.Validation" id="ManageRecord">
+	<wv-section class="mt-4">
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="Name" value="@Model.Name" name="Name" required="true"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-checkbox label-text="System" text-true="system entity" text-false="not a system entity" value="@Model.System" name="System"></wv-field-checkbox>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="Label" value="@Model.Label" name="Label" required="true"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-text label-text="Label Plural" value="@Model.LabelPlural" name="LabelPlural" required="true"></wv-field-text>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-color label-text="Color" value="@Model.Color" name="Color"></wv-field-color>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-text label-text="IconName" value="@Model.IconName" name="IconName"></wv-field-text>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-select options="Model.FieldOptions" label-text="Record Screen Id Field" value="@Model.RecordScreenIdField" name="RecordScreenIdField"></wv-field-select>
+			</wv-column>
+			@if (Model.ErpEntity != null)
+			{
+				<wv-column span="6">
+					<wv-field-guid label-text="Entity Id" value="@Model.ErpEntity.Id" required="true" mode="Display"></wv-field-guid>
+				</wv-column>
+			}
+		</wv-row>
+		<wv-row>
+			<wv-column span="12">
+				<wv-field-checkbox-grid name="RecordPermissions" label-text="Record Permissions" columns="Model.PermissionOptions" rows="Model.RoleOptions" value="@Model.RecordPermissions" text-true="granted" text-false="not granted"></wv-field-checkbox-grid>
+			</wv-column>
+		</wv-row>
+	</wv-section>
+</wv-form>
+
+
+

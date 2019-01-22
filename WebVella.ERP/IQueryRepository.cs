@@ -1,4 +1,4 @@
-﻿namespace WebVella.ERP.Storage
+﻿namespace WebVella.Erp.Storage
 {
     public interface IQueryRepository
     {

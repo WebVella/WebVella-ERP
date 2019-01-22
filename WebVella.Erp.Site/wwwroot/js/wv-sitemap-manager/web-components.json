@@ -1,0 +1,51 @@
+{
+  "tags": [
+    {
+      "label": "wv-sitemap-area-modal",
+      "description": "",
+      "attributes": []
+    },
+    {
+      "label": "wv-sitemap-manager-area",
+      "description": "",
+      "attributes": []
+    },
+    {
+      "label": "wv-sitemap-manager",
+      "description": "",
+      "attributes": [
+        {
+          "label": "api-root",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "app-id",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "init-data",
+          "description": "",
+          "required": false
+        }
+      ]
+    },
+    {
+      "label": "wv-sitemap-node-modal",
+      "description": "",
+      "attributes": [
+        {
+          "label": "api-root",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "app-id",
+          "description": "",
+          "required": false
+        }
+      ]
+    }
+  ]
+}

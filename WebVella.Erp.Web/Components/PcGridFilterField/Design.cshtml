@@ -1,0 +1,88 @@
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web.Components;
+@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Api.Models;
+@{
+	var options = (PcGridFilterField.PcGridFilterFieldOptions)ViewBag.Options;
+	var node = (PageBodyNode)ViewBag.Node;
+	var valueOptions = (List<SelectOption>)ViewBag.ValueOptions;
+}
+<div class="p-1">
+	@switch ((FieldType)options.FieldType) {
+		case FieldType.AutoNumberField:
+			<wv-filter-autonumber name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions"></wv-filter-autonumber>
+			break;
+		case FieldType.CheckboxField:
+			<wv-filter-checkbox name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions"></wv-filter-checkbox>
+			break;
+		case FieldType.CurrencyField:
+			<wv-filter-currency name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions"></wv-filter-currency>
+			break;
+		case FieldType.DateField:
+			<wv-filter-date name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions"></wv-filter-date>
+			break;
+		case FieldType.DateTimeField:
+			<wv-filter-datetime name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions"></wv-filter-datetime>
+			break;
+		case FieldType.EmailField:
+			<wv-filter-email name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions"></wv-filter-email>
+			break;
+		case FieldType.FileField:
+			<wv-filter-file name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions"></wv-filter-file>
+			break;
+		case FieldType.GuidField:
+			<wv-filter-guid name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions"></wv-filter-guid>
+			break;
+		case FieldType.HtmlField:
+			<wv-filter-html name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions"></wv-filter-html>
+			break;
+		case FieldType.ImageField:
+			<wv-filter-image name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions"></wv-filter-image>
+			break;
+		case FieldType.MultiSelectField:
+			<wv-filter-multiselect name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions"></wv-filter-multiselect>
+			break;
+		case FieldType.PercentField:
+			<wv-filter-percent name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions"></wv-filter-percent>
+			break;
+		case FieldType.NumberField:
+			<wv-filter-number name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions"></wv-filter-number>
+			break;
+		case FieldType.PhoneField:
+			<wv-filter-phone name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions"></wv-filter-phone>
+			break;
+		case FieldType.SelectField:
+			<wv-filter-select name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions" value-options="@valueOptions"></wv-filter-select>
+			break;
+		case FieldType.TextField:
+			<wv-filter-text name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions"></wv-filter-text>
+			break;
+		case FieldType.MultiLineTextField:
+			<wv-filter-textarea name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions"></wv-filter-textarea>
+			break;
+		case FieldType.UrlField:
+			<wv-filter-url name="@options.Name" label="@options.Label" query-type="@options.QueryType" prefix="@options.Prefix"
+				query-options="@options.QueryOptions"></wv-filter-url>
+			break;
+		default:
+			throw new Exception("Field type not found for grid filter field");
+	}
+</div>

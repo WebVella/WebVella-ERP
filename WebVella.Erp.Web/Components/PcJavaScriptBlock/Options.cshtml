@@ -1,0 +1,10 @@
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web.Components;
+@{
+	var options = (PcJavaScriptBlock.PcJavaScriptBlockOptions)ViewBag.Options;
+}
+
+<div>@("<script>")</div>
+<wv-field-code language="javascript" height="200px" name="script" value="@options.Script" label-mode="Hidden"></wv-field-code>
+<div style="margin-top: -1rem;">@("</script>")</div>

@@ -1,10 +1,13 @@
 ﻿using System;
+using System.ComponentModel;
 
-namespace WebVella.ERP.Api.Models
+namespace WebVella.Erp.Api.Models
 {
     public enum QuerySortType
     {
-        Ascending,
-        Descending
+		[SelectOption(Label = "asc")]
+		Ascending,
+		[SelectOption(Label = "desc")]
+		Descending
     }
 }

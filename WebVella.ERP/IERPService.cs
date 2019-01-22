@@ -1,11 +1,17 @@
-﻿using WebVella.ERP.Storage;
+﻿using System;
+using System.Collections.Generic;
+using WebVella.Erp.Jobs;
 
-namespace WebVella.ERP
+namespace WebVella.Erp
 {
     public interface IErpService
     {
-        void InitializeSystemEntities();
-		void InitializeBackgroundJobs();
+		List<ErpPlugin> Plugins { get; set; }
+
+		void InitializeSystemEntities();
+		void InitializeBackgroundJobs(List<JobType> additionalJobTypes = null);
 		void StartBackgroundJobProcess();
+		void InitializePlugins(IServiceProvider app);
+		void SetAutoMapperConfiguration();
 	}
 }

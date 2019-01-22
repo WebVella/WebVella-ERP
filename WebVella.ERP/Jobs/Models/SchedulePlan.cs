@@ -1,17 +1,23 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using WebVella.Erp.Api.Models;
 
-namespace WebVella.ERP.Jobs
+namespace WebVella.Erp.Jobs
 {
 	[Serializable]
 	public enum SchedulePlanType
 	{
+		[SelectOption(Label = "interval")]
 		Interval = 1,
+		[SelectOption(Label = "daily")]
 		Daily = 2,
+		[SelectOption(Label = "weekly")]
 		Weekly = 3,
+		[SelectOption(Label = "monthly")]
 		Monthly = 4
 	}
 

@@ -1,8 +1,9 @@
 ﻿using System;
 using AutoMapper;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
-namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
+namespace WebVella.Erp.Api.Models.AutoMapper.Profiles
 {
     internal class ErpUserConverter : ITypeConverter<EntityRecord, ErpUser>
     {
@@ -15,8 +16,8 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 
             ErpUser dest = new ErpUser();
             dest.Id = (Guid)src["id"];
-            dest.Username = (string)src["username"];
-            dest.Email = (string)src["email"];
+			dest.Username = (string)src["username"];
+			dest.Email = (string)src["email"];
 
             try
             {
@@ -32,15 +33,24 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
             dest.LastName = (string)src["last_name"];
             dest.Image = (string)src["image"];
             dest.CreatedOn = (DateTime)src["created_on"];
-            dest.CreatedBy = (Guid?)src["created_by"];
-            dest.ModifiedOn = (DateTime)src["last_modified_on"];
-            dest.ModifiedBy = (Guid?)src["last_modified_by"];
             dest.LastLoggedIn = (DateTime?)src["last_logged_in"];
             dest.Enabled = (bool)src["enabled"];
+			dest.Verified = (bool)src["verified"];
 
-            dest.Roles = new List<ErpRole>();
             if (src.Properties.ContainsKey("$user_role") && src["$user_role"] != null)
                 ((List<EntityRecord>)src["$user_role"]).ForEach(x => dest.Roles.Add(x.MapTo<ErpRole>()));
+
+			dest.Preferences = new ErpUserPreferences();
+			if (source.Properties.ContainsKey("preferences"))
+			{
+				string prefsJson = (string)source["preferences"];
+				if (!string.IsNullOrWhiteSpace(prefsJson))
+				{
+					var jsonSerializerSettings = new JsonSerializerSettings();
+					jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+					dest.Preferences = JsonConvert.DeserializeObject<ErpUserPreferences>(prefsJson, jsonSerializerSettings);
+				}
+			}
 
             return dest;
         }
@@ -57,19 +67,18 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 
             EntityRecord dest = new EntityRecord();
             dest["id"] = src.Id;
-            dest["username"] = src.Username;
-            dest["email"] = src.Email;
+			dest["username"] = src.Username;
+			dest["email"] = src.Email;
             dest["password"] = src.Password;
             dest["first_name"] = src.FirstName;
             dest["last_name"] = src.LastName;
             dest["created_on"] = src.CreatedOn;
-            dest["created_by"] = src.CreatedBy;
-            dest["last_modified_on"] = src.ModifiedOn;
-            dest["last_modified_by"] = src.ModifiedBy;
             dest["last_logged_in"] = src.LastLoggedIn;
             dest["enabled"] = src.Enabled;
+			dest["verified"] = src.Verified;
+			dest["preferences"] = src.Preferences??new ErpUserPreferences();
 
-            return dest;
+			return dest;
         }
     }
 }

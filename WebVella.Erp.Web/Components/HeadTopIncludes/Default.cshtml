@@ -1,0 +1,34 @@
+﻿@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Web.Utils;
+@{
+	var metaTitle = (string)ViewBag.Title;
+	var metaTagsToInclude = (List<MetaTagInclude>)ViewBag.MetaTags;
+	var linkTagsToInclude = (List<LinkTagInclude>)ViewBag.LinkTags;
+	var scriptTagsToInclude = (List<ScriptTagInclude>)ViewBag.ScriptTags;
+}
+@* <title> *@
+@* ================================================= *@
+@if (!string.IsNullOrWhiteSpace(metaTitle)) { 
+	@:@Html.Raw(metaTitle)
+}
+@* <meta> *@
+@* ================================================= *@
+@foreach (var metaTag in metaTagsToInclude)
+{
+	var tag = PageUtils.GenerateTagsFromObject(metaTag);
+	@:@Html.Raw(tag)
+}
+@* <link> *@
+@* ================================================= *@
+@foreach (var linkTag in linkTagsToInclude)
+{
+	var tag = PageUtils.GenerateTagsFromObject(linkTag);
+	@:@Html.Raw(tag)
+}
+@* <script> *@
+@* ================================================= *@
+@foreach (var scriptTag in scriptTagsToInclude)
+{
+	var tag = PageUtils.GenerateTagsFromObject(scriptTag);
+	@:@Html.Raw(tag)
+}

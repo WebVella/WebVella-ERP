@@ -1,0 +1,7 @@
+﻿@using WebVella.Erp.Web.Components;
+@using WebVella.Erp.Web.Models;
+@{
+	var options = (PcHtmlBlock.PcHtmlBlockOptions)ViewBag.Options;
+	var node = (PageBodyNode)ViewBag.Node;
+}
+<div class="p-1">@Html.Raw(ViewBag.ProccessedHtml)</div>

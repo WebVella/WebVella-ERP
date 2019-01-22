@@ -1,0 +1,47 @@
+﻿@page "/sdk/objects/page/m/{RecordId}/manage-custom"
+
+@model WebVella.Erp.Plugins.SDK.Pages.Page.ManageCustomModel
+@{
+	Layout = "~/Pages/_AppMaster.cshtml";
+	ViewData["Title"] = "Manage Page";
+	var pageIconClass = "ti-file";
+	if (!String.IsNullOrWhiteSpace(Model.ErpPage.IconClass)){
+		pageIconClass = Model.ErpPage.IconClass;
+	}
+
+}
+<wv-page-header color="#dc3545" area-label="Pages" title="@Model.ErpPage.Label" subtitle="Manage Custom body"
+				icon-class="@pageIconClass" return-url="@Model.ReturnUrl">
+	<wv-page-header-actions>
+		<button type='button' onclick='ErpEvent.DISPATCH("WebVella.Erp.Web.Components.PcForm","submit")' class='btn btn-blue btn-sm'><span class='ti-save go-white'></span> Save Custom Body</button>
+		<a href='@Html.Raw(Model.ReturnUrl)' class='btn btn-white btn-sm'>Cancel</a>
+	</wv-page-header-actions>
+
+	<wv-page-header-toolbar>
+		@foreach (var action in Model.HeaderToolbar)
+		{
+			@Html.Raw(action)
+		}
+	</wv-page-header-toolbar>
+</wv-page-header>
+
+<wv-validation validation="Model.Validation" show-errors="true"></wv-validation>
+
+<wv-form name="ManageRecord" validation="Model.Validation" label-mode="Stacked" mode="Form">
+	<wv-section class="mt-4">
+		<wv-row>
+			<wv-column span="12">
+				<wv-field-checkbox label-text="Custom Body" value="@Model.IsRazorBody" name="IsRazorBody"
+								   text-true="custom body  enabled" text-false="custom body disabled"></wv-field-checkbox>
+			</wv-column>
+		</wv-row>
+		<div><strong>Templates</strong></div>
+		<div>Replace Razor body with template: <button type="button" class="btn btn-link btn-sm">Record List</button></div>
+		<wv-row>
+			<wv-column span="12">
+				<wv-field-code label-text="RazorBody" value="@Model.RazorBody" name="RazorBody" height="600px"></wv-field-code>
+			</wv-column>
+		</wv-row>
+	</wv-section>
+
+</wv-form>

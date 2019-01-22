@@ -3,7 +3,7 @@
 //using System.Collections.Generic;
 //using System.Collections;
 
-//namespace WebVella.ERP.Database.AutoMapper
+//namespace WebVella.Erp.Database.AutoMapper
 //{
 //    public static class AutoMapperExtensions
 //    {

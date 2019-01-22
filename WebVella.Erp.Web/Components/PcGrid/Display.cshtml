@@ -1,0 +1,64 @@
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web.Components;
+@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Web;
+@using WebVella.Erp.Web.Utils;
+@using WebVella.Erp.Api.Models;
+@{
+	var options = (PcGrid.PcGridOptions)ViewBag.Options;
+	var node = (PageBodyNode)ViewBag.Node;
+	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
+	var componentContext = (PageComponentContext)ViewBag.ComponentContext;
+	var pager = (int)ViewBag.Page;
+	var totalCount = (int)ViewBag.TotalCount;
+	var pageSize = (int)ViewBag.PageSize;
+	var records = (List<EntityRecord>)ViewBag.Records;
+	var columns = (List<GridColumn>)ViewBag.Columns;
+}
+
+<wv-grid striped="@options.Striped" small="@options.Small" bordered="@options.Bordered" borderless="@options.Borderless"
+		 hover="@options.Hover" responsive-breakpoint="@options.ResponsiveBreakpoint" id="@options.Id" prefix="@options.Prefix"
+		 name="@options.Name" culture="@options.Culture" class="@options.Class" query-string-sortby="@options.QueryStringSortBy"
+		 query-string-sort-order="@options.QueryStringSortOrder" query-string-page="@options.QueryStringPage" columns="columns"
+		  page="@pager" total-count="@totalCount" page-size="@pageSize" has-thead="@options.HasThead" has-tfoot="@options.HasTfoot">
+	@foreach (var record in records)
+	{
+		<wv-grid-row>
+			@for (var i=1; i <= options.VisibleColumns; i++)
+			{
+				var containerId = (options.GetType().GetProperty($"Container{i}Id").GetValue(options, null) ?? "").ToString();
+				var columnNoWrap = (bool)(options.GetType().GetProperty($"Container{i}NoWrap").GetValue(options, null) ?? false);
+				var columnClass = (string)(options.GetType().GetProperty($"Container{i}Class").GetValue(options, null) ?? false);
+				var verticalAlign = (VerticalAlignmentType)(options.GetType().GetProperty($"Container{i}VerticalAlign").GetValue(options, null) ?? false);
+				var horizontalAlign = (HorizontalAlignmentType)(options.GetType().GetProperty($"Container{i}HorizontalAlign").GetValue(options, null) ?? false);
+				var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == containerId);
+				<wv-grid-column text-wrap="@columnNoWrap" class="@columnClass" horizontal-align="@horizontalAlign" vertical-align="@verticalAlign">
+					@foreach (var childNode in columnChildNodes)
+					{
+						var nodeComponentName = "";
+						if (childNode != null)
+						{
+							var nameArray = childNode.ComponentName.Split('.');
+							nodeComponentName = nameArray[nameArray.Length - 1];
+						}
+						if (!String.IsNullOrWhiteSpace(nodeComponentName))
+						{
+							var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+							var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+							pcContext.DataModel.SetRowRecord(record);
+							@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+						}
+					}
+				</wv-grid-column>
+			}
+		</wv-grid-row>
+	}
+	@if (records.Count == 0) { 
+	<tbody>
+		<tr>
+			<td colspan="@options.VisibleColumns"><div class="alert alert-info m-0">@Html.Raw(options.EmptyText)</div></td>
+		</tr>
+	</tbody>
+	}
+</wv-grid>

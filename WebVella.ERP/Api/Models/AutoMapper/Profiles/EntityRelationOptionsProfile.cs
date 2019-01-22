@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using WebVella.ERP.Database;
+using WebVella.Erp.Database;
 
-namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
+namespace WebVella.Erp.Api.Models.AutoMapper.Profiles
 {
 	internal class EntityRelationOptionsProfile : Profile
 	{

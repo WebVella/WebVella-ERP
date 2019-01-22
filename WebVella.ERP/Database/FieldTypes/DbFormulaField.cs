@@ -1,6 +1,6 @@
 ﻿
 
-namespace WebVella.ERP.Database
+namespace WebVella.Erp.Database
 {
     //Not supported at the moment
     //public class DbFormulaField : DbBaseField

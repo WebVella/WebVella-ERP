@@ -5,7 +5,7 @@ using System;
 
 #endregion
 
-namespace WebVella.ERP.Database
+namespace WebVella.Erp.Database
 {
 	public abstract class DbDocumentBase
 	{

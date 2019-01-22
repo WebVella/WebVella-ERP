@@ -1,0 +1,83 @@
+﻿@page "/sdk/objects/entity/r/{ParentRecordId}/rl/pages/l"
+
+@model WebVella.Erp.Plugins.SDK.Pages.ErpEntity.PagesModel
+@{
+	Layout = "~/Pages/_AppMaster.cshtml";
+	ViewData["Title"] = "Pages";
+	var containsFilterList = new List<FilterType>() {
+FilterType.CONTAINS
+};
+	var eqFilterList = new List<FilterType>() {
+FilterType.EQ
+};
+	var titleAction = "<a href=\"javascript:void(0)\" class=\"clear-filter-all\">clear all</a>";
+}
+<wv-page-header color="#dc3545" area-label="Pages" title="All pages list"
+				icon-class="ti-file" description="@Model.PageDescription">
+
+	<wv-page-header-actions>
+		<a href='/sdk/objects/page/c?returnUrl=@Html.Raw(Model.ReturnUrlEncoded)&PresetEntityId=@Model.ErpEntity.Id' class='btn btn-white btn-sm'><span class='fa fa-plus go-green'></span> Create Entity Page</a>
+		<button type='button' onclick="ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcDrawer','open')" class='btn btn-white btn-sm'><span class='fa fa-search'></span> Search</button>
+	</wv-page-header-actions>
+	<wv-page-header-toolbar>
+		@foreach (var action in Model.HeaderToolbar)
+		{
+			@Html.Raw(action)
+		}
+	</wv-page-header-toolbar>
+</wv-page-header>
+
+<wv-grid bordered="true" hover="true" columns="Model.Columns" page="Model.Pager" total-count="Model.TotalCount" page-size="Model.PagerSize">
+	@foreach (var record in Model.Records)
+	{
+		<wv-grid-row>
+			<wv-grid-column>
+				@Html.Raw(record["action"])
+			</wv-grid-column>
+			<wv-grid-column>
+				@record["label"]
+			</wv-grid-column>
+			<wv-grid-column>
+				@record["name"]
+			</wv-grid-column>
+			<wv-grid-column>
+				@record["app"]
+			</wv-grid-column>
+			<wv-grid-column>
+				@record["entity"]
+			</wv-grid-column>
+			<wv-grid-column>
+				@record["type"]
+			</wv-grid-column>
+			<wv-grid-column>
+				<wv-field-checkbox mode="Simple" label-mode="Hidden" value="@record["system"]"></wv-field-checkbox>
+			</wv-grid-column>
+			<wv-grid-column>
+				<wv-field-checkbox mode="Simple" label-mode="Hidden" value="@record["customized"]"></wv-field-checkbox>
+			</wv-grid-column>
+		</wv-grid-row>
+	}
+	@if (Model.Records.Count == 0)
+	{
+		<tbody>
+			<tr>
+				<td colspan="@Model.Columns.Count"><div class="alert alert-info">No pages found</div></td>
+			</tr>
+		</tbody>
+	}
+</wv-grid>
+
+
+<wv-drawer width="550px" title="Search Pages" title-action-html="@titleAction">
+	<form method="get" name="SearchPages">
+		<wv-filter-text name="label" label="Label" query-options="containsFilterList"></wv-filter-text>
+		<wv-filter-text name="name" label="Name" query-options="containsFilterList"></wv-filter-text>
+		<wv-filter-text name="app" label="App" query-options="eqFilterList"></wv-filter-text>
+		<wv-filter-text name="entity" label="Entity" query-options="eqFilterList"></wv-filter-text>
+		<wv-filter-text name="type" label="Type" query-options="containsFilterList"></wv-filter-text>
+		<wv-filter-checkbox name="system" label="System"></wv-filter-checkbox>
+		<wv-filter-checkbox name="customized" label="Customized"></wv-filter-checkbox>
+		<hr class="divider" />
+		<button type="submit" class="btn btn-sm btn-white">Search Pages</button>
+	</form>
+</wv-drawer>

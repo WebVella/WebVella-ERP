@@ -1,36 +1,75 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Npgsql;
 using System;
-using WebVella.ERP.Api;
-using WebVella.ERP.Api.Models;
+using System.Data;
+using WebVella.Erp.Api.Models;
+using WebVella.Erp.Database;
 
-namespace WebVella.ERP.Diagnostics
+namespace WebVella.Erp.Diagnostics
 {
 	public class Log
 	{
+
+		public EntityRecordList GetLogs(int page, int pageSize, string querySource = null, string queryMessage = null)
+		{
+			int offset = (page - 1) * pageSize;
+			int limit = pageSize;
+
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				var sql = $@"SELECT *, COUNT(*) OVER() AS ___total_count___ FROM system_log WHERE (source  ILIKE  @querySource  OR @querySource is null)  AND (message  ILIKE  @queryMessage OR @queryMessage is null ) LIMIT {limit} OFFSET {offset} ";
+
+				var cmd = connection.CreateCommand(sql);
+				cmd.Parameters.Add(new NpgsqlParameter("@querySource", string.IsNullOrWhiteSpace(querySource) ? (object)DBNull.Value : $"%{querySource}%"));
+				cmd.Parameters.Add(new NpgsqlParameter("@queryMessage", string.IsNullOrWhiteSpace(queryMessage) ? (object)DBNull.Value : $"%{queryMessage}%"));
+
+				DataTable dt = new DataTable();
+				new NpgsqlDataAdapter(cmd).Fill(dt);
+
+				EntityRecordList result = new EntityRecordList();
+				foreach (DataRow dr in dt.Rows)
+				{
+					result.TotalCount = (int)((long)dr["___total_count___"]);
+					EntityRecord record = new EntityRecord();
+					record["id"] = dr["id"];
+					record["created_on"] = dr["created_on"];
+					record["type"] = dr["type"];
+					record["notification_status"] = dr["notification_status"];
+					record["source"] = dr["source"];
+					record["message"] = dr["message"];
+					if (dr["details"] == DBNull.Value)
+						record["details"] = null;
+					else
+						record["details"] = dr["details"];
+
+					result.Add(record);
+				}
+				return result;
+
+			}
+		}
+
 		public void Create(LogType type, string source, string message, string details, LogNotificationStatus notificationStatus = LogNotificationStatus.NotNotified, bool saveDetailsAsJson = false)
 		{
-			EntityRecord logRecord = new EntityRecord();
-			logRecord["id"] = Guid.NewGuid();
-			logRecord["type"] = ((int)type).ToString();
-			logRecord["source"] = source;
-			logRecord["message"] = message;
-			logRecord["notification_status"] = ((int)notificationStatus).ToString();
-			logRecord["details"] = saveDetailsAsJson ? MakeDetailsJson(details) : details;
-			logRecord["created_by"] = SystemIds.SystemUserId;
-			logRecord["last_modified_by"] = SystemIds.SystemUserId;
-			logRecord["created_on"] = DateTime.UtcNow;
-			logRecord["last_modified_on"] = DateTime.UtcNow;
-
-			RecordManager recMan = new RecordManager(true);
-			var response = recMan.CreateRecord("system_log", logRecord);
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				var cmd = connection.CreateCommand("INSERT INTO system_log(id,created_on,type,message,source,details,notification_status) VALUES(@id,@created_on,@type,@message,@source,@details,@notification_status);");
+				cmd.Parameters.Add(new NpgsqlParameter("@id", Guid.NewGuid()));
+				cmd.Parameters.Add(new NpgsqlParameter("@type", ((int)type)));
+				cmd.Parameters.Add(new NpgsqlParameter("@source", source ?? string.Empty));
+				cmd.Parameters.Add(new NpgsqlParameter("@message", message ?? string.Empty));
+				cmd.Parameters.Add(new NpgsqlParameter("@notification_status", ((int)notificationStatus)));
+				cmd.Parameters.Add(new NpgsqlParameter("@details", details ?? string.Empty));
+				cmd.Parameters.Add(new NpgsqlParameter("@created_on", DateTime.UtcNow));
+				cmd.ExecuteNonQuery();
+			}
 		}
 
 		public void Create(LogType type, string source, Exception ex, HttpRequest request = null, LogNotificationStatus notificationStatus = LogNotificationStatus.NotNotified)
 		{
 			string details = MakeDetailsJson("", ex, request);
-			Create(LogType.Error, source, ex.Message, details, notificationStatus);
+			Create(LogType.Error, source, ex?.Message, details, notificationStatus);
 		}
 
 		public void Create(LogType type, string source, string message, Exception ex, HttpRequest request = null, LogNotificationStatus notificationStatus = LogNotificationStatus.NotNotified)
@@ -72,50 +111,6 @@ namespace WebVella.ERP.Diagnostics
 				eRecord["request_url"] = $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}";
 
 			return JsonConvert.SerializeObject(eRecord);
-		}
-
-		public void UpdateNotificationStatus(Guid id, LogNotificationStatus notificationStatus)
-		{
-			RecordManager recMan = new RecordManager(true);
-
-			var response = recMan.Find(new EntityQuery("system_log", "*", EntityQuery.QueryEQ("id", id)));
-
-			if (!response.Success || response.Object == null || response.Object.Data == null || response.Object.Data.Count == 0)
-				return; //Maybe it have to throw exception here
-
-			EntityRecord logRecord = response.Object.Data[0];
-			logRecord["notification_status"] = ((int)notificationStatus).ToString();
-			logRecord["last_modified_on"] = DateTime.UtcNow;
-
-			recMan.UpdateRecord("system_log", logRecord);
-		}
-
-		public void SendEmails()
-		{
-			RecordManager recMan = new RecordManager();
-
-			var response = recMan.Find(new EntityQuery("system_log", "*", EntityQuery.QueryEQ("notification_status", (int)LogNotificationStatus.NotNotified)));
-
-			if (!response.Success || response.Object == null || response.Object.Data == null || response.Object.Data.Count == 0)
-				return;
-
-			foreach (EntityRecord log in response.Object.Data)
-			{
-				Guid id = (Guid)log["id"];
-				LogNotificationStatus notificationStatus = LogNotificationStatus.Notified;
-
-				//TODO: SendEmail method have to be implemented
-				//try
-				//{
-				//	SendEmail(string toEmailAddress, string subject, string body)
-				//}
-				//catch (Exception)
-				//{
-				//	notificationStatus = LogNotificationStatus.NotificationFailed;
-				//}
-
-				UpdateNotificationStatus(id, notificationStatus);
-			}
 		}
 	}
 

@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using WebVella.ERP.Api.Models;
-using WebVella.ERP.Utilities;
+using WebVella.Erp.Api.Models;
+using WebVella.Erp.Utilities;
 
-namespace WebVella.ERP.Api
+namespace WebVella.Erp.Api
 {
 	internal class Cache
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Xml;
 
-namespace WebVella.ERP.Utilities.Dynamic
+namespace WebVella.Erp.Utilities.Dynamic
 {
     /// <summary>
     /// Creates a serializable string/object dictionary that is XML serializable

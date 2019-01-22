@@ -13,11 +13,11 @@
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
+#[Rr]elease/
+#[Rr]eleases/
 x64/
 x86/
-build/
+#build/
 bld/
 [Bb]in/
 [Oo]bj/
@@ -217,3 +217,5 @@ FakesAssemblies/
 _Pvt_Extensions
 /WebVella.ERP.Web/Properties/PublishProfiles
 /WebVella.ERP.sln.ide
+/WebVella.ERP.Site/Pages/WV/Pages
+**/Properties/launchSettings.json

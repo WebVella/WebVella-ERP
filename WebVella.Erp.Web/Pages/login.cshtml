@@ -1,0 +1,28 @@
+﻿@page "/login"
+@model WebVella.Erp.Web.Pages.LoginModel
+@{ 
+    Layout = "~/Pages/_SystemMaster.cshtml";
+    ViewData["Title"] = "Login";
+}
+
+<div class="card login-card card-sm">
+	<div class="card-header text-center"><img src="/assets/logo.png"/> WebVella Next</div>
+	<div class="card-body pt-3">
+		@if (!String.IsNullOrWhiteSpace(Model.Error))
+		{
+		<div class="alert alert-danger">@Model.Error</div>
+		}
+		<form method="post" name="form">
+			@Html.AntiForgeryToken()
+			<div class="form-group">
+				<label for="loginEmail">Email</label>
+				<input type="email" class="form-control form-control-sm" id="loginEmail" placeholder="" name="Username" value="">
+			</div>
+			<div class="form-group">
+				<label for="loginPassword">Password</label>
+				<input type="password" class="form-control form-control-sm" id="loginPassword" placeholder="" name="Password" value="">
+			</div>
+			<button class="btn btn-primary btn-block mt-4 btn-sm" type="submit">Login</button>
+		</form>
+	</div>
+</div>

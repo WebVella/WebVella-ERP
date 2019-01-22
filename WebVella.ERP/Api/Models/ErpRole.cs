@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace WebVella.ERP.Api.Models
+namespace WebVella.Erp.Api.Models
 {
 	[Serializable]
 	public class ErpRole
@@ -11,6 +11,9 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
-    }
+
+		[JsonProperty(PropertyName = "description")]
+		public string Description { get; set; }
+	}
 
 } 

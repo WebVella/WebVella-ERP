@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace WebVella.ERP.Utilities.Dynamic
+namespace WebVella.Erp.Utilities.Dynamic
 {
 	public class DynamicObjectCreater
 	{

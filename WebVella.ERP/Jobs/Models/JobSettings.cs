@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebVella.ERP.Jobs
+namespace WebVella.Erp.Jobs
 {
     public class JobManagerSettings
     {

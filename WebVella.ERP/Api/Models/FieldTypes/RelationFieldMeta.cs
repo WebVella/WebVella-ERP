@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace WebVella.ERP.Api.Models
+namespace WebVella.Erp.Api.Models
 {
 	[Serializable]
-	public class RelationFieldMeta : Field
+	internal class RelationFieldMeta : Field
     {
         [JsonProperty(PropertyName = "fieldType")]
         public static FieldType FieldType { get { return FieldType.RelationField; } }

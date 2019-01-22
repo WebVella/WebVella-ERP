@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace WebVella.ERP.Database
+namespace WebVella.Erp.Database
 {
 	public class DbFieldPermissions
     {

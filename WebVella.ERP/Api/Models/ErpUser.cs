@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace WebVella.ERP.Api.Models
+namespace WebVella.Erp.Api.Models
 {
 	[Serializable]
 	public class ErpUser
@@ -16,7 +17,8 @@ namespace WebVella.ERP.Api.Models
             LastName = String.Empty;
 			Username = String.Empty;
             Enabled = true;
-        }
+			Verified = true;
+		}
 
         [JsonProperty(PropertyName = "id")]
         public Guid Id { get; set; }
@@ -27,8 +29,9 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "email")]
         public string Email { get; set; }
 
-        [JsonProperty(PropertyName = "password")]
-        public string Password { get; set; }
+		[JsonIgnore]
+		//[JsonProperty(PropertyName = "password")]
+		public string Password { get; set; }
 
         [JsonProperty(PropertyName = "firstName")]
         public string FirstName { get; set; }
@@ -39,25 +42,28 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "image")]
         public string Image { get; set; }
 
-        [JsonProperty(PropertyName = "enabled")]
+		[JsonIgnore]
+		//[JsonProperty(PropertyName = "enabled")]
         public bool Enabled { get; set; }
 
-        [JsonProperty(PropertyName = "createdOn")]
-        public DateTime CreatedOn { get; set; }
+		[JsonIgnore]
+		//[JsonProperty(PropertyName = "verified")]
+		public bool Verified { get; set; }
 
-        [JsonProperty(PropertyName = "createdBy")]
-        public Guid? CreatedBy { get; set; }
+		[JsonProperty(PropertyName = "createdOn")]
+		public DateTime CreatedOn { get; set; }
 
-        [JsonProperty(PropertyName = "modifiedOn")]
-        public DateTime ModifiedOn { get; set; }
-
-        [JsonProperty(PropertyName = "modifiedBy")]
-        public Guid? ModifiedBy { get; set; }
-
-        [JsonProperty(PropertyName = "lastLoggedIn")]
+		[JsonProperty(PropertyName = "lastLoggedIn")]
         public DateTime? LastLoggedIn { get; set; }
 
-        [JsonProperty(PropertyName = "roles")]
-        public List<ErpRole> Roles { get; set; }
-    }
+		[JsonIgnore]
+		//[JsonProperty(PropertyName = "roles")]
+		public List<ErpRole> Roles { get; private set; } = new List<ErpRole>();
+
+		[JsonProperty(PropertyName = "is_admin")]
+		public bool IsAdmin { get { return Roles.Any(x => x.Id == SystemIds.AdministratorRoleId); } }
+	
+		[JsonProperty(PropertyName = "preferences")]
+		public ErpUserPreferences Preferences { get; set; }
+	}
 }

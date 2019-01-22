@@ -1,9 +1,9 @@
 ﻿//using AutoMapper;
-//using WebVella.ERP.Database;
-//using WebVella.ERP;
-//using WebVella.ERP.Storage;
+//using WebVella.Erp.Database;
+//using WebVella.Erp;
+//using WebVella.Erp.Storage;
 
-//namespace WebVella.ERP.Database.AutoMapper.Profiles
+//namespace WebVella.Erp.Database.AutoMapper.Profiles
 //{
 //	internal class DbFieldPermissionsProfile : Profile
 //	{

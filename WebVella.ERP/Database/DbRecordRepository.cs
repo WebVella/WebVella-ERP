@@ -10,13 +10,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebVella.ERP.Api;
-using WebVella.ERP.Api.Models;
-using WebVella.ERP.Api.Models.AutoMapper;
-using WebVella.ERP.Database.Models;
-using WebVella.ERP.Utilities;
+using WebVella.Erp.Api;
+using WebVella.Erp.Api.Models;
+using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Database.Models;
+using WebVella.Erp.Fts;
+using WebVella.Erp.Utilities;
 
-namespace WebVella.ERP.Database
+namespace WebVella.Erp.Database
 {
     public class DbRecordRepository
     {
@@ -57,8 +58,10 @@ namespace WebVella.ERP.Database
 
         EntityManager entMan = new EntityManager();
         EntityRelationManager relMan = new EntityRelationManager();
+		FtsAnalyzer ftsAnalyzer = new FtsAnalyzer();
 
-        public void Create(string entityName, IEnumerable<KeyValuePair<string, object>> recordData)
+
+		public void Create(string entityName, IEnumerable<KeyValuePair<string, object>> recordData)
         {
             Entity entity = entMan.ReadEntity(entityName).Object;
 
@@ -186,21 +189,22 @@ namespace WebVella.ERP.Database
 
         }
 
-        public long Count(string entityName, QueryObject query)
+        public long Count(EntityQuery query)
         {
-            string tableName = RECORD_COLLECTION_PREFIX + entityName;
+            string tableName = RECORD_COLLECTION_PREFIX + query.EntityName;
             using (DbConnection con = DbContext.Current.CreateConnection())
             {
                 string sql = $"SELECT COUNT( {tableName}.id ) FROM {tableName} ";
-                if(ContainsRelationalQuery(query))
+                if(ContainsRelationalQuery(query.Query))
                     sql = $"SELECT COUNT( DISTINCT {tableName}.id ) FROM {tableName} ";
 
                 string whereSql = string.Empty;
                 string whereJoinSql = string.Empty;
 
-                Entity entity = new EntityManager().ReadEntity(entityName).Object;
+                Entity entity = new EntityManager().ReadEntity(query.EntityName).Object;
                 List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
-                GenerateWhereClause(query, entity, ref whereSql, ref whereJoinSql, ref parameters);
+				if( query != null )
+					GenerateWhereClause(query.Query, entity, ref whereSql, ref whereJoinSql, ref parameters, query.OverwriteArgs);
 
                 if (whereJoinSql.Length > 0)
                     sql = sql + "  " + whereJoinSql;
@@ -328,22 +332,49 @@ namespace WebVella.ERP.Database
 					if (string.IsNullOrWhiteSpace(value as string))
 						return null;
 					date = DateTime.Parse(value as string);
-					//date can be local, utc and unspecified
-					//if local convert to utc, unspecified is used as is
-					if (date.HasValue && date.Value.Kind == DateTimeKind.Local)
-						date = date.Value.ToUniversalTime();
+					////date can be local, utc and unspecified
+					////if local convert to utc, unspecified is used as is
+					//if (date.HasValue && date.Value.Kind == DateTimeKind.Local)
+					//	date = date.Value.ToUniversalTime();
+
+					switch (date.Value.Kind)
+					{
+						case DateTimeKind.Utc:
+							return date;
+						case DateTimeKind.Local:
+							return date.Value.ToUniversalTime();
+						case DateTimeKind.Unspecified:
+							{
+								var erpTimeZone = TimeZoneInfo.FindSystemTimeZoneById(ErpSettings.TimeZoneName);
+								return TimeZoneInfo.ConvertTimeToUtc(date.Value, erpTimeZone);
+							}
+					}
 				}
 				else
 				{
 					date = value as DateTime?;
-					//date can be local, utc and unspecified
-					//if local convert to utc, unspecified is used as is
-					if (date.HasValue && date.Value.Kind == DateTimeKind.Local)
-						date = date.Value.ToUniversalTime();
+					////date can be local, utc and unspecified
+					////if local convert to utc, unspecified is used as is
+					//if (date.HasValue && date.Value.Kind == DateTimeKind.Local)
+					//	date = date.Value.ToUniversalTime();
+
+					switch (date.Value.Kind)
+					{
+						case DateTimeKind.Utc:
+							return date;
+						case DateTimeKind.Local:
+							return date.Value.ToUniversalTime();
+						case DateTimeKind.Unspecified:
+							{
+								var erpTimeZone = TimeZoneInfo.FindSystemTimeZoneById(ErpSettings.TimeZoneName);
+								return TimeZoneInfo.ConvertTimeToUtc(date.Value, erpTimeZone);
+							}
+					}
 				}
 
-				if (date != null)
-					return new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, DateTimeKind.Utc);
+				//if (date != null)
+				//	return new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, DateTimeKind.Utc);
+				return date;
 			}
 			else if (field is DateTimeField)
             {
@@ -456,20 +487,6 @@ namespace WebVella.ERP.Database
                 return value as string;
             else if (field is UrlField)
                 return value as string;
-            else if (field is TreeSelectField)
-            {
-                if (value == null)
-                    return null;
-                else if (value is JArray)
-                    return ((JArray)value).Select(x => new Guid(((JToken)x).Value<string>())).ToList<Guid>();
-                else if (value is List<object>)
-                    return ((List<object>)value).Select(x => ((Guid)x)).ToList<Guid>();
-                else if (value is Guid[])
-                    return new List<Guid>(value as Guid[]);
-                else
-                    return value as IEnumerable<Guid>;
-            }
-
 
             throw new Exception("System Error. A field type is not supported in field value extraction process.");
         }
@@ -487,7 +504,7 @@ namespace WebVella.ERP.Database
             var fields = ExtractQueryFieldsMeta(query);
             StringBuilder sql = new StringBuilder();
             StringBuilder sqlJoins = new StringBuilder();
-            StringBuilder sqlGroupBy = new StringBuilder();
+            //StringBuilder sqlGroupBy = new StringBuilder();
             List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
             bool containsRelationalQuery = ContainsRelationalQuery(query.Query);
 
@@ -587,7 +604,7 @@ namespace WebVella.ERP.Database
                                 }
                                 else
                                 {
-                                    if (sortOrder == "ascending")
+                                    if (sortOrder == "asc")
                                         sortSql = sortSql + " ASC,";
                                     else
                                         sortSql = sortSql + " DESC,";
@@ -685,7 +702,7 @@ namespace WebVella.ERP.Database
                     if (!(field is RelationFieldMeta))
                     {
                         sql.AppendLine(string.Format(REGULAR_FIELD_SELECT, field.Name, GetTableNameForEntity(entity.Name)));
-                        sqlGroupBy.Append(GetTableNameForEntity(entity) + "." + field.Name + ",");
+                        //sqlGroupBy.Append(GetTableNameForEntity(entity) + "." + field.Name + ",");
                     }
                     else
                     {
@@ -970,7 +987,7 @@ namespace WebVella.ERP.Database
                                 }
                                 else
                                 {
-                                    if (sortOrder == "ascending")
+                                    if (sortOrder == "asc")
                                         sortSql = sortSql + " ASC,";
                                     else
                                         sortSql = sortSql + " DESC,";
@@ -1045,6 +1062,9 @@ namespace WebVella.ERP.Database
         private void GenerateWhereClause(QueryObject query, Entity entity, ref string sql, ref string joinSql, ref List<NpgsqlParameter> parameters,
                                         List<KeyValuePair<string, string>> overwriteArgs = null)
         {
+
+			if (query == null)
+				return;
 
             Field field = null;
             FieldType fieldType = FieldType.GuidField;
@@ -1263,9 +1283,6 @@ namespace WebVella.ERP.Database
                 if (fieldType == FieldType.MultiSelectField &&	
 						!(query.QueryType == QueryType.EQ || query.QueryType == QueryType.NOT || query.QueryType == QueryType.CONTAINS ))
                     throw new Exception("The query operator is not supported on field '" + fieldType.ToString() + "'");
-
-				if (fieldType == FieldType.TreeSelectField &&  !(query.QueryType == QueryType.EQ || query.QueryType == QueryType.NOT))
-					throw new Exception("The query operator is not supported on field '" + fieldType.ToString() + "'");
 			}
 
             if (sql.Length > 0)
@@ -1360,10 +1377,34 @@ namespace WebVella.ERP.Database
                     }
 				case QueryType.FTS:
 					{
-						if( string.IsNullOrWhiteSpace( query.FtsLanguage ))
-							sql = sql + " to_tsvector( 'english', " + completeFieldName + ") @@ plainto_tsquery( 'english', " + paramName + ") ";
+						//make text which we search lower case
+						var parameter = parameters.Single(x => x.ParameterName == paramName);
+						string text = (string)parameter.Value;
+
+						bool singleWord = true;
+						if (!string.IsNullOrWhiteSpace(text))
+						{
+							string analizedText = ftsAnalyzer.ProcessText(text);
+							parameter.Value = analizedText;
+							singleWord = analizedText.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Count() == 1;
+						}
+
+						if (singleWord)
+						{
+							parameter.Value = parameter.Value + ":*"; //search for all lexemes starting with this word 
+							if (string.IsNullOrWhiteSpace(query.FtsLanguage))
+								sql = sql + " to_tsvector( 'simple', " + completeFieldName + ") @@ to_tsquery( 'simple', " + paramName + ") ";
+							else
+								sql = sql + " to_tsvector( '" + query.FtsLanguage + "' , " + completeFieldName + ") @@ to_tsquery( '" + query.FtsLanguage + "' ," + paramName + ") ";
+
+						}
 						else
-							sql = sql + " to_tsvector( '"+ query.FtsLanguage + "' , " + completeFieldName + ") @@ plainto_tsquery( '" + query.FtsLanguage + "' ," + paramName + ") ";
+						{
+							if (string.IsNullOrWhiteSpace(query.FtsLanguage))
+								sql = sql + " to_tsvector( 'simple', " + completeFieldName + ") @@ plainto_tsquery( 'simple', " + paramName + ") ";
+							else
+								sql = sql + " to_tsvector( '" + query.FtsLanguage + "' , " + completeFieldName + ") @@ plainto_tsquery( '" + query.FtsLanguage + "' ," + paramName + ") ";
+						}
 						return;
 					}
 				case QueryType.RELATED:
@@ -1685,11 +1726,7 @@ namespace WebVella.ERP.Database
 				else if (value is string[])
 					return new List<string>(value as string[]);
 				else if (value is string)
-				{
-					var list = new List<string>();
-					list.Add(value as string);
-					return list;
-				}
+					return new List<string>(((string)value).Split(',', StringSplitOptions.RemoveEmptyEntries));
 				else
 					return value as IEnumerable<string>;
             }
@@ -1740,7 +1777,10 @@ namespace WebVella.ERP.Database
                 if (value == null)
                     return (Guid?)null;
 
-                throw new Exception("Invalid Guid field value.");
+				if( value is DBNull)
+					return (Guid?)null;
+
+				throw new Exception("Invalid Guid field value.");
             }
             else if (field is SelectField)
                 return value as string;
@@ -1748,19 +1788,6 @@ namespace WebVella.ERP.Database
                 return value as string;
             else if (field is UrlField)
                 return value as string;
-            else if (field is TreeSelectField)
-            {
-                if (value == null)
-                    return null;
-                else if (value is JArray)
-                    return ((JArray)value).Select(x => new Guid(((JToken)x).Value<string>())).ToList<Guid>();
-                else if (value is List<object>)
-                    return ((List<object>)value).Select(x => ((Guid)x)).ToList<Guid>();
-                else if (value is Guid[])
-                    return new List<Guid>(value as Guid[]);
-                else
-                    return value as IEnumerable<Guid>;
-            }
 
 
             throw new Exception("System Error. A field type is not supported in field value extraction process.");
@@ -1941,17 +1968,22 @@ namespace WebVella.ERP.Database
                     if (overwriteArgs != null && overwriteArgs.Any(x => x.Key.ToLowerInvariant() == sortOrderParameterKey))
                     {
                         KeyValuePair<string, string> pair = overwriteArgs.Single(x => x.Key.ToLowerInvariant() == sortOrderParameterKey);
-                        sortOrder = (pair.Value ?? "ascending").Trim().ToLowerInvariant();
-                        if (!(sortOrder == "ascending" || sortOrder == "descending"))
+                        sortOrder = (pair.Value ?? "asc").Trim().ToLowerInvariant();
+                        if (!(sortOrder == "asc" || sortOrder == "desc"))
                             sortOrder = null;
                     }
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(sortField))
-                return null;
+			if (string.IsNullOrWhiteSpace(sortField))
+				return null;
+			else
+				sortField = sortField.Trim();
 
-            return new { Field = sortField, Order = sortOrder };
+			if (string.IsNullOrWhiteSpace(sortOrder))
+				sortOrder = sortOrder.Trim();
+
+			return new { Field = sortField, Order = sortOrder };
         }
     }
 }

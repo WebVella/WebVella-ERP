@@ -1,0 +1,20 @@
+﻿@using WebVella.Erp.Exceptions;
+@{
+	var errors = (List<ValidationError>)ViewBag.Errors;
+}
+@if (errors.Count == 0)
+{
+<div class="go-red p-3"><i class="fas fa-exclamation-circle"></i> @ViewBag.ExceptionMessage</div>
+}
+else {
+<div class="go-red p-3">
+	<ul>
+		@foreach (var error in errors) { 
+			<li><i class="fas fa-exclamation-circle"></i> @error.Message</li>
+		}
+	</ul>
+	
+</div>	
+}
+
+

@@ -37,7 +37,7 @@ using System.Linq;
 using System.Dynamic;
 using System.Reflection;
 
-namespace WebVella.ERP.Utilities.Dynamic
+namespace WebVella.Erp.Utilities.Dynamic
 {
     /// <summary>
     /// Class that provides extensible properties and methods to an

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebVella.ERP.Database
+namespace WebVella.Erp.Database
 {
 	public class DbException : Exception
 	{

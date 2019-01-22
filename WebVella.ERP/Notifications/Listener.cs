@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace WebVella.ERP.Notifications
+namespace WebVella.Erp.Notifications
 {
     internal class Listener
     {

@@ -6,10 +6,10 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using WebVella.ERP.Utilities;
-using WebVella.ERP.Utilities.Dynamic;
+using WebVella.Erp.Utilities;
+using WebVella.Erp.Utilities.Dynamic;
 
-namespace WebVella.ERP.Notifications
+namespace WebVella.Erp.Notifications
 {
 	public class NotificationContext
 	{
@@ -106,7 +106,7 @@ namespace WebVella.ERP.Notifications
 		/// </summary>
 		private void ListenForNotifications()
 		{
-			sqlConnection = new NpgsqlConnection(Settings.ConnectionString);
+			sqlConnection = new NpgsqlConnection(ErpSettings.ConnectionString);
 			JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
 
 			sqlConnection.Open();
@@ -157,7 +157,7 @@ namespace WebVella.ERP.Notifications
 			var encodedText = Encoding.UTF8.ToBase64(json);
 			string sql = $"notify {SQL_NOTIFICATION_CHANNEL_NAME}, '{encodedText}';";
 
-			using (NpgsqlConnection con = new NpgsqlConnection(Settings.ConnectionString))
+			using (NpgsqlConnection con = new NpgsqlConnection(ErpSettings.ConnectionString))
 			{
 				con.Open();
 				using (NpgsqlCommand command = new NpgsqlCommand(sql, con))
