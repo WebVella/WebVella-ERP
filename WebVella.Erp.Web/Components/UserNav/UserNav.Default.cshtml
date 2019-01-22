@@ -1,0 +1,52 @@
+﻿@using WebVella.Erp.Api.Models;
+@{
+	var erpUser = (ErpUser)ViewBag.CurrentUser;
+	var pageEditUrl = $"/sdk/objects/page/r/{ViewBag.PageId}/generated-body";
+	var showSettings = false;
+	if (ViewBag.PageId != null)
+	{
+		showSettings = true;
+	}
+}
+
+<!--c:UserNav_Default-->
+@if (showSettings)
+{
+	<div class="menu-nav-wrapper">
+		<div class="menu-nav dropdown">
+			<a href="javascript:void(0)" class="pl-2 pr-2" data-navclick-handler>
+				<span class="ti-settings icon"></span>
+			</a>
+		</div>
+		<div class="dropdown-menu  dropdown-menu-right">
+			@if (erpUser != null && erpUser.IsAdmin && ViewBag.PageId != null)
+			{
+				<a class="dropdown-item" href="@pageEditUrl" target="_blank">Manage Page</a>
+			}
+		</div>
+	</div>
+}
+
+
+<div class="menu-nav-wrapper">
+	<div class="menu-nav dropdown">
+		<a href="javascript:void(0)" class="pl-2 pr-2" data-navclick-handler title="@erpUser.Username">
+			@if (erpUser != null && !String.IsNullOrWhiteSpace(erpUser.Image))
+			{
+				var imagePath = erpUser.Image;
+				if (!imagePath.StartsWith("/fs") && !imagePath.StartsWith("http"))
+				{
+					imagePath = "/fs" + imagePath;
+				}
+				<img class="rounded-circle avatar" src="@imagePath" />
+			}
+			else
+			{
+				<img class="rounded-circle avatar" src="/assets/avatar.png" />
+			}
+		</a>
+	</div>
+	<div class="dropdown-menu  dropdown-menu-right">
+		<a class="dropdown-item" href="/logout">Logout</a>
+	</div>
+</div>

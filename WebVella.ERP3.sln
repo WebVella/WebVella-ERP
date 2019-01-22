@@ -1,0 +1,70 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2009
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{15EB6AED-0663-4CFD-B874-E80636988E74}"
+	ProjectSection(SolutionItems) = preProject
+		home.PNG = home.PNG
+		INSTRUCTIONS.md = INSTRUCTIONS.md
+		internal.PNG = internal.PNG
+		LIBRARIES.md = LIBRARIES.md
+		LICENSE.txt = LICENSE.txt
+		..\Users\rumen.yankov\Desktop\postgresql.conf = ..\Users\rumen.yankov\Desktop\postgresql.conf
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ECE0CA21-685B-414D-9438-7E7C9B9B9870}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp", "WebVella.ERP\WebVella.Erp.csproj", "{5DD56AA7-9479-4EDF-A10A-FDE7C2708314}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalLibraries", "ExternalLibraries", "{906BD917-C530-4496-BC58-52929662F024}"
+	ProjectSection(SolutionItems) = preProject
+		ExternalLibraries\libwkhtmltox.dll = ExternalLibraries\libwkhtmltox.dll
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Site", "WebVella.Erp.Site\WebVella.Erp.Site.csproj", "{499AC531-9980-44B1-A7C2-13EDC879D430}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Web", "WebVella.Erp.Web\WebVella.Erp.Web.csproj", "{1025828E-ADB9-42E2-A27D-87461E104DDB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Plugins.SDK", "WebVella.Erp.Plugins.SDK\WebVella.Erp.Plugins.SDK.csproj", "{F3117BB5-84C8-4791-AFBE-2C15092D9367}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Plugins.Next", "WebVella.Erp.Plugins.Next\WebVella.Erp.Plugins.Next.csproj", "{8A5E7461-3D62-48E3-8461-E092A8916756}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5DD56AA7-9479-4EDF-A10A-FDE7C2708314}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DD56AA7-9479-4EDF-A10A-FDE7C2708314}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DD56AA7-9479-4EDF-A10A-FDE7C2708314}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DD56AA7-9479-4EDF-A10A-FDE7C2708314}.Release|Any CPU.Build.0 = Release|Any CPU
+		{499AC531-9980-44B1-A7C2-13EDC879D430}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{499AC531-9980-44B1-A7C2-13EDC879D430}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{499AC531-9980-44B1-A7C2-13EDC879D430}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{499AC531-9980-44B1-A7C2-13EDC879D430}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1025828E-ADB9-42E2-A27D-87461E104DDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1025828E-ADB9-42E2-A27D-87461E104DDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1025828E-ADB9-42E2-A27D-87461E104DDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1025828E-ADB9-42E2-A27D-87461E104DDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3117BB5-84C8-4791-AFBE-2C15092D9367}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3117BB5-84C8-4791-AFBE-2C15092D9367}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3117BB5-84C8-4791-AFBE-2C15092D9367}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3117BB5-84C8-4791-AFBE-2C15092D9367}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A5E7461-3D62-48E3-8461-E092A8916756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A5E7461-3D62-48E3-8461-E092A8916756}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A5E7461-3D62-48E3-8461-E092A8916756}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A5E7461-3D62-48E3-8461-E092A8916756}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7554126B-4E1B-4A14-B172-31A4B7A0FA43}
+	EndGlobalSection
+EndGlobal

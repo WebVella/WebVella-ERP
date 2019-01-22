@@ -1,0 +1,20 @@
+﻿@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Web.Utils;
+@{
+	var linkTagsToInclude = (List<LinkTagInclude>)ViewBag.LinkTags;
+	var scriptTagsToInclude = (List<ScriptTagInclude>)ViewBag.ScriptTags;
+}
+@* <link> *@
+@* ================================================= *@
+@foreach (var linkTag in linkTagsToInclude)
+{
+	var tag = PageUtils.GenerateTagsFromObject(linkTag);
+	@:@Html.Raw(tag)
+}
+@* <script> *@
+@* ================================================= *@
+@foreach (var scriptTag in scriptTagsToInclude)
+{
+	var tag = PageUtils.GenerateTagsFromObject(scriptTag);
+	@:@Html.Raw(tag)
+}

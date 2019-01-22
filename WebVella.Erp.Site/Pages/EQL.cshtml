@@ -1,0 +1,34 @@
+﻿@page
+@model WebVella.Erp.Site.Pages.EqlModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>EQL Test Page</title>
+</head>
+<body>
+	<div>Input:</div>
+	<pre>@Model.Input</pre>
+	<br /><br />
+		<hr />
+	<br /><br />
+	<div>Sql:</div>
+	<pre>@Model.Sql</pre>
+	<br /><br />
+	<hr />
+	<br /><br />
+	<div>Result:</div>
+	<pre>@Model.Result</pre>
+	<br /><br />
+	<hr />
+	<br /><br />
+	<div>Meta:</div>
+	<pre>@Model.Meta</pre>
+	
+</body>
+</html>

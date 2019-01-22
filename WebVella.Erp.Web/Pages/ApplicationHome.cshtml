@@ -1,0 +1,34 @@
+﻿@page "/{AppName}/a/{PageName?}"
+@model WebVella.Erp.Web.Pages.Application.ApplicationHomePageModel
+@using WebVella.Erp.Web.Utils;
+@{
+	Layout = !string.IsNullOrWhiteSpace(Model?.ErpRequestContext?.Page?.Layout) ? Model.ErpRequestContext.Page.Layout : "~/Pages/_AppMaster.cshtml";
+	ViewData["Title"] =  Model.ErpRequestContext.Page.Label;
+	var currentPage = Model.ErpRequestContext.Page;
+}
+
+@if (currentPage != null)
+{
+	if (currentPage.Body != null && currentPage.Body.Count > 0)
+	{
+		foreach (var bodyNode in currentPage.Body)
+		{
+			var nameArray = bodyNode.ComponentName.Split('.');
+			var rootComponentName = nameArray[nameArray.Length - 1];
+
+			if (!String.IsNullOrWhiteSpace(rootComponentName))
+			{
+				var options = PageUtils.ConvertStringToJObject(bodyNode.Options.ToString());
+				var pcContext = new PageComponentContext(bodyNode, Model.DataModel, ComponentMode.Display, options);
+				@await Component.InvokeAsync(rootComponentName, new { context = pcContext })
+			}
+		}
+	}
+	else
+	{
+		<div class="alert alert-info">Page does not have page nodes attached</div>
+	}
+}
+else { 
+	<div class="alert alert-danger">No current page found!</div>
+}

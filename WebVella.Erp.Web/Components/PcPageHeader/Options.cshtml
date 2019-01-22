@@ -1,0 +1,57 @@
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web.Components;
+@using WebVella.Erp.Web;
+@{
+	var options = (PcPageHeader.PcPageHeaderOptions)ViewBag.Options;
+	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
+}
+
+<wv-row>
+	<wv-column span="6">
+		<wv-field-datasource page-id="erpRequest.Page.Id" name="area_label" value="@options.AreaLabel" label-text="Area Label"></wv-field-datasource>
+	</wv-column>
+	<wv-column span="6">
+		<wv-field-datasource page-id="erpRequest.Page.Id" name="area_sublabel" value="@options.AreaSubLabel" label-text="Area Sublabel"></wv-field-datasource>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="6">
+		<wv-field-datasource page-id="erpRequest.Page.Id" name="title" value="@options.Title" label-text="Title"></wv-field-datasource>
+	</wv-column>
+	<wv-column span="6">
+		<wv-field-datasource page-id="erpRequest.Page.Id" name="subtitle" value="@options.SubTitle" label-text="Subtitle"></wv-field-datasource>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="6">
+		<wv-field-datasource page-id="erpRequest.Page.Id" name="description" value="@options.Description" label-text="Description"></wv-field-datasource>
+	</wv-column>	
+	<wv-column span="6">
+		<wv-field-checkbox name="show_page_switch" value="@options.ShowPageSwitch" label-text="Page switch" text-true="show page switch"></wv-field-checkbox>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="6">
+		<wv-field-datasource page-id="erpRequest.Page.Id" name="color" value="@options.Color" label-text="Color"></wv-field-datasource>
+	</wv-column>
+	<wv-column span="6">
+		<wv-field-datasource page-id="erpRequest.Page.Id" name="icon_color" value="@options.IconColor" label-text="Icon Color"></wv-field-datasource>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="6">
+		<wv-field-datasource page-id="erpRequest.Page.Id" name="icon_class" value="@options.IconClass" label-text="Icon Class"></wv-field-datasource>
+	</wv-column>
+	<wv-column span="6">
+		<wv-field-datasource page-id="erpRequest.Page.Id" name="return_url" value="@options.ReturnUrl" label-text="Default Return Url"></wv-field-datasource>
+	</wv-column>
+</wv-row>
+
+
+
+
+
+
+
+

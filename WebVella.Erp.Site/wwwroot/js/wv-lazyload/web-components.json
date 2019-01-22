@@ -1,0 +1,45 @@
+{
+  "tags": [
+    {
+      "label": "wv-lazyload",
+      "description": "",
+      "attributes": [
+        {
+          "label": "component-name",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "entity-id",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "node-id",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "node-options",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "page-id",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "record-id",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "site-root-url",
+          "description": "",
+          "required": false
+        }
+      ]
+    }
+  ]
+}

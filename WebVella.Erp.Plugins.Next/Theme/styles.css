@@ -1,0 +1,236 @@
+﻿/*#region  << Comment and Feed post >>*/
+.pc-post-list .group {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: #999;
+    padding: 3px 5px;
+    border-top: 1px solid #d1d1d1;
+    border-bottom: 1px solid #d1d1d1;
+    margin-bottom: 1.25rem;
+}
+
+
+.post {
+	margin-bottom: 1.5rem;
+}
+
+	.post > .header {
+		display: flex;
+		flex-flow: row;
+		align-items: center;
+	}
+
+		.post > .header .avatar {
+			flex-grow: 0;
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			overflow: hidden;
+		}
+
+			.post > .header .avatar img {
+				max-width: 100%;
+				max-height: 100%;
+			}
+
+		.post > .header .meta {
+			flex-grow: 1;
+			padding-left: 0.5rem;
+		}
+
+			.post > .header .meta .title {
+			}
+
+				.post > .header .meta .title .username {
+					color: #333;
+					font-weight: bold;
+				}
+
+			.post > .header .meta .title-aux {
+				font-size: 0.75rem;
+				color: #999;
+				margin-top: -3px;
+			}
+
+				.post > .header .meta .title-aux .actions {
+					border-left: 1px solid #ccc;
+					margin-left: 0.5rem;
+					padding-left: 0.5rem;
+				}
+
+					.post > .header .meta .title-aux .actions .btn {
+						line-height: 1;
+						font-size: 0.75rem;
+						text-transform: lowercase;
+						padding: 0 0.25rem;
+					}
+
+	.post > .body {
+		background: #f2f2f2;
+		padding: 0.5rem;
+		margin: 0.5rem 0;
+		/*border-radius: 5px;*/
+	}
+
+		.post > .body:empty {
+			display: none;
+		}
+
+		.post > .body > p:last-child {
+			margin-bottom:0;
+		}
+
+	.post.add-new > .body {
+		padding: 0;
+		background: transparent;
+	}
+
+	.post > .footer {
+	}
+
+		.post > .footer > .actions {
+		}
+
+		.post > .footer .add-new {
+			display: flex;
+			flex-flow: row;
+			margin: 1.5rem 0;
+		}
+
+			.post > .footer .add-new .avatar {
+				flex-grow: 0;
+				width: 32px;
+				height: 32px;
+				border-radius: 50%;
+				overflow: hidden;
+			}
+
+				.post > .footer .add-new .avatar img {
+					max-width: 100%;
+					max-height: 100%;
+				}
+
+			.post > .footer .add-new .meta {
+				flex-grow: 1;
+				padding-left: 1rem;
+			}
+
+				.post > .footer .add-new .meta .form-control {
+				}
+
+		.post > .footer > .comment-list {
+			padding-left: 40px;
+			/*border-top: 1px solid #ccc;*/
+			margin-top: 1rem;
+			/*padding-top:1rem;*/
+		}
+
+		.post > .footer .comment-list {
+		}
+
+	.post .comment-list .comment {
+		display: flex;
+		flex-flow: row;
+		margin-bottom: 0.75rem;
+	}
+
+		.post .comment-list .comment > .avatar {
+			flex-grow: 0;
+			width: 24px;
+			height: 24px;
+			overflow: hidden;
+			border-radius: 50%;
+		}
+
+			.post .comment-list .comment > .avatar img {
+				max-width: 100%;
+				max-height: 100%;
+			}
+
+		.post .comment-list .comment > .meta {
+			flex-grow: 1;
+			padding-left: 0.5rem;
+		}
+
+
+			.post .comment-list .comment > .meta > .header {
+			}
+
+				.post .comment-list .comment > .meta > .header > .title {
+					display: inline-block;
+				}
+
+					.post .comment-list .comment > .meta > .header > .title .username {
+						color: #333;
+						font-weight: bold;
+					}
+
+				.post .comment-list .comment > .meta > .header > .title-aux {
+					display: inline-block;
+					font-size: 0.75rem;
+					color: #999;
+					border-left: 1px solid #ccc;
+					margin-left: 0.75rem;
+					padding-left: 0.75rem;
+				}
+
+					.post .comment-list .comment > .meta > .header > .title-aux .actions {
+						padding-left: 0.5rem;
+					}
+
+						.post .comment-list .comment > .meta > .header > .title-aux .actions .btn {
+							line-height: 1;
+							font-size: 0.75rem;
+							text-transform: lowercase;
+							padding: 0 0.25rem;
+						}
+
+
+			.post .comment-list .comment > .meta > .body {
+				background: #f2f2f2;
+				padding: 0.5rem;
+				margin: 0.5rem 0;
+				border-radius: 5px;
+			}
+
+				.post .comment-list .comment > .meta > .body > p:last-child {
+					margin-bottom:0;
+				}
+
+		.post .comment-list .comment.add-new > .meta > .body {
+			background: transparent;
+			padding: 0;
+		}
+
+		.post .comment-list .comment > .meta > .comment-list {
+			padding-left: 0;
+			padding-top: 1rem;
+		}
+
+/*#endregion*/
+
+
+/*#region << Editor toolbar >>*/
+.wv-field-html-toolbar {
+	display: flex;
+	flex-flow: row;
+	background: #f2f2f2;
+	padding: 0.5rem;
+	align-items: center;
+	border: 1px solid #d1d1d1;
+	border-top: none;
+	position: relative;
+	margin-top: 0px;
+}
+
+	.wv-field-html-toolbar .content {
+		flex-grow: 1;
+	}
+
+	.wv-field-html-toolbar .note {
+		flex-grow: 0;
+		color: #999;
+	}
+
+
+/*#endregion*/

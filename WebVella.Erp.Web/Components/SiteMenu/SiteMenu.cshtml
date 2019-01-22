@@ -1,0 +1,31 @@
+﻿@using WebVella.Erp.Api.Models;
+@using WebVella.Erp.Web.Models;
+@{
+	var erpUser = (ErpUser)ViewBag.CurrentUser;
+	var siteMenu = (List<MenuItem>)ViewBag.SiteMenu;
+}
+
+<!--c:UserNav_Default-->
+@if (siteMenu.Count > 0)
+{
+	<div class="menu-nav-wrapper">
+		<div class="menu-nav dropdown">
+			<a href="javascript:void(0)" class="pl-2 pr-2" data-navclick-handler>
+				<span class="fa fa-bars icon"></span>
+			</a>
+		</div>
+		<div class="dropdown-menu">
+			@foreach (var menuItem in siteMenu)
+			{
+				@if (menuItem.IsHtml)
+				{
+					@Html.Raw(menuItem.Content)
+				}
+				else
+				{
+					@menuItem.Content
+				}
+			}
+		</div>
+	</div>
+}

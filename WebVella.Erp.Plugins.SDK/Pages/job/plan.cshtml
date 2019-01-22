@@ -1,0 +1,85 @@
+﻿@page "/sdk/server/job/l/plan"
+@using Newtonsoft.Json;
+@using WebVella.Erp.Web.Utils;
+@model WebVella.Erp.Plugins.SDK.Pages.Job.PlanModel
+@{
+	Layout = "~/Pages/_AppMaster.cshtml";
+	ViewData["Title"] = "Logs";
+	var locService = new LocalizationService();
+}
+<wv-page-header color="#dc3545" area-label="Jobs" title="Schedule Plans"
+				icon-class="ti-calendar icon" return-url="@Model.ReturnUrl">
+	<wv-page-header-actions>
+		<wv-button type="Button" onclick="ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcDrawer','open')" color="White" icon-class="fa fa-search" text="Search schedule plans" size="Small"></wv-button>
+	</wv-page-header-actions>
+	<wv-page-header-toolbar>
+		@foreach (var action in Model.HeaderToolbar)
+		{
+			@Html.Raw(action)
+		}
+	</wv-page-header-toolbar>
+</wv-page-header>
+
+<wv-grid bordered="true" hover="true" columns="Model.Columns" page="Model.Pager" total-count="Model.TotalCount" page-size="Model.PagerSize" vertical-align="Middle">
+	@foreach (var record in Model.Records)
+	{
+		<wv-grid-row>
+			<wv-grid-column>
+				<wv-button-group size="Small">
+					<wv-button color="White" icon-class="fa fa-pencil-alt fa-fw" type="LinkAsButton" href="@($"/sdk/access/job/m/{record.Id}/plan")"></wv-button>
+					<wv-form mode="Form" name=@($"triggerForm{record.Id}")>
+						<input type="hidden" value="@record.Id" name="TriggerPlanId" />
+						<wv-button color="White" icon-class="fas fa-play fa-fw" type="Submit"></wv-button>
+					</wv-form>
+					<wv-button color="White" icon-class="far fa-paper-plane fa-fw" type="LinkAsButton" href="@($"/sdk/server/job/l/list?q_type_id_t=EQ&q_type_id_v={record.Id}")"></wv-button>
+				</wv-button-group>
+			</wv-grid-column>
+			<wv-grid-column>
+				@if (record.Enabled)
+				{
+					<span class="btn btn-green disabled btn-sm">ON</span>
+				}
+				else
+				{
+					<span class="btn btn-red disabled btn-sm">OFF</span>
+				}
+			</wv-grid-column>
+			<wv-grid-column>
+				<div>@record.Name</div>
+				<span class="go-gray">start date</span> 
+				<span>@(record.StartDate != null ? locService.ConvertUtcToAppDate(record.StartDate).Value.ToString("dd MMM yyyy HH:mm") : "n/a")</span>
+				<span class="divider">|</span>
+				<span class="go-gray" style="text-align:right">end date</span>
+				<span>@(record.EndDate != null ? locService.ConvertUtcToAppDate(record.EndDate).Value.ToString("dd MMM yyyy HH:mm") : "n/a")</span>
+			</wv-grid-column>
+			<wv-grid-column>
+				@record.Type.GetLabel()
+			</wv-grid-column>
+			<wv-grid-column>
+				@(record.LastTriggerTime != null ? locService.ConvertUtcToAppDate(record.LastTriggerTime).Value.ToString("dd MMM yyyy HH:mm") : "n/a")
+			</wv-grid-column>
+			<wv-grid-column>
+				@(record.NextTriggerTime != null ? locService.ConvertUtcToAppDate(record.NextTriggerTime).Value.ToString("dd MMM yyyy HH:mm") : "n/a")
+			</wv-grid-column>
+		</wv-grid-row>
+	}
+	@if (Model.Records.Count == 0)
+	{
+		<tbody>
+			<tr>
+				<td colspan="@Model.Columns.Count"><div class="alert alert-info m-0">No logs found</div></td>
+			</tr>
+		</tbody>
+	}
+</wv-grid>
+
+@{
+	var titleAction = "<a href=\"javascript:void(0)\" class=\"clear-filter-all\">clear all</a>";
+}
+<wv-drawer id="logSearchDrawler" width="400px" title="Search logs" title-action-html="@titleAction">
+	<form method="get" name="Search">
+		<wv-filter-text label="Name" name="name" query-type="CONTAINS" query-options="@(new List<FilterType> { FilterType.CONTAINS })"></wv-filter-text>
+		<hr class="divider" />
+		<wv-button type="Submit" color="White" text="Search logs" size="Small"></wv-button>
+	</form>
+</wv-drawer>

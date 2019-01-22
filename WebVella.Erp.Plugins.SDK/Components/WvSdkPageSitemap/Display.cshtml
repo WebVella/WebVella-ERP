@@ -1,0 +1,60 @@
+﻿@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Api.Models;
+@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Plugins.SDK.Model;
+@{
+	var pageSelectionTree = (PageSelectionTree)ViewBag.PageSelectionTree;
+	var mode = (FieldRenderMode)ViewBag.RenderMode;
+	var erpPage = (ErpPage)ViewBag.ErpPage;
+
+	var applicationOptions = (List<SelectOption>)ViewBag.ApplicationOptions;
+	var areaOptions = (List<SelectOption>)ViewBag.AreaOptions;
+	var nodeOptions = (List<SelectOption>)ViewBag.NodeOptions;
+	var entityOptions = (List<SelectOption>)ViewBag.EntityOptions;
+}
+@if (erpPage.Type == PageType.Home)
+{
+	<wv-row>
+		<wv-column span="4">
+			<wv-field-select options="pageSelectionTree.AllTypes" label-text="Type" value="@((int)erpPage.Type)" field-id="ViewBag.TypeOptionsFieldId"
+							 name="Type" required="true" mode="@FieldRenderMode.Display"></wv-field-select>
+		</wv-column>
+	</wv-row>
+}
+else
+{
+	<wv-row>
+		<wv-column span="4">
+			<wv-field-select options="pageSelectionTree.AllTypes" label-text="Type" value="@((int)erpPage.Type)" field-id="ViewBag.TypeOptionsFieldId"
+							 name="Type" required="true" mode="@mode"></wv-field-select>
+		</wv-column>
+		@if (erpPage.Type != PageType.Site && erpPage.Type != PageType.Home)
+		{
+			<wv-column span="4">
+				<wv-field-select options="applicationOptions" label-text="Application" value="@erpPage.AppId" field-id="ViewBag.AppOptionsFieldId"
+								 name="AppId" required="true" mode="@mode"></wv-field-select>
+			</wv-column>
+		}
+		@if (erpPage.Type == PageType.RecordCreate || erpPage.Type == PageType.RecordDetails || erpPage.Type == PageType.RecordList || erpPage.Type == PageType.RecordManage)
+		{
+			<wv-column span="4">
+				<wv-field-select options="entityOptions" label-text="Entity" value="@erpPage.EntityId" field-id="ViewBag.EntityOptionsFieldId"
+								 name="EntityId" required="true" mode="@mode"></wv-field-select>
+			</wv-column>
+		}
+	</wv-row>
+	@if (erpPage.Type != PageType.Site && erpPage.Type != PageType.Home)
+	{
+		<wv-row>
+			<wv-column span="4">
+				<wv-field-select options="areaOptions" label-text="Area" value="@erpPage.AreaId" field-id="ViewBag.AreaOptionsFieldId"
+								 name="AreaId" required="true" mode="@mode"></wv-field-select>
+			</wv-column>
+			<wv-column span="4">
+				<wv-field-select options="nodeOptions" label-text="Node" value="@erpPage.NodeId" field-id="ViewBag.NodeOptionsFieldId"
+								 name="NodeId" required="true" mode="@mode"></wv-field-select>
+			</wv-column>
+
+		</wv-row>
+	}
+}

@@ -1,0 +1,44 @@
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web.Components;
+@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Api.Models;
+@using WebVella.Erp.Web;
+@{
+	var options = (PcFieldPhone.PcFieldPhoneOptions)ViewBag.Options;
+	var fieldModel = (PcFieldPhone.PcFieldBaseModel)ViewBag.Model;
+	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
+}
+
+<h4 class="mt-2 mb-0">Label</h4>
+<wv-row>
+	<wv-column span="6">
+		<wv-field-text name="label_text" value="@options.LabelText" label-text="Label text"></wv-field-text>
+	</wv-column>
+	<wv-column span="6">
+		<wv-field-select name="label_mode" value="@((int)options.LabelMode)" label-text="Label mode" options="@fieldModel.LabelRenderModeOptions"></wv-field-select>		
+	</wv-column>
+</wv-row>
+<h4 class="mt-4 mb-0">Field</h4>
+<wv-row>
+	<wv-column span="6">
+		<wv-field-datasource name="value" value="@options.Value" label-text="Value" page-id="erpRequest.Page.Id"></wv-field-datasource>
+	</wv-column>
+	<wv-column span="6">
+		<wv-field-text name="name" value="@options.Name" label-text="Name">
+			<wv-field-append>
+				<div class="input-group-text">
+					<wv-field-checkbox class="mb-0" name="try_connect_to_entity" value="@options.TryConnectToEntity" text-true="try entity connect" label-mode="Hidden"></wv-field-checkbox>
+				</div>
+			</wv-field-append>
+		</wv-field-text>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="6">
+		<wv-field-select name="mode" value="@((int)options.Mode)" label-text="Mode" options="@fieldModel.FieldRenderModeOptions"></wv-field-select>
+	</wv-column>
+	<wv-column span="6">
+		<wv-field-number name="maxlength" value="@options.MaxLength" label-text="MaxLength" description="empty or 0 for no limit"></wv-field-number>
+	</wv-column>
+</wv-row>

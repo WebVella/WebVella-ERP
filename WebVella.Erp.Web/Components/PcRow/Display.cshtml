@@ -1,0 +1,259 @@
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web.Components;
+@using WebVella.Erp.Web.Models;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+@using WebVella.Erp.Web.Utils;
+@using WebVella.Erp.Web;
+@{
+	var options = (PcRow.PcRowOptions)ViewBag.Options;
+	var node = (PageBodyNode)ViewBag.Node;
+	var htmlIdPrefix = "wv-row-" + node.Id + "-";
+	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
+	var componentContext = (PageComponentContext)ViewBag.ComponentContext;
+}
+
+<wv-row class="@options.Class" flex-vertical-alignment="@options.FlexVerticalAlignment" flex-horizontal-alignment="@options.FlexHorizontalAlignment"
+	no-gutters="@options.NoGutters">
+	@if (options.VisibleColumns > 0) {
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Container1Id);
+		<wv-column id="@(htmlIdPrefix)@options.Container1Id" span="@options.Container1Span" span-sm="@options.Container1SpanSm" span-md="@options.Container1SpanMd" span-lg="@options.Container1SpanLg" span-xl="@options.Container1SpanXl"
+				   offset="@options.Container1Offset" offset-sm="@options.Container1OffsetSm" offset-md="@options.Container1OffsetMd" offset-lg="@options.Container1OffsetLg" offset-xl="@options.Container1OffsetXl"
+				   flex-self-align="@options.Container1FlexSelftAlign" flex-order="@options.Container1FlexOrder">
+			@foreach (var childNode in columnChildNodes) {
+				var nodeComponentName = "";
+				if (childNode != null) {
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</wv-column>
+	}
+	@if (options.VisibleColumns > 1) {
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Container2Id);
+		<wv-column id="@(htmlIdPrefix)@options.Container2Id" span="@options.Container2Span" span-sm="@options.Container2SpanSm" span-md="@options.Container2SpanMd" span-lg="@options.Container2SpanLg" span-xl="@options.Container2SpanXl"
+				   offset="@options.Container2Offset" offset-sm="@options.Container2OffsetSm" offset-md="@options.Container2OffsetMd" offset-lg="@options.Container2OffsetLg" offset-xl="@options.Container2OffsetXl"
+				   flex-self-align="@options.Container2FlexSelftAlign" flex-order="@options.Container2FlexOrder">
+			@foreach (var childNode in columnChildNodes) {
+				var nodeComponentName = "";
+				if (childNode != null) {
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</wv-column>
+	}
+	@if (options.VisibleColumns > 2) {
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Container3Id);
+		<wv-column id="@(htmlIdPrefix)@options.Container3Id" span="@options.Container3Span" span-sm="@options.Container3SpanSm" span-md="@options.Container3SpanMd" span-lg="@options.Container3SpanLg" span-xl="@options.Container3SpanXl"
+				   offset="@options.Container3Offset" offset-sm="@options.Container3OffsetSm" offset-md="@options.Container3OffsetMd" offset-lg="@options.Container3OffsetLg" offset-xl="@options.Container3OffsetXl"
+				   flex-self-align="@options.Container3FlexSelftAlign" flex-order="@options.Container3FlexOrder">
+			@foreach (var childNode in columnChildNodes) {
+				var nodeComponentName = "";
+				if (childNode != null) {
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</wv-column>
+	}
+	@if (options.VisibleColumns > 3) {
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Container4Id);
+		<wv-column id="@(htmlIdPrefix)@options.Container4Id" span="@options.Container4Span" span-sm="@options.Container4SpanSm" span-md="@options.Container4SpanMd" span-lg="@options.Container4SpanLg" span-xl="@options.Container4SpanXl"
+				   offset="@options.Container4Offset" offset-sm="@options.Container4OffsetSm" offset-md="@options.Container4OffsetMd" offset-lg="@options.Container4OffsetLg" offset-xl="@options.Container4OffsetXl"
+				   flex-self-align="@options.Container4FlexSelftAlign" flex-order="@options.Container4FlexOrder">
+			@foreach (var childNode in columnChildNodes) {
+				var nodeComponentName = "";
+				if (childNode != null) {
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</wv-column>
+	}
+	@if (options.VisibleColumns > 4) {
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Container5Id);
+		<wv-column id="@(htmlIdPrefix)@options.Container5Id" span="@options.Container5Span" span-sm="@options.Container5SpanSm" span-md="@options.Container5SpanMd" span-lg="@options.Container5SpanLg" span-xl="@options.Container5SpanXl"
+				   offset="@options.Container5Offset" offset-sm="@options.Container5OffsetSm" offset-md="@options.Container5OffsetMd" offset-lg="@options.Container5OffsetLg" offset-xl="@options.Container5OffsetXl"
+				   flex-self-align="@options.Container5FlexSelftAlign" flex-order="@options.Container5FlexOrder">
+			@foreach (var childNode in columnChildNodes) {
+				var nodeComponentName = "";
+				if (childNode != null) {
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</wv-column>
+	}
+	@if (options.VisibleColumns > 5) {
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Container6Id);
+		<wv-column id="@(htmlIdPrefix)@options.Container6Id" span="@options.Container6Span" span-sm="@options.Container6SpanSm" span-md="@options.Container6SpanMd" span-lg="@options.Container6SpanLg" span-xl="@options.Container6SpanXl"
+				   offset="@options.Container6Offset" offset-sm="@options.Container6OffsetSm" offset-md="@options.Container6OffsetMd" offset-lg="@options.Container6OffsetLg" offset-xl="@options.Container6OffsetXl"
+				   flex-self-align="@options.Container6FlexSelftAlign" flex-order="@options.Container6FlexOrder">
+			@foreach (var childNode in columnChildNodes) {
+				var nodeComponentName = "";
+				if (childNode != null) {
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</wv-column>
+	}
+	@if (options.VisibleColumns > 6) {
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Container7Id);
+		<wv-column id="@(htmlIdPrefix)@options.Container7Id" span="@options.Container7Span" span-sm="@options.Container7SpanSm" span-md="@options.Container7SpanMd" span-lg="@options.Container7SpanLg" span-xl="@options.Container7SpanXl"
+				   offset="@options.Container7Offset" offset-sm="@options.Container7OffsetSm" offset-md="@options.Container7OffsetMd" offset-lg="@options.Container7OffsetLg" offset-xl="@options.Container7OffsetXl"
+				   flex-self-align="@options.Container7FlexSelftAlign" flex-order="@options.Container7FlexOrder">
+			@foreach (var childNode in columnChildNodes) {
+				var nodeComponentName = "";
+				if (childNode != null) {
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</wv-column>
+	}
+	@if (options.VisibleColumns > 7) {
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Container8Id);
+		<wv-column id="@(htmlIdPrefix)@options.Container8Id" span="@options.Container8Span" span-sm="@options.Container8SpanSm" span-md="@options.Container8SpanMd" span-lg="@options.Container8SpanLg" span-xl="@options.Container8SpanXl"
+				   offset="@options.Container8Offset" offset-sm="@options.Container8OffsetSm" offset-md="@options.Container8OffsetMd" offset-lg="@options.Container8OffsetLg" offset-xl="@options.Container8OffsetXl"
+				   flex-self-align="@options.Container8FlexSelftAlign" flex-order="@options.Container8FlexOrder">
+			@foreach (var childNode in columnChildNodes) {
+				var nodeComponentName = "";
+				if (childNode != null) {
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</wv-column>
+	}
+	@if (options.VisibleColumns > 8) {
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Container9Id);
+		<wv-column id="@(htmlIdPrefix)@options.Container9Id" span="@options.Container9Span" span-sm="@options.Container9SpanSm" span-md="@options.Container9SpanMd" span-lg="@options.Container9SpanLg" span-xl="@options.Container9SpanXl"
+				   offset="@options.Container9Offset" offset-sm="@options.Container9OffsetSm" offset-md="@options.Container9OffsetMd" offset-lg="@options.Container9OffsetLg" offset-xl="@options.Container9OffsetXl"
+				   flex-self-align="@options.Container9FlexSelftAlign" flex-order="@options.Container9FlexOrder">
+			@foreach (var childNode in columnChildNodes) {
+				var nodeComponentName = "";
+				if (childNode != null) {
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</wv-column>
+	}
+	@if (options.VisibleColumns > 9) {
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Container10Id);
+		<wv-column id="@(htmlIdPrefix)@options.Container10Id" span="@options.Container10Span" span-sm="@options.Container10SpanSm" span-md="@options.Container10SpanMd" span-lg="@options.Container10SpanLg" span-xl="@options.Container10SpanXl"
+				   offset="@options.Container10Offset" offset-sm="@options.Container10OffsetSm" offset-md="@options.Container10OffsetMd" offset-lg="@options.Container10OffsetLg" offset-xl="@options.Container10OffsetXl"
+				   flex-self-align="@options.Container10FlexSelftAlign" flex-order="@options.Container10FlexOrder">
+			@foreach (var childNode in columnChildNodes) {
+				var nodeComponentName = "";
+				if (childNode != null) {
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</wv-column>
+	}
+	@if (options.VisibleColumns > 10) {
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Container11Id);
+		<wv-column id="@(htmlIdPrefix)@options.Container11Id" span="@options.Container11Span" span-sm="@options.Container11SpanSm" span-md="@options.Container11SpanMd" span-lg="@options.Container11SpanLg" span-xl="@options.Container11SpanXl"
+				   offset="@options.Container11Offset" offset-sm="@options.Container11OffsetSm" offset-md="@options.Container11OffsetMd" offset-lg="@options.Container11OffsetLg" offset-xl="@options.Container11OffsetXl"
+				   flex-self-align="@options.Container11FlexSelftAlign" flex-order="@options.Container11FlexOrder">
+			@foreach (var childNode in columnChildNodes) {
+				var nodeComponentName = "";
+				if (childNode != null) {
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</wv-column>
+	}
+	@if (options.VisibleColumns > 11) {
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Container12Id);
+		<wv-column id="@(htmlIdPrefix)@options.Container12Id" span="@options.Container12Span" span-sm="@options.Container12SpanSm" span-md="@options.Container12SpanMd" span-lg="@options.Container12SpanLg" span-xl="@options.Container12SpanXl"
+				   offset="@options.Container12Offset" offset-sm="@options.Container12OffsetSm" offset-md="@options.Container12OffsetMd" offset-lg="@options.Container12OffsetLg" offset-xl="@options.Container12OffsetXl"
+				   flex-self-align="@options.Container12FlexSelftAlign" flex-order="@options.Container12FlexOrder">
+			@foreach (var childNode in columnChildNodes) {
+				var nodeComponentName = "";
+				if (childNode != null) {
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</wv-column>
+	}
+</wv-row>

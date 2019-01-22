@@ -1,0 +1,55 @@
+{
+  "tags": [
+    {
+      "label": "wv-add-post",
+      "description": "",
+      "attributes": []
+    },
+    {
+      "label": "wv-comment",
+      "description": "",
+      "attributes": []
+    },
+    {
+      "label": "wv-post-list",
+      "description": "",
+      "attributes": [
+        {
+          "label": "current-user",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "is-debug",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "posts",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "related-record-id",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "related-records",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "site-root-url",
+          "description": "",
+          "required": false
+        }
+      ]
+    },
+    {
+      "label": "wv-post",
+      "description": "",
+      "attributes": []
+    }
+  ]
+}

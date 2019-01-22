@@ -1,0 +1,1 @@
+export * from '../esm/es5/wv-sitemap-manager.define.js';

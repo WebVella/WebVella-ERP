@@ -1,0 +1,15 @@
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Web.Components;
+@using WebVella.Erp.Web;
+@{
+	var options = (PcHtmlBlock.PcHtmlBlockOptions)ViewBag.Options;
+	var node = (PageBodyNode)ViewBag.Node;
+	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
+}
+<wv-row>
+	<wv-column span="4">
+		<wv-field-datasource page-id="erpRequest.Page.Id" name="html" value="@options.Html" label-text="Html Code"></wv-field-datasource>
+	</wv-column>
+</wv-row>

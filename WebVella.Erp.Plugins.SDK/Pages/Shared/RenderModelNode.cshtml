@@ -1,0 +1,47 @@
+﻿@using Newtonsoft.Json;
+@{
+	var node = (ModelNode)Model.Node;
+	var parentNode =(ModelNode)Model.ParentNode;
+
+	var dataSourceString = "";
+	if (parentNode == null) {
+		dataSourceString = node.PageDataSourceName;
+	}
+	else if (parentNode.Tags.Contains("list")) {
+		dataSourceString = Model.DataSourceString + "[$index]." + node.PageDataSourceName;
+	}
+	else { 
+		dataSourceString = Model.DataSourceString + "." + node.PageDataSourceName;
+	}
+
+	var nodeType = "";
+	if (node.Tags.Contains("system")) {
+		nodeType = "system";
+	}
+	else if (node.Tags.Contains("database")) {
+		nodeType = "database";
+	}
+	else if (node.Tags.Contains("code")) {
+		nodeType = "code";
+	}
+}
+<li class="model-node" data-jstree='{"type":"@nodeType"}' title="Copy insert tag" data-node-type="@nodeType" datasource-id="@node.DataSourceId" 
+	datasource-eql="@node.DataSourceId"
+	page-datasource-id="@node.PageDataSourceId" page-datasource-name="@node.PageDataSourceName" 
+	page-datasource-params="@JsonConvert.SerializeObject(node.Params)">
+	<a href="#" datasource-string="@dataSourceString">
+		@node.PageDataSourceName 
+		<span class="go-gray">(<span class="go-teal">@node.DataType</span>)</span>
+	</a>
+	@if (node.Nodes.Count > 0)
+	{
+		<ul class="model-tree">
+			@{
+				var orderedChildNodes = node.Nodes.OrderBy(x => x.PageDataSourceName).ToList();
+			}
+			@foreach (var childNode in orderedChildNodes) { 
+				@Html.Partial("RenderModelNode", new { Node = childNode, DataSourceString = dataSourceString, ParentNode = node})
+			}
+		</ul>
+	}
+</li>

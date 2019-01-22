@@ -1,0 +1,56 @@
+﻿@page "/sdk/access/user/m/{RecordId}/{PageName?}"
+
+@model WebVella.Erp.Plugins.SDK.Pages.User.ManageModel
+@{
+	Layout = "~/Pages/_AppMaster.cshtml";
+	ViewData["Title"] = "Manage Application";
+
+}
+<wv-page-header color="#dc3545" area-label="Users" title="Manage User"
+				icon-class="ti-user" return-url="@Model.ReturnUrl">
+	<wv-page-header-actions>
+		<wv-button type="Button" size="Small" onclick="ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcForm','submit')" color="Primary" icon-class="fa fa-save go-white" text="Save User"></wv-button>
+		<wv-button type="LinkAsButton" size="Small" href="@Model.ReturnUrl" text="Cancel" color="White"></wv-button>
+	</wv-page-header-actions>
+
+</wv-page-header>
+
+<wv-validation validation="Model.Validation" show-errors="false"></wv-validation>
+
+<wv-form name="ManageRecord" validation="Model.Validation" label-mode="Stacked" mode="Form" autocomplete="false">
+	<wv-section class="mt-4">
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-email label-text="Email" value="@Model.Email" name="Email" required="true"></wv-field-email>
+				<wv-field-text label-text="Username" value="@Model.UserName" name="UserName" required="true"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-image label-text="Image" value="@Model.Image" name="Image" width="80" height="80"></wv-field-image>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-password label-text="Password" value="@Model.Password" name="Password" required="true"></wv-field-password>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-multiselect label-text="Assign roles" value="@Model.Roles" name="Roles" options="Model.RoleOptions"></wv-field-multiselect>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="First Name" value="@Model.FirstName" name="FirstName"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-text label-text="Last Name" value="@Model.LastName" name="LastName"></wv-field-text>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-checkbox label-text="Enabled" value="@Model.Enabled" name="Enabled" text-true="enabled user"></wv-field-checkbox>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-checkbox label-text="Verified" value="@Model.Verified" name="Verified" text-true="verified email"></wv-field-checkbox>
+			</wv-column>
+		</wv-row>
+	</wv-section>
+</wv-form>

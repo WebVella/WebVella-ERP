@@ -1,0 +1,55 @@
+{
+  "tags": [
+    {
+      "label": "wv-datasource-manage",
+      "description": "",
+      "attributes": [
+        {
+          "label": "api-root-url",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "datasource-id",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "page-datasource-id",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "page-datasource-name",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "page-datasource-params",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "show",
+          "description": "",
+          "required": false
+        }
+      ]
+    },
+    {
+      "label": "wv-datasource-param-form",
+      "description": "",
+      "attributes": []
+    },
+    {
+      "label": "wv-datasource-step1",
+      "description": "",
+      "attributes": []
+    },
+    {
+      "label": "wv-datasource-step2",
+      "description": "",
+      "attributes": []
+    }
+  ]
+}

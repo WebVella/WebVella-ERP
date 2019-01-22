@@ -1,0 +1,40 @@
+﻿@using WebVella.Erp.Web.Models;
+@using Newtonsoft.Json;
+@addTagHelper *, WebVella.Erp.Web
+@{
+	var theme = (Theme)ViewBag.Theme;
+	var currentApp = (App)ViewBag.CurrentApp;
+	var pageModel = (BaseErpPageModel)ViewBag.PageModel;
+}
+<!--c:Nav_Default-->
+<div id="nav" class="pl-2 pr-2">
+	<div class="menu-nav-wrapper">
+		<div class="menu-nav">
+			<a href="/" class="pl-2 pr-2">
+				<span class="fas fa-home icon"></span>
+			</a>
+		</div>
+	</div>
+	<vc:site-menu page-model="@pageModel"></vc:site-menu>
+	<div id="brand-logo" class="pl-3 pr-3 ml-2">
+			@if (currentApp == null)
+			{
+				<img src="@theme.BrandLogoText" />
+			}
+			else {
+				<a href="@ViewBag.AppDefaultLink">
+					<img src="@theme.BrandLogo" />
+					<span class="app-label text-uppercase" title="@currentApp.Label">@ViewBag.AppShortName</span>			
+				</a>
+			}
+	</div>
+	<vc:application-menu page-model="@pageModel"></vc:application-menu>
+
+	<div id="nav-right">
+		<vc:user-menu page-model="@pageModel"></vc:user-menu>
+		<vc:search-nav></vc:search-nav>
+		<vc:user-nav></vc:user-nav>
+	</div>
+</div>
+
+@Html.Raw(ViewBag.EmbededJs)

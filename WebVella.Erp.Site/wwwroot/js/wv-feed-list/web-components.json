@@ -1,0 +1,25 @@
+{
+  "tags": [
+    {
+      "label": "wv-feed-list",
+      "description": "",
+      "attributes": [
+        {
+          "label": "is-debug",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "records",
+          "description": "",
+          "required": false
+        }
+      ]
+    },
+    {
+      "label": "wv-feed",
+      "description": "",
+      "attributes": []
+    }
+  ]
+}

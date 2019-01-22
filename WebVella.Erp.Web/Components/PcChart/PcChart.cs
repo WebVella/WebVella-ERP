@@ -1,0 +1,192 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using WebVella.Erp.Exceptions;
+using WebVella.Erp.Web.Models;
+using WebVella.Erp.Web.Services;
+using WebVella.Erp.Web.Utils;
+
+namespace WebVella.Erp.Web.Components
+{
+	[PageComponent(Label = "Chart", Library = "WebVella", Description = "Line,area,pie, doughnut, bar, horizontal bar", Version = "0.0.1", IconClass = "fas fa-chart-pie")]
+	public class PcChart : PageComponent
+	{
+		protected ErpRequestContext ErpRequestContext { get; set; }
+
+		public PcChart([FromServices]ErpRequestContext coreReqCtx)
+		{
+			ErpRequestContext = coreReqCtx;
+		}
+
+		public class PcChartOptions
+		{
+			[JsonProperty(PropertyName = "datasets")]
+			public string Datasets { get; set; } = "";
+
+			[JsonProperty(PropertyName = "labels")]
+			public string Labels { get; set; } = "";
+
+			[JsonProperty(PropertyName = "show_legend")]
+			public bool ShowLegend { get; set; } = false;
+
+			[JsonProperty(PropertyName = "type")]
+			public ErpChartType Type { get; set; } = ErpChartType.Line;
+
+			[JsonProperty(PropertyName = "height")]
+			public string Height { get; set; } = null;
+
+			[JsonProperty(PropertyName = "width")]
+			public string Width { get; set; } = null;
+		}
+
+		public async Task<IViewComponentResult> InvokeAsync(PageComponentContext context)
+		{
+			ErpPage currentPage = null;
+			try
+			{
+				#region << Init >>
+				if (context.Node == null)
+				{
+					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query param 'nid', when requesting this component"));
+				}
+
+				var pageFromModel = context.DataModel.GetProperty("Page");
+				if (pageFromModel == null)
+				{
+					return await Task.FromResult<IViewComponentResult>(Content("Error: PageModel cannot be null"));
+				}
+				else if (pageFromModel is ErpPage)
+				{
+					currentPage = (ErpPage)pageFromModel;
+				}
+				else
+				{
+					return await Task.FromResult<IViewComponentResult>(Content("Error: PageModel does not have Page property or it is not from ErpPage Type"));
+				}
+
+				var options = new PcChartOptions();
+				if (context.Options != null)
+				{
+					options = JsonConvert.DeserializeObject<PcChartOptions>(context.Options.ToString());
+				}
+
+				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
+				#endregion
+
+
+				ViewBag.Options = options;
+				ViewBag.Node = context.Node;
+				ViewBag.ComponentMeta = componentMeta;
+				ViewBag.RequestContext = ErpRequestContext;
+				ViewBag.AppContext = ErpAppContext.Current;
+				ViewBag.ComponentContext = context;
+
+				var theme = new Theme();
+				var colorOptionsList = new List<string>() {theme.TealColor,theme.PinkColor, theme.GreenColor, theme.OrangeColor,theme.RedColor,theme.PurpleColor,theme.DeepPurpleColor,
+					theme.BlueColor, theme.LightBlueColor,theme.CyanColor,theme.GreenColor,theme.IndigoColor,theme.LightGreenColor,theme.LimeColor,theme.YellowColor,
+					theme.AmberColor,theme.DeepOrangeColor};
+
+				var bkgColorOptionsList = new List<string>() {theme.TealLightColor,theme.PinkLightColor, theme.GreenLightColor, theme.OrangeLightColor,theme.RedLightColor,theme.PurpleLightColor,theme.DeepPurpleLightColor,
+					theme.BlueLightColor, theme.LightBlueLightColor,theme.CyanLightColor,theme.GreenLightColor,theme.IndigoLightColor,theme.LightGreenLightColor,theme.LimeLightColor,theme.YellowLightColor,
+					theme.AmberLightColor,theme.DeepOrangeLightColor};
+
+				List<ErpChartDataset> dataSets = context.DataModel.GetPropertyValueByDataSource(options.Datasets) as List<ErpChartDataset> ?? new List<ErpChartDataset>();
+
+				if (dataSets == null || dataSets.Count == 0) {
+					var decimalList = new List<decimal>();
+					decimalList = context.DataModel.GetPropertyValueByDataSource(options.Datasets) as List<decimal> ?? new List<decimal>();
+					if ((dataSets == null || dataSets.Count == 0) && !String.IsNullOrWhiteSpace(options.Datasets) && options.Datasets.Contains(",")){
+						var optionValueCsv = options.Datasets.Split(",");
+						var csvDecimalList = new List<decimal>();
+						var csvParseHasError = false;
+						foreach (var valueString in optionValueCsv)
+						{
+							if (Decimal.TryParse(valueString.Trim(), out decimal outDecimal))
+								csvDecimalList.Add(outDecimal);
+							else
+							{
+								csvParseHasError = true;
+								break;
+							}
+						}
+						if (!csvParseHasError)
+							decimalList = csvDecimalList;
+					}
+
+					if (decimalList != null && decimalList.Count > 0) {
+						var dataSet = new ErpChartDataset();
+						dataSet.Data = decimalList;
+						if (options.Type == ErpChartType.Area || options.Type == ErpChartType.Line)
+						{
+							dataSet.BorderColor = colorOptionsList[0];
+							dataSet.BackgroundColor = bkgColorOptionsList[0];
+						}
+						else
+						{
+							dataSet.BorderColor = new List<string>();
+							dataSet.BackgroundColor = new List<string>();
+							var index = 0;
+							foreach (var value in decimalList)
+							{
+								((List<string>)dataSet.BorderColor).Add(colorOptionsList[index]);
+								if(options.Type == ErpChartType.Bar || options.Type == ErpChartType.HorizontalBar)
+									((List<string>)dataSet.BackgroundColor).Add(bkgColorOptionsList[index]);
+								else
+									((List<string>)dataSet.BackgroundColor).Add(colorOptionsList[index]);
+								index++;
+							}
+						}
+						dataSets.Add(dataSet);
+					}
+				}
+
+				List<string> labels = context.DataModel.GetPropertyValueByDataSource(options.Labels) as List<string> ?? new List<string>();
+				if ((labels == null || labels.Count == 0) && !String.IsNullOrWhiteSpace(options.Labels) && options.Labels.Contains(","))
+				{
+					labels = options.Labels.Split(",").ToList();
+				}
+
+				ViewBag.DataSets = dataSets;
+				ViewBag.Labels = labels;
+				var chartTypeOptions = ModelExtensions.GetEnumAsSelectOptions<ErpChartType>();
+				chartTypeOptions.First(x => x.Value == "4").Label = "area";
+				ViewBag.ChartTypeOptions = chartTypeOptions;
+				ViewBag.ShowLegend = options.ShowLegend;
+				ViewBag.Height = options.Height;
+				ViewBag.Width = options.Width;
+				ViewBag.Type = (ErpChartType)options.Type;
+
+				switch (context.Mode)
+				{
+					case ComponentMode.Display:
+						return await Task.FromResult<IViewComponentResult>(View("Display"));
+					case ComponentMode.Design:
+						return await Task.FromResult<IViewComponentResult>(View("Design"));
+					case ComponentMode.Options:
+						return await Task.FromResult<IViewComponentResult>(View("Options"));
+					case ComponentMode.Help:
+						return await Task.FromResult<IViewComponentResult>(View("Help"));
+					default:
+						ViewBag.ExceptionMessage = "Unknown component mode";
+						ViewBag.Errors = new List<ValidationError>();
+						return await Task.FromResult<IViewComponentResult>(View("Error"));
+				}
+			}
+			catch (ValidationException ex)
+			{
+				ViewBag.ExceptionMessage = ex.Message;
+				ViewBag.Errors = new List<ValidationError>();
+				return await Task.FromResult<IViewComponentResult>(View("Error"));
+			}
+			catch (Exception ex)
+			{
+				ViewBag.ExceptionMessage = ex.Message;
+				ViewBag.Errors = new List<ValidationError>();
+				return await Task.FromResult<IViewComponentResult>(View("Error"));
+			}
+		}
+	}
+}

@@ -1,0 +1,28 @@
+﻿@Html.Raw(ViewBag.GeneralHelpSection)
+
+<h2>Component specific</h2>
+<p>The supported ErpEvent actions by this component are listed bellow.</p>
+<table class="table table-bordered table-sm">
+	<thead>
+		<tr>
+			<th width="240">action</th>
+			<th>description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th><code>open</code> or <code>show</code></th>
+			<td>
+				This action will open the drawer. Ex. <code>@("<script>")ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcDrawer','open')@("</script>")</code>.
+				If there are one or more drawers on the page you need to set the correct <code>htmlId</code> of the drawer's PageComponent <code>@("<script>")ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcDrawer',{htmlId:HTML_ID,action:'open',payload:null})@("</script>")</code>.
+			</td>
+		</tr>
+		<tr>
+			<th><code>close</code> or <code>hide</code></th>
+			<td>
+				This action will close the drawer. Ex. <code>ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcDrawer','close')</code>.
+				If there are one or more drawers on the page you need to set the correct <code>htmlId</code> of the drawer's PageComponent <code>@("<script>")ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcDrawer',{htmlId:HTML_ID,action:'close',payload:null})@("</script>")</code>.
+			</td>
+		</tr>
+	</tbody>
+</table>

@@ -1,0 +1,209 @@
+﻿@using WebVella.Erp.Web.Components;
+@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Web.Utils;
+@using WebVella.Erp.Web;
+@{
+	var options = (PcTabNav.PcTabNavOptions)ViewBag.Options;
+	var node = (PageBodyNode)ViewBag.Node;
+	var htmlIdPrefix = "wv-tab-" + node.Id + "-";
+	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
+	var componentContext = (PageComponentContext)ViewBag.ComponentContext;
+}
+
+
+<ul class="nav nav-pills nav-sm @options.CssClass">
+	@if (options.VisibleTabs > 0)
+	{
+		<li class="nav-item">
+			<a class="nav-link active" data-toggle="tab" href="#@(htmlIdPrefix)@(options.Tab1Id)">@(options.Tab1Label)</a>
+		</li>
+	}
+	@if (options.VisibleTabs > 1)
+	{
+		<li class="nav-item">
+			<a class="nav-link" data-toggle="tab" href="#@(htmlIdPrefix)@(options.Tab2Id)">@(options.Tab2Label)</a>
+		</li>
+	}
+	@if (options.VisibleTabs > 2)
+	{
+		<li class="nav-item">
+			<a class="nav-link" data-toggle="tab" href="#@(htmlIdPrefix)@(options.Tab3Id)">@(options.Tab3Label)</a>
+		</li>
+	}
+	@if (options.VisibleTabs > 3)
+	{
+		<li class="nav-item">
+			<a class="nav-link" data-toggle="tab" href="#@(htmlIdPrefix)@(options.Tab4Id)">@(options.Tab4Label)</a>
+		</li>
+	}
+	@if (options.VisibleTabs > 4)
+	{
+		<li class="nav-item">
+			<a class="nav-link" data-toggle="tab" href="#@(htmlIdPrefix)@(options.Tab5Id)">@(options.Tab5Label)</a>
+		</li>
+	}
+	@if (options.VisibleTabs > 5)
+	{
+		<li class="nav-item">
+			<a class="nav-link" data-toggle="tab" href="#@(htmlIdPrefix)@(options.Tab6Id)">@(options.Tab6Label)</a>
+		</li>
+	}
+	@if (options.VisibleTabs > 6)
+	{
+		<li class="nav-item">
+			<a class="nav-link" data-toggle="tab" href="#@(htmlIdPrefix)@(options.Tab7Id)">@(options.Tab7Label)</a>
+		</li>
+	}
+</ul>
+
+<div class="tab-content @options.BodyCssClass">
+	@if (options.VisibleTabs > 0)
+	{
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Tab1Id);
+		<div class="tab-pane active" id="@(htmlIdPrefix)@(options.Tab1Id)">
+			@foreach (var childNode in columnChildNodes)
+			{
+				var nodeComponentName = "";
+				if (childNode != null)
+				{
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</div>
+	}
+	@if (options.VisibleTabs > 1)
+	{
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Tab2Id);
+		<div class="tab-pane" id="@(htmlIdPrefix)@(options.Tab2Id)">
+			@foreach (var childNode in columnChildNodes)
+			{
+				var nodeComponentName = "";
+				if (childNode != null)
+				{
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</div>
+	}
+	@if (options.VisibleTabs > 2)
+	{
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Tab3Id);
+		<div class="tab-pane" id="@(htmlIdPrefix)@(options.Tab3Id)">
+			@foreach (var childNode in columnChildNodes)
+			{
+				var nodeComponentName = "";
+				if (childNode != null)
+				{
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</div>
+	}
+	@if (options.VisibleTabs > 3)
+	{
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Tab4Id);
+		<div class="tab-pane" id="@(htmlIdPrefix)@(options.Tab4Id)">
+			@foreach (var childNode in columnChildNodes)
+			{
+				var nodeComponentName = "";
+				if (childNode != null)
+				{
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</div>
+	}
+	@if (options.VisibleTabs > 4)
+	{
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Tab5Id);
+		<div class="tab-pane" id="@(htmlIdPrefix)@(options.Tab5Id)">
+			@foreach (var childNode in columnChildNodes)
+			{
+				var nodeComponentName = "";
+				if (childNode != null)
+				{
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</div>
+	}
+	@if (options.VisibleTabs > 5)
+	{
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Tab6Id);
+		<div class="tab-pane" id="@(htmlIdPrefix)@(options.Tab6Id)">
+			@foreach (var childNode in columnChildNodes)
+			{
+				var nodeComponentName = "";
+				if (childNode != null)
+				{
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</div>
+	}
+	@if (options.VisibleTabs > 6)
+	{
+		var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == options.Tab7Id);
+		<div class="tab-pane" id="@(htmlIdPrefix)@(options.Tab7Id)">
+			@foreach (var childNode in columnChildNodes)
+			{
+				var nodeComponentName = "";
+				if (childNode != null)
+				{
+					var nameArray = childNode.ComponentName.Split('.');
+					nodeComponentName = nameArray[nameArray.Length - 1];
+				}
+				if (!String.IsNullOrWhiteSpace(nodeComponentName))
+				{
+					var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+					var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+					@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+				}
+			}
+		</div>
+	}
+</div>
+
+

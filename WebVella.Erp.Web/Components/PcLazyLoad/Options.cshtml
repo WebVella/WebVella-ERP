@@ -1,0 +1,8 @@
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web.Components;
+@{
+	var options = (PcLazyLoad.PcLazyLoadOptions)ViewBag.Options;
+}
+
+<wv-field-number name="scroll_distance" value="@options.ScrollDistance" label-text="Scroll distance"></wv-field-number>

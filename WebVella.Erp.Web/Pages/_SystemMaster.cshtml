@@ -1,0 +1,14 @@
+﻿@using WebVella.Erp
+<!DOCTYPE html>
+<html lang="@ErpSettings.Lang">
+<head>
+	<vc:render-hook placeholder="head-top" page-model="@Model"  model="null"></vc:render-hook>
+	<vc:render-hook placeholder="head-bottom" page-model="@Model"  model="null"></vc:render-hook>
+</head>
+<body class="@ViewData["BodyClass"] system">
+    @RenderBody()
+	<vc:render-hook placeholder="body-top" page-model="@Model"  model="null"></vc:render-hook>
+	<vc:render-hook placeholder="body-bottom" page-model="@Model"  model="null"></vc:render-hook>
+	<vc:screen-message></vc:screen-message>
+</body>
+</html>

@@ -1,0 +1,48 @@
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Web.Components;
+@using WebVella.Erp.Api.Models;
+@{
+	var options = (PcGridFilterField.PcGridFilterFieldOptions)ViewBag.Options;
+	var node = (PageBodyNode)ViewBag.Node;
+	var fieldTypeOptions = (List<SelectOption>)ViewBag.FieldTypeOptions;
+	var filterTypeOptions = (List<SelectOption>)ViewBag.FilterTypeOptions;
+	var selectedQueryOptionsConverted = (List<string>)ViewBag.ConvertedSelectedQueryOptions;
+}
+
+<wv-row>
+	<wv-column span="6">
+		<wv-field-text name="label" value="@options.Label" label-text="Label"></wv-field-text>
+	</wv-column>
+	<wv-column span="6">
+		<wv-field-text name="name" value="@options.Name" label-text="Name">
+			<wv-field-append>
+				<div class="input-group-text">
+					<wv-field-checkbox class="mb-0" name="try_connect_to_entity" value="@options.TryConnectToEntity" text-true="try entity connect" label-mode="Hidden"></wv-field-checkbox>
+				</div>
+			</wv-field-append>
+		</wv-field-text>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="6">
+		<wv-field-select name="field_type" label-text="Field Type" options="fieldTypeOptions" value="@options.FieldType"></wv-field-select>
+	</wv-column>
+	<wv-column span="6">
+		<wv-field-select name="query_type" label-text="Default Query Type" options="filterTypeOptions" value="@options.QueryType"></wv-field-select>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="12">
+		<wv-field-multiselect name="query_options" label-text="Query options" options="filterTypeOptions" value="@selectedQueryOptionsConverted"></wv-field-multiselect>
+	</wv-column>
+	<wv-column span="6">
+
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="6">
+		<wv-field-text name="prefix" value="@options.Prefix" label-text="Prefix"></wv-field-text>
+	</wv-column>
+</wv-row>

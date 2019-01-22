@@ -1,0 +1,14 @@
+export declare function setDrake(payload: any): (dispatch: any) => any;
+export declare function addDrakeContainerId(payload: any): (dispatch: any) => any;
+export declare function setActiveNode(payload: any): (dispatch: any) => any;
+export declare function hoverNode(payload: any): (dispatch: any) => any;
+export declare function hoverContainer(payload: any): (dispatch: any) => any;
+export declare function setNodeCreation(payload: any): (dispatch: any) => any;
+export declare function addNode(payload: any): (dispatch: any) => any;
+export declare function removeNode(payload: any): (dispatch: any) => any;
+export declare function setOptionsModalState(payload: any): (dispatch: any) => any;
+export declare function setHelpModalState(payload: any): (dispatch: any) => any;
+export declare function addReloadNodeIds(payload: any): (dispatch: any) => any;
+export declare function removeReloadNodeIds(payload: any): (dispatch: any) => any;
+export declare function updateNodeOptions(payload: any): (dispatch: any) => any;
+export declare function updatePageNodes(payload: any): (dispatch: any) => any;

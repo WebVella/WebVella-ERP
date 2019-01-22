@@ -1,0 +1,75 @@
+﻿@page "/sdk/objects/entity/r/{RecordId}/{PageName?}"
+
+@model WebVella.Erp.Plugins.SDK.Pages.ErpEntity.DetailsModel
+@{
+	Layout = "~/Pages/_AppMaster.cshtml";
+	ViewData["Title"] = "Entity details";
+}
+
+<wv-page-header color="@Model.ErpEntity.Color" area-label="Entities" title="@Model.ErpEntity.Name" subtitle="Details"
+				icon-class="@Model.ErpEntity.IconName" return-url="@Model.ReturnUrl">
+	<wv-page-header-actions>
+		@foreach (var action in Model.HeaderActions)
+		{
+			@Html.Raw(action)
+		}
+	</wv-page-header-actions>
+
+	<wv-page-header-toolbar>
+		@foreach (var action in Model.HeaderToolbar)
+		{
+			@Html.Raw(action)
+		}
+	</wv-page-header-toolbar>
+</wv-page-header>
+
+<wv-validation validation="Model.Validation" show-errors="false"></wv-validation>
+
+<wv-form label-mode="Stacked" mode="Display">
+	<wv-section class="mt-4">
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="Name" value="@Model.ErpEntity.Name"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-guid label-text="Id" value="@Model.ErpEntity.Id"></wv-field-guid>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="Label" value="@Model.ErpEntity.Label"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-text label-text="Label Plural" value="@Model.ErpEntity.LabelPlural"></wv-field-text>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-color label-text="Color" value="@Model.ErpEntity.Color"></wv-field-color>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-text label-text="IconName" value="@Model.ErpEntity.IconName"></wv-field-text>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="Record Screen Id Field" value="@Model.RecordScreenIdFieldName"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-checkbox label-text="System" text-true="system entity" text-false="not a system entity" value="@Model.ErpEntity.System"></wv-field-checkbox>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="12">
+				<wv-field-checkbox-grid name="RecordPermissions" label-text="Record Permissions" columns="Model.PermissionOptions" rows="Model.RoleOptions" value="@Model.RecordPermissions" text-true="granted" text-false="not granted"></wv-field-checkbox-grid>
+			</wv-column>
+		</wv-row>
+	</wv-section>
+</wv-form>
+
+
+
+@if (!Model.ErpEntity.System)
+{
+	<wv-form name="DeleteRecord" id="DeleteRecord"></wv-form>
+}

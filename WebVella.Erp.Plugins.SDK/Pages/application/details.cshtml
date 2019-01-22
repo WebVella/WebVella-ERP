@@ -1,0 +1,65 @@
+﻿@page "/sdk/objects/application/r/{RecordId}/{PageName?}"
+@using System.Web;
+@model WebVella.Erp.Plugins.SDK.Pages.Application.DetailsModel
+@{
+	Layout = "~/Pages/_AppMaster.cshtml";
+	ViewData["Title"] = "Application details";
+}
+<wv-page-header color="@Model.App.Color" area-label="Applications" title="@Model.App.Label" subtitle="Details"
+	icon-class="@Model.App.IconClass" return-url="@Model.ReturnUrl">
+	<wv-page-header-actions>
+		<button type="button" onclick='ErpEvent.DISPATCH("WebVella.Erp.Web.Components.PcForm",{htmlId:"DeleteRecord",action:"submit",payload:null})' class="btn btn-white btn-sm"><i class="ti-trash go-red"></i> Delete App</button>
+		<a href="/sdk/objects/application/m/@(Model.App != null ? Model.App.Id : Guid.Empty)/manage?returnUrl=@(HttpUtility.UrlEncode(Model.CurrentUrl))" class="btn btn-white btn-sm">
+			<i class="ti-settings go-orange"></i> Manage
+		</a>
+	</wv-page-header-actions>
+	<wv-page-header-toolbar>
+		@foreach (var item in Model.LocalNav)
+		{
+			@Html.Raw(item)
+		}
+	</wv-page-header-toolbar>
+</wv-page-header>
+
+<wv-validation validation="Model.Validation" show-errors="false"></wv-validation>
+
+<wv-form label-mode="Stacked" mode="Display" id="RecordDetails">
+	<wv-section class="mt-4">
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="Name" value="@Model.Name" name="Name" required="true"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-text label-text="Label" value="@Model.Label" name="Label" required="true"></wv-field-text>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="Icon CSS Class" value="@Model.IconClass" name="IconClass"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-color label-text="Color" value="@Model.Color" name="Color"></wv-field-color>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="Author" value="@Model.Author" name="Author"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-number label-text="Weight" decimal-digits="0" value="@Model.Weight" name="Weight"></wv-field-number>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column>
+				<wv-field-textarea label-text="Description" value="@Model.Description" name="Description"></wv-field-textarea>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column>
+				<wv-field-multiselect label-text="Access" value="@Model.Access" name="Access" options="Model.RoleOptions"></wv-field-multiselect>
+			</wv-column>
+		</wv-row>
+	</wv-section>
+</wv-form>
+
+<wv-form name="DeleteRecord" id="DeleteRecord"></wv-form>

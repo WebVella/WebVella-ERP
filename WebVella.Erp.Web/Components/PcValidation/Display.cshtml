@@ -1,0 +1,12 @@
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web;
+@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Exceptions;
+@using WebVella.Erp.Web.Components;
+@{
+	var options = (PcValidation.PcValidationOptions)ViewBag.Options;
+	var node = (PageBodyNode)ViewBag.Node;
+	var validation = (ValidationException)ViewBag.Validation;
+}
+<wv-validation show-errors="true" validation="@validation"></wv-validation>

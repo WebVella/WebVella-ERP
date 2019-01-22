@@ -1,0 +1,99 @@
+﻿@using WebVella.Erp.Web.Components;
+@using WebVella.Erp.Web.Models;
+@{
+	var options = (PcTabNav.PcTabNavOptions)ViewBag.Options;
+	var node = (PageBodyNode)ViewBag.Node;
+	var htmlIdPrefix = "wv-tab-" + node.Id + "-";
+}
+
+
+<ul class="nav nav-pills nav-sm @options.CssClass p-2">
+	@if (options.VisibleTabs > 0)
+	{
+		<li class="nav-item">
+			<a class="nav-link active" href="#@(htmlIdPrefix)@(options.Tab1Id)">@(options.Tab1Label)</a>
+		</li>
+	}
+	@if (options.VisibleTabs > 1)
+	{
+		<li class="nav-item">
+			<a class="nav-link" href="#@(htmlIdPrefix)@(options.Tab2Id)">@(options.Tab2Label)</a>
+		</li>
+	}
+	@if (options.VisibleTabs > 2)
+	{
+		<li class="nav-item">
+			<a class="nav-link" href="#@(htmlIdPrefix)@(options.Tab3Id)">@(options.Tab3Label)</a>
+		</li>
+	}
+	@if (options.VisibleTabs > 3)
+	{
+		<li class="nav-item">
+			<a class="nav-link" href="#@(htmlIdPrefix)@(options.Tab4Id)">@(options.Tab4Label)</a>
+		</li>
+	}
+	@if (options.VisibleTabs > 4)
+	{
+		<li class="nav-item">
+			<a class="nav-link" href="#@(htmlIdPrefix)@(options.Tab5Id)">@(options.Tab5Label)</a>
+		</li>
+	}
+	@if (options.VisibleTabs > 5)
+	{
+		<li class="nav-item">
+			<a class="nav-link" href="#@(htmlIdPrefix)@(options.Tab6Id)">@(options.Tab6Label)</a>
+		</li>
+	}
+	@if (options.VisibleTabs > 6)
+	{
+		<li class="nav-item">
+			<a class="nav-link" href="#@(htmlIdPrefix)@(options.Tab7Id)">@(options.Tab7Label)</a>
+		</li>
+	}
+</ul>
+
+<div class="tab-content @options.BodyCssClass">
+	@if (options.VisibleTabs > 0)
+	{
+		<div class="tab-pane active" id="@(htmlIdPrefix)@(options.Tab1Id)">
+			<wv-pb-node-container parent-node-id="@node.Id" container-id="@(options.Tab1Id)"></wv-pb-node-container>
+		</div>
+	}
+	@if (options.VisibleTabs > 1)
+	{
+		<div class="tab-pane" id="@(htmlIdPrefix)@(options.Tab2Id)">
+			<wv-pb-node-container parent-node-id="@node.Id" container-id="@(options.Tab2Id)"></wv-pb-node-container>
+		</div>
+	}
+	@if (options.VisibleTabs > 2)
+	{
+		<div class="tab-pane" id="@(htmlIdPrefix)@(options.Tab3Id)">
+			<wv-pb-node-container parent-node-id="@node.Id" container-id="@(options.Tab3Id)"></wv-pb-node-container>
+		</div>
+	}
+	@if (options.VisibleTabs > 3)
+	{
+		<div class="tab-pane" id="@(htmlIdPrefix)@(options.Tab4Id)">
+			<wv-pb-node-container parent-node-id="@node.Id" container-id="@(options.Tab4Id)"></wv-pb-node-container>
+		</div>
+	}
+	@if (options.VisibleTabs > 4)
+	{
+		<div class="tab-pane" id="@(htmlIdPrefix)@(options.Tab5Id)">
+			<wv-pb-node-container parent-node-id="@node.Id" container-id="@(options.Tab5Id)"></wv-pb-node-container>
+		</div>
+	}
+	@if (options.VisibleTabs > 5)
+	{
+		<div class="tab-pane" id="@(htmlIdPrefix)@(options.Tab6Id)">
+			<wv-pb-node-container parent-node-id="@node.Id" container-id="@(options.Tab6Id)"></wv-pb-node-container>
+		</div>
+	}
+	@if (options.VisibleTabs > 6)
+	{
+		<div class="tab-pane" id="@(htmlIdPrefix)@(options.Tab7Id)">
+			<wv-pb-node-container parent-node-id="@node.Id" container-id="@(options.Tab7Id)"></wv-pb-node-container>
+		</div>
+	}
+</div>
+

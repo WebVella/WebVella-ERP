@@ -1,0 +1,105 @@
+﻿@page
+@model WebVella.Erp.Web.Pages.JsAdminModel
+@using System.Collections.Generic;
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" ng-app="wvApp" ng-controller="ApplicationController as appData">
+<head>
+    <meta charset="utf-8" />
+    <meta name="referrer" content="origin" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title ng-bind="appData.pageTitle"></title>
+    <!-- library > css -->
+    @foreach (var cssFile in Model.LibraryCssFileList)
+    {
+        <link href="@cssFile" rel="stylesheet" />
+    }
+    <!-- module > css -->
+    @foreach (var cssFile in Model.ModuleCssFileList)
+    {
+        <link href="@cssFile" rel="stylesheet" />
+    }
+</head>
+<body class="theme-{{appData.bodyColor}} @Model.DevCssClass" ng-cloak ng-class="{'mini-sidebar':appData.$storage.isMiniSidebar}">
+    <toast></toast>
+
+    <div ui-view="rootView"></div>
+
+    <!-- library > js -->
+    @foreach (var jsFile in Model.LibraryJsFileList)
+    {
+        <script src="@jsFile"></script>
+    }
+
+    @* Core Application module definition *@
+    <script>
+        @*In order to dynamically add plug-in modules, the appCore definition should be with server side aspect*@
+		(function () {
+			'use strict';
+			angular
+                .module('wvApp', [
+                    // Angular modules
+                    'ngAnimate', 'ngCookies', 'ngSanitize', //'ngTouch'
+                     // 3rd Party Modules
+                    'ui.router', 'ngMessages','ngToast', 'xeditable', 'ui.bootstrap', 'as.sortable', 'checklist-model','ui.tree',
+					'ngCkeditor', 'ngFileUpload', 'ngStorage', 'ui.bootstrap.datetimepicker','RecursionHelper','angular-loading-bar',
+					'doubleScrollBars','angular-bind-html-compile','oc.lazyLoad','ui.ace','pascalprecht.translate',
+                    //Plug-in app injects
+					@foreach(var appInjection in Model.AppDependencyInjections)
+					{
+					@:"@appInjection",
+					}
+
+                ])
+                .config(config)
+                .run(run);
+
+			// Configuration ///////////////////////////////////
+			config.$inject = ['$httpProvider', '$urlRouterProvider', '$logProvider', 'wvAppConstants', 'ngToastProvider'];
+			function config($httpProvider,$urlRouterProvider, $logProvider, wvAppConstants, ngToastProvider) {
+
+				//$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+
+				$urlRouterProvider.otherwise('/login');
+				$httpProvider.useApplyAsync("true");
+				$logProvider.debugEnabled(wvAppConstants.debugEnabled);
+				moment.locale('@Model.Lang');
+				ngToastProvider.configure({
+					animation: 'fade',
+					horizontalPosition: 'center',
+					timeout: 2000,
+					maxNumber: 1
+				});
+			};
+
+			// Run //////////////////////////////////////
+			run.$inject = ['editableOptions', 'editableThemes'];
+			function run(editableOptions, editableThemes) { editableOptions.theme = 'bs3'; editableThemes.bs3.buttonsClass = 'btn-sm'; };
+		})();
+    </script>
+    <script src="/jsadmin/application.controller.js?v=@Model.CacheBreaker"></script>
+    <script src="/jsadmin/application.constants.js?v=@Model.CacheBreaker"></script>
+
+    <!-- Server generated global variables -->
+    <script>
+		var htmlCacheBreaker = @Model.CacheBreaker;
+		var GlobalLanguage = '@Model.Lang';
+		var GlobalCompanyName = '@Model.CompanyName';
+		var GlobalCompanyLogo = '@Model.CompanyLogo';
+    </script>
+    <script src="@Model.LanguageFile"></script>
+
+    <!-- module > js -->
+    @foreach (var jsFile in Model.ModuleJsFileList)
+    {
+        <script src="@jsFile"></script>
+    }
+
+</body>
+
+
+
+</html>
