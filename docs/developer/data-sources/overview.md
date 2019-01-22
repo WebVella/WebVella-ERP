@@ -13,4 +13,4 @@ There are two types of datasources - database and code. Code datasources can be 
 
 ##### Step 2: Select from the Objects top menu -> Data sources
 
-![Data source List](doc-images/sdk-datasource-list.png)
+![Data source List](/doc-images/sdk-datasource-list.png)

@@ -67,10 +67,10 @@ If successful, this method returns a response JSON with the following structure:
 
 ##### Step 2: Select from the Objects top menu -> Entities
 
-![Entity list](doc-images/sdk-entity-list.png)
+![Entity list](/doc-images/sdk-entity-list.png)
 
 ##### Step 3: Press the "Create Entity" button on the top right corner
 
-![Entity list](doc-images/sdk-entity-create.png)
+![Entity list](/doc-images/sdk-entity-create.png)
 
 ##### Step 4: Press the green "Create Entity" button

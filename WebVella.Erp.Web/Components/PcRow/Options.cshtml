@@ -2,6 +2,7 @@
 @addTagHelper *, WebVella.Erp.Web
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Api.Models;
+@using WebVella.Erp.Web.Models;
 @{
 	var options = (PcRow.PcRowOptions)ViewBag.Options;
 	var flexSelfAlignTypeOptions = (List<SelectOption>)ViewBag.FlexSelfAlignTypeOptions;
@@ -43,7 +44,7 @@
 	var containerOffsetMd = (int?)options.GetType().GetProperty($"Container{i}OffsetMd").GetValue(options, null);
 	var containerOffsetLg = (int?)options.GetType().GetProperty($"Container{i}OffsetLg").GetValue(options, null);
 	var containerOffsetXl = (int?)options.GetType().GetProperty($"Container{i}OffsetXl").GetValue(options, null);
-	var containerFlexSelftAlign = (options.GetType().GetProperty($"Container{i}FlexSelftAlign").GetValue(options, null) ?? "").ToString();
+	var containerFlexSelftAlign = options.GetType().GetProperty($"Container{i}FlexSelftAlign").GetValue(options, null) ?? FlexSelfAlignType.None;
 	var containerFlexOrder = (int?)options.GetType().GetProperty($"Container{i}FlexOrder").GetValue(options, null);
 
 	<wv-section id="@containerId" title="@($"Column {i}")" class="mt-3 @(options.VisibleColumns > (i-1) ? "" : "d-none")" title-tag="h5" is-collapsable="true">
@@ -96,7 +97,7 @@
 
 		<wv-row>
 			<wv-column span="4">
-				<wv-field-select name="@($"container{i}_flex_selft_align")" value="@containerFlexSelftAlign" label-text="Flex Self Alignment" options="flexSelfAlignTypeOptions"></wv-field-select>
+				<wv-field-select name="@($"container{i}_flex_self_align")" value="@containerFlexSelftAlign" label-text="Flex Self Alignment" options="flexSelfAlignTypeOptions"></wv-field-select>
 			</wv-column>
 			<wv-column span="4">
 				<wv-field-number name="@($"container{i}_flex_order")" min="1" max="12" value="@containerFlexOrder" label-text="Flex Order"></wv-field-number>

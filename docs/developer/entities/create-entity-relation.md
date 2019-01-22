@@ -66,6 +66,6 @@ If successful, this method returns a response JSON with the following structure:
 
 ##### Step 5: Press the "Create Relation" button
 
-![Field Create](doc-images/sdk-entity-relation-create.png)
+![Field Create](/doc-images/sdk-entity-relation-create.png)
 
 ##### Step 6: Press the "Create Relation" button

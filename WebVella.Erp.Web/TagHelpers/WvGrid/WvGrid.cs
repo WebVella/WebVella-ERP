@@ -407,6 +407,7 @@ namespace WebVella.Erp.Web.TagHelpers
 			context.Items["QueryStringSortBy"] = QueryStringSortBy;
 			context.Items["QueryStringSortOrder"] = QueryStringSortOrder;
 			context.Items["QueryStringPage"] = QueryStringPage;
+			context.Items["HasThead"] = HasThead;
 
 			if (!String.IsNullOrWhiteSpace(Prefix))
 			{

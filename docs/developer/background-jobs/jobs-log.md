@@ -5,8 +5,8 @@ You can review the list of all subscribed schedule plans as well as the already 
 
 ## Registered Schedule plans
 
-![schedule plans](doc-images/sdk-schedule-plans.png)
+![schedule plans](/doc-images/sdk-schedule-plans.png)
 
 ## Scheduled Background jobs
 
-![background jobs](doc-images/sdk-background-jobs.png)
+![background jobs](/doc-images/sdk-background-jobs.png)

@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Components\PcReportAccountMonthlyTimelogs\service.js" />
     <None Remove="Components\PcFeedList\service.js" />
     <None Remove="Components\PcProjectWidgetTasksPriority\service.js" />
     <None Remove="Components\PcProjectWidgetTasksDueToday\service.js" />
@@ -19,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Components\PcReportAccountMonthlyTimelogs\service.js" />
     <EmbeddedResource Include="Components\PcFeedList\service.js" />
     <EmbeddedResource Include="Components\PcProjectWidgetTasksPriority\service.js" />
     <EmbeddedResource Include="Components\PcProjectWidgetTasksDueToday\service.js" />

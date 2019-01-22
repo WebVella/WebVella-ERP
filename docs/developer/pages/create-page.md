@@ -11,10 +11,10 @@
 
 ##### Step 2: Select from the Objects top menu -> Pages
 
-![Page list](doc-images/sdk-page-list.png)
+![Page list](/doc-images/sdk-page-list.png)
 
 ##### Step 3: Press the "Create Page" button on the top right corner
 
-![Page create](doc-images/sdk-page-create.png)
+![Page create](/doc-images/sdk-page-create.png)
 
 ##### Step 4: Press the green "Create Page" button

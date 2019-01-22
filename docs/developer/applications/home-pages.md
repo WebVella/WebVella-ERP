@@ -9,12 +9,12 @@ To review their list you need to:
 
 ##### Step 2: Select from the Objects top menu -> Applications
 
-![Application list](doc-images/sdk-application-list.png)
+![Application list](/doc-images/sdk-application-list.png)
 
 ##### Step 3: Open the application management screen by pressing on a the view button
 
 ##### Step 4: Click on the "Home Pages" tab menu
 
-![Application home pages](doc-images/sdk-application-home-pages.png)
+![Application home pages](/doc-images/sdk-application-home-pages.png)
 
 

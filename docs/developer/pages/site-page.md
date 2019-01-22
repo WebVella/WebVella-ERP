@@ -5,4 +5,4 @@ A site page is a general page that is not related to any application. Often used
 
 All site pages are sorted based on their sort weight and presented in a dropdown menu as presented on the next image.
 
-![sdk site page shortcut](doc-images/sdk-site-shortcut.png)
+![sdk site page shortcut](/doc-images/sdk-site-shortcut.png)

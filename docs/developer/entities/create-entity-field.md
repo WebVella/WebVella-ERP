@@ -79,6 +79,6 @@ If successful, this method returns a response JSON with the following structure:
 
 ##### Step 6: Select the field type you need to create
 
-![Field Create](doc-images/sdk-entity-field-create.png)
+![Field Create](/doc-images/sdk-entity-field-create.png)
 
 ##### Step 6: Press the "Create Field" button
