@@ -10,12 +10,12 @@
 		"EnableFileSystemStorage": "false",
 		"FileSystemStorageFolder": "\\\\192.168.0.2\\Share\\erp3-files",
 		"EmailEnabled": false,
-		"EmailSMTPServerName": "mail.webvella.com",
+		"EmailSMTPServerName": "",
 		"EmailSMTPPort": "25",
 		"EmailSMTPUsername": "",
 		"EmailSMTPPassword": "",
-		"EmailFrom": "all@webvella.com",
-		"EmailTo": "rumen@webvella.com, goro@webvella.com, todor@webvella.com"
+		"EmailFrom": "",
+		"EmailTo": ""
 	},
 	"Development": {
 		"TestEntityName": "test",
