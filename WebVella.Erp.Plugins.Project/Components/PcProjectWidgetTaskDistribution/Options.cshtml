@@ -1,0 +1,15 @@
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web;
+@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Plugins.Project.Components;
+@{
+	var options = (PcProjectWidgetTaskDistribution.PcProjectWidgetTaskDistributionOptions)ViewBag.Options;
+	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
+}
+<wv-row>
+	<wv-column span="6">
+		<wv-field-datasource name="project_id" value="@options.ProjectId" label-text="Project Id" page-id="erpRequest.Page.Id"></wv-field-datasource>
+	</wv-column>
+</wv-row>
+

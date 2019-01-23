@@ -21,7 +21,7 @@ export class WvComment {
             }
         };
         let siteRoot = storeState.siteRootUrl;
-        let requestUrl = siteRoot + "/api/v3.0/p/next/pc-post-list/delete";
+        let requestUrl = siteRoot + "/api/v3.0/p/project/pc-post-list/delete";
         let requestBody = new Object();
         requestBody["id"] = scope.comment["id"];
         axios.post(requestUrl, requestBody, requestConfig)

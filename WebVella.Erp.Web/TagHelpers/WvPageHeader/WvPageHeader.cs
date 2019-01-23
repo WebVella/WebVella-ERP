@@ -164,7 +164,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				metaSubLabelTextEl.AddCssClass("page-switch");
 				metaSubLabelTextEl.AddCssClass("dropdown-toggle");
 				metaSubLabelTextEl.Attributes.Add("data-toggle", "dropdown");
-				metaSubLabelTextEl.Attributes.Add("href", "javascript:void(0)");
+				metaSubLabelTextEl.Attributes.Add("href", "#");
 				metaSubLabelTextEl.InnerHtml.AppendHtml("switch");
 				switchDropdownEl.InnerHtml.AppendHtml(metaSubLabelTextEl);
 

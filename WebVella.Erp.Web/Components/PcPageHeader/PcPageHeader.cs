@@ -126,16 +126,16 @@ namespace WebVella.Erp.Web.Components
 				if (instanceOptions.ShowPageSwitch && currentPage != null && currentPage.Type == PageType.Site)
 				{
 					var allPages = new PageService().GetAll();
-					switchItemPages = allPages.FindAll(x => x.Type == currentPage.Type).ToList();
+					switchItemPages = allPages.FindAll(x => x.Weight > 0 && x.Type == currentPage.Type).ToList();
 				}
 				else if (instanceOptions.ShowPageSwitch && currentPage != null && currentPage.AppId != null && currentPage.Type == PageType.Application)
 				{
 					var allPages = new PageService().GetAll();
-					switchItemPages = allPages.FindAll(x => x.Type == currentPage.Type && x.AppId == currentApp.Id && x.NodeId == currentPage.NodeId).ToList();
+					switchItemPages = allPages.FindAll(x => x.Weight > 0 && x.Type == currentPage.Type && x.AppId == currentApp.Id && x.NodeId == currentPage.NodeId).ToList();
 				}
 				if (instanceOptions.ShowPageSwitch && currentPage != null && currentSitemapNode != null) {
 					var allPages = new PageService().GetAll();
-					var sameTypePages = allPages.FindAll(x => x.Type == currentPage.Type).ToList();
+					var sameTypePages = allPages.FindAll(x => x.Weight > 0 && x.Type == currentPage.Type).ToList();
 					foreach (var page in sameTypePages)
 					{
 						if (page.NodeId == context.Node.Id)
@@ -202,12 +202,12 @@ namespace WebVella.Erp.Web.Components
 						currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/r/{ErpRequestContext.ParentRecordId}/rl/{ErpRequestContext.RelationId}/r/{ErpRequestContext.RecordId}/[[pageName]]";
 					}
 					//Record list page, No relation
-					else if (currentPage.Type == PageType.RecordDetails && parentEntity == null)
+					else if (currentPage.Type == PageType.RecordList && parentEntity == null)
 					{
 						currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/l/[[pageName]]";
 					}
 					//Record list page, With relation
-					else if (currentPage.Type == PageType.RecordDetails && parentEntity != null)
+					else if (currentPage.Type == PageType.RecordList && parentEntity != null)
 					{
 						currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/r/{ErpRequestContext.ParentRecordId}/rl/{ErpRequestContext.RelationId}/l/[[pageName]]";
 					}

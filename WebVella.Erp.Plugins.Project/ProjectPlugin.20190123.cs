@@ -1738,7 +1738,7 @@ namespace WebVella.Erp.Plugins.Project
 				Guid? parentId = new Guid("ae930e6f-38b5-4c48-a17f-63b0bdf7dab6");
 				Guid? nodeId = null;
 				var pageId = new Guid("33f2cd33-cf38-4247-9097-75f895d1ef7a");
-				var componentName = "WebVella.Erp.Plugins.Next.Components.PcProjectWidgetTimesheet";
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcProjectWidgetTimesheet";
 				var containerId = "body";
 				var options = @"""{}""";
 				var weight = 1;
@@ -1943,7 +1943,7 @@ namespace WebVella.Erp.Plugins.Project
 				Guid? parentId = new Guid("47303562-04a3-4935-b228-aaa61527f963");
 				Guid? nodeId = null;
 				var pageId = new Guid("33f2cd33-cf38-4247-9097-75f895d1ef7a");
-				var componentName = "WebVella.Erp.Plugins.Next.Components.PcProjectWidgetTasks";
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcProjectWidgetTasks";
 				var containerId = "body";
 				var options = @"{
   ""project_id"": """",
@@ -1986,7 +1986,7 @@ namespace WebVella.Erp.Plugins.Project
 				Guid? parentId = new Guid("be907fa3-0971-45b5-9dcf-fabbb277fe54");
 				Guid? nodeId = null;
 				var pageId = new Guid("33f2cd33-cf38-4247-9097-75f895d1ef7a");
-				var componentName = "WebVella.Erp.Plugins.Next.Components.PcProjectWidgetTasksPriority";
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcProjectWidgetTasksPriority";
 				var containerId = "body";
 				var options = @"{
   ""project_id"": """",
@@ -2227,7 +2227,7 @@ namespace WebVella.Erp.Plugins.Project
 				Guid? parentId = new Guid("e49cf2f9-82b0-4988-aa29-427e8d9501d9");
 				Guid? nodeId = null;
 				var pageId = new Guid("33f2cd33-cf38-4247-9097-75f895d1ef7a");
-				var componentName = "WebVella.Erp.Plugins.Next.Components.PcProjectWidgetTimesheet";
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcProjectWidgetTimesheet";
 				var containerId = "body";
 				var options = @"{
   ""project_id"": """",
@@ -3985,7 +3985,7 @@ namespace WebVella.Erp.Plugins.Project
 				Guid? parentId = null;
 				Guid? nodeId = null;
 				var pageId = new Guid("d23be591-dbb5-4795-86e4-8adbd9aff08b");
-				var componentName = "WebVella.Erp.Plugins.Next.Components.PcReportAccountMonthlyTimelogs";
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcReportAccountMonthlyTimelogs";
 				var containerId = "";
 				var options = @"{
   ""year"": ""{\""type\"":\""0\"",\""string\"":\""RequestQuery.year\"",\""default\"":\""\""}"",
@@ -5579,7 +5579,7 @@ namespace WebVella.Erp.Plugins.Project
 				Guid? parentId = new Guid("164261ae-2df4-409a-8fdd-adc85c86a6dc");
 				Guid? nodeId = null;
 				var pageId = new Guid("3a40b8e6-0a87-4eee-9b6b-6c665ebee28c");
-				var componentName = "WebVella.Erp.Plugins.Next.Components.PcFeedList";
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcFeedList";
 				var containerId = "tab2";
 				var options = @"{
   ""records"": ""{\""type\"":\""0\"",\""string\"":\""FeedItemsForRecordId\"",\""default\"":\""\""}""
@@ -5596,7 +5596,7 @@ namespace WebVella.Erp.Plugins.Project
 				Guid? parentId = new Guid("164261ae-2df4-409a-8fdd-adc85c86a6dc");
 				Guid? nodeId = null;
 				var pageId = new Guid("3a40b8e6-0a87-4eee-9b6b-6c665ebee28c");
-				var componentName = "WebVella.Erp.Plugins.Next.Components.PcTimelogList";
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcTimelogList";
 				var containerId = "tab3";
 				var options = @"{
   ""records"": ""{\""type\"":\""0\"",\""string\"":\""TimeLogsForRecordId\"",\""default\"":\""\""}""
@@ -5613,7 +5613,7 @@ namespace WebVella.Erp.Plugins.Project
 				Guid? parentId = new Guid("164261ae-2df4-409a-8fdd-adc85c86a6dc");
 				Guid? nodeId = null;
 				var pageId = new Guid("3a40b8e6-0a87-4eee-9b6b-6c665ebee28c");
-				var componentName = "WebVella.Erp.Plugins.Next.Components.PcPostList";
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcPostList";
 				var containerId = "tab1";
 				var options = @"{
   ""records"": ""{\""type\"":\""0\"",\""string\"":\""CommentsForRecordId\"",\""default\"":\""\""}"",
@@ -7044,7 +7044,7 @@ namespace WebVella.Erp.Plugins.Project
 				Guid? parentId = null;
 				Guid? nodeId = null;
 				var pageId = new Guid("acb76466-32b8-428c-81cb-47b6013879e7");
-				var componentName = "WebVella.Erp.Plugins.Next.Components.PcFeedList";
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcFeedList";
 				var containerId = "";
 				var options = @"{
   ""records"": ""{\""type\"":\""0\"",\""string\"":\""FeedItemsForRecordId\"",\""default\"":\""\""}""
@@ -8218,7 +8218,7 @@ namespace WebVella.Erp.Plugins.Project
 				Guid? parentId = new Guid("66828292-07c7-4cc1-9060-a92798d6b95a");
 				Guid? nodeId = null;
 				var pageId = new Guid("50e4e84d-4148-4635-8372-4f2262747668");
-				var componentName = "WebVella.Erp.Plugins.Next.Components.PcProjectWidgetTimesheet";
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcProjectWidgetTimesheet";
 				var containerId = "body";
 				var options = @"{
   ""project_id"": ""{\""type\"":\""0\"",\""string\"":\""Record.id\"",\""default\"":\""\""}""
@@ -8425,7 +8425,7 @@ namespace WebVella.Erp.Plugins.Project
 				Guid? parentId = new Guid("a94793d2-492a-4b7e-9fac-199f8bf46f46");
 				Guid? nodeId = null;
 				var pageId = new Guid("50e4e84d-4148-4635-8372-4f2262747668");
-				var componentName = "WebVella.Erp.Plugins.Next.Components.PcProjectWidgetTasks";
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcProjectWidgetTasks";
 				var containerId = "body";
 				var options = @"{
   ""project_id"": ""{\""type\"":\""0\"",\""string\"":\""Record.id\"",\""default\"":\""\""}""
@@ -8467,7 +8467,7 @@ namespace WebVella.Erp.Plugins.Project
 				Guid? parentId = new Guid("5466f4d1-20a5-4808-8bb5-aefaac756347");
 				Guid? nodeId = null;
 				var pageId = new Guid("50e4e84d-4148-4635-8372-4f2262747668");
-				var componentName = "WebVella.Erp.Plugins.Next.Components.PcProjectWidgetBudget";
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcProjectWidgetBudget";
 				var containerId = "body";
 				var options = @"{
   ""project_id"": ""{\""type\"":\""0\"",\""string\"":\""Record.id\"",\""default\"":\""\""}""
@@ -8509,7 +8509,7 @@ namespace WebVella.Erp.Plugins.Project
 				Guid? parentId = new Guid("734e7201-a15e-4ae5-8ea9-b683a94f80d0");
 				Guid? nodeId = null;
 				var pageId = new Guid("50e4e84d-4148-4635-8372-4f2262747668");
-				var componentName = "WebVella.Erp.Plugins.Next.Components.PcProjectWidgetTasksDueToday";
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcProjectWidgetTasksDueToday";
 				var containerId = "body";
 				var options = @"{
   ""project_id"": ""{\""type\"":\""0\"",\""string\"":\""Record.id\"",\""default\"":\""\""}""
@@ -8551,7 +8551,7 @@ namespace WebVella.Erp.Plugins.Project
 				Guid? parentId = new Guid("f1c53374-0efb-4612-ab94-68e8e8242ddb");
 				Guid? nodeId = null;
 				var pageId = new Guid("50e4e84d-4148-4635-8372-4f2262747668");
-				var componentName = "WebVella.Erp.Plugins.Next.Components.PcProjectWidgetTaskDistribution";
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcProjectWidgetTaskDistribution";
 				var containerId = "body";
 				var options = @"{
   ""project_id"": ""{\""type\"":\""0\"",\""string\"":\""Record.id\"",\""default\"":\""\""}""
@@ -8593,7 +8593,7 @@ namespace WebVella.Erp.Plugins.Project
 				Guid? parentId = new Guid("39fa86aa-3d7a-49af-bfa9-30f1c03671eb");
 				Guid? nodeId = null;
 				var pageId = new Guid("50e4e84d-4148-4635-8372-4f2262747668");
-				var componentName = "WebVella.Erp.Plugins.Next.Components.PcProjectWidgetOverdueTasks";
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcProjectWidgetOverdueTasks";
 				var containerId = "body";
 				var options = @"{
   ""project_id"": ""{\""type\"":\""0\"",\""string\"":\""Record.id\"",\""default\"":\""\""}""
@@ -8804,7 +8804,7 @@ namespace WebVella.Erp.Plugins.Project
 				Guid? parentId = null;
 				Guid? nodeId = null;
 				var pageId = new Guid("dfe56667-174d-492d-8f84-b8ab8b70c63f");
-				var componentName = "WebVella.Erp.Plugins.Next.Components.PcFeedList";
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcFeedList";
 				var containerId = "";
 				var options = @"{
   ""records"": ""{\""type\"":\""0\"",\""string\"":\""FeedItemsForRecordId\"",\""default\"":\""\""}""

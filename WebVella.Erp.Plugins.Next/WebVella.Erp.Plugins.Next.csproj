@@ -5,36 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Components\PcReportAccountMonthlyTimelogs\service.js" />
-    <None Remove="Components\PcFeedList\service.js" />
-    <None Remove="Components\PcProjectWidgetTasksPriority\service.js" />
-    <None Remove="Components\PcProjectWidgetTasksDueToday\service.js" />
-    <None Remove="Components\PcProjectWidgetTimesheet\service.js" />
-    <None Remove="Components\PcProjectWidgetTaskDistribution\service.js" />
-    <None Remove="Components\PcProjectWidgetOverdueTasks\service.js" />
-    <None Remove="Components\PcProjectWidgetTasks\service.js" />
-    <None Remove="Components\PcProjectWidgetBudget\service.js" />
-    <None Remove="Components\PcTimelogList\service.js" />
-    <None Remove="Components\PcPostList\service.js" />
-    <None Remove="Theme\styles.css" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Components\PcReportAccountMonthlyTimelogs\service.js" />
-    <EmbeddedResource Include="Components\PcFeedList\service.js" />
-    <EmbeddedResource Include="Components\PcProjectWidgetTasksPriority\service.js" />
-    <EmbeddedResource Include="Components\PcProjectWidgetTasksDueToday\service.js" />
-    <EmbeddedResource Include="Components\PcProjectWidgetTimesheet\service.js" />
-    <EmbeddedResource Include="Components\PcProjectWidgetTaskDistribution\service.js" />
-    <EmbeddedResource Include="Components\PcProjectWidgetOverdueTasks\service.js" />
-    <EmbeddedResource Include="Components\PcProjectWidgetTasks\service.js" />
-    <EmbeddedResource Include="Components\PcProjectWidgetBudget\service.js" />
-    <EmbeddedResource Include="Components\PcTimelogList\service.js" />
-    <EmbeddedResource Include="Components\PcPostList\service.js" />
-    <EmbeddedResource Include="Theme\styles.css" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
   </ItemGroup>
 

@@ -1,0 +1,44 @@
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Api.Models;
+@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Plugins.Project.Components;
+
+@{
+	var options = (PcProjectWidgetTimesheet.PcProjectWidgetTimesheetOptions)ViewBag.Options;
+	var gridColumns = (List<GridColumn>)ViewBag.GridColumns;
+	var records = (List<EntityRecord>)ViewBag.Records;
+}
+<wv-grid bordered="true" small="true" columns="@gridColumns" has-tfoot="false">
+	@foreach (var record in records)
+	{
+		<wv-grid-row>
+			<wv-grid-column class="@((string)record["id"] == "total" ? "font-weight-bold text-right" : "")">@Html.Raw(record["label"])</wv-grid-column>
+			<wv-grid-column class="@((string)record["id"] == "total" ? "font-weight-bold" : "") text-right">
+				@((decimal)record["day1"] > 0 ? Math.Round((decimal)record["day1"]/60,1) + "h" : "-")
+			</wv-grid-column>
+			<wv-grid-column class="@((string)record["id"] == "total" ? "font-weight-bold" : "") text-right">
+				@((decimal)record["day2"] > 0 ? Math.Round((decimal)record["day2"]/60,1) + "h" : "-")
+			</wv-grid-column>
+			<wv-grid-column class="@((string)record["id"] == "total" ? "font-weight-bold" : "") text-right">
+				@((decimal)record["day3"] > 0 ? Math.Round((decimal)record["day3"]/60,1) + "h" : "-")
+			</wv-grid-column>
+			<wv-grid-column class="@((string)record["id"] == "total" ? "font-weight-bold" : "") text-right">
+				@((decimal)record["day4"] > 0 ? Math.Round((decimal)record["day4"]/60,1) + "h" : "-")
+			</wv-grid-column>
+			<wv-grid-column class="@((string)record["id"] == "total" ? "font-weight-bold" : "") text-right">
+				@((decimal)record["day5"] > 0 ? Math.Round((decimal)record["day5"]/60,1) + "h" : "-")
+			</wv-grid-column>
+			<wv-grid-column class="@((string)record["id"] == "total" ? "font-weight-bold" : "") text-right">
+				@((decimal)record["day6"] > 0 ? Math.Round((decimal)record["day6"]/60,1) + "h" : "-")
+			</wv-grid-column>
+			<wv-grid-column class="@((string)record["id"] == "total" ? "font-weight-bold" : "") text-right">
+				@((decimal)record["day7"] > 0 ? Math.Round((decimal)record["day7"]/60,1) + "h" : "-")
+			</wv-grid-column>
+			<wv-grid-column class="font-weight-bold text-right">
+				@((decimal)record["total"] > 0 ? Math.Round((decimal)record["total"]/60,1) + "h" : "-")
+			</wv-grid-column>
+		</wv-grid-row>
+	}
+
+</wv-grid>

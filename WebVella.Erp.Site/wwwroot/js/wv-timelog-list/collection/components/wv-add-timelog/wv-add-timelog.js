@@ -10,7 +10,7 @@ function SubmitReplyForm(scope) {
         }
     };
     let siteRoot = storeState.siteRootUrl;
-    let requestUrl = siteRoot + "/api/v3.0/p/next/pc-timelog-list/create";
+    let requestUrl = siteRoot + "/api/v3.0/p/project/pc-timelog-list/create";
     let requestBody = new Object();
     requestBody["minutes"] = scope.minutes;
     requestBody["loggedOn"] = scope.loggedOn;

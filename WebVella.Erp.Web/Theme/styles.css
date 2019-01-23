@@ -2329,8 +2329,7 @@ textarea.autogrow {
 .dropdown-menu {
 	border-radius: 0;
 	box-shadow: 0 3px 5px rgba(0,0,0,0.5);
-	padding-top: 0.25rem;
-	padding-bottom: 0.25rem;
+	padding: 0.25rem;
 	border: none;
 }
 

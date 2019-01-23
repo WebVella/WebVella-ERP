@@ -9,7 +9,7 @@ function SubmitReplyForm(scope) {
         }
     };
     let siteRoot = storeState.siteRootUrl;
-    let requestUrl = siteRoot + "/api/v3.0/p/next/pc-post-list/create";
+    let requestUrl = siteRoot + "/api/v3.0/p/project/pc-post-list/create";
     let requestBody = new Object();
     switch (storeState.mode) {
         case "timelogs":
