@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using Npgsql;
 using System;
@@ -8560,12 +8561,11 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 				}
 				else
 				{
-					var serializationSettings = new JsonSerializerSettings() { ContractResolver = new OrderedContractResolver() };
 					var currentRec = currentRecordsDict[key];
 					var oldRec = oldRecordsDict[key];
-					var currentRecJson = JsonConvert.SerializeObject(currentRec, serializationSettings);
-					var oldRecJson = JsonConvert.SerializeObject(oldRec, serializationSettings );
-					if (currentRecJson != oldRecJson)
+					var currentRecJson = JsonConvert.SerializeObject(currentRec);
+					var oldRecJson = JsonConvert.SerializeObject(oldRec);
+					if (JsonUtility.NormalizeJsonString(currentRecJson) != JsonUtility.NormalizeJsonString(oldRecJson))
 						recordsToUpdate.Add(currentRec);
 				}
 			}
@@ -8636,11 +8636,40 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 		}
 	}
 
-	class OrderedContractResolver : DefaultContractResolver
+	class JsonUtility
 	{
-		protected override System.Collections.Generic.IList<JsonProperty> CreateProperties(System.Type type, MemberSerialization memberSerialization)
+		public static string NormalizeJsonString(string json)
 		{
-			return base.CreateProperties(type, memberSerialization).OrderBy(p => p.PropertyName).ToList();
+			// Parse json string into JObject.
+			var parsedObject = JObject.Parse(json);
+
+			// Sort properties of JObject.
+			var normalizedObject = SortPropertiesAlphabetically(parsedObject);
+
+			// Serialize JObject .
+			return JsonConvert.SerializeObject(normalizedObject);
+		}
+
+		private static JObject SortPropertiesAlphabetically(JObject original)
+		{
+			var result = new JObject();
+
+			foreach (var property in original.Properties().ToList().OrderBy(p => p.Name))
+			{
+				var value = property.Value as JObject;
+
+				if (value != null)
+				{
+					value = SortPropertiesAlphabetically(value);
+					result.Add(property.Name, value);
+				}
+				else
+				{
+					result.Add(property.Name, property.Value);
+				}
+			}
+
+			return result;
 		}
 	}
 }
