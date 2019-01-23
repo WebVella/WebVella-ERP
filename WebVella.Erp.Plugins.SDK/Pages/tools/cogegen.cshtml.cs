@@ -33,7 +33,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Tools
 		public string ConnectionString { get; set; }
 
 		[BindProperty]
-		public bool IncludeMeta { get; set; } = true;
+		public bool IncludeEntityMeta { get; set; } = true;
 
 		[BindProperty]
 		public bool IncludeEntityRelations { get; set; } = true;
@@ -90,7 +90,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Tools
 				}	
 				
 				var cgService = new CodeGenService();
-				var result = cgService.EvaluateMetaChanges(conString, IncludeRecordsEntityIdList, IncludeMeta, IncludeEntityRelations, IncludeUserRoles, IncludeApplications);
+				var result = cgService.EvaluateMetaChanges(conString, IncludeRecordsEntityIdList, IncludeEntityMeta, IncludeEntityRelations, IncludeUserRoles, IncludeApplications);
 				Code = result.Code;
 				Changes = result.Changes;
 				ShowResults = true;
