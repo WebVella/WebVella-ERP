@@ -55,26 +55,25 @@ namespace WebVella.Erp.Plugins.Project
 
 						#region << 3. Run methods based on the current installed version of the plugin >>
 
-						//this patch creates SDK application
 						//duplicate this IF for next patches
-						if (currentPluginSettings.Version < 20190117)
-						{
-							try
-							{
-								currentPluginSettings.Version = 20190123;
-								Patch20190123(entMan, relMan, recMan);
-							}
-							catch (ValidationException ex)
-							{
-								var exception = ex;
-								throw ex;
-							}
-							catch (Exception ex)
-							{
-								var exception = ex;
-								throw ex;
-							}
-						}
+						//if (currentPluginSettings.Version < 20190117)
+						//{
+						//	try
+						//	{
+						//		currentPluginSettings.Version = 20190123;
+						//		Patch20190123(entMan, relMan, recMan);
+						//	}
+						//	catch (ValidationException ex)
+						//	{
+						//		var exception = ex;
+						//		throw ex;
+						//	}
+						//	catch (Exception ex)
+						//	{
+						//		var exception = ex;
+						//		throw ex;
+						//	}
+						//}
 
 						#endregion
 

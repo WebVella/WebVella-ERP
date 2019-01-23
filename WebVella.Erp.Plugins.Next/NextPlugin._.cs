@@ -73,24 +73,24 @@ namespace WebVella.Erp.Plugins.Next
 						#region << 3. Run methods based on the current installed version of the plugin >>
 
 						//duplicate this IF for next patches
-						//if (currentPluginSettings.Version < 20190117)
-						//{
-						//	try
-						//	{
-						//		currentPluginSettings.Version = 20190117;
-						//		Patch20190117(entMan, relMan, recMan);
-						//	}
-						//	catch (ValidationException ex)
-						//	{
-						//		var exception = ex;
-						//		throw ex;
-						//	}
-						//	catch (Exception ex)
-						//	{
-						//		var exception = ex;
-						//		throw ex;
-						//	}
-						//}
+						if (currentPluginSettings.Version < 20190117)
+						{
+							try
+							{
+								currentPluginSettings.Version = 20190117;
+								Patch20190117(entMan, relMan, recMan);
+							}
+							catch (ValidationException ex)
+							{
+								var exception = ex;
+								throw ex;
+							}
+							catch (Exception ex)
+							{
+								var exception = ex;
+								throw ex;
+							}
+						}
 
 						#endregion
 

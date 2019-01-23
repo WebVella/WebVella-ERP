@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Swashbuckle.AspNetCore.Swagger;
 using WebVella.Erp.Plugins.SDK;
 using WebVella.Erp.Plugins.Next;
+using WebVella.Erp.Plugins.Project;
 
 namespace WebVella.Erp.Site
 {
@@ -90,8 +91,9 @@ namespace WebVella.Erp.Site
 			}
 
 			app
-			.UseErpPlugin<SdkPlugin>()
 			.UseErpPlugin<NextPlugin>()
+			//.UseErpPlugin<SdkPlugin>()
+			.UseErpPlugin<ProjectPlugin>()
 			.UseErp(configFolder: configFolder)
 			.UseErpMiddleware();
 

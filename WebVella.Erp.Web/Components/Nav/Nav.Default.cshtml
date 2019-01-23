@@ -19,12 +19,15 @@
 	<div id="brand-logo" class="pl-3 pr-3 ml-2">
 			@if (currentApp == null)
 			{
-				<img src="@theme.BrandLogoText" />
+				<a href="@ViewBag.AppDefaultLink">
+					<img src="@theme.BrandLogo" />
+					<span class="app-label">WebVella</span>			
+				</a>
 			}
 			else {
 				<a href="@ViewBag.AppDefaultLink">
 					<img src="@theme.BrandLogo" />
-					<span class="app-label text-uppercase" title="@currentApp.Label">@ViewBag.AppShortName</span>			
+					<span class="app-label" title="@currentApp.Label">@ViewBag.AppShortName</span>			
 				</a>
 			}
 	</div>
