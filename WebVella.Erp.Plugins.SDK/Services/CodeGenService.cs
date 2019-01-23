@@ -71,6 +71,18 @@ namespace WebVella.Erp.Plugins.SDK.Services
 			oldRoleList = ReadOldRoles();
 			#endregion
 
+			#region << Init >>
+			foreach (var entity in oldEntityList)
+			{
+				oldEntityDictionary[entity.Id] = entity;
+				foreach (var field in entity.Fields)
+				{
+					oldEntityFieldsList.Add(field);
+					oldEntityFieldsDictionary[field.Id] = field;
+				}
+			}
+			#endregion
+
 			#region << Generate relations list >>
 			foreach (var relation in currentRelationsList)
 			{
@@ -82,18 +94,6 @@ namespace WebVella.Erp.Plugins.SDK.Services
 			if (includeEntityMeta)
 			{
 				#region << Process entity >>
-
-				#region << Init >>
-				foreach (var entity in oldEntityList)
-				{
-					oldEntityDictionary[entity.Id] = entity;
-					foreach (var field in entity.Fields)
-					{
-						oldEntityFieldsList.Add(field);
-						oldEntityFieldsDictionary[field.Id] = field;
-					}
-				}
-				#endregion
 
 				#region << Logic >>
 				foreach (var entity in currentEntityList)
