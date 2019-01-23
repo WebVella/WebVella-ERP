@@ -316,13 +316,13 @@ Here is the list of supported where condition operators:
 All the operators have equal precedence with only Logical AND and OR operators. 
 The OR operator have lowest precedence. The logical AND operator have lower precedence than others, but higher than logical OR.
 You can use standard braces to control operator precedence. Also the following example shows, how you can use relation in where clause. 
-Only note that first level relations can be used only (`$relation1.$relation2`.... not supported).
+Only note that first level relations can be used only (`$relation1.$relation2`.... not supported). 
+
 ```SQL
 SELECT *,  $customer_1n_address.*
 FROM demo_customer
 WHERE ( contact = 'Thomas Hardy'  OR name STARTSWITH 'Around'  ) AND $customer_1n_address.country CONTAINS 'UK'
 ```
-
 
 You can use multiple expressions and combine them with logical operators.  In example
 
@@ -330,6 +330,13 @@ You can use multiple expressions and combine them with logical operators.  In ex
 SELECT *
 FROM demo_customer
 WHERE ( contact = 'Thomas Hardy' ) AND ( name STARTSWITH 'Around' )
+```
+
+In EQL compare to NULL (note its upper case only) is also done with operators `=`, `<>` and `!=`. 
+```SQL
+SELECT *,  $customer_1n_address.*
+FROM demo_customer
+WHERE contact = NULL
 ```
 
 
@@ -406,8 +413,3 @@ PAGESIZE @pagesize
 
 Note: When using these keywords, it is important to use an ORDER BY that sorts the result records into a unique order. 
 Otherwise you will get an unpredictable subset of the query's records. 
-
-
-
-
-
