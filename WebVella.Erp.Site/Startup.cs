@@ -92,7 +92,7 @@ namespace WebVella.Erp.Site
 
 			app
 			.UseErpPlugin<NextPlugin>()
-			//.UseErpPlugin<SdkPlugin>()
+			.UseErpPlugin<SdkPlugin>()
 			.UseErpPlugin<ProjectPlugin>()
 			.UseErp(configFolder: configFolder)
 			.UseErpMiddleware();

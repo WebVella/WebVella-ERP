@@ -13,22 +13,6 @@ namespace WebVella.Erp.Plugins.Project
 	{
 		private static void Patch20190123(EntityManager entMan, EntityRelationManager relMan, RecordManager recMan)
 		{
-			#region << ***Create app*** App name: sdk >>
-			{
-				var id = new Guid("56a8548a-19d0-497f-8e5b-242abfdc4082");
-				var name = "sdk";
-				var label = "Software Development Kit";
-				var description = "SDK & Development Tools";
-				var iconClass = "ti-settings";
-				var author = "WebVella";
-				var color = "#dc3545";
-				var weight = 1000;
-				var access = new List<Guid>();
-				access.Add(new Guid("bdc56420-caf0-4030-8a0e-d264938e0cda"));
-
-				new WebVella.Erp.Web.Services.AppService().CreateApplication(id, name, label, description, iconClass, author, color, weight, access, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
 
 			#region << ***Create app*** App name: crm >>
 			{
@@ -60,63 +44,6 @@ namespace WebVella.Erp.Plugins.Project
 				access.Add(new Guid("bdc56420-caf0-4030-8a0e-d264938e0cda"));
 
 				new WebVella.Erp.Web.Services.AppService().CreateApplication(id, name, label, description, iconClass, author, color, weight, access, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
-
-			#region << ***Create sitemap area*** Sitemap area name: objects >>
-			{
-				var id = new Guid("d3237d8c-c074-46d7-82c2-1385cbfff35a");
-				var appId = new Guid("56a8548a-19d0-497f-8e5b-242abfdc4082");
-				var name = "objects";
-				var label = "Objects";
-				var description = @"Schema and Layout management";
-				var iconClass = "ti-ruler-pencil";
-				var color = "#2196F3";
-				var weight = 1;
-				var showGroupNames = false;
-				var access = new List<Guid>();
-				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
-				var descriptionTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
-
-				new WebVella.Erp.Web.Services.AppService().CreateArea(id, appId, name, label, labelTranslations, description, descriptionTranslations, iconClass, color, weight, showGroupNames, access, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
-
-			#region << ***Create sitemap area*** Sitemap area name: access >>
-			{
-				var id = new Guid("c5c4cefc-1402-4a8b-9867-7f2a059b745d");
-				var appId = new Guid("56a8548a-19d0-497f-8e5b-242abfdc4082");
-				var name = "access";
-				var label = "Access";
-				var description = @"Manage users and roles";
-				var iconClass = "ti-key";
-				var color = "#673AB7";
-				var weight = 2;
-				var showGroupNames = false;
-				var access = new List<Guid>();
-				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
-				var descriptionTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
-
-				new WebVella.Erp.Web.Services.AppService().CreateArea(id, appId, name, label, labelTranslations, description, descriptionTranslations, iconClass, color, weight, showGroupNames, access, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
-
-			#region << ***Create sitemap area*** Sitemap area name: server >>
-			{
-				var id = new Guid("fee72214-f1c4-4ed5-8bda-35698dc11528");
-				var appId = new Guid("56a8548a-19d0-497f-8e5b-242abfdc4082");
-				var name = "server";
-				var label = "Server";
-				var description = @"Background jobs and maintenance";
-				var iconClass = "ti-server";
-				var color = "#F44336";
-				var weight = 3;
-				var showGroupNames = false;
-				var access = new List<Guid>();
-				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
-				var descriptionTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
-
-				new WebVella.Erp.Web.Services.AppService().CreateArea(id, appId, name, label, labelTranslations, description, descriptionTranslations, iconClass, color, weight, showGroupNames, access, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -250,168 +177,6 @@ namespace WebVella.Erp.Plugins.Project
 				var descriptionTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
 
 				new WebVella.Erp.Web.Services.AppService().CreateArea(id, appId, name, label, labelTranslations, description, descriptionTranslations, iconClass, color, weight, showGroupNames, access, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
-
-			#region << ***Create sitemap node*** Sitemap node name: page >>
-			{
-				var id = new Guid("5b132ac0-703e-4342-a13d-c7ff93d07a4f");
-				var areaId = new Guid("d3237d8c-c074-46d7-82c2-1385cbfff35a");
-				Guid? entityId = null;
-				var name = "page";
-				var label = "Pages";
-				var url = "/sdk/objects/page/l";
-				var iconClass = "ti-file";
-				var weight = 1;
-				var type = ((int)3);
-				var access = new List<Guid>();
-				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
-
-				new WebVella.Erp.Web.Services.AppService().CreateAreaNode(id, areaId, name, label, labelTranslations, iconClass, url, type, entityId, weight, access, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
-
-			#region << ***Create sitemap node*** Sitemap node name: data_source >>
-			{
-				var id = new Guid("9b30bf96-67d9-4d20-bf07-e6ef1c44d553");
-				var areaId = new Guid("d3237d8c-c074-46d7-82c2-1385cbfff35a");
-				Guid? entityId = null;
-				var name = "data_source";
-				var label = "Data sources";
-				var url = "/sdk/objects/data_source/l/list";
-				var iconClass = "ti-cloud-down";
-				var weight = 2;
-				var type = ((int)3);
-				var access = new List<Guid>();
-				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
-
-				new WebVella.Erp.Web.Services.AppService().CreateAreaNode(id, areaId, name, label, labelTranslations, iconClass, url, type, entityId, weight, access, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
-
-			#region << ***Create sitemap node*** Sitemap node name: application >>
-			{
-				var id = new Guid("02d75ea5-8fc6-4f95-9933-0eed6b36ca49");
-				var areaId = new Guid("d3237d8c-c074-46d7-82c2-1385cbfff35a");
-				Guid? entityId = null;
-				var name = "application";
-				var label = "Applications";
-				var url = "/sdk/objects/application/l/list";
-				var iconClass = "ti-layout-grid2";
-				var weight = 3;
-				var type = ((int)3);
-				var access = new List<Guid>();
-				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
-
-				new WebVella.Erp.Web.Services.AppService().CreateAreaNode(id, areaId, name, label, labelTranslations, iconClass, url, type, entityId, weight, access, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
-
-			#region << ***Create sitemap node*** Sitemap node name: entity >>
-			{
-				var id = new Guid("dfa7ec55-b55b-404f-b251-889f1d81df29");
-				var areaId = new Guid("d3237d8c-c074-46d7-82c2-1385cbfff35a");
-				Guid? entityId = null;
-				var name = "entity";
-				var label = "Entities";
-				var url = "/sdk/objects/entity/l";
-				var iconClass = "ti-server";
-				var weight = 4;
-				var type = ((int)3);
-				var access = new List<Guid>();
-				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
-
-				new WebVella.Erp.Web.Services.AppService().CreateAreaNode(id, areaId, name, label, labelTranslations, iconClass, url, type, entityId, weight, access, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
-
-			#region << ***Create sitemap node*** Sitemap node name: codegen >>
-			{
-				var id = new Guid("4571de62-a817-4a94-8b49-4b230cc0d2ad");
-				var areaId = new Guid("d3237d8c-c074-46d7-82c2-1385cbfff35a");
-				Guid? entityId = null;
-				var name = "codegen";
-				var label = "Code generation";
-				var url = "/sdk/objects/codegen/a/codegen";
-				var iconClass = "fa fa-code";
-				var weight = 10;
-				var type = ((int)3);
-				var access = new List<Guid>();
-				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
-
-				new WebVella.Erp.Web.Services.AppService().CreateAreaNode(id, areaId, name, label, labelTranslations, iconClass, url, type, entityId, weight, access, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
-
-			#region << ***Create sitemap node*** Sitemap node name: user >>
-			{
-				var id = new Guid("ff578868-817e-433d-988f-bb8d4e9baa0d");
-				var areaId = new Guid("c5c4cefc-1402-4a8b-9867-7f2a059b745d");
-				Guid? entityId = null;
-				var name = "user";
-				var label = "Users";
-				var url = "/sdk/access/user/l/list";
-				var iconClass = "ti-user";
-				var weight = 1;
-				var type = ((int)3);
-				var access = new List<Guid>();
-				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
-
-				new WebVella.Erp.Web.Services.AppService().CreateAreaNode(id, areaId, name, label, labelTranslations, iconClass, url, type, entityId, weight, access, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
-
-			#region << ***Create sitemap node*** Sitemap node name: role >>
-			{
-				var id = new Guid("75567fc4-70e1-41a9-9e32-2e5b62636598");
-				var areaId = new Guid("c5c4cefc-1402-4a8b-9867-7f2a059b745d");
-				Guid? entityId = null;
-				var name = "role";
-				var label = "Roles";
-				var url = "/sdk/access/role/l/list";
-				var iconClass = "fa fa-key";
-				var weight = 2;
-				var type = ((int)3);
-				var access = new List<Guid>();
-				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
-
-				new WebVella.Erp.Web.Services.AppService().CreateAreaNode(id, areaId, name, label, labelTranslations, iconClass, url, type, entityId, weight, access, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
-
-			#region << ***Create sitemap node*** Sitemap node name: job >>
-			{
-				var id = new Guid("396ec481-3b2e-461c-b514-743fb3252003");
-				var areaId = new Guid("fee72214-f1c4-4ed5-8bda-35698dc11528");
-				Guid? entityId = null;
-				var name = "job";
-				var label = "Background jobs";
-				var url = "/sdk/server/job/l/plan";
-				var iconClass = "ti-settings";
-				var weight = 1;
-				var type = ((int)3);
-				var access = new List<Guid>();
-				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
-
-				new WebVella.Erp.Web.Services.AppService().CreateAreaNode(id, areaId, name, label, labelTranslations, iconClass, url, type, entityId, weight, access, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
-
-			#region << ***Create sitemap node*** Sitemap node name: log >>
-			{
-				var id = new Guid("78a29ac8-d2aa-4379-b990-08f7f164a895");
-				var areaId = new Guid("fee72214-f1c4-4ed5-8bda-35698dc11528");
-				Guid? entityId = null;
-				var name = "log";
-				var label = "Logs";
-				var url = "/sdk/server/log/l/list";
-				var iconClass = "ti-notepad";
-				var weight = 2;
-				var type = ((int)3);
-				var access = new List<Guid>();
-				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
-
-				new WebVella.Erp.Web.Services.AppService().CreateAreaNode(id, areaId, name, label, labelTranslations, iconClass, url, type, entityId, weight, access, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -691,28 +456,6 @@ namespace WebVella.Erp.Plugins.Project
 			}
 			#endregion
 
-			#region << ***Create page*** Page name: site-page >>
-			{
-				var id = new Guid("f3d2caa9-cdfb-4aad-915f-6b48c181938c");
-				var name = @"site-page";
-				var label = "General Site Page";
-				var iconClass = "";
-				var system = false;
-				var layout = @"";
-				var weight = 10;
-				var type = (PageType)((int)1);
-				var isRazorBody = false;
-				Guid? appId = null;
-				Guid? entityId = null;
-				Guid? nodeId = null;
-				Guid? areaId = null;
-				string razorBody = null;
-				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
-
-				new WebVella.Erp.Web.Services.PageService().CreatePage(id, name, label, labelTranslations, iconClass, system, weight, type, appId, entityId, nodeId, areaId, isRazorBody, razorBody, layout, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
-
 			#region << ***Create page*** Page name: create >>
 			{
 				var id = new Guid("c2e38698-24cd-4209-b560-02c225f3ff4a");
@@ -801,6 +544,28 @@ namespace WebVella.Erp.Plugins.Project
 			}
 			#endregion
 
+			#region << ***Create page*** Page name: no-owner >>
+			{
+				var id = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var name = @"no-owner";
+				var label = "Tasks without owner";
+				string iconClass = null;
+				var system = false;
+				var layout = @"";
+				var weight = 100;
+				var type = (PageType)((int)3);
+				var isRazorBody = false;
+				Guid? appId = new Guid("652ccabf-d5ad-46d8-aa67-25842537ed4c");
+				Guid? entityId = new Guid("9386226e-381e-4522-b27b-fb5514d77902");
+				Guid? nodeId = null;
+				Guid? areaId = null;
+				string razorBody = null;
+				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
+
+				new WebVella.Erp.Web.Services.PageService().CreatePage(id, name, label, labelTranslations, iconClass, system, weight, type, appId, entityId, nodeId, areaId, isRazorBody, razorBody, layout, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
 			#region << ***Create page*** Page name: details >>
 			{
 				var id = new Guid("7a0aad34-0f2f-4c40-a77f-cee92c9550a3");
@@ -814,6 +579,28 @@ namespace WebVella.Erp.Plugins.Project
 				var isRazorBody = false;
 				Guid? appId = new Guid("652ccabf-d5ad-46d8-aa67-25842537ed4c");
 				Guid? entityId = new Guid("2d9b2d1d-e32b-45e1-a013-91d92a9ce792");
+				Guid? nodeId = null;
+				Guid? areaId = null;
+				string razorBody = null;
+				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
+
+				new WebVella.Erp.Web.Services.PageService().CreatePage(id, name, label, labelTranslations, iconClass, system, weight, type, appId, entityId, nodeId, areaId, isRazorBody, razorBody, layout, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
+			#region << ***Create page*** Page name: tasks >>
+			{
+				var id = new Guid("6f673561-fad7-4844-8262-589834f1b2ce");
+				var name = @"tasks";
+				var label = "Project tasks";
+				string iconClass = null;
+				var system = false;
+				var layout = @"";
+				var weight = -1;
+				var type = (PageType)((int)3);
+				var isRazorBody = false;
+				Guid? appId = new Guid("652ccabf-d5ad-46d8-aa67-25842537ed4c");
+				Guid? entityId = new Guid("9386226e-381e-4522-b27b-fb5514d77902");
 				Guid? nodeId = null;
 				Guid? areaId = null;
 				string razorBody = null;
@@ -854,28 +641,6 @@ namespace WebVella.Erp.Plugins.Project
 				var system = false;
 				var layout = @"";
 				var weight = 10;
-				var type = (PageType)((int)3);
-				var isRazorBody = false;
-				Guid? appId = new Guid("652ccabf-d5ad-46d8-aa67-25842537ed4c");
-				Guid? entityId = new Guid("9386226e-381e-4522-b27b-fb5514d77902");
-				Guid? nodeId = null;
-				Guid? areaId = null;
-				string razorBody = null;
-				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
-
-				new WebVella.Erp.Web.Services.PageService().CreatePage(id, name, label, labelTranslations, iconClass, system, weight, type, appId, entityId, nodeId, areaId, isRazorBody, razorBody, layout, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
-
-			#region << ***Create page*** Page name: tasks >>
-			{
-				var id = new Guid("6f673561-fad7-4844-8262-589834f1b2ce");
-				var name = @"tasks";
-				var label = "Project tasks";
-				string iconClass = null;
-				var system = false;
-				var layout = @"";
-				var weight = 1000;
 				var type = (PageType)((int)3);
 				var isRazorBody = false;
 				Guid? appId = new Guid("652ccabf-d5ad-46d8-aa67-25842537ed4c");
@@ -2487,6 +2252,25 @@ namespace WebVella.Erp.Plugins.Project
 			}
 			#endregion
 
+			#region << ***Create page body node*** Page name: account-monthly-timelog  id: d3501ea7-86f2-4230-8bc5-30ffab78be5e >>
+			{
+				var id = new Guid("d3501ea7-86f2-4230-8bc5-30ffab78be5e");
+				Guid? parentId = null;
+				Guid? nodeId = null;
+				var pageId = new Guid("d23be591-dbb5-4795-86e4-8adbd9aff08b");
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcReportAccountMonthlyTimelogs";
+				var containerId = "";
+				var options = @"{
+  ""year"": ""{\""type\"":\""0\"",\""string\"":\""RequestQuery.year\"",\""default\"":\""\""}"",
+  ""month"": ""{\""type\"":\""0\"",\""string\"":\""RequestQuery.month\"",\""default\"":\""\""}"",
+  ""account_id"": ""{\""type\"":\""0\"",\""string\"":\""RequestQuery.account\"",\""default\"":\""\""}""
+}";
+				var weight = 3;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
 			#region << ***Create page body node*** Page name: all  id: 8b4b07e4-b994-4fdc-95d4-1e7b33dea6dc >>
 			{
 				var id = new Guid("8b4b07e4-b994-4fdc-95d4-1e7b33dea6dc");
@@ -3974,25 +3758,6 @@ namespace WebVella.Erp.Plugins.Project
   ""form"": """"
 }";
 				var weight = 2;
-
-				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
-
-			#region << ***Create page body node*** Page name: account-monthly-timelog  id: d3501ea7-86f2-4230-8bc5-30ffab78be5e >>
-			{
-				var id = new Guid("d3501ea7-86f2-4230-8bc5-30ffab78be5e");
-				Guid? parentId = null;
-				Guid? nodeId = null;
-				var pageId = new Guid("d23be591-dbb5-4795-86e4-8adbd9aff08b");
-				var componentName = "WebVella.Erp.Plugins.Project.Components.PcReportAccountMonthlyTimelogs";
-				var containerId = "";
-				var options = @"{
-  ""year"": ""{\""type\"":\""0\"",\""string\"":\""RequestQuery.year\"",\""default\"":\""\""}"",
-  ""month"": ""{\""type\"":\""0\"",\""string\"":\""RequestQuery.month\"",\""default\"":\""\""}"",
-  ""account_id"": ""{\""type\"":\""0\"",\""string\"":\""RequestQuery.account\"",\""default\"":\""\""}""
-}";
-				var weight = 3;
 
 				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
@@ -7505,6 +7270,94 @@ namespace WebVella.Erp.Plugins.Project
 			}
 			#endregion
 
+			#region << ***Create page body node*** Page name: no-owner  id: edc68b26-d508-4c2e-a431-5a6656957944 >>
+			{
+				var id = new Guid("edc68b26-d508-4c2e-a431-5a6656957944");
+				Guid? parentId = null;
+				Guid? nodeId = null;
+				var pageId = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var componentName = "WebVella.Erp.Web.Components.PcPageHeader";
+				var containerId = "";
+				var options = @"{
+  ""area_label"": ""{\""type\"":\""0\"",\""string\"":\""App.Label\"",\""default\"":\""\""}"",
+  ""area_sublabel"": """",
+  ""title"": ""{\""type\"":\""0\"",\""string\"":\""Page.Label\"",\""default\"":\""\""}"",
+  ""subtitle"": """",
+  ""description"": """",
+  ""show_page_switch"": ""true"",
+  ""color"": ""{\""type\"":\""0\"",\""string\"":\""Entity.Color\"",\""default\"":\""\""}"",
+  ""icon_color"": ""#fff"",
+  ""icon_class"": ""{\""type\"":\""0\"",\""string\"":\""Entity.IconName\"",\""default\"":\""\""}"",
+  ""return_url"": """"
+}";
+				var weight = 1;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
+			#region << ***Create page body node*** Page name: no-owner  id: 4ac33cdb-3058-4a85-833c-9d8473d48dfe >>
+			{
+				var id = new Guid("4ac33cdb-3058-4a85-833c-9d8473d48dfe");
+				Guid? parentId = new Guid("edc68b26-d508-4c2e-a431-5a6656957944");
+				Guid? nodeId = null;
+				var pageId = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var componentName = "WebVella.Erp.Web.Components.PcButton";
+				var containerId = "actions";
+				var options = @"{
+  ""type"": ""2"",
+  ""text"": ""New Task"",
+  ""color"": ""0"",
+  ""size"": ""3"",
+  ""class"": """",
+  ""id"": """",
+  ""icon_class"": ""fa fa-fw fa-plus go-green"",
+  ""is_block"": ""false"",
+  ""is_outline"": ""false"",
+  ""is_active"": ""false"",
+  ""is_disabled"": ""false"",
+  ""onclick"": """",
+  ""href"": ""/projects/tasks/tasks/c/create?returnUrl=/projects/tasks/tasks/l/all"",
+  ""new_tab"": ""false"",
+  ""form"": """"
+}";
+				var weight = 1;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
+			#region << ***Create page body node*** Page name: no-owner  id: 719ca43f-bb66-4134-a2d2-ad2cc30ade6d >>
+			{
+				var id = new Guid("719ca43f-bb66-4134-a2d2-ad2cc30ade6d");
+				Guid? parentId = new Guid("edc68b26-d508-4c2e-a431-5a6656957944");
+				Guid? nodeId = null;
+				var pageId = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var componentName = "WebVella.Erp.Web.Components.PcButton";
+				var containerId = "actions";
+				var options = @"{
+  ""type"": ""0"",
+  ""text"": ""Search"",
+  ""color"": ""0"",
+  ""size"": ""3"",
+  ""class"": """",
+  ""id"": """",
+  ""icon_class"": ""fa fa-search"",
+  ""is_block"": ""false"",
+  ""is_outline"": ""false"",
+  ""is_active"": ""false"",
+  ""is_disabled"": ""false"",
+  ""onclick"": ""ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcDrawer','open')"",
+  ""href"": """",
+  ""new_tab"": ""false"",
+  ""form"": """"
+}";
+				var weight = 2;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
 			#region << ***Create page body node*** Page name: create  id: b6951134-f57f-4da2-8203-a8c36cc99fd7 >>
 			{
 				var id = new Guid("b6951134-f57f-4da2-8203-a8c36cc99fd7");
@@ -7948,7 +7801,7 @@ namespace WebVella.Erp.Plugins.Project
   ""title"": ""{\""type\"":\""0\"",\""string\"":\""Page.Label\"",\""default\"":\""\""}"",
   ""subtitle"": """",
   ""description"": """",
-  ""show_page_switch"": ""false"",
+  ""show_page_switch"": ""true"",
   ""color"": ""{\""type\"":\""0\"",\""string\"":\""Entity.Color\"",\""default\"":\""\""}"",
   ""icon_color"": ""#fff"",
   ""icon_class"": ""{\""type\"":\""0\"",\""string\"":\""Entity.IconName\"",\""default\"":\""\""}"",
@@ -8793,23 +8646,6 @@ namespace WebVella.Erp.Plugins.Project
   ""script"": ""$(function(){\r\n\r\n\tfunction RunTimer(wvTimerEl) {\r\n\t\tvar recordRow = $(wvTimerEl).closest(\""tr\"");\r\n\t\trecordRow.addClass(\""go-bkg-orange-light\"");\r\n\t\tvar inputTotalEl = recordRow.find(\""input[name='timelog_total_seconds']\"");\r\n\t\tvar totalLoggedSeconds = $(inputTotalEl).val();\r\n\t\tvar totalLoggedSecondsDec = new Decimal(totalLoggedSeconds);\t\t\r\n\t\tvar loggedHours = totalLoggedSecondsDec.div(3600).toDecimalPlaces(0,Decimal.ROUND_DOWN);\r\n\t\tvar totalLeft = totalLoggedSecondsDec.minus(loggedHours.times(3600));\r\n\t\tvar loggedMinutes = totalLeft.div(60).toDecimalPlaces(0,Decimal.ROUND_DOWN);\r\n\t\ttotalLeft = totalLeft.minus(loggedMinutes.times(60));\r\n\t\tvar loggedSeconds = totalLeft;\r\n\t\tvar loggedHoursString = loggedHours.toString();\r\n\t\tif (loggedHours.lessThan(10)) {\r\n\t\t\tloggedHoursString = \""0\""+loggedHoursString;\r\n\t\t}\r\n\t\tvar loggedMinutesString = loggedMinutes.toString();\r\n\t\tif (loggedMinutes.lessThan(10)) {\r\n\t\t\tloggedMinutesString = \""0\""+loggedMinutesString;\r\n\t\t}\r\n\t\tvar loggedSecondsString = loggedSeconds.toString();\r\n\t\tif (loggedSeconds.lessThan(10)) {\r\n\t\t\tloggedSecondsString = \""0\""+loggedSecondsString;\r\n\t\t}\r\n\t\trecordRow.find(\"".timer-td span\"").html(loggedHoursString + ' : ' + loggedMinutesString + ' : ' + loggedSecondsString);\r\n\t\trecordRow.find(\"".timer-td span\"").addClass(\""go-orange\"").removeClass(\""go-gray\"");\r\n\t\ttotalLoggedSecondsDec = totalLoggedSecondsDec.plus(1);\r\n\t\t$(inputTotalEl).val(totalLoggedSecondsDec);\r\n\t}\r\n\r\n\tfunction EvaluateTimer(wvTimerEl) {\r\n\t\tvar recordRow = $(wvTimerEl).closest(\""tr\"");\r\n\t\tvar inputLogStartedOn = recordRow.find(\""input[name='timelog_started_on']\"");\r\n\t\tif (inputLogStartedOn.val()) {\r\n\t\t\trecordRow.find(\"".start-log-group\"").addClass(\""d-none\"");\r\n\t\t\trecordRow.find(\"".stop-log-group\"").removeClass(\""d-none\"");\r\n\t\t\tRunTimer(wvTimerEl);\r\n\t\t\tsetInterval(function () {\r\n\t\t\t\tRunTimer(wvTimerEl);\r\n\t\t\t}, 1000);\r\n\t\t}\r\n\t\telse {\r\n\t\t\trecordRow.find(\"".start-log-group\"").removeClass(\""d-none\"");\r\n\t\t\trecordRow.find(\"".stop-log-group\"").addClass(\""d-none\"");\r\n\t\t}\r\n\r\n\t}\r\n\r\n\r\n    $(\"".wv-timer\"").each(function(){\r\n\t\tEvaluateTimer(this);\r\n    });\r\n    \r\n    $(\"".start-log\"").click(function(){\r\n        var clickedBtn = $(this);\r\n\t\tvar recordRow = clickedBtn.closest(\""tr\"");\r\n\t\tvar recordTimer = recordRow.find(\"".wv-timer\"");\r\n\r\n        var clickedBtnIcon = clickedBtn.find(\"".fa\"");\r\n        var clickedBtnTd = clickedBtn.closest(\""td\"");\r\n        var hiddenTaskInput = clickedBtnTd.find(\""input[name='task_id']\"");\r\n        var startLogGroup = clickedBtnTd.find(\"".start-log-group\"");\r\n        var stopLogGroup = clickedBtnTd.find(\"".stop-log-group\"");\r\n        var taskId = hiddenTaskInput.val();\r\n        \r\n        clickedBtn.prop('disabled', true);\r\n        clickedBtnIcon.removeClass(\""fa-play\"").addClass(\""fa-spin fa-spinner\"");\r\n        \r\n\t\t$.ajax({\r\n\t\ttype: \""POST\"",\r\n\t\turl: \""/api/v3.0/p/next/timelog/start?taskId=\""+taskId,\r\n\t\tdataType:\""json\"",\r\n\t\tsuccess: function(response){\r\n\t\t\tif(!response.success){\r\n\t\t\t\ttoastr.error(response.message, 'Error!', { closeButton: false, tapToDismiss: true });\r\n\t\t\t\tclickedBtn.prop('disabled', false);\r\n\t\t\t\tclickedBtnIcon.addClass(\""fa-play\"").removeClass(\""fa-spin fa-spinner\"");\r\n\t\t\t}\r\n\t\t\telse{\r\n\t\t\t\tstartLogGroup.addClass(\""d-none\"");\r\n\t\t\t\tstopLogGroup.removeClass(\""d-none\"");\r\n\t\t\t\tclickedBtn.prop('disabled', false);\r\n\t\t\t\tclickedBtnIcon.addClass(\""fa-play\"").removeClass(\""fa-spin fa-spinner\"");\r\n\t\t\t\trecordRow.find(\""input[name='timelog_started_on']\"").val(moment().toISOString());\r\n\t\t\t\tEvaluateTimer(recordTimer);\r\n\t\t\t}\r\n        \r\n\t\t},\r\n\t\terror:function(XMLHttpRequest, textStatus, errorThrown) {\r\n\t\t\ttoastr.error(textStatus, 'Error!', { closeButton: false, tapToDismiss: true });\r\n\t\t}\r\n\t\t});        \r\n\r\n    });\r\n\r\n\t$(\"".stop-log\"").click(function(){\r\n        var clickedBtn = $(this);\r\n\t\tvar recordRow = clickedBtn.closest(\""tr\"");\t\t\r\n\t\tvar inputTimelogStartEl = recordRow.find(\""input[name='timelog_started_on']\"");\r\n\t\tvar inputTaskId =  recordRow.find(\""input[name='task_id']\"");\r\n\t\tvar modalId = \""wv-6694f852-c49e-4dd2-a4dc-dd2f6faaf4b4\"";\r\n\t\tvar formEl = $(\""#\""+modalId);\r\n\t\tvar minutesFormInputEl = formEl.find(\""input[name='minutes']\"");\r\n\t\tvar taskIdFormInputEl = formEl.find(\""input[name='task_id']\"");\r\n\t\tvar logStartFormInputEl = formEl.find(\""input[name='timelog_started_on']\"");\r\n\t\t//set minutes\r\n\t\tvar logstartDate = $(inputTimelogStartEl).val();\r\n\t\tvar totalLoggedSeconds = moment().utc().diff(logstartDate, 'seconds');\r\n\t\tvar totalLoggedSecondsDec = new Decimal(totalLoggedSeconds);\t\r\n\t\tvar totalMinutes = totalLoggedSecondsDec.div(60).toDecimalPlaces(0,Decimal.ROUND_DOWN);\r\n\t\tminutesFormInputEl.val(totalMinutes.toNumber());\r\n\t\t//set taskId\r\n\t\ttaskIdFormInputEl.val(inputTaskId.val());\r\n\t\tlogStartFormInputEl.val(moment(logstartDate).format(\""DD MMM YYYY HH:mm\""));\r\n\t\tlogStartFormInputEl.prop('disabled', true);\r\n\t\t//set logstart date\r\n\t\tErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcModal',{htmlId:modalId,action:'open',payload:null});\r\n\t});\r\n\t$(\"".manual-log\"").click(function(){\r\n        var clickedBtn = $(this);\r\n\t\tvar recordRow = clickedBtn.closest(\""tr\"");\t\t\r\n\t\tvar inputTotalEl = recordRow.find(\""input[name='timelog_total_seconds']\"");\r\n\t\tvar inputTaskId =  recordRow.find(\""input[name='task_id']\"");\r\n\t\tvar formId = \""wv-6694f852-c49e-4dd2-a4dc-dd2f6faaf4b4\"";\r\n\t\tvar formEl = $(\""#\""+formId);\r\n\t\tvar taskIdFormInputEl = formEl.find(\""input[name='task_id']\"");\r\n\t\t//set taskId\r\n\t\ttaskIdFormInputEl.val(inputTaskId.val());\r\n\t\tErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcModal',{htmlId:formId,action:'open',payload:null});\t\t\r\n\t});\r\n});""
 }";
 				var weight = 2;
-
-				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
-
-			#region << ***Create page body node*** Page name: feed  id: 3f85bfe4-5040-42c6-a3fb-fefc9ab59b10 >>
-			{
-				var id = new Guid("3f85bfe4-5040-42c6-a3fb-fefc9ab59b10");
-				Guid? parentId = null;
-				Guid? nodeId = null;
-				var pageId = new Guid("dfe56667-174d-492d-8f84-b8ab8b70c63f");
-				var componentName = "WebVella.Erp.Plugins.Project.Components.PcFeedList";
-				var containerId = "";
-				var options = @"{
-  ""records"": ""{\""type\"":\""0\"",\""string\"":\""FeedItemsForRecordId\"",\""default\"":\""\""}""
-}";
-				var weight = 3;
 
 				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
@@ -9792,6 +9628,122 @@ namespace WebVella.Erp.Plugins.Project
 			}
 			#endregion
 
+			#region << ***Create page body node*** Page name: feed  id: 3f85bfe4-5040-42c6-a3fb-fefc9ab59b10 >>
+			{
+				var id = new Guid("3f85bfe4-5040-42c6-a3fb-fefc9ab59b10");
+				Guid? parentId = null;
+				Guid? nodeId = null;
+				var pageId = new Guid("dfe56667-174d-492d-8f84-b8ab8b70c63f");
+				var componentName = "WebVella.Erp.Plugins.Project.Components.PcFeedList";
+				var containerId = "";
+				var options = @"{
+  ""records"": ""{\""type\"":\""0\"",\""string\"":\""FeedItemsForRecordId\"",\""default\"":\""\""}""
+}";
+				var weight = 3;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
+			#region << ***Create page body node*** Page name: no-owner  id: 73d24cb2-ae13-4ddd-9ea8-80d8ef6c2911 >>
+			{
+				var id = new Guid("73d24cb2-ae13-4ddd-9ea8-80d8ef6c2911");
+				Guid? parentId = null;
+				Guid? nodeId = null;
+				var pageId = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var componentName = "WebVella.Erp.Web.Components.PcDrawer";
+				var containerId = "";
+				var options = @"{
+  ""title"": ""Search Tasks"",
+  ""width"": ""550px"",
+  ""class"": """",
+  ""body_class"": """",
+  ""title_action_html"": """"
+}";
+				var weight = 3;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
+			#region << ***Create page body node*** Page name: no-owner  id: d1580be1-733d-477e-bd4a-65e325a8a263 >>
+			{
+				var id = new Guid("d1580be1-733d-477e-bd4a-65e325a8a263");
+				Guid? parentId = new Guid("73d24cb2-ae13-4ddd-9ea8-80d8ef6c2911");
+				Guid? nodeId = null;
+				var pageId = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var componentName = "WebVella.Erp.Web.Components.PcForm";
+				var containerId = "body";
+				var options = @"{
+  ""id"": ""wv-156877b1-d1ea-4fea-be4a-62a982bef3a7"",
+  ""name"": ""form"",
+  ""hook_key"": """",
+  ""method"": ""get"",
+  ""label_mode"": ""1"",
+  ""mode"": ""1""
+}";
+				var weight = 1;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
+			#region << ***Create page body node*** Page name: no-owner  id: 9888344d-c88f-4d1a-9984-7a718779e4cc >>
+			{
+				var id = new Guid("9888344d-c88f-4d1a-9984-7a718779e4cc");
+				Guid? parentId = new Guid("d1580be1-733d-477e-bd4a-65e325a8a263");
+				Guid? nodeId = null;
+				var pageId = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var componentName = "WebVella.Erp.Web.Components.PcGridFilterField";
+				var containerId = "body";
+				var options = @"{
+  ""label"": ""Task contents"",
+  ""name"": ""x_search"",
+  ""try_connect_to_entity"": ""true"",
+  ""field_type"": ""18"",
+  ""query_type"": ""2"",
+  ""query_options"": [
+    ""2""
+  ],
+  ""prefix"": """"
+}";
+				var weight = 1;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
+			#region << ***Create page body node*** Page name: no-owner  id: c150a0fa-9c1a-4f05-a842-22d374e2c2e6 >>
+			{
+				var id = new Guid("c150a0fa-9c1a-4f05-a842-22d374e2c2e6");
+				Guid? parentId = new Guid("d1580be1-733d-477e-bd4a-65e325a8a263");
+				Guid? nodeId = null;
+				var pageId = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var componentName = "WebVella.Erp.Web.Components.PcButton";
+				var containerId = "body";
+				var options = @"{
+  ""type"": ""1"",
+  ""text"": ""Search Tasks"",
+  ""color"": ""0"",
+  ""size"": ""3"",
+  ""class"": """",
+  ""id"": """",
+  ""icon_class"": """",
+  ""is_block"": ""false"",
+  ""is_outline"": ""false"",
+  ""is_active"": ""false"",
+  ""is_disabled"": ""false"",
+  ""onclick"": """",
+  ""href"": """",
+  ""new_tab"": ""false"",
+  ""form"": """"
+}";
+				var weight = 2;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
 			#region << ***Create page body node*** Page name: feed  id: ff5b4808-9c2a-4d4f-8eaf-a4878594c55a >>
 			{
 				var id = new Guid("ff5b4808-9c2a-4d4f-8eaf-a4878594c55a");
@@ -9811,6 +9763,325 @@ namespace WebVella.Erp.Plugins.Project
   ""toolbar_mode"": ""1""
 }";
 				var weight = 3;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
+			#region << ***Create page body node*** Page name: no-owner  id: 34916453-4d5a-40a7-b74c-3c4e8b5a8950 >>
+			{
+				var id = new Guid("34916453-4d5a-40a7-b74c-3c4e8b5a8950");
+				Guid? parentId = null;
+				Guid? nodeId = null;
+				var pageId = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var componentName = "WebVella.Erp.Web.Components.PcGrid";
+				var containerId = "";
+				var options = @"{
+  ""visible_columns"": 8,
+  ""records"": ""{\""type\"":\""0\"",\""string\"":\""NoOwnerTasks\"",\""default\"":\""\""}"",
+  ""id"": """",
+  ""name"": """",
+  ""prefix"": """",
+  ""class"": """",
+  ""striped"": ""false"",
+  ""small"": ""true"",
+  ""bordered"": ""true"",
+  ""borderless"": ""false"",
+  ""hover"": ""true"",
+  ""responsive_breakpoint"": ""0"",
+  ""empty_text"": ""No records"",
+  ""has_thead"": ""true"",
+  ""has_tfoot"": ""true"",
+  ""container1_label"": """",
+  ""container1_width"": ""40px"",
+  ""container1_name"": """",
+  ""container1_nowrap"": ""false"",
+  ""container1_sortable"": ""false"",
+  ""container1_class"": """",
+  ""container1_vertical_align"": ""1"",
+  ""container1_horizontal_align"": ""1"",
+  ""container2_label"": ""type"",
+  ""container2_width"": ""20px"",
+  ""container2_name"": ""type"",
+  ""container2_nowrap"": ""false"",
+  ""container2_sortable"": ""false"",
+  ""container2_class"": """",
+  ""container2_vertical_align"": ""1"",
+  ""container2_horizontal_align"": ""1"",
+  ""container3_label"": ""key"",
+  ""container3_width"": ""80px"",
+  ""container3_name"": ""key"",
+  ""container3_nowrap"": ""false"",
+  ""container3_sortable"": ""false"",
+  ""container3_class"": """",
+  ""container3_vertical_align"": ""1"",
+  ""container3_horizontal_align"": ""1"",
+  ""container4_label"": ""task"",
+  ""container4_width"": """",
+  ""container4_name"": ""task"",
+  ""container4_nowrap"": ""false"",
+  ""container4_sortable"": ""false"",
+  ""container4_class"": """",
+  ""container4_vertical_align"": ""1"",
+  ""container4_horizontal_align"": ""1"",
+  ""container5_label"": ""owner"",
+  ""container5_width"": ""120px"",
+  ""container5_name"": ""owner_id"",
+  ""container5_nowrap"": ""false"",
+  ""container5_sortable"": ""false"",
+  ""container5_class"": """",
+  ""container5_vertical_align"": ""1"",
+  ""container5_horizontal_align"": ""1"",
+  ""container6_label"": ""created by"",
+  ""container6_width"": ""120px"",
+  ""container6_name"": ""created_by"",
+  ""container6_nowrap"": ""false"",
+  ""container6_sortable"": ""false"",
+  ""container6_class"": """",
+  ""container6_vertical_align"": ""1"",
+  ""container6_horizontal_align"": ""1"",
+  ""container7_label"": ""target date"",
+  ""container7_width"": ""120px"",
+  ""container7_name"": ""target_date"",
+  ""container7_nowrap"": ""false"",
+  ""container7_sortable"": ""false"",
+  ""container7_class"": """",
+  ""container7_vertical_align"": ""1"",
+  ""container7_horizontal_align"": ""1"",
+  ""container8_label"": ""status"",
+  ""container8_width"": ""80px"",
+  ""container8_name"": ""status"",
+  ""container8_nowrap"": ""false"",
+  ""container8_sortable"": ""false"",
+  ""container8_class"": """",
+  ""container8_vertical_align"": ""1"",
+  ""container8_horizontal_align"": ""1"",
+  ""container9_label"": """",
+  ""container9_width"": """",
+  ""container9_name"": """",
+  ""container9_nowrap"": ""false"",
+  ""container9_sortable"": ""false"",
+  ""container9_class"": """",
+  ""container9_vertical_align"": ""1"",
+  ""container9_horizontal_align"": ""1"",
+  ""container10_label"": ""column10"",
+  ""container10_width"": """",
+  ""container10_name"": ""column10"",
+  ""container10_nowrap"": ""false"",
+  ""container10_sortable"": ""false"",
+  ""container10_class"": """",
+  ""container10_vertical_align"": ""1"",
+  ""container10_horizontal_align"": ""1"",
+  ""container11_label"": ""column11"",
+  ""container11_width"": """",
+  ""container11_name"": ""column11"",
+  ""container11_nowrap"": ""false"",
+  ""container11_sortable"": ""false"",
+  ""container11_class"": """",
+  ""container11_vertical_align"": ""1"",
+  ""container11_horizontal_align"": ""1"",
+  ""container12_label"": ""column12"",
+  ""container12_width"": """",
+  ""container12_name"": ""column12"",
+  ""container12_nowrap"": ""false"",
+  ""container12_sortable"": ""false"",
+  ""container12_class"": """",
+  ""container12_vertical_align"": ""1"",
+  ""container12_horizontal_align"": ""1""
+}";
+				var weight = 2;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
+			#region << ***Create page body node*** Page name: no-owner  id: 91bbd374-13d5-4a86-8a07-84349ec57682 >>
+			{
+				var id = new Guid("91bbd374-13d5-4a86-8a07-84349ec57682");
+				Guid? parentId = new Guid("34916453-4d5a-40a7-b74c-3c4e8b5a8950");
+				Guid? nodeId = null;
+				var pageId = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var componentName = "WebVella.Erp.Web.Components.PcFieldText";
+				var containerId = "column8";
+				var options = @"{
+  ""label_text"": """",
+  ""label_mode"": ""3"",
+  ""value"": ""{\""type\"":\""0\"",\""string\"":\""RowRecord.$task_status_1n_task[0].label\"",\""default\"":\""n/a\""}"",
+  ""name"": ""status_id"",
+  ""try_connect_to_entity"": ""false"",
+  ""mode"": ""4"",
+  ""maxlength"": 0
+}";
+				var weight = 1;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
+			#region << ***Create page body node*** Page name: no-owner  id: d0addd75-c216-4f25-9f61-44fb29f7f160 >>
+			{
+				var id = new Guid("d0addd75-c216-4f25-9f61-44fb29f7f160");
+				Guid? parentId = new Guid("34916453-4d5a-40a7-b74c-3c4e8b5a8950");
+				Guid? nodeId = null;
+				var pageId = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var componentName = "WebVella.Erp.Web.Components.PcFieldText";
+				var containerId = "column6";
+				var options = @"{
+  ""label_text"": """",
+  ""label_mode"": ""3"",
+  ""value"": ""{\""type\"":\""0\"",\""string\"":\""RowRecord.$user_1n_task_creator[0].username\"",\""default\"":\""n/a\""}"",
+  ""name"": ""field"",
+  ""try_connect_to_entity"": ""false"",
+  ""mode"": ""4"",
+  ""maxlength"": 0
+}";
+				var weight = 1;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
+			#region << ***Create page body node*** Page name: no-owner  id: 001a3188-1d23-4f85-90f2-9053eac93bbc >>
+			{
+				var id = new Guid("001a3188-1d23-4f85-90f2-9053eac93bbc");
+				Guid? parentId = new Guid("34916453-4d5a-40a7-b74c-3c4e8b5a8950");
+				Guid? nodeId = null;
+				var pageId = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var componentName = "WebVella.Erp.Web.Components.PcFieldText";
+				var containerId = "column4";
+				var options = @"{
+  ""label_text"": """",
+  ""label_mode"": ""3"",
+  ""value"": ""{\""type\"":\""0\"",\""string\"":\""RowRecord.subject\"",\""default\"":\""Task subject\""}"",
+  ""name"": ""subject"",
+  ""try_connect_to_entity"": ""true"",
+  ""mode"": ""4"",
+  ""maxlength"": 0
+}";
+				var weight = 1;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
+			#region << ***Create page body node*** Page name: no-owner  id: fd73e317-ae0a-4c54-9bed-55f9c89965a9 >>
+			{
+				var id = new Guid("fd73e317-ae0a-4c54-9bed-55f9c89965a9");
+				Guid? parentId = new Guid("34916453-4d5a-40a7-b74c-3c4e8b5a8950");
+				Guid? nodeId = null;
+				var pageId = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var componentName = "WebVella.Erp.Web.Components.PcButton";
+				var containerId = "column1";
+				var options = @"{
+  ""type"": ""2"",
+  ""text"": """",
+  ""color"": ""0"",
+  ""size"": ""3"",
+  ""class"": """",
+  ""id"": """",
+  ""icon_class"": ""fa fa-eye"",
+  ""is_block"": ""false"",
+  ""is_outline"": ""false"",
+  ""is_active"": ""false"",
+  ""is_disabled"": ""false"",
+  ""onclick"": """",
+  ""href"": ""{\""type\"":\""1\"",\""string\"":\""using System;\\nusing System.Collections.Generic;\\nusing WebVella.Erp.Web.Models;\\nusing WebVella.Erp.Api.Models;\\n\\npublic class SelectOptionsConvertCodeVariable : ICodeVariable\\n{\\n\\tpublic object Evaluate(BaseErpPageModel pageModel)\\n\\t{\\n\\t\\t//replace constants with your values\\n\\t\\tconst string DATASOURCE_NAME = \\\""RowRecord.id\\\"";\\n\\n\\t\\t//if pageModel is not provided, returns empty List<SelectOption>()\\n\\t\\tif (pageModel == null)\\n\\t\\t\\treturn null;\\n\\n\\t\\t//try read data source by name and get result as specified type object\\n\\t\\tvar dataSource = pageModel.TryGetDataSourceProperty<Guid>(DATASOURCE_NAME);\\n\\n\\t\\t//if data source not found or different type, return empty List<SelectOption>()\\n\\t\\tif (dataSource == null)\\n\\t\\t\\treturn null;\\n\\n\\t\\treturn $\\\""/projects/tasks/tasks/r/{dataSource}/details?returnUrl=/projects/tasks/tasks/l/all\\\"";\\n\\t}\\n}\\n\"",\""default\"":\""\""}"",
+  ""new_tab"": ""false"",
+  ""form"": """"
+}";
+				var weight = 1;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
+			#region << ***Create page body node*** Page name: no-owner  id: 0ba5ed3f-625e-4df3-84ab-70f064b9905a >>
+			{
+				var id = new Guid("0ba5ed3f-625e-4df3-84ab-70f064b9905a");
+				Guid? parentId = new Guid("34916453-4d5a-40a7-b74c-3c4e8b5a8950");
+				Guid? nodeId = null;
+				var pageId = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var componentName = "WebVella.Erp.Web.Components.PcFieldText";
+				var containerId = "column3";
+				var options = @"{
+  ""label_text"": """",
+  ""label_mode"": ""3"",
+  ""value"": ""{\""type\"":\""0\"",\""string\"":\""RowRecord.key\"",\""default\"":\""key\""}"",
+  ""name"": ""key"",
+  ""try_connect_to_entity"": ""true"",
+  ""mode"": ""4"",
+  ""maxlength"": 0
+}";
+				var weight = 1;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
+			#region << ***Create page body node*** Page name: no-owner  id: 0867158f-f0c2-4284-838a-1c4ec3acb796 >>
+			{
+				var id = new Guid("0867158f-f0c2-4284-838a-1c4ec3acb796");
+				Guid? parentId = new Guid("34916453-4d5a-40a7-b74c-3c4e8b5a8950");
+				Guid? nodeId = null;
+				var pageId = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var componentName = "WebVella.Erp.Web.Components.PcFieldText";
+				var containerId = "column5";
+				var options = @"{
+  ""label_text"": """",
+  ""label_mode"": ""3"",
+  ""value"": ""{\""type\"":\""0\"",\""string\"":\""RowRecord.$user_1n_task[0].username\"",\""default\"":\""n/a\""}"",
+  ""name"": ""owner_id"",
+  ""try_connect_to_entity"": ""false"",
+  ""mode"": ""4"",
+  ""maxlength"": 0
+}";
+				var weight = 1;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
+			#region << ***Create page body node*** Page name: no-owner  id: b2b5e677-341a-43af-9baa-0aba98a7d8c3 >>
+			{
+				var id = new Guid("b2b5e677-341a-43af-9baa-0aba98a7d8c3");
+				Guid? parentId = new Guid("34916453-4d5a-40a7-b74c-3c4e8b5a8950");
+				Guid? nodeId = null;
+				var pageId = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var componentName = "WebVella.Erp.Web.Components.PcFieldHtml";
+				var containerId = "column2";
+				var options = @"{
+  ""label_text"": """",
+  ""label_mode"": ""3"",
+  ""value"": ""{\""type\"":\""1\"",\""string\"":\""using System;\\nusing System.Collections.Generic;\\nusing WebVella.Erp.Web.Models;\\nusing WebVella.Erp.Api.Models;\\n\\npublic class SelectOptionsConvertCodeVariable : ICodeVariable\\n{\\n\\tpublic object Evaluate(BaseErpPageModel pageModel)\\n\\t{\\n\\t\\t//if pageModel is not provided, returns empty List<SelectOption>()\\n\\t\\tif (pageModel == null)\\n\\t\\t\\treturn null;\\n\\n\\t\\t//try read data source by name and get result as specified type object\\n\\t\\tvar typeRecord = pageModel.TryGetDataSourceProperty<EntityRecord>(\\\""RowRecord.$task_type_1n_task[0]\\\"");\\n\\n\\t\\t//if data source not found or different type, return empty List<SelectOption>()\\n\\t\\tif (typeRecord == null)\\n\\t\\t\\treturn null;\\n\\n        var iconClass=\\\""fa fa-fw fa-file\\\"";\\n        var color=\\\""#999\\\"";\\n        if(typeRecord[\\\""icon_class\\\""] != null){\\n            iconClass = (string)typeRecord[\\\""icon_class\\\""];\\n        }\\n        if(typeRecord[\\\""color\\\""] != null){\\n            color = (string)typeRecord[\\\""color\\\""];\\n        }\\n\\t\\treturn $\\\""<i class=\\\\\\\""{iconClass}\\\\\\\"" style=\\\\\\\""color:{color};font-size:23px;\\\\\\\"" title=\\\\\\\""{typeRecord[\\\""label\\\""]}\\\\\\\""></i>\\\"";\\n\\t}\\n}\\n\"",\""default\"":\""icon\""}"",
+  ""name"": ""field"",
+  ""try_connect_to_entity"": ""false"",
+  ""mode"": ""4"",
+  ""upload_mode"": ""1"",
+  ""toolbar_mode"": ""1""
+}";
+				var weight = 1;
+
+				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
+			#region << ***Create page body node*** Page name: no-owner  id: 8d244aa4-ad6b-464f-87e9-37a55fd18d19 >>
+			{
+				var id = new Guid("8d244aa4-ad6b-464f-87e9-37a55fd18d19");
+				Guid? parentId = new Guid("34916453-4d5a-40a7-b74c-3c4e8b5a8950");
+				Guid? nodeId = null;
+				var pageId = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var componentName = "WebVella.Erp.Web.Components.PcFieldDate";
+				var containerId = "column7";
+				var options = @"{
+  ""label_text"": """",
+  ""label_mode"": ""3"",
+  ""value"": ""{\""type\"":\""0\"",\""string\"":\""RowRecord.target_date\"",\""default\"":\""\""}"",
+  ""name"": ""target_date"",
+  ""try_connect_to_entity"": ""true"",
+  ""mode"": ""4""
+}";
+				var weight = 1;
 
 				new WebVella.Erp.Web.Services.PageService().CreatePageBodyNode(id, parentId, pageId, nodeId, weight, componentName, containerId, options, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
@@ -10698,6 +10969,102 @@ OFFSET 0
 			}
 			#endregion
 
+			#region << ***Create data source*** Name: NoOwnerTasks >>
+			{
+				var id = new Guid("40c0bcc6-2e3e-4b68-ae6a-27f1f472f069");
+				var name = @"NoOwnerTasks";
+				var description = @"all tasks without an owner";
+				var eqlText = @"SELECT *,$project_nn_task.abbr,$user_1n_task.username,$task_status_1n_task.label,$task_type_1n_task.label,$task_type_1n_task.icon_class,$task_type_1n_task.color,$user_1n_task_creator.username
+FROM task
+WHERE owner_id = NULL AND x_search CONTAINS @searchQuery
+ORDER BY @sortBy @sortOrder
+PAGE @page
+PAGESIZE @pageSize
+";
+				var sqlText = @"SELECT row_to_json( X ) FROM (
+SELECT DISTINCT 
+	 rec_task.""id"" AS ""id"",
+	 rec_task.""l_scope"" AS ""l_scope"",
+	 rec_task.""subject"" AS ""subject"",
+	 rec_task.""body"" AS ""body"",
+	 rec_task.""created_on"" AS ""created_on"",
+	 rec_task.""created_by"" AS ""created_by"",
+	 rec_task.""completed_on"" AS ""completed_on"",
+	 rec_task.""number"" AS ""number"",
+	 rec_task.""parent_id"" AS ""parent_id"",
+	 rec_task.""status_id"" AS ""status_id"",
+	 rec_task.""key"" AS ""key"",
+	 rec_task.""x_search"" AS ""x_search"",
+	 rec_task.""estimated_minutes"" AS ""estimated_minutes"",
+	 rec_task.""x_billable_minutes"" AS ""x_billable_minutes"",
+	 rec_task.""x_nonbillable_minutes"" AS ""x_nonbillable_minutes"",
+	 rec_task.""start_date"" AS ""start_date"",
+	 rec_task.""target_date"" AS ""target_date"",
+	 rec_task.""priority"" AS ""priority"",
+	 rec_task.""timelog_started_on"" AS ""timelog_started_on"",
+	 rec_task.""owner_id"" AS ""owner_id"",
+	 rec_task.""type_id"" AS ""type_id"",
+	 COUNT(*) OVER() AS ___total_count___,
+	------->: $project_nn_task
+	(SELECT  COALESCE(  array_to_json(array_agg( row_to_json(d))), '[]') FROM ( 
+	 SELECT 
+		 project_nn_task.""id"" AS ""id"",
+		 project_nn_task.""abbr"" AS ""abbr""
+	 FROM rec_project project_nn_task
+	 LEFT JOIN  rel_project_nn_task project_nn_task_target ON project_nn_task_target.target_id = rec_task.id
+	 WHERE project_nn_task.id = project_nn_task_target.origin_id )d  )::jsonb AS ""$project_nn_task"",
+	-------< $project_nn_task
+	------->: $user_1n_task
+	(SELECT  COALESCE( array_to_json( array_agg( row_to_json(d) )), '[]') FROM ( 
+	 SELECT 
+		 user_1n_task.""id"" AS ""id"",
+		 user_1n_task.""username"" AS ""username"" 
+	 FROM rec_user user_1n_task
+	 WHERE user_1n_task.id = rec_task.owner_id ) d )::jsonb AS ""$user_1n_task"",
+	-------< $user_1n_task
+	------->: $task_status_1n_task
+	(SELECT  COALESCE( array_to_json( array_agg( row_to_json(d) )), '[]') FROM ( 
+	 SELECT 
+		 task_status_1n_task.""id"" AS ""id"",
+		 task_status_1n_task.""label"" AS ""label"" 
+	 FROM rec_task_status task_status_1n_task
+	 WHERE task_status_1n_task.id = rec_task.status_id ) d )::jsonb AS ""$task_status_1n_task"",
+	-------< $task_status_1n_task
+	------->: $task_type_1n_task
+	(SELECT  COALESCE( array_to_json( array_agg( row_to_json(d) )), '[]') FROM ( 
+	 SELECT 
+		 task_type_1n_task.""id"" AS ""id"",
+		 task_type_1n_task.""label"" AS ""label"",
+		 task_type_1n_task.""icon_class"" AS ""icon_class"",
+		 task_type_1n_task.""color"" AS ""color"" 
+	 FROM rec_task_type task_type_1n_task
+	 WHERE task_type_1n_task.id = rec_task.type_id ) d )::jsonb AS ""$task_type_1n_task"",
+	-------< $task_type_1n_task
+	------->: $user_1n_task_creator
+	(SELECT  COALESCE( array_to_json( array_agg( row_to_json(d) )), '[]') FROM ( 
+	 SELECT 
+		 user_1n_task_creator.""id"" AS ""id"",
+		 user_1n_task_creator.""username"" AS ""username"" 
+	 FROM rec_user user_1n_task_creator
+	 WHERE user_1n_task_creator.id = rec_task.created_by ) d )::jsonb AS ""$user_1n_task_creator""	
+	-------< $user_1n_task_creator
+
+FROM rec_task
+WHERE  (  ( rec_task.""owner_id"" IS NULL )  AND  ( rec_task.""x_search""  ILIKE  @searchQuery )  ) 
+ORDER BY rec_task.""target_date"" ASC
+LIMIT 15
+OFFSET 0
+) X
+";
+				var parametersJson = @"[{""name"":""sortBy"",""type"":""text"",""value"":""target_date""},{""name"":""sortOrder"",""type"":""text"",""value"":""asc""},{""name"":""page"",""type"":""int"",""value"":""1""},{""name"":""pageSize"",""type"":""int"",""value"":""15""},{""name"":""searchQuery"",""type"":""text"",""value"":""string.empty""}]";
+				var fieldsJson = @"[{""name"":""id"",""type"":16,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""l_scope"",""type"":18,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""subject"",""type"":18,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""body"",""type"":8,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""created_on"",""type"":5,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""created_by"",""type"":16,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""completed_on"",""type"":5,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""number"",""type"":1,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""parent_id"",""type"":16,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""status_id"",""type"":16,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""key"",""type"":18,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""x_search"",""type"":18,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""estimated_minutes"",""type"":12,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""x_billable_minutes"",""type"":12,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""x_nonbillable_minutes"",""type"":12,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""start_date"",""type"":4,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""target_date"",""type"":4,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""priority"",""type"":17,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""timelog_started_on"",""type"":5,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""owner_id"",""type"":16,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""type_id"",""type"":16,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""$project_nn_task"",""type"":20,""entity_name"":"""",""relation_name"":null,""children"":[{""name"":""id"",""type"":16,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""abbr"",""type"":18,""entity_name"":"""",""relation_name"":null,""children"":[]}]},{""name"":""$user_1n_task"",""type"":20,""entity_name"":"""",""relation_name"":null,""children"":[{""name"":""id"",""type"":16,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""username"",""type"":18,""entity_name"":"""",""relation_name"":null,""children"":[]}]},{""name"":""$task_status_1n_task"",""type"":20,""entity_name"":"""",""relation_name"":null,""children"":[{""name"":""id"",""type"":16,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""label"",""type"":18,""entity_name"":"""",""relation_name"":null,""children"":[]}]},{""name"":""$task_type_1n_task"",""type"":20,""entity_name"":"""",""relation_name"":null,""children"":[{""name"":""id"",""type"":16,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""label"",""type"":18,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""icon_class"",""type"":18,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""color"",""type"":18,""entity_name"":"""",""relation_name"":null,""children"":[]}]},{""name"":""$user_1n_task_creator"",""type"":20,""entity_name"":"""",""relation_name"":null,""children"":[{""name"":""id"",""type"":16,""entity_name"":"""",""relation_name"":null,""children"":[]},{""name"":""username"",""type"":18,""entity_name"":"""",""relation_name"":null,""children"":[]}]}]";
+				var weight = 10;
+				var entityName = @"task";
+
+				new WebVella.Erp.Database.DbDataSourceRepository().Create(id, name, description, weight, eqlText, sqlText, parametersJson, fieldsJson, entityName);
+			}
+			#endregion
+
 			#region << ***Create page data source*** Name: Accounts >>
 			{
 				var id = new Guid("a2db7724-f05b-4820-9269-64792398c309");
@@ -11165,6 +11532,19 @@ OFFSET 0
 				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
+
+			#region << ***Create page data source*** Name: NoOwnerTasks >>
+			{
+				var id = new Guid("0335866b-023d-4922-af27-a27960d72177");
+				var pageId = new Guid("db1cfef5-50a9-42ba-8f5e-34f80e6aad3c");
+				var dataSourceId = new Guid("40c0bcc6-2e3e-4b68-ae6a-27f1f472f069");
+				var name = @"NoOwnerTasks";
+				var parameters = @"[{""name"":""sortBy"",""type"":""text"",""value"":""{{RequestQuery.sortBy}}""},{""name"":""sortOrder"",""type"":""text"",""value"":""{{RequestQuery.sortOrder}}""},{""name"":""page"",""type"":""int"",""value"":""{{RequestQuery.page}}""},{""name"":""searchQuery"",""type"":""text"",""value"":""{{RequestQuery.q_x_search_v}}""}]";
+
+				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+			}
+			#endregion
+
 
 
 		}

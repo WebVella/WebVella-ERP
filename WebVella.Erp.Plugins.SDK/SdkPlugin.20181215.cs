@@ -37,7 +37,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Id = WEBVELLA_SDK_APP_AREA_DESIGN_ID,
 					Name = "objects",
 					Label = "Objects",
-					Description = "System objects management",
+					Description = "Schema and Layout management",
 					IconClass = "ti-ruler-pencil",
 					Weight = 1,
 					Color = "#2196F3"

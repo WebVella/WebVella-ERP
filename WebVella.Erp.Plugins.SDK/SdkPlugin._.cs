@@ -93,21 +93,6 @@ namespace WebVella.Erp.Plugins.SDK
 						#endregion
 
 
-						//if (currentPluginSettings.Version < 20190110)
-						//{
-						//	try
-						//	{
-						//		currentPluginSettings.Version = 20190110;
-						//		Patch20190110(entMan, relMan, recMan);
-						//	}
-						//	catch (Exception ex)
-						//	{
-						//		var exception = ex;
-						//		throw ex;
-						//	}
-						//}
-
-
 						SavePluginData(JsonConvert.SerializeObject(currentPluginSettings));
 
 						connection.CommitTransaction();
