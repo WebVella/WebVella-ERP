@@ -861,7 +861,17 @@ namespace WebVella.Erp.Plugins.SDK.Services
 					}
 					else if( !oldEntityDictionary.ContainsKey(entityId) && currentEntityList.Any(x => x.Id == entityId) )
 					{
-
+						DbEntity currentEntity = currentEntityList.First(x => x.Id == entityId);
+						var currentRecords = recMan.Find(new EntityQuery(currentEntity.Name)).Object.Data;
+						foreach (var rec in currentRecords )
+						{
+							changeRow = new MetaChangeModel();
+							changeRow.Element = "record";
+							changeRow.Type = "created";
+							changeRow.Name = $"{rec["id"]} ({currentEntity.Name})";
+							response.Changes.Add(changeRow);
+							response.Code += CreateRecordCode(rec, currentEntity);
+						}
 					}
 
 
