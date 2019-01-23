@@ -4088,12 +4088,12 @@ border-bottom-style:dashed;
 .erp-list .sort-link {
 	text-decoration: none;
 	float:right;
-	display:none;
+	opacity:0;
 	height: 16px;
 }
 
 .erp-list thead:hover .sort-link {
-	display:inline;
+	opacity:1;
 }
 
 	.erp-list .sort-link em {
