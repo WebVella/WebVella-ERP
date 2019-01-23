@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace WebVella.Erp.Plugins.Next.Model
+namespace WebVella.Erp.Plugins.Project.Model
 {
 	internal class PluginSettings
 	{
