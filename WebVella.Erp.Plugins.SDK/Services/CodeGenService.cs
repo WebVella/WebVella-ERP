@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Npgsql;
 using System;
 using System.Collections.Generic;
@@ -19,10 +20,10 @@ namespace WebVella.Erp.Plugins.SDK.Services
 		private EntityManager entMan = new EntityManager();
 		private RecordManager recMan = new RecordManager();
 		private string OldDbConnectionString;
-		
 
-		public MetaChangeResponseModel EvaluateMetaChanges(string connectionString, List<string> entityRecordsToCompare, 
-					bool includeEntityMeta,bool includeEntityRelations, bool includeRoles, bool includeApplications)
+
+		public MetaChangeResponseModel EvaluateMetaChanges(string connectionString, List<string> entityRecordsToCompare,
+					bool includeEntityMeta, bool includeEntityRelations, bool includeRoles, bool includeApplications)
 		{
 			ValidationException valEx = new ValidationException();
 
@@ -812,31 +813,31 @@ namespace WebVella.Erp.Plugins.SDK.Services
 				#endregion
 			}
 
-			if( entityRecordsToCompare != null && entityRecordsToCompare.Count > 0 )
+			if (entityRecordsToCompare != null && entityRecordsToCompare.Count > 0)
 			{
-				
-				foreach(var id in entityRecordsToCompare )
+
+				foreach (var id in entityRecordsToCompare)
 				{
 					//compare only if entity exists in both databases
 					Guid entityId = new Guid(id);
-					if( oldEntityDictionary.ContainsKey(entityId) && currentEntityList.Any(x=>x.Id == entityId) )
+					if (oldEntityDictionary.ContainsKey(entityId) && currentEntityList.Any(x => x.Id == entityId))
 					{
 						List<EntityRecord> recordsToCreate = new List<EntityRecord>();
 						List<EntityRecord> recordsToUpdate = new List<EntityRecord>();
 						List<EntityRecord> recordsToDelete = new List<EntityRecord>();
 
 						DbEntity oldEntity = oldEntityDictionary[entityId];
-						DbEntity currentEntity = currentEntityList.First( x=>x.Id == entityId );
+						DbEntity currentEntity = currentEntityList.First(x => x.Id == entityId);
 						CompareEntityRecords(oldEntity, currentEntity, recordsToCreate, recordsToUpdate, recordsToDelete);
 
-						foreach(var rec in recordsToCreate )
+						foreach (var rec in recordsToCreate)
 						{
 							changeRow = new MetaChangeModel();
 							changeRow.Element = "record";
 							changeRow.Type = "created";
 							changeRow.Name = $"{rec["id"]} ({currentEntity.Name})";
 							response.Changes.Add(changeRow);
-							response.Code += CreateRecordCode(rec,currentEntity);
+							response.Code += CreateRecordCode(rec, currentEntity);
 						}
 
 						foreach (var rec in recordsToUpdate)
@@ -846,7 +847,7 @@ namespace WebVella.Erp.Plugins.SDK.Services
 							changeRow.Type = "updated";
 							changeRow.Name = $"{rec["id"]} ({currentEntity.Name})";
 							response.Changes.Add(changeRow);
-							response.Code += UpdateRecordCode(rec,currentEntity);
+							response.Code += UpdateRecordCode(rec, currentEntity);
 						}
 
 						foreach (var rec in recordsToDelete)
@@ -856,14 +857,14 @@ namespace WebVella.Erp.Plugins.SDK.Services
 							changeRow.Type = "deleted";
 							changeRow.Name = $"{rec["id"]} ({currentEntity.Name})";
 							response.Changes.Add(changeRow);
-							response.Code += DeleteRecordCode(rec,currentEntity);
+							response.Code += DeleteRecordCode(rec, currentEntity);
 						}
 					}
-					else if( !oldEntityDictionary.ContainsKey(entityId) && currentEntityList.Any(x => x.Id == entityId) )
+					else if (!oldEntityDictionary.ContainsKey(entityId) && currentEntityList.Any(x => x.Id == entityId))
 					{
 						DbEntity currentEntity = currentEntityList.First(x => x.Id == entityId);
 						var currentRecords = recMan.Find(new EntityQuery(currentEntity.Name)).Object.Data;
-						foreach (var rec in currentRecords )
+						foreach (var rec in currentRecords)
 						{
 							changeRow = new MetaChangeModel();
 							changeRow.Element = "record";
@@ -947,7 +948,7 @@ namespace WebVella.Erp.Plugins.SDK.Services
 			}
 		}
 
-		private List<EntityRecord> ReadOldEntityRecords( string entityName )
+		private List<EntityRecord> ReadOldEntityRecords(string entityName)
 		{
 			using (NpgsqlConnection con = new NpgsqlConnection(OldDbConnectionString))
 			{
@@ -8327,7 +8328,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 		private string CreateDatabaseDataSourceCode(DatabaseDataSource ds)
 		{
 			var parametersJson = JsonConvert.SerializeObject(ds.Parameters ?? new List<DataSourceParameter>()).EscapeMultiline();
-			var fieldsJson = JsonConvert.SerializeObject(ds.Fields ?? new List<DataSourceModelFieldMeta>() ).EscapeMultiline();
+			var fieldsJson = JsonConvert.SerializeObject(ds.Fields ?? new List<DataSourceModelFieldMeta>()).EscapeMultiline();
 			var response =
 			$"#region << ***Create data source*** Name: {ds.Name} >>\n" +
 			"{\n" +
@@ -8347,7 +8348,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 			return response;
 		}
 
-		private UpdateCheckResponse UpdateDatabaseDataSourceCode(DatabaseDataSource currentDS, DatabaseDataSource oldDS )
+		private UpdateCheckResponse UpdateDatabaseDataSourceCode(DatabaseDataSource currentDS, DatabaseDataSource oldDS)
 		{
 			var response = new UpdateCheckResponse();
 			response.Code = string.Empty;
@@ -8394,7 +8395,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 			var oldParametersJson = JsonConvert.SerializeObject(oldDS.Parameters ?? new List<DataSourceParameter>()).EscapeMultiline();
 			var oldFieldsJson = JsonConvert.SerializeObject(oldDS.Fields ?? new List<DataSourceModelFieldMeta>()).EscapeMultiline();
 
-			if (currentParametersJson != oldParametersJson )
+			if (currentParametersJson != oldParametersJson)
 			{
 				response.HasUpdate = true;
 				response.ChangeList.Add($"<span class='go-green label-block'>data source parameters</span>  from <span class='go-red'>{oldParametersJson}</span> to <span class='go-red'>{currentParametersJson}</span>");
@@ -8409,7 +8410,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 
 			if (response.HasUpdate)
 			{
-				
+
 				response.Code =
 				$"#region << ***Update data source*** Name: {currentDS.Name} >>\n" +
 				"{\n" +
@@ -8452,7 +8453,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 				$"\tvar id = new Guid(\"{ds.Id.ToString()}\");\n" +
 				$"\tvar pageId = new Guid(\"{ds.PageId.ToString()}\");\n" +
 				$"\tvar dataSourceId = new Guid(\"{ds.DataSourceId.ToString()}\");\n" +
-				$"\tvar name = @\"{ds.Name}\";\n" + 
+				$"\tvar name = @\"{ds.Name}\";\n" +
 				$"\tvar parameters = @\"{parametersJson}\";\n" +
 				"\n\tnew WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId,name,parameters,WebVella.Erp.Database.DbContext.Current.Transaction );\n" +
 			"}\n" +
@@ -8473,7 +8474,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 				response.ChangeList.Add($"<span class='go-green label-block'>page data source name</span>  from <span class='go-red'>{oldDS.Name}</span> to <span class='go-red'>{currentDS.Name}</span>");
 			}
 
-			if (currentDS.PageId != oldDS.PageId )
+			if (currentDS.PageId != oldDS.PageId)
 			{
 				response.HasUpdate = true;
 				response.ChangeList.Add($"<span class='go-green label-block'>page data source PageId</span>  from <span class='go-red'>{oldDS.PageId}</span> to <span class='go-red'>{currentDS.PageId}</span>");
@@ -8525,10 +8526,10 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 
 		#region << Entity Records >>
 
-		private void CompareEntityRecords(DbEntity oldEntity, DbEntity currentEntity, List<EntityRecord> recordsToCreate, List<EntityRecord> recordsToUpdate, List<EntityRecord> recordsToDelete )
+		private void CompareEntityRecords(DbEntity oldEntity, DbEntity currentEntity, List<EntityRecord> recordsToCreate, List<EntityRecord> recordsToUpdate, List<EntityRecord> recordsToDelete)
 		{
 			List<string> fieldsToRemoveFromOldEntity = new List<string>();
-			foreach(var field in oldEntity.Fields)
+			foreach (var field in oldEntity.Fields)
 			{
 				if (!currentEntity.Fields.Any(x => x.Id == field.Id))
 					fieldsToRemoveFromOldEntity.Add(field.Name);
@@ -8550,20 +8551,21 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 			var oldRecordsDict = oldRecordLists.AsRecordDictionary();
 			var currentRecordsDict = recMan.Find(new EntityQuery(currentEntity.Name)).Object.Data.AsRecordDictionary();
 
-			foreach(var key in currentRecordsDict.Keys )			
+			foreach (var key in currentRecordsDict.Keys)
 			{
-				if( !oldRecordsDict.ContainsKey(key) )
+				if (!oldRecordsDict.ContainsKey(key))
 				{
 					var currentRec = currentRecordsDict[key];
 					recordsToCreate.Add(currentRec);
 				}
 				else
 				{
+					var serializationSettings = new JsonSerializerSettings() { ContractResolver = new OrderedContractResolver() };
 					var currentRec = currentRecordsDict[key];
 					var oldRec = oldRecordsDict[key];
-					var currentRecJson = JsonConvert.SerializeObject(currentRec);
-					var oldRecJson = JsonConvert.SerializeObject(oldRec);
-					if( currentRecJson != oldRecJson )
+					var currentRecJson = JsonConvert.SerializeObject(currentRec, serializationSettings);
+					var oldRecJson = JsonConvert.SerializeObject(oldRec, serializationSettings );
+					if (currentRecJson != oldRecJson)
 						recordsToUpdate.Add(currentRec);
 				}
 			}
@@ -8580,10 +8582,10 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 
 		private string CreateRecordCode(EntityRecord rec, DbEntity currentEntity)
 		{
-			
+
 			var response = $"#region << ***Create record*** Id: {rec["id"]} ({currentEntity.Name}) >>\n" +
 			"{\n" +
-				$"\tvar json = @\"{JsonConvert.SerializeObject(rec, Formatting.Indented, new JsonSerializerSettings{ TypeNameHandling = TypeNameHandling.All }).EscapeMultiline()}\";\n" +
+				$"\tvar json = @\"{JsonConvert.SerializeObject(rec, Formatting.Indented, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All }).EscapeMultiline()}\";\n" +
 				$"\tEntityRecord rec = JsonConvert.DeserializeObject<EntityRecord>(json);\n" +
 				$"\tvar result = recMan.CreateRecord(\"{currentEntity.Name}\", rec);\n" +
 				$"\tif( !result.Success ) throw new Exception(result.Message);\n" +
@@ -8631,6 +8633,14 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 				return string.Empty;
 
 			return str.Replace("\"", "\"\"").Replace(Environment.NewLine, "\n");
+		}
+	}
+
+	class OrderedContractResolver : DefaultContractResolver
+	{
+		protected override System.Collections.Generic.IList<JsonProperty> CreateProperties(System.Type type, MemberSerialization memberSerialization)
+		{
+			return base.CreateProperties(type, memberSerialization).OrderBy(p => p.PropertyName).ToList();
 		}
 	}
 }
