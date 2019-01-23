@@ -18,23 +18,35 @@ Note its free for open-source contributors like ourself. Once its installed, che
 4. WebVella ERP use PotgreSQL database. You can go download the latest version from https://www.postgresql.org/download/ . 
 If you don't have any management tool for PostgreSQL install also pgAdmin. You can download it from https://www.pgadmin.org/download/ . 
 
+## Start with seed project
+
+1. Download or Clone the repository sources ($ git clone https://github.com/WebVella/WebVella-ERP-Seed.git ) .
+This project contains ready to start web site project with all ERP libraries and resources installed from nuget packages.
+
+2. Create an empty PostgreSQL database for the erp. When erp starts for first time, it will create 
+necessary structure and data.
+
+3. Edit the Config.json file and set the correct sql connection string. 
+
+4. Run the project.
 
 ## Get, build and run the sources
 
-5. Download or Clone the repository sources ($ git clone https://github.com/WebVella/WebVella-ERP.git) .
+1. Download or Clone the repository sources ($ git clone https://github.com/WebVella/WebVella-ERP.git) .
 
-6. Create an empty PostgreSQL database for the erp. When erp starts for first time, it will create 
+2. Create an empty PostgreSQL database for the erp. When erp starts for first time, it will create 
 necessary structure and data.
 
-7. Open the solution file WebVella.ERP3.sln with Visual Studio and build the solution. 
+3. Open the solution file WebVella.ERP3.sln with Visual Studio and build the solution. 
 Set as startup  (if is not already set). Edit the Config.json file 
 in project WebVella.Erp.Site and set the correct sql connection string. 
 You may also want to change other configuration values (like timezone), but is not required.
 
-8. Run the application. The project is configured to open browser open on login screen when started. 
+4. Run the application. The project is configured to open browser open on login screen when started. 
 All erp functionality requires authentication. Use the default account email "**erp@webvella.com**" and password "**erp**"
 to authenticate. 
 
-9. If you want to develop your own components or applications, be sure that the WebVella.Erp.Plugins.SDK is included in your solution.
+5. If you want to develop your own components or applications, be sure that the WebVella.Erp.Plugins.SDK is included in your solution.
 This application will help you greatly to create and manage ERP objects like Entities and Relations, although its not required because
 ERP API can used directly to create and manage these objects.
+
