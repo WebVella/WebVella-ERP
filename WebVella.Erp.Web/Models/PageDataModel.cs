@@ -757,12 +757,28 @@ namespace WebVella.Erp.Web.Models
 						foreach (var propName in record.Properties.Keys)
 						{
 							var propValue = record[propName];
-							if (propValue is List<EntityRecord>)
-								Properties.Add(propName, new MPW(MPT.ListEntityRecords, propValue));
-							else if (propValue is EntityRecord)
-								Properties.Add(propName, new MPW(MPT.EntityRecord, propValue));
+							//the case when set record from page post 
+							if (propName.StartsWith("$") && propName.Contains(".") && propValue is List<Guid>)
+							{
+								string[] split = propName.Split('.');
+								List<EntityRecord> records = new List<EntityRecord>();
+								foreach(Guid id in (List<Guid>)propValue)
+								{
+									EntityRecord rec = new EntityRecord();
+									rec["id"] = id;
+									records.Add(rec);
+								}
+								Properties.Add(split[0], new MPW(MPT.ListEntityRecords, records));
+							}
 							else
-								Properties.Add(propName, new MPW(MPT.Object, propValue));
+							{
+								if (propValue is List<EntityRecord>)
+									Properties.Add(propName, new MPW(MPT.ListEntityRecords, propValue));
+								else if (propValue is EntityRecord)
+									Properties.Add(propName, new MPW(MPT.EntityRecord, propValue));
+								else
+									Properties.Add(propName, new MPW(MPT.Object, propValue));
+							}
 						}
 					}
 				}
