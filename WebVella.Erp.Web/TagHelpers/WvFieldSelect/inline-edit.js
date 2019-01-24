@@ -134,7 +134,12 @@ function SelectInlineEditInitSuccessCallback(response, fieldId, fieldName, entit
 
 	var selectOptions = $(selectors.inputEl + ' option');
 	var matchedOption = _.find(selectOptions, function (record) {
-		return newValue === record.attributes["value"].value;
+		if (!newValue && !record.attributes["value"].value) {
+			return true;
+		}
+		else {
+			return newValue === record.attributes["value"].value;
+		}
 	});
 	var optionLabel = matchedOption.text;
 

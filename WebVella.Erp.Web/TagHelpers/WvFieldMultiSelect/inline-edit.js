@@ -121,7 +121,12 @@ function MultiSelectInlineEditInitSuccessCallback(response, fieldId, fieldName, 
 	var selectOptions = $(selectors.inputEl + ' option');
 	_.forEach(newValue, function (optionKey) {
 		var matchedOption = _.find(selectOptions, function (record) {
-			return optionKey === record.attributes["value"].value;
+			if (!optionKey && !record.attributes["value"].value) {
+				return true;
+			}
+			else {
+				return optionKey === record.attributes["value"].value;
+			}
 		});
 		var optionLabel = matchedOption.text;
 		$(selectors.viewOptionsListUl).append('<li class="select2-selection__choice" title="' + optionLabel + '" data-key="' + optionKey + '">' + optionLabel + '</li>');

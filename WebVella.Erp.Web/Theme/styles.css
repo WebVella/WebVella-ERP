@@ -3243,7 +3243,7 @@ input[type=date].form-control, input[type=datetime-local].form-control {
 .erp-field div.form-control {
 	min-height: 31px;
 	line-height: 1.35rem;
-	background: #fafafa;
+	/*background: #fafafa;*/
 }
 
 	.erp-field div.form-control [class^="fa"],
