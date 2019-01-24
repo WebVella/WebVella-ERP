@@ -4,15 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Eql;
 using WebVella.Erp.Exceptions;
-using WebVella.Erp.Plugins.Project.Utils;
+using WebVella.Erp.Plugins.Project.Services;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
-using WebVella.Erp.Web.Utils;
 
 namespace WebVella.Erp.Plugins.Project.Components
 {
@@ -79,13 +76,59 @@ namespace WebVella.Erp.Plugins.Project.Components
 				ViewBag.AppContext = ErpAppContext.Current;
 				ViewBag.ComponentContext = context;
 
+
+
+				#region << Init Data >>
+
 				if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
 				{
 					var selectedYearString = context.DataModel.GetPropertyValueByDataSource(options.Year) as string;
-					var selectedMonthString = context.DataModel.GetPropertyValueByDataSource(options.Month) as string;
-					var selectedAccountIdString = context.DataModel.GetPropertyValueByDataSource(options.AccountId) as string;
+					if (string.IsNullOrWhiteSpace(selectedYearString))
+						selectedYearString = DateTime.Now.Year.ToString();
+					if (!int.TryParse(selectedYearString, out int year))
+						throw new Exception("Year is not specified.");
 
+					var selectedMonthString = context.DataModel.GetPropertyValueByDataSource(options.Month) as string;
+					if (string.IsNullOrWhiteSpace(selectedMonthString))
+						selectedMonthString = DateTime.Now.Month.ToString();
+					if (!int.TryParse(selectedMonthString, out int month))
+						throw new Exception("Month is not specified.");
+
+					Guid? accountId = null;
+					var selectedAccountIdString = context.DataModel.GetPropertyValueByDataSource(options.AccountId) as string;
+					if (Guid.TryParse(selectedAccountIdString, out Guid selectedAccountId))
+						accountId = selectedAccountId;
+					else if (!String.IsNullOrWhiteSpace(selectedAccountIdString))
+						throw new Exception("Selected account id is not GUID.");
+
+					List<EntityRecord> data = new ReportService().GetTimelogData(year, month, accountId);
+
+					List<EntityRecord> projects = new List<EntityRecord>();
+					List<EntityRecord> tasks = new List<EntityRecord>();
+					decimal overallBillableMinutes = 0;
+					decimal overallNonBillableMinutes = 0;
+
+					foreach (var rec in data)
+					{
+						if (!projects.Any(x => (Guid)rec["project_id"] == (Guid)x["id"]))
+						{
+							EntityRecord projRec = new EntityRecord();
+							projRec["id"] = rec["project_id"];
+							projRec["name"] = rec["project_name"];
+							projects.Add(projRec);
+						}
+						tasks.Add(rec);
+						overallBillableMinutes += (decimal)rec["billable_minutes"];
+						overallNonBillableMinutes += (decimal)rec["non_billable_minutes"];
+					}
+					ViewBag.projects = projects;
+					ViewBag.tasks = tasks;
+					ViewBag.overallBillableMinutes = overallBillableMinutes;
+					ViewBag.overallNonBillableMinutes = overallNonBillableMinutes;
 				}
+
+				#endregion
+
 				switch (context.Mode)
 				{
 					case ComponentMode.Display:
