@@ -8202,10 +8202,10 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 					$"\tvar weight = {currentPage.Weight};\n" +
 					$"\tvar type = (PageType)((int){(int)currentPage.Type});\n" +
 					$"\tvar isRazorBody = {currentPage.IsRazorBody.ToString().ToLower()};\n" +
-					(currentPage.AppId.HasValue ? $"\tvar appId = new Guid(\"{currentPage.AppId}\");\n" : $"\tvar appId = null;\n") +
-					(currentPage.EntityId.HasValue ? $"\tvar entityId = new Guid(\"{currentPage.EntityId}\");\n" : $"\tvar entityId = null;\n") +
-					(currentPage.NodeId.HasValue ? $"\tvar nodeId = new Guid(\"{currentPage.NodeId}\");\n" : $"\tvar nodeId = null;\n") +
-					(currentPage.AreaId.HasValue ? $"\tvar areaId = new Guid(\"{currentPage.AreaId}\");\n" : $"\tvar areaId = null;\n") +
+					(currentPage.AppId.HasValue ? $"\tvar appId = new Guid(\"{currentPage.AppId}\");\n" : $"\tGuid? appId = null;\n") +
+					(currentPage.EntityId.HasValue ? $"\tvar entityId = new Guid(\"{currentPage.EntityId}\");\n" : $"\tGuid? entityId = null;\n") +
+					(currentPage.NodeId.HasValue ? $"\tvar nodeId = new Guid(\"{currentPage.NodeId}\");\n" : $"\tGuid? nodeId = null;\n") +
+					(currentPage.AreaId.HasValue ? $"\tvar areaId = new Guid(\"{currentPage.AreaId}\");\n" : $"\tGuid? areaId = null;\n") +
 					(currentPage.RazorBody != null ? $"\tstring razorBody = @\"{currentPage.RazorBody.EscapeMultiline()}\";\n" : $"\tstring razorBody = null;\n") +
 
 					$"\tvar labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();\n";
