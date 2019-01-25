@@ -8,6 +8,7 @@ using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Eql;
 using WebVella.Erp.Exceptions;
+using WebVella.Erp.Plugins.Project.Utils;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
@@ -111,6 +112,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 
 					var inputRecords = context.DataModel.GetPropertyValueByDataSource(options.Records) as List<EntityRecord> ?? new List<EntityRecord>();
 					ViewBag.RecordsJson = JsonConvert.SerializeObject(inputRecords);
+					ViewBag.SiteRootUrl = UrlUtils.FullyQualifiedApplicationPath(ErpRequestContext.PageContext.HttpContext);
 				}
 				switch (context.Mode)
 				{

@@ -99,20 +99,28 @@ namespace WebVella.Erp.Plugins.Project.Components
 
 					foreach (var task in projectTasks)
 					{
-						var ownerId = (Guid)task["owner_id"];
+						var ownerId = (Guid?)task["owner_id"];
 						var taskStatus = (Guid)task["status_id"];
 						var targetDate = (DateTime?)task["target_date"];
 
-						if (!userDict.ContainsKey(ownerId)) {
+						if (ownerId == null && !userDict.ContainsKey(Guid.Empty)) {
 							var userRecord = new EntityRecord();
 							userRecord["overdue"] = (int)0;
 							userRecord["today"] = (int)0;
 							userRecord["open"] = (int)0;
 							userRecord["all"] = (int)0;
-							userDict[ownerId] = userRecord;
+							userDict[Guid.Empty] = userRecord;
+						}
+						else if (!userDict.ContainsKey(ownerId.Value)) {
+							var userRecord = new EntityRecord();
+							userRecord["overdue"] = (int)0;
+							userRecord["today"] = (int)0;
+							userRecord["open"] = (int)0;
+							userRecord["all"] = (int)0;
+							userDict[ownerId.Value] = userRecord;
 						}
 
-						var currentRecord = userDict[ownerId];
+						var currentRecord = userDict[ownerId != null ? ownerId.Value : Guid.Empty];
 						currentRecord["all"] = ((int)currentRecord["all"])+1;
 						if (!closedStatusHashset.Contains(taskStatus))
 							currentRecord["open"] = ((int)currentRecord["open"]) + 1;
@@ -125,25 +133,41 @@ namespace WebVella.Erp.Plugins.Project.Components
 							else if (targetDate.Value.Date == DateTime.Now.Date)
 								currentRecord["today"] = ((int)currentRecord["today"]) + 1;
 						}
-						userDict[ownerId] = currentRecord;
+						userDict[ownerId != null ? ownerId.Value : Guid.Empty] = currentRecord;
 					}
 
 					var records = new List<EntityRecord>();
 					foreach (var key in userDict.Keys)
 					{
-						var user = users.First(x => (Guid)x["id"] == key);
-						var statRecord = userDict[key];
-						var row = new EntityRecord();
-						var imagePath = "/assets/avatar.png";
-						if (user["image"] != null && (string)user["image"] != "")
-							imagePath = "/fs" + (string)user["image"];
+						if (key == Guid.Empty)
+						{
+							var statRecord = userDict[key];
+							var row = new EntityRecord();
+							var imagePath = "/assets/avatar.png";
 
-						row["user"] = $"<img src=\"{imagePath}\" class=\"rounded-circle\" width=\"24\"> {(string)user["username"]}";
-						row["overdue"] = statRecord["overdue"];
-						row["today"] = statRecord["today"];
-						row["open"] = statRecord["open"];
-						row["all"] = statRecord["all"];
-						records.Add(row);
+							row["user"] = $"<img src=\"{imagePath}\" class=\"rounded-circle\" width=\"24\"> No owner";
+							row["overdue"] = statRecord["overdue"];
+							row["today"] = statRecord["today"];
+							row["open"] = statRecord["open"];
+							row["all"] = statRecord["all"];
+							records.Add(row);
+						}
+						else
+						{
+							var user = users.First(x => (Guid)x["id"] == key);
+							var statRecord = userDict[key];
+							var row = new EntityRecord();
+							var imagePath = "/assets/avatar.png";
+							if (user["image"] != null && (string)user["image"] != "")
+								imagePath = "/fs" + (string)user["image"];
+
+							row["user"] = $"<img src=\"{imagePath}\" class=\"rounded-circle\" width=\"24\"> {(string)user["username"]}";
+							row["overdue"] = statRecord["overdue"];
+							row["today"] = statRecord["today"];
+							row["open"] = statRecord["open"];
+							row["all"] = statRecord["all"];
+							records.Add(row);
+						}
 					}
 					ViewBag.Records = records;
 				}

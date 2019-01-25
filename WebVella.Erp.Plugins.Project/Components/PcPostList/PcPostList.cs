@@ -121,6 +121,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 						parentIdFieldName: "parent_id", createdDateFieldName: "created_on", sortOrder: "asc");
 					ViewBag.Records = treeRecords;
 					ViewBag.RecordsJson = JsonConvert.SerializeObject(treeRecords);
+					ViewBag.SiteRootUrl = UrlUtils.FullyQualifiedApplicationPath(ErpRequestContext.PageContext.HttpContext);
 				}
 
 				switch (context.Mode)

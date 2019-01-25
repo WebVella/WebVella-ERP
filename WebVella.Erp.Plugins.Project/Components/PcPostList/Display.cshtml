@@ -24,6 +24,6 @@
 <script src="/js/wv-post-list/wv-post-list.js"></script>
 
   <wv-post-list related-record-id="@ViewBag.RelatedRecordId" related-records='@ViewBag.RelatedRecordsJson'
-    site-root-url="http://localhost:2202"
+    site-root-url="@ViewBag.SiteRootUrl"
     posts='@Html.Raw(ViewBag.RecordsJson)'
     current-user='@Html.Raw(ViewBag.CurrentUserJson)'></wv-post-list>

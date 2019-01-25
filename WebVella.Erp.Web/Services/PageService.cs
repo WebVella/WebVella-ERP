@@ -48,7 +48,7 @@ namespace WebVella.Erp.Web.Services
 					return pages;
 			}
 
-			pages = new ErpPageRepository(connectionString).GetAllPages(transaction).MapTo<ErpPage>();
+			pages = new ErpPageRepository(connectionString).GetAllPages(transaction).MapTo<ErpPage>().OrderBy(x => x.Weight).ToList();
 			
 			if( useCache && ErpAppContext.Current != null)
 				ErpAppContext.Current.Cache.Put(CACHE_KEY, pages);
@@ -1111,7 +1111,7 @@ namespace WebVella.Erp.Web.Services
 						//that are attached to this app or has NO app. Pages attached to other apps should not be selected
 						if (resultPage == null)
 						{
-							resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id && (x.AppId == currentApp.Id || x.AppId == null));
+							resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id && (x.AppId == currentApp.Id || x.AppId == null)); 
 						}
 					}
 					#endregion

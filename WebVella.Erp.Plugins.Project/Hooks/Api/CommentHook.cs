@@ -14,8 +14,7 @@ using WebVella.Erp.Plugins.Project.Services;
 namespace WebVella.Erp.Plugins.Project.Hooks.Api
 {
 	[HookAttachment("comment")]
-	public class CommentHook : IErpPreCreateRecordHook, IErpPreUpdateRecordHook,IErpPreDeleteRecordHook,	
-							IErpPostCreateRecordHook,IErpPostUpdateRecordHook,IErpPostDeleteRecordHook
+	public class CommentHook : IErpPreCreateRecordHook
 	{
 
 		public void OnPreCreateRecord(string entityName, EntityRecord record, List<ErrorModel> errors)
@@ -109,41 +108,6 @@ namespace WebVella.Erp.Plugins.Project.Hooks.Api
 					body:body,relatedRecords: relatedRecords, scope: scope, type: "comment");
 			}
 
-		}
-
-		public void OnPreUpdateRecord(string entityName, EntityRecord record, List<ErrorModel> errors)
-		{
-		}
-
-		public void OnPreDeleteRecord(string entityName, EntityRecord record, List<ErrorModel> errors)
-		{
-		}
-
-		public void OnPostCreateRecord(string entityName, EntityRecord record)
-		{
-			//Get comment and its related records
-			//var eqlCommand = " SELECT * FROM comment ";
-			//eqlCommand += " WHERE id = @commentId ";
-			//var eqlParams = new List<EqlParameter>() { new EqlParameter("commentId", (Guid)record["id"])};
-			//var getCommentResponse = new EqlCommand(eqlCommand, eqlParams).Execute();
-
-
-
-			//Add activity log
-			//var subject = $"created <a href=\"/projects/tasks/{patchRecord["id"]}\">{patchRecord["key"]} {taskSubject}</a>";
-			//var relatedRecords = new List<string>() { patchRecord["id"].ToString(), projectId.ToString() };
-			//var scope = new List<string>() { "projects" };
-			//var recordId = (Guid)patchRecord["id"];
-			//new FeedItemService().Create(id: Guid.NewGuid(), createdBy: SecurityContext.CurrentUser.Id, subject: subject,
-			//	relatedRecords: relatedRecords, scope: scope, recordId: recordId, type: "task");
-		}
-
-		public void OnPostUpdateRecord(string entityName, EntityRecord record)
-		{
-		}
-
-		public void OnPostDeleteRecord(string entityName, EntityRecord record)
-		{
 		}
 
 	}

@@ -18,7 +18,7 @@ You need to decorate the class as an API hook by prepending an attribute. It has
 |                               |
 |                               | *is required*: `FALSE`                      
 |                               |                                   
-|                               | If you need to target a custom hook handler, here you need to provide its name
+|                               | The name of a custom hook handler -> if the page has a queryParam `hookKey`, only hooks that match it with their `key` will be executed
 +-------------------------------+-----------------------------------+
 | `priority`                    | *object type*: `int`                         
 |                               |         
