@@ -18,7 +18,8 @@ function MultiSelectFormInit(fieldId, fieldName, entityName, config) {
 	var selectors = MultiSelectFormGenerateSelectors(fieldId, fieldName, config);
 	$(selectors.inputEl).select2({
 		closeOnSelect: true,
-		language: "bg",
+		language: "en",
+		minimumResultsForSearch: 10,
 		width: 'style'
 	});
 	//Stops remove selection click opening the dropdown

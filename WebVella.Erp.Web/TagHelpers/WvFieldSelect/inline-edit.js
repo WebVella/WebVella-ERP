@@ -29,6 +29,9 @@ function SelectInlineEditPreEnableCallback(fieldId, fieldName, entityName, recor
 	$(selectors.inputEl).select2({
 		closeOnSelect: true,
 		language: "en",
+		minimumResultsForSearch: 10,
+		placeholder: 'not selected',
+		allowClear:!$(selectors.inputEl).prop('required'),
 		width: 'style',
 		escapeMarkup: function (markup) {
 			return markup;

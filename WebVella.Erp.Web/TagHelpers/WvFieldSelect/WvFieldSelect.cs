@@ -90,7 +90,13 @@ namespace WebVella.Erp.Web.TagHelpers
 				if (Access == FieldAccess.Full || Access == FieldAccess.FullAndCreate)
 				{
 					var inputGroupEl = new TagBuilder("div");
-					inputGroupEl.AddCssClass("input-group");
+					if (PrependHtml.Count > 0 || AppendHtml.Count > 0)
+					{
+						inputGroupEl.AddCssClass("input-group");
+					}
+					else {
+						inputGroupEl.AddCssClass("d-flex");
+					}
 					//Prepend
 					if (PrependHtml.Count > 0)
 					{
@@ -121,15 +127,8 @@ namespace WebVella.Erp.Web.TagHelpers
 						{
 							var defaultOption = Options.FirstOrDefault(x => x.Value == DefaultValue);
 
-							if (defaultOption == null)
+							if (defaultOption != null)
 							{
-								var optionEl = new TagBuilder("option");
-								optionEl.Attributes.Add("value", "");
-								optionEl.Attributes.Add("selected", null);
-								optionEl.InnerHtml.Append("not selected");
-								selectEl.InnerHtml.AppendHtml(optionEl);
-							}
-							else {
 								Value = DefaultValue;
 							}
 						}
@@ -145,6 +144,7 @@ namespace WebVella.Erp.Web.TagHelpers
 						optionEl.InnerHtml.Append("not selected");
 						selectEl.InnerHtml.AppendHtml(optionEl);
 					}
+
 					foreach (var option in Options)
 					{
 						var optionEl = new TagBuilder("option");
@@ -524,17 +524,6 @@ namespace WebVella.Erp.Web.TagHelpers
 						}
 
 						selectEl.Attributes.Add("data-original-value", JsonConvert.SerializeObject((Value ?? "").ToString()));
-
-						{
-							var optionEl = new TagBuilder("option");
-							optionEl.Attributes.Add("value", "");
-							if (String.IsNullOrWhiteSpace(Value))
-							{
-								optionEl.Attributes.Add("selected", null);
-							}
-							optionEl.InnerHtml.Append("not selected");
-							selectEl.InnerHtml.AppendHtml(optionEl);
-						}
 
 						foreach (var option in Options)
 						{

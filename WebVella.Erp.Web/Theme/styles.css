@@ -2348,7 +2348,7 @@ dropdown-item.active {
 }
 
 .card {
-	border-radius:0;
+	border-radius: 0;
 }
 
 .card-header {
@@ -2359,6 +2359,7 @@ dropdown-item.active {
 	/*text-transform: uppercase;*/
 	font-size: 12px;
 }
+
 .card-body {
 	padding: 0.5rem;
 }
@@ -2380,13 +2381,13 @@ dropdown-item.active {
 .align-center-col {
 	display: flex;
 	align-items: center;
-	flex-flow:column;
+	flex-flow: column;
 }
 
 .align-center-row {
 	display: flex;
 	align-items: center;
-	flex-flow:column;
+	flex-flow: column;
 }
 
 
@@ -2400,7 +2401,7 @@ dropdown-item.active {
 	}
 
 .page-link:focus {
-	box-shadow:none;
+	box-shadow: none;
 }
 
 /*#endregion*/
@@ -2990,16 +2991,16 @@ pre, code {
 
 .erp-field.form .input-group .clear-link {
 	position: absolute;
-    right: 10px;
-    top: 50%;
-    margin-top: -10px;
-	color:--gray_color;
-	z-index:5;
+	right: 10px;
+	top: 50%;
+	margin-top: -10px;
+	color: --gray_color;
+	z-index: 5;
 }
 
-.erp-field.form .input-group .clear-link:hover {
-	color:--red_color;
-}
+	.erp-field.form .input-group .clear-link:hover {
+		color: --red_color;
+	}
 
 .sp-container {
 	background: #fff;
@@ -3432,7 +3433,9 @@ input[type=date].form-control, input[type=datetime-local].form-control {
 }
 
 .select2-container--open .select2-dropdown--below {
-	border-top: 1px solid #ccc;
+	border: 1px solid #ccc;
+    border-top: none;
+	box-shadow: 0px 1px 5px rgba(0,0,0,0.25);
 }
 
 .select2-results .select2-add-option {
@@ -3462,6 +3465,41 @@ input[type=date].form-control, input[type=datetime-local].form-control {
 .erp-field .select2.disabled .select2-selection {
 	background-color: #fafafa;
 }
+
+.select2-container--default .select2-results>.select2-results__options::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.select2-container--default .select2-results>.select2-results__options::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+.select2-container--default .select2-results>.select2-results__options::-webkit-scrollbar-thumb {
+  background: #546e7a;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+.select2-container--default .select2-results>.select2-results__options::-webkit-scrollbar-thumb:hover {
+  background: #455a64;
+}
+.select2-container--default .select2-results>.select2-results__options::-webkit-scrollbar-thumb:active {
+  background: #263238;
+}
+.select2-container--default .select2-results>.select2-results__options::-webkit-scrollbar-track {
+  background: #cfd8dc;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+.select2-container--default .select2-results>.select2-results__options::-webkit-scrollbar-track:hover {
+  background: #cfd8dc;
+}
+.select2-container--default .select2-results>.select2-results__options::-webkit-scrollbar-track:active {
+  background: #cfd8dc;
+}
+.select2-container--default .select2-results>.select2-results__options::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 
 
 .erp-field .select2:not(.disabled) .select2-selection__choice,
@@ -3537,8 +3575,8 @@ erp-field.inline-edit .select2-container--default .select2-search--inline .selec
 
 .select2-container--default .select2-results__option {
 	border-bottom: 1px solid #ccc !important;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-top: 7px;
+	padding-bottom: 7px;
 }
 
 	.select2-container--default .select2-results__option:hover {
@@ -3547,8 +3585,8 @@ erp-field.inline-edit .select2-container--default .select2-search--inline .selec
 	}
 
 	.select2-container--default .select2-results__option[aria-selected=true] {
-		background: #FFFDE7 !important;
-		color: #333;
+		background: #fff !important;
+		color: #4CAF50;
 		font-weight: normal;
 		border-bottom: 1px solid #ccc !important;
 	}
@@ -4002,7 +4040,7 @@ border-bottom-style:dashed;
 	/*border-bottom: 2px solid --blue_gray_dark_color;*/
 	border-top: none;
 	font-weight: bold;
-	white-space:nowrap;
+	white-space: nowrap;
 	/*padding-right: 20px;*/
 	line-height: 16px;
 }
@@ -4099,27 +4137,27 @@ border-bottom-style:dashed;
 
 .erp-list .sort-link {
 	text-decoration: none;
-	float:right;
-	opacity:0;
+	float: right;
+	opacity: 0;
 	height: 16px;
 }
 
 .erp-list thead:hover .sort-link {
-	opacity:1;
+	opacity: 1;
 }
 
-	.erp-list .sort-link em {
-		position: absolute;
-		top: 0;
-		left: 0;
-		height: 100%;
-		width: 100%;
-		display: block;
-	}
+.erp-list .sort-link em {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	display: block;
+}
 
-		.erp-list .sort-link em:hover {
-			background: rgba(0,0,0,0.02);
-		}
+	.erp-list .sort-link em:hover {
+		background: rgba(0,0,0,0.02);
+	}
 
 .erp-list .sort-marker {
 	display: inline-block;

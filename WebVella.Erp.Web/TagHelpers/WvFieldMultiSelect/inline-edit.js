@@ -14,7 +14,8 @@ function MultiSelectInlineEditPreEnableCallback(fieldId, fieldName, entityName, 
 	var selectors = MultiSelectInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
 	$(selectors.inputEl).select2({
 		closeOnSelect: true,
-		language: "bg",
+		language: "en",
+		minimumResultsForSearch: 10,
 		width: 'style'
 	});
 	//Stops remove selection click opening the dropdown

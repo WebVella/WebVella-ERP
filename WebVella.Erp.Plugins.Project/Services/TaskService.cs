@@ -5,6 +5,7 @@ using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Eql;
 using WebVella.Erp.Exceptions;
+using WebVella.Erp.Web.Models;
 
 
 //TODO develop service
@@ -166,6 +167,111 @@ namespace WebVella.Erp.Plugins.Project.Services
 				throw new Exception(updateResponse.Message);
 		}
 
+		public EntityRecord GetPageHookLogic(BaseErpPageModel pageModel, EntityRecord record) {
 
+			if (record == null)
+				record = new EntityRecord();
+
+			//Preselect owner
+			ErpUser currentUser = (ErpUser)pageModel.DataModel.GetProperty("CurrentUser");
+			if (currentUser != null)
+				record["owner_id"] = currentUser.Id;
+			//$project_nn_task.id
+			//Preselect project
+			if (pageModel.HttpContext.Request.Query.ContainsKey("projectId"))
+			{
+				var projectQueryId = pageModel.HttpContext.Request.Query["projectId"].ToString();
+				if (Guid.TryParse(projectQueryId, out Guid outGuid))
+				{
+					var projectIdList = new List<Guid>();
+					projectIdList.Add(outGuid);
+					record["$project_nn_task.id"] = projectIdList;
+				}
+			}
+			else
+			{
+				var eqlCommand = "SELECT created_on,type_id,$project_nn_task.id FROM task WHERE created_by = @currentUserId ORDER BY created_on PAGE 1 PAGESIZE 1";
+				var eqlParams = new List<EqlParameter>() { new EqlParameter("currentUserId", currentUser.Id) };
+				var eqlResult = new EqlCommand(eqlCommand, eqlParams).Execute();
+				if (eqlResult != null && eqlResult is EntityRecordList && eqlResult.Count > 0)
+				{
+					var relatedProjects = (List<EntityRecord>)eqlResult[0]["$project_nn_task"];
+					if (relatedProjects.Count > 0)
+					{
+						var projectIdList = new List<Guid>();
+						projectIdList.Add((Guid)relatedProjects[0]["id"]);
+						record["$project_nn_task.id"] = projectIdList;
+					}
+					record["type_id"] = (Guid?)eqlResult[0]["type_id"];
+				}
+			}
+
+			//Preset start date
+			record["start_date"] = DateTime.Now;
+
+			return record;
+		}
+
+
+		public void PreCreateRecordPageHookLogic(string entityName, EntityRecord record, List<ErrorModel> errors) {
+			var projectIdSubmitted = true;
+			if (!record.Properties.ContainsKey("$project_nn_task"))
+			{
+				projectIdSubmitted = false;
+			}
+			else
+			{
+				var projectRecord = (EntityRecord)record["$project_nn_task"];
+				if (!projectRecord.Properties.ContainsKey("id"))
+				{
+					projectIdSubmitted = false;
+				}
+				else
+				{
+					if (projectRecord["id"] == null && !(projectRecord["id"] is Guid))
+					{
+						projectIdSubmitted = false;
+					}
+				}
+			}
+
+			if (!projectIdSubmitted)
+			{
+				errors.Add(new ErrorModel()
+				{
+					Key = "$project_nn_task.id",
+					Message = "Project is required"
+				});
+			}
+		}
+
+		public void PostCreateApiHookLogic(string entityName, EntityRecord record) {
+			//Update key and search fields
+			Guid projectId = Guid.Empty;
+			string taskSubject = "";
+			var patchRecord = new TaskService().SetCalculationFields((Guid)record["id"], subject: out taskSubject, projectId: out projectId);
+			var updateResponse = new RecordManager(executeHooks: false).UpdateRecord("task", patchRecord);
+			if (!updateResponse.Success)
+				throw new Exception(updateResponse.Message);
+
+
+			//Add activity log
+			var subject = $"created <a href=\"/projects/tasks/tasks/r/{patchRecord["id"]}/details\">[{patchRecord["key"]}] {taskSubject}</a>";
+			var relatedRecords = new List<string>() { patchRecord["id"].ToString(), projectId.ToString() };
+			var scope = new List<string>() { "projects" };
+			new FeedItemService().Create(id: Guid.NewGuid(), createdBy: SecurityContext.CurrentUser.Id, subject: subject,
+				relatedRecords: relatedRecords, scope: scope, type: "task");
+		}
+
+		public void PostUpdateApiHookLogic(string entityName, EntityRecord record)
+		{
+			//Update key and search fields
+			Guid projectId = Guid.Empty;
+			string taskSubject = "";
+			var patchRecord = new TaskService().SetCalculationFields((Guid)record["id"], subject: out taskSubject, projectId: out projectId);
+			var updateResponse = new RecordManager(executeHooks: false).UpdateRecord("task", patchRecord);
+			if (!updateResponse.Success)
+				throw new Exception(updateResponse.Message);
+		}
 	}
 }

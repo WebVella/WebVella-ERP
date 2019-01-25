@@ -21,4 +21,8 @@
     <ProjectReference Include="..\WebVella.Erp.Web\WebVella.Erp.Web.csproj" />
     <ProjectReference Include="..\WebVella.ERP\WebVella.Erp.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Hooks\" />
+  </ItemGroup>
 </Project>

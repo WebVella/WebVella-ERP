@@ -27,9 +27,13 @@ function SelectFormFormat(icon) {
 function SelectFormInit(fieldId, fieldName, entityName, config) {
 	config = ProcessConfig(config);
 	var selectors = SelectFormGenerateSelectors(fieldId, fieldName, config);
+
 	$(selectors.inputEl).select2({
 		language: "en",
+		minimumResultsForSearch: 10,
 		closeOnSelect: true,
+		placeholder: 'not selected',
+		allowClear:!$(selectors.inputEl).prop('required'),
 		width: 'style',
 		escapeMarkup: function (markup) {
 			return markup;

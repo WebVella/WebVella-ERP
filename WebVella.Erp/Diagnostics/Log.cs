@@ -18,7 +18,7 @@ namespace WebVella.Erp.Diagnostics
 
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				var sql = $@"SELECT *, COUNT(*) OVER() AS ___total_count___ FROM system_log WHERE (source  ILIKE  @querySource  OR @querySource is null)  AND (message  ILIKE  @queryMessage OR @queryMessage is null ) LIMIT {limit} OFFSET {offset} ";
+				var sql = $@"SELECT *, COUNT(*) OVER() AS ___total_count___ FROM system_log WHERE (source  ILIKE  @querySource  OR @querySource is null)  AND (message  ILIKE  @queryMessage OR @queryMessage is null ) ORDER BY created_on DESC LIMIT {limit} OFFSET {offset} ";
 
 				var cmd = connection.CreateCommand(sql);
 				cmd.Parameters.Add(new NpgsqlParameter("@querySource", string.IsNullOrWhiteSpace(querySource) ? (object)DBNull.Value : $"%{querySource}%"));
