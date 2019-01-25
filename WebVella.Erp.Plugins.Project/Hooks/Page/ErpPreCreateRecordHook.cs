@@ -11,7 +11,7 @@ using WebVella.Erp.Web.Pages.Application;
 
 namespace WebVella.Erp.Plugins.Project.Hooks.Page
 {
-	[HookAttachment]
+	[HookAttachment("task")]
 	public class ErpPreCreateRecordHook : IErpPreCreateRecordHook
 	{
 		public void OnPreCreateRecord(string entityName, EntityRecord record, List<ErrorModel> errors) {

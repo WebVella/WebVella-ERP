@@ -4,7 +4,6 @@ using System.Linq;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Eql;
-using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Models;
 
 
@@ -213,35 +212,35 @@ namespace WebVella.Erp.Plugins.Project.Services
 		}
 
 
-		public void PreCreateRecordPageHookLogic(string entityName, EntityRecord record, List<ErrorModel> errors) {
-			var projectIdSubmitted = true;
-			if (!record.Properties.ContainsKey("$project_nn_task"))
-			{
-				projectIdSubmitted = false;
-			}
-			else
-			{
-				var projectRecord = (EntityRecord)record["$project_nn_task"];
-				if (!projectRecord.Properties.ContainsKey("id"))
-				{
-					projectIdSubmitted = false;
-				}
-				else
-				{
-					if (projectRecord["id"] == null && !(projectRecord["id"] is Guid))
-					{
-						projectIdSubmitted = false;
-					}
-				}
-			}
-
-			if (!projectIdSubmitted)
+		public void PreCreateRecordPageHookLogic(string entityName, EntityRecord record, List<ErrorModel> errors) 
+		{
+			if (!record.Properties.ContainsKey("$project_nn_task.id"))
 			{
 				errors.Add(new ErrorModel()
 				{
 					Key = "$project_nn_task.id",
-					Message = "Project is required"
+					Message = "Project is not specified."
 				});
+			}
+			else
+			{
+				var projectRecord = (List<Guid>)record["$project_nn_task.id"];
+				if (projectRecord.Count == 0)
+				{
+					errors.Add(new ErrorModel()
+					{
+						Key = "$project_nn_task.id",
+						Message = "Project is not specified."
+					});
+				}
+				else if (projectRecord.Count > 1)
+				{
+					errors.Add(new ErrorModel()
+					{
+						Key = "$project_nn_task.id",
+						Message = "More than one project is selected."
+					});
+				}
 			}
 		}
 

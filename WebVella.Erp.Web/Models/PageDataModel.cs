@@ -384,7 +384,7 @@ namespace WebVella.Erp.Web.Models
 				if (ds == null)
 					continue;
 
-				Properties.Add(pageDS.Name, new MPW(MPT.DataSource, new DSW { DataSource = ds, PageDataSource = pageDS }));
+				Properties[pageDS.Name] = new MPW(MPT.DataSource, new DSW { DataSource = ds, PageDataSource = pageDS });
 			}
 
 		}
@@ -745,7 +745,7 @@ namespace WebVella.Erp.Web.Models
 						for (int i = 0; i < records.Count; i++)
 						{
 							var recMPW = new MPW(MPT.EntityRecord, records[i]);
-							Properties.Add($"[{i}]", recMPW);
+							Properties[$"[{i}]"] = recMPW;
 						}
 					}
 				}
@@ -768,16 +768,16 @@ namespace WebVella.Erp.Web.Models
 									rec["id"] = id;
 									records.Add(rec);
 								}
-								Properties.Add(split[0], new MPW(MPT.ListEntityRecords, records));
+								Properties[split[0]] = new MPW(MPT.ListEntityRecords, records);
 							}
 							else
 							{
 								if (propValue is List<EntityRecord>)
-									Properties.Add(propName, new MPW(MPT.ListEntityRecords, propValue));
+									Properties[propName] = new MPW(MPT.ListEntityRecords, propValue);
 								else if (propValue is EntityRecord)
-									Properties.Add(propName, new MPW(MPT.EntityRecord, propValue));
+									Properties[propName] = new MPW(MPT.EntityRecord, propValue);
 								else
-									Properties.Add(propName, new MPW(MPT.Object, propValue));
+									Properties[propName] = new MPW(MPT.Object, propValue);
 							}
 						}
 					}
