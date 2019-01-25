@@ -2,38 +2,45 @@
 	<tbody>
 		<tr>
 			<th width="200">Total billable</th>
-			<td>0</td>
+			<td>@ViewBag.overallBillableMinutes minutes = @(((decimal)ViewBag.overallBillableMinutes/60).ToString("n2")) hours</td>
 		</tr>
 		<tr>
 			<th>Total not billable</th>
-			<td>0</td>
+			<td>@ViewBag.overallNonBillableMinutes minutes = @(((decimal)ViewBag.overallNonBillableMinutes/60).ToString("n2")) hours</td>
 		</tr>
 	</tbody>
 </table>
 
-@*For each project*@
-
-<div class="mt-5">
-	<h3>Project name</h3>
-	<table class="table table-bordered table-sm">
-		<thead>
-			<tr>
-				<th>subject</th>
-				<th width="120">type</th>
-				<th width="120">billable</th>
-				<th width="120">not-billable</th>
-			</tr>
-		</thead>
-		<tbody>
-		@*For each task with timelog for this month*@
-			<tr>
-				<td>
-					<a target="_blank" href="#">Task subject</a>
-				</td>
-				<td>type</td>
-				<td>0</td>
-				<td>0</td>
-			</tr>
-		</tbody>
-	</table>
-</div>
+@foreach (var project in ViewBag.projects)
+{
+	<div class="mt-5">
+		<h3>@project["name"]</h3>
+		<table class="table table-bordered table-sm">
+			<thead>
+				<tr>
+					<th>subject</th>
+					<th width="120">type</th>
+					<th width="120">billable</th>
+					<th width="120">not-billable</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var task in ViewBag.tasks)
+				{
+					if ((Guid)task["project_id"] != (Guid)project["id"])
+					{
+						continue;
+					}
+					<tr>
+						<td>
+							<a target="_blank" href="/projects/tasks/tasks/r/@task["task_id"]/details">@task["task_subject"]</a>
+						</td>
+						<td>@task["task_type"]</td>
+						<td>@task["billable_minutes"] m = @(((decimal)@task["billable_minutes"]/60).ToString("n2")) h</td>
+						<td>@task["non_billable_minutes"] m = @(((decimal)@task["non_billable_minutes"]/60).ToString("n2")) h</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}
