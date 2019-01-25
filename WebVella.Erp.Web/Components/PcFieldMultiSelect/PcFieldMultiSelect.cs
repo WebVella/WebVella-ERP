@@ -200,7 +200,7 @@ namespace WebVella.Erp.Web.Components
 							dataSourceOptions = optionsList;
 						}
 					}
-					if (!instanceOptions.TryConnectToEntity || dataSourceOptions.Count > 0)
+					if (dataSourceOptions.Count > 0)
 					{
 						model.Options = dataSourceOptions;
 					}

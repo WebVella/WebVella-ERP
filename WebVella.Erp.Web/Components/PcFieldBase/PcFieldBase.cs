@@ -7,6 +7,8 @@ using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Utils;
 using WebVella.Erp.Exceptions;
 using System.Linq;
+using WebVella.Erp.Web.Services;
+using WebVella.Erp.Api;
 
 namespace WebVella.Erp.Web.Components
 {
@@ -32,8 +34,8 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "value")]
 			public string Value { get; set; } = "";
 
-			[JsonProperty(PropertyName = "try_connect_to_entity")]
-			public bool TryConnectToEntity { get; set; } = false;
+			[JsonProperty(PropertyName = "connected_entity_id")]
+			public Guid? ConnectedEntityId { get; set; } = null;
 
 		}
 
@@ -105,6 +107,8 @@ namespace WebVella.Erp.Web.Components
 			public List<SelectOption> LabelRenderModeOptions { get; set; } = new List<SelectOption>();
 
 			public List<SelectOption> FieldRenderModeOptions { get; set; } = new List<SelectOption>();
+
+			public List<SelectOption> EntitySelectOptions { get; set; } = new List<SelectOption>();
 		}
 
 		public class PcFieldSelectModel : PcFieldBaseModel
@@ -127,6 +131,7 @@ namespace WebVella.Erp.Web.Components
 					FieldId = input.FieldId,
 					FieldRenderModeOptions = input.FieldRenderModeOptions,
 					LabelRenderModeOptions = input.LabelRenderModeOptions,
+					EntitySelectOptions = input.EntitySelectOptions,
 					InitErrors = input.InitErrors,
 					LabelErrorText = input.LabelErrorText,
 					LabelHelpText = input.LabelHelpText,
@@ -166,6 +171,7 @@ namespace WebVella.Erp.Web.Components
 					FieldId = input.FieldId,
 					FieldRenderModeOptions = input.FieldRenderModeOptions,
 					LabelRenderModeOptions = input.LabelRenderModeOptions,
+					EntitySelectOptions = input.EntitySelectOptions,
 					InitErrors = input.InitErrors,
 					LabelErrorText = input.LabelErrorText,
 					LabelHelpText = input.LabelHelpText,
@@ -203,6 +209,7 @@ namespace WebVella.Erp.Web.Components
 					FieldId = input.FieldId,
 					FieldRenderModeOptions = input.FieldRenderModeOptions,
 					LabelRenderModeOptions = input.LabelRenderModeOptions,
+					EntitySelectOptions = input.EntitySelectOptions,
 					InitErrors = input.InitErrors,
 					LabelErrorText = input.LabelErrorText,
 					LabelHelpText = input.LabelHelpText,
@@ -239,6 +246,7 @@ namespace WebVella.Erp.Web.Components
 					FieldId = input.FieldId,
 					FieldRenderModeOptions = input.FieldRenderModeOptions,
 					LabelRenderModeOptions = input.LabelRenderModeOptions,
+					EntitySelectOptions = input.EntitySelectOptions,
 					InitErrors = input.InitErrors,
 					LabelErrorText = input.LabelErrorText,
 					LabelHelpText = input.LabelHelpText,
@@ -275,6 +283,7 @@ namespace WebVella.Erp.Web.Components
 					FieldId = input.FieldId,
 					FieldRenderModeOptions = input.FieldRenderModeOptions,
 					LabelRenderModeOptions = input.LabelRenderModeOptions,
+					EntitySelectOptions = input.EntitySelectOptions,
 					InitErrors = input.InitErrors,
 					LabelErrorText = input.LabelErrorText,
 					LabelHelpText = input.LabelHelpText,
@@ -332,6 +341,9 @@ namespace WebVella.Erp.Web.Components
 
 			model.FieldRenderModeOptions = ModelExtensions.GetEnumAsSelectOptions<FieldRenderMode>();
 
+			if(context.Mode == ComponentMode.Options)
+				model.EntitySelectOptions = new MetaService().GetEntitiesAsSelectOptions();
+
 			var recordId = context.DataModel.GetProperty("RecordId");
 			if (recordId != null && recordId is Guid)
 			{
@@ -344,77 +356,89 @@ namespace WebVella.Erp.Web.Components
 				model.EntityName = ((Entity)entity).Name;
 				if (!String.IsNullOrWhiteSpace(model.EntityName) && model.RecordId != null)
 					model.ApiUrl = $"/api/v3/en_US/record/{model.EntityName}/{model.RecordId}/";
+			}
 
-				if (options.TryConnectToEntity)
+			Entity mappedEntity = null;
+			if (options.ConnectedEntityId != null)
+			{
+				mappedEntity = new EntityManager().ReadEntity(options.ConnectedEntityId.Value).Object;
+			}
+			else if (options.ConnectedEntityId == null && entity is Entity)
+			{
+				mappedEntity = (Entity)entity;
+			}
+
+			if (mappedEntity != null)
+			{
+				var fieldName = options.Name;
+				var entityField = mappedEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
+				if (entityField != null)
 				{
-					var fieldName = options.Name;
-					var entityField = ((Entity)entity).Fields.FirstOrDefault(x => x.Name == fieldName);
-					if (entityField != null)
+					//Connection success override the local options
+					//Init model
+					model.Placeholder = entityField.PlaceholderText;
+					model.Description = entityField.Description;
+					model.LabelHelpText = entityField.HelpText;
+					model.Required = entityField.Required;
+					label = entityField.Label;
+
+					if (entityField.EnableSecurity)
 					{
-						//Connection success override the local options
-						//Init model
-						model.Placeholder = entityField.PlaceholderText;
-						model.Description = entityField.Description;
-						model.LabelHelpText = entityField.HelpText;
-						model.Required = entityField.Required;
-						label = entityField.Label;
-						if (entityField.EnableSecurity)
-						{
 
-							var currentUser = context.DataModel.GetProperty("CurrentUser");
-							if (currentUser != null && currentUser is ErpUser)
+						var currentUser = context.DataModel.GetProperty("CurrentUser");
+						if (currentUser != null && currentUser is ErpUser)
+						{
+							var canRead = false;
+							var canUpdate = false;
+							var user = (ErpUser)currentUser;
+							foreach (var role in user.Roles)
 							{
-								var canRead = false;
-								var canUpdate = false;
-								var user = (ErpUser)currentUser;
-								foreach (var role in user.Roles)
-								{
-									if (entityField.Permissions.CanRead.Any(x => x == role.Id))
-										canRead = true;
-									if (entityField.Permissions.CanUpdate.Any(x => x == role.Id))
-										canUpdate = true;
-								}
-								if (canUpdate)
-									model.Access = FieldAccess.Full;
-								else if (canRead)
-									model.Access = FieldAccess.ReadOnly;
-								else
-									model.Access = FieldAccess.Forbidden;
-
+								if (entityField.Permissions.CanRead.Any(x => x == role.Id))
+									canRead = true;
+								if (entityField.Permissions.CanUpdate.Any(x => x == role.Id))
+									canUpdate = true;
 							}
-						}
+							if (canUpdate)
+								model.Access = FieldAccess.Full;
+							else if (canRead)
+								model.Access = FieldAccess.ReadOnly;
+							else
+								model.Access = FieldAccess.Forbidden;
 
-						//Specific model properties
-						var fieldOptions = new List<SelectOption>();
-						switch (entityField.GetFieldType()) {
-							case FieldType.SelectField:
-								var selectField = ((SelectField)entityField);
-								model.DefaultValue = selectField.DefaultValue;
-								fieldOptions = selectField.Options;
-								break;
-							case FieldType.MultiSelectField:
-								var multiselectField = ((MultiSelectField)entityField);
-								model.DefaultValue = multiselectField.DefaultValue;
-								fieldOptions = multiselectField.Options;
-								break;
-							default:
-								break;
 						}
-						switch (targetModel)
-						{
-							case "PcFieldSelectModel":
-								return PcFieldSelectModel.CopyFromBaseModel(model, fieldOptions);
-							case "PcFieldRadioListModel":
-								return PcFieldRadioListModel.CopyFromBaseModel(model, fieldOptions);
-							case "PcFieldCheckboxListModel":
-								return PcFieldCheckboxListModel.CopyFromBaseModel(model, fieldOptions);
-							case "PcFieldMultiSelectModel":
-								return PcFieldMultiSelectModel.CopyFromBaseModel(model, fieldOptions);
-							case "PcFieldCheckboxGridModel":
-								return PcFieldCheckboxGridModel.CopyFromBaseModel(model, new List<SelectOption>(), new List<SelectOption>());
-							default:
-								return model;
-						}
+					}
+
+					//Specific model properties
+					var fieldOptions = new List<SelectOption>();
+					switch (entityField.GetFieldType())
+					{
+						case FieldType.SelectField:
+							var selectField = ((SelectField)entityField);
+							model.DefaultValue = selectField.DefaultValue;
+							fieldOptions = selectField.Options;
+							break;
+						case FieldType.MultiSelectField:
+							var multiselectField = ((MultiSelectField)entityField);
+							model.DefaultValue = multiselectField.DefaultValue;
+							fieldOptions = multiselectField.Options;
+							break;
+						default:
+							break;
+					}
+					switch (targetModel)
+					{
+						case "PcFieldSelectModel":
+							return PcFieldSelectModel.CopyFromBaseModel(model, fieldOptions);
+						case "PcFieldRadioListModel":
+							return PcFieldRadioListModel.CopyFromBaseModel(model, fieldOptions);
+						case "PcFieldCheckboxListModel":
+							return PcFieldCheckboxListModel.CopyFromBaseModel(model, fieldOptions);
+						case "PcFieldMultiSelectModel":
+							return PcFieldMultiSelectModel.CopyFromBaseModel(model, fieldOptions);
+						case "PcFieldCheckboxGridModel":
+							return PcFieldCheckboxGridModel.CopyFromBaseModel(model, new List<SelectOption>(), new List<SelectOption>());
+						default:
+							return model;
 					}
 				}
 			}

@@ -48,7 +48,7 @@ namespace WebVella.Erp.Web.Components
 				#region << Init >>
 				if (context.Node == null)
 				{
-					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query param 'nid', when requesting this component"));
+					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query parameter 'nid', when requesting this component"));
 				}
 
 				var pageFromModel = context.DataModel.GetProperty("Page");
@@ -113,7 +113,6 @@ namespace WebVella.Erp.Web.Components
 				{
 					model.Value = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Value);
 
-
 					dynamic optionsResult = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Options);
 					var dataSourceOptions = new List<SelectOption>();
 					if (optionsResult == null) { }
@@ -139,7 +138,7 @@ namespace WebVella.Erp.Web.Components
 							catch
 							{
 								stringProcessed = false;
-								return await Task.FromResult<IViewComponentResult>(Content("Error: Options Json Deserialization failed!"));
+								return await Task.FromResult<IViewComponentResult>(Content("Error: Options Json De-serialization failed!"));
 							}
 						}
 						if (!stringProcessed && ((string)optionsResult).Contains(",") && !((string)optionsResult).Contains("{") && !((string)optionsResult).Contains("["))
@@ -154,7 +153,7 @@ namespace WebVella.Erp.Web.Components
 						}
 					}
 					
-					if (!instanceOptions.TryConnectToEntity || dataSourceOptions.Count > 0)
+					if (dataSourceOptions.Count > 0)
 					{
 						model.Options = dataSourceOptions;
 					}

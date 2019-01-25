@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Models;
@@ -66,41 +67,51 @@ namespace WebVella.Erp.Web.Components
 				}
 
 				var baseOptions = InitPcFieldBaseOptions(context);
-				var instanceOptions = PcFieldAutonumberOptions.CopyFromBaseOptions(baseOptions);
+				var options = PcFieldAutonumberOptions.CopyFromBaseOptions(baseOptions);
 				if (context.Options != null)
 				{
-					instanceOptions = JsonConvert.DeserializeObject<PcFieldAutonumberOptions>(context.Options.ToString());
+					options = JsonConvert.DeserializeObject<PcFieldAutonumberOptions>(context.Options.ToString());
 					//Check for connection to entity field
-					if (instanceOptions.TryConnectToEntity)
+					Entity mappedEntity = null;
+					if (options.ConnectedEntityId != null)
+					{
+						mappedEntity = new EntityManager().ReadEntity(options.ConnectedEntityId.Value).Object;
+					}
+					else
 					{
 						var entity = context.DataModel.GetProperty("Entity");
-						if (entity != null && entity is Entity)
+						if (entity is Entity)
 						{
-							var fieldName = instanceOptions.Name;
-							var entityField = ((Entity)entity).Fields.FirstOrDefault(x => x.Name == fieldName);
-							if (entityField != null && entityField is AutoNumberField)
-							{
-								var castedEntityField = ((AutoNumberField)entityField);
-								instanceOptions.Template = castedEntityField.DisplayFormat;
-							}
+							mappedEntity = (Entity)entity;
+						}
+					}
+
+					if (mappedEntity != null)
+					{
+						var fieldName = options.Name;
+						var entityField = mappedEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
+						if (entityField != null && entityField is AutoNumberField)
+						{
+							var castedEntityField = ((AutoNumberField)entityField);
+							options.Template = castedEntityField.DisplayFormat;
 						}
 					}
 				}
 				var modelFieldLabel = "";
-				var model = (PcFieldBaseModel)InitPcFieldBaseModel(context, instanceOptions, label: out modelFieldLabel);
-				if (String.IsNullOrWhiteSpace(instanceOptions.LabelText))
+				var model = (PcFieldBaseModel)InitPcFieldBaseModel(context, options, label: out modelFieldLabel);
+				if (String.IsNullOrWhiteSpace(options.LabelText))
 				{
-					instanceOptions.LabelText = modelFieldLabel;
+					options.LabelText = modelFieldLabel;
 				}
 
 				//Implementing Inherit label mode
-				ViewBag.LabelMode = instanceOptions.LabelMode;
-				ViewBag.Mode = instanceOptions.Mode;
+				ViewBag.LabelMode = options.LabelMode;
+				ViewBag.Mode = options.Mode;
 
-				if (instanceOptions.LabelMode == LabelRenderMode.Undefined && baseOptions.LabelMode != LabelRenderMode.Undefined)
+				if (options.LabelMode == LabelRenderMode.Undefined && baseOptions.LabelMode != LabelRenderMode.Undefined)
 					ViewBag.LabelMode = baseOptions.LabelMode;
 
-				if (instanceOptions.Mode == FieldRenderMode.Undefined && baseOptions.Mode != FieldRenderMode.Undefined)
+				if (options.Mode == FieldRenderMode.Undefined && baseOptions.Mode != FieldRenderMode.Undefined)
 					ViewBag.Mode = baseOptions.Mode;
 
 
@@ -109,10 +120,10 @@ namespace WebVella.Erp.Web.Components
 
 				if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
 				{
-					model.Value = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Value);
+					model.Value = context.DataModel.GetPropertyValueByDataSource(options.Value);
 				}
 
-				ViewBag.Options = instanceOptions;
+				ViewBag.Options = options;
 				ViewBag.Model = model;
 				ViewBag.Node = context.Node;
 				ViewBag.ComponentMeta = componentMeta;

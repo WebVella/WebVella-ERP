@@ -25,13 +25,7 @@
 		<wv-field-datasource name="value" value="@options.Value" label-text="Value" page-id="erpRequest.Page.Id"></wv-field-datasource>
 	</wv-column>
 	<wv-column span="6">
-		<wv-field-text name="name" value="@options.Name" label-text="Name">
-			<wv-field-append>
-				<div class="input-group-text">
-					<wv-field-checkbox class="mb-0" name="try_connect_to_entity" value="@options.TryConnectToEntity" text-true="try entity connect" label-mode="Hidden"></wv-field-checkbox>
-				</div>
-			</wv-field-append>
-		</wv-field-text>
+		<wv-field-text name="name" value="@options.Name" label-text="Name"></wv-field-text>
 	</wv-column>
 </wv-row>
 <wv-row>
@@ -43,3 +37,15 @@
 	</wv-column>
 </wv-row>
 
+<wv-section is-collapsable="true" is-collapsed="true" title="advanced options" class="mt-3">
+	<wv-row>
+		<wv-column span="6">
+			<wv-field-select name="connected_entity_id" value="@options.ConnectedEntityId" label-text="Connected Entity" options="@fieldModel.EntitySelectOptions"></wv-field-select>
+		</wv-column>
+		<wv-column span="6">
+			<div class="go-bkg-gray-light border p-2">
+				<span class="go-blue"><i class="fa fa-info-circle"></i> Note: </span>The platform will try getting the advanced field properties by mapping the field name to the selected entity field name. If "<strong>label</strong>" or "<strong>options</strong>" are specified above, they will be applied with priority. If no entity is selected, the system will use the page's entity, if any is found!
+			</div>
+		</wv-column>
+	</wv-row>
+</wv-section>
