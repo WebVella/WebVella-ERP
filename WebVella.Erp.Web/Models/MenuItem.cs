@@ -1,8 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using WebVella.Erp.Api.Models;
 
 namespace WebVella.Erp.Web.Models
 {
@@ -22,6 +19,9 @@ namespace WebVella.Erp.Web.Models
 
 		[JsonProperty("is_dropdown_right")]
 		public bool isDropdownRight { get; set; } = false;
+
+		[JsonProperty("sort_order")]
+		public int SortOrder { get; set; } = 10;
 
 	}
 }

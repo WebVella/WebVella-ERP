@@ -11,8 +11,7 @@ using WebVella.Erp.Plugins.Project.Services;
 namespace WebVella.Erp.Plugins.Project.Hooks.Api
 {
 	[HookAttachment("timelog")]
-	public class TimelogHook : IErpPreCreateRecordHook, IErpPreUpdateRecordHook, IErpPreDeleteRecordHook,
-							IErpPostCreateRecordHook, IErpPostUpdateRecordHook, IErpPostDeleteRecordHook
+	public class TimelogHook : IErpPreCreateRecordHook, IErpPreDeleteRecordHook
 	{
 
 		public void OnPreCreateRecord(string entityName, EntityRecord record, List<ErrorModel> errors)
@@ -106,11 +105,6 @@ namespace WebVella.Erp.Plugins.Project.Hooks.Api
 			}
 		}
 
-		public void OnPreUpdateRecord(string entityName, EntityRecord record, List<ErrorModel> errors)
-		{
-			//Do nothing
-		}
-
 		public void OnPreDeleteRecord(string entityName, EntityRecord record, List<ErrorModel> errors)
 		{
 			if (!record.Properties.ContainsKey("id"))
@@ -197,21 +191,6 @@ namespace WebVella.Erp.Plugins.Project.Hooks.Api
 				}
 
 			}
-		}
-
-		public void OnPostCreateRecord(string entityName, EntityRecord record)
-		{
-			//Do nothing
-		}
-
-		public void OnPostUpdateRecord(string entityName, EntityRecord record)
-		{
-			//No timelog update implemented yet
-		}
-
-		public void OnPostDeleteRecord(string entityName, EntityRecord record)
-		{
-			//Do nothing
 		}
 
 	}

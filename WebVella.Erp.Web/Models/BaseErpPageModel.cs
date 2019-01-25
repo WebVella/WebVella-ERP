@@ -351,6 +351,11 @@ namespace WebVella.Erp.Web.Models
 			return pageModel;
 		}
 
+		public void AddUserMenu(MenuItem menu) {
+			UserMenu.Add(menu);
+			UserMenu = UserMenu.OrderBy(x => x.SortOrder).ToList();
+		}
+
 		public void BeforeRender()
 		{
 

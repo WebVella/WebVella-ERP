@@ -293,7 +293,7 @@ namespace WebVella.Erp.Eql
 				else
 					fieldName = orderMemberNode.ChildNodes[0].ChildNodes[0].Token.ValueString;
 
-				if (orderMemberNode.ChildNodes.Count > 1)
+				if (orderMemberNode.ChildNodes.Count > 1 && orderMemberNode.ChildNodes[1].ChildNodes.Count > 0)
 				{
 					if (orderMemberNode.ChildNodes[1].ChildNodes[0].ChildNodes.Count > 0 &&
 						orderMemberNode.ChildNodes[1].ChildNodes[0].ChildNodes[0].Token.ValueString == "@")

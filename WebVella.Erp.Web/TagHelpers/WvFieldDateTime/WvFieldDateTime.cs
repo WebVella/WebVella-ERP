@@ -157,7 +157,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					initScript.Attributes.Add("type", "text/javascript");
 					var scriptTemplate = @"
 						$(function(){
-							InitFlatPickrDateTime(""#input-{{FieldId}}"");
+							InitFlatPickrDateTime(""{{FieldId}}"");
 						});";
 					scriptTemplate = scriptTemplate.Replace("{{FieldId}}", (FieldId ?? null).ToString());
 

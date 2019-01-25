@@ -99,6 +99,27 @@ namespace WebVella.Erp.Plugins.Project
 								}
 							}
 						}
+						{
+							var patchVersion = 20190125;
+							if (currentPluginSettings.Version < patchVersion)
+							{
+								try
+								{
+									currentPluginSettings.Version = patchVersion;
+									Patch20190125(entMan, relMan, recMan);
+								}
+								catch (ValidationException ex)
+								{
+									var exception = ex;
+									throw ex;
+								}
+								catch (Exception ex)
+								{
+									var exception = ex;
+									throw ex;
+								}
+							}
+						}
 						#endregion
 
 

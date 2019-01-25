@@ -2704,7 +2704,7 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 
 	.menu-nav a {
 		display: block;
-		color: --brand_color;
+		color: --gray_semi_light_color;
 		padding-left: 0.75rem;
 		padding-right: 0.75rem;
 	}
@@ -2784,7 +2784,7 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 	}
 
 	#brand-logo .app-label {
-		color: #fff;
+		color: --gray_semi_light_color;
 		margin-left: 5px;
 		display: inline-block;
 		font-size: 14px;
@@ -2987,6 +2987,19 @@ pre, code {
 		border: none;
 		outline: 1px solid #ccc;
 	}
+
+.erp-field.form .input-group .clear-link {
+	position: absolute;
+    right: 10px;
+    top: 50%;
+    margin-top: -10px;
+	color:--gray_color;
+	z-index:5;
+}
+
+.erp-field.form .input-group .clear-link:hover {
+	color:--red_color;
+}
 
 .sp-container {
 	background: #fff;

@@ -69,7 +69,7 @@
         
 		$.ajax({
 		type: "POST",
-		url: "/api/v3.0/p/next/timelog/start?taskId="+taskId,
+		url: "/api/v3.0/p/project/timelog/start?taskId="+taskId,
 		dataType:"json",
 		success: function(response){
 			if(!response.success){

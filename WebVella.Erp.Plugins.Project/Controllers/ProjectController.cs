@@ -164,23 +164,10 @@ namespace WebVella.Erp.Plugins.Project.Controllers
 			#region << Init >>
 			var recordId = Guid.NewGuid();
 
-			Guid relatedRecordId = Guid.Empty;
-			if (!record.Properties.ContainsKey("relatedRecordId") || record["relatedRecordId"] == null)
-			{
-				throw new Exception("relatedRecordId is required");
-			}
-			if (Guid.TryParse((string)record["relatedRecordId"], out Guid outGuid))
-			{
-				relatedRecordId = outGuid;
-			}
-			else
-			{
-				throw new Exception("relatedRecordId is invalid Guid");
-			}
 
 			var scope = new List<string>() { "projects" };
 
-			var relatedRecords = new List<Guid>() { relatedRecordId };
+			var relatedRecords = new List<Guid>();
 			if (record.Properties.ContainsKey("relatedRecords") && record["relatedRecords"] != null)
 			{
 				relatedRecords = JsonConvert.DeserializeObject<List<Guid>>((string)record["relatedRecords"]);

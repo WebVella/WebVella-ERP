@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,12 +6,10 @@ using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Database;
 using WebVella.Erp.Eql;
-using WebVella.Erp.Exceptions;
 using WebVella.Erp.Hooks;
 using WebVella.Erp.Plugins.Project.Services;
 using WebVella.Erp.Web.Hooks;
 using WebVella.Erp.Web.Models;
-using WebVella.Erp.Web.Pages.Application;
 
 namespace WebVella.Erp.Plugins.Project.Hooks.Page
 {
@@ -66,12 +63,14 @@ namespace WebVella.Erp.Plugins.Project.Hooks.Page
 				var scope = new List<string>() { "projects" };
 				var relatedRecords = new List<Guid>() { (Guid)taskRecord["id"] };
 
-				if (taskRecord.Properties.ContainsKey("$project_nn_task") && ((List<EntityRecord>)taskRecord["$project_nn_task"]).Any()) {
+				if (taskRecord.Properties.ContainsKey("$project_nn_task") && ((List<EntityRecord>)taskRecord["$project_nn_task"]).Any())
+				{
 					var projectRecord = ((List<EntityRecord>)taskRecord["$project_nn_task"]).First();
 					relatedRecords.Add((Guid)projectRecord["id"]);
 				}
 
-				using (var connection = DbContext.Current.CreateConnection()){
+				using (var connection = DbContext.Current.CreateConnection())
+				{
 					try
 					{
 						connection.BeginTransaction();
@@ -85,7 +84,7 @@ namespace WebVella.Erp.Plugins.Project.Hooks.Page
 						throw ex;
 					}
 				}
-				
+
 			}
 			return null;
 		}

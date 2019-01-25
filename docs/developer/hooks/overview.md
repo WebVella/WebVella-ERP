@@ -125,6 +125,9 @@ namespace WebVella.Erp.Plugins.SDK.Hooks.Page
 }
 ```
 #### Example with custom hook handler
+
+The custom hook handler will be defined by requesting the page with a query parameter `hookKey`. If this is the case, the page will execute only hooks that have this key set in their `HookAttachment` attribute.
+
 ```csharp
 using Microsoft.AspNetCore.Mvc;
 using WebVella.Erp.Hooks;

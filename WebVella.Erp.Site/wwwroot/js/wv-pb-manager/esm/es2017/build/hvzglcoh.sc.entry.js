@@ -4255,7 +4255,7 @@ class WvPageManager {
         let library = this.store.getState().library;
         return (h("div", { id: "wv-page-manager-wrapper" },
             h("div", { class: "row no-gutters" },
-                h("div", { class: "col" },
+                h("div", { class: "col", style: { "overflow-x": "auto" } },
                     h("div", { class: "wv-pb-content" },
                         h("div", { class: "wb-pb-content-inner" },
                             h("wv-pb-node-container", { "parent-node-id": null, containerId: "" })))),

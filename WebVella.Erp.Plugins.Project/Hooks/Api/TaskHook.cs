@@ -8,23 +8,8 @@ using WebVella.Erp.Plugins.Project.Services;
 namespace WebVella.Erp.Plugins.Project.Hooks.Api
 {
 	[HookAttachment("task")]
-	public class TaskHook : IErpPreCreateRecordHook, IErpPreUpdateRecordHook, IErpPreDeleteRecordHook,
-							IErpPostCreateRecordHook, IErpPostUpdateRecordHook, IErpPostDeleteRecordHook
+	public class TaskHook : IErpPostCreateRecordHook, IErpPostUpdateRecordHook
 	{
-
-		public void OnPreCreateRecord(string entityName, EntityRecord record, List<ErrorModel> errors)
-		{
-		}
-
-		public void OnPreUpdateRecord(string entityName, EntityRecord record, List<ErrorModel> errors)
-		{
-
-		}
-
-		public void OnPreDeleteRecord(string entityName, EntityRecord record, List<ErrorModel> errors)
-		{
-
-		}
 
 		public void OnPostCreateRecord(string entityName, EntityRecord record)
 		{
@@ -54,11 +39,6 @@ namespace WebVella.Erp.Plugins.Project.Hooks.Api
 			var updateResponse = new RecordManager(executeHooks: false).UpdateRecord("task", patchRecord);
 			if (!updateResponse.Success)
 				throw new Exception(updateResponse.Message);
-		}
-
-		public void OnPostDeleteRecord(string entityName, EntityRecord record)
-		{
-
 		}
 
 	}
