@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using WebVella.Erp.Api;
+﻿using System.Collections.Generic;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Hooks;
 using WebVella.Erp.Plugins.Project.Services;
@@ -8,8 +6,12 @@ using WebVella.Erp.Plugins.Project.Services;
 namespace WebVella.Erp.Plugins.Project.Hooks.Api
 {
 	[HookAttachment("task")]
-	public class Task : IErpPostCreateRecordHook, IErpPostUpdateRecordHook
+	public class Task : IErpPostCreateRecordHook, IErpPostUpdateRecordHook, IErpPreCreateRecordHook
 	{
+		public void OnPreCreateRecord(string entityName, EntityRecord record, List<ErrorModel> errors)
+		{
+			new TaskService().PreCreateRecordPageHookLogic(entityName, record, errors);
+		}
 
 		public void OnPostCreateRecord(string entityName, EntityRecord record)
 		{
@@ -20,6 +22,5 @@ namespace WebVella.Erp.Plugins.Project.Hooks.Api
 		{
 			new TaskService().PostUpdateApiHookLogic(entityName, record);
 		}
-
 	}
 }

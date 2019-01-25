@@ -24,7 +24,7 @@ namespace WebVella.Erp.Web.Models
 		public string Name { get; set; } = "";
 
 		[JsonProperty("icon_class")]
-		public string IconClass { get; set; } = ""; //overrides the default one
+		public string IconClass { get; set; } = null; //overrides the default one
 
 		[JsonProperty("system")]
 		public bool System { get; set; } = false; //for the pages that should not be deleted or presented in the lists -> default home, list and record page
