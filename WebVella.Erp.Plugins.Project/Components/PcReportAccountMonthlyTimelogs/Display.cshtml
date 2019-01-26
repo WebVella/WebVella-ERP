@@ -2,11 +2,11 @@
 	<tbody>
 		<tr>
 			<th width="200">Total billable</th>
-			<td>@ViewBag.overallBillableMinutes minutes = @(((decimal)ViewBag.overallBillableMinutes/60).ToString("n2")) hours</td>
+			<td>@(((decimal)ViewBag.overallBillableMinutes/60).ToString("n2"))</td>
 		</tr>
 		<tr>
 			<th>Total not billable</th>
-			<td>@ViewBag.overallNonBillableMinutes minutes = @(((decimal)ViewBag.overallNonBillableMinutes/60).ToString("n2")) hours</td>
+			<td>@(((decimal)ViewBag.overallNonBillableMinutes/60).ToString("n2"))</td>
 		</tr>
 	</tbody>
 </table>
@@ -36,8 +36,8 @@
 							<a target="_blank" href="/projects/tasks/tasks/r/@task["task_id"]/details">@task["task_subject"]</a>
 						</td>
 						<td>@task["task_type"]</td>
-						<td>@task["billable_minutes"] m = @(((decimal)@task["billable_minutes"]/60).ToString("n2")) h</td>
-						<td>@task["non_billable_minutes"] m = @(((decimal)@task["non_billable_minutes"]/60).ToString("n2")) h</td>
+						<td>@(((decimal)@task["billable_minutes"]/60).ToString("n2"))</td>
+						<td>@(((decimal)@task["non_billable_minutes"]/60).ToString("n2"))</td>
 					</tr>
 				}
 			</tbody>
