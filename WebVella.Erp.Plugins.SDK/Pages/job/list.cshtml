@@ -5,7 +5,6 @@
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Logs";
-	var locService = new LocalizationService();
 }
 
 <wv-page-header color="#dc3545" area-label="Jobs" title="Background Jobs"
@@ -37,13 +36,13 @@
 				</wv-modal>*@
 			</wv-grid-column>
 			<wv-grid-column>
-				<wv-field-datetime label-mode="Hidden" mode="Simple" value="@locService.ConvertUtcToAppDate(record.CreatedOn)"></wv-field-datetime>
+				<wv-field-datetime label-mode="Hidden" mode="Simple" value="@(record.CreatedOn.ConvertToAppDate())"></wv-field-datetime>
 			</wv-grid-column>
 			<wv-grid-column>
-				<wv-field-datetime label-mode="Hidden" mode="Simple" value="@locService.ConvertUtcToAppDate(record.StartedOn)"></wv-field-datetime>
+				<wv-field-datetime label-mode="Hidden" mode="Simple" value="@(record.StartedOn.ConvertToAppDate())"></wv-field-datetime>
 			</wv-grid-column>
 			<wv-grid-column>
-				<wv-field-datetime label-mode="Hidden" mode="Simple" value="@locService.ConvertUtcToAppDate(record.FinishedOn)"></wv-field-datetime>
+				<wv-field-datetime label-mode="Hidden" mode="Simple" value="@(record.FinishedOn.ConvertToAppDate())"></wv-field-datetime>
 			</wv-grid-column>
 			<wv-grid-column>
 				@record.TypeName

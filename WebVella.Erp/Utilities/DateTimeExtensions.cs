@@ -1,21 +1,26 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using WebVella.Erp;
-using WebVella.Erp.Api.Models;
-using WebVella.Erp.Utilities;
+﻿using WebVella.Erp;
 
 namespace System
 {
 	public static class DateTimeExtensions
 	{
+		public static DateTime ConvertToAppDate(this DateTime datetime)
+		{
+			return ((DateTime?)datetime).ConvertToAppDate().Value;
+		}
 
-        public static DateTime? ConvertToAppDate(this DateTime? utcDate)
+		public static DateTime? ConvertToAppDate(this DateTime? utcDate)
         {
 			if (utcDate == null)
 				return null;
 
 			TimeZoneInfo appTimeZone = TimeZoneInfo.FindSystemTimeZoneById(ErpSettings.TimeZoneName);
 			return TimeZoneInfo.ConvertTimeBySystemTimeZoneId(utcDate.Value, appTimeZone.Id);
+		}
+
+		public static DateTime ConvertAppDateToUtc(this DateTime datetime)
+		{
+			return ((DateTime?)datetime).ConvertAppDateToUtc().Value;
 		}
 
 		public static DateTime? ConvertAppDateToUtc(this DateTime? appDate)

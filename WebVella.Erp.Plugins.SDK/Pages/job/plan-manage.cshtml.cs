@@ -135,21 +135,19 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Job
 				Plan.EndDate = EndDate;
 				Plan.Type = Type;
 
-				var locService = new LocalizationService();
-
 				if (StartDate.HasValue)
-					Plan.StartDate = locService.ConvertAppDateToUtc(StartDate.Value);
+					Plan.StartDate = StartDate.ConvertAppDateToUtc();
 				else
 					Plan.StartDate = null;
 
 				if (EndDate.HasValue)
-					Plan.EndDate = locService.ConvertAppDateToUtc(EndDate.Value);
+					Plan.EndDate = EndDate.ConvertAppDateToUtc();
 				else
 					Plan.EndDate = null;
 
 				if (StartTimespan.HasValue)
 				{
-					StartTimespan = locService.ConvertAppDateToUtc(StartTimespan.Value);
+					StartTimespan = StartTimespan.ConvertAppDateToUtc();
 					Plan.StartTimespan = StartTimespan.Value.Hour * 60 + StartTimespan.Value.Minute;
 				}
 				else
@@ -157,7 +155,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Job
 
 				if (EndTimespan.HasValue)
 				{
-					EndTimespan = locService.ConvertAppDateToUtc(EndTimespan.Value);
+					EndTimespan = EndTimespan.ConvertAppDateToUtc();
 
 					Plan.EndTimespan = EndTimespan.Value.Hour * 60 + EndTimespan.Value.Minute;
 					if (Plan.EndTimespan == 0)

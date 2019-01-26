@@ -47,9 +47,6 @@ namespace WebVella.Erp.Web.TagHelpers
 			#endregion
 			#endregion
 
-			var localizationService = new LocalizationService();
-
-
 			#region << Render >>
 			if (Mode == FieldRenderMode.Form)
 			{
@@ -57,7 +54,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				var inputEditValue = "";
 				if (Value != null)
 				{
-					inputReadOnlyValue = ((DateTime?)localizationService.ConvertUtcToAppDate(Value) ?? DateTime.Now).ToString("dd MMM yyyy", Culture);
+					inputReadOnlyValue = (Value as DateTime? ?? (DateTime?)DateTime.Now).ConvertToAppDate().Value.ToString("dd MMM yyyy", Culture);
 					inputEditValue = (Value ?? DateTime.Now).ToString("yyyy-MM-ddT00:00:00.000");
 				}
 
@@ -172,7 +169,7 @@ namespace WebVella.Erp.Web.TagHelpers
 			{
 				if (Value != null)
 				{
-					var inputReadOnlyValue = ((DateTime?)localizationService.ConvertUtcToAppDate(Value) ?? DateTime.Now).ToString("dd MMM yyyy", Culture);
+					var inputReadOnlyValue = (Value as DateTime? ?? (DateTime?)DateTime.Now).ConvertToAppDate().Value.ToString("dd MMM yyyy", Culture);
 
 					var divEl = new TagBuilder("div");
 					divEl.Attributes.Add("id", $"input-{FieldId}");
@@ -191,7 +188,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				if (Value != null)
 				{
 					output.SuppressOutput();
-					var inputReadOnlyValue = ((DateTime?)localizationService.ConvertUtcToAppDate(Value) ?? DateTime.Now).ToString("dd MMM yyyy", Culture);
+					var inputReadOnlyValue = (Value as DateTime? ?? (DateTime?)DateTime.Now).ConvertToAppDate().Value.ToString("dd MMM yyyy", Culture);
 					output.Content.AppendHtml(inputReadOnlyValue);
 				}
 				else
@@ -209,7 +206,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					var readOnlyInputValue = "";
 					if (Value != null)
 					{
-						readOnlyInputValue = ((DateTime?)localizationService.ConvertUtcToAppDate(Value) ?? DateTime.Now).ToString("dd MMM yyyy", Culture);
+						readOnlyInputValue = (Value as DateTime? ?? (DateTime?)DateTime.Now).ConvertToAppDate().Value.ToString("dd MMM yyyy", Culture);
 						editInpuValue = (Value ?? DateTime.Now).ToString("yyyy-MM-ddT00:00:00.000"); 
 					}
 
@@ -359,7 +356,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					var readOnlyInputValue = "";
 					if (Value != null)
 					{
-						readOnlyInputValue = ((DateTime?)localizationService.ConvertUtcToAppDate(Value) ?? DateTime.Now).ToString("dd MMM yyyy", Culture);
+						readOnlyInputValue = (Value as DateTime? ?? (DateTime?)DateTime.Now).ConvertToAppDate().Value.ToString("dd MMM yyyy", Culture);
 					}
 
 					var divEl = new TagBuilder("div");
@@ -397,7 +394,6 @@ namespace WebVella.Erp.Web.TagHelpers
 				}
 			}
 			#endregion
-
 
 			//Finally
 			if (SubInputEl != null)

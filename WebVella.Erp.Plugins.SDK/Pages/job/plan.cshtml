@@ -5,7 +5,6 @@
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Logs";
-	var locService = new LocalizationService();
 }
 <wv-page-header color="#dc3545" area-label="Jobs" title="Schedule Plans"
 				icon-class="ti-calendar icon" return-url="@Model.ReturnUrl">
@@ -47,19 +46,19 @@
 			<wv-grid-column>
 				<div>@record.Name</div>
 				<span class="go-gray">start date</span> 
-				<span>@(record.StartDate != null ? locService.ConvertUtcToAppDate(record.StartDate).Value.ToString("dd MMM yyyy HH:mm") : "n/a")</span>
+				<span>@(record.StartDate != null ? record.StartDate.Value.ConvertToAppDate().ToString("dd MMM yyyy HH:mm") : "n/a")</span>
 				<span class="divider">|</span>
 				<span class="go-gray" style="text-align:right">end date</span>
-				<span>@(record.EndDate != null ? locService.ConvertUtcToAppDate(record.EndDate).Value.ToString("dd MMM yyyy HH:mm") : "n/a")</span>
+				<span>@(record.EndDate != null ? record.EndDate.ConvertToAppDate().Value.ToString("dd MMM yyyy HH:mm") : "n/a")</span>
 			</wv-grid-column>
 			<wv-grid-column>
 				@record.Type.GetLabel()
 			</wv-grid-column>
 			<wv-grid-column>
-				@(record.LastTriggerTime != null ? locService.ConvertUtcToAppDate(record.LastTriggerTime).Value.ToString("dd MMM yyyy HH:mm") : "n/a")
+				@(record.LastTriggerTime != null ? record.LastTriggerTime.ConvertToAppDate().Value.ToString("dd MMM yyyy HH:mm") : "n/a")
 			</wv-grid-column>
 			<wv-grid-column>
-				@(record.NextTriggerTime != null ? locService.ConvertUtcToAppDate(record.NextTriggerTime).Value.ToString("dd MMM yyyy HH:mm") : "n/a")
+				@(record.NextTriggerTime != null ? record.NextTriggerTime.ConvertToAppDate().Value.ToString("dd MMM yyyy HH:mm") : "n/a")
 			</wv-grid-column>
 		</wv-grid-row>
 	}
