@@ -8,20 +8,32 @@ namespace System
 {
 	public static class DateTimeExtensions
 	{
-		public static DateTime GetErpDate(this DateTime dateTime)
-		{
-           var erpTimeZone = TimeZoneInfo.FindSystemTimeZoneById(ErpSettings.TimeZoneName);
-            
-            dateTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0, 0, DateTimeKind.Unspecified);
-            return TimeZoneInfo.ConvertTimeToUtc(dateTime, erpTimeZone);
-        }
 
-        public static DateTime GetErpDateTime(this DateTime dateTime)
+        public static DateTime? ConvertToAppDate(this DateTime? utcDate)
         {
-            var erpTimeZone = TimeZoneInfo.FindSystemTimeZoneById(ErpSettings.TimeZoneName);
+			if (utcDate == null)
+				return null;
 
-            dateTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, dateTime.Minute, dateTime.Second, dateTime.Millisecond, DateTimeKind.Unspecified);
-            return TimeZoneInfo.ConvertTimeToUtc(dateTime, erpTimeZone);
-        }
-    }
+			TimeZoneInfo appTimeZone = TimeZoneInfo.FindSystemTimeZoneById(ErpSettings.TimeZoneName);
+			return TimeZoneInfo.ConvertTimeBySystemTimeZoneId(utcDate.Value, appTimeZone.Id);
+		}
+
+		public static DateTime? ConvertAppDateToUtc(this DateTime? appDate)
+		{
+			if (appDate == null)
+				return null;
+			TimeZoneInfo appTimeZone = TimeZoneInfo.FindSystemTimeZoneById(ErpSettings.TimeZoneName);
+
+			DateTime tmpDT = appDate.Value;
+			if (tmpDT.Kind == DateTimeKind.Utc)
+				return tmpDT;
+			else if (tmpDT.Kind == DateTimeKind.Local && appTimeZone != TimeZoneInfo.Local)
+			{
+				var convertedToAppZoneDate = TimeZoneInfo.ConvertTime(tmpDT, appTimeZone);
+				return TimeZoneInfo.ConvertTimeToUtc(convertedToAppZoneDate, appTimeZone);
+			}
+
+			return TimeZoneInfo.ConvertTimeToUtc(appDate.Value, appTimeZone);
+		}
+	}
 }

@@ -109,21 +109,22 @@ namespace WebVella.Erp.Plugins.Project.Services
 		public EntityRecordList GetTasks(Guid? projectId, Guid? userId)
 		{
 			var projectRecord = new EntityRecord();
-			var eqlCommand = " SELECT * from task ";
+			var eqlCommand = " SELECT * from task  WHERE status_id <> 'b1cc69e5-ce09-40e0-8785-b6452b257bdf' AND (start_date >= @currentDate OR start_date = null) AND ";
 			var eqlParams = new List<EqlParameter>();
+			eqlParams.Add(new EqlParameter("currentDate", DateTime.Now.Date));
 			if (projectId != null && userId != null)
 			{
-				eqlCommand += " WHERE $project_nn_task.id = @projectId AND owner_id = @userId ";
+				eqlCommand += " $project_nn_task.id = @projectId AND owner_id = @userId ";
 				eqlParams.Add(new EqlParameter("projectId", projectId));
 				eqlParams.Add(new EqlParameter("userId", userId));
 			}
 			else if (projectId != null)
 			{
-				eqlCommand += " WHERE $project_nn_task.id = @projectId ";
+				eqlCommand += " $project_nn_task.id = @projectId ";
 				eqlParams.Add(new EqlParameter("projectId", projectId));
 			}
 			else if (userId != null) {
-				eqlCommand += " WHERE owner_id = @userId ";
+				eqlCommand += " owner_id = @userId ";
 				eqlParams.Add(new EqlParameter("userId", userId));
 			}
 

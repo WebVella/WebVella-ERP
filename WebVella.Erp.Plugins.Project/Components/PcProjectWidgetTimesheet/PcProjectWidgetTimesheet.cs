@@ -82,9 +82,9 @@ namespace WebVella.Erp.Plugins.Project.Components
 					Guid? userId = context.DataModel.GetPropertyValueByDataSource(options.UserId) as Guid?;
 
 					var nowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0, DateTimeKind.Local);
-					List<DateTime> last7Days = Enumerable.Range(0, 7).Select(i => nowDate.AddDays(-7).Date.AddDays(i)).ToList();
+					List<DateTime> last7Days = Enumerable.Range(0, 7).Select(i => nowDate.AddDays(-6).Date.AddDays(i)).ToList();
 					var startDate = new DateTime(last7Days[0].Year, last7Days[0].Month, last7Days[0].Day, 0, 0, 0, DateTimeKind.Local);
-					var endDate = nowDate;
+					var endDate = nowDate.AddDays(1); //Get End of current date
 
 					var projectTimelogs = new TimeLogService().GetTimelogsForPeriod(projectId,userId,startDate,endDate);
 
@@ -130,7 +130,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 					}
 					#endregion
 
-					var timelogsGroupByDate = projectTimelogs.GroupBy(x => ((DateTime)x["logged_on"]).ToString("dd-MM")).ToList();
+					var timelogsGroupByDate = projectTimelogs.GroupBy(x => (((DateTime?)x["logged_on"]).ConvertToAppDate() ?? DateTime.Now).ToString("dd-MM")).ToList();
 
 					for (int i = 0; i < 7; i++)
 					{
@@ -175,7 +175,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 								imagePath = "/fs" + (string)user["image"];
 
 							var userTimelogs = userGroup.ToList();
-							var userTimelogsGroupByDate = userTimelogs.GroupBy(x => ((DateTime)x["logged_on"]).ToString("dd-MM")).ToList();
+							var userTimelogsGroupByDate = userTimelogs.GroupBy(x => (((DateTime?)x["logged_on"]).ConvertToAppDate() ?? DateTime.Now).ToString("dd-MM")).ToList();
 							var userRow = new EntityRecord();
 							userRow["id"] = (string)user["username"];
 							userRow["label"] = $"<img src=\"{imagePath}\" class=\"rounded-circle\" width=\"24\"> {(string)user["username"]}";
