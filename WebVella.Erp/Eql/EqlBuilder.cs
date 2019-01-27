@@ -326,8 +326,13 @@ namespace WebVella.Erp.Eql
 		private void BuildWhereNode(EqlWhereNode whereNode, ParseTreeNode parseTreeNode)
 		{
 			//first child node is WHERE keyword
-			var binaryExpressionNode = parseTreeNode.ChildNodes[1];
-			whereNode.RootExpressionNode = BuildBinaryExpressionNode(binaryExpressionNode);
+			var expressionNode = parseTreeNode.ChildNodes[1];
+			if (expressionNode.Term.Name == "binary_expression")
+				whereNode.RootExpressionNode = BuildBinaryExpressionNode(expressionNode);
+			else if (expressionNode.Term.Name == "term") //when brakets are used for OR in root expression
+				whereNode.RootExpressionNode = BuildBinaryExpressionNode(expressionNode.ChildNodes[0].ChildNodes[0]);
+			else
+				throw new EqlException("Unsupported node type during WHERE clause processing.");
 		}
 
 		private EqlBinaryExpressionNode BuildBinaryExpressionNode(ParseTreeNode parseTreeNode)
