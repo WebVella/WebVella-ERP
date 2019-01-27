@@ -284,7 +284,7 @@ namespace WebVella.Erp.Plugins.Project.Controllers
 			var response = new ResponseModel();
 			//Validate
 			var task = new TaskService().GetTask(taskId);
-			if (taskId == null)
+			if (task == null)
 			{
 				response.Success = false;
 				response.Message = "task not found";
@@ -341,6 +341,40 @@ namespace WebVella.Erp.Plugins.Project.Controllers
 					response.Message = ex.Message;
 					return Json(response);
 				}
+			}
+		}
+
+		[Route("api/v3.0/p/project/task/status")]
+		[HttpPost]
+		public ActionResult TaskSetStatus([FromQuery]Guid taskId, [FromQuery]Guid statusId)
+		{
+			var response = new ResponseModel();
+			//Validate
+			var task = new TaskService().GetTask(taskId);
+			if (task == null)
+			{
+				response.Success = false;
+				response.Message = "task not found";
+				return Json(response);
+			}
+			if (task["status_id"] != null && (Guid)task["status_id"] == statusId)
+			{
+				response.Success = false;
+				response.Message = "status already set";
+				return Json(response);
+			}
+			try
+			{
+				new TaskService().SetStatus(taskId, statusId);
+				response.Success = true;
+				response.Message = "Log Started";
+				return Json(response);
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Message = ex.Message;
+				return Json(response);
 			}
 		}
 

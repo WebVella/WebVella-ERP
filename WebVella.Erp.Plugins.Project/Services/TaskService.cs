@@ -4,6 +4,7 @@ using System.Linq;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Eql;
+using WebVella.Erp.Plugins.Project.Model;
 using WebVella.Erp.Web.Models;
 
 
@@ -64,7 +65,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 
 			patchRecord["id"] = taskId;
 			patchRecord["key"] = projectAbbr + "-" + taskRecord["number"];
-			var searchIndex = ""; // fts is included to be used as a default string when you need all records to be returned
+			var searchIndex = ""; // FTS is included to be used as a default string when you need all records to be returned
 			searchIndex += $" {patchRecord["key"]} ";
 			searchIndex += $" {taskRecord["subject"]} ";
 			searchIndex += $" {taskRecord["body"]} ";
@@ -75,7 +76,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 			searchIndex += $" {type} ";
 
 
-			//Todo Add Comments
+			//TODO Add Comments
 
 			patchRecord["x_search"] = searchIndex;
 
@@ -106,27 +107,91 @@ namespace WebVella.Erp.Plugins.Project.Services
 				return eqlResult[0];
 		}
 
-		public EntityRecordList GetTasks(Guid? projectId, Guid? userId)
+		public EntityRecordList GetTaskQueue(Guid? projectId, Guid? userId, TasksDueType type = TasksDueType.All, int? limit = null)
 		{
-			var projectRecord = new EntityRecord();
-			var eqlCommand = " SELECT * from task  WHERE status_id <> 'b1cc69e5-ce09-40e0-8785-b6452b257bdf' AND (start_date >= @currentDate OR start_date = null) AND ";
+			var eqlCommand = " SELECT * from task ";
 			var eqlParams = new List<EqlParameter>();
 			eqlParams.Add(new EqlParameter("currentDate", DateTime.Now.Date));
+
+			var whereFilters = new List<string>();
+
+			// Start date
+			if (type == TasksDueType.StartDateDue)
+				whereFilters.Add("(start_date <= @currentDate OR start_date = null)");
+			if (type == TasksDueType.StartDateNotDue)
+				whereFilters.Add("start_date > @currentDate");
+
+			// Target date
+			if (type == TasksDueType.TargetDateOverdue)
+				whereFilters.Add("target_date < @currentDate");
+			if (type == TasksDueType.TargetDateDueToday)
+				whereFilters.Add("target_date = @currentDate");
+			if (type == TasksDueType.TargetDateNotDue)
+				whereFilters.Add("target_date > @currentDate");
+			
+			// Project and user
 			if (projectId != null && userId != null)
 			{
-				eqlCommand += " $project_nn_task.id = @projectId AND owner_id = @userId ";
+				whereFilters.Add("$project_nn_task.id = @projectId AND owner_id = @userId");
 				eqlParams.Add(new EqlParameter("projectId", projectId));
 				eqlParams.Add(new EqlParameter("userId", userId));
 			}
 			else if (projectId != null)
 			{
-				eqlCommand += " $project_nn_task.id = @projectId ";
+				whereFilters.Add("$project_nn_task.id = @projectId");
 				eqlParams.Add(new EqlParameter("projectId", projectId));
 			}
 			else if (userId != null) {
-				eqlCommand += " owner_id = @userId ";
+				whereFilters.Add("owner_id = @userId");
 				eqlParams.Add(new EqlParameter("userId", userId));
 			}
+
+			//Status open
+			if (type != TasksDueType.All)
+			{
+				var taskStatuses = new TaskService().GetTaskStatuses();
+				var closedStatusHashset = new HashSet<Guid>();
+				foreach (var taskStatus in taskStatuses)
+				{
+					if ((bool)taskStatus["is_closed"])
+					{
+						closedStatusHashset.Add((Guid)taskStatus["id"]);
+					}
+				}
+				var index = 1;
+				foreach (var key in closedStatusHashset)
+				{
+					var paramName = "status" + index;
+					whereFilters.Add($"status_id <> @{paramName}");
+					eqlParams.Add(new EqlParameter(paramName, key));
+					index++;
+				}
+			}
+
+			if (whereFilters.Count > 0)
+			{
+				eqlCommand += " WHERE " + string.Join(" AND ", whereFilters);
+			}
+
+
+			//Order
+			if (type == TasksDueType.All || type == TasksDueType.StartDateNotDue)
+			{
+				eqlCommand += $" ORDER BY start_date ASC";
+			}
+			else if (type == TasksDueType.StartDateDue) {
+				eqlCommand += $" ORDER BY start_date DESC";
+			}
+			else
+			{
+				eqlCommand += $" ORDER BY target_date ASC";
+			}
+
+
+			//Limit
+			if(limit != null)
+				eqlCommand += $" PAGE 1 PAGESIZE {limit} ";
+
 
 			var eqlResult = new EqlCommand(eqlCommand, eqlParams).Execute();
 
@@ -270,6 +335,16 @@ namespace WebVella.Erp.Plugins.Project.Services
 			string taskSubject = "";
 			var patchRecord = new TaskService().SetCalculationFields((Guid)record["id"], subject: out taskSubject, projectId: out projectId);
 			var updateResponse = new RecordManager(executeHooks: false).UpdateRecord("task", patchRecord);
+			if (!updateResponse.Success)
+				throw new Exception(updateResponse.Message);
+		}
+
+		public void SetStatus(Guid taskId, Guid statusId)
+		{
+			var patchRecord = new EntityRecord();
+			patchRecord["id"] = taskId;
+			patchRecord["status_id"] = statusId;
+			var updateResponse = new RecordManager().UpdateRecord("task", patchRecord);
 			if (!updateResponse.Success)
 				throw new Exception(updateResponse.Message);
 		}

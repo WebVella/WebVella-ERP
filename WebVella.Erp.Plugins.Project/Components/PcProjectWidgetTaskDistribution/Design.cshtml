@@ -24,28 +24,27 @@
 			Label = "today"
 		},
 		new GridColumn(){
-			Name = "open",
+			Name = "other",
 			Width = "80px",
-			Label = "open"
-		},
-		new GridColumn(){
-			Name = "all",
-			Width = "80px",
-			Label = "all"
+			Label = "other"
 		},
 	};
 }
-
+@if (records.Count > 0)
+{
 <wv-grid bordered="true" small="true" columns="@gridColumn" has-tfoot="false">
 	@foreach (var record in records)
 	{
 		<wv-grid-row>
 			<wv-grid-column>@Html.Raw((string)record["user"])</wv-grid-column>
-			<wv-grid-column class="@((int)record["overdue"] > 0 ?"go-bkg-red-light" : "")">@record["overdue"]</wv-grid-column>
-			<wv-grid-column class="@((int)record["today"] > 0 ?"go-bkg-orange-light" : "")">@record["today"]</wv-grid-column>
-			<wv-grid-column>@record["open"]</wv-grid-column>
-			<wv-grid-column>@record["all"]</wv-grid-column>
+			<wv-grid-column class="@((int)record["overdue"] > 0 ? "go-bkg-red-light" : "")">@record["overdue"]</wv-grid-column>
+			<wv-grid-column class="@((int)record["today"] > 0 ? "go-bkg-orange-light" : "")">@record["today"]</wv-grid-column>
+			<wv-grid-column>@record["other"]</wv-grid-column>
 		</wv-grid-row>
 	}
 
 </wv-grid>
+}
+else { 
+	<div class="alert alert-info">No tasks found in queue</div>
+}

@@ -4,27 +4,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Exceptions;
+using WebVella.Erp.Plugins.Project.Model;
 using WebVella.Erp.Plugins.Project.Services;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
+using WebVella.Erp.Web.Utils;
 
 namespace WebVella.Erp.Plugins.Project.Components
 {
-	[PageComponent(Label = "Project Widget Priority", Library = "WebVella", Description = "Chart presenting the current project tasks by priority", Version = "0.0.1", IconClass = "fas fa-chart-pie")]
-	public class PcProjectWidgetTasksPriority : PageComponent
+	[PageComponent(Label = "Project Widget Tasks Queue", Library = "WebVella", Description = "tasks queue for a project or an user", Version = "0.0.1", IconClass = "fas fa-chart-pie")]
+	public class PcProjectWidgetTasksQueue : PageComponent
 	{
 		protected ErpRequestContext ErpRequestContext { get; set; }
 
-		public PcProjectWidgetTasksPriority([FromServices]ErpRequestContext coreReqCtx)
+		public PcProjectWidgetTasksQueue([FromServices]ErpRequestContext coreReqCtx)
 		{
 			ErpRequestContext = coreReqCtx;
 		}
 
-		public class PcProjectWidgetTasksPriorityOptions
+		public class PcProjectWidgetTasksQueueOptions
 		{
 
 			[JsonProperty(PropertyName = "project_id")]
@@ -32,6 +33,9 @@ namespace WebVella.Erp.Plugins.Project.Components
 
 			[JsonProperty(PropertyName = "user_id")]
 			public string UserId { get; set; } = null;
+
+			[JsonProperty(PropertyName = "type")]
+			public TasksDueType Type { get; set; } = TasksDueType.All;
 		}
 
 		public async Task<IViewComponentResult> InvokeAsync(PageComponentContext context)
@@ -59,10 +63,10 @@ namespace WebVella.Erp.Plugins.Project.Components
 					return await Task.FromResult<IViewComponentResult>(Content("Error: PageModel does not have Page property or it is not from ErpPage Type"));
 				}
 
-				var options = new PcProjectWidgetTasksPriorityOptions();
+				var options = new PcProjectWidgetTasksQueueOptions();
 				if (context.Options != null)
 				{
-					options = JsonConvert.DeserializeObject<PcProjectWidgetTasksPriorityOptions>(context.Options.ToString());
+					options = JsonConvert.DeserializeObject<PcProjectWidgetTasksQueueOptions>(context.Options.ToString());
 				}
 
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
@@ -75,52 +79,43 @@ namespace WebVella.Erp.Plugins.Project.Components
 				ViewBag.RequestContext = ErpRequestContext;
 				ViewBag.AppContext = ErpAppContext.Current;
 				ViewBag.ComponentContext = context;
+				ViewBag.TypeOptions = ModelExtensions.GetEnumAsSelectOptions<TasksDueType>();
 
 				if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
 				{
 
 					Guid? projectId = context.DataModel.GetPropertyValueByDataSource(options.ProjectId) as Guid?;
+
 					Guid? userId = context.DataModel.GetPropertyValueByDataSource(options.UserId) as Guid?;
+					var limit = options.Type == TasksDueType.TargetDateNotDue ? 10 : 50;
+					var taskQueue = new TaskService().GetTaskQueue(projectId, userId, options.Type, limit);
 
+					var users = new UserService().GetAll();
 
-					var projectTasks = new TaskService().GetTasks(projectId, userId);
-					int lowPriority = 0;
-					int normalPriority = 0;
-					int highPriority = 0;
+					var resultRecords = new List<EntityRecord>();
 
-					foreach (var task in projectTasks)
+					foreach (var task in taskQueue)
 					{
-						var taskPriority = (string)task["priority"];
-						switch (taskPriority) {
-							case "1":
-								lowPriority++;
-								break;
-							case "2":
-								normalPriority++;
-								break;
-							case "3":
-								highPriority++;
-								break;
-							default:
-								throw new Exception("Unknown task priority: " + taskPriority);
+						var imagePath = "/assets/avatar.png";
+						var user = new EntityRecord();
+						user["username"] = "No Owner";
+						if (task["owner_id"] != null)
+						{
+							user = users.First(x => (Guid)x["id"] == (Guid)task["owner_id"]);
+							if (user["image"] != null && (string)user["image"] != "")
+								imagePath = "/fs" + (string)user["image"];
 						}
+						string iconClass = "";
+						string color = "";
+						new TaskService().GetTaskIconAndColor((string)task["priority"],out iconClass, out color);
+
+						var row = new EntityRecord();
+						row["task"] = $"<i class='{iconClass}' style='color:{color}'></i> <a target=\"_blank\" href=\"/projects/tasks/tasks/r/{(Guid)task["id"]}/details\">[{task["key"]}] {task["subject"]}</a>";
+						row["user"] = $"<img src=\"{imagePath}\" class=\"rounded-circle\" width=\"24\"> {(string)user["username"]}";
+						row["date"] = ((DateTime?)task["target_date"]).ConvertToAppDate();
+						resultRecords.Add(row);
 					}
-
-
-					var theme = new Theme();
-					var chartDatasets = new List<ErpChartDataset>() {
-						new ErpChartDataset(){
-							Data = new List<decimal>(){ lowPriority, normalPriority, highPriority },
-							BackgroundColor = new List<string>{ theme.GreenColor, theme.LightBlueColor, theme.RedColor},
-							BorderColor = new List<string>{ theme.GreenColor, theme.LightBlueColor, theme.RedColor }
-						}
-					};
-
-					ViewBag.LowPriority = lowPriority;
-					ViewBag.NormalPriority = normalPriority;
-					ViewBag.HighPriority = highPriority;
-					ViewBag.PriorityOptions = ((SelectField)new EntityManager().ReadEntity("task").Object.Fields.First(x => x.Name == "priority")).Options;
-					ViewBag.Datasets = chartDatasets;
+					ViewBag.Records = resultRecords;
 				}
 				switch (context.Mode)
 				{

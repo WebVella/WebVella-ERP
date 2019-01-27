@@ -34,7 +34,7 @@
 		var recordId = record["id"];
 		<wv-grid-row>
 
-			<wv-grid-column text-wrap="false">
+			<wv-grid-column text-nowrap="true">
 				<wv-form label-mode="Stacked" mode="Form" name="DeleteRecord" validation="Model.Validation" id="DeleteRecord" action="/sdk/objects/entity/r/@Model.ErpEntity.Id/rl/data/l/?recordId=@recordId" method="Post">
 					@if (@Model.UpdateAccess)
 					{
@@ -55,7 +55,7 @@
 				var wrap = fieldType == FieldType.TextField || fieldType == FieldType.HtmlField || fieldType == FieldType.MultiSelectField ||
 							fieldType == FieldType.MultiLineTextField || fieldType == FieldType.UrlField;
 
-				<wv-grid-column text-wrap="@wrap">
+				<wv-grid-column text-nowrap="@(!wrap)">
 					@switch (fieldType)
 					{
 						case FieldType.AutoNumberField:

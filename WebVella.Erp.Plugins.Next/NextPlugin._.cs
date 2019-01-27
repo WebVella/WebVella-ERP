@@ -96,7 +96,7 @@ namespace WebVella.Erp.Plugins.Next
 							}
 						}
 
-						//PATCH START
+						//PATCH 20190122
 						{
 							var patchVersion = 20190122;
 							if (currentPluginSettings.Version < patchVersion)
@@ -105,6 +105,29 @@ namespace WebVella.Erp.Plugins.Next
 								{
 									currentPluginSettings.Version = patchVersion;
 									Patch20190122(entMan, relMan, recMan);
+								}
+								catch (ValidationException ex)
+								{
+									var exception = ex;
+									throw ex;
+								}
+								catch (Exception ex)
+								{
+									var exception = ex;
+									throw ex;
+								}
+							}
+						}
+
+						//PATCH 20190127
+						{
+							var patchVersion = 20190127;
+							if (currentPluginSettings.Version < patchVersion)
+							{
+								try
+								{
+									currentPluginSettings.Version = patchVersion;
+									Patch20190127(entMan, relMan, recMan);
 								}
 								catch (ValidationException ex)
 								{

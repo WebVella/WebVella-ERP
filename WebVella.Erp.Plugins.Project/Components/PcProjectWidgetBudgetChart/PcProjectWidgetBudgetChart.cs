@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Exceptions;
+using WebVella.Erp.Plugins.Project.Model;
 using WebVella.Erp.Plugins.Project.Services;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Models;
@@ -12,17 +13,17 @@ using WebVella.Erp.Web.Services;
 
 namespace WebVella.Erp.Plugins.Project.Components
 {
-	[PageComponent(Label = "Project Widget Budget", Library = "WebVella", Description = "Chart presenting the current project budget", Version = "0.0.1", IconClass = "fas fa-chart-pie")]
-	public class PcProjectWidgetBudget : PageComponent
+	[PageComponent(Label = "Project Widget Budget Chart", Library = "WebVella", Description = "Chart presenting the current project budget", Version = "0.0.1", IconClass = "fas fa-chart-pie")]
+	public class PcProjectWidgetBudgetChart : PageComponent
 	{
 		protected ErpRequestContext ErpRequestContext { get; set; }
 
-		public PcProjectWidgetBudget([FromServices]ErpRequestContext coreReqCtx)
+		public PcProjectWidgetBudgetChart([FromServices]ErpRequestContext coreReqCtx)
 		{
 			ErpRequestContext = coreReqCtx;
 		}
 
-		public class PcProjectWidgetBudgetOptions
+		public class PcProjectWidgetBudgetChartOptions
 		{
 
 			[JsonProperty(PropertyName = "project_id")]
@@ -54,10 +55,10 @@ namespace WebVella.Erp.Plugins.Project.Components
 					return await Task.FromResult<IViewComponentResult>(Content("Error: PageModel does not have Page property or it is not from ErpPage Type"));
 				}
 
-				var options = new PcProjectWidgetBudgetOptions();
+				var options = new PcProjectWidgetBudgetChartOptions();
 				if (context.Options != null)
 				{
-					options = JsonConvert.DeserializeObject<PcProjectWidgetBudgetOptions>(context.Options.ToString());
+					options = JsonConvert.DeserializeObject<PcProjectWidgetBudgetChartOptions>(context.Options.ToString());
 				}
 
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
@@ -81,7 +82,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 
 					var projectSrv = new ProjectService();
 					var projectRecord = projectSrv.Get(projectId);
-					var projectTasks = new TaskService().GetTasks(projectId,null);
+					var projectTasks = new TaskService().GetTaskQueue(projectId,null,TasksDueType.All);
 					var projectTimelogs = projectSrv.GetProjectTimelogs(projectId);
 
 					decimal loggedBillableMinutes = 0;
@@ -101,9 +102,9 @@ namespace WebVella.Erp.Plugins.Project.Components
 						projectEstimatedMinutes += (decimal)task["estimated_minutes"];
 					}
 
-					var billedHours = Math.Round(loggedBillableMinutes / 60, 1);
-					var nonBilledhours = Math.Round(loggedNonBillableMinutes / 60, 1);
-					var estimatedHours = Math.Round(projectEstimatedMinutes / 60, 1);
+					var billedHours = Math.Round(loggedBillableMinutes / 60, 2);
+					var nonBilledhours = Math.Round(loggedNonBillableMinutes / 60, 2);
+					var estimatedHours = Math.Round(projectEstimatedMinutes / 60, 2);
 
 					var budgetLeft = (decimal)0;
 					decimal budgetAmount = projectRecord["budget_amount"] != null ? (decimal)projectRecord["budget_amount"] : 0;

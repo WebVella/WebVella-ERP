@@ -81,18 +81,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 						return await Task.FromResult<IViewComponentResult>(Content("Error: ProjectId is required"));
 
 					var projectRecord = new ProjectService().Get(projectId);
-					var projectTasks = new TaskService().GetTasks(projectId,null);
-					int openTasks = 0;
-					int closedTasks = 0;
-
-					var taskStatuses = new TaskService().GetTaskStatuses();
-					var closedStatusHashset = new HashSet<Guid>();
-					foreach (var taskStatus in taskStatuses)
-					{
-						if ((bool)taskStatus["is_closed"]) {
-							closedStatusHashset.Add((Guid)taskStatus["id"]);
-						}
-					}
+					var projectTasks = new TaskService().GetTaskQueue(projectId,null);
 
 					var users = new UserService().GetAll();
 					var userDict = new Dictionary<Guid, EntityRecord>();
@@ -103,35 +92,29 @@ namespace WebVella.Erp.Plugins.Project.Components
 						var taskStatus = (Guid)task["status_id"];
 						var targetDate = (DateTime?)task["target_date"];
 
-						if (ownerId == null && !userDict.ContainsKey(Guid.Empty)) {
-							var userRecord = new EntityRecord();
-							userRecord["overdue"] = (int)0;
-							userRecord["today"] = (int)0;
-							userRecord["open"] = (int)0;
-							userRecord["all"] = (int)0;
+
+						var userRecord = new EntityRecord();
+						userRecord["overdue"] = (int)0;
+						userRecord["today"] = (int)0;
+						userRecord["other"] = (int)0;
+						if (ownerId == null && !userDict.ContainsKey(Guid.Empty)) 
 							userDict[Guid.Empty] = userRecord;
-						}
-						else if (!userDict.ContainsKey(ownerId.Value)) {
-							var userRecord = new EntityRecord();
-							userRecord["overdue"] = (int)0;
-							userRecord["today"] = (int)0;
-							userRecord["open"] = (int)0;
-							userRecord["all"] = (int)0;
+						else if (!userDict.ContainsKey(ownerId.Value))
 							userDict[ownerId.Value] = userRecord;
-						}
 
 						var currentRecord = userDict[ownerId != null ? ownerId.Value : Guid.Empty];
-						currentRecord["all"] = ((int)currentRecord["all"])+1;
-						if (!closedStatusHashset.Contains(taskStatus))
-							currentRecord["open"] = ((int)currentRecord["open"]) + 1;
 
-						if (targetDate != null) {
-							var erpTimeZone = TimeZoneInfo.FindSystemTimeZoneById(ErpSettings.TimeZoneName);
-							targetDate = TimeZoneInfo.ConvertTimeFromUtc(targetDate.Value, erpTimeZone);
-							if (targetDate.Value.Date < DateTime.Now.Date)
+						if (targetDate != null)
+						{
+							if (targetDate.Value.ConvertToAppDate().Date < DateTime.Now.Date)
 								currentRecord["overdue"] = ((int)currentRecord["overdue"]) + 1;
-							else if (targetDate.Value.Date == DateTime.Now.Date)
+							else if (targetDate.Value.ConvertToAppDate().Date == DateTime.Now.Date)
 								currentRecord["today"] = ((int)currentRecord["today"]) + 1;
+							else
+								currentRecord["other"] = ((int)currentRecord["other"]) + 1;
+						}
+						else {
+							currentRecord["other"] = ((int)currentRecord["other"]) + 1;
 						}
 						userDict[ownerId != null ? ownerId.Value : Guid.Empty] = currentRecord;
 					}
@@ -148,8 +131,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 							row["user"] = $"<img src=\"{imagePath}\" class=\"rounded-circle\" width=\"24\"> No owner";
 							row["overdue"] = statRecord["overdue"];
 							row["today"] = statRecord["today"];
-							row["open"] = statRecord["open"];
-							row["all"] = statRecord["all"];
+							row["other"] = statRecord["other"];
 							records.Add(row);
 						}
 						else
@@ -164,8 +146,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 							row["user"] = $"<img src=\"{imagePath}\" class=\"rounded-circle\" width=\"24\"> {(string)user["username"]}";
 							row["overdue"] = statRecord["overdue"];
 							row["today"] = statRecord["today"];
-							row["open"] = statRecord["open"];
-							row["all"] = statRecord["all"];
+							row["other"] = statRecord["other"];
 							records.Add(row);
 						}
 					}

@@ -26,8 +26,8 @@ namespace WebVella.Erp.Web.TagHelpers
 		[HtmlAttributeName("horizontal-align")]
 		public HorizontalAlignmentType HorizontalAlign { get; set; } = HorizontalAlignmentType.None;
 
-		[HtmlAttributeName("text-wrap")]
-		public bool TextWrap { get; set; } = true;
+		[HtmlAttributeName("text-nowrap")]
+		public bool TextNoWrap { get; set; } = false;
 
 		[HtmlAttributeName("class")]
 		public string Class { get; set; } = null;
@@ -67,7 +67,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					break;
 			}
 
-			if(TextWrap){
+			if(TextNoWrap){
 				styleList.Add("white-space:nowrap");
 			}
 

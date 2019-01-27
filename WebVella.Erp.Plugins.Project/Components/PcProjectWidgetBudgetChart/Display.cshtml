@@ -5,7 +5,7 @@
 @using WebVella.Erp.Plugins.Project.Components;
 
 @{
-	var options = (PcProjectWidgetBudget.PcProjectWidgetBudgetOptions)ViewBag.Options;
+	var options = (PcProjectWidgetBudgetChart.PcProjectWidgetBudgetChartOptions)ViewBag.Options;
 	var datasets = (List<ErpChartDataset>)ViewBag.Datasets;
 	var budgetResult = (EntityRecord)ViewBag.BudgetResult;
 	var billableHoursInt = Math.Round((decimal)budgetResult["billed_hours"],1);

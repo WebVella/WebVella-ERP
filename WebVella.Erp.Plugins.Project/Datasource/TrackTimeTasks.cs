@@ -4,6 +4,7 @@ using System.Linq;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Eql;
+using WebVella.Erp.Plugins.Project.Services;
 using WebVella.Erp.Web.Models;
 
 namespace WebVella.Erp.Plugins.Project.DataSource
@@ -26,19 +27,7 @@ namespace WebVella.Erp.Plugins.Project.DataSource
 			if (currentUser == null)
 				return null;
 
-			var userOpenTasks = new List<EntityRecord>();
-			var searchQuery = (string)arguments["search_query"];
-			{
-				var eqlCommand = "SELECT * from task WHERE owner_id = @userId AND (start_date >= @currentDate OR x_billable_minutes > 0 OR x_nonbillable_minutes > 0) ";
-				var eqlParams = new List<EqlParameter>() { new EqlParameter("userId", currentUser.Id) };
-				eqlParams.Add(new EqlParameter("currentDate", new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,0,0,0)));
-				if (!String.IsNullOrWhiteSpace(eqlCommand)) {
-					eqlCommand += " AND x_search CONTAINS @search";
-					eqlParams.Add(new EqlParameter("search", searchQuery));
-				}
-
-				userOpenTasks = new EqlCommand(eqlCommand, eqlParams).Execute();
-			}
+			var userOpenTasks = new TaskService().GetTaskQueue(null,currentUser.Id,Model.TasksDueType.StartDateDue);
 
 			var userTimelogs = new List<EntityRecord>();
 

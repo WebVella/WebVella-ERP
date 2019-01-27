@@ -5,7 +5,7 @@
 @using WebVella.Erp.Plugins.Project.Components;
 
 @{
-	var options = (PcProjectWidgetTasksPriority.PcProjectWidgetTasksPriorityOptions)ViewBag.Options;
+	var options = (PcProjectWidgetTasksPriorityChart.PcProjectWidgetTasksPriorityChartOptions)ViewBag.Options;
 	var datasets = (List<ErpChartDataset>)ViewBag.Datasets;
 	var lowPriority = (int)ViewBag.LowPriority;
 	var normalPriority = (int)ViewBag.NormalPriority;
@@ -22,18 +22,36 @@
 	<wv-column class="flex-grow-1 pl-4">
 		<wv-row class="mb-2">
 			<wv-column>
-				<div>Low</div>
-				<div><strong><i class="@lowPriorityOption.IconClass" style="color: @lowPriorityOption.Color"></i> @lowPriority</strong></div>			
+				<div>High</div>
+				@if (highPriority > 0)
+				{
+					<div><strong><i class="@highPriorityOption.IconClass" style="color: @highPriorityOption.Color"></i> @highPriority</strong></div>	
+				}
+				else { 
+					<div class="go-gray">0</div>
+				}
 			</wv-column>
 			<wv-column>
 				<div>Normal</div>
-				<div><strong><i class="@normalPriorityOption.IconClass" style="color: @normalPriorityOption.Color"></i> @normalPriority</strong></div>		
+				@if (normalPriority > 0)
+				{
+					<div><strong><i class="@normalPriorityOption.IconClass" style="color: @normalPriorityOption.Color"></i> @normalPriority</strong></div>		
+				}
+				else { 
+					<div class="go-gray">0</div>
+				}
 			</wv-column>
 		</wv-row>
 		<wv-row class="mb-2">
 			<wv-column>
-				<div>High</div>
-				<div><strong><i class="@highPriorityOption.IconClass" style="color: @highPriorityOption.Color"></i> @highPriority</strong></div>	
+				<div>Low</div>
+				@if (lowPriority > 0)
+				{
+				<div><strong><i class="@lowPriorityOption.IconClass" style="color: @lowPriorityOption.Color"></i> @lowPriority</strong></div>			
+				}
+				else { 
+					<div class="go-gray">0</div>
+				}
 			</wv-column>
 			<wv-column>
 			</wv-column>

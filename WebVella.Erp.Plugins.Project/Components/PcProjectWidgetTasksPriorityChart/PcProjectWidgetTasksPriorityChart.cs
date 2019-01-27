@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Exceptions;
+using WebVella.Erp.Plugins.Project.Model;
 using WebVella.Erp.Plugins.Project.Services;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Models;
@@ -13,21 +15,24 @@ using WebVella.Erp.Web.Services;
 
 namespace WebVella.Erp.Plugins.Project.Components
 {
-	[PageComponent(Label = "Project Widget Tasks Due Today", Library = "WebVella", Description = "tasks due for today for a project", Version = "0.0.1", IconClass = "fas fa-chart-pie")]
-	public class PcProjectWidgetTasksDueToday : PageComponent
+	[PageComponent(Label = "Project Widget Priority Chart", Library = "WebVella", Description = "Chart presenting the current project tasks by priority", Version = "0.0.1", IconClass = "fas fa-chart-pie")]
+	public class PcProjectWidgetTasksPriorityChart : PageComponent
 	{
 		protected ErpRequestContext ErpRequestContext { get; set; }
 
-		public PcProjectWidgetTasksDueToday([FromServices]ErpRequestContext coreReqCtx)
+		public PcProjectWidgetTasksPriorityChart([FromServices]ErpRequestContext coreReqCtx)
 		{
 			ErpRequestContext = coreReqCtx;
 		}
 
-		public class PcProjectWidgetTasksDueTodayOptions
+		public class PcProjectWidgetTasksPriorityChartOptions
 		{
 
 			[JsonProperty(PropertyName = "project_id")]
 			public string ProjectId { get; set; } = null;
+
+			[JsonProperty(PropertyName = "user_id")]
+			public string UserId { get; set; } = null;
 		}
 
 		public async Task<IViewComponentResult> InvokeAsync(PageComponentContext context)
@@ -55,10 +60,10 @@ namespace WebVella.Erp.Plugins.Project.Components
 					return await Task.FromResult<IViewComponentResult>(Content("Error: PageModel does not have Page property or it is not from ErpPage Type"));
 				}
 
-				var options = new PcProjectWidgetTasksDueTodayOptions();
+				var options = new PcProjectWidgetTasksPriorityChartOptions();
 				if (context.Options != null)
 				{
-					options = JsonConvert.DeserializeObject<PcProjectWidgetTasksDueTodayOptions>(context.Options.ToString());
+					options = JsonConvert.DeserializeObject<PcProjectWidgetTasksPriorityChartOptions>(context.Options.ToString());
 				}
 
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
@@ -75,45 +80,48 @@ namespace WebVella.Erp.Plugins.Project.Components
 				if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
 				{
 
-					Guid projectId = context.DataModel.GetPropertyValueByDataSource(options.ProjectId) as Guid? ?? Guid.Empty;
+					Guid? projectId = context.DataModel.GetPropertyValueByDataSource(options.ProjectId) as Guid?;
+					Guid? userId = context.DataModel.GetPropertyValueByDataSource(options.UserId) as Guid?;
 
-					if (projectId == Guid.Empty)
-						return await Task.FromResult<IViewComponentResult>(Content("Error: ProjectId is required"));
 
-					var projectRecord = new ProjectService().Get(projectId);
-					var projectTasks = new TaskService().GetTasks(projectId,null);
-
-					var overdueTasks = new List<EntityRecord>();
-					var users = new UserService().GetAll();
+					var projectTasks = new TaskService().GetTaskQueue(projectId, userId, TasksDueType.StartDateDue);
+					int lowPriority = 0;
+					int normalPriority = 0;
+					int highPriority = 0;
 
 					foreach (var task in projectTasks)
 					{
-						var targetDate = (DateTime?)task["target_date"];
-
-						if (targetDate != null)
-						{
-							var erpTimeZone = TimeZoneInfo.FindSystemTimeZoneById(ErpSettings.TimeZoneName);
-							targetDate = TimeZoneInfo.ConvertTimeFromUtc(targetDate.Value, erpTimeZone);
-							if (targetDate.Value.Date == DateTime.Now.Date)
-							{
-								var user = users.First(x => (Guid)x["id"] == (Guid)task["owner_id"]);
-								var imagePath = "/assets/avatar.png";
-								if (user["image"] != null && (string)user["image"] != "")
-									imagePath = "/fs" + (string)user["image"];
-
-								string iconClass = "";
-								string color = "";
-								new TaskService().GetTaskIconAndColor((string)task["priority"],out iconClass, out color);
-
-								var row = new EntityRecord();
-								row["task"] = $"<i class='{iconClass}' style='color:{color}'></i> <a target=\"_blank\" href=\"/projects/tasks/tasks/r/{(Guid)task["id"]}/details\">[{task["key"]}] {task["subject"]}</a>";
-								row["user"] = $"<img src=\"{imagePath}\" class=\"rounded-circle\" width=\"24\"> {(string)user["username"]}";
-								row["date"] = targetDate;
-								overdueTasks.Add(row);
-							}
+						var taskPriority = (string)task["priority"];
+						switch (taskPriority) {
+							case "1":
+								lowPriority++;
+								break;
+							case "2":
+								normalPriority++;
+								break;
+							case "3":
+								highPriority++;
+								break;
+							default:
+								throw new Exception("Unknown task priority: " + taskPriority);
 						}
 					}
-					ViewBag.Records = overdueTasks;
+
+
+					var theme = new Theme();
+					var chartDatasets = new List<ErpChartDataset>() {
+						new ErpChartDataset(){
+							Data = new List<decimal>(){ highPriority, normalPriority, lowPriority },
+							BackgroundColor = new List<string>{ theme.RedColor, theme.LightBlueColor, theme.GreenColor},
+							BorderColor = new List<string>{ theme.RedColor, theme.LightBlueColor, theme.GreenColor }
+						}
+					};
+
+					ViewBag.LowPriority = lowPriority;
+					ViewBag.NormalPriority = normalPriority;
+					ViewBag.HighPriority = highPriority;
+					ViewBag.PriorityOptions = ((SelectField)new EntityManager().ReadEntity("task").Object.Fields.First(x => x.Name == "priority")).Options;
+					ViewBag.Datasets = chartDatasets;
 				}
 				switch (context.Mode)
 				{

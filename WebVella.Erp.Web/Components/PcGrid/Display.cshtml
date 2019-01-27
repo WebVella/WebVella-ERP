@@ -34,7 +34,7 @@
 				var horizontalAlign = (HorizontalAlignmentType)(options.GetType().GetProperty($"Container{i}HorizontalAlign").GetValue(options, null) ?? false);
 				var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == containerId);
 				var columnWidth = options.HasThead ? "" : columns[i - 1].Width;
-				<wv-grid-column width="@columnWidth" text-wrap="@columnNoWrap" class="@columnClass" horizontal-align="@horizontalAlign" vertical-align="@verticalAlign">
+				<wv-grid-column width="@columnWidth" text-nowrap="@columnNoWrap" class="@columnClass" horizontal-align="@horizontalAlign" vertical-align="@verticalAlign">
 					@foreach (var childNode in columnChildNodes)
 					{
 						var nodeComponentName = "";

@@ -4,12 +4,15 @@
 @using WebVella.Erp.Web.Models;
 @using WebVella.Erp.Plugins.Project.Components;
 @{
-	var options = (PcProjectWidgetOverdueTasks.PcProjectWidgetOverdueTasksOptions)ViewBag.Options;
+	var options = (PcProjectWidgetTasksPriorityChart.PcProjectWidgetTasksPriorityChartOptions)ViewBag.Options;
 	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
 }
 <wv-row>
 	<wv-column span="6">
 		<wv-field-datasource name="project_id" value="@options.ProjectId" label-text="Project Id" page-id="erpRequest.Page.Id"></wv-field-datasource>
+	</wv-column>
+	<wv-column span="6">
+		<wv-field-datasource name="user_id" value="@options.UserId" label-text="User Id" page-id="erpRequest.Page.Id"></wv-field-datasource>
 	</wv-column>
 </wv-row>
 

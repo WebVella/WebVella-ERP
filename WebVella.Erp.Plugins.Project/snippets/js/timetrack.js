@@ -129,4 +129,36 @@
 		taskIdFormInputEl.val(inputTaskId.val());
 		ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcModal',{htmlId:formId,action:'open',payload:null});		
 	});
+
+	$(".set-completed").click(function(){
+		if (window.confirm("Confirm task change to completed status")) {
+			var clickedBtn = $(this);
+			var clickedBtnIcon = clickedBtn.find(".fa");
+			clickedBtn.prop('disabled', false);
+			clickedBtnIcon.removeClass("fa-check").addClass("fa-spin fa-spinner");
+			var recordRow = clickedBtn.closest("tr");		
+			var inputTaskId =  recordRow.find("input[name='task_id']");
+			var taskId = inputTaskId.val();
+
+			$.ajax({
+			type: "POST",
+			url: "/api/v3.0/p/project/task/status?statusId=b1cc69e5-ce09-40e0-8785-b6452b257bdf&taskId="+taskId,
+			dataType:"json",
+			success: function(response){
+				if(!response.success){
+					toastr.error(response.message, 'Error!', { closeButton: false, tapToDismiss: true });
+					clickedBtn.prop('disabled', false);
+					clickedBtnIcon.addClass("fa-check").removeClass("fa-spin fa-spinner");
+				}
+				else{
+					clickedBtn.removeClass("btn-white").addClass("btn-success").html("<i class='fa fa-check'></i> completed");
+				}
+        
+			},
+			error:function(XMLHttpRequest, textStatus, errorThrown) {
+				toastr.error(textStatus, 'Error!', { closeButton: false, tapToDismiss: true });
+			}
+			});   
+		}
+	});
 });

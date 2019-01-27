@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Web.Models;
 
@@ -36,11 +37,14 @@ namespace WebVella.Erp.Web.DataSource
 			dsMeta.Type = FieldType.TextField;
 			Fields.Add(dsMeta);
 
+
 			Parameters.Add(new DataSourceParameter { Name = "DataSourceName", Type = "text", Value = "" });
 			Parameters.Add(new DataSourceParameter { Name = "KeyPropName", Type = "text", Value = "id" });
 			Parameters.Add(new DataSourceParameter { Name = "ValuePropName", Type = "text", Value = "label" });
 			Parameters.Add(new DataSourceParameter { Name = "IconClassPropName", Type = "text", Value = "icon_class" });
 			Parameters.Add(new DataSourceParameter { Name = "ColorPropName", Type = "text", Value = "color" });
+			Parameters.Add(new DataSourceParameter { Name = "SortOrderPropName", Type = "text", Value = "" });
+			Parameters.Add(new DataSourceParameter { Name = "SortTypePropName", Type = "text", Value = "asc" });
 		}
 
 		public override object Execute(Dictionary<string, object> arguments)
@@ -55,6 +59,8 @@ namespace WebVella.Erp.Web.DataSource
 				string VALUE_FIELD_NAME = (string)arguments["ValuePropName"];
 				string ICON_CLASS_FIELD_NAME = (string)arguments["IconClassPropName"];
 				string COLOR_FIELD_NAME = (string)arguments["ColorPropName"];
+				string SORT_ORDER_FIELD_NAME = (string)arguments["SortOrderPropName"];
+				string SORT_TYPE_NAME = (string)arguments["SortTypePropName"];
 
 				PageDataModel pageModel = arguments["PageModel"] as PageDataModel;
 				if (pageModel == null)
@@ -71,6 +77,34 @@ namespace WebVella.Erp.Web.DataSource
 
 					if (dataSource is List<EntityRecord>)
 					{
+						var recordsList = (List<EntityRecord>)dataSource;
+						if (!String.IsNullOrWhiteSpace(SORT_ORDER_FIELD_NAME) && recordsList.Count > 1 && recordsList[0].Properties.ContainsKey(SORT_ORDER_FIELD_NAME)
+							&& recordsList[0][SORT_ORDER_FIELD_NAME] != null) {
+							bool isDecimal = false;
+							if (decimal.TryParse((recordsList[0][SORT_ORDER_FIELD_NAME] ?? "").ToString(), out decimal outDecimal)) {
+								isDecimal = true;
+							}
+
+							if (SORT_TYPE_NAME.ToLowerInvariant() == "desc")
+							{
+								if (isDecimal) {
+									dataSource = recordsList.OrderByDescending(x => (decimal?)x[SORT_ORDER_FIELD_NAME]).ToList();
+								}
+								else {
+									dataSource = recordsList.OrderByDescending(x => (string)x[SORT_ORDER_FIELD_NAME]).ToList();
+								}
+							}
+							else {
+								if (isDecimal)
+								{
+									dataSource = recordsList.OrderBy(x => (decimal?)x[SORT_ORDER_FIELD_NAME]).ToList();
+								}
+								else
+								{
+									dataSource = recordsList.OrderBy(x => (string)x[SORT_ORDER_FIELD_NAME]).ToList();
+								}
+							}
+						}
 						foreach (var record in (List<EntityRecord>)dataSource)
 						{
 							if (record.Properties.ContainsKey(ICON_CLASS_FIELD_NAME) && record[ICON_CLASS_FIELD_NAME] != null)
