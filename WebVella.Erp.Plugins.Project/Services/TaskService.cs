@@ -175,16 +175,27 @@ namespace WebVella.Erp.Plugins.Project.Services
 
 
 			//Order
-			if (type == TasksDueType.All || type == TasksDueType.StartDateNotDue)
-			{
-				eqlCommand += $" ORDER BY start_date ASC";
-			}
-			else if (type == TasksDueType.StartDateDue) {
-				eqlCommand += $" ORDER BY start_date DESC";
-			}
-			else
-			{
-				eqlCommand += $" ORDER BY target_date ASC";
+			switch (type) {
+				case TasksDueType.All:
+					// No sort for optimization purposes
+					break;
+				case TasksDueType.TargetDateOverdue:
+					eqlCommand += $" ORDER BY target_date ASC, priority DESC";
+					break;
+				case TasksDueType.TargetDateDueToday:
+					eqlCommand += $" ORDER BY priority DESC";
+					break;
+				case TasksDueType.TargetDateNotDue:
+					eqlCommand += $" ORDER BY target_date ASC, priority DESC";
+					break;
+				case TasksDueType.StartDateDue:
+					eqlCommand += $" ORDER BY target_date ASC, priority DESC";
+					break;
+				case TasksDueType.StartDateNotDue:
+					eqlCommand += $" ORDER BY target_date ASC, priority DESC";
+					break;
+				default:
+					throw new Exception("Unknown TasksDueType");
 			}
 
 
