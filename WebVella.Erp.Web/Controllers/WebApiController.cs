@@ -19,6 +19,7 @@ using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Api.Models.AutoMapper;
 using WebVella.Erp.Database;
+using WebVella.Erp.Diagnostics;
 using WebVella.Erp.Eql;
 using WebVella.Erp.Jobs;
 using WebVella.Erp.Utilities;
@@ -83,6 +84,7 @@ namespace WebVella.Erp.Web.Controllers
 			catch (Exception ex) {
 				response.Success = false;
 				response.Message = ex.Message;
+				new Log().Create(LogType.Error, "ToggleSidebarSize API Method Error", ex);
 				return Json(response);
 			}
 		}
@@ -97,6 +99,7 @@ namespace WebVella.Erp.Web.Controllers
 			}
 			catch (Exception ex)
 			{
+				new Log().Create(LogType.Error, "DataSourceAction Code compile API Method Error", ex);
 				return Json(new { success = false, message = ex.Message });
 			}
 
@@ -127,6 +130,7 @@ namespace WebVella.Erp.Web.Controllers
 			}
 			catch (Exception ex)
 			{
+				new Log().Create(LogType.Error, "DataSourceAction test API Method Error", ex);
 				errors.Add(new EqlError { Message = ex.Message });
 			}
 
@@ -186,6 +190,7 @@ namespace WebVella.Erp.Web.Controllers
 			}
 			catch (Exception ex)
 			{
+				new Log().Create(LogType.Error, "DataSourceAction Id test API Method Error", ex);
 				errors.Add(new EqlError { Message = ex.Message });
 			}
 
@@ -229,7 +234,7 @@ namespace WebVella.Erp.Web.Controllers
 			}
 			catch (Exception exception)
 			{
-
+				new Log().Create(LogType.Error, "CreatePageBodyNode API Method Error", exception);
 				return new ContentResult
 				{
 					Content = $"Error: {exception.Message}",
@@ -274,7 +279,7 @@ namespace WebVella.Erp.Web.Controllers
 			}
 			catch (Exception exception)
 			{
-
+				new Log().Create(LogType.Error, "UpdatePageBodyNode API Method Error", exception);
 				return new ContentResult
 				{
 					Content = $"Error: {exception.Message}",
@@ -332,7 +337,7 @@ namespace WebVella.Erp.Web.Controllers
 			}
 			catch (Exception exception)
 			{
-
+				new Log().Create(LogType.Error, "MovePageBodyNode API Method Error", exception);
 				return new ContentResult
 				{
 					Content = $"Error: {exception.Message}",
@@ -366,7 +371,7 @@ namespace WebVella.Erp.Web.Controllers
 			}
 			catch (Exception exception)
 			{
-
+				new Log().Create(LogType.Error, "DeletePageBodyNode API Method Error", exception);
 				return new ContentResult
 				{
 					Content = $"Error: {exception.Message}",
@@ -401,7 +406,7 @@ namespace WebVella.Erp.Web.Controllers
 			}
 			catch (Exception exception)
 			{
-
+				new Log().Create(LogType.Error, "UpdatePageBodyNodeOptions API Method Error", exception);
 				return new ContentResult
 				{
 					Content = $"Error: {exception.Message}",
@@ -574,7 +579,7 @@ namespace WebVella.Erp.Web.Controllers
 			}
 			catch (Exception exception)
 			{
-
+				new Log().Create(LogType.Error, "PageComponentRenderViews API Method Error", exception);
 				return new ContentResult
 				{
 					Content = $"Error: {exception.Message}",
@@ -616,7 +621,7 @@ namespace WebVella.Erp.Web.Controllers
 			}
 			catch (Exception exception)
 			{
-
+				new Log().Create(LogType.Error, "PageComponentServiceJs API Method Error", exception);
 				return new ContentResult
 				{
 					Content = $"Error: {exception.Message}",
@@ -633,15 +638,22 @@ namespace WebVella.Erp.Web.Controllers
 		[HttpGet]
 		public ContentResult StylesCss()
 		{
-			var cssContent = "";
-
-			if (String.IsNullOrWhiteSpace(ErpAppContext.Current.StylesContent))
+			try
 			{
-				new ThemeService().GenerateStylesContent();
-			}
+				var cssContent = "";
 
-			cssContent = ErpAppContext.Current.StylesContent;
-			return Content(cssContent, "text/css");
+				if (String.IsNullOrWhiteSpace(ErpAppContext.Current.StylesContent))
+				{
+					new ThemeService().GenerateStylesContent();
+				}
+
+				cssContent = ErpAppContext.Current.StylesContent;
+				return Content(cssContent, "text/css");
+			}
+			catch (Exception ex) {
+				new Log().Create(LogType.Error, "StylesCss API Method Error", ex);
+				throw ex;
+			}
 		}
 
 		[AllowAnonymous]
@@ -650,15 +662,23 @@ namespace WebVella.Erp.Web.Controllers
 		[HttpGet]
 		public ContentResult FrameworkCss()
 		{
-			var cssContent = "";
-
-			if (String.IsNullOrWhiteSpace(ErpAppContext.Current.StyleFrameworkContent))
+			try
 			{
-				new ThemeService().GenerateStyleFrameworkContent();
-			}
+				var cssContent = "";
 
-			cssContent = ErpAppContext.Current.StyleFrameworkContent;
-			return Content(cssContent, "text/css");
+				if (String.IsNullOrWhiteSpace(ErpAppContext.Current.StyleFrameworkContent))
+				{
+					new ThemeService().GenerateStyleFrameworkContent();
+				}
+
+				cssContent = ErpAppContext.Current.StyleFrameworkContent;
+				return Content(cssContent, "text/css");
+			}
+			catch (Exception ex)
+			{
+				new Log().Create(LogType.Error, "FrameworkCss API Method Error", ex);
+				throw ex;
+			}
 		}
 
 		[Produces("application/json")]
@@ -667,69 +687,77 @@ namespace WebVella.Erp.Web.Controllers
 		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult RelatedFieldMultiSelect(string entityName, string fieldName, string search = "", int page = 1)
 		{
-			var response = new TypeaheadResponse();
-			var errorResponse = new ResponseModel();
-			var recMan = new RecordManager();
-			if (String.IsNullOrWhiteSpace(entityName))
+			try
 			{
-				errorResponse.Message = "entity name is required";
-				Response.StatusCode = (int)HttpStatusCode.BadRequest;
-				return Json(errorResponse);
-			}
-			if (String.IsNullOrWhiteSpace(fieldName))
-			{
-				errorResponse.Message = "field name is required";
-				Response.StatusCode = (int)HttpStatusCode.BadRequest;
-				return Json(errorResponse);
-			}
-
-			var pageSize = 5 + 1; //the extra record will tell us if there are more records
-			var skipPages = (page - 1) * pageSize;
-			var sortList = new List<QuerySortObject>();
-			sortList.Add(new QuerySortObject(fieldName, QuerySortType.Ascending));
-
-			var query = new EntityQuery(entityName, fieldName, null, sortList.ToArray(), skipPages, pageSize);
-			if (!String.IsNullOrWhiteSpace(search))
-			{
-				query = new EntityQuery(entityName, fieldName, EntityQuery.QueryContains(fieldName, search), sortList.ToArray(), skipPages, pageSize);
-			}
-
-			var findResult = recMan.Find(query);
-			var resultRecords = new List<EntityRecord>();
-			if (!findResult.Success)
-			{
-				errorResponse.Message = findResult.Message;
-				Response.StatusCode = (int)HttpStatusCode.BadRequest;
-				return Json(errorResponse);
-			}
-
-			if (findResult.Object.Data.Count > 0)
-			{
-				if (findResult.Object.Data.Count == 6)
+				var response = new TypeaheadResponse();
+				var errorResponse = new ResponseModel();
+				var recMan = new RecordManager();
+				if (String.IsNullOrWhiteSpace(entityName))
 				{
-					response.Pagination.More = true;
-					resultRecords = findResult.Object.Data.Take(5).ToList();
+					errorResponse.Message = "entity name is required";
+					Response.StatusCode = (int)HttpStatusCode.BadRequest;
+					return Json(errorResponse);
 				}
-				else
+				if (String.IsNullOrWhiteSpace(fieldName))
 				{
-					resultRecords = findResult.Object.Data;
+					errorResponse.Message = "field name is required";
+					Response.StatusCode = (int)HttpStatusCode.BadRequest;
+					return Json(errorResponse);
 				}
 
-				var entity = new EntityManager().ReadEntity(entityName).Object;
-				foreach (var record in resultRecords)
+				var pageSize = 5 + 1; //the extra record will tell us if there are more records
+				var skipPages = (page - 1) * pageSize;
+				var sortList = new List<QuerySortObject>();
+				sortList.Add(new QuerySortObject(fieldName, QuerySortType.Ascending));
+
+				var query = new EntityQuery(entityName, fieldName, null, sortList.ToArray(), skipPages, pageSize);
+				if (!String.IsNullOrWhiteSpace(search))
 				{
-					response.Results.Add(new TypeaheadResponseRow
+					query = new EntityQuery(entityName, fieldName, EntityQuery.QueryContains(fieldName, search), sortList.ToArray(), skipPages, pageSize);
+				}
+
+				var findResult = recMan.Find(query);
+				var resultRecords = new List<EntityRecord>();
+				if (!findResult.Success)
+				{
+					errorResponse.Message = findResult.Message;
+					Response.StatusCode = (int)HttpStatusCode.BadRequest;
+					return Json(errorResponse);
+				}
+
+				if (findResult.Object.Data.Count > 0)
+				{
+					if (findResult.Object.Data.Count == 6)
 					{
-						Id = record[fieldName].ToString(),
-						Text = record[fieldName].ToString(),
-						FieldName = fieldName,
-						EntityName = entity.Label,
-						Color = entity.Color,
-						IconName = entity.IconName
-					});
+						response.Pagination.More = true;
+						resultRecords = findResult.Object.Data.Take(5).ToList();
+					}
+					else
+					{
+						resultRecords = findResult.Object.Data;
+					}
+
+					var entity = new EntityManager().ReadEntity(entityName).Object;
+					foreach (var record in resultRecords)
+					{
+						response.Results.Add(new TypeaheadResponseRow
+						{
+							Id = record[fieldName].ToString(),
+							Text = record[fieldName].ToString(),
+							FieldName = fieldName,
+							EntityName = entity.Label,
+							Color = entity.Color,
+							IconName = entity.IconName
+						});
+					}
 				}
+				return new JsonResult(response);
 			}
-			return new JsonResult(response);
+			catch (Exception ex)
+			{
+				new Log().Create(LogType.Error, "RelatedFieldMultiSelect API Method Error", ex);
+				throw ex;
+			}
 		}
 
 		[Produces("application/json")]
@@ -845,10 +873,11 @@ namespace WebVella.Erp.Web.Controllers
 				response.Success = true;
 				response.Message = "Record created successfully";
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
+				new Log().Create(LogType.Error, "RelatedFieldMultiSelect API Method Error", ex);
 				response.Success = false;
-				response.Message = e.Message;
+				response.Message = ex.Message;
 			}
 			return new JsonResult(response);
 		}

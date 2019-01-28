@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using WebVella.Erp.Diagnostics;
 using WebVella.Erp.Hooks;
 using WebVella.Erp.Web.Hooks;
 using WebVella.Erp.Web.Models;
@@ -14,49 +15,66 @@ namespace WebVella.Erp.Web.Pages.Application
 
 		public IActionResult OnGet()
 		{
-			Init();
-			if (ErpRequestContext.Page == null) return NotFound();
+			try
+			{
+				Init();
+				if (ErpRequestContext.Page == null) return NotFound();
 
-			var globalHookInstances = HookManager.GetHookedInstances<IPageHook>(HookKey);
-			foreach (IPageHook inst in globalHookInstances)
-			{
-				var result = inst.OnGet(this);
-				if (result != null) return result;
+				var globalHookInstances = HookManager.GetHookedInstances<IPageHook>(HookKey);
+				foreach (IPageHook inst in globalHookInstances)
+				{
+					var result = inst.OnGet(this);
+					if (result != null) return result;
+				}
+
+				foreach (IApplicationHomePageHook inst in HookManager.GetHookedInstances<IApplicationHomePageHook>(HookKey))
+				{
+					var result = inst.OnGet(this);
+					if (result != null)
+						return result;
+				}
+				BeforeRender();
+				return Page();
 			}
-			
-			foreach (IApplicationHomePageHook inst in HookManager.GetHookedInstances<IApplicationHomePageHook>(HookKey))
+			catch (Exception ex)
 			{
-				var result = inst.OnGet(this);
-				if (result != null)
-					return result;
+				new Log().Create(LogType.Error, "ApplicationHomePageModel Error on GET", ex);
+				BeforeRender();
+				return Page();
 			}
-			BeforeRender();
-			return Page();
 		}
 
 		public IActionResult OnPost()
 		{
-			if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
-
-			Init();
-
-			if (ErpRequestContext.Page == null) return NotFound();
-
-			var globalHookInstances = HookManager.GetHookedInstances<IPageHook>(HookKey);
-			foreach (IPageHook inst in globalHookInstances)
+			try
 			{
-				var result = inst.OnPost(this);
-				if (result != null) return result;
+				if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
+				Init();
+
+				if (ErpRequestContext.Page == null) return NotFound();
+
+				var globalHookInstances = HookManager.GetHookedInstances<IPageHook>(HookKey);
+				foreach (IPageHook inst in globalHookInstances)
+				{
+					var result = inst.OnPost(this);
+					if (result != null) return result;
+				}
+
+				foreach (IApplicationHomePageHook inst in HookManager.GetHookedInstances<IApplicationHomePageHook>(HookKey))
+				{
+					var result = inst.OnPost(this);
+					if (result != null)
+						return result;
+				}
+				BeforeRender();
+				return Page();
 			}
-			
-			foreach (IApplicationHomePageHook inst in HookManager.GetHookedInstances<IApplicationHomePageHook>(HookKey))
+			catch (Exception ex)
 			{
-				var result = inst.OnPost(this);
-				if (result != null)
-					return result;
+				new Log().Create(LogType.Error, "ApplicationHomePageModel Error on POST", ex);
+				BeforeRender();
+				return Page();
 			}
-			BeforeRender();
-			return Page();
 		}
 
 	}

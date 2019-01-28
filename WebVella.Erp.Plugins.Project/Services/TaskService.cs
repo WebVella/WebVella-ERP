@@ -127,7 +127,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 			if (type == TasksDueType.TargetDateDueToday)
 				whereFilters.Add("target_date = @currentDate");
 			if (type == TasksDueType.TargetDateNotDue)
-				whereFilters.Add("target_date > @currentDate");
+				whereFilters.Add("(target_date > @currentDate OR target_date = null)");
 			
 			// Project and user
 			if (projectId != null && userId != null)
