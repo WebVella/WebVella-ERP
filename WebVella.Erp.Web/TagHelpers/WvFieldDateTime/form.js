@@ -33,7 +33,7 @@ function InitFlatPickrDateTime(fieldId) {
 			var options = { 
 				time_24hr: true, 
 				dateFormat: flatPickrServerDateTimeFormat,
-				locale: BulgarianDateTimeLocale,
+				//locale: BulgarianDateTimeLocale,
 				enableTime: true,
 				minuteIncrement: 1,
 				altInput: true,

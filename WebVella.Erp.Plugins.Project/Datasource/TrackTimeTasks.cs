@@ -27,7 +27,7 @@ namespace WebVella.Erp.Plugins.Project.DataSource
 			if (currentUser == null)
 				return null;
 
-			var userOpenTasks = new TaskService().GetTaskQueue(null,currentUser.Id,Model.TasksDueType.StartDateDue);
+			var userOpenTasks = new TaskService().GetTaskQueue(null,currentUser.Id,Model.TasksDueType.StartDateDue, includeProjectData: true);
 
 			var userTimelogs = new List<EntityRecord>();
 
@@ -48,6 +48,15 @@ namespace WebVella.Erp.Plugins.Project.DataSource
 					var lastLog = taskTimelogs.OrderByDescending(x => (DateTime)x["created_on"]).FirstOrDefault();
 					if (lastLog != null)
 						task["last_logged_on"] = (DateTime)lastLog["created_on"];
+				}
+				task["is_billable"] = true;
+				if (task.Properties.ContainsKey("$project_nn_task") && task["$project_nn_task"] != null && task["$project_nn_task"] is List<EntityRecord>
+					&& ((List<EntityRecord>)task["$project_nn_task"]).Any()) {
+
+					var firstRecord = ((List<EntityRecord>)task["$project_nn_task"])[0];
+					if (firstRecord.Properties.ContainsKey("is_billable") && firstRecord["is_billable"] != null && firstRecord["is_billable"] is Boolean) {
+						task["is_billable"] = (bool)firstRecord["is_billable"];
+					}
 				}
 			}
 

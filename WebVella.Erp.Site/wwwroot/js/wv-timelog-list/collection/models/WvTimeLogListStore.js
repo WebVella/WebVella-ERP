@@ -6,5 +6,6 @@ export default class WvTimeLogListStore {
         this.relatedRecords = null;
         this.siteRootUrl = "http://localhost:2202";
         this.reloadPostIndex = 1;
+        this.isBillable = true;
     }
 }

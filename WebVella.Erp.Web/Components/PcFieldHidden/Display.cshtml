@@ -7,4 +7,4 @@
 	var node = (PageBodyNode)ViewBag.Node;
 	var fieldModel = (PcFieldHidden.PcFieldBaseModel)ViewBag.Model;
 }
-<input type="hidden" name="@options.Name" value="@fieldModel.Value"/>
+<input type="hidden" name="@options.Name" value="@fieldModel.Value.ToString()"/>

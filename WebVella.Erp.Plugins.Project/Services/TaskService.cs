@@ -107,9 +107,14 @@ namespace WebVella.Erp.Plugins.Project.Services
 				return eqlResult[0];
 		}
 
-		public EntityRecordList GetTaskQueue(Guid? projectId, Guid? userId, TasksDueType type = TasksDueType.All, int? limit = null)
+		public EntityRecordList GetTaskQueue(Guid? projectId, Guid? userId, TasksDueType type = TasksDueType.All, int? limit = null, bool includeProjectData = false)
 		{
-			var eqlCommand = " SELECT * from task ";
+			var selectedFields = "*";
+			if (includeProjectData) {
+				selectedFields += ",$project_nn_task.is_billable";
+			}
+
+			var eqlCommand = $"SELECT {selectedFields} from task ";
 			var eqlParams = new List<EqlParameter>();
 			eqlParams.Add(new EqlParameter("currentDate", DateTime.Now.Date));
 
@@ -284,7 +289,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 
 			//Preset start date
 			record["start_date"] = DateTime.Now;
-
+			record["target_date"] = DateTime.Now.AddDays(1);
 			return record;
 		}
 
@@ -359,6 +364,16 @@ namespace WebVella.Erp.Plugins.Project.Services
 			var updateResponse = new RecordManager().UpdateRecord("task", patchRecord);
 			if (!updateResponse.Success)
 				throw new Exception(updateResponse.Message);
+		}
+
+		public List<EntityRecord> GetTasksThatNeedStarting() {
+			var eqlCommand = "SELECT id FROM task WHERE status_id = @notStartedStatusId AND start_date <= @currentDate";
+			var eqlParams = new List<EqlParameter>() {
+				new EqlParameter("notStartedStatusId", new Guid("f3fdd750-0c16-4215-93b3-5373bd528d1f")),
+				new EqlParameter("currentDate", DateTime.Now.Date),
+			};
+
+			return new EqlCommand(eqlCommand, eqlParams).Execute();
 		}
 	}
 }

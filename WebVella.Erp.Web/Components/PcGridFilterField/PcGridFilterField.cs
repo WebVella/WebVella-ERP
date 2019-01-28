@@ -88,6 +88,8 @@ namespace WebVella.Erp.Web.Components
 				ViewBag.RequestContext = ErpRequestContext;
 				ViewBag.AppContext = ErpAppContext.Current;
 				ViewBag.ComponentContext = context;
+				if (options.QueryOptions == null)
+					options.QueryOptions = new List<FilterType>();
 
 				var selectedQueryOptionsConverted = new List<string>();
 				foreach (var option in options.QueryOptions)

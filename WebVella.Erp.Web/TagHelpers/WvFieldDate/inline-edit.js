@@ -6,7 +6,14 @@ var flatPickrUiDateFormat = "d M Y";
 //From the server dates will be received yyyy-MM-ddTHH:mm:ss.fff
 function InitFlatPickrDateInlineEdit(editWrapperSelector) {
 	var defaultDate = $(editWrapperSelector).attr("data-default-date");
-	flatpickr(editWrapperSelector + " .form-control", { time_24hr: true, defaultDate: defaultDate, dateFormat: flatPickrServerDateFormat, locale: BulgarianDateTimeLocale, altInput: true, altFormat: flatPickrUiDateFormat });
+	var options = { 
+		time_24hr: true,
+		defaultDate: defaultDate,
+		dateFormat: flatPickrServerDateFormat,
+		//locale: BulgarianDateTimeLocale,
+		altInput: true,
+		altFormat: flatPickrUiDateFormat };
+	flatpickr(editWrapperSelector + " .form-control", options);
 }
 
 function DateInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config) {

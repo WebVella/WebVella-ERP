@@ -5,7 +5,17 @@ var flatPickrServerDateTimeFormat = "Z";//"Y-m-dTH:i:S";
 var flatPickrUiDateTimeFormat = "d M Y H:i";
 function InitFlatPickrDateTimeInlineEdit(editWrapperSelector) {
 	var defaultDate = $(editWrapperSelector).attr("data-default-date");
-	flatpickr(editWrapperSelector + " .form-control", { time_24hr: true, defaultDate: defaultDate, dateFormat: flatPickrServerDateTimeFormat, enableTime: true, minuteIncrement: 1, altInput: true, altFormat: flatPickrUiDateTimeFormat });
+	var options = { 
+		time_24hr: true,
+		defaultDate: defaultDate,
+		dateFormat: flatPickrServerDateTimeFormat,
+		//locale: BulgarianDateTimeLocale,
+		enableTime: true,
+		minuteIncrement: 1,
+		altInput: true,
+		altFormat: flatPickrUiDateTimeFormat
+	};
+	flatpickr(editWrapperSelector + " .form-control", );
 }
 
 function DateTimeInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config) {

@@ -75,7 +75,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 				ViewBag.ComponentContext = context;
 				ViewBag.CurrentUser = SecurityContext.CurrentUser;
 				ViewBag.CurrentUserJson = JsonConvert.SerializeObject(SecurityContext.CurrentUser);
-
+				ViewBag.IsBillable = true;
 				if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
 				{
 					var relatedRecordId = (Guid?)context.DataModel.GetProperty("Record.id");
@@ -88,7 +88,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 					switch (entityName) {
 						case "task":
 							{
-								var eqlCommand = "SELECT $project_nn_task.id FROM task WHERE id = @recordId";
+								var eqlCommand = "SELECT $project_nn_task.id, $project_nn_task.is_billable FROM task WHERE id = @recordId";
 								var eqlParams = new List<EqlParameter>() { new EqlParameter("recordId", relatedRecordId) };
 								var eqlResult = new EqlCommand(eqlCommand, eqlParams).Execute();
 								if (eqlResult.Any()) {
@@ -98,6 +98,10 @@ namespace WebVella.Erp.Plugins.Project.Components
 											var projectRecord = ((List<EntityRecord>)taskRecord["$project_nn_task"])[0];
 											if (projectRecord.Properties.ContainsKey("id") && projectRecord["id"] != null) {
 												relatedRecords.Add((Guid)projectRecord["id"]);
+											}
+											if (projectRecord.Properties.ContainsKey("is_billable") && projectRecord["is_billable"] != null && projectRecord["is_billable"] is Boolean)
+											{
+												ViewBag.IsBillable = (bool)projectRecord["is_billable"];
 											}
 										}
 									}

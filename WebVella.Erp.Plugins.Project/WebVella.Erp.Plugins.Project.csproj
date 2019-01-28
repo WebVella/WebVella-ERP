@@ -15,6 +15,7 @@
     <None Remove="Components\PcProjectWidgetTimesheet\service.js" />
     <None Remove="Components\PcReportAccountMonthlyTimelogs\service.js" />
     <None Remove="Components\PcTimelogList\service.js" />
+    <None Remove="Files\timetrack.js" />
     <None Remove="Theme\styles.css" />
   </ItemGroup>
 
@@ -29,6 +30,9 @@
     <EmbeddedResource Include="Components\PcProjectWidgetTimesheet\service.js" />
     <EmbeddedResource Include="Components\PcReportAccountMonthlyTimelogs\service.js" />
     <EmbeddedResource Include="Components\PcTimelogList\service.js" />
+    <EmbeddedResource Include="Files\timetrack.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Theme\styles.css" />
   </ItemGroup>
 

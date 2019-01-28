@@ -2,4 +2,4 @@
 <wv-timelog-list related-records='@ViewBag.RelatedRecordsJson'
 				 site-root-url="@ViewBag.SiteRootUrl"
 				 records='@Html.Raw(ViewBag.RecordsJson)'
-				 current-user='@Html.Raw(ViewBag.CurrentUserJson)'></wv-timelog-list>
+				 current-user='@Html.Raw(ViewBag.CurrentUserJson)' is-billable="@(((bool)ViewBag.IsBillable).ToString().ToLowerInvariant())"></wv-timelog-list>

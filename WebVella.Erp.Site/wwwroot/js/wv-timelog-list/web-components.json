@@ -15,6 +15,11 @@
           "required": false
         },
         {
+          "label": "is-billable",
+          "description": "",
+          "required": false
+        },
+        {
           "label": "is-debug",
           "description": "",
           "required": false

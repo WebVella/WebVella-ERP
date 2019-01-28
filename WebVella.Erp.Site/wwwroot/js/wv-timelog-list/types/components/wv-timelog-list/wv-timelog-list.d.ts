@@ -7,6 +7,7 @@ export declare class WvPostList {
     isDebug: string;
     relatedRecords: string;
     siteRootUrl: string;
+    isBillable: boolean;
     reloadPostIndex: number;
     componentWillLoad(): void;
     render(): JSX.Element;

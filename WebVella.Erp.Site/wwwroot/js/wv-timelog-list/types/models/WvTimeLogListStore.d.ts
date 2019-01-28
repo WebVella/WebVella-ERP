@@ -5,4 +5,5 @@ export default class WvTimeLogListStore {
     relatedRecords: string;
     siteRootUrl: string;
     reloadPostIndex: number;
+    isBillable: boolean;
 }

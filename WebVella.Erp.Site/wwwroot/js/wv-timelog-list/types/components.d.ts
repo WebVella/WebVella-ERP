@@ -17,6 +17,7 @@ export namespace Components {
 
   interface WvTimelogList {
     'currentUser': string;
+    'isBillable': boolean;
     'isDebug': string;
     'records': string;
     'relatedRecords': string;
@@ -24,6 +25,7 @@ export namespace Components {
   }
   interface WvTimelogListAttributes extends StencilHTMLAttributes {
     'currentUser'?: string;
+    'isBillable'?: boolean;
     'isDebug'?: string;
     'records'?: string;
     'relatedRecords'?: string;

@@ -7,6 +7,7 @@ export class WvPostList {
         this.isDebug = "false";
         this.relatedRecords = null;
         this.siteRootUrl = null;
+        this.isBillable = true;
         this.reloadPostIndex = 1;
     }
     componentWillLoad() {
@@ -15,6 +16,7 @@ export class WvPostList {
         initStore.currentUser = JSON.parse(this.currentUser);
         initStore.relatedRecords = this.relatedRecords;
         initStore.siteRootUrl = this.siteRootUrl;
+        initStore.isBillable = this.isBillable;
         initStore.reloadPostIndex = 1;
         if (this.isDebug.toLowerCase() === "true") {
             initStore.isDebug = true;
@@ -44,6 +46,10 @@ export class WvPostList {
         "currentUser": {
             "type": String,
             "attr": "current-user"
+        },
+        "isBillable": {
+            "type": Boolean,
+            "attr": "is-billable"
         },
         "isDebug": {
             "type": String,

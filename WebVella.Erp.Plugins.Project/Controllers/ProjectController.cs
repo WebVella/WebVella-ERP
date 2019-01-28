@@ -7,8 +7,10 @@ using System.Linq;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Database;
+using WebVella.Erp.Diagnostics;
 using WebVella.Erp.Eql;
 using WebVella.Erp.Plugins.Project.Services;
+using WebVella.Erp.Web.Services;
 
 namespace WebVella.Erp.Plugins.Project.Controllers
 {
@@ -375,6 +377,25 @@ namespace WebVella.Erp.Plugins.Project.Controllers
 				response.Success = false;
 				response.Message = ex.Message;
 				return Json(response);
+			}
+		}
+
+		[AllowAnonymous]
+		[Route("api/v3.0/p/project/files/timetrack.js")]
+		[ResponseCache(NoStore = false, Duration = 30 * 24 * 3600)]
+		[HttpGet]
+		public ContentResult StylesCss()
+		{
+			try
+			{
+				var jsContent = FileService.GetEmbeddedTextResource("timetrack.js", "WebVella.Erp.Plugins.Project.Files", "WebVella.Erp.Plugins.Project");
+			
+				return Content(jsContent, "text/javascript");
+			}
+			catch (Exception ex)
+			{
+				new Log().Create(LogType.Error, "Timetrack.js API Method Error", ex);
+				throw ex;
 			}
 		}
 

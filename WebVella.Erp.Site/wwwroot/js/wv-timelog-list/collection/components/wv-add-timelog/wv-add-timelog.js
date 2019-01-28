@@ -67,6 +67,7 @@ export class WvAddNew {
             addTimelog: action.addTimelog
         });
         this.loggedOn = moment().toISOString();
+        this.isBillable = this.store.getState().isBillable;
     }
     componentDidLoad() {
         let scope = this;
