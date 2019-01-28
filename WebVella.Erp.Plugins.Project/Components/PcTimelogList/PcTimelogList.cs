@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -112,7 +113,12 @@ namespace WebVella.Erp.Plugins.Project.Components
 
 					var inputRecords = context.DataModel.GetPropertyValueByDataSource(options.Records) as List<EntityRecord> ?? new List<EntityRecord>();
 					ViewBag.RecordsJson = JsonConvert.SerializeObject(inputRecords);
-					ViewBag.SiteRootUrl = UrlUtils.FullyQualifiedApplicationPath(ErpRequestContext.PageContext.HttpContext);
+					HttpContext httpContext = null;
+					if (ErpRequestContext.PageContext != null)
+					{
+						httpContext = ErpRequestContext.PageContext.HttpContext;
+					}
+					ViewBag.SiteRootUrl = UrlUtils.FullyQualifiedApplicationPath(httpContext);
 				}
 				switch (context.Mode)
 				{

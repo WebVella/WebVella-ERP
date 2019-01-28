@@ -150,9 +150,9 @@ namespace WebVella.Erp.Web.TagHelpers
 					//Control
 					var inputEl = new TagBuilder("div");
 					inputEl.Attributes.Add("id", $"plaintext-{FieldId}");
-					inputEl.AddCssClass("form-control erp-guid disabled");
+					inputEl.AddCssClass("form-control erp-html disabled");
 					inputEl.Attributes.Add("style", "height:auto;");
-					inputEl.InnerHtml.Append((Value ?? "").ToString());
+					inputEl.InnerHtml.AppendHtml((Value ?? "").ToString());
 					inputGroupEl.InnerHtml.AppendHtml(inputEl);
 					//Append
 					if (AppendHtml.Count > 0)
@@ -184,7 +184,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				{
 					var divEl = new TagBuilder("div");
 					divEl.Attributes.Add("id", $"input-{FieldId}");
-					divEl.AddCssClass("form-control-plaintext erp-guid");
+					divEl.AddCssClass("form-control-plaintext erp-html");
 					divEl.InnerHtml.AppendHtml((Value ?? "").ToString());
 					output.Content.AppendHtml(divEl);
 				}
@@ -223,7 +223,7 @@ namespace WebVella.Erp.Web.TagHelpers
 						//Control
 
 						var viewFormControlEl = new TagBuilder("div");
-						viewFormControlEl.AddCssClass("form-control erp-guid");
+						viewFormControlEl.AddCssClass("form-control erp-html");
 						viewFormControlEl.Attributes.Add("style","height:auto;");
 						viewFormControlEl.InnerHtml.AppendHtml((Value ?? "").ToString());
 						viewWrapperEl.InnerHtml.AppendHtml(viewFormControlEl);
@@ -274,7 +274,7 @@ namespace WebVella.Erp.Web.TagHelpers
 						editModalBody.AddCssClass("modal-body");
 						var editModalBodyTextArea = new TagBuilder("textarea");
 						editModalBodyTextArea.Attributes.Add("id", $"input-{FieldId}");
-						editModalBodyTextArea.AddCssClass("form-control erp-guid");
+						editModalBodyTextArea.AddCssClass("form-control erp-html");
 						if (Required)
 						{
 							editModalBodyTextArea.Attributes.Add("required", null);
@@ -374,7 +374,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					}
 					//Control
 					var inputEl = new TagBuilder("div");
-					inputEl.AddCssClass("form-control erp-guid disabled");
+					inputEl.AddCssClass("form-control erp-html disabled");
 					inputEl.InnerHtml.AppendHtml((Value ?? "").ToString());
 					divEl.InnerHtml.AppendHtml(inputEl);
 					//Append

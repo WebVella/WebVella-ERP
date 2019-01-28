@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -121,7 +122,12 @@ namespace WebVella.Erp.Plugins.Project.Components
 						parentIdFieldName: "parent_id", createdDateFieldName: "created_on", sortOrder: "asc");
 					ViewBag.Records = treeRecords;
 					ViewBag.RecordsJson = JsonConvert.SerializeObject(treeRecords);
-					ViewBag.SiteRootUrl = UrlUtils.FullyQualifiedApplicationPath(ErpRequestContext.PageContext.HttpContext);
+					HttpContext httpContext = null;
+					if (ErpRequestContext.PageContext != null)
+					{
+						httpContext = ErpRequestContext.PageContext.HttpContext;
+					}
+					ViewBag.SiteRootUrl = UrlUtils.FullyQualifiedApplicationPath(httpContext);
 				}
 
 				switch (context.Mode)

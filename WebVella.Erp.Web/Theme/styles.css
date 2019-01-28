@@ -3164,7 +3164,7 @@ pre, code {
 }
 
 .erp-field.inline-edit .view-wrapper div.form-control {
-	display: flex;
+	display: block;
 	align-items: center;
 }
 
