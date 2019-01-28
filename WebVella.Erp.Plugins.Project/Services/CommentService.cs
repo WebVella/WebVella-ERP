@@ -160,32 +160,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 				{
 					relatedRecords.Add(projectId.ToString());
 				}
-				var body = "";
-				if (!String.IsNullOrWhiteSpace((string)record["body"]))
-				{
-					HtmlDocument doc = new HtmlDocument();
-					doc.LoadHtml((string)record["body"]);
-					var root = doc.DocumentNode;
-					var sb = new StringBuilder();
-					foreach (var node in root.DescendantsAndSelf())
-					{
-						if (!node.HasChildNodes)
-						{
-							string text = node.InnerText;
-							if (!string.IsNullOrEmpty(text))
-								sb.AppendLine(text.Trim());
-						}
-					}
-					var commentText = sb.ToString();
-					if (commentText.Length > 150)
-					{
-						body = sb.ToString().Substring(0, 150);
-						if (commentText.Length > 150)
-						{
-							body += "...";
-						}
-					}
-				}
+				var body = new Web.Services.RenderService().GetSnippetFromHtml((string)record["body"]);
 				var scope = new List<string>() { "projects" };
 				new FeedItemService().Create(id: Guid.NewGuid(), createdBy: SecurityContext.CurrentUser.Id, subject: subject,
 					body: body, relatedRecords: relatedRecords, scope: scope, type: "comment");

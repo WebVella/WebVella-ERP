@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using HtmlAgilityPack;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using WebVella.Erp.Api;
@@ -350,6 +352,34 @@ namespace WebVella.Erp.Web.Services
 			}
 
 			return template;
+		}
+
+		public string GetSnippetFromHtml(string html, int snippetLength = 150) {
+			var result = "";
+			if (!String.IsNullOrWhiteSpace(html))
+			{
+				HtmlDocument doc = new HtmlDocument();
+				doc.LoadHtml(html);
+				var root = doc.DocumentNode;
+				var sb = new StringBuilder();
+				foreach (var node in root.DescendantsAndSelf())
+				{
+					if (!node.HasChildNodes)
+					{
+						string text = node.InnerText;
+						if (!string.IsNullOrEmpty(text))
+							sb.AppendLine(text.Trim());
+					}
+				}
+				result = sb.ToString();
+
+				if (result.Length > snippetLength)
+				{
+					result = sb.ToString().Substring(0, 150);
+					result += "...";
+				}
+			}
+			return result;
 		}
 
 		private string GetValueFromPropertyPath(dynamic Obj, string[] PropertyPath)

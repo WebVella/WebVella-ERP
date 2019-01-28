@@ -258,8 +258,9 @@ namespace WebVella.Erp.Plugins.Project.Services
 					relatedRecords.Add(projectId.ToString());
 				}
 				var scope = new List<string>() { "projects" };
+				var logSnippet = new Web.Services.RenderService().GetSnippetFromHtml((string)record["body"]);
 				new FeedItemService().Create(id: Guid.NewGuid(), createdBy: SecurityContext.CurrentUser.Id, subject: subject,
-					relatedRecords: relatedRecords, scope: scope, type: "timelog");
+					body: logSnippet, relatedRecords: relatedRecords, scope: scope, type: "timelog");
 			}
 		}
 

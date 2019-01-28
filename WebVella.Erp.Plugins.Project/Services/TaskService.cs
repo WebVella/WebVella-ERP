@@ -335,8 +335,9 @@ namespace WebVella.Erp.Plugins.Project.Services
 			var subject = $"created <a href=\"/projects/tasks/tasks/r/{patchRecord["id"]}/details\">[{patchRecord["key"]}] {taskSubject}</a>";
 			var relatedRecords = new List<string>() { patchRecord["id"].ToString(), projectId.ToString() };
 			var scope = new List<string>() { "projects" };
+			var taskSnippet = new Web.Services.RenderService().GetSnippetFromHtml((string)record["body"]);
 			new FeedItemService().Create(id: Guid.NewGuid(), createdBy: SecurityContext.CurrentUser.Id, subject: subject,
-				relatedRecords: relatedRecords, scope: scope, type: "task");
+				body: taskSnippet, relatedRecords: relatedRecords, scope: scope, type: "task");
 		}
 
 		public void PostUpdateApiHookLogic(string entityName, EntityRecord record)

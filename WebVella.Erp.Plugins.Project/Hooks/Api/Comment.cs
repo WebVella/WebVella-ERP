@@ -1,13 +1,5 @@
-﻿using HtmlAgilityPack;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using WebVella.Erp.Api;
+﻿using System.Collections.Generic;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Eql;
 using WebVella.Erp.Hooks;
 using WebVella.Erp.Plugins.Project.Services;
 
