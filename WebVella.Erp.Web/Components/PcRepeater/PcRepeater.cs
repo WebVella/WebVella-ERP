@@ -88,21 +88,25 @@ namespace WebVella.Erp.Web.Components
 					case ComponentMode.Help:
 						return await Task.FromResult<IViewComponentResult>(View("Help"));
 					default:
-						ViewBag.ExceptionMessage = "Unknown component mode";
-						ViewBag.Errors = new List<ValidationError>();
+						ViewBag.Error = new ValidationException()
+						{
+							Message = "Unknown component mode"
+						};
 						return await Task.FromResult<IViewComponentResult>(View("Error"));
 				}
 
 			}
-			catch (ValidationException ex) {
-				ViewBag.ExceptionMessage = ex.Message;
-				ViewBag.Errors = new List<ValidationError>();
+			catch (ValidationException ex)
+			{
+				ViewBag.Error = ex;
 				return await Task.FromResult<IViewComponentResult>(View("Error"));
 			}
 			catch (Exception ex)
 			{
-				ViewBag.ExceptionMessage = ex.Message;
-				ViewBag.Errors = new List<ValidationError>();
+				ViewBag.Error = new ValidationException()
+				{
+					Message = ex.Message
+				};
 				return await Task.FromResult<IViewComponentResult>(View("Error"));
 			}
 		}

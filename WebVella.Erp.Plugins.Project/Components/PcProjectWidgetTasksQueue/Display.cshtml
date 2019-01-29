@@ -26,14 +26,16 @@
 	};
 }
 @if(records.Count > 0){
-<wv-grid bordered="true" small="true" columns="@gridColumn" has-tfoot="false">
+<wv-grid small="true" columns="@gridColumn"  has-tfoot="false" has-thead="false">
 	@foreach (var record in records)
 	{
-		var dateString = "";
+		var dateString = "no target date";
+		var dateClass = "go-gray";
 		if (record["date"] != null) {
+			dateClass = "";
 			dateString = ((DateTime)record["date"]).ToString("dd MMM yyyy");
 		}
-		var dateClass = "";
+
 		@switch (options.Type)
 		{
 			case TasksDueType.TargetDateDueToday:
@@ -47,8 +49,8 @@
 		}
 		<wv-grid-row>
 			<wv-grid-column>@Html.Raw((string)record["task"])</wv-grid-column>
-			<wv-grid-column>@Html.Raw((string)record["user"])</wv-grid-column>
-			<wv-grid-column class="@dateClass">@dateString</wv-grid-column>
+			<wv-grid-column width="200px">@Html.Raw((string)record["user"])</wv-grid-column>
+			<wv-grid-column width="120px" class="@dateClass">@dateString</wv-grid-column>
 		</wv-grid-row>
 	}
 </wv-grid>

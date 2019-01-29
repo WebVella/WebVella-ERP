@@ -4068,6 +4068,10 @@ border-bottom-style:dashed;
 	white-space: nowrap;*/
 }
 
+.erp-list .table.table-sm:not(.table-bordered) tbody tr:first-child td {
+	border-top:none;
+}
+
 .erp-list .table tfoot {
 	/*background: #fafafa;*/
 }

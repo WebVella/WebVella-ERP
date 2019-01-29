@@ -31,7 +31,7 @@
     <EmbeddedResource Include="Components\PcReportAccountMonthlyTimelogs\service.js" />
     <EmbeddedResource Include="Components\PcTimelogList\service.js" />
     <EmbeddedResource Include="Files\timetrack.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Theme\styles.css" />
   </ItemGroup>

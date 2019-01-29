@@ -9,7 +9,7 @@
 	var gridColumns = (List<GridColumn>)ViewBag.GridColumns;
 	var records = (List<EntityRecord>)ViewBag.Records;
 }
-<wv-grid bordered="true" small="true" columns="@gridColumns" has-tfoot="false">
+<wv-grid small="true" columns="@gridColumns" has-tfoot="false">
 	@foreach (var record in records)
 	{
 		<wv-grid-row>

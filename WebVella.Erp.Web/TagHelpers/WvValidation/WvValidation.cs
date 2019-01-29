@@ -25,14 +25,14 @@ namespace WebVella.Erp.Web.TagHelpers
 				return Task.CompletedTask;
 			}
 			output.TagName = "div";
-			output.AddCssClass("alert alert-danger");
+			output.AddCssClass("alert alert-danger p-2");
 
 			if (!ShowErrors && String.IsNullOrWhiteSpace(Validation.Message))
 			{
 				Validation.Message = "Validation Error";
 			}
 
-			if (!ShowErrors)
+			if (!ShowErrors || Validation.Errors.Count == 0)
 			{
 				output.Content.AppendHtml(Validation.Message);
 			}

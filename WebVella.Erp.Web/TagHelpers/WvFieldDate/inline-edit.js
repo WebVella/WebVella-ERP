@@ -75,7 +75,10 @@ function DateInlineEditInit(fieldId, fieldName, entityName, recordId, config) {
 		event.stopPropagation();
 		event.preventDefault();
 		var inputValue = $(selectors.editWrapper + " .form-control").val();
-		if (!moment(inputValue).isValid()) {
+		if (!inputValue) {
+			inputValue = null;
+		}
+		else if (!moment(inputValue).isValid()) {
 			toastr.error("invalid date", 'Error!', { closeButton: true, tapToDismiss: true });
 			return;
 		}

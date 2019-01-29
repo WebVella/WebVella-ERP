@@ -110,7 +110,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 						new TaskService().GetTaskIconAndColor((string)task["priority"],out iconClass, out color);
 
 						var row = new EntityRecord();
-						row["task"] = $"<i class='{iconClass}' style='color:{color}'></i> <a target=\"_blank\" href=\"/projects/tasks/tasks/r/{(Guid)task["id"]}/details\">[{task["key"]}] {task["subject"]}</a>";
+						row["task"] = $"<i class='{iconClass}' style='color:{color}'></i> <a href=\"/projects/tasks/tasks/r/{(Guid)task["id"]}/details\">[{task["key"]}] {task["subject"]}</a>";
 						row["user"] = $"<img src=\"{imagePath}\" class=\"rounded-circle\" width=\"24\"> {(string)user["username"]}";
 						row["date"] = ((DateTime?)task["target_date"]).ConvertToAppDate();
 						resultRecords.Add(row);
@@ -128,18 +128,25 @@ namespace WebVella.Erp.Plugins.Project.Components
 					case ComponentMode.Help:
 						return await Task.FromResult<IViewComponentResult>(View("Help"));
 					default:
-						ViewBag.ExceptionMessage = "Unknown component mode";
+						ViewBag.Error = new ValidationException()
+						{
+							Message = "Unknown component mode"
+						};
 						return await Task.FromResult<IViewComponentResult>(View("Error"));
 				}
+
 			}
 			catch (ValidationException ex)
 			{
-				ViewBag.ExceptionMessage = ex.Message;
+				ViewBag.Error = ex;
 				return await Task.FromResult<IViewComponentResult>(View("Error"));
 			}
 			catch (Exception ex)
 			{
-				ViewBag.ExceptionMessage = ex.Message;
+				ViewBag.Error = new ValidationException()
+				{
+					Message = ex.Message
+				};
 				return await Task.FromResult<IViewComponentResult>(View("Error"));
 			}
 		}
