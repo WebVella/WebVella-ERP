@@ -7727,7 +7727,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 		{
 			return $"#region << ***Delete sitemap area*** Area name: {area.Name} >>\n" +
 					"{\n" +
-						$"\n\tnew WebVella.Erp.Web.Services.PageService().DeleteArea( new Guid(\"{area.Id}\"),WebVella.Erp.Database.DbContext.Current.Transaction);\n" +
+						$"\n\tnew WebVella.Erp.Web.Services.AppService().DeleteArea( new Guid(\"{area.Id}\"),WebVella.Erp.Database.DbContext.Current.Transaction);\n" +
 					"}\n" +
 					"#endregion\n\n";
 		}
