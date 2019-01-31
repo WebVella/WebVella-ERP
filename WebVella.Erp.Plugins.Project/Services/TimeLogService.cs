@@ -173,7 +173,8 @@ namespace WebVella.Erp.Plugins.Project.Services
 			return null;
 		}
 
-		public void PreCreateApiHookLogic(string entityName, EntityRecord record, List<ErrorModel> errors) {
+		public void PreCreateApiHookLogic(string entityName, EntityRecord record, List<ErrorModel> errors)
+		{
 			if (!record.Properties.ContainsKey("id"))
 				throw new Exception("Hook exception: timelog id field not found in record");
 
@@ -194,7 +195,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 					try
 					{
 						var relatedRecordGuid = JsonConvert.DeserializeObject<List<Guid>>((string)record["l_related_records"]);
-						var taskEqlCommand = "SELECT *,$project_nn_task.id from task WHERE ";
+						var taskEqlCommand = "SELECT *,$project_nn_task.id, $user_nn_task_watchers.id FROM task WHERE ";
 						var filterStringList = new List<string>();
 						var taskEqlParams = new List<EqlParameter>();
 						var index = 1;
@@ -208,9 +209,9 @@ namespace WebVella.Erp.Plugins.Project.Services
 						taskEqlCommand += String.Join(" OR ", filterStringList);
 						relatedTaskRecords = new EqlCommand(taskEqlCommand, taskEqlParams).Execute();
 					}
-					catch
+					catch(Exception ex)
 					{
-						//Do nothing
+						throw ex;
 					}
 				}
 
@@ -250,6 +251,12 @@ namespace WebVella.Erp.Plugins.Project.Services
 					}
 				}
 
+				var taskWatchersList = new List<string>();
+				if (((List<EntityRecord>)taskRecord["$user_nn_task_watchers"]).Any())
+				{
+					taskWatchersList = ((List<EntityRecord>)taskRecord["$user_nn_task_watchers"]).Select(x => ((Guid)x["id"]).ToString()).ToList();
+				}
+
 				//Add activity log
 				var subject = $"logged {((int)record["minutes"]).ToString("N0")} {loggedTypeString} minutes on <a href=\"/projects/tasks/tasks/r/{taskRecord["id"]}/details\">[{taskRecord["key"]}] {taskRecord["subject"]}</a>";
 				var relatedRecords = new List<string>() { taskRecord["id"].ToString(), record["id"].ToString() };
@@ -257,6 +264,8 @@ namespace WebVella.Erp.Plugins.Project.Services
 				{
 					relatedRecords.Add(projectId.ToString());
 				}
+				relatedRecords.AddRange(taskWatchersList);
+
 				var scope = new List<string>() { "projects" };
 				var logSnippet = new Web.Services.RenderService().GetSnippetFromHtml((string)record["body"]);
 				new FeedItemService().Create(id: Guid.NewGuid(), createdBy: SecurityContext.CurrentUser.Id, subject: subject,

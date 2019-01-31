@@ -2304,6 +2304,11 @@ textarea.autogrow {
 	padding: 0.5rem;
 }
 
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+	color: #007bff;
+    background: rgba(0, 123, 255, 0.075);
+}
+
 .btn:hover {
 	cursor: pointer;
 }
@@ -2395,10 +2400,6 @@ dropdown-item.active {
 	padding: 0.25rem 0.5rem;
 	margin-right: 0.25rem;
 }
-
-	.nav.nav-sm .nav-link.active {
-		background: #2196F3;
-	}
 
 .page-link:focus {
 	box-shadow: none;
@@ -2945,10 +2946,24 @@ pre, code {
 
 	.erp-field .control-label.label-horizontal,
 	.erp-field .col-form-label.label-horizontal {
-		text-align: right;
+		/*text-align: right;*/
 		margin-bottom: 0;
 		width: 120px;
+		border-bottom: 1px solid #eee;
+		padding: 0.25rem 0;
+		font-size:14px;
 	}
+
+.erp-field .col.label-horizontal {
+	border-bottom: 1px solid #eee;
+}
+
+.erp-field.inline-edit .col.label-horizontal .view-wrapper .form-control,
+.erp-field.inline-edit .col.label-horizontal .view-wrapper .form-control-plaintext,
+.erp-field.display .col.label-horizontal .form-control, .erp-field.display .col.label-horizontal .form-control-plaintext, .erp-field.display .col.label-horizontal .select2-container,
+.erp-field.inline-edit .col.label-horizontal .view-wrapper .input-group-prepend, .erp-field.inline-edit .col.label-horizontal .view-wrapper .input-group-append{
+	border-bottom:none;
+}
 
 .erp-field .form-control {
 	/*box-shadow:inset 0 0 3px rgba(0,0,0,0.25);*/
@@ -3166,6 +3181,7 @@ pre, code {
 .erp-field.inline-edit .view-wrapper div.form-control {
 	display: block;
 	align-items: center;
+	border-radius:0;
 }
 
 .erp-field.inline-edit .view-wrapper .action .btn {
@@ -3262,7 +3278,7 @@ input[type=date].form-control, input[type=datetime-local].form-control {
 
 	.erp-field div.form-control [class^="fa"],
 	.erp-field div.form-control [class^="ti"] {
-		margin-right: 0.25rem;
+		margin-right: 0.05rem;
 	}
 
 .erp-field .form-control.with-progress {

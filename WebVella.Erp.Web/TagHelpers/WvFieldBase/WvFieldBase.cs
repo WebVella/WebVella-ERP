@@ -314,7 +314,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				}
 				if (LabelMode == LabelRenderMode.Horizontal)
 				{
-					labelEl.Attributes.Add("class", "col-12 col-sm-auto col-form-label label-horizontal text-left text-sm-right pr-0 pr-sm-2");
+					labelEl.Attributes.Add("class", "col-12 col-sm-auto col-form-label label-horizontal pr-0 pr-sm-2");
 				}
 				else
 				{
@@ -322,7 +322,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				}
 
 				//Set Required 
-				if (Required && !( Mode == FieldRenderMode.Display || Mode == FieldRenderMode.Simple ))
+				if (Required &&  Mode == FieldRenderMode.Form)
 				{
 					var requiredEl = new TagBuilder("abbr");
 					requiredEl.MergeAttribute("class", "go-red");
@@ -332,9 +332,15 @@ namespace WebVella.Erp.Web.TagHelpers
 				}
 
 				//Set Label text
-				labelEl.InnerHtml.AppendHtml(LabelText);
+				if (LabelMode != LabelRenderMode.Horizontal)
+				{
+					labelEl.InnerHtml.AppendHtml(LabelText);
+				}
+				else {
+					labelEl.InnerHtml.AppendHtml(LabelText + ":");
+				}
 
-				//Set Help
+					//Set Help
 				if (!String.IsNullOrWhiteSpace(LabelHelpText))
 				{
 					var helpEl = new TagBuilder("i");
@@ -395,9 +401,10 @@ namespace WebVella.Erp.Web.TagHelpers
 
 			#region << Field Outer Wrapper tag - StartTag >>
 			var fieldWrapper = new TagBuilder("div");
-			fieldWrapper.Attributes.Add("class", "col");
+			fieldWrapper.AddCssClass("col");
 			if (LabelMode == LabelRenderMode.Horizontal)
 			{
+				fieldWrapper.AddCssClass("label-horizontal");
 				output.PreContent.AppendHtml(fieldWrapper.RenderStartTag());
 			}
 			#endregion

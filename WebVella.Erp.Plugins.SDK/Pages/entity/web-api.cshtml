@@ -1,0 +1,625 @@
+﻿@page "/sdk/objects/entity/r/{ParentRecordId}/web-api"
+@using WebVella.Erp.Api.Models;
+@model WebVella.Erp.Plugins.SDK.Pages.ErpEntity.EntityWebApiModel
+@{
+	Layout = "~/Pages/_AppMaster.cshtml";
+	ViewData["Title"] = "Entity Web Api";
+}
+<wv-page-header color="@Model.ErpEntity.Color" area-label="Entities" title="@Model.ErpEntity.Name" subtitle="Web Api"
+				icon-class="@Model.ErpEntity.IconName" return-url="@Model.ReturnUrl">
+	<wv-page-header-toolbar>
+		@foreach (var action in Model.HeaderToolbar)
+		{
+			@Html.Raw(action)
+		}
+	</wv-page-header-toolbar>
+</wv-page-header>
+
+<div class="card">
+	<div class="card-body p-0">
+		<div class="row no-gutters">
+			<div class="col-2 go-bkg-gray-light p-2">
+				<div class="nav flex-column nav-pills">
+					<a class="nav-link disabled" href="#">Meta</a>
+					<a class="nav-link active" data-toggle="pill" href="#meta-read">Read</a>
+					<a class="nav-link" data-toggle="pill" href="#meta-update">Update / Patch</a>
+					<a class="nav-link" data-toggle="pill" href="#meta-delete">Delete</a>
+					<a class="nav-link disabled" href="#">Fields</a>
+					<a class="nav-link" data-toggle="pill" href="#field-create">Create</a>
+					<a class="nav-link" data-toggle="pill" href="#field-read">Read</a>
+					<a class="nav-link" data-toggle="pill" href="#field-update">Update / Patch</a>
+					<a class="nav-link" data-toggle="pill" href="#field-delete">Delete</a>
+					<a class="nav-link disabled" href="#">Records</a>
+					<a class="nav-link" data-toggle="pill" href="#records-create">Create</a>
+					<a class="nav-link" data-toggle="pill" href="#records-query">Query</a>
+					<a class="nav-link" data-toggle="pill" href="#records-update">Update / Patch</a>
+					<a class="nav-link" data-toggle="pill" href="#records-delete">Delete</a>
+				</div>
+			</div>
+			<div class="col-10 border-left">
+				<div class="tab-content p-3" id="v-pills-tabContent">
+					@* Meta READ *@
+					<div class="tab-pane show active" id="meta-read">
+						<h2>HTTP Request</h2>
+						@{
+							var metaReadRequestId = $"<span class='go-light-blue'>GET</span> {Model.EntityMetaUrlRoot}id/<span class='go-red'>{Model.ErpEntity.Id}</span>";
+							var metaReadRequestName = $"<span class='go-light-blue'>GET</span> {Model.EntityMetaUrlRoot}<span class='go-red'>{Model.ErpEntity.Name}</span>";
+						}
+						<div class="rounded go-bkg-gray-dark go-white p-3">@Html.Raw(metaReadRequestName)</div>
+						<div class="rounded go-bkg-gray-dark go-white p-3 mt-2">@Html.Raw(metaReadRequestId)</div>
+
+						<h2 class="mt-5">Authorization</h2>
+						<p>Type: <strong>cookie</strong>. Allowed roles: <strong>administrator</strong></p>
+
+						<h2 class="mt-5">Route Parameters</h2>
+						<table class="table table-sm table-bordered">
+							<thead>
+								<tr>
+									<th>property</th>
+									<th>type</th>
+									<th>description</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="100" class="go-green">entityId</td>
+									<td width="100">Guid</td>
+									<td>Id of the target entity</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<h2 class="mt-5">Query Parameters</h2>
+						<p>Do not supply parameters with this method.</p>
+
+						<h2 class="mt-5">Request body</h2>
+						<p>Do not supply a request body with this method.</p>
+
+						<h2 class="mt-5">Example Response</h2>
+						<p>If successful, this method returns a response JSON with the following structure:</p>
+
+						<button type="button" class="btn btn-white btn-sm" onclick="EntityReadGet()" id="entity-read-get-btn"><i class="fas fa-retweet"></i> Show request result</button>
+
+						<wv-modal id="entity-read-get-modal" size="Large">
+							<wv-modal-body>
+								<pre class="rounded go-bkg-gray-dark go-white p-3"></pre>
+							</wv-modal-body>
+							<wv-modal-footer>
+								<button type="button" class="btn btn-white btn-sm" onclick="ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcModal',{htmlId:'entity-read-get-modal',action:'close',payload:null})">Close</button>
+							</wv-modal-footer>
+						</wv-modal>
+					</div>
+
+					@* Meta Update / Patch *@
+					<div class="tab-pane" id="meta-update">
+						<h2>HTTP Request</h2>
+						@{
+							var metaUpdateRequestId = $"<span class='go-light-blue'>PATCH</span> {Model.EntityMetaUrlRoot}<span class='go-red'>{Model.ErpEntity.Id}</span>";
+						}
+						<div class="rounded go-bkg-gray-dark go-white p-3">@Html.Raw(metaUpdateRequestId)</div>
+
+						<h2 class="mt-5">Authorization</h2>
+						<p>Type: <strong>cookie</strong>. Allowed roles: <strong>administrator</strong></p>
+
+						<h2 class="mt-5">Route Parameters</h2>
+						<table class="table table-sm table-bordered">
+							<thead>
+								<tr>
+									<th>property</th>
+									<th>type</th>
+									<th>description</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="100" class="go-green">entityId</td>
+									<td width="100">Guid</td>
+									<td>Id of the target entity</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<h2 class="mt-5">Query Parameters</h2>
+						<p>Do not supply parameters with this method.</p>
+
+						<h2 class="mt-5">Request body</h2>
+						<table class="table table-sm table-bordered">
+							<thead>
+								<tr>
+									<th>property</th>
+									<th>type</th>
+									<th>description</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="100" class="go-green">data</td>
+									<td width="100">JSON</td>
+									<td>Object containing only the properties you want to update.</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<h2 class="mt-5">Example Response</h2>
+						<p>If successful, this method returns a response JSON with a structure similar to the READ method. As object though is returned the new entity meta state after the update.</p>
+					</div>
+
+					@* Meta Delete *@
+					<div class="tab-pane" id="meta-delete">
+						<h2>HTTP Request</h2>
+						@{
+							var metaDeleteRequestId = $"<span class='go-light-blue'>DELETE</span> {Model.EntityMetaUrlRoot}<span class='go-red'>{Model.ErpEntity.Id}</span>";
+						}
+						<div class="rounded go-bkg-gray-dark go-white p-3">@Html.Raw(metaDeleteRequestId)</div>
+
+						<h2 class="mt-5">Authorization</h2>
+						<p>Type: <strong>cookie</strong>. Allowed roles: <strong>administrator</strong></p>
+
+						<h2 class="mt-5">Route Parameters</h2>
+						<table class="table table-sm table-bordered">
+							<thead>
+								<tr>
+									<th>property</th>
+									<th>type</th>
+									<th>description</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="100" class="go-green">entityId</td>
+									<td width="100">Guid</td>
+									<td>Id of the target entity</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<h2 class="mt-5">Query Parameters</h2>
+						<p>Do not supply parameters with this method.</p>
+
+						<h2 class="mt-5">Request body</h2>
+						<p>Do not supply a request body with this method.</p>
+
+						<h2 class="mt-5">Example Response</h2>
+						<p>If successful, this method returns a response JSON with a structure similar to the READ method. As object though is returned the entity meta state before the delete.</p>
+					</div>
+
+					@* Field Create *@
+					<div class="tab-pane" id="field-create">
+						<h2>HTTP Request</h2>
+						@{
+							var fieldCreateRequest = $"<span class='go-light-blue'>POST</span> {Model.EntityMetaUrlRoot}<span class='go-red'>{Model.ErpEntity.Id}</span>/field";
+						}
+						<div class="rounded go-bkg-gray-dark go-white p-3">@Html.Raw(fieldCreateRequest)</div>
+
+						<h2 class="mt-5">Authorization</h2>
+						<p>Type: <strong>cookie</strong>. Allowed roles: <strong>administrator</strong></p>
+
+						<h2 class="mt-5">Route Parameters</h2>
+						<table class="table table-sm table-bordered">
+							<thead>
+								<tr>
+									<th>property</th>
+									<th>type</th>
+									<th>description</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="100" class="go-green">entityId</td>
+									<td width="100">Guid</td>
+									<td>Id of the target entity</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<h2 class="mt-5">Query Parameters</h2>
+						<p>Do not supply parameters with this method.</p>
+
+						<h2 class="mt-5">Request body</h2>
+						<table class="table table-sm table-bordered">
+							<thead>
+								<tr>
+									<th>property</th>
+									<th>type</th>
+									<th>description</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="100" class="go-green">data</td>
+									<td width="100">JSON</td>
+									<td>Object containing the properties of the field you need to create.</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<h2 class="mt-5">Example Response</h2>
+						<p>If successful, this method returns a response JSON with a structure similar to the READ method. As object though is returned the entity meta state before the delete.</p>
+					</div>
+
+					@* Field READ *@
+					<div class="tab-pane" id="field-read">
+						<p class="alert alert-info"><span class="go-blue">Note:</span> Field's meta is accessible only through entity meta read.</p>
+					</div>
+
+					@* Field UPDATE / PATCH *@
+					<div class="tab-pane" id="field-update">
+						<h2>HTTP Request</h2>
+						@{
+							var fieldUpdateRequest = $"<span class='go-light-blue'>PATCH</span> {Model.EntityMetaUrlRoot}<span class='go-red'>{Model.ErpEntity.Id}</span>/field/<span class='go-red'>{Model.SampleFieldId}</span>";
+						}
+						<div class="rounded go-bkg-gray-dark go-white p-3">@Html.Raw(fieldUpdateRequest)</div>
+
+						<h2 class="mt-5">Authorization</h2>
+						<p>Type: <strong>cookie</strong>. Allowed roles: <strong>administrator</strong></p>
+
+						<h2 class="mt-5">Route Parameters</h2>
+						<table class="table table-sm table-bordered">
+							<thead>
+								<tr>
+									<th>property</th>
+									<th>type</th>
+									<th>description</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="100" class="go-green">entityId</td>
+									<td width="100">Guid</td>
+									<td>Id of the target entity</td>
+								</tr>
+								<tr>
+									<td width="100" class="go-green">fieldId</td>
+									<td width="100">Guid</td>
+									<td>Id of the target field</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<h2 class="mt-5">Query Parameters</h2>
+						<p>Do not supply parameters with this method.</p>
+
+						<h2 class="mt-5">Request body</h2>
+						<table class="table table-sm table-bordered">
+							<thead>
+								<tr>
+									<th>property</th>
+									<th>type</th>
+									<th>description</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="100" class="go-green">data</td>
+									<td width="100">JSON</td>
+									<td>Object containing only the properties you want to update.</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<h2 class="mt-5">Example Response</h2>
+						<p>If successful, this method returns a response JSON with a structure similar to the READ method. As object though is returned the field meta state after the update.</p>
+					</div>
+
+					@* Field Delete *@
+					<div class="tab-pane" id="field-delete">
+						<h2>HTTP Request</h2>
+						@{
+							var fieldDeleteRequest = $"<span class='go-light-blue'>DELETE</span> {Model.EntityMetaUrlRoot}<span class='go-red'>{Model.ErpEntity.Id}</span>/field/<span class='go-red'>{Model.SampleFieldId}</span>";
+						}
+						<div class="rounded go-bkg-gray-dark go-white p-3">@Html.Raw(metaDeleteRequestId)</div>
+
+						<h2 class="mt-5">Authorization</h2>
+						<p>Type: <strong>cookie</strong>. Allowed roles: <strong>administrator</strong></p>
+
+						<h2 class="mt-5">Route Parameters</h2>
+						<table class="table table-sm table-bordered">
+							<thead>
+								<tr>
+									<th>property</th>
+									<th>type</th>
+									<th>description</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="100" class="go-green">entityId</td>
+									<td width="100">Guid</td>
+									<td>Id of the target entity</td>
+								</tr>
+								<tr>
+									<td width="100" class="go-green">fieldId</td>
+									<td width="100">Guid</td>
+									<td>Id of the target field</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<h2 class="mt-5">Query Parameters</h2>
+						<p>Do not supply parameters with this method.</p>
+
+						<h2 class="mt-5">Request body</h2>
+						<p>Do not supply a request body with this method.</p>
+
+						<h2 class="mt-5">Example Response</h2>
+						<p>If successful, this method returns a response JSON with a structure similar to the READ method. As object though is returned the field meta state before the delete.</p>
+					</div>
+
+					@* Record Create *@
+					<div class="tab-pane" id="records-create">
+						<h2>HTTP Request</h2>
+						@{
+							var recordCreateRequest = $"<span class='go-light-blue'>POST</span> {Model.EntityRecordUrlRoot}<span class='go-red'>{Model.ErpEntity.Name}</span>";
+						}
+						<div class="rounded go-bkg-gray-dark go-white p-3">@Html.Raw(recordCreateRequest)</div>
+
+						<h2 class="mt-5">Authorization</h2>
+						<p>Type: <strong>cookie</strong>. Allowed roles: as set in the entity's permission setting.</p>
+
+						<h2 class="mt-5">Route Parameters</h2>
+						<table class="table table-sm table-bordered">
+							<thead>
+								<tr>
+									<th>property</th>
+									<th>type</th>
+									<th>description</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="100" class="go-green">entityName</td>
+									<td width="100">Guid</td>
+									<td>The name of the target entity</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<h2 class="mt-5">Query Parameters</h2>
+						<p>Do not supply parameters with this method.</p>
+
+						<h2 class="mt-5">Request body</h2>
+						<table class="table table-sm table-bordered">
+							<thead>
+								<tr>
+									<th>property</th>
+									<th>type</th>
+									<th>description</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="100" class="go-green">data</td>
+									<td width="100">JSON</td>
+									<td>Object containing the properties of the record you need to create. Missing properties that are required will be filled in with their default values.</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<h2 class="mt-5">Example Response</h2>
+						<p>If successful, this method returns a response JSON with a structure similar to the READ method. As object though is returned the newly created record.</p>
+					</div>
+
+					@* Record Query *@
+					<div class="tab-pane" id="records-query">
+						<p>This method provides you with a way to make EQL queries with a web request. Read mode about EQL on its <a href="https://webvella.com/documents/developer/data-sources/eql">documentation page</a></p>
+						<h2>HTTP Request</h2>
+						@{
+							var recordQueryRequest = $"<span class='go-light-blue'>POST</span> {Model.EQLUrlRoot}";
+						}
+						<div class="rounded go-bkg-gray-dark go-white p-3">@Html.Raw(recordQueryRequest)</div>
+
+						<h2 class="mt-5">Authorization</h2>
+						<p>Type: <strong>cookie</strong>. Allowed roles: as set in the entity's permission setting.</p>
+
+						<h2 class="mt-5">Route Parameters</h2>
+						<p>Do not supply route with this method.</p>
+
+						<h2 class="mt-5">Query Parameters</h2>
+						<p>Do not supply parameters with this method.</p>
+
+						<h2 class="mt-5">Request body</h2>
+						<table class="table table-sm table-bordered">
+							<thead>
+								<tr>
+									<th>property</th>
+									<th>type</th>
+									<th>description</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="100" class="go-green">data</td>
+									<td width="100">EqlQuery</td>
+									<td>
+										EqlQuery object with properties with the following mode:
+@{
+	var eqlModel = @"
+public class EqlQuery
+{
+	[JsonProperty(PropertyName = ""eql"")]
+	public string Eql { get; set; }
+
+	[JsonProperty(PropertyName = ""parameters"")]
+	public List<EqlParameter> Parameters { get; set; }
+}
+";
+}
+										<div wv-code-highlight="language-csharp" wv-code-string="@eqlModel"></div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<h2 class="mt-5">Example Response</h2>
+						<p>If successful, this method returns a response JSON with the standard structure. As object though is returned the query result as <code>EntityRecordList</code> model.</p>
+					</div>
+
+					@* Record Update / Patch *@
+					<div class="tab-pane" id="records-update">
+						<h2>HTTP Request</h2>
+						@{
+							var recordUpdateRequest = $"<span class='go-light-blue'>PUT</span> {Model.EntityRecordUrlRoot}<span class='go-red'>{Model.ErpEntity.Name}</span>/<span class='go-red'>{{recordId}}</span>";
+						}
+						<div class="rounded go-bkg-gray-dark go-white p-3">@Html.Raw(recordUpdateRequest)</div>
+
+						<h2 class="mt-5">Authorization</h2>
+						<p>Type: <strong>cookie</strong>. Allowed roles: as set in the entity's permission setting.</p>
+
+						<h2 class="mt-5">Route Parameters</h2>
+						<table class="table table-sm table-bordered">
+							<thead>
+								<tr>
+									<th>property</th>
+									<th>type</th>
+									<th>description</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="100" class="go-green">entityName</td>
+									<td width="100">Guid</td>
+									<td>The name of the target entity</td>
+								</tr>
+								<tr>
+									<td width="100" class="go-green">recordId</td>
+									<td width="100">Guid</td>
+									<td>Id of the targeted entity</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<h2 class="mt-5">Query Parameters</h2>
+						<p>Do not supply parameters with this method.</p>
+
+						<h2 class="mt-5">Request body</h2>
+						<table class="table table-sm table-bordered">
+							<thead>
+								<tr>
+									<th>property</th>
+									<th>type</th>
+									<th>description</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="100" class="go-green">data</td>
+									<td width="100">JSON</td>
+									<td>Object containing only the properties of the record you need to update.</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<h2 class="mt-5">Example Response</h2>
+						<p>If successful, this method returns a response JSON with the standard structure. As object though is returned the newly updated record in its entirety.</p>
+					</div>
+
+					@* Record Delete *@
+					<div class="tab-pane" id="records-delete">
+						<h2>HTTP Request</h2>
+						@{
+							var recordDeleteRequest = $"<span class='go-light-blue'>DELETE</span> {Model.EntityRecordUrlRoot}<span class='go-red'>{Model.ErpEntity.Name}</span>/<span class='go-red'>{{recordId}}</span>";
+						}
+						<div class="rounded go-bkg-gray-dark go-white p-3">@Html.Raw(recordDeleteRequest)</div>
+
+						<h2 class="mt-5">Authorization</h2>
+						<p>Type: <strong>cookie</strong>. Allowed roles: as set in the entity's permission setting.</p>
+
+						<h2 class="mt-5">Route Parameters</h2>
+						<table class="table table-sm table-bordered">
+							<thead>
+								<tr>
+									<th>property</th>
+									<th>type</th>
+									<th>description</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="100" class="go-green">entityName</td>
+									<td width="100">Guid</td>
+									<td>The name of the target entity</td>
+								</tr>
+								<tr>
+									<td width="100" class="go-green">recordId</td>
+									<td width="100">Guid</td>
+									<td>Id of the targeted entity</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<h2 class="mt-5">Query Parameters</h2>
+						<p>Do not supply parameters with this method.</p>
+
+						<h2 class="mt-5">Request body</h2>
+						<p>Do not supply a request body with this method.</p>
+
+						<h2 class="mt-5">Example Response</h2>
+						<p>If successful, this method returns a response JSON with the standard structure. As object though is returned the deleted record.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script>
+	// General functions
+	function spinBtn(btnId) {
+		$("#" + btnId).find("i").removeClass("fa-retweet").addClass("fa-spin fa-spinner");
+	}
+	function unspinBtn(btnId) {
+		$("#" + btnId).find("i").addClass("fa-retweet").removeClass("fa-spin fa-spinner");
+	}
+	function setResponseJson(btnId,modalId, response) {
+		$("#" + modalId).find("pre").html(JSON.stringify(response, null, 2));
+		ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcModal',{htmlId:modalId,action:'open',payload:null});
+		unspinBtn(btnId);
+	}
+
+	// Meta Read
+	function EntityReadGet() {
+		var btnId = "entity-read-get-btn";
+		var modalId = "entity-read-get-modal";
+		spinBtn(btnId);
+		$.ajax({
+		type: "GET",
+		url: "@Model.EntityMetaUrlRoot" + "@Model.ErpEntity.Name",
+		dataType:"json",
+		success: function(response){
+			setResponseJson(btnId,modalId,response);
+		},
+		error:function(XMLHttpRequest, textStatus, errorThrown) {
+			toastr.error(textStatus, 'Check JS console for details!', { closeButton: false, tapToDismiss: true });
+			console.error(errorThrown);
+			unspinBtn(btnId);
+		}
+		});
+	}
+
+	// Meta Update
+	@*function EntityReadUpdate() {
+		var btnId = "entity-update-patch-btn";
+		var modalId = "entity-update-patch-modal";
+		spinBtn(btnId);
+		var submitObj = {};
+		$.ajax({
+		type: "PATCH",
+		headers: { 
+			'Accept': 'application/json',
+			'Content-Type': 'application/json' 
+		},
+		url: "@Model.EntityMetaUrlRoot" + "@Model.ErpEntity.Id",
+		dataType:"json",
+		data:JSON.stringify(submitObj),
+		success: function(response){
+			setResponseJson(btnId,modalId,response);
+		},
+		error:function(XMLHttpRequest, textStatus, errorThrown) {
+			toastr.error(textStatus, 'Check JS console for details!', { closeButton: false, tapToDismiss: true });
+			console.error(errorThrown);
+			unspinBtn(btnId);
+		}
+		});
+	}*@
+</script>

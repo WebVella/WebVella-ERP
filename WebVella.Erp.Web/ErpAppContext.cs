@@ -22,9 +22,9 @@ namespace WebVella.Erp.Web
 
 		public IServiceProvider ServiceProvider { get; private set; }
 
-		public string StyleFrameworkHash { get; private set; } = "";
+		//public string StyleFrameworkHash { get; private set; } = "";
 
-		public string StyleFrameworkContent { get; private set; } = "";
+		//public string StyleFrameworkContent { get; private set; } = "";
 
 		public string StylesHash { get; private set; } = "";
 
@@ -73,8 +73,8 @@ namespace WebVella.Erp.Web
 			Theme = themeService.Get();
 			StylesContent = themeService.GenerateStylesContent();
 			StylesHash = GetStringHash(StylesContent, new SHA256CryptoServiceProvider());
-			StyleFrameworkContent = themeService.GenerateStyleFrameworkContent();
-			StyleFrameworkHash = GetStringHash(StyleFrameworkContent, new SHA256CryptoServiceProvider());
+			//StyleFrameworkContent = themeService.GenerateStyleFrameworkContent();
+			//StyleFrameworkHash = GetStringHash(StyleFrameworkContent, new SHA256CryptoServiceProvider());
 		}
 
 		public static string GetStringHash(string content, HashAlgorithm algorithm)
@@ -85,11 +85,11 @@ namespace WebVella.Erp.Web
 			return Convert.ToBase64String(hashedBytes);
 		}
 
-		public static void UpdateStyleFrameworkContent(string content)
-		{
-			Current.StyleFrameworkContent = content;
-			Current.StyleFrameworkHash = GetStringHash(content, new SHA256CryptoServiceProvider());
-		}
+		//public static void UpdateStyleFrameworkContent(string content)
+		//{
+		//	Current.StyleFrameworkContent = content;
+		//	Current.StyleFrameworkHash = GetStringHash(content, new SHA256CryptoServiceProvider());
+		//}
 
 		public static void UpdateStylesFileContent(string content)
 		{

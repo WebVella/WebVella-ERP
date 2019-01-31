@@ -17,14 +17,15 @@ namespace WebVella.Erp.Plugins.Project.Services
 		/// Calculates the key and x_search contents and updates the task
 		/// </summary>
 		/// <param name="data"></param>
-		public EntityRecord SetCalculationFields(Guid taskId, out string subject, out Guid projectId)
+		public EntityRecord SetCalculationFields(Guid taskId, out string subject, out Guid projectId, out Guid? projectOwnerId)
 		{
 			subject = "";
 			projectId = Guid.Empty;
+			projectOwnerId = null;
 
 			EntityRecord patchRecord = new EntityRecord();
 
-			var getTaskResponse = new RecordManager().Find(new EntityQuery("task", "*,$task_type_1n_task.label,$task_status_1n_task.label,$project_nn_task.abbr,$project_nn_task.id", EntityQuery.QueryEQ("id", taskId)));
+			var getTaskResponse = new RecordManager().Find(new EntityQuery("task", "*,$task_type_1n_task.label,$task_status_1n_task.label,$project_nn_task.abbr,$project_nn_task.id, $project_nn_task.owner_id", EntityQuery.QueryEQ("id", taskId)));
 			if (!getTaskResponse.Success)
 				throw new Exception(getTaskResponse.Message);
 			if (!getTaskResponse.Object.Data.Any())
@@ -44,6 +45,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 				}
 				if (projectRecord != null) {
 					projectId = (Guid)projectRecord["id"];
+					projectOwnerId = (Guid?)projectRecord["owner_id"];
 				}
 			}
 			if (((List<EntityRecord>)taskRecord["$task_status_1n_task"]).Any())
@@ -329,17 +331,59 @@ namespace WebVella.Erp.Plugins.Project.Services
 		public void PostCreateApiHookLogic(string entityName, EntityRecord record) {
 			//Update key and search fields
 			Guid projectId = Guid.Empty;
+			Guid? projectOwnerId = null;
 			string taskSubject = "";
-			var patchRecord = new TaskService().SetCalculationFields((Guid)record["id"], subject: out taskSubject, projectId: out projectId);
+			var patchRecord = new TaskService().SetCalculationFields((Guid)record["id"], subject: out taskSubject, projectId: out projectId, projectOwnerId: out projectOwnerId);
 			var updateResponse = new RecordManager(executeHooks: false).UpdateRecord("task", patchRecord);
 			if (!updateResponse.Success)
 				throw new Exception(updateResponse.Message);
+
+			//Set the initial watchers list - project lead, creator, owner
+			var watchers = new List<Guid>();
+			{
+				var fieldName = "owner_id";
+				if (record.Properties.ContainsKey(fieldName) && record[fieldName] != null) {
+					var userId = (Guid)record[fieldName];
+					if (!watchers.Contains(userId))
+						watchers.Add(userId);
+				}
+			}
+			{
+				var fieldName = "created_by";
+				if (record.Properties.ContainsKey(fieldName) && record[fieldName] != null)
+				{
+					var userId = (Guid)record[fieldName];
+					if (!watchers.Contains(userId))
+						watchers.Add(userId);
+				}
+			}
+			if (projectOwnerId != null) {
+				if (!watchers.Contains(projectOwnerId.Value))
+					watchers.Add(projectOwnerId.Value);
+			}
+
+			//Create relations
+			var watchRelation = new EntityRelationManager().Read("user_nn_task_watchers").Object;
+			if (watchRelation == null)
+				throw new Exception("Watch relation not found");
+
+			foreach (var userId in watchers)
+			{
+				var createRelResponse = new RecordManager().CreateRelationManyToManyRecord(watchRelation.Id, userId, (Guid)record["id"]);
+				if (!createRelResponse.Success)
+					throw new Exception(createRelResponse.Message);
+			}
 
 
 			//Add activity log
 			var subject = $"created <a href=\"/projects/tasks/tasks/r/{patchRecord["id"]}/details\">[{patchRecord["key"]}] {taskSubject}</a>";
 			var relatedRecords = new List<string>() { patchRecord["id"].ToString(), projectId.ToString() };
 			var scope = new List<string>() { "projects" };
+			//Add watchers as scope
+			foreach (var userId in watchers)
+			{
+				relatedRecords.Add(userId.ToString());
+			}
 			var taskSnippet = new Web.Services.RenderService().GetSnippetFromHtml((string)record["body"]);
 			new FeedItemService().Create(id: Guid.NewGuid(), createdBy: SecurityContext.CurrentUser.Id, subject: subject,
 				body: taskSnippet, relatedRecords: relatedRecords, scope: scope, type: "task");
@@ -349,8 +393,9 @@ namespace WebVella.Erp.Plugins.Project.Services
 		{
 			//Update key and search fields
 			Guid projectId = Guid.Empty;
+			Guid? projectOwnerId = null;
 			string taskSubject = "";
-			var patchRecord = new TaskService().SetCalculationFields((Guid)record["id"], subject: out taskSubject, projectId: out projectId);
+			var patchRecord = new TaskService().SetCalculationFields((Guid)record["id"], subject: out taskSubject, projectId: out projectId, projectOwnerId: out projectOwnerId);
 			var updateResponse = new RecordManager(executeHooks: false).UpdateRecord("task", patchRecord);
 			if (!updateResponse.Success)
 				throw new Exception(updateResponse.Message);
