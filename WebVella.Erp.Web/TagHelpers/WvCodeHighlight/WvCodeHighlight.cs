@@ -26,15 +26,9 @@ namespace WebVella.Erp.Web.TagHelpers
 
 		public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-			var prependTemplate = $@"
-    <code class='{HighlightLanguage} line-numbers' style='white-space:pre-line'>
-          <script type = 'prism-html-markup'>
-";
+			var prependTemplate = $@"<code class='{HighlightLanguage}'>";
 
-			var appendTemplate = $@"
-        </script>
-    </code>
-";
+			var appendTemplate = $@"</code>";
 
 			output.TagName = null;
 			var preEl = new TagBuilder("pre");
@@ -61,7 +55,6 @@ namespace WebVella.Erp.Web.TagHelpers
 				linkEl.Attributes.Add("href", "/js/prism/prism.css");
 				linkEl.Attributes.Add("rel", "stylesheet");
 				linkEl.Attributes.Add("type", "text/css");
-
 				output.PostContent.AppendHtml(linkEl);
 
 				ViewContext.HttpContext.Items[typeof(WvCodeHighlight)] = new WvCodeHighlightContext()

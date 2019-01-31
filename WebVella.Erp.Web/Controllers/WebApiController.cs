@@ -53,6 +53,40 @@ namespace WebVella.Erp.Web.Controllers
 			this.erpRequestContext = requestContext;
 		}
 
+		[Route("api/v3/en_US/eql")]
+		[HttpPost]
+		public ActionResult DataSourceAction([FromBody]EqlQuery model)
+		{
+			ResponseModel response = new ResponseModel();
+			response.Success = true;
+
+			if (model == null)
+				return NotFound();
+
+			try
+			{
+				var eqlResult = new EqlCommand(model.Eql, model.Parameters).Execute();
+				response.Object = eqlResult;
+			}
+			catch (EqlException eqlEx)
+			{
+				response.Success = false;
+				foreach (var eqlError in eqlEx.Errors) {
+					response.Errors.Add(new ErrorModel("eql", "", eqlError.Message));
+				}
+				return Json(response);
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Message = ex.Message;
+				return Json(response);
+			}
+
+			return Json(response);
+		}
+
+
 		[Route("api/v3.0/user/preferences/toggle-sidebar-size")]
 		[HttpPost]
 		public ActionResult ToggleSidebarSize()
@@ -656,30 +690,30 @@ namespace WebVella.Erp.Web.Controllers
 			}
 		}
 
-		[AllowAnonymous]
-		[Route("api/v3.0/p/core/framework.css")]
-		[ResponseCache(NoStore = false, Duration = 30 * 24 * 3600)]
-		[HttpGet]
-		public ContentResult FrameworkCss()
-		{
-			try
-			{
-				var cssContent = "";
+		//[AllowAnonymous]
+		//[Route("api/v3.0/p/core/framework.css")]
+		//[ResponseCache(NoStore = false, Duration = 30 * 24 * 3600)]
+		//[HttpGet]
+		//public ContentResult FrameworkCss()
+		//{
+		//	try
+		//	{
+		//		var cssContent = "";
 
-				if (String.IsNullOrWhiteSpace(ErpAppContext.Current.StyleFrameworkContent))
-				{
-					new ThemeService().GenerateStyleFrameworkContent();
-				}
+		//		if (String.IsNullOrWhiteSpace(ErpAppContext.Current.StyleFrameworkContent))
+		//		{
+		//			new ThemeService().GenerateStyleFrameworkContent();
+		//		}
 
-				cssContent = ErpAppContext.Current.StyleFrameworkContent;
-				return Content(cssContent, "text/css");
-			}
-			catch (Exception ex)
-			{
-				new Log().Create(LogType.Error, "FrameworkCss API Method Error", ex);
-				throw ex;
-			}
-		}
+		//		cssContent = ErpAppContext.Current.StyleFrameworkContent;
+		//		return Content(cssContent, "text/css");
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		new Log().Create(LogType.Error, "FrameworkCss API Method Error", ex);
+		//		throw ex;
+		//	}
+		//}
 
 		[Produces("application/json")]
 		[Route("api/v3.0/p/core/related-field-multiselect")]

@@ -91,16 +91,28 @@ namespace WebVella.Erp.Web.Components
 				}
 				#endregion
 
-				#region << framework >>
+				//#region << framework >>
+				//{
+				//	//Always include
+				//	linkTagsToInclude.Add(new LinkTagInclude()
+				//	{
+				//		Href = "/api/v3.0/p/core/framework.css",
+				//		CacheBreaker = pageModel.ErpAppContext.StyleFrameworkHash,
+				//		CrossOrigin = CrossOriginType.Anonymous,
+				//		Integrity = $"sha256-{pageModel.ErpAppContext.StyleFrameworkHash}"
+				//	});
+				//}
+				//#endregion
+
+				#region << bootstrap.css >>
 				{
-					//Always include
-					linkTagsToInclude.Add(new LinkTagInclude()
+					if (!includedLinkTags.Any(x => x.Href.Contains("/bootstrap.css")))
 					{
-						Href = "/api/v3.0/p/core/framework.css",
-						CacheBreaker = pageModel.ErpAppContext.StyleFrameworkHash,
-						CrossOrigin = CrossOriginType.Anonymous,
-						Integrity = $"sha256-{pageModel.ErpAppContext.StyleFrameworkHash}"
-					});
+						linkTagsToInclude.Add(new LinkTagInclude()
+						{
+							Href = "/lib/twitter-bootstrap/css/bootstrap.css"
+						});
+					}
 				}
 				#endregion
 

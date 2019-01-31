@@ -37,6 +37,8 @@ You need to decorate the class as an API hook by prepending an attribute. It has
 
 This hook can inherit the following interfaces: IErpPreCreateRecordHook, IErpPreUpdateRecordHook, IErpPreDeleteRecordHook, IErpPostCreateRecordHook, IErpPostUpdateRecordHook, IErpPostDeleteRecordHook
 
+*Note*: All API hooks are executed in a transaction with the main operation and other hooks. If one fails, the whole transaction will be reversed.
+
 ```csharp
 public class TaskHook : IErpPreCreateRecordHook, IErpPreUpdateRecordHook,IErpPreDeleteRecordHook,IErpPostCreateRecordHook,IErpPostUpdateRecordHook,IErpPostDeleteRecordHook
 ```

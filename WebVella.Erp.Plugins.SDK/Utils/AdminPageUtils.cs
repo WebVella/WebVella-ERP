@@ -49,6 +49,7 @@ namespace WebVella.Erp.Plugins.SDK.Utils
 				$"<a href='/sdk/objects/entity/r/{(entity != null ? entity.Id : Guid.Empty)}/rl/relations/l' class='btn btn-link btn-sm {(pageName == "relations" ? "active" : "")}'>Relations</a>",
 				$"<a href='/sdk/objects/entity/r/{(entity != null ? entity.Id : Guid.Empty)}/rl/pages/l' class='btn btn-link btn-sm {(pageName == "pages" ? "active" : "")}'>Pages</a>",
 				$"<a href='/sdk/objects/entity/r/{(entity != null ? entity.Id : Guid.Empty)}/rl/data/l' class='btn btn-link btn-sm {(pageName == "data" ? "active" : "")}'>Data</a>",
+				$"<a href='/sdk/objects/entity/r/{(entity != null ? entity.Id : Guid.Empty)}/web-api' class='btn btn-link btn-sm {(pageName == "web-api" ? "active" : "")}'>Web Api</a>",
 
 			};
 		}

@@ -1,9 +1,7 @@
-﻿using HtmlAgilityPack;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Eql;
@@ -15,7 +13,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 {
 	public class CommentService : BaseService
 	{
-		public void Create(Guid? id = null, Guid? createdBy = null, DateTime? createdOn = null, string body = "", Guid? parentId = null, 
+		public void Create(Guid? id = null, Guid? createdBy = null, DateTime? createdOn = null, string body = "", Guid? parentId = null,
 			List<string> scope = null, List<Guid> relatedRecords = null)
 		{
 			#region << Init >>
@@ -52,7 +50,8 @@ namespace WebVella.Erp.Plugins.Project.Services
 			}
 		}
 
-		public void Delete(Guid recordId) {
+		public void Delete(Guid recordId)
+		{
 			//Validate - only authors can start to delete their posts and comments. Moderation will be later added if needed
 			{
 				var eqlCommand = "SELECT id,created_by FROM comment WHERE id = @commentId";
@@ -74,7 +73,8 @@ namespace WebVella.Erp.Plugins.Project.Services
 				var eqlCommand = "SELECT id FROM comment WHERE parent_id = @commentId";
 				var eqlParams = new List<EqlParameter>() { new EqlParameter("commentId", recordId) };
 				var eqlResult = new EqlCommand(eqlCommand, eqlParams).Execute();
-				foreach (var childComment in eqlResult) {
+				foreach (var childComment in eqlResult)
+				{
 					commentIdListForDeletion.Add((Guid)childComment["id"]);
 				}
 			}
@@ -84,7 +84,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 			//Trigger delete
 			foreach (var commentId in commentIdListForDeletion)
 			{
-	
+
 				//Remove case relations
 				//TODO
 
@@ -95,29 +95,30 @@ namespace WebVella.Erp.Plugins.Project.Services
 					throw new Exception(deleteResponse.Message);
 				}
 			}
-						
+
 
 
 		}
 
-		public void PreCreateApiHookLogic(string entityName, EntityRecord record, List<ErrorModel> errors) {
-			var isProjectTimeLog = false;
+		public void PreCreateApiHookLogic(string entityName, EntityRecord record, List<ErrorModel> errors)
+		{
+			var isProjectComment = false;
 			var relatedTaskRecords = new EntityRecordList();
 			//Get timelog
-			if (record["l_scope"] != null && ((string)record["l_scope"]).Contains("projects"))
+			if (record.Properties.ContainsKey("l_scope") && record["l_scope"] != null && ((string)record["l_scope"]).Contains("projects"))
 			{
-				isProjectTimeLog = true;
+				isProjectComment = true;
 			}
 
-			if (isProjectTimeLog)
+			if (isProjectComment)
 			{
 				//Get related tasks from related records field
-				if (record["l_related_records"] != null && (string)record["l_related_records"] != "")
+				if (record.Properties.ContainsKey("l_related_records") && record["l_related_records"] != null && (string)record["l_related_records"] != "")
 				{
 					try
 					{
 						var relatedRecordGuid = JsonConvert.DeserializeObject<List<Guid>>((string)record["l_related_records"]);
-						var taskEqlCommand = "SELECT *,$project_nn_task.id from task WHERE ";
+						var taskEqlCommand = "SELECT *,$project_nn_task.id, $user_nn_task_watchers.id FROM task WHERE ";
 						var filterStringList = new List<string>();
 						var taskEqlParams = new List<EqlParameter>();
 						var index = 1;
@@ -131,9 +132,9 @@ namespace WebVella.Erp.Plugins.Project.Services
 						taskEqlCommand += String.Join(" OR ", filterStringList);
 						relatedTaskRecords = new EqlCommand(taskEqlCommand, taskEqlParams).Execute();
 					}
-					catch
+					catch (Exception ex)
 					{
-						//Do nothing
+						throw ex;
 					}
 				}
 				if (!relatedTaskRecords.Any())
@@ -152,6 +153,11 @@ namespace WebVella.Erp.Plugins.Project.Services
 					}
 				}
 
+				var taskWatchersList = new List<string>();
+				if (((List<EntityRecord>)taskRecord["$user_nn_task_watchers"]).Any())
+				{
+					taskWatchersList = ((List<EntityRecord>)taskRecord["$user_nn_task_watchers"]).Select(x=>((Guid)x["id"]).ToString()).ToList();
+				}
 
 				//Add activity log
 				var subject = $"commented on <a href=\"/projects/tasks/tasks/r/{taskRecord["id"]}/details\">[{taskRecord["key"]}] {taskRecord["subject"]}</a>";
@@ -160,12 +166,62 @@ namespace WebVella.Erp.Plugins.Project.Services
 				{
 					relatedRecords.Add(projectId.ToString());
 				}
+				relatedRecords.AddRange(taskWatchersList);
+
 				var body = new Web.Services.RenderService().GetSnippetFromHtml((string)record["body"]);
 				var scope = new List<string>() { "projects" };
 				new FeedItemService().Create(id: Guid.NewGuid(), createdBy: SecurityContext.CurrentUser.Id, subject: subject,
 					body: body, relatedRecords: relatedRecords, scope: scope, type: "comment");
 			}
 
+		}
+
+		public void PostCreateApiHookLogic(string entityName, EntityRecord record)
+		{
+			Guid? commentCreator = null;
+			if (record.Properties.ContainsKey("created_by") && record["created_by"] != null && record["created_by"] is Guid) {
+				commentCreator = (Guid)record["created_by"];
+			}
+			if (commentCreator == null)
+				return;
+
+			if (!record.Properties.ContainsKey("l_scope") || record["l_scope"] == null || !((string)record["l_scope"]).Contains("projects"))
+				return;
+
+			if (record.Properties.ContainsKey("l_related_records") && record["l_related_records"] != null && (string)record["l_related_records"] != "")
+			{
+				var relatedRecordGuid = JsonConvert.DeserializeObject<List<Guid>>((string)record["l_related_records"]);
+				var taskEqlCommand = "SELECT *,$user_nn_task_watchers.id from task WHERE ";
+				var filterStringList = new List<string>();
+				var taskEqlParams = new List<EqlParameter>();
+				var index = 1;
+				foreach (var taskGuid in relatedRecordGuid)
+				{
+					var paramName = "taskId" + index;
+					filterStringList.Add($" id = @{paramName} ");
+					taskEqlParams.Add(new EqlParameter(paramName, taskGuid));
+					index++;
+				}
+				taskEqlCommand += String.Join(" OR ", filterStringList);
+				var relatedTaskRecords = new EqlCommand(taskEqlCommand, taskEqlParams).Execute();
+				var watchRelation = new EntityRelationManager().Read("user_nn_task_watchers").Object;
+				if (watchRelation == null)
+					throw new Exception("Watch relation not found");
+
+				foreach (var task in relatedTaskRecords)
+				{
+					if (task.Properties.ContainsKey("$user_nn_task_watchers") && task["$user_nn_task_watchers"] != null && task["$user_nn_task_watchers"] is List<EntityRecord>)
+					{
+						var watcherIdList = ((List<EntityRecord>)task["$user_nn_task_watchers"]).Select(x=> (Guid)x["id"]).ToList();
+						if (!watcherIdList.Contains(commentCreator.Value)){
+							//Create relation
+							var createRelResponse = new RecordManager().CreateRelationManyToManyRecord(watchRelation.Id, commentCreator.Value, (Guid)task["id"]);
+							if (!createRelResponse.Success)
+								throw new Exception(createRelResponse.Message);
+						}
+					}
+				}
+			}
 		}
 	}
 }

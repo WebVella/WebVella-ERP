@@ -22,6 +22,17 @@ namespace WebVella.Erp.Web.Services
 			return eqlResult;
 		}
 
+		public EntityRecord Get(Guid userId)
+		{
+			var projectRecord = new EntityRecord();
+			var eqlCommand = "SELECT * from user WHERE id = @userId";
+			var eqlParams = new List<EqlParameter>() { new EqlParameter("userId", userId)};
+			var eqlResult = new EqlCommand(eqlCommand, eqlParams).Execute();
+			if (!eqlResult.Any()) {
+				return null;
+			}
+			return eqlResult[0];
+		}
 
 	}
 }

@@ -3,9 +3,16 @@
 	function RunTimer(wvTimerEl) {
 		var recordRow = $(wvTimerEl).closest("tr");
 		recordRow.addClass("go-bkg-orange-light");
-		var inputTotalEl = recordRow.find("input[name='timelog_total_seconds']");
-		var totalLoggedSeconds = $(inputTotalEl).val();
-		var totalLoggedSecondsDec = new Decimal(totalLoggedSeconds);		
+		var timerTd = $(wvTimerEl).closest('.timer-td');
+		var alreadyLoggedSecondsEl = timerTd.find("input[name='timelog_total_seconds']");
+		var alreadyLoggedSeconds = 0;
+		if (alreadyLoggedSecondsEl && alreadyLoggedSecondsEl.val()) {
+			alreadyLoggedSeconds = alreadyLoggedSecondsEl.val();
+		}
+		var logStartFormInputEl = timerTd.find("input[name='timelog_started_on']");
+		var logstartDate = $(logStartFormInputEl).val();
+		var totalLoggedSeconds = moment().utc().diff(moment(logstartDate), 'seconds');
+		var totalLoggedSecondsDec = new Decimal(totalLoggedSeconds).add(new Decimal(alreadyLoggedSeconds));		
 		var loggedHours = totalLoggedSecondsDec.div(3600).toDecimalPlaces(0,Decimal.ROUND_DOWN);
 		var totalLeft = totalLoggedSecondsDec.minus(loggedHours.times(3600));
 		var loggedMinutes = totalLeft.div(60).toDecimalPlaces(0,Decimal.ROUND_DOWN);
@@ -25,8 +32,6 @@
 		}
 		recordRow.find(".timer-td span").html(loggedHoursString + ' : ' + loggedMinutesString + ' : ' + loggedSecondsString);
 		recordRow.find(".timer-td span").addClass("go-orange").removeClass("go-gray");
-		totalLoggedSecondsDec = totalLoggedSecondsDec.plus(1);
-		$(inputTotalEl).val(totalLoggedSecondsDec);
 	}
 
 	function EvaluateTimer(wvTimerEl) {
@@ -129,7 +134,6 @@
 	$(".manual-log").click(function(){
         var clickedBtn = $(this);
 		var recordRow = clickedBtn.closest("tr");		
-		var inputTotalEl = recordRow.find("input[name='timelog_total_seconds']");
 		var inputTaskId =  recordRow.find("input[name='task_id']");
 		var inputBillableStatus =  recordRow.find("input[name='is_billable']");
 		var billableStatusVal = inputBillableStatus.val();

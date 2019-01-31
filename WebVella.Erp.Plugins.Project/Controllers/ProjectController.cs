@@ -380,24 +380,93 @@ namespace WebVella.Erp.Plugins.Project.Controllers
 			}
 		}
 
-		[AllowAnonymous]
-		[Route("api/v3.0/p/project/files/timetrack.js")]
-		[ResponseCache(NoStore = false, Duration = 30 * 24 * 3600)]
-		[HttpGet]
-		public ContentResult StylesCss()
+		[Route("api/v3.0/p/project/task/watch")]
+		[HttpPost]
+		public ActionResult TaskSetWatch([FromQuery]Guid? taskId = null, [FromQuery]Guid? userId = null, [FromQuery]bool startWatch = true)
 		{
+			var response = new ResponseModel();
+			if (taskId == null) {
+				response.Success = false;
+				response.Message = "Missing taskId query parameter";
+				return Json(response);
+			}
+			//Validate
+			var task = new TaskService().GetTask(taskId.Value);
+			if (task == null)
+			{
+				response.Success = false;
+				response.Message = "task not found";
+				return Json(response);
+			}
+			if (userId != null)
+			{
+				var userRecord = new UserService().Get(userId.Value);
+				if (userRecord == null)
+				{
+					response.Success = false;
+					response.Message = "user not found";
+					return Json(response);
+				}
+			}
+			else {
+				userId = SecurityContext.CurrentUser.Id;
+			}
+
 			try
 			{
-				var jsContent = FileService.GetEmbeddedTextResource("timetrack.js", "WebVella.Erp.Plugins.Project.Files", "WebVella.Erp.Plugins.Project");
+				var watchRelation = new EntityRelationManager().Read("user_nn_task_watchers").Object;
+				if (watchRelation == null)
+					throw new Exception("Watch relation not found");
+
+				if (startWatch)
+				{
+					var createRelResponse = new RecordManager().CreateRelationManyToManyRecord(watchRelation.Id, userId.Value, taskId.Value);
+					if (!createRelResponse.Success)
+						throw new Exception(createRelResponse.Message);
+
+					response.Message = "Task watch started";
+				}
+				else {
+					var removeRelResponse = new RecordManager().RemoveRelationManyToManyRecord(watchRelation.Id, userId.Value, taskId.Value);
+					if (!removeRelResponse.Success)
+						throw new Exception(removeRelResponse.Message);
+
+					response.Message = "Task watch stopped";
+				}
+
+				response.Success = true;
+				return Json(response);
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Message = ex.Message;
+				return Json(response);
+			}
+		}
+
+
+		[AllowAnonymous]
+		[Route("api/v3.0/p/project/files/javascript")]
+		[ResponseCache(NoStore = false, Duration = 30 * 24 * 3600)]
+		[HttpGet]
+		public ContentResult TimeTrackJs([FromQuery]string file = "")
+		{
+			if(String.IsNullOrWhiteSpace(file))
+				return Content("", "text/javascript");
+			try
+			{
+				var jsContent = FileService.GetEmbeddedTextResource(file, "WebVella.Erp.Plugins.Project.Files", "WebVella.Erp.Plugins.Project");
 			
 				return Content(jsContent, "text/javascript");
 			}
 			catch (Exception ex)
 			{
-				new Log().Create(LogType.Error, "Timetrack.js API Method Error", ex);
+				new Log().Create(LogType.Error, file + " API File get Method Error", ex);
 				throw ex;
 			}
 		}
+
 
 		#endregion
 
