@@ -9,9 +9,9 @@ If you want this project to continue or just like it, we will greatly appreciate
 
 Related repositories
 
-[WebVella-ERP-StencilJs](/WebVella/WebVella-ERP-StencilJs)
+[WebVella-ERP-StencilJs](https://github.com/WebVella/WebVella-ERP-StencilJs)
 
-[WebVella-ERP-Seed](/WebVella/WebVella-ERP-Seed)
+[WebVella-ERP-Seed](https://github.com/WebVella/WebVella-ERP-Seed)
 
 ### Third party libraries
 * see [LIBRARIES](https://github.com/WebVella/WebVella-ERP/blob/master/LIBRARIES.md) files
