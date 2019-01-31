@@ -74,85 +74,56 @@ namespace WebVella.Erp.Web.Pages.Application
 					if (result != null) return result;
 				}
 
-				if (PageContext.HttpContext.Request.Query.ContainsKey("hookKey"))
+
+				ValidateRecordSubmission(PostObject, ErpRequestContext.Entity, Validation);
+				if (Validation.Errors.Count == 0)
 				{
-					//custom implementation hook
-					try
+
+					if (!PostObject.Properties.ContainsKey("id"))
+						PostObject["id"] = RecordId.Value;
+
+					var hookInstances = HookManager.GetHookedInstances<IRecordRelatedRecordManagePageHook>(HookKey);
+
+					//pre manage hooks
+					foreach (IRecordRelatedRecordManagePageHook inst in hookInstances)
 					{
-						var hookInstances = HookManager.GetHookedInstances<IRecordRelatedRecordManagePageCustomImplHook>(HookKey);
-
-						foreach (IRecordRelatedRecordManagePageCustomImplHook inst in hookInstances)
+						List<ValidationError> errors = new List<ValidationError>();
+						var result = inst.OnPreManageRecord(PostObject, ErpRequestContext.Entity, this, errors);
+						if (result != null) return result;
+						if (errors.Any())
 						{
-							var result = inst.OnManageRecord(PostObject, ErpRequestContext.Entity, this);
-							if (result != null) return result;
-						}
+							Validation.Errors.AddRange(errors);
 
-						if (string.IsNullOrWhiteSpace(ReturnUrl))
-							return Redirect($"/{ErpRequestContext.App.Name}/{ErpRequestContext.SitemapArea.Name}/{ErpRequestContext.SitemapNode.Name}/r/{ErpRequestContext.ParentRecordId}/rl/{ErpRequestContext.RelationId}/r/{RecordId}");
-						else
-							return Redirect(ReturnUrl);
-
-					}
-					catch (ValidationException valEx)
-					{
-						Validation.Message = valEx.Message;
-						Validation.Errors.AddRange(valEx.Errors);
-
-						BeforeRender();
-						return Page();
-					}
-				}
-				else
-				{
-					ValidateRecordSubmission(PostObject, ErpRequestContext.Entity, Validation);
-					if (Validation.Errors.Count == 0)
-					{
-
-						if (!PostObject.Properties.ContainsKey("id"))
-							PostObject["id"] = RecordId.Value;
-
-						var hookInstances = HookManager.GetHookedInstances<IRecordRelatedRecordManagePageHook>(HookKey);
-
-						//pre manage hooks
-						foreach (IRecordRelatedRecordManagePageHook inst in hookInstances)
-						{
-							List<ValidationError> errors = new List<ValidationError>();
-							var result = inst.OnPreManageRecord(PostObject, ErpRequestContext.Entity, this, errors);
-							if (result != null) return result;
-							if (errors.Any())
-							{
-								Validation.Errors.AddRange(errors);
-
-								BeforeRender();
-								return Page();
-							}
-						}
-
-						var updateResponse = new RecordManager().UpdateRecord(ErpRequestContext.Entity.MapTo<Entity>(), PostObject);
-						if (!updateResponse.Success)
-						{
-							Validation.Message = updateResponse.Message;
-							foreach (var error in updateResponse.Errors)
-								Validation.Errors.Add(new ValidationError(error.Key, error.Message));
-
-							ErpRequestContext.PageContext = PageContext;
 							BeforeRender();
 							return Page();
 						}
-
-						//post manage hook
-						foreach (IRecordRelatedRecordManagePageHook inst in hookInstances)
-						{
-							var result = inst.OnPostManageRecord(PostObject, ErpRequestContext.Entity, this);
-							if (result != null) return result;
-						}
-
-						if (string.IsNullOrWhiteSpace(ReturnUrl))
-							return Redirect($"/{ErpRequestContext.App.Name}/{ErpRequestContext.SitemapArea.Name}/{ErpRequestContext.SitemapNode.Name}/r/{ErpRequestContext.ParentRecordId}/rl/{ErpRequestContext.RelationId}/r/{RecordId}");
-						else
-							return Redirect(ReturnUrl);
-
 					}
+
+					var updateResponse = new RecordManager().UpdateRecord(ErpRequestContext.Entity.MapTo<Entity>(), PostObject);
+					if (!updateResponse.Success)
+					{
+						Validation.Message = updateResponse.Message;
+						foreach (var error in updateResponse.Errors)
+							Validation.Errors.Add(new ValidationError(error.Key, error.Message));
+
+						ErpRequestContext.PageContext = PageContext;
+						BeforeRender();
+						return Page();
+					}
+
+					//post manage hook
+					foreach (IRecordRelatedRecordManagePageHook inst in hookInstances)
+					{
+						var result = inst.OnPostManageRecord(PostObject, ErpRequestContext.Entity, this);
+						if (result != null) return result;
+					}
+
+					if (string.IsNullOrWhiteSpace(ReturnUrl))
+						return Redirect($"/{ErpRequestContext.App.Name}/{ErpRequestContext.SitemapArea.Name}/{ErpRequestContext.SitemapNode.Name}/r/{ErpRequestContext.ParentRecordId}/rl/{ErpRequestContext.RelationId}/r/{RecordId}");
+					else
+						return Redirect(ReturnUrl);
+
+
 				}
 				BeforeRender();
 				return Page();

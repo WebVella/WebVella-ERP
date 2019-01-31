@@ -29,10 +29,7 @@ namespace WebVella.Erp.Site
 		{
 			services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
 			services.AddResponseCompression(options => { options.Providers.Add<GzipCompressionProvider>(); });
-			services.AddRouting(options =>
-			{
-				options.LowercaseUrls = true;
-			});
+			services.AddRouting(options => { options.LowercaseUrls = true; });
 
 			//CORS policy declaration
 			services.AddCors(options =>
@@ -43,7 +40,7 @@ namespace WebVella.Erp.Site
 
 			services.AddDetectionCore().AddDevice();
 
-			services.AddMvc() 
+			services.AddMvc()
 
 				.AddRazorPagesOptions(options =>
 				{
@@ -55,10 +52,7 @@ namespace WebVella.Erp.Site
 				   options.SerializerSettings.Converters.Add(new ErpDateTimeJsonConverter());
 			   });
 
-			services.AddSwaggerGen(c =>
-			{
-				c.SwaggerDoc("v1", new Info { Title = "Erp API", Version = "v1" });
-			});
+			services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info { Title = "Erp API", Version = "v1" }); });
 
 			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 					.AddCookie(options =>
@@ -84,13 +78,6 @@ namespace WebVella.Erp.Site
 
 			app.UseAuthentication();
 
-			string configFolder = null;
-			if (System.IO.Directory.Exists("configuration"))
-			{
-				var appPoolName = System.Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
-				configFolder = System.IO.Path.Combine("configuration", appPoolName);
-			}
-
 			app
 			.UseErpPlugin<NextPlugin>()
 			.UseErpPlugin<SdkPlugin>()
@@ -98,12 +85,6 @@ namespace WebVella.Erp.Site
 			.UseErpPlugin<CrmPlugin>()
 			.UseErp(configFolder: configFolder)
 			.UseErpMiddleware();
-
-			//app.Run(async context =>
-			//{
-			//	await context.Response.WriteAsync(configFolder);
-			//});
-			//return;
 
 			//env.EnvironmentName = EnvironmentName.Production;
 			// Add the following to the request pipeline only in development environment.
@@ -135,19 +116,11 @@ namespace WebVella.Erp.Site
 				}
 			});
 
-			app.UseMvc(routes =>
-			{
-				routes.MapRoute(
-					name: "default",
-					template: "{controller=Home}/{action=Index}/{id?}");
-			});
+			app.UseMvc(routes => { routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}"); });
 
 			app.UseSwagger();
 
-			app.UseSwaggerUI(c =>
-			{
-				c.SwaggerEndpoint("/swagger/v1/swagger.json", "Erp API V1");
-			});
+			app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Erp API V1"); });
 		}
 	}
 }
