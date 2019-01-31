@@ -14,6 +14,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using WebVella.Erp.Plugins.SDK;
 using WebVella.Erp.Plugins.Next;
 using WebVella.Erp.Plugins.Project;
+using WebVella.Erp.Plugins.Crm;
 
 namespace WebVella.Erp.Site
 {
@@ -93,7 +94,8 @@ namespace WebVella.Erp.Site
 			app
 			.UseErpPlugin<NextPlugin>()
 			.UseErpPlugin<SdkPlugin>()
-			.UseErpPlugin<ProjectPlugin>()
+			//.UseErpPlugin<ProjectPlugin>()
+			.UseErpPlugin<CrmPlugin>()
 			.UseErp(configFolder: configFolder)
 			.UseErpMiddleware();
 
