@@ -83,7 +83,8 @@ namespace WebVella.Erp.Site
 			.UseErpPlugin<SdkPlugin>()
 			//.UseErpPlugin<ProjectPlugin>()
 			.UseErpPlugin<CrmPlugin>()
-			.UseErp(configFolder: configFolder)
+			.UseErp()
+			//.UseErp(configFolder: configFolder)
 			.UseErpMiddleware();
 
 			//env.EnvironmentName = EnvironmentName.Production;
