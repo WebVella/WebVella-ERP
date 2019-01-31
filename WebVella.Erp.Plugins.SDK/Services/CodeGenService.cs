@@ -344,6 +344,38 @@ namespace WebVella.Erp.Plugins.SDK.Services
 
 				#region <-- generate delete code -->
 
+				//delete page data sources
+				foreach (var oldDS in oldPageDataSources)
+				{
+					if (!currentPageDataSources.Any(x => x.Id == oldDS.Id))
+					{
+						//// DELETED
+						/////////////////////////////////////////////////////
+						changeRow = new MetaChangeModel();
+						changeRow.Element = "page data source";
+						changeRow.Type = "deleted";
+						changeRow.Name = oldDS.Name;
+						response.Changes.Add(changeRow);
+						response.Code += DeletePageDataSourceCode(oldDS);
+					}
+				}
+
+				//delete data sources
+				foreach (var oldDS in oldDataSources)
+				{
+					if (!currentDataSources.Any(x => x.Id == oldDS.Id))
+					{
+						//// DELETED
+						/////////////////////////////////////////////////////
+						changeRow = new MetaChangeModel();
+						changeRow.Element = "data source";
+						changeRow.Type = "deleted";
+						changeRow.Name = oldDS.Name;
+						response.Changes.Add(changeRow);
+						response.Code += DeleteDatabaseDataSourceCode(oldDS);
+					}
+				}
+
 				//delete page body nodes
 				{
 					Stack<PageBodyNode> deleteStack = new Stack<PageBodyNode>();
@@ -489,37 +521,7 @@ namespace WebVella.Erp.Plugins.SDK.Services
 					}
 				}
 
-				//delete page data sources
-				foreach (var oldDS in oldPageDataSources)
-				{
-					if (!currentPageDataSources.Any(x => x.Id == oldDS.Id))
-					{
-						//// DELETED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "page data source";
-						changeRow.Type = "deleted";
-						changeRow.Name = oldDS.Name;
-						response.Changes.Add(changeRow);
-						response.Code += DeletePageDataSourceCode(oldDS);
-					}
-				}
-
-				//delete data sources
-				foreach (var oldDS in oldDataSources)
-				{
-					if (!currentDataSources.Any(x => x.Id == oldDS.Id))
-					{
-						//// DELETED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "data source";
-						changeRow.Type = "deleted";
-						changeRow.Name = oldDS.Name;
-						response.Changes.Add(changeRow);
-						response.Code += DeleteDatabaseDataSourceCode(oldDS);
-					}
-				}
+			
 
 				#endregion
 
@@ -7415,7 +7417,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 		{
 			return $"#region << ***Delete app*** App name: {app.Name} >>\n" +
 					"{\n" +
-						$"\n\tnew WebVella.Erp.Web.Services.AppService().DeleteApplication( new Guid(\"{app.Id}\"),WebVella.Erp.Database.DbContext.Current.Transaction);\n" +
+						$"\n\tnew WebVella.Erp.Web.Services.AppService().DeleteApplication( new Guid(\"{app.Id}\"),WebVella.Erp.Database.DbContext.Current.Transaction, cascade: false );\n" +
 					"}\n" +
 					"#endregion\n\n";
 		}
@@ -7727,7 +7729,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 		{
 			return $"#region << ***Delete sitemap area*** Area name: {area.Name} >>\n" +
 					"{\n" +
-						$"\n\tnew WebVella.Erp.Web.Services.AppService().DeleteArea( new Guid(\"{area.Id}\"),WebVella.Erp.Database.DbContext.Current.Transaction);\n" +
+						$"\n\tnew WebVella.Erp.Web.Services.AppService().DeleteArea( new Guid(\"{area.Id}\"),WebVella.Erp.Database.DbContext.Current.Transaction, cascade: false );\n" +
 					"}\n" +
 					"#endregion\n\n";
 		}
@@ -7891,7 +7893,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 		{
 			return $"#region << ***Delete sitemap node*** Node name: {node.Name} >>\n" +
 					"{\n" +
-						$"\n\tnew WebVella.Erp.Web.Services.AppService().DeleteAreaNode( new Guid(\"{node.Id}\"),WebVella.Erp.Database.DbContext.Current.Transaction);\n" +
+						$"\n\tnew WebVella.Erp.Web.Services.AppService().DeleteAreaNode( new Guid(\"{node.Id}\"),WebVella.Erp.Database.DbContext.Current.Transaction );\n" +
 					"}\n" +
 					"#endregion\n\n";
 		}
@@ -8074,7 +8076,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 		{
 			return $"#region << ***Delete page*** Page name: {page.Name} >>\n" +
 					"{\n" +
-						$"\n\tnew WebVella.Erp.Web.Services.PageService().DeletePage( new Guid(\"{page.Id}\"),WebVella.Erp.Database.DbContext.Current.Transaction);\n" +
+						$"\n\tnew WebVella.Erp.Web.Services.PageService().DeletePage( new Guid(\"{page.Id}\"),WebVella.Erp.Database.DbContext.Current.Transaction, cascade: false );\n" +
 					"}\n" +
 					"#endregion\n\n";
 		}
@@ -8317,7 +8319,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 		{
 			return $"#region << ***Delete page body node*** Page name: {pageName} ID: {node.Id} >>\n" +
 					"{\n" +
-						$"\n\tnew WebVella.Erp.Web.Services.PageService().DeletePageBodyNode( new Guid(\"{node.Id}\"),WebVella.Erp.Database.DbContext.Current.Transaction);\n" +
+						$"\n\tnew WebVella.Erp.Web.Services.PageService().DeletePageBodyNode( new Guid(\"{node.Id}\"),WebVella.Erp.Database.DbContext.Current.Transaction, cascade: false );\n" +
 					"}\n" +
 					"#endregion\n\n";
 		}

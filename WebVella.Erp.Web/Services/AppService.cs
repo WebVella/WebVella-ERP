@@ -165,7 +165,7 @@ namespace WebVella.Erp.Web.Services
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="transaction"></param>
-		public void DeleteApplication(Guid id, NpgsqlTransaction transaction = null)
+		public void DeleteApplication(Guid id, NpgsqlTransaction transaction = null, bool cascade = true )
 		{
 			ValidationException vex = new ValidationException();
 
@@ -185,7 +185,7 @@ namespace WebVella.Erp.Web.Services
 						con.Open();
 						trans = con.BeginTransaction();
 
-						DeleteApplicationInternal(id, trans);
+						DeleteApplicationInternal(id, cascade, trans);
 
 						trans.Commit();
 					}
@@ -203,7 +203,7 @@ namespace WebVella.Erp.Web.Services
 			}
 			else
 			{
-				DeleteApplicationInternal(id, transaction);
+				DeleteApplicationInternal(id, cascade, transaction);
 			}
 		}
 
@@ -212,18 +212,21 @@ namespace WebVella.Erp.Web.Services
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="transaction"></param>
-		private void DeleteApplicationInternal(Guid id, NpgsqlTransaction transaction)
+		private void DeleteApplicationInternal(Guid id, bool cascade, NpgsqlTransaction transaction)
 		{
-			//delete application pages
-			PageService pageService = new PageService(connectionString);
-			DataTable appPages = new ErpPageRepository(connectionString).GetApplicationPages(id, transaction);
-			foreach (DataRow pageRow in appPages.Rows)
-				pageService.DeletePage((Guid)pageRow["id"], transaction);
+			if (cascade)
+			{
+				//delete application pages
+				PageService pageService = new PageService(connectionString);
+				DataTable appPages = new ErpPageRepository(connectionString).GetApplicationPages(id, transaction);
+				foreach (DataRow pageRow in appPages.Rows)
+					pageService.DeletePage((Guid)pageRow["id"], transaction);
 
-			//delete application areas
-			DataTable appAreas = new SitemapAreaRepository(connectionString).GetApplicationAreas(id, transaction);
-			foreach (DataRow entRow in appAreas.Rows)
-				DeleteArea((Guid)entRow["id"], transaction);
+				//delete application areas
+				DataTable appAreas = new SitemapAreaRepository(connectionString).GetApplicationAreas(id, transaction);
+				foreach (DataRow entRow in appAreas.Rows)
+					DeleteArea((Guid)entRow["id"], transaction);
+			}
 
 			//delete application
 			repository.DeleteApplication(id, transaction);
@@ -332,7 +335,7 @@ namespace WebVella.Erp.Web.Services
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="transaction"></param>
-		public void DeleteArea(Guid id, NpgsqlTransaction transaction = null)
+		public void DeleteArea(Guid id, NpgsqlTransaction transaction = null, bool cascade = true )
 		{
 			if (transaction == null)
 			{
@@ -348,7 +351,7 @@ namespace WebVella.Erp.Web.Services
 						if (appId == null)
 							throw new Exception("Sitemap area is not found");
 
-						DeleteAreaInternal(id, appId.Value ,trans);
+						DeleteAreaInternal(id, appId.Value, cascade, trans);
 
 						trans.Commit();
 					}
@@ -370,21 +373,24 @@ namespace WebVella.Erp.Web.Services
 				if (appId == null)
 					throw new Exception("Sitemap area is not found");
 
-				DeleteAreaInternal(id, appId.Value, transaction);
+				DeleteAreaInternal(id, appId.Value, cascade, transaction);
 			}
 		}
 
-		public void DeleteAreaInternal(Guid id, Guid appId, NpgsqlTransaction transaction = null)
+		public void DeleteAreaInternal(Guid id, Guid appId, bool cascade, NpgsqlTransaction transaction = null)
 		{
-			SitemapAreaGroupRepository groupsRep = new SitemapAreaGroupRepository(connectionString);
-			DataTable areaGroups = groupsRep.GetAreaGroups(id, transaction);
-			foreach (DataRow entRow in areaGroups.Rows)
-				groupsRep.Delete((Guid)entRow["id"], transaction);
+			if (cascade)
+			{
+				SitemapAreaGroupRepository groupsRep = new SitemapAreaGroupRepository(connectionString);
+				DataTable areaGroups = groupsRep.GetAreaGroups(id, transaction);
+				foreach (DataRow entRow in areaGroups.Rows)
+					groupsRep.Delete((Guid)entRow["id"], transaction);
 
-			SitemapAreaNodeRepository nodesRep = new SitemapAreaNodeRepository(connectionString);
-			DataTable areaNodes = nodesRep.GetAreaNodes(id, transaction);
-			foreach (DataRow entRow in areaNodes.Rows)
-				DeleteAreaNode((Guid)entRow["id"], transaction);
+				SitemapAreaNodeRepository nodesRep = new SitemapAreaNodeRepository(connectionString);
+				DataTable areaNodes = nodesRep.GetAreaNodes(id, transaction);
+				foreach (DataRow entRow in areaNodes.Rows)
+					DeleteAreaNode((Guid)entRow["id"], transaction);
+			}
 
 			new PageService(connectionString).UnbindPagesFromSitemapArea(id,transaction);
 			new SitemapAreaRepository(connectionString).Delete(id, transaction);

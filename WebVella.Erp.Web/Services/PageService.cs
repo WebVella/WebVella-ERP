@@ -38,10 +38,10 @@ namespace WebVella.Erp.Web.Services
 		/// Gets all pages list
 		/// </summary>
 		/// <returns></returns>
-		public List<ErpPage> GetAll(NpgsqlTransaction transaction = null, bool useCache = true )
+		public List<ErpPage> GetAll(NpgsqlTransaction transaction = null, bool useCache = true)
 		{
 			List<ErpPage> pages;
-			if (useCache && ErpAppContext.Current != null )
+			if (useCache && ErpAppContext.Current != null)
 			{
 				pages = ErpAppContext.Current.Cache.Get<List<ErpPage>>(CACHE_KEY);
 				if (pages != null)
@@ -49,8 +49,8 @@ namespace WebVella.Erp.Web.Services
 			}
 
 			pages = new ErpPageRepository(connectionString).GetAllPages(transaction).MapTo<ErpPage>().OrderBy(x => x.Weight).ToList();
-			
-			if( useCache && ErpAppContext.Current != null)
+
+			if (useCache && ErpAppContext.Current != null)
 				ErpAppContext.Current.Cache.Put(CACHE_KEY, pages);
 			return pages;
 		}
@@ -308,12 +308,13 @@ namespace WebVella.Erp.Web.Services
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="transaction"></param>
-		public void DeletePage(Guid id, NpgsqlTransaction transaction = null)
+		/// <param name="cascade"></param>
+		public void DeletePage(Guid id, NpgsqlTransaction transaction = null, bool cascade = true)
 		{
 			var pageRepository = new ErpPageRepository(connectionString);
 			ValidationException vex = new ValidationException();
 
-			var page = pageRepository.GetById(id);
+			var page = pageRepository.GetById(id, transaction);
 			if (page == null)
 				vex.AddError("id", "There is no page for specified identifier.");
 
@@ -329,7 +330,7 @@ namespace WebVella.Erp.Web.Services
 						con.Open();
 						trans = con.BeginTransaction();
 
-						DeletePageInternal(id, trans);
+						DeletePageInternal(id, cascade, trans);
 
 						trans.Commit();
 					}
@@ -347,7 +348,7 @@ namespace WebVella.Erp.Web.Services
 			}
 			else
 			{
-				DeletePageInternal(id, transaction);
+				DeletePageInternal(id, cascade, transaction);
 			}
 
 			ClearPagesCache();
@@ -358,10 +359,10 @@ namespace WebVella.Erp.Web.Services
 		/// </summary>
 		/// <param name="pageId"></param>
 		/// <returns></returns>
-		private string GetRazorBodyFromFileSystem(Guid pageId)
+		private string GetRazorBodyFromFileSystem(Guid pageId, NpgsqlTransaction transaction = null)
 		{
 			var pageRepository = new ErpPageRepository(connectionString);
-			var pageRow = pageRepository.GetById(pageId);
+			var pageRow = pageRepository.GetById(pageId, transaction );
 			if (pageRow == null)
 				throw new ValidationException("Page is not found.");
 
@@ -392,15 +393,18 @@ namespace WebVella.Erp.Web.Services
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="transaction"></param>
-		private void DeletePageInternal(Guid id, NpgsqlTransaction transaction = null)
+		private void DeletePageInternal(Guid id, bool cascade, NpgsqlTransaction transaction = null)
 		{
-			DataTable layoutTable = new PageBodyNodeRepository(connectionString).GetPageRootBodyNode(id, transaction);
-			foreach (DataRow layoutRow in layoutTable.Rows)
-				DeletePageBodyNode((Guid)layoutRow["id"], transaction);
+			if (cascade)
+			{
+				DataTable layoutTable = new PageBodyNodeRepository(connectionString).GetPageRootBodyNode(id, transaction);
+				foreach (DataRow layoutRow in layoutTable.Rows)
+					DeletePageBodyNode((Guid)layoutRow["id"], transaction);
 
-			DataTable pageDataSources = new PageDataSourceRepository(connectionString).GetByPageId(id, transaction);
-			foreach (DataRow dr in pageDataSources.Rows)
-				DeletePageDataSource((Guid)dr["id"], transaction);
+				DataTable pageDataSources = new PageDataSourceRepository(connectionString).GetByPageId(id, transaction);
+				foreach (DataRow dr in pageDataSources.Rows)
+					DeletePageDataSource((Guid)dr["id"], transaction);
+			}
 
 			//delete content if exists
 			DeletePageBodyContentOnFileSystem(id);
@@ -457,7 +461,7 @@ namespace WebVella.Erp.Web.Services
 		/// <param name="appId"></param>
 		public void ClearPagesCache()
 		{
-			if(ErpAppContext.Current != null )
+			if (ErpAppContext.Current != null)
 				ErpAppContext.Current.Cache.Remove(CACHE_KEY);
 			//we clear cache for apps also cause pages are loaded into apps 
 			new AppService(connectionString).ClearAllAppCache();
@@ -575,9 +579,9 @@ namespace WebVella.Erp.Web.Services
 				ClonePageBodyNodeInternal(newPageId, null, node, transaction);
 
 			var pageDataSources = GetPageDataSources(page.Id);
-			foreach(var ds in pageDataSources)
-				CreatePageDataSource(Guid.NewGuid(), newPageId, ds.DataSourceId, ds.Name, ds.Parameters,transaction);
-			
+			foreach (var ds in pageDataSources)
+				CreatePageDataSource(Guid.NewGuid(), newPageId, ds.DataSourceId, ds.Name, ds.Parameters, transaction);
+
 			ClearPagesCache();
 			return GetPage(newPageId, transaction);
 		}
@@ -687,11 +691,12 @@ namespace WebVella.Erp.Web.Services
 		public void CreatePageBodyNode(Guid id, Guid? parentId, Guid pageId, Guid? nodeId, int weight,
 			string componentName, string containerId, string options, NpgsqlTransaction transaction = null)
 		{
-			//TODO validations 
+			PageBodyNodeRepository nodeRep = new PageBodyNodeRepository(connectionString);
+			DataRow node = nodeRep.GetById(id,transaction);
+			if (node != null)
+				throw new Exception("Node with same ID already exists.");
 
-			//string optionsJson = null;
-			//if (options != null)
-			//	optionsJson = JsonConvert.SerializeObject(options);
+			//TODO MORE VALIDATION
 
 			new PageBodyNodeRepository(connectionString).Insert(id, parentId, pageId, nodeId, weight, componentName, containerId, options, transaction);
 
@@ -713,10 +718,14 @@ namespace WebVella.Erp.Web.Services
 		public void UpdatePageBodyNode(Guid id, Guid? parentId, Guid pageId, Guid? nodeId, int weight,
 				string componentName, string containerId, string options, NpgsqlTransaction transaction = null)
 		{
+			PageBodyNodeRepository nodeRep = new PageBodyNodeRepository(connectionString);
+			DataRow node = nodeRep.GetById(id, transaction);
+			if (node == null)
+				throw new Exception("Node you try to update does not exist.");
 
-			//TODO validations 
+			//TODO MORE VALIDATION
 
-			new PageBodyNodeRepository(connectionString).Update(id, parentId, pageId, nodeId, weight, componentName, containerId, options, transaction);
+			nodeRep.Update(id, parentId, pageId, nodeId, weight, componentName, containerId, options, transaction);
 
 			ClearPagesCache();
 
@@ -730,9 +739,12 @@ namespace WebVella.Erp.Web.Services
 		/// <param name="transaction"></param>
 		public void UpdatePageBodyNodeOptions(Guid id, string options, NpgsqlTransaction transaction = null)
 		{
-			//TODO validations 
+			PageBodyNodeRepository nodeRep = new PageBodyNodeRepository(connectionString);
+			DataRow node = nodeRep.GetById(id, transaction);
+			if( node == null )
+				throw new Exception("Node you try to update does not exist.");
 
-			new PageBodyNodeRepository(connectionString).Update(id, options, transaction);
+			nodeRep.Update(id, options, transaction);
 
 			ClearPagesCache();
 
@@ -744,7 +756,8 @@ namespace WebVella.Erp.Web.Services
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="transaction"></param>
-		public void DeletePageBodyNode(Guid id, NpgsqlTransaction transaction = null)
+		/// <param name="cascade"></param>
+		public void DeletePageBodyNode(Guid id, NpgsqlTransaction transaction = null, bool cascade = true)
 		{
 			if (transaction == null)
 			{
@@ -756,7 +769,7 @@ namespace WebVella.Erp.Web.Services
 						con.Open();
 						trans = con.BeginTransaction();
 
-						DeletePageBodyNodeInternal(id, trans);
+						DeletePageBodyNodeInternal(id, cascade, trans);
 
 						trans.Commit();
 					}
@@ -774,49 +787,52 @@ namespace WebVella.Erp.Web.Services
 			}
 			else
 			{
-				DeletePageBodyNodeInternal(id, transaction);
+				DeletePageBodyNodeInternal(id, cascade, transaction);
 			}
 
 		}
 
 
-		public void DeletePageBodyNodeInternal(Guid id, NpgsqlTransaction transaction = null)
+		public void DeletePageBodyNodeInternal(Guid id, bool cascade, NpgsqlTransaction transaction = null)
 		{
 			PageBodyNodeRepository nodeRep = new PageBodyNodeRepository(connectionString);
 
 			Stack<Guid> deleteStack = new Stack<Guid>();
 			Queue<Guid> processQueue = new Queue<Guid>();
 
-			DataRow layoutRow = nodeRep.GetById(id);
-			if (layoutRow != null)
+			DataRow pageBodyNode = nodeRep.GetById(id, transaction);
+			if (pageBodyNode != null)
 			{
 				processQueue.Enqueue(id);
 
-				// process nodes from parents to children
-				while (processQueue.Count > 0)
+				if (cascade)
 				{
-					Guid nodeId = processQueue.Dequeue();
-					deleteStack.Push(nodeId);
-
-					DataTable dtChildNodes = nodeRep.GetPageBodyNodesByParentId(nodeId);
-					foreach (DataRow dr in dtChildNodes.Rows)
+					// process nodes from parents to children
+					while (processQueue.Count > 0)
 					{
-						Guid childNodeId = (Guid)dr["id"];
-
-						//if deleteStack already contains this nodeId, that mean a cyclic structure exists
-						if (deleteStack.Contains(childNodeId))
-							throw new Exception($"Cyclic node structure found between: '{id}' and '{childNodeId}' .");
-
+						Guid nodeId = processQueue.Dequeue();
 						deleteStack.Push(nodeId);
-						processQueue.Enqueue(childNodeId);
-					}
-				}
 
-				//deletes nodes in order, so we have no problems with references
-				while (deleteStack.Count > 0)
-				{
-					Guid deleteId = deleteStack.Pop();
-					nodeRep.Delete(deleteId, transaction);
+						DataTable dtChildNodes = nodeRep.GetPageBodyNodesByParentId(nodeId);
+						foreach (DataRow dr in dtChildNodes.Rows)
+						{
+							Guid childNodeId = (Guid)dr["id"];
+
+							//if deleteStack already contains this nodeId, that mean a cyclic structure exists
+							if (deleteStack.Contains(childNodeId))
+								throw new Exception($"Cyclic node structure found between: '{id}' and '{childNodeId}' .");
+
+							deleteStack.Push(nodeId);
+							processQueue.Enqueue(childNodeId);
+						}
+					}
+
+					//deletes nodes in order, so we have no problems with references
+					while (deleteStack.Count > 0)
+					{
+						Guid deleteId = deleteStack.Pop();
+						nodeRep.Delete(deleteId, transaction);
+					}
 				}
 
 				nodeRep.Delete(id, transaction);
@@ -922,7 +938,12 @@ namespace WebVella.Erp.Web.Services
 		/// /// <param name="transaction"></param>
 		public void DeletePageDataSource(Guid id, NpgsqlTransaction transaction = null)
 		{
-			new PageDataSourceRepository(connectionString).Delete(id, transaction);
+			PageDataSourceRepository dsRep = new PageDataSourceRepository(connectionString);
+			var ds = dsRep.GetById(id, transaction );
+			if( ds == null )
+				throw new Exception("Page data source you try to delete does not exist.");
+
+			dsRep.Delete(id, transaction);
 		}
 
 		#endregion
@@ -1111,7 +1132,7 @@ namespace WebVella.Erp.Web.Services
 						//that are attached to this app or has NO app. Pages attached to other apps should not be selected
 						if (resultPage == null)
 						{
-							resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id && (x.AppId == currentApp.Id || x.AppId == null)); 
+							resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id && (x.AppId == currentApp.Id || x.AppId == null));
 						}
 					}
 					#endregion
