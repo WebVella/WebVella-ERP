@@ -70,78 +70,54 @@ namespace WebVella.Erp.Web.Pages.Application
 					if (result != null) return result;
 				}
 
-
-				if (PageContext.HttpContext.Request.Query.ContainsKey("hookKey"))
+				ValidateRecordSubmission(PostObject, ErpRequestContext.Entity, Validation);
+				if (Validation.Errors.Count == 0)
 				{
-					//custom implementation hook
-					var hookInstances = HookManager.GetHookedInstances<IRecordCreatePageCustomImplHook>(HookKey);
 
 					if (!PostObject.Properties.ContainsKey("id"))
 						PostObject["id"] = Guid.NewGuid();
 
-					foreach (IRecordCreatePageCustomImplHook inst in hookInstances)
+					var hookInstances = HookManager.GetHookedInstances<IRecordCreatePageHook>(HookKey);
+
+					//pre create hooks
+					foreach (IRecordCreatePageHook inst in hookInstances)
 					{
-						var result = inst.OnCreateRecord(PostObject, ErpRequestContext.Entity, this);
+						List<ValidationError> errors = new List<ValidationError>();
+						var result = inst.OnPreCreateRecord(PostObject, ErpRequestContext.Entity, this, errors);
+						if (result != null) return result;
+						if (errors.Any())
+						{
+							Validation.Errors.AddRange(errors);
+							BeforeRender();
+							return Page();
+						}
+					}
+
+					var createResponse = new RecordManager().CreateRecord(ErpRequestContext.Entity.MapTo<Entity>(), PostObject);
+					if (!createResponse.Success)
+					{
+						Validation.Message = createResponse.Message;
+						foreach (var error in createResponse.Errors)
+							Validation.Errors.Add(new ValidationError(error.Key, error.Message));
+
+						ErpRequestContext.PageContext = PageContext;
+						BeforeRender();
+						return Page();
+					}
+
+					//post create hook
+					foreach (IRecordCreatePageHook inst in hookInstances)
+					{
+						var result = inst.OnPostCreateRecord(PostObject, ErpRequestContext.Entity, this);
 						if (result != null) return result;
 					}
 
 					if (string.IsNullOrWhiteSpace(ReturnUrl))
-						return Redirect($"/{ErpRequestContext.App.Name}/{ErpRequestContext.SitemapArea.Name}/{ErpRequestContext.SitemapNode.Name}/r/{PostObject["id"]}");
+						return Redirect($"/{ErpRequestContext.App.Name}/{ErpRequestContext.SitemapArea.Name}/{ErpRequestContext.SitemapNode.Name}/r/{createResponse.Object.Data[0]["id"]}");
 					else
 						return Redirect(ReturnUrl);
-
-
 				}
-				else
-				{
-					ValidateRecordSubmission(PostObject, ErpRequestContext.Entity, Validation);
-					if (Validation.Errors.Count == 0)
-					{
 
-						if (!PostObject.Properties.ContainsKey("id"))
-							PostObject["id"] = Guid.NewGuid();
-
-						var hookInstances = HookManager.GetHookedInstances<IRecordCreatePageHook>(HookKey);
-
-						//pre create hooks
-						foreach (IRecordCreatePageHook inst in hookInstances)
-						{
-							List<ValidationError> errors = new List<ValidationError>();
-							var result = inst.OnPreCreateRecord(PostObject, ErpRequestContext.Entity, this, errors);
-							if (result != null) return result;
-							if (errors.Any())
-							{
-								Validation.Errors.AddRange(errors);
-								BeforeRender();
-								return Page();
-							}
-						}
-
-						var createResponse = new RecordManager().CreateRecord(ErpRequestContext.Entity.MapTo<Entity>(), PostObject);
-						if (!createResponse.Success)
-						{
-							Validation.Message = createResponse.Message;
-							foreach (var error in createResponse.Errors)
-								Validation.Errors.Add(new ValidationError(error.Key, error.Message));
-
-							ErpRequestContext.PageContext = PageContext;
-							BeforeRender();
-							return Page();
-						}
-
-						//post create hook
-						foreach (IRecordCreatePageHook inst in hookInstances)
-						{
-							var result = inst.OnPostCreateRecord(PostObject, ErpRequestContext.Entity, this);
-							if (result != null) return result;
-						}
-
-						if (string.IsNullOrWhiteSpace(ReturnUrl))
-							return Redirect($"/{ErpRequestContext.App.Name}/{ErpRequestContext.SitemapArea.Name}/{ErpRequestContext.SitemapNode.Name}/r/{createResponse.Object.Data[0]["id"]}");
-						else
-							return Redirect(ReturnUrl);
-					}
-				}
 				BeforeRender();
 				return Page();
 			}
