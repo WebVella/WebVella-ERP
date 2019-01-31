@@ -83,18 +83,11 @@ namespace WebVella.Erp.Site
 
 			app.UseAuthentication();
 
-			string configFolder = null;
-			if (System.IO.Directory.Exists("configuration"))
-			{
-				var appPoolName = System.Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
-				configFolder = System.IO.Path.Combine("configuration", appPoolName);
-			}
-
 			app
 			.UseErpPlugin<NextPlugin>()
 			.UseErpPlugin<SdkPlugin>()
 			.UseErpPlugin<ProjectPlugin>()
-			.UseErp(configFolder: configFolder)
+			.UseErp()
 			.UseErpMiddleware();
 
 			//app.Run(async context =>
