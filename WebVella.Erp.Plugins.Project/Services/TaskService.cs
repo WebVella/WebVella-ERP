@@ -118,23 +118,24 @@ namespace WebVella.Erp.Plugins.Project.Services
 
 			var eqlCommand = $"SELECT {selectedFields} from task ";
 			var eqlParams = new List<EqlParameter>();
-			eqlParams.Add(new EqlParameter("currentDate", DateTime.Now.Date));
+			eqlParams.Add(new EqlParameter("currentDateStart", DateTime.Now.Date));
+			eqlParams.Add(new EqlParameter("currentDateEnd", DateTime.Now.Date.AddDays(1)));
 
 			var whereFilters = new List<string>();
 
-			// Start date
-			if (type == TasksDueType.StartDateDue)
-				whereFilters.Add("(start_date <= @currentDate OR start_date = null)");
-			if (type == TasksDueType.StartDateNotDue)
-				whereFilters.Add("start_date > @currentDate");
+			// Start time
+			if (type == TasksDueType.StartTimeDue)
+				whereFilters.Add("(start_time < @currentDateEnd OR start_time = null)");
+			if (type == TasksDueType.StartTimeNotDue)
+				whereFilters.Add("start_time > @currentDateEnd");
 
-			// Target date
-			if (type == TasksDueType.TargetDateOverdue)
-				whereFilters.Add("target_date < @currentDate");
-			if (type == TasksDueType.TargetDateDueToday)
-				whereFilters.Add("target_date = @currentDate");
-			if (type == TasksDueType.TargetDateNotDue)
-				whereFilters.Add("(target_date > @currentDate OR target_date = null)");
+			// End time
+			if (type == TasksDueType.EndTimeOverdue)
+				whereFilters.Add("end_time < @currentDateStart");
+			if (type == TasksDueType.EndTimeDueToday)
+				whereFilters.Add("(end_time >= @currentDateStart AND end_time < @currentDateEnd)");
+			if (type == TasksDueType.EndTimeNotDue)
+				whereFilters.Add("(end_time >= @currentDateEnd OR end_time = null)");
 			
 			// Project and user
 			if (projectId != null && userId != null)
@@ -186,20 +187,20 @@ namespace WebVella.Erp.Plugins.Project.Services
 				case TasksDueType.All:
 					// No sort for optimization purposes
 					break;
-				case TasksDueType.TargetDateOverdue:
-					eqlCommand += $" ORDER BY target_date ASC, priority DESC";
+				case TasksDueType.EndTimeOverdue:
+					eqlCommand += $" ORDER BY end_time ASC, priority DESC";
 					break;
-				case TasksDueType.TargetDateDueToday:
+				case TasksDueType.EndTimeDueToday:
 					eqlCommand += $" ORDER BY priority DESC";
 					break;
-				case TasksDueType.TargetDateNotDue:
-					eqlCommand += $" ORDER BY target_date ASC, priority DESC";
+				case TasksDueType.EndTimeNotDue:
+					eqlCommand += $" ORDER BY end_time ASC, priority DESC";
 					break;
-				case TasksDueType.StartDateDue:
-					eqlCommand += $" ORDER BY target_date ASC, priority DESC";
+				case TasksDueType.StartTimeDue:
+					eqlCommand += $" ORDER BY end_time ASC, priority DESC";
 					break;
-				case TasksDueType.StartDateNotDue:
-					eqlCommand += $" ORDER BY target_date ASC, priority DESC";
+				case TasksDueType.StartTimeNotDue:
+					eqlCommand += $" ORDER BY end_time ASC, priority DESC";
 					break;
 				default:
 					throw new Exception("Unknown TasksDueType");
@@ -290,8 +291,8 @@ namespace WebVella.Erp.Plugins.Project.Services
 			}
 
 			//Preset start date
-			record["start_date"] = DateTime.Now;
-			record["target_date"] = DateTime.Now.AddDays(1);
+			record["start_time"] = DateTime.Now.Date.ClearKind();
+			record["end_time"] = DateTime.Now.Date.ClearKind().AddDays(1).AddSeconds(-1);
 			return record;
 		}
 
@@ -412,7 +413,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 		}
 
 		public List<EntityRecord> GetTasksThatNeedStarting() {
-			var eqlCommand = "SELECT id FROM task WHERE status_id = @notStartedStatusId AND start_date <= @currentDate";
+			var eqlCommand = "SELECT id FROM task WHERE status_id = @notStartedStatusId AND start_time <= @currentDate";
 			var eqlParams = new List<EqlParameter>() {
 				new EqlParameter("notStartedStatusId", new Guid("f3fdd750-0c16-4215-93b3-5373bd528d1f")),
 				new EqlParameter("currentDate", DateTime.Now.Date),

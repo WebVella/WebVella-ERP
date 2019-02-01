@@ -87,7 +87,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 					Guid? projectId = context.DataModel.GetPropertyValueByDataSource(options.ProjectId) as Guid?;
 
 					Guid? userId = context.DataModel.GetPropertyValueByDataSource(options.UserId) as Guid?;
-					var limit = options.Type == TasksDueType.TargetDateNotDue ? 10 : 50;
+					var limit = options.Type == TasksDueType.EndTimeNotDue ? 10 : 50;
 					var taskQueue = new TaskService().GetTaskQueue(projectId, userId, options.Type, limit);
 
 					var users = new UserService().GetAll();
@@ -112,7 +112,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 						var row = new EntityRecord();
 						row["task"] = $"<i class='{iconClass}' style='color:{color}'></i> <a href=\"/projects/tasks/tasks/r/{(Guid)task["id"]}/details\">[{task["key"]}] {task["subject"]}</a>";
 						row["user"] = $"<img src=\"{imagePath}\" class=\"rounded-circle\" width=\"24\"> {(string)user["username"]}";
-						row["date"] = ((DateTime?)task["target_date"]).ConvertToAppDate();
+						row["date"] = ((DateTime?)task["end_time"]).ConvertToAppDate();
 						resultRecords.Add(row);
 					}
 					ViewBag.Records = resultRecords;

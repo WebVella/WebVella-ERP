@@ -84,7 +84,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 					Guid? userId = context.DataModel.GetPropertyValueByDataSource(options.UserId) as Guid?;
 
 
-					var projectTasks = new TaskService().GetTaskQueue(projectId, userId, TasksDueType.StartDateDue);
+					var projectTasks = new TaskService().GetTaskQueue(projectId, userId, TasksDueType.StartTimeDue);
 					int lowPriority = 0;
 					int normalPriority = 0;
 					int highPriority = 0;

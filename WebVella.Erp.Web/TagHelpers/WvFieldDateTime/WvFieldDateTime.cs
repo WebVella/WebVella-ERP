@@ -54,8 +54,8 @@ namespace WebVella.Erp.Web.TagHelpers
 				var inputEditValue = "";
 				if (Value != null)
 				{
-					inputReadOnlyValue = (Value as DateTime? ?? (DateTime?)DateTime.Now).ConvertToAppDate().Value.ToString("dd MMM yyyy HH:mm", Culture);
-					inputEditValue = (Value ?? DateTime.Now).ToString("yyyy-MM-ddTHH:mm:ssZ");
+					inputReadOnlyValue = (Value as DateTime? ?? DateTime.Now).ConvertToAppDate().ClearKind().ToString("dd MMM yyyy HH:mm", Culture);
+					inputEditValue = (Value as DateTime? ?? DateTime.Now).ConvertToAppDate().ClearKind().ToString("yyyy-MM-ddTHH:mm:ss");//.ToString("yyyy-MM-ddTHH:mm:ssZ");
 				}
 
 
@@ -169,7 +169,7 @@ namespace WebVella.Erp.Web.TagHelpers
 			{
 				if (Value != null)
 				{
-					var inputReadOnlyValue = (Value as DateTime? ?? (DateTime?)DateTime.Now).ConvertToAppDate().Value.ToString("dd MMM yyyy HH:mm", Culture);
+					var inputReadOnlyValue = (Value as DateTime? ?? DateTime.Now).ConvertToAppDate().ClearKind().ToString("dd MMM yyyy HH:mm", Culture);
 
 					var divEl = new TagBuilder("div");
 					divEl.Attributes.Add("id", $"input-{FieldId}");
@@ -188,7 +188,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				if (Value != null)
 				{
 					output.SuppressOutput();
-					var inputReadOnlyValue = (Value as DateTime? ?? (DateTime?)DateTime.Now).ConvertToAppDate().Value.ToString("dd MMM yyyy HH:mm", Culture);
+					var inputReadOnlyValue = (Value as DateTime? ?? DateTime.Now).ConvertToAppDate().ClearKind().ToString("dd MMM yyyy HH:mm", Culture);
 					output.Content.AppendHtml(inputReadOnlyValue);
 				}
 				else
@@ -206,8 +206,8 @@ namespace WebVella.Erp.Web.TagHelpers
 					var readOnlyInputValue = "";
 					if (Value != null)
 					{
-						readOnlyInputValue = (Value as DateTime? ?? (DateTime?)DateTime.Now).ConvertToAppDate().Value.ToString("dd MMM yyyy HH:mm", Culture);
-						editInpuValue = (Value ?? DateTime.Now).ToString("yyyy-MM-ddTHH:mm:ssZ"); 
+						readOnlyInputValue = (Value as DateTime? ?? DateTime.Now).ConvertToAppDate().ClearKind().ToString("dd MMM yyyy HH:mm", Culture);
+						editInpuValue = (Value as DateTime? ?? DateTime.Now).ConvertToAppDate().ClearKind().ToString("yyyy-MM-ddTHH:mm:ss"); //.ToString("yyyy-MM-ddTHH:mm:ssZ"); 
 					}
 
 					#region << View Wrapper >>
@@ -357,7 +357,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					var readOnlyInputValue = "";
 					if (Value != null)
 					{
-						readOnlyInputValue = (Value as DateTime? ?? (DateTime?)DateTime.Now).ConvertToAppDate().Value.ToString("dd MMM yyyy HH:mm", Culture);
+						readOnlyInputValue = (Value as DateTime? ?? DateTime.Now).ConvertToAppDate().ClearKind().ToString("dd MMM yyyy HH:mm", Culture);
 					}
 
 					var divEl = new TagBuilder("div");

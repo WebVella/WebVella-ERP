@@ -197,7 +197,7 @@ namespace WebVella.Erp.Web.Services
 
 			ValidationException ex = new ValidationException();
 
-			var page = pageRepository.GetById(id);
+			var page = pageRepository.GetById(id, transaction);
 			if (page != null)
 				ex.AddError("id", "There is an existing page with specified identifier.");
 
@@ -253,7 +253,7 @@ namespace WebVella.Erp.Web.Services
 
 			ValidationException ex = new ValidationException();
 
-			var page = pageRepository.GetById(id);
+			var page = pageRepository.GetById(id, transaction);
 			if (page == null)
 				ex.AddError("id", "There is no page for specified identifier.");
 

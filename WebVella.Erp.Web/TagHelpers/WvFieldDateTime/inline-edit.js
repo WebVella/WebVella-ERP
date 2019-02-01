@@ -1,6 +1,6 @@
 ﻿
 //JS DateTime picker init method
-var flatPickrServerDateTimeFormat = "Z";//"Y-m-dTH:i:S";
+var flatPickrServerDateTimeFormat = "Y-m-dTH:i:S";//"Z";
 //From the server dates will be received yyyy-MM-ddTHH:mm:ss.fff
 var flatPickrUiDateTimeFormat = "d M Y H:i";
 function InitFlatPickrDateTimeInlineEdit(editWrapperSelector) {
@@ -15,7 +15,7 @@ function InitFlatPickrDateTimeInlineEdit(editWrapperSelector) {
 		altInput: true,
 		altFormat: flatPickrUiDateTimeFormat
 	};
-	flatpickr(editWrapperSelector + " .form-control", );
+	flatpickr(editWrapperSelector + " .form-control", options);
 }
 
 function DateTimeInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config) {

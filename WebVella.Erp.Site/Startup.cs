@@ -15,6 +15,8 @@ using WebVella.Erp.Plugins.SDK;
 using WebVella.Erp.Plugins.Next;
 using WebVella.Erp.Plugins.Project;
 using WebVella.Erp.Plugins.Crm;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace WebVella.Erp.Site
 {
@@ -52,6 +54,12 @@ namespace WebVella.Erp.Site
 				   options.SerializerSettings.Converters.Add(new ErpDateTimeJsonConverter());
 			   });
 
+			//adds global datetime converter for json.net
+			JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+			{
+				Converters = new List<JsonConverter> { new ErpDateTimeJsonConverter() }
+			};
+
 			services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info { Title = "Erp API", Version = "v1" }); });
 
 			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -81,8 +89,8 @@ namespace WebVella.Erp.Site
 			app
 			.UseErpPlugin<NextPlugin>()
 			.UseErpPlugin<SdkPlugin>()
-			//.UseErpPlugin<ProjectPlugin>()
-			.UseErpPlugin<CrmPlugin>()
+			.UseErpPlugin<ProjectPlugin>()
+			//.UseErpPlugin<CrmPlugin>()
 			.UseErp()
 			//.UseErp(configFolder: configFolder)
 			.UseErpMiddleware();
