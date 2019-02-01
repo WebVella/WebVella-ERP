@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace WebVella.Erp.Site.Mail
+namespace WebVella.Erp.Site.Project
 {
 	public class Program
 	{

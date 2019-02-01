@@ -10,12 +10,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Compression;
-using WebVella.Erp.Plugins.Mail;
 using WebVella.Erp.Plugins.SDK;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Middleware;
 
-namespace WebVella.Erp.Site.Mail
+namespace WebVella.Erp.Site.Sdk
 {
 	public class Startup
 	{
@@ -83,7 +82,6 @@ namespace WebVella.Erp.Site.Mail
 
 			app
 			.UseErpPlugin<SdkPlugin>()
-			.UseErpPlugin<MailPlugin>()
 			.UseErp()
 			.UseErpMiddleware();
 

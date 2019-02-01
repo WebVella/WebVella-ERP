@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace WebVella.Erp.Site.Crm
+namespace WebVella.Erp.Site.Next
 {
 	public class Program
 	{

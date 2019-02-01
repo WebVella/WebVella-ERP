@@ -15,7 +15,7 @@ using WebVella.Erp.Plugins.SDK;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Middleware;
 
-namespace WebVella.Erp.Site
+namespace WebVella.Erp.Site.Crm
 {
 	public class Startup
 	{
