@@ -4,18 +4,32 @@ namespace System
 {
 	public static class DateTimeExtensions
 	{
+
+		public static DateTime ClearKind(this DateTime datetime)
+		{
+			return ((DateTime?)datetime).ClearKind().Value;
+		}
+
+		public static DateTime? ClearKind(this DateTime? datetime)
+		{
+			if (datetime == null)
+				return null;
+
+			return new DateTime(datetime.Value.Ticks, DateTimeKind.Unspecified);
+		}
+
 		public static DateTime ConvertToAppDate(this DateTime datetime)
 		{
 			return ((DateTime?)datetime).ConvertToAppDate().Value;
 		}
 
-		public static DateTime? ConvertToAppDate(this DateTime? utcDate)
+		public static DateTime? ConvertToAppDate(this DateTime? datetime )
         {
-			if (utcDate == null)
+			if (datetime == null)
 				return null;
 
 			TimeZoneInfo appTimeZone = TimeZoneInfo.FindSystemTimeZoneById(ErpSettings.TimeZoneName);
-			return TimeZoneInfo.ConvertTimeBySystemTimeZoneId(utcDate.Value, appTimeZone.Id);
+			return TimeZoneInfo.ConvertTimeBySystemTimeZoneId(datetime.Value, appTimeZone.Id);
 		}
 
 		public static DateTime ConvertAppDateToUtc(this DateTime datetime)
