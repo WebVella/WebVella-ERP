@@ -1,0 +1,27 @@
+﻿{
+	"Settings": {
+		"ConnectionString": "Server=192.168.0.2;Port=5433;User Id=test;Password=test;Database=erp3_next;Pooling=true;MinPoolSize=1;MaxPoolSize=100;CommandTimeout=120;",
+		"EncriptionKey": "BC93B776A42877CFEE808823BA8B37C83B6B0AD23198AC3AF2B5A54DCB647658",
+		"Lang": "en",
+		"Locale": "en-US",
+		"TimeZoneName": "FLE Standard Time",
+		"DevelopmentMode": "true",
+		"EnableBackgroungJobs": "true",
+		"EnableFileSystemStorage": "false",
+		"FileSystemStorageFolder": "\\\\192.168.0.2\\Share\\erp3-files",
+		"EmailEnabled": false,
+		"EmailSMTPServerName": "",
+		"EmailSMTPPort": "25",
+		"EmailSMTPUsername": "",
+		"EmailSMTPPassword": "",
+		"EmailFrom": "",
+		"EmailTo": ""
+	},
+	"Development": {
+		"TestEntityName": "test",
+		"TestRecordId": "001ea36f-fd2e-4d1b-b8ee-25d32d4e396c"
+	},
+	"ApiUrlTemplates": {
+		"FieldInlineEdit": "/api/v3/en_US/record/{entityName}/{recordId}"
+	}
+}
