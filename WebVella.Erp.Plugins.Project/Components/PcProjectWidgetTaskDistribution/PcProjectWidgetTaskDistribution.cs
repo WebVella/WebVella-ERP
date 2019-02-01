@@ -90,7 +90,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 					{
 						var ownerId = (Guid?)task["owner_id"];
 						var taskStatus = (Guid)task["status_id"];
-						var targetDate = (DateTime?)task["target_date"];
+						var endTime = (DateTime?)task["end_time"];
 
 
 						var userRecord = new EntityRecord();
@@ -104,11 +104,11 @@ namespace WebVella.Erp.Plugins.Project.Components
 
 						var currentRecord = userDict[ownerId != null ? ownerId.Value : Guid.Empty];
 
-						if (targetDate != null)
+						if (endTime != null)
 						{
-							if (targetDate.Value.ConvertToAppDate().Date < DateTime.Now.Date)
+							if (endTime.Value < DateTime.Now.Date)
 								currentRecord["overdue"] = ((int)currentRecord["overdue"]) + 1;
-							else if (targetDate.Value.ConvertToAppDate().Date == DateTime.Now.Date)
+							else if (endTime.Value >= DateTime.Now.Date && endTime.Value < DateTime.Now.Date.AddDays(1))
 								currentRecord["today"] = ((int)currentRecord["today"]) + 1;
 							else
 								currentRecord["other"] = ((int)currentRecord["other"]) + 1;

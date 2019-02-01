@@ -27,7 +27,7 @@ namespace WebVella.Erp.Plugins.Project.DataSource
 			if (currentUser == null)
 				return null;
 
-			var userOpenTasks = new TaskService().GetTaskQueue(null,currentUser.Id,Model.TasksDueType.StartDateDue, includeProjectData: true);
+			var userOpenTasks = new TaskService().GetTaskQueue(null,currentUser.Id,Model.TasksDueType.StartTimeDue, includeProjectData: true);
 
 			var userTimelogs = new List<EntityRecord>();
 

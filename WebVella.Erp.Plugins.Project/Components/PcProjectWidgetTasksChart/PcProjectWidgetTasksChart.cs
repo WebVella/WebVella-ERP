@@ -82,7 +82,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 					Guid? userId = context.DataModel.GetPropertyValueByDataSource(options.UserId) as Guid?;
 
 
-					var projectTasks = new TaskService().GetTaskQueue(projectId, userId, TasksDueType.StartDateDue);
+					var projectTasks = new TaskService().GetTaskQueue(projectId, userId, TasksDueType.StartTimeDue);
 
 					var overdueTasks = (int)0;
 					var dueTodayTasks = (int)0;
@@ -90,11 +90,11 @@ namespace WebVella.Erp.Plugins.Project.Components
 
 					foreach (var task in projectTasks)
 					{
-						var targetDate = ((DateTime?)task["target_date"]).ConvertToAppDate();
+						var endTime = (DateTime?)task["end_time"];
 
-						if (targetDate != null && (targetDate ?? DateTime.Now).Date < DateTime.Now.Date)
+						if (endTime != null && endTime.Value < DateTime.Now)
 							overdueTasks++;
-						else if (targetDate != null && (targetDate ?? DateTime.Now).Date == DateTime.Now.Date)
+						else if (endTime != null && endTime.Value >= DateTime.Now.Date && endTime.Value < DateTime.Now.Date.AddDays(1))
 							dueTodayTasks++;
 						else
 							notDueTasks++;

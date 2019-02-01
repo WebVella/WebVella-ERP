@@ -1,6 +1,6 @@
 ﻿//JS DateTime picker init method
 var dateTimePickerDictionary = {};
-var flatPickrServerDateTimeFormat = "Z";//"Y-m-dTH:i:S";
+var flatPickrServerDateTimeFormat = "Y-m-dTH:i:S";//"Z";
 //From the server dates will be received yyyy-MM-ddTHH:mm:ss.fff
 var flatPickrUiDateTimeFormat = "d M Y H:i";
 function InitFlatPickrDateTime(fieldId) {
@@ -45,7 +45,7 @@ function InitFlatPickrDateTime(fieldId) {
 				}
 			};
 			fp = flatpickr(selector, options);
-			return instance;
+			return fp;
 		}
 		return fp;
 		

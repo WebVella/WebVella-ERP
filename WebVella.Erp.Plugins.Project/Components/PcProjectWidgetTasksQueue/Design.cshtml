@@ -40,10 +40,10 @@
 
 		@switch (options.Type)
 		{
-			case TasksDueType.TargetDateDueToday:
+			case TasksDueType.EndTimeDueToday:
 				dateClass = "go-orange";
 				break;
-			case TasksDueType.TargetDateOverdue:
+			case TasksDueType.EndTimeOverdue:
 				dateClass = "go-red";
 				break;
 			default:
@@ -61,13 +61,13 @@ else
 {
 	@switch (options.Type)
 	{
-		case TasksDueType.TargetDateDueToday:
+		case TasksDueType.EndTimeDueToday:
 			<div class="alert alert-info p-2 m-0">No tasks due today</div>
 			break;
-		case TasksDueType.TargetDateOverdue:
+		case TasksDueType.EndTimeOverdue:
 			<div class="alert alert-info p-2 m-0">No overdue tasks</div>
 			break;
-		case TasksDueType.TargetDateNotDue:
+		case TasksDueType.EndTimeNotDue:
 			<div class="alert alert-info p-2 m-0">No upcoming tasks</div>
 			break;
 		default:

@@ -105,7 +105,6 @@
     <EmbeddedResource Include="TagHelpers\WvModal\modal.js" />
     <EmbeddedResource Include="TagHelpers\WvSection\service.js" />
     <EmbeddedResource Include="TagHelpers\WvGrid\sort-and-page.js" />
-    <EmbeddedResource Include="Theme\bootstrap.css" />
     <EmbeddedResource Include="Theme\styles.css">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </EmbeddedResource>
