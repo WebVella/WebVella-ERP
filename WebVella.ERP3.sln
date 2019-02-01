@@ -36,7 +36,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Plugins.Next",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Plugins.Project", "WebVella.Erp.Plugins.Project\WebVella.Erp.Plugins.Project.csproj", "{21BBEC8A-E9D4-4646-938B-830C89BB4355}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebVella.Erp.Plugins.Crm", "WebVella.Erp.Plugins.Crm\WebVella.Erp.Plugins.Crm.csproj", "{17A4F979-E36F-4129-840B-0F222D7FB6AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Plugins.Crm", "WebVella.Erp.Plugins.Crm\WebVella.Erp.Plugins.Crm.csproj", "{17A4F979-E36F-4129-840B-0F222D7FB6AF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Plugins.Mail", "WebVella.Erp.Plugins.Mail\WebVella.Erp.Plugins.Mail.csproj", "{B3C27A05-5AD4-4D09-9AA0-E772D29C7155}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Site.Mail", "WebVella.Erp.Site.Mail\WebVella.Erp.Site.Mail.csproj", "{158BF214-4FE5-47E2-8B09-23D5F092D7DD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Site.Project", "WebVella.Erp.Site.Project\WebVella.Erp.Site.Project.csproj", "{6739491D-04B0-45AC-81B8-35FB9B6A87C5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Site.Crm", "WebVella.Erp.Site.Crm\WebVella.Erp.Site.Crm.csproj", "{35E988D5-CC1A-44F9-8A07-437255D43BAD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,6 +80,22 @@ Global
 		{17A4F979-E36F-4129-840B-0F222D7FB6AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17A4F979-E36F-4129-840B-0F222D7FB6AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17A4F979-E36F-4129-840B-0F222D7FB6AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3C27A05-5AD4-4D09-9AA0-E772D29C7155}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3C27A05-5AD4-4D09-9AA0-E772D29C7155}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3C27A05-5AD4-4D09-9AA0-E772D29C7155}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3C27A05-5AD4-4D09-9AA0-E772D29C7155}.Release|Any CPU.Build.0 = Release|Any CPU
+		{158BF214-4FE5-47E2-8B09-23D5F092D7DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{158BF214-4FE5-47E2-8B09-23D5F092D7DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{158BF214-4FE5-47E2-8B09-23D5F092D7DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{158BF214-4FE5-47E2-8B09-23D5F092D7DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6739491D-04B0-45AC-81B8-35FB9B6A87C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6739491D-04B0-45AC-81B8-35FB9B6A87C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6739491D-04B0-45AC-81B8-35FB9B6A87C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6739491D-04B0-45AC-81B8-35FB9B6A87C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35E988D5-CC1A-44F9-8A07-437255D43BAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35E988D5-CC1A-44F9-8A07-437255D43BAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35E988D5-CC1A-44F9-8A07-437255D43BAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35E988D5-CC1A-44F9-8A07-437255D43BAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
