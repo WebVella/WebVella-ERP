@@ -11,10 +11,6 @@ using Microsoft.AspNetCore.Http;
 using WebVella.Erp.Web.Middleware;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Swashbuckle.AspNetCore.Swagger;
-using WebVella.Erp.Plugins.SDK;
-using WebVella.Erp.Plugins.Next;
-using WebVella.Erp.Plugins.Project;
-using WebVella.Erp.Plugins.Crm;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
@@ -87,12 +83,7 @@ namespace WebVella.Erp.Site
 			app.UseAuthentication();
 
 			app
-			.UseErpPlugin<NextPlugin>()
-			.UseErpPlugin<SdkPlugin>()
-			.UseErpPlugin<ProjectPlugin>()
-			//.UseErpPlugin<CrmPlugin>()
 			.UseErp()
-			//.UseErp(configFolder: configFolder)
 			.UseErpMiddleware();
 
 			//env.EnvironmentName = EnvironmentName.Production;
