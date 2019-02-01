@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Compression;
+using WebVella.Erp.Plugins.Next;
 using WebVella.Erp.Plugins.SDK;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Middleware;
@@ -81,6 +82,7 @@ namespace WebVella.Erp.Site.Sdk
 			app.UseAuthentication();
 
 			app
+			.UseErpPlugin<NextPlugin>()
 			.UseErpPlugin<SdkPlugin>()
 			.UseErp()
 			.UseErpMiddleware();
