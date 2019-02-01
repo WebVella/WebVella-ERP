@@ -112,7 +112,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 
 					if ((string)projectRecord["budget_type"] == "on duration")
 					{
-						budgetLeft = (decimal)projectRecord["budget_amount"] - billedHours;
+						budgetLeft = budgetAmount - billedHours;
 					}
 					else {
 						if (hourRate > 0 && budgetAmount > 0)
