@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Compression;
 using WebVella.Erp.Plugins.Mail;
+using WebVella.Erp.Plugins.Next;
 using WebVella.Erp.Plugins.SDK;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Middleware;
@@ -82,6 +83,7 @@ namespace WebVella.Erp.Site.Mail
 			app.UseAuthentication();
 
 			app
+			.UseErpPlugin<NextPlugin>()
 			.UseErpPlugin<SdkPlugin>()
 			.UseErpPlugin<MailPlugin>()
 			.UseErp()
