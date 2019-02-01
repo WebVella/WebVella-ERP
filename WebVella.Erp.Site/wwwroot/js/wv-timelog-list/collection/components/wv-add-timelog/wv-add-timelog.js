@@ -2,6 +2,11 @@ import axios from 'axios';
 import * as action from '../../store/actions';
 import moment from 'moment';
 function SubmitReplyForm(scope) {
+    scope.isWarningVisible = false;
+    if (!scope.minutes || scope.minutes === "0" || scope.minutes === 0) {
+        scope.isWarningVisible = true;
+        return;
+    }
     let storeState = scope.store.getState();
     let requestConfig = {
         headers: {
@@ -55,7 +60,7 @@ function SubmitReplyForm(scope) {
 export class WvAddNew {
     constructor() {
         this.isReplyBoxVisible = false;
-        this.isReplyBtnDisabled = true;
+        this.isWarningVisible = false;
         this.minutes = null;
         this.isBillable = true;
         this.taskBody = "";
@@ -74,7 +79,7 @@ export class WvAddNew {
         let getFormEl = document.getElementById("form-timelog-add");
         if (getFormEl) {
             getFormEl.addEventListener('keydown', function (ev) {
-                if (ev.keyCode == 13 && ev.ctrlKey && !scope.isReplyBtnDisabled) {
+                if (ev.keyCode == 13 && ev.ctrlKey) {
                     document.getElementById("wv-timelog-minutes").blur();
                     document.getElementById("wv-timelog-body").blur();
                     SubmitReplyForm(scope);
@@ -105,11 +110,9 @@ export class WvAddNew {
         var parsed = parseInt(ev.target.value);
         if (!isNaN(parsed) && parsed > 0) {
             this.minutes = parsed;
-            this.isReplyBtnDisabled = false;
         }
         else {
             this.minutes = null;
-            this.isReplyBtnDisabled = true;
         }
     }
     bodyChange(ev) {
@@ -174,9 +177,10 @@ export class WvAddNew {
                                         "is billable")))),
                         h("div", { class: "form-group erp-field" },
                             h("textarea", { class: "form-control", id: "wv-timelog-body", onChange: (e) => scope.bodyChange(e) }, scope.taskBody)),
+                        h("div", { class: "alert alert-danger " + (scope.isWarningVisible ? "" : "d-none") }, "Minutes are required or need to be more than 0"),
                         h("div", { class: "wv-field-html-toolbar mt-2" },
                             h("div", { class: "content" },
-                                h("button", { type: "submit", class: "btn btn-sm btn-primary", disabled: scope.isReplyBtnDisabled }, "Submit"),
+                                h("button", { type: "submit", class: "btn btn-sm btn-primary" }, "Submit"),
                                 h("button", { type: "button", class: "btn btn-sm btn-link", onClick: (e) => scope.ReplyLinkHandler(e) }, "Cancel")),
                             h("div", { class: "note " }, "Ctrl+Enter to submit")))))));
     }
@@ -191,7 +195,7 @@ export class WvAddNew {
         "isReplyBoxVisible": {
             "state": true
         },
-        "isReplyBtnDisabled": {
+        "isWarningVisible": {
             "state": true
         },
         "loggedOn": {

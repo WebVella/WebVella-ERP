@@ -3,7 +3,7 @@ import { Store, Action } from '@stencil/redux';
 export declare class WvAddNew {
     store: Store;
     isReplyBoxVisible: boolean;
-    isReplyBtnDisabled: boolean;
+    isWarningVisible: boolean;
     minutes: number;
     isBillable: boolean;
     taskBody: string;
