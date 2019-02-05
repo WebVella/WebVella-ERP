@@ -2031,7 +2031,12 @@ class NodeUtils {
         let nodeDesignTemplate = document.getElementById("node-design-" + nodeId);
         let nodeDesignStack = document.getElementById("wv-node-design-stack");
         if (nodeDesignTemplate && nodeDesignTemplate.parentElement.id === "wv-node-" + nodeId && nodeDesignStack) {
-            nodeDesignStack.appendChild(nodeDesignTemplate);
+            window.setTimeout(function () {
+                nodeDesignStack.appendChild(nodeDesignTemplate);
+            }, 5);
+            return true;
+        }
+        if (nodeDesignTemplate && nodeDesignTemplate.parentElement.id === "wv-node-design-stack" && nodeDesignStack) {
             return true;
         }
         if (!nodeDesignStack) {
@@ -2050,10 +2055,13 @@ class NodeUtils {
         let nodeDesignTemplate = document.getElementById("node-design-" + nodeId);
         let nodeContainerPlaceholder = document.getElementById("wv-node-" + nodeId);
         if (nodeDesignTemplate && nodeDesignTemplate.parentElement.id === "wv-node-design-stack" && nodeContainerPlaceholder) {
-            nodeContainerPlaceholder.appendChild(nodeDesignTemplate);
+            window.setTimeout(function () {
+                nodeContainerPlaceholder.appendChild(nodeDesignTemplate);
+            }, 5);
             return true;
         }
         if (nodeDesignTemplate && nodeDesignTemplate.parentElement.id === "wv-node-" + nodeId) {
+            console.log("no need from stack " + nodeId);
             return true;
         }
         if (!nodeContainerPlaceholder) {
@@ -3550,7 +3558,7 @@ function dragula (initialContainers, options) {
     // truthy check fixes #239, equality fixes #207
 	if ((e.clientX !== void 0 && Math.abs(e.clientX - _moveX) <= (o.slideFactorX || 0)) &&
        (e.clientY !== void 0 && Math.abs(e.clientY - _moveY) <= (o.slideFactorY || 0))) {
-		   console.log("boz");
+		   //console.log("boz");
       return;
     }
     if (o.ignoreInputTextSelection) {
@@ -4187,7 +4195,7 @@ class WvPageManager {
         });
         let scope = this;
         let drake = dragula_1({
-            revertOnSpill: true,
+            revertOnSpill: false,
             direction: 'vertical',
         });
         drake.on('drop', function (el, target, source) {

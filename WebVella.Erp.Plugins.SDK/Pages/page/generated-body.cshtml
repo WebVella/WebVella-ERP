@@ -27,5 +27,5 @@
 
 </wv-page-header>
 
-<wv-pb-manager record-id="@Model.SimulationRecordId" page-id="@Model.ErpPage.Id" site-root-url="@Model.ApiUrlRoot" library-json='@Model.LibraryJson' page-nodes-json='@Model.PageNodeListJson'></wv-pb-manager>
+<wv-pb-manager record-id="@Model.SimulationRecordId" page-id="@Model.ErpPage.Id" site-root-url="@Model.ApiUrlRoot" library-json='@Html.Raw(Model.LibraryJson)' page-nodes-json='@Html.Raw(Model.PageNodeListJson)'></wv-pb-manager>
 
