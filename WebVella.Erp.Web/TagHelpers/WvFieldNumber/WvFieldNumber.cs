@@ -26,7 +26,7 @@ namespace WebVella.Erp.Web.TagHelpers
 		public decimal? Step { get; set; } = null;
 
 		[HtmlAttributeName("decimal-digits")]
-		public int DecimalDigits { get; set; } = 2;
+		public int? DecimalDigits { get; set; } = 2;
 
 		public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
@@ -60,7 +60,7 @@ namespace WebVella.Erp.Web.TagHelpers
 			//Apply currency dec places
 			if (Value != null)
 			{
-				Value = Math.Round(Convert.ToDecimal(Value), DecimalDigits);
+				Value = Math.Round(Convert.ToDecimal(Value), DecimalDigits ?? 2);
 			}
 
 			#endregion
@@ -108,7 +108,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					{
 						inputEl.Attributes.Add("max", Max.ToString());
 					}
-					if (Step != null)
+					if (Step != null && Step != 0)
 					{
 						inputEl.Attributes.Add("step", Step.ToString());
 					}

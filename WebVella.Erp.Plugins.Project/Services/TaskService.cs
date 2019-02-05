@@ -409,8 +409,12 @@ namespace WebVella.Erp.Plugins.Project.Services
 				var eqlResult = new EqlCommand(eqlCommand, eqlParams).Execute();
 				foreach (var relRecord in eqlResult)
 				{
-					if (relRecord.Properties.ContainsKey("id") && relRecord["id"] is Guid) {
-						watchers.Add((Guid)relRecord["id"]);
+					if (relRecord.Properties.ContainsKey("$user_nn_task_watchers") && relRecord["$user_nn_task_watchers"] is List<EntityRecord>) {
+						var currentWatchers = (List<EntityRecord>)relRecord["$user_nn_task_watchers"];
+						foreach (var watchRecord in currentWatchers)
+						{
+							watchers.Add((Guid)watchRecord["id"]);
+						}
 					}
 				}
 				if (!watchers.Contains((Guid)record["owner_id"])){

@@ -38,8 +38,8 @@ namespace WebVella.Erp.Web.Components
 					LabelText = input.LabelText,
 					Mode = input.Mode,
 					Name = input.Name,
-					Min = null,
-					Max = null
+					Min = (int?)input.Min,
+					Max = (int?)input.Max
 				};
 			}
 		}
@@ -74,31 +74,15 @@ namespace WebVella.Erp.Web.Components
 				if (context.Options != null)
 				{
 					options = JsonConvert.DeserializeObject<PcFieldPasswordOptions>(context.Options.ToString());
-					//Check for connection to entity field
-					Entity mappedEntity = null;
-					if (options.ConnectedEntityId != null)
+					if (context.Mode != ComponentMode.Options)
 					{
-						mappedEntity = new EntityManager().ReadEntity(options.ConnectedEntityId.Value).Object;
+						if (options.Min == null)
+							options.Min = (int?)baseOptions.Min;
+
+						if (options.Max == null)
+							options.Max = (int?)baseOptions.Max;
 					}
-					else
-					{
-						var entity = context.DataModel.GetProperty("Entity");
-						if (entity is Entity)
-						{
-							mappedEntity = (Entity)entity;
-						}
-					}
-					if (mappedEntity != null)
-					{
-						var fieldName = options.Name;
-						var entityField = mappedEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
-						if (entityField != null && entityField is PasswordField)
-						{
-							var castedEntityField = ((PasswordField)entityField);
-							options.Min = castedEntityField.MinLength;
-							options.Max = castedEntityField.MaxLength;
-						}
-					}
+
 				}
 				var modelFieldLabel = "";
 				var model = (PcFieldBaseModel)InitPcFieldBaseModel(context, options, label: out modelFieldLabel);

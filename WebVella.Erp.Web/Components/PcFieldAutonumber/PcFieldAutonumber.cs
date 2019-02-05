@@ -36,7 +36,7 @@ namespace WebVella.Erp.Web.Components
 					LabelText = input.LabelText,
 					Mode = input.Mode,
 					Name = input.Name,
-					Template = ""
+					Template = input.Template
 				};
 			}
 		}
@@ -71,31 +71,13 @@ namespace WebVella.Erp.Web.Components
 				if (context.Options != null)
 				{
 					options = JsonConvert.DeserializeObject<PcFieldAutonumberOptions>(context.Options.ToString());
-					//Check for connection to entity field
-					Entity mappedEntity = null;
-					if (options.ConnectedEntityId != null)
-					{
-						mappedEntity = new EntityManager().ReadEntity(options.ConnectedEntityId.Value).Object;
-					}
-					else
-					{
-						var entity = context.DataModel.GetProperty("Entity");
-						if (entity is Entity)
-						{
-							mappedEntity = (Entity)entity;
-						}
-					}
 
-					if (mappedEntity != null)
+					if (context.Mode != ComponentMode.Options)
 					{
-						var fieldName = options.Name;
-						var entityField = mappedEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
-						if (entityField != null && entityField is AutoNumberField)
-						{
-							var castedEntityField = ((AutoNumberField)entityField);
-							options.Template = castedEntityField.DisplayFormat;
-						}
+						if (String.IsNullOrWhiteSpace(options.Template))
+							options.Template = baseOptions.Template;
 					}
+					
 				}
 				var modelFieldLabel = "";
 				var model = (PcFieldBaseModel)InitPcFieldBaseModel(context, options, label: out modelFieldLabel);
