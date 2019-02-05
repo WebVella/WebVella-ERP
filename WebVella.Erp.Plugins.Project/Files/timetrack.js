@@ -122,7 +122,7 @@
 		var logstartDate = $(inputTimelogStartEl).val();
 		var totalLoggedSeconds = moment().utc().diff(logstartDate, 'seconds');
 		var totalLoggedSecondsDec = new Decimal(totalLoggedSeconds);	
-		var totalMinutes = totalLoggedSecondsDec.div(60).toDecimalPlaces(0,Decimal.ROUND_DOWN);
+		var totalMinutes = totalLoggedSecondsDec.div(60).toDecimalPlaces(0,Decimal.ROUND_UP);
 		minutesFormInputEl.val(totalMinutes.toNumber());
 		//set taskId
 		taskIdFormInputEl.val(inputTaskId.val());
