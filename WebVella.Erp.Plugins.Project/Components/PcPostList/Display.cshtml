@@ -23,7 +23,7 @@
 
 <script src="/js/wv-post-list/wv-post-list.js"></script>
 
-  <wv-post-list related-record-id="@ViewBag.RelatedRecordId" related-records='@Html.Raw(ViewBag.RelatedRecordsJson)'
+  <wv-post-list related-record-id="@ViewBag.RelatedRecordId" related-records='@ViewBag.RelatedRecordsJson'
     site-root-url="@ViewBag.SiteRootUrl"
-    posts='@Html.Raw(ViewBag.RecordsJson)'
-    current-user='@Html.Raw(ViewBag.CurrentUserJson)'></wv-post-list>
+    posts='@ViewBag.RecordsJson'
+    current-user='@ViewBag.CurrentUserJson'></wv-post-list>
