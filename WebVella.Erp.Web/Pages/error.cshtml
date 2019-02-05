@@ -1,29 +1,38 @@
 ﻿@page
 @model WebVella.Erp.Site.Pages.ErrorModel
-@using WebVella.Erp.Web.Models;
 @{
-	Layout = "~/Pages/_AppMaster.cshtml";
-	ViewData["Title"] = "Error";
-	var errors = new List<string>() { "error 1", "error 2" };
+	Layout = "";
 }
 
-<div class="container">
-	<div class="row justify-content-center">
-		<div class="col-auto" style="width:500px;">
-			@{ switch (HttpContext.Response.StatusCode)
-				{
-					case 401:
-						<p>НЕВАЛИДЕН ДОСТЪП:  Нямате достъп до страницата.</p>
-						break;
-					case 404:
-						<p>ГРЕШКА:  Страницата която търсите не беше намерена.</p>
-						break;
-					case 500:
-						<p>Възникна непредвидена грешка.</p>
-						break;
+<html>
+<head>
+	<title>Error</title>
+</head>
+<body>
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-auto" style="width:500px;">
+				@{ switch (HttpContext.Response.StatusCode)
+					{
+						case 401:
+							<h1>ACCESS DENIED:  No permission to view requested page or resource.</h1>
+							break;
+						case 404:
+							<h1>ERROR:  The page or resource you requested is not found.</h1>
+							break;
+						case 500:
+							<h1>An unexpected system error occurred.</h1>
+							break;
+						default:
+							<h1>An unexpected error occurred.</h1>
+							break;
 
+					}
 				}
-			}
+			</div>
 		</div>
 	</div>
-</div>
+
+</body>
+</html>
+
