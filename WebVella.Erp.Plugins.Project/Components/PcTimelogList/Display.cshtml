@@ -1,5 +1,5 @@
 ﻿<script src="/js/wv-timelog-list/wv-timelog-list.js"></script>
-<wv-timelog-list related-records='@ViewBag.RelatedRecordsJson'
+<wv-timelog-list related-records='@Html.Raw(ViewBag.RelatedRecordsJson)'
 				 site-root-url="@ViewBag.SiteRootUrl"
-				 records='@ViewBag.RecordsJson'
-				 current-user='@ViewBag.CurrentUserJson' is-billable="@(((bool)ViewBag.IsBillable).ToString().ToLowerInvariant())"></wv-timelog-list>
+				 records='@Html.Raw(ViewBag.RecordsJson)'
+				 current-user='@Html.Raw(ViewBag.CurrentUserJson)' is-billable="@(((bool)ViewBag.IsBillable).ToString().ToLowerInvariant())"></wv-timelog-list>

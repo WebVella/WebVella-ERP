@@ -2282,10 +2282,10 @@ textarea.autogrow {
 	top: -1px;
 }
 
-.form-check-inline .form-check-input {
+/*.form-check-inline .form-check-input {
 	position: relative;
 	top: 2px;
-}
+}*/
 
 
 .btn .icon {
@@ -2909,6 +2909,16 @@ pre, code {
 
 
 /*#region << Erp Field >> */
+.erp-field.form-group.display.label-horizontal,
+.erp-field.form-group.simple.label-horizontal,
+.erp-field.form-group.inline-edit.label-horizontal{
+	margin-bottom:0.25rem;
+}
+
+.erp-field.form-group.form.label-horizontal {
+	margin-bottom:0.25rem;
+}
+
 .erp-field.display .form-control,
 .erp-field.display .form-control-plaintext,
 .erp-field.display .select2-container {
@@ -2954,14 +2964,17 @@ pre, code {
 		font-size:14px;
 	}
 
-.erp-field .col.label-horizontal {
+.erp-field.label-horizontal .col{
 	/*border-bottom: 1px solid #eee;*/
 }
 
-.erp-field.inline-edit .col.label-horizontal .view-wrapper .form-control,
-.erp-field.inline-edit .col.label-horizontal .view-wrapper .form-control-plaintext,
-.erp-field.display .col.label-horizontal .form-control, .erp-field.display .col.label-horizontal .form-control-plaintext, .erp-field.display .col.label-horizontal .select2-container,
-.erp-field.inline-edit .col.label-horizontal .view-wrapper .input-group-prepend, .erp-field.inline-edit .col.label-horizontal .view-wrapper .input-group-append{
+.erp-field.inline-edit.label-horizontal .view-wrapper .form-control,
+.erp-field.inline-edit.label-horizontal .view-wrapper .form-control-plaintext,
+.erp-field.display.label-horizontal .form-control, 
+.erp-field.display.label-horizontal .form-control-plaintext,
+.erp-field.display.label-horizontal .select2-container,
+.erp-field.inline-edit.label-horizontal .view-wrapper .input-group-prepend,
+.erp-field.inline-edit.label-horizontal .view-wrapper .input-group-append{
 	border-bottom:none;
 }
 

@@ -1,0 +1,40 @@
+{
+  "tags": [
+    {
+      "label": "wv-recurrence-template",
+      "description": "",
+      "attributes": [
+        {
+          "label": "change-type-options",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "end-type-options",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "period-type-options",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "recurrence-template",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "template-default",
+          "description": "",
+          "required": false
+        },
+        {
+          "label": "type-options",
+          "description": "",
+          "required": false
+        }
+      ]
+    }
+  ]
+}

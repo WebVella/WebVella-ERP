@@ -58,6 +58,7 @@
 
 
   <ItemGroup>
+    <Folder Include="wwwroot\js\wv-recurrence-template\" />
     <Folder Include="wwwroot\js\wv-timelog-list\" />
     <Folder Include="wwwroot\js\wv-post-list\" />
   </ItemGroup>
