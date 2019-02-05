@@ -90,7 +90,7 @@ function NumberInlineEditInit(fieldId, fieldName, entityName, recordId, config) 
 				var response = {};
 				response.message = "";
 				if (jqXHR && jqXHR.responseJSON) {
-					response.message = jqXHR.responseJSON.message;
+					response = jqXHR.responseJSON;
 				}
 				NumberInlineEditInitErrorCallback(response, fieldId, fieldName, entityName, recordId, config);
 			}
@@ -104,13 +104,19 @@ function NumberInlineEditInitSuccessCallback(response, fieldId, fieldName, entit
 	$(selectors.viewWrapper + " .form-control").html(newValue);
 	$(selectors.editWrapper + " .form-control").val(newValue);
 	NumberInlineEditPreDisableCallback(fieldId, fieldName, entityName, recordId, config);
-	toastr.success("The new value is successfull saved", 'Success!', { closeButton: true, tapToDismiss: true });
+	toastr.success("The new value is successfully saved", 'Success!', { closeButton: true, tapToDismiss: true });
 }
 
 function NumberInlineEditInitErrorCallback(response, fieldId, fieldName, entityName, recordId, config) {
 	var selectors = NumberInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
 	$(selectors.editWrapper + " .form-control").addClass("is-invalid");
-	$(selectors.editWrapper + " .input-group").after("<div class='invalid-feedback'>" + response.message + "</div>");
+
+	var errorMessage = response.message;
+	if (!errorMessage && response.errors && response.errors.length > 0) {
+		errorMessage = response.errors[0].message;
+	}
+		
+	$(selectors.editWrapper + " .input-group").after("<div class='invalid-feedback'>" + errorMessage + "</div>");
 	$(selectors.editWrapper + " .invalid-feedback").show();
 	$(selectors.editWrapper + " .save .fa").addClass("fa-check").removeClass("fa-spin fa-spinner");
 	$(selectors.editWrapper + " .save").attr("disabled", false);
