@@ -87,7 +87,7 @@ function CheckboxListInlineEditInit(fieldId, fieldName, entityName, recordId, co
 				var response = {};
 				response.message = "";
 				if (jqXHR && jqXHR.responseJSON) {
-					response.message = jqXHR.responseJSON.message;
+					response = jqXHR.responseJSON;
 				}
 				CheckboxListInlineEditInitErrorCallback(response, fieldId, fieldName, entityName, recordId, config);
 			}
@@ -128,7 +128,12 @@ function CheckboxListInlineEditInitSuccessCallback(response, fieldId, fieldName,
 function CheckboxListInlineEditInitErrorCallback(response, fieldId, fieldName, entityName, recordId, config) {
 	var selectors = CheckboxListInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
 	$(selectors.editWrapper + " .form-control").addClass("is-invalid");
-	$(selectors.editWrapper + " .input-group").after("<div class='invalid-feedback'>" + response.message + "</div>");
+	var errorMessage = response.message;
+	if (!errorMessage && response.errors && response.errors.length > 0) {
+		errorMessage = response.errors[0].message;
+	}
+		
+	$(selectors.editWrapper + " .input-group").after("<div class='invalid-feedback'>" + errorMessage + "</div>");
 	$(selectors.editWrapper + " .invalid-feedback").show();
 	$(selectors.editWrapper + " .save .fa").addClass("fa-check").removeClass("fa-spin fa-spinner");
 	$(selectors.editWrapper + " .save").attr("disabled", false);

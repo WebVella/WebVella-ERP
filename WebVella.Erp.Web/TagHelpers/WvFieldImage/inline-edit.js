@@ -124,7 +124,7 @@ function ImageInlineEditUploadSuccessCallback(response, fieldId, fieldName, enti
 				var result = {};
 				response.message = "";
 				if (jqXHR && jqXHR.responseJSON) {
-					response.message = jqXHR.responseJSON.message;
+					response = jqXHR.responseJSON;
 				}
 				ImageInlineEditInitErrorCallback(result, fieldId, fieldName, entityName, recordId, config);
 			}
@@ -164,7 +164,12 @@ function ImageInlineEditInitSuccessCallback(response, fieldId, fieldName, entity
 function ImageInlineEditInitErrorCallback(response, fieldId, fieldName, entityName, recordId, config) {
 	var selectors = ImageInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
 	$(selectors.editWrapperText).first().html("<i class='fa fa-exclamation-circle go-red'></i> Error");
-	$(selectors.editWrapper).after("<div class='invalid-feedback'>" + response.message + "</div>");
+	var errorMessage = response.message;
+	if (!errorMessage && response.errors && response.errors.length > 0) {
+		errorMessage = response.errors[0].message;
+	}
+		
+	$(selectors.editWrapper + " .input-group").after("<div class='invalid-feedback'>" + errorMessage + "</div>");
 	$(selectors.editWrapper).closest(".erp-field").find(".invalid-feedback").first().show();
 	toastr.error("An error occurred", 'Error!', { closeButton: true, tapToDismiss: true });
 	console.log("error", response);

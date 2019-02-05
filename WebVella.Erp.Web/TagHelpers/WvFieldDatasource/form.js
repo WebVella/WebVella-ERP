@@ -118,7 +118,7 @@ function DataSourceFormEditInit(fieldId, propertyNameLibrary) {
 					var response = {};
 					response.message = "";
 					if (jqXHR && jqXHR.responseJSON) {
-						response.message = jqXHR.responseJSON.message;
+						response = jqXHR.responseJSON;
 					}
 					toastr.error(response.message);
 				}
@@ -217,7 +217,7 @@ function DataSourceFormEditInit(fieldId, propertyNameLibrary) {
 				var response = {};
 				response.message = "";
 				if (jqXHR && jqXHR.responseJSON) {
-					response.message = jqXHR.responseJSON.message;
+					response = jqXHR.responseJSON;
 				}
 				toastr.error(response.message);
 			}

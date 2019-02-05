@@ -114,7 +114,7 @@ function SelectFormInit(fieldId, fieldName, entityName, config) {
 					var response = {};
 					response.message = "";
 					if (jqXHR && jqXHR.responseJSON) {
-						response.message = jqXHR.responseJSON.message;
+						response = jqXHR.responseJSON;
 					}
 					addOptionErrorCallback(response, fieldId, fieldName, entityName, inputValue, config.prefix);
 				}
