@@ -90,9 +90,9 @@ namespace WebVella.Erp.Plugins.Project.Components
 
 					foreach (var task in projectTasks)
 					{
-						var endTime = (DateTime?)task["end_time"];
+						var endTime = ((DateTime?)task["end_time"]).ConvertToAppDate();
 
-						if (endTime != null && endTime.Value < DateTime.Now)
+						if (endTime != null && endTime.Value.AddDays(1) < DateTime.Now)
 							overdueTasks++;
 						else if (endTime != null && endTime.Value >= DateTime.Now.Date && endTime.Value < DateTime.Now.Date.AddDays(1))
 							dueTodayTasks++;
