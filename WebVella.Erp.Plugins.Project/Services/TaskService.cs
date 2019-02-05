@@ -292,7 +292,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 
 			//Preset start date
 			record["start_time"] = DateTime.Now.Date.ClearKind();
-			record["end_time"] = DateTime.Now.Date.ClearKind().AddDays(1).AddSeconds(-1);
+			record["end_time"] = DateTime.Now.Date.ClearKind().AddDays(1);
 			return record;
 		}
 
