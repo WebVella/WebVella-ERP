@@ -400,6 +400,29 @@ namespace WebVella.Erp.Plugins.Project.Services
 			var updateResponse = new RecordManager(executeHooks: false).UpdateRecord("task", patchRecord);
 			if (!updateResponse.Success)
 				throw new Exception(updateResponse.Message);
+
+			//Check if owner is in watchers list. If not create relation
+			if (record.Properties.ContainsKey("owner_id") && record["owner_id"] != null) {
+				var watchers = new List<Guid>();
+				var eqlCommand = "SELECT id, $user_nn_task_watchers.id FROM task WHERE id = @taskId";
+				var eqlParams = new List<EqlParameter>() { new EqlParameter("taskId", (Guid)record["id"]) };
+				var eqlResult = new EqlCommand(eqlCommand, eqlParams).Execute();
+				foreach (var relRecord in eqlResult)
+				{
+					if (relRecord.Properties.ContainsKey("id") && relRecord["id"] is Guid) {
+						watchers.Add((Guid)relRecord["id"]);
+					}
+				}
+				if (!watchers.Contains((Guid)record["owner_id"])){
+					var watchRelation = new EntityRelationManager().Read("user_nn_task_watchers").Object;
+					if (watchRelation == null)
+						throw new Exception("Watch relation not found");
+
+					var createRelResponse = new RecordManager().CreateRelationManyToManyRecord(watchRelation.Id, (Guid)record["owner_id"], (Guid)record["id"]);
+					if (!createRelResponse.Success)
+						throw new Exception(createRelResponse.Message);
+				}
+			}
 		}
 
 		public void SetStatus(Guid taskId, Guid statusId)
