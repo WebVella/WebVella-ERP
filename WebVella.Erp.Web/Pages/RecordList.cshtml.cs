@@ -46,6 +46,7 @@ namespace WebVella.Erp.Web.Pages.Application
 			catch (Exception ex)
 			{
 				new Log().Create(LogType.Error, "RecordListPageModel Error on GET", ex);
+				Validation.Message = ex.Message;
 				BeforeRender();
 				return Page();
 			}
@@ -80,6 +81,7 @@ namespace WebVella.Erp.Web.Pages.Application
 			catch (Exception ex)
 			{
 				new Log().Create(LogType.Error, "RecordListPageModel Error on POST", ex);
+				Validation.Message = ex.Message;
 				BeforeRender();
 				return Page();
 			}

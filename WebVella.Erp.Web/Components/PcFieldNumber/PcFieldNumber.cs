@@ -34,7 +34,7 @@ namespace WebVella.Erp.Web.Components
 			public decimal? Step { get; set; } = null;
 
 			[JsonProperty(PropertyName = "decimal_digits")]
-			public int DecimalDigits { get; set; } = 2;
+			public int? DecimalDigits { get; set; } = null;
 
 			public static PcFieldNumberOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
@@ -44,10 +44,10 @@ namespace WebVella.Erp.Web.Components
 					LabelText = input.LabelText,
 					Mode = input.Mode,
 					Name = input.Name,
-					Min = null,
-					Max = null,
+					Min = input.Min,
+					Max = input.Max,
 					Step = null,
-					DecimalDigits = 2
+					DecimalDigits = input.DecimalDigits
 				};
 			}
 		}
@@ -82,33 +82,19 @@ namespace WebVella.Erp.Web.Components
 				if (context.Options != null)
 				{
 					options = JsonConvert.DeserializeObject<PcFieldNumberOptions>(context.Options.ToString());
-					//Check for connection to entity field
-					Entity mappedEntity = null;
-					if (options.ConnectedEntityId != null)
+
+					if (context.Mode != ComponentMode.Options)
 					{
-						mappedEntity = new EntityManager().ReadEntity(options.ConnectedEntityId.Value).Object;
-					}
-					else
-					{
-						var entity = context.DataModel.GetProperty("Entity");
-						if (entity is Entity)
-						{
-							mappedEntity = (Entity)entity;
-						}
+						if (options.Min == null)
+							options.Min = baseOptions.Min;
+
+						if (options.Max == null)
+							options.Max = baseOptions.Max;
+
+						if (options.DecimalDigits == null)
+							options.DecimalDigits = baseOptions.DecimalDigits;
 					}
 
-					if (mappedEntity != null)
-					{
-						var fieldName = options.Name;
-						var entityField = mappedEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
-						if (entityField != null && entityField is NumberField)
-						{
-							var castedEntityField = ((NumberField)entityField);
-							options.Min = castedEntityField.MinValue;
-							options.Max = castedEntityField.MaxValue;
-							options.DecimalDigits = (int)(castedEntityField.DecimalPlaces ?? 0);
-						}
-					}
 				}
 				var modelFieldLabel = "";
 				var model = (PcFieldBaseModel)InitPcFieldBaseModel(context, options, label: out modelFieldLabel);

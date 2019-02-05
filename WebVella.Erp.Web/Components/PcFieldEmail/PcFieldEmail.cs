@@ -35,7 +35,7 @@ namespace WebVella.Erp.Web.Components
 					LabelText = input.LabelText,
 					Mode = input.Mode,
 					Name = input.Name,
-					MaxLength = null
+					MaxLength = input.MaxLength
 				};
 			}
 		}
@@ -70,31 +70,13 @@ namespace WebVella.Erp.Web.Components
 				if (context.Options != null)
 				{
 					options = JsonConvert.DeserializeObject<PcFieldEmailOptions>(context.Options.ToString());
-					//Check for connection to entity field
-					Entity mappedEntity = null;
-					if (options.ConnectedEntityId != null)
+
+					if (context.Mode != ComponentMode.Options)
 					{
-						mappedEntity = new EntityManager().ReadEntity(options.ConnectedEntityId.Value).Object;
-					}
-					else
-					{
-						var entity = context.DataModel.GetProperty("Entity");
-						if (entity is Entity)
-						{
-							mappedEntity = (Entity)entity;
-						}
+						if (options.MaxLength == null)
+							options.MaxLength = baseOptions.MaxLength;
 					}
 
-					if (mappedEntity != null)
-					{
-						var fieldName = options.Name;
-						var entityField = mappedEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
-						if (entityField != null && entityField is EmailField)
-						{
-							var castedEntityField = ((EmailField)entityField);
-							options.MaxLength = castedEntityField.MaxLength;
-						}
-					}
 				}
 				var modelFieldLabel = "";
 				var model = (PcFieldBaseModel)InitPcFieldBaseModel(context, options, label: out modelFieldLabel);

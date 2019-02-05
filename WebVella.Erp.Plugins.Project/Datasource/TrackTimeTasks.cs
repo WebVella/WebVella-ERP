@@ -60,7 +60,7 @@ namespace WebVella.Erp.Plugins.Project.DataSource
 				}
 			}
 
-			return userOpenTasks.OrderByDescending(x => (DateTime?)x["timelog_started_on"]).ThenByDescending(x => (DateTime)x["last_logged_on"]).ToList();
+			return userOpenTasks.OrderByDescending(x => (DateTime?)x["created_on"]).ToList();
 		}
 	}
 }

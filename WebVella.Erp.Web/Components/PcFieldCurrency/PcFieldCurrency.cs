@@ -44,10 +44,10 @@ namespace WebVella.Erp.Web.Components
 					LabelText = input.LabelText,
 					Mode = input.Mode,
 					Name = input.Name,
-					Min = null,
-					Max = null,
+					Min = input.Min,
+					Max = input.Max,
 					Step = null,
-					CurrencyCode = "USD"
+					CurrencyCode = input.CurrencyCode
 				};
 			}
 		}
@@ -82,32 +82,16 @@ namespace WebVella.Erp.Web.Components
 				if (context.Options != null)
 				{
 					options = JsonConvert.DeserializeObject<PcFieldCurrencyOptions>(context.Options.ToString());
-					//Check for connection to entity field
-					Entity mappedEntity = null;
-					if (options.ConnectedEntityId != null)
+					if (context.Mode != ComponentMode.Options)
 					{
-						mappedEntity = new EntityManager().ReadEntity(options.ConnectedEntityId.Value).Object;
-					}
-					else 
-					{
-						var entity = context.DataModel.GetProperty("Entity");
-						if (entity is Entity)
-						{
-							mappedEntity = (Entity)entity;
-						}
-					}
+						if (options.Min == null)
+							options.Min = baseOptions.Min;
 
-					if (mappedEntity != null)
-					{
-						var fieldName = options.Name;
-						var entityField = mappedEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
-						if (entityField != null && entityField is CurrencyField)
-						{
-							var castedEntityField = ((CurrencyField)entityField);
-							options.CurrencyCode = castedEntityField.Currency.Code;
-							options.Min = castedEntityField.MinValue;
-							options.Max = castedEntityField.MaxValue;
-						}
+						if (options.Max == null)
+							options.Max = baseOptions.Max;
+
+						if (String.IsNullOrWhiteSpace(options.CurrencyCode))
+							options.CurrencyCode = baseOptions.CurrencyCode;
 					}
 				}
 				var modelFieldLabel = "";
