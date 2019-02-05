@@ -37,5 +37,18 @@ namespace WebVella.Erp.Utilities
 				return false;
 			}
 		}
+
+		public static bool IsEmail(this string text)
+		{
+			try
+			{
+				var addr = new System.Net.Mail.MailAddress(text);
+				return addr.Address == text;
+			}
+			catch
+			{
+				return false;
+			}
+		}
 	}
 }
