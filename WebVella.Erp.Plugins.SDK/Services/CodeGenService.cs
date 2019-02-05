@@ -175,22 +175,18 @@ namespace WebVella.Erp.Plugins.SDK.Services
 					{
 						//// CREATED
 						/////////////////////////////////////////////////////
-						if (!relation.Name.EndsWith("created_by") && !relation.Name.EndsWith("modified_by"))
+						var changeCode = CreateRelationCode(relation);
+						changeRow = new MetaChangeModel();
+						changeRow.Element = "relation";
+						changeRow.Type = "created";
+						changeRow.Name = relation.Name;
+						changeRow.ChangeList = new List<string>();
+						if (changeCode == string.Empty)
 						{
-							//the creation of system fields and relations is handled in the create entity script
-							var changeCode = CreateRelationCode(relation);
-							changeRow = new MetaChangeModel();
-							changeRow.Element = "relation";
-							changeRow.Type = "created";
-							changeRow.Name = relation.Name;
-							changeRow.ChangeList = new List<string>();
-							if (changeCode == string.Empty)
-							{
-								changeRow.ChangeList.Add(@"<span class='go-gray'>No code will be generated. It is automatically created, in the entity creation process</span>");
-							}
-							response.Changes.Add(changeRow);
-							response.Code += changeCode;
+							changeRow.ChangeList.Add(@"<span class='go-gray'>No code will be generated. It is automatically created, in the entity creation process</span>");
 						}
+						response.Changes.Add(changeRow);
+						response.Code += changeCode;
 					}
 					else
 					{
