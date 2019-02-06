@@ -400,6 +400,16 @@ namespace WebVella.Erp.Api
 
 						return dsParameter.Value;
 					}
+				case "bool":
+					{
+						if (dsParameter.Value.ToLowerInvariant() == "true")
+							return true;
+
+						if (dsParameter.Value.ToLowerInvariant() == "false")
+							return false;
+
+						throw new Exception($"Invalid boolean value for parameter: " + dsParameter.Name);
+					}
 				default:
 					throw new Exception($"Invalid parameter type '{dsParameter.Type}' for '{dsParameter.Name}'");
 			}
