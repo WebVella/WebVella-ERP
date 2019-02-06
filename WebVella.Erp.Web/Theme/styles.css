@@ -2410,11 +2410,12 @@ dropdown-item.active {
 /*#region << Body Inner Wrapper >> */
 body {
 	background-color: --brand_background_color;
+	border-top:2px solid #999;
 }
 
 #body-inner-wrapper {
 	position: absolute;
-	top: 0;
+	top: 2px;
 	bottom: 0;
 	left: 0;
 	right: 0;
@@ -2577,7 +2578,7 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 	border: 1px solid --brand_background_color;
 	border-top: none;
 	background: #fff;
-	height: calc(100vh - 40px);
+	height: calc(100vh - 43px);
 	overflow-y: auto;
 	padding-top: 15px;
 	/*padding-bottom: 30px;*/
@@ -2603,7 +2604,7 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 	line-height: 40px;
 	box-sizing: content-box;
 	position: fixed;
-	top: 0;
+	top: 2px;
 	left: 0;
 	right: 0;
 	z-index: 50;

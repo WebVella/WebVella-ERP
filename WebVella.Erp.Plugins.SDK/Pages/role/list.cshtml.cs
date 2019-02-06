@@ -79,6 +79,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Role
 			TotalCount = Records.TotalCount;
 			#endregion
 
+			BeforeRender();
 		}
 	}
 }

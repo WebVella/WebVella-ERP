@@ -119,6 +119,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Job
 			Records = Records.Skip((Pager - 1) * PagerSize).Take(PagerSize).ToList();
 			#endregion
 
+			BeforeRender();
 		}
 
 		public IActionResult OnPost()
@@ -133,6 +134,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Job
 
 			ScheduleManager.Current.TriggerNowSchedulePlan(schedulePlan);
 
+			BeforeRender();
 			return Redirect(PageContext.HttpContext.Request.Path + PageContext.HttpContext.Request.QueryString.ToUriComponent());
 
 		}

@@ -43,6 +43,9 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "mode")]
 			public FieldRenderMode Mode { get; set; } = FieldRenderMode.Form; //To be inherited
 
+			[JsonProperty(PropertyName = "class")]
+			public string Class { get; set; } = "";
+
 		}
 
 		public async Task<IViewComponentResult> InvokeAsync(PageComponentContext context)

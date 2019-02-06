@@ -139,8 +139,8 @@ namespace WebVella.Erp.Api
 
 			if (field is InputAutoNumberField)
 			{
-				if (field.Required.HasValue && field.Required.Value && !((InputAutoNumberField)field).DefaultValue.HasValue)
-					errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
+				//if (field.Required.HasValue && field.Required.Value && !((InputAutoNumberField)field).DefaultValue.HasValue)
+				//	errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
 				//if (((AutoNumberField)field).DisplayFormat == null)
 				//    errorList.Add(new ErrorModel("DisplayFormat", null, "DisplayFormat is required!"));
@@ -157,8 +157,8 @@ namespace WebVella.Erp.Api
 			}
 			else if (field is InputCurrencyField)
 			{
-				if (field.Required.HasValue && field.Required.Value && !((InputCurrencyField)field).DefaultValue.HasValue)
-					errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
+				//if (field.Required.HasValue && field.Required.Value && !((InputCurrencyField)field).DefaultValue.HasValue)
+				//	errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
 				//if (!((CurrencyField)field).MinValue.HasValue)
 				//    errorList.Add(new ErrorModel("minValue", null, "Min Value is required!"));
@@ -196,16 +196,16 @@ namespace WebVella.Erp.Api
 			}
 			else if (field is InputEmailField)
 			{
-				if (field.Required.HasValue && field.Required.Value && ((InputEmailField)field).DefaultValue == null)
-					errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
+				//if (field.Required.HasValue && field.Required.Value && ((InputEmailField)field).DefaultValue == null)
+				//	errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
 				//if (!((EmailField)field).MaxLength.HasValue)
 				//    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
 			}
 			else if (field is InputFileField)
 			{
-				if (field.Required.HasValue && field.Required.Value && ((InputFileField)field).DefaultValue == null)
-					errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
+				//if (field.Required.HasValue && field.Required.Value && ((InputFileField)field).DefaultValue == null)
+				//	errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 			}
 			//else if (field is FormulaField)
 			//{
@@ -232,18 +232,18 @@ namespace WebVella.Erp.Api
 			}
 			else if (field is InputHtmlField)
 			{
-				if (field.Required.HasValue && field.Required.Value && ((InputHtmlField)field).DefaultValue == null)
-					errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
+				//if (field.Required.HasValue && field.Required.Value && ((InputHtmlField)field).DefaultValue == null)
+				//	errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 			}
 			else if (field is InputImageField)
 			{
-				if (field.Required.HasValue && field.Required.Value && ((InputImageField)field).DefaultValue == null)
-					errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
+				//if (field.Required.HasValue && field.Required.Value && ((InputImageField)field).DefaultValue == null)
+				//	errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 			}
 			else if (field is InputMultiLineTextField)
 			{
-				if (field.Required.HasValue && field.Required.Value && ((InputMultiLineTextField)field).DefaultValue == null)
-					errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
+				//if (field.Required.HasValue && field.Required.Value && ((InputMultiLineTextField)field).DefaultValue == null)
+				//	errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
 				//if (!((MultiLineTextField)field).MaxLength.HasValue)
 				//    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
@@ -270,8 +270,8 @@ namespace WebVella.Erp.Api
 			}
 			else if (field is InputNumberField)
 			{
-				if (field.Required.HasValue && field.Required.Value && !((InputNumberField)field).DefaultValue.HasValue)
-					errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
+				//if (field.Required.HasValue && field.Required.Value && !((InputNumberField)field).DefaultValue.HasValue)
+				//	errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
 				//if (!((NumberField)field).MinValue.HasValue)
 				//    errorList.Add(new ErrorModel("minValue", null, "Min Value is required!"));
@@ -299,8 +299,8 @@ namespace WebVella.Erp.Api
 			}
 			else if (field is InputPercentField)
 			{
-				if (field.Required.HasValue && field.Required.Value && !((InputPercentField)field).DefaultValue.HasValue)
-					errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
+				//if (field.Required.HasValue && field.Required.Value && !((InputPercentField)field).DefaultValue.HasValue)
+				//	errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
 				//if (!((PercentField)field).MinValue.HasValue)
 				//    errorList.Add(new ErrorModel("minValue", null, "Min Value is required!"));
@@ -320,8 +320,8 @@ namespace WebVella.Erp.Api
 			}
 			else if (field is InputPhoneField)
 			{
-				if (field.Required.HasValue && field.Required.Value && ((InputPhoneField)field).DefaultValue == null)
-					errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
+				//if (field.Required.HasValue && field.Required.Value && ((InputPhoneField)field).DefaultValue == null)
+				//	errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
 				//if (!string.IsNullOrWhiteSpace(((PhoneField)field).Format))
 				//    errorList.Add(new ErrorModel("format", null, "Format is required!"));
@@ -333,8 +333,8 @@ namespace WebVella.Erp.Api
 			}
 			else if (field is InputSelectField)
 			{
-				if (field.Required.HasValue && field.Required.Value && string.IsNullOrWhiteSpace(((InputSelectField)field).DefaultValue))
-					errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
+				//if (field.Required.HasValue && field.Required.Value && string.IsNullOrWhiteSpace(((InputSelectField)field).DefaultValue))
+				//	errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
 				if (((InputSelectField)field).Options != null)
 				{
@@ -346,16 +346,16 @@ namespace WebVella.Erp.Api
 			}
 			else if (field is InputTextField)
 			{
-				if (field.Required.HasValue && field.Required.Value && ((InputTextField)field).DefaultValue == null)
-					errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
+				//if (field.Required.HasValue && field.Required.Value && ((InputTextField)field).DefaultValue == null)
+				//	errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
 				//if (!((TextField)field).MaxLength.HasValue)
 				//    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
 			}
 			else if (field is InputUrlField)
 			{
-				if (field.Required.HasValue && field.Required.Value && ((InputUrlField)field).DefaultValue == null)
-					errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
+				//if (field.Required.HasValue && field.Required.Value && ((InputUrlField)field).DefaultValue == null)
+				//	errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
 				//if (!((UrlField)field).MaxLength.HasValue)
 				//    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
@@ -890,8 +890,12 @@ namespace WebVella.Erp.Api
 			{
 				case FieldType.AutoNumberField:
 					field = new AutoNumberField();
-					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
-						((AutoNumberField)field).DefaultValue = (decimal?)data["defaultValue"];
+					if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() != "null")
+						((AutoNumberField)field).DefaultValue = (decimal)data["defaultValue"];
+					else if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() == "null")
+						((AutoNumberField)field).DefaultValue = null;
+					else if (HasKey(data, "defaultValue") && String.IsNullOrWhiteSpace((string)data["defaultValue"]))
+						((AutoNumberField)field).DefaultValue = 0;
 					if (HasKey(data, "startingNumber") && data["startingNumber"] != null)
 						((AutoNumberField)field).StartingNumber = (decimal?)data["startingNumber"];
 					if (HasKey(data, "displayFormat") && data["displayFormat"] != null)
@@ -904,8 +908,12 @@ namespace WebVella.Erp.Api
 					break;
 				case FieldType.CurrencyField:
 					field = new CurrencyField();
-					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
-						((CurrencyField)field).DefaultValue = (decimal?)data["defaultValue"];
+					if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() != "null")
+						((CurrencyField)field).DefaultValue = (decimal)data["defaultValue"];
+					else if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() == "null")
+						((CurrencyField)field).DefaultValue = null;
+					else if (HasKey(data, "defaultValue") && String.IsNullOrWhiteSpace((string)data["defaultValue"]))
+						((CurrencyField)field).DefaultValue = 0;
 					if (HasKey(data, "minValue") && data["minValue"] != null)
 						((CurrencyField)field).MinValue = (decimal?)data["minValue"];
 					if (HasKey(data, "maxValue") && data["maxValue"] != null)
@@ -948,15 +956,23 @@ namespace WebVella.Erp.Api
 					break;
 				case FieldType.EmailField:
 					field = new EmailField();
-					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() != "null")
 						((EmailField)field).DefaultValue = (string)data["defaultValue"];
+					else if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() == "null")
+						((EmailField)field).DefaultValue = null;
+					else if (HasKey(data, "defaultValue") && String.IsNullOrWhiteSpace((string)data["defaultValue"]))
+						((EmailField)field).DefaultValue = String.Empty;
 					if (HasKey(data, "maxLength") && data["maxLength"] != null)
 						((EmailField)field).MaxLength = (int?)data["maxLength"];
 					break;
 				case FieldType.FileField:
 					field = new FileField();
-					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() != "null")
 						((FileField)field).DefaultValue = (string)data["defaultValue"];
+					else if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() == "null")
+						((FileField)field).DefaultValue = null;
+					else if (HasKey(data, "defaultValue") && String.IsNullOrWhiteSpace((string)data["defaultValue"]))
+						((FileField)field).DefaultValue = String.Empty;
 					break;
 				case FieldType.GuidField:
 					field = new GuidField();
@@ -967,18 +983,31 @@ namespace WebVella.Erp.Api
 					break;
 				case FieldType.HtmlField:
 					field = new HtmlField();
-					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() != "null")
 						((HtmlField)field).DefaultValue = (string)data["defaultValue"];
+					else if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() == "null")
+						((HtmlField)field).DefaultValue = null;
+					else if (HasKey(data, "defaultValue") && String.IsNullOrWhiteSpace((string)data["defaultValue"]))
+						((HtmlField)field).DefaultValue = String.Empty;
 					break;
 				case FieldType.ImageField:
 					field = new ImageField();
-					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() != "null")
 						((ImageField)field).DefaultValue = (string)data["defaultValue"];
+					else if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() == "null")
+						((ImageField)field).DefaultValue = null;
+					else if (HasKey(data, "defaultValue") && String.IsNullOrWhiteSpace((string)data["defaultValue"]))
+						((ImageField)field).DefaultValue = String.Empty;
 					break;
 				case FieldType.MultiLineTextField:
 					field = new MultiLineTextField();
-					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() != "null")
 						((MultiLineTextField)field).DefaultValue = (string)data["defaultValue"];
+					else if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() == "null")
+						((MultiLineTextField)field).DefaultValue = null;
+					else if (HasKey(data, "defaultValue") && String.IsNullOrWhiteSpace((string)data["defaultValue"]))
+						((MultiLineTextField)field).DefaultValue = String.Empty;
+
 					if (HasKey(data, "maxLength") && data["maxLength"] != null)
 						((MultiLineTextField)field).MaxLength = (int?)data["maxLength"];
 					if (HasKey(data, "visibleLineNumber") && data["visibleLineNumber"] != null)
@@ -993,8 +1022,13 @@ namespace WebVella.Erp.Api
 					break;
 				case FieldType.NumberField:
 					field = new NumberField();
-					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
-						((NumberField)field).DefaultValue = (int?)data["defaultValue"];
+					if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() != "null")
+						((NumberField)field).DefaultValue = (decimal)data["defaultValue"];
+					else if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() == "null")
+						((NumberField)field).DefaultValue = null;
+					else if (HasKey(data, "defaultValue") && String.IsNullOrWhiteSpace((string)data["defaultValue"]))
+						((NumberField)field).DefaultValue = 0;
+
 					if (HasKey(data, "minValue") && data["minValue"] != null)
 						((NumberField)field).MinValue = (decimal?)data["minValue"];
 					if (HasKey(data, "maxValue") && data["maxValue"] != null)
@@ -1013,8 +1047,13 @@ namespace WebVella.Erp.Api
 					break;
 				case FieldType.PercentField:
 					field = new PercentField();
-					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
-						((PercentField)field).DefaultValue = (decimal?)data["defaultValue"]; //0.01m;
+					if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() != "null")
+						((PercentField)field).DefaultValue = (decimal)data["defaultValue"];
+					else if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() == "null")
+						((PercentField)field).DefaultValue = null;
+					else if (HasKey(data, "defaultValue") && String.IsNullOrWhiteSpace((string)data["defaultValue"]))
+						((PercentField)field).DefaultValue = 0;
+
 					if (HasKey(data, "minValue") && data["minValue"] != null)
 						((PercentField)field).MinValue = (decimal?)data["minValue"];
 					if (HasKey(data, "maxValue") && data["maxValue"] != null)
@@ -1024,8 +1063,13 @@ namespace WebVella.Erp.Api
 					break;
 				case FieldType.PhoneField:
 					field = new PhoneField();
-					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() != "null")
 						((PhoneField)field).DefaultValue = (string)data["defaultValue"];
+					else if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() == "null")
+						((PhoneField)field).DefaultValue = null;
+					else if (HasKey(data, "defaultValue") && String.IsNullOrWhiteSpace((string)data["defaultValue"]))
+						((PhoneField)field).DefaultValue = String.Empty;
+
 					if (HasKey(data, "format") && data["format"] != null)
 						((PhoneField)field).Format = (string)data["format"];
 					if (HasKey(data, "maxLength") && data["maxLength"] != null)
@@ -1033,22 +1077,37 @@ namespace WebVella.Erp.Api
 					break;
 				case FieldType.SelectField:
 					field = new SelectField();
-					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() != "null")
 						((SelectField)field).DefaultValue = (string)data["defaultValue"];
+					else if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() == "null")
+						((SelectField)field).DefaultValue = null;
+					else if (HasKey(data, "defaultValue") && String.IsNullOrWhiteSpace((string)data["defaultValue"]))
+						((SelectField)field).DefaultValue = String.Empty;
+
 					if (HasKey(data, "options") && data["options"] != null)
 						((SelectField)field).Options = (List<SelectOption>)data["options"];
 					break;
 				case FieldType.TextField:
 					field = new TextField();
-					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() != "null")
 						((TextField)field).DefaultValue = (string)data["defaultValue"];
+					else if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() == "null")
+						((TextField)field).DefaultValue = null;
+					else if (HasKey(data, "defaultValue") && String.IsNullOrWhiteSpace((string)data["defaultValue"]))
+						((TextField)field).DefaultValue = String.Empty;
+
 					if (HasKey(data, "maxLength") && data["maxLength"] != null)
 						((TextField)field).MaxLength = (int?)data["maxLength"];
 					break;
 				case FieldType.UrlField:
 					field = new UrlField();
-					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() != "null")
 						((UrlField)field).DefaultValue = (string)data["defaultValue"];
+					else if (HasKey(data, "defaultValue") && !String.IsNullOrWhiteSpace((string)data["defaultValue"]) && ((string)data["defaultValue"]).ToLowerInvariant() == "null")
+						((UrlField)field).DefaultValue = null;
+					else if (HasKey(data, "defaultValue") && String.IsNullOrWhiteSpace((string)data["defaultValue"]))
+						((UrlField)field).DefaultValue = String.Empty;
+
 					if (HasKey(data, "maxLength") && data["maxLength"] != null)
 						((UrlField)field).MaxLength = (int?)data["maxLength"];
 					if (HasKey(data, "openTargetInNewWindow") && data["openTargetInNewWindow"] != null)

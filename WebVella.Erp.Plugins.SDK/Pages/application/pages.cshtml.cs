@@ -82,7 +82,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 					Width = ""
 				},
 			};
-
+			BeforeRender();
 			return Page();
 		}
 

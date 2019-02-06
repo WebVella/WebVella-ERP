@@ -96,6 +96,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Page
 				return NotFound();
 
 			ErpRequestContext.PageContext = PageContext;
+
+			BeforeRender();
 			return Page();
 		}
 
@@ -141,6 +143,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Page
 				Validation.Message = ex.Message;
 				Validation.Errors = ex.Errors;
 			}
+
+			BeforeRender();
 			return Page();
 		}
 

@@ -79,6 +79,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Page
 			PageNodeListJson = JsonConvert.SerializeObject(pageNodes);
 
 			ErpRequestContext.PageContext = PageContext;
+
+			BeforeRender();
 			return Page();
 		}
 

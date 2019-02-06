@@ -27,6 +27,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Role
 		public IActionResult OnGet()
 		{
 			InitPage();
+
+			BeforeRender();
 			return Page();
 		}
 
@@ -44,13 +46,14 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Role
 				newRole.Name = Name;
 				newRole.Description = Description;
 				new SecurityManager().SaveRole(newRole);
-
+				BeforeRender();
 				return Redirect(ReturnUrl);
 			}
 			catch (ValidationException ex)
 			{
 				Validation.Message = ex.Message;
 				Validation.Errors = ex.Errors;
+				BeforeRender();
 				return Page();
 			}
 		}

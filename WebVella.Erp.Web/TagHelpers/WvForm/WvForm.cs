@@ -73,6 +73,9 @@ namespace WebVella.Erp.Web.TagHelpers
 		[HtmlAttributeName("mode")]
 		public FieldRenderMode Mode { get; set; } = FieldRenderMode.Undefined; //To be inherited
 
+		[HtmlAttributeName("class")]
+		public string Class { get; set; } = "";
+
 		public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
 			#region << Init >>
@@ -110,6 +113,11 @@ namespace WebVella.Erp.Web.TagHelpers
 				if (!String.IsNullOrWhiteSpace(Id))
 				{
 					output.Attributes.Add("id", Id);
+				}
+
+				if (!String.IsNullOrWhiteSpace(Class))
+				{
+					output.AddCssClass(Class);
 				}
 
 				if (!String.IsNullOrWhiteSpace(Name))

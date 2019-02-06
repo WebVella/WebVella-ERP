@@ -53,6 +53,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Page
 				return NotFound();
 
 			ErpRequestContext.PageContext = PageContext;
+
+			BeforeRender();
 			return Page();
 		}
 

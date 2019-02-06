@@ -4,7 +4,7 @@
 	<vc:render-hook placeholder="head-top" page-model="@Model"  model="null"></vc:render-hook>
 	<vc:render-hook placeholder="head-bottom" page-model="@Model"  model="null"></vc:render-hook>
 </head>
-<body class="@ViewData["BodyClass"]">
+<body class="@ViewData["BodyClass"]" style="border-color:@ViewData["BodyBorderColor"]">
 	<div id="body-inner-wrapper">
 		<vc:nav page-model="@Model"></vc:nav>
 		<vc:toobar-menu page-model="@Model"></vc:toobar-menu>

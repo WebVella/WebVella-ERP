@@ -44,7 +44,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Role
 
 			Name = (string)RoleRecord["name"];
 			Description = (string)RoleRecord["description"];
-
+			BeforeRender();
 			return Page();
 		}
 
@@ -61,13 +61,14 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Role
 				role.Name = Name;
 				role.Description = Description;
 				new SecurityManager().SaveRole(role);
-
+				BeforeRender();
 				return Redirect(ReturnUrl);
 			}
 			catch (ValidationException ex)
 			{
 				Validation.Message = ex.Message;
 				Validation.Errors = ex.Errors;
+				BeforeRender();
 				return Page();
 			}
 		}

@@ -270,6 +270,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Page
 			}
 			#endregion
 
+			BeforeRender();
 		}
 
 		public IActionResult OnPost()
@@ -285,6 +286,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Page
 
 
 			pageServ.ClonePage(pageId);
+			BeforeRender();
 			return Redirect($"/sdk/objects/page/l/list");
 		}
 	}

@@ -122,6 +122,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Job
 
 			#endregion
 
+			BeforeRender();
 		}
 	}
 }

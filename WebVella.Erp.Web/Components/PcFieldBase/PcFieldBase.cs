@@ -37,6 +37,9 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "connected_entity_id")]
 			public Guid? ConnectedEntityId { get; set; } = null;
 
+			[JsonProperty(PropertyName = "class")]
+			public string Class { get; set; } = "";
+
 			//Field specific options
 			[JsonProperty(PropertyName = "template")]
 			public string Template { get; set; } = "";
@@ -348,6 +351,8 @@ namespace WebVella.Erp.Web.Components
 				options.Mode = FieldRenderMode.Form;
 			}
 
+			var baseOptions = JsonConvert.DeserializeObject<PcFieldBaseOptions>(context.Options.ToString());
+
 			Entity mappedEntity = null;
 			var entity = context.DataModel.GetProperty("Entity");
 			if (options.ConnectedEntityId != null)
@@ -361,7 +366,26 @@ namespace WebVella.Erp.Web.Components
 
 			if (mappedEntity != null)
 			{
-				var fieldName = options.Name;
+				var fieldName = baseOptions.Name;
+
+				if (fieldName.StartsWith("$")) {
+					//Field with relation is set. Mapped entity should be changed
+					var fieldNameArray = fieldName.Replace("$", "").Split(".", StringSplitOptions.RemoveEmptyEntries);
+					if (fieldNameArray.Length == 2) {
+						var relationName = fieldNameArray[0];
+						fieldName = fieldNameArray[1];
+						var relation = new EntityRelationManager().Read(relationName).Object;
+						if (relation != null) {
+							if (relation.OriginEntityId == mappedEntity.Id)
+								mappedEntity = new EntityManager().ReadEntity(relation.TargetEntityId).Object;
+							else if (relation.TargetEntityId == mappedEntity.Id)
+								mappedEntity = new EntityManager().ReadEntity(relation.OriginEntityId).Object;
+						}
+
+					}
+
+				}
+
 				var entityField = mappedEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
 				if (entityField != null)
 				{
@@ -430,7 +454,7 @@ namespace WebVella.Erp.Web.Components
 							break;
 						case FieldType.TextField:
 							{
-								var fieldMeta = (PhoneField)entityField;
+								var fieldMeta = (TextField)entityField;
 								options.MaxLength = fieldMeta.MaxLength;
 							}
 							break;
@@ -487,6 +511,28 @@ namespace WebVella.Erp.Web.Components
 			if (mappedEntity != null)
 			{
 				var fieldName = options.Name;
+
+				if (fieldName.StartsWith("$"))
+				{
+					//Field with relation is set. Mapped entity should be changed
+					var fieldNameArray = fieldName.Replace("$", "").Split(".", StringSplitOptions.RemoveEmptyEntries);
+					if (fieldNameArray.Length == 2)
+					{
+						var relationName = fieldNameArray[0];
+						fieldName = fieldNameArray[1];
+						var relation = new EntityRelationManager().Read(relationName).Object;
+						if (relation != null)
+						{
+							if (relation.OriginEntityId == mappedEntity.Id)
+								mappedEntity = new EntityManager().ReadEntity(relation.TargetEntityId).Object;
+							else if (relation.TargetEntityId == mappedEntity.Id)
+								mappedEntity = new EntityManager().ReadEntity(relation.OriginEntityId).Object;
+						}
+
+					}
+
+				}
+
 				var entityField = mappedEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
 				if (entityField != null)
 				{

@@ -239,6 +239,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 			#endregion
 
+			BeforeRender();
 			return Page();
 		}
 
@@ -276,6 +277,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 				Validation.Message = ex.Message;
 				Validation.Errors = ex.Errors;
 			}
+
+			BeforeRender();
 			return Page();
 		}
 

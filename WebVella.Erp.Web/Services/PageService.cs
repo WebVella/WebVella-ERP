@@ -95,7 +95,7 @@ namespace WebVella.Erp.Web.Services
 		public List<ErpPage> GetAppPages(Guid appId, NpgsqlTransaction transaction = null)
 		{
 			var pages = GetAll(transaction);
-			return pages.FindAll(x => x.AppId == appId && x.Type == PageType.Application).OrderBy(x => x.Weight).ThenBy(x => x.Label).ToList();
+			return pages.FindAll(x => x.AppId == appId).OrderBy(x => x.Weight).ThenBy(x => x.Label).ToList();
 		}
 
 		/// <summary>

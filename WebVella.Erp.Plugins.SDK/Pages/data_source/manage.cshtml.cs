@@ -81,6 +81,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 			}
 
 			ErpRequestContext.PageContext = PageContext;
+
+			BeforeRender();
 			return Page();
 		}
 
@@ -121,6 +123,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 			}
 
 			ErpRequestContext.PageContext = PageContext;
+
+			BeforeRender();
 			return Page();
 		}
 

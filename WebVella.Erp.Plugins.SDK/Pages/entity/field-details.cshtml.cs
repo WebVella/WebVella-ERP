@@ -119,6 +119,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			HeaderToolbar.AddRange(AdminPageUtils.GetEntityAdminSubNav(ErpEntity, "fields"));
 
 			ErpRequestContext.PageContext = PageContext;
+
+			BeforeRender();
 			return Page();
 		}
 
@@ -166,6 +168,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			HeaderToolbar.AddRange(AdminPageUtils.GetEntityAdminSubNav(ErpEntity, "fields"));
 
 			ErpRequestContext.PageContext = PageContext;
+
+			BeforeRender();
 			return Page();
 		}
 	}

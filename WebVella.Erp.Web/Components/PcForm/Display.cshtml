@@ -14,7 +14,8 @@
 	var action = (string)ViewBag.Action;
 }
 <wv-validation show-errors="false" validation="@validation"></wv-validation>
-<wv-form method="@options.Method" id="@options.Id" name="@options.Name" label-mode="@options.LabelMode" mode="@options.Mode" action="@action" validation="@validation">
+<wv-form method="@options.Method" id="@options.Id" name="@options.Name" label-mode="@options.LabelMode" 
+	mode="@options.Mode" action="@action" validation="@validation" class="@options.Class">
 	@foreach (var childNode in node.Nodes) {
 		var nodeComponentName = "";
 		if (childNode != null) {

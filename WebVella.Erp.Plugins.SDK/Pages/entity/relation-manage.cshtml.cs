@@ -77,6 +77,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			IsSystem = Relation.System;
 
 			ErpRequestContext.PageContext = PageContext;
+
+			BeforeRender();
 			return Page();
 		}
 
@@ -129,6 +131,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			}
 
 			ErpRequestContext.PageContext = PageContext;
+
+			BeforeRender();
 			return Page();
 		}
 
