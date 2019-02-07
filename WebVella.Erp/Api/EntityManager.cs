@@ -139,8 +139,8 @@ namespace WebVella.Erp.Api
 
 			if (field is InputAutoNumberField)
 			{
-				//if (field.Required.HasValue && field.Required.Value && !((InputAutoNumberField)field).DefaultValue.HasValue)
-				//	errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
+				if (field.Required.HasValue && field.Required.Value && !((InputAutoNumberField)field).DefaultValue.HasValue)
+					errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
 				//if (((AutoNumberField)field).DisplayFormat == null)
 				//    errorList.Add(new ErrorModel("DisplayFormat", null, "DisplayFormat is required!"));
