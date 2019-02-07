@@ -67,20 +67,6 @@ namespace WebVella.Erp.Plugins.Project.Services
 
 			patchRecord["id"] = taskId;
 			patchRecord["key"] = projectAbbr + "-" + taskRecord["number"];
-			var searchIndex = ""; // FTS is included to be used as a default string when you need all records to be returned
-			searchIndex += $" {patchRecord["key"]} ";
-			searchIndex += $" {taskRecord["subject"]} ";
-			searchIndex += $" {taskRecord["body"]} ";
-			searchIndex += $" {taskRecord["priority"]} ";
-
-
-			searchIndex += $" {status} ";
-			searchIndex += $" {type} ";
-
-
-			//TODO Add Comments
-
-			patchRecord["x_search"] = searchIndex;
 
 			return patchRecord;
 		}
