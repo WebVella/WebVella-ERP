@@ -206,6 +206,24 @@ namespace WebVella.Erp.Database
 			}
 		}
 
+		public static void SetColumnDefaultValue(string tableName, string columnName, FieldType type, object value )
+		{
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				var defVal = ConvertDefaultValue(type, value);
+				if( value != null )
+				{
+					string updateNullRecordsSql = $"UPDATE \"{tableName}\" SET \"{columnName}\" = {defVal} WHERE \"{columnName}\" IS NULL";
+					var updateCommand = connection.CreateCommand(updateNullRecordsSql);
+					updateCommand.ExecuteNonQuery();
+				}
+
+				string sql = $"ALTER TABLE ONLY \"{tableName}\" ALTER COLUMN \"{columnName}\" SET DEFAULT {defVal}";
+				var command = connection.CreateCommand(sql);
+				command.ExecuteNonQuery();
+			}
+		}
+
 		public static void CreateRelation(string relName, string originTableName, string originFieldName, string targetTableName, string targetFieldName)
 		{
 			if (!TableExists(originTableName))
@@ -422,7 +440,7 @@ namespace WebVella.Erp.Database
 		public static string ConvertDefaultValue(FieldType type, object value)
 		{
 			if (value == null)
-				return null;
+				return " NULL";
 
 			switch (type)
 			{
