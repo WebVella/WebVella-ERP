@@ -23,6 +23,10 @@ namespace WebVella.Erp.Web.Components
 
 		public class PcFieldUrlOptions : PcFieldBaseOptions
 		{
+
+			[JsonProperty(PropertyName = "show_icon")]
+			public bool ShowIcon { get; set; } = false;
+
 			public static PcFieldUrlOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldUrlOptions

@@ -27,6 +27,9 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "maxlength")]
 			public int? MaxLength { get; set; } = null;
 
+			[JsonProperty(PropertyName = "show_icon")]
+			public bool ShowIcon { get; set; } = false;
+
 			public static PcFieldEmailOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldEmailOptions

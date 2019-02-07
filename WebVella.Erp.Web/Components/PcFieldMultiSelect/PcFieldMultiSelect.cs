@@ -26,6 +26,9 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "options")]
 			public string Options { get; set; } = "";
 
+			[JsonProperty(PropertyName = "show_icon")]
+			public bool ShowIcon { get; set; } = false;
+
 			public static PcFieldMultiSelectOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldMultiSelectOptions

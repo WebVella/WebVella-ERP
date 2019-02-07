@@ -23,6 +23,10 @@ namespace WebVella.Erp.Web.Components
 
 		public class PcFieldDateTimeOptions : PcFieldBaseOptions
 		{
+
+			[JsonProperty(PropertyName = "show_icon")]
+			public bool ShowIcon { get; set; } = false;
+
 			public static PcFieldDateTimeOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldDateTimeOptions

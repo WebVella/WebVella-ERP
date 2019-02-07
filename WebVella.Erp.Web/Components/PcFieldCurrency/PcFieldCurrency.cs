@@ -36,6 +36,9 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "step")]
 			public decimal? Step { get; set; } = null;
 
+			[JsonProperty(PropertyName = "show_code")]
+			public bool ShowCode { get; set; } = false;
+
 			public static PcFieldCurrencyOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldCurrencyOptions
