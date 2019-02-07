@@ -240,7 +240,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 							System = typedInput.System;
 							PlaceholderText = typedInput.PlaceholderText;
 							Searchable = typedInput.Searchable;
-							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "");
+							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "NULL");
 							EnableSecurity = typedInput.EnableSecurity;
 							MaxLength = typedInput.MaxLength;
 						}
@@ -257,7 +257,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 							System = typedInput.System;
 							PlaceholderText = typedInput.PlaceholderText;
 							Searchable = typedInput.Searchable;
-							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "");
+							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "NULL");
 							EnableSecurity = typedInput.EnableSecurity;
 						}
 						break;
@@ -273,7 +273,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 							System = typedInput.System;
 							PlaceholderText = typedInput.PlaceholderText;
 							Searchable = typedInput.Searchable;
-							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "");
+							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "NULL");
 							EnableSecurity = typedInput.EnableSecurity;
 						}
 						break;
@@ -289,7 +289,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 							System = typedInput.System;
 							PlaceholderText = typedInput.PlaceholderText;
 							Searchable = typedInput.Searchable;
-							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "");
+							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "NULL");
 							EnableSecurity = typedInput.EnableSecurity;
 						}
 						break;
@@ -305,7 +305,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 							System = typedInput.System;
 							PlaceholderText = typedInput.PlaceholderText;
 							Searchable = typedInput.Searchable;
-							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "");
+							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "NULL");
 							EnableSecurity = typedInput.EnableSecurity;
 							MaxLength = typedInput.MaxLength;
 						}
@@ -419,7 +419,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 							System = typedInput.System;
 							PlaceholderText = typedInput.PlaceholderText;
 							Searchable = typedInput.Searchable;
-							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "");
+							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "NULL");
 							EnableSecurity = typedInput.EnableSecurity;
 							MaxLength = typedInput.MaxLength;
 						}
@@ -490,7 +490,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 							System = typedInput.System;
 							PlaceholderText = typedInput.PlaceholderText;
 							Searchable = typedInput.Searchable;
-							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "");
+							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "NULL");
 							EnableSecurity = typedInput.EnableSecurity;
 							MaxLength = typedInput.MaxLength;
 						}
@@ -507,7 +507,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 							System = typedInput.System;
 							PlaceholderText = typedInput.PlaceholderText;
 							Searchable = typedInput.Searchable;
-							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "");
+							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "NULL");
 							EnableSecurity = typedInput.EnableSecurity;
 							MaxLength = typedInput.MaxLength;
 							OpenTargetInNewWindow = typedInput.OpenTargetInNewWindow ?? false;
