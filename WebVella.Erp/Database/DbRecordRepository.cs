@@ -237,7 +237,8 @@ namespace WebVella.Erp.Database
         {
             string tableName = RECORD_COLLECTION_PREFIX + entityName;
 
-			DbRepository.SetColumnDefaultValue(RECORD_COLLECTION_PREFIX + entityName, field.Name, field.GetFieldType(), field.GetDefaultValue());
+			bool overrideNulls = field.Required && field.GetDefaultValue() != null;
+			DbRepository.SetColumnDefaultValue(RECORD_COLLECTION_PREFIX + entityName, field.Name, field.GetFieldType(), field.GetDefaultValue(), overrideNulls );
 
 			DbRepository.SetColumnNullable(RECORD_COLLECTION_PREFIX + entityName, field.Name, !field.Required);
 			

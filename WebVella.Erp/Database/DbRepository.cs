@@ -206,12 +206,12 @@ namespace WebVella.Erp.Database
 			}
 		}
 
-		public static void SetColumnDefaultValue(string tableName, string columnName, FieldType type, object value )
+		public static void SetColumnDefaultValue(string tableName, string columnName, FieldType type, object value, bool overrideNulls )
 		{
 			using (var connection = DbContext.Current.CreateConnection())
 			{
 				var defVal = ConvertDefaultValue(type, value);
-				if( value != null )
+				if( value != null && overrideNulls )
 				{
 					string updateNullRecordsSql = $"UPDATE \"{tableName}\" SET \"{columnName}\" = {defVal} WHERE \"{columnName}\" IS NULL";
 					var updateCommand = connection.CreateCommand(updateNullRecordsSql);
