@@ -8432,7 +8432,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 				$"\tvar dataSourceId = new Guid(\"{ds.DataSourceId.ToString()}\");\n" +
 				$"\tvar name = @\"{ds.Name}\";\n" +
 				$"\tvar parameters = @\"{parametersJson}\";\n" +
-				"\n\tnew WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId,name,parameters,WebVella.Erp.Database.DbContext.Current.Transaction );\n" +
+				"\n\tnew WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId,name,parameters,WebVella.Erp.Database.DbContext.Current.Transaction );\n" +
 			"}\n" +
 			"#endregion\n\n";
 
@@ -8483,7 +8483,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 					$"\tvar dataSourceId = new Guid(\"{currentDS.DataSourceId.ToString()}\");\n" +
 					$"\tvar name = @\"{currentDS.Name}\";\n" +
 					$"\tvar parameters = @\"{currentParametersJson}\";\n" +
-					"\n\tnew WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Update(id, pageId, dataSourceId,name,parameters,WebVella.Erp.Database.DbContext.Current.Transaction );\n" +
+					"\n\tnew WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).UpdatePageDataSource(id, pageId, dataSourceId,name,parameters,WebVella.Erp.Database.DbContext.Current.Transaction );\n" +
 				"}\n" +
 				"#endregion\n\n";
 			}
@@ -8495,7 +8495,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 		{
 			return $"#region << ***Delete page data source *** Name: {ds.Name} >>\n" +
 					"{\n" +
-						$"\n\tnew WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Delete(new Guid(\"{ds.Id}\"),WebVella.Erp.Database.DbContext.Current.Transaction);\n" +
+						$"\n\tnew WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).DeletePageDataSource(new Guid(\"{ds.Id}\"),WebVella.Erp.Database.DbContext.Current.Transaction);\n" +
 					"}\n" +
 					"#endregion\n\n";
 		}

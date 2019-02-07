@@ -23,6 +23,16 @@
 	var emptyString = "";
 }
 
+<script>
+	function DeleteDataSource() {
+		if (confirm("Are you sure you want to delete the data source?") == true) {
+			ErpEvent.DISPATCH("WebVella.Erp.Web.Components.PcForm", { htmlId: "DeleteDataSourceForm", action: "submit", payload: null });
+		}
+	}
+</script>
+<wv-form name="DeleteDataSourceForm" id="DeleteDataSourceForm" action="/sdk/objects/data_source/r/@Model.DataSourceObject.Id/?op=delete"></wv-form>
+
+
 <wv-page-header color="#dc3545" area-label="Data Sources" title="@dataSourceLabel" subtitle="Details" icon-class="ti-cloud-down"
 				return-url="@Model.ReturnUrl">
 	<wv-page-header-actions>

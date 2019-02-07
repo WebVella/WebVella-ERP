@@ -10532,7 +10532,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"Accounts";
 				var parameters = @"[{""name"":""name"",""type"":""text"",""value"":""{{RequestQuery.q_name_v}}""},{""name"":""sortBy"",""type"":""text"",""value"":""{{RequestQuery.sortBy ?? name}}""},{""name"":""page"",""type"":""int"",""value"":""{{RequestQuery.page ?? 1 }}""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10544,7 +10544,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"TaskTypes";
 				var parameters = @"[]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10556,7 +10556,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllProjects";
 				var parameters = @"[{""name"":""sortBy"",""type"":""text"",""value"":""{{RequestQuery.sortBy ?? name}}""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10568,7 +10568,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllUsers";
 				var parameters = @"[]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10580,7 +10580,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllAccounts";
 				var parameters = @"[]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10592,7 +10592,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllUsersSelectOptions";
 				var parameters = @"[{""name"":""DataSourceName"",""type"":""text"",""value"":""AllUsers""},{""name"":""KeyPropName"",""type"":""text"",""value"":""id""},{""name"":""ValuePropName"",""type"":""text"",""value"":""username""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10604,7 +10604,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllAccountsSelectOptions";
 				var parameters = @"[{""name"":""DataSourceName"",""type"":""text"",""value"":""AllAccounts""},{""name"":""KeyPropName"",""type"":""text"",""value"":""id""},{""name"":""ValuePropName"",""type"":""text"",""value"":""name""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10616,7 +10616,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllAccountsSelectOptions";
 				var parameters = @"[{""name"":""DataSourceName"",""type"":""text"",""value"":""AllAccounts""},{""name"":""KeyPropName"",""type"":""text"",""value"":""id""},{""name"":""ValuePropName"",""type"":""text"",""value"":""name""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10628,7 +10628,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllUsers";
 				var parameters = @"[]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10640,7 +10640,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllUsersSelectOptions";
 				var parameters = @"[{""name"":""DataSourceName"",""type"":""text"",""value"":""AllUsers""},{""name"":""KeyPropName"",""type"":""text"",""value"":""id""},{""name"":""ValuePropName"",""type"":""text"",""value"":""username""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10652,7 +10652,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllUsers";
 				var parameters = @"[]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10664,7 +10664,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllUsersSelectOption";
 				var parameters = @"[{""name"":""DataSourceName"",""type"":""text"",""value"":""AllUsers""},{""name"":""KeyPropName"",""type"":""text"",""value"":""id""},{""name"":""ValuePropName"",""type"":""text"",""value"":""username""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10676,7 +10676,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllProjects";
 				var parameters = @"[]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10688,7 +10688,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllProjectsSelectOption";
 				var parameters = @"[{""name"":""DataSourceName"",""type"":""text"",""value"":""AllProjects""},{""name"":""KeyPropName"",""type"":""text"",""value"":""id""},{""name"":""ValuePropName"",""type"":""text"",""value"":""name""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10700,7 +10700,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"MonthSelectOptions";
 				var parameters = @"[]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10712,7 +10712,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllProjectTasks";
 				var parameters = @"[{""name"":""sortBy"",""type"":""text"",""value"":""{{RequestQuery.sortBy}}""},{""name"":""sortOrder"",""type"":""text"",""value"":""{{RequestQuery.sortOrder}}""},{""name"":""page"",""type"":""int"",""value"":""{{RequestQuery.page}}""},{""name"":""searchQuery"",""type"":""text"",""value"":""{{RequestQuery.q_x_search_v}}""},{""name"":""projectId"",""type"":""guid"",""value"":""{{ParentRecord.id}}""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10724,7 +10724,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"TaskAuxData";
 				var parameters = @"[{""name"":""recordId"",""type"":""guid"",""value"":""{{Record.id}}""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10736,7 +10736,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllUsers";
 				var parameters = @"[]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10748,7 +10748,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllUsersSelectOption";
 				var parameters = @"[{""name"":""DataSourceName"",""type"":""text"",""value"":""AllUsers""},{""name"":""KeyPropName"",""type"":""text"",""value"":""id""},{""name"":""ValuePropName"",""type"":""text"",""value"":""username""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10760,7 +10760,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"TaskTypesSelectOption";
 				var parameters = @"[{""name"":""DataSourceName"",""type"":""text"",""value"":""TaskTypes""},{""name"":""KeyPropName"",""type"":""text"",""value"":""id""},{""name"":""ValuePropName"",""type"":""text"",""value"":""label""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10772,7 +10772,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"TaskStatuses";
 				var parameters = @"[]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10784,7 +10784,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllTasks";
 				var parameters = @"[{""name"":""sortBy"",""type"":""text"",""value"":""{{RequestQuery.sortBy}}""},{""name"":""sortOrder"",""type"":""text"",""value"":""{{RequestQuery.sortOrder}}""},{""name"":""page"",""type"":""int"",""value"":""{{RequestQuery.page}}""},{""name"":""searchQuery"",""type"":""text"",""value"":""{{RequestQuery.q_x_search_v}}""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10796,7 +10796,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"TaskTypes";
 				var parameters = @"[]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10808,7 +10808,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"TaskTypeSelectOptions";
 				var parameters = @"[{""name"":""DataSourceName"",""type"":""text"",""value"":""TaskTypes""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10820,7 +10820,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllAccounts";
 				var parameters = @"[]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10832,7 +10832,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"FeedItemsForRecordId";
 				var parameters = @"[{""name"":""recordId"",""type"":""text"",""value"":""{{Record.id}}""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10844,7 +10844,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"CommentsForRecordId";
 				var parameters = @"[{""name"":""recordId"",""type"":""text"",""value"":""{{Record.id}}""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10856,7 +10856,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"TimeLogsForRecordId";
 				var parameters = @"[{""name"":""recordId"",""type"":""text"",""value"":""{{Record.id}}""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10868,7 +10868,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"CurrentDate";
 				var parameters = @"[]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10880,7 +10880,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"ProjectWidgetMyTasks";
 				var parameters = @"[{""name"":""userId"",""type"":""guid"",""value"":""{{CurrentUser.Id}}""},{""name"":""currentDate"",""type"":""date"",""value"":""{{CurrentDate}}""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10892,7 +10892,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"TaskStatusesSelectOption";
 				var parameters = @"[{""name"":""DataSourceName"",""type"":""text"",""value"":""TaskStatuses""},{""name"":""KeyPropName"",""type"":""text"",""value"":""id""},{""name"":""ValuePropName"",""type"":""text"",""value"":""label""},{""name"":""SortOrderPropName"",""type"":""text"",""value"":""sort_index""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10904,7 +10904,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"FeedItemsForRecordId";
 				var parameters = @"[{""name"":""recordId"",""type"":""text"",""value"":""{{Record.id}}""},{""name"":""type"",""type"":""text"",""value"":""{{RequestQuery.type}}""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10916,7 +10916,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"ProjectWidgetMyTasksDueToday";
 				var parameters = @"[{""name"":""userId"",""type"":""guid"",""value"":""{{CurrentUser.Id}}""},{""name"":""currentDate"",""type"":""date"",""value"":""{{CurrentDate}}""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10928,7 +10928,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllAccounts";
 				var parameters = @"[]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10940,7 +10940,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"CurrentDate";
 				var parameters = @"[]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10952,7 +10952,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"TrackTimeTasks";
 				var parameters = @"[{""name"":""search_query"",""type"":""text"",""value"":""{{RequestQuery.q_x_fts_v}}""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10964,7 +10964,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AccountSelectOptions";
 				var parameters = @"[{""name"":""DataSourceName"",""type"":""text"",""value"":""AllAccounts""},{""name"":""KeyPropName"",""type"":""text"",""value"":""id""},{""name"":""ValuePropName"",""type"":""text"",""value"":""name""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10976,7 +10976,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"NoOwnerTasks";
 				var parameters = @"[{""name"":""sortBy"",""type"":""text"",""value"":""{{RequestQuery.sortBy}}""},{""name"":""sortOrder"",""type"":""text"",""value"":""{{RequestQuery.sortOrder}}""},{""name"":""page"",""type"":""int"",""value"":""{{RequestQuery.page}}""},{""name"":""searchQuery"",""type"":""text"",""value"":""{{RequestQuery.q_x_search_v}}""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -10988,7 +10988,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"FeedItemsForRecordId";
 				var parameters = @"[{""name"":""recordId"",""type"":""text"",""value"":""{{CurrentUser.Id}}""},{""name"":""type"",""type"":""text"",""value"":""{{RequestQuery.type}}""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -11000,7 +11000,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"AllOpenTasks";
 				var parameters = @"[{""name"":""sortBy"",""type"":""text"",""value"":""{{RequestQuery.sortBy}}""},{""name"":""sortOrder"",""type"":""text"",""value"":""{{RequestQuery.sortOrder}}""},{""name"":""page"",""type"":""int"",""value"":""{{RequestQuery.page}}""},{""name"":""searchQuery"",""type"":""text"",""value"":""{{RequestQuery.q_x_search_v}}""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -11012,7 +11012,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"TaskStatuses";
 				var parameters = @"[]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -11024,7 +11024,7 @@ ORDER BY rec_task.""end_time"" ASC , rec_task.""priority"" DESC
 				var name = @"TaskStatusSelectOptions";
 				var parameters = @"[{""name"":""DataSourceName"",""type"":""text"",""value"":""TaskStatuses""}]";
 
-				new WebVella.Erp.Web.Repositories.PageDataSourceRepository(ErpSettings.ConnectionString).Insert(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.PageService(ErpSettings.ConnectionString).CreatePageDataSource(id, pageId, dataSourceId, name, parameters, WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
