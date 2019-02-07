@@ -51,9 +51,6 @@ namespace WebVella.Erp.Plugins.SDK.Services
 			//Relations
 			var currentRelationsList = new List<DbEntityRelation>();
 			var oldRelationsList = new List<DbEntityRelation>();
-			var oldRelationsDictionary = new Dictionary<Guid, DbEntityRelation>();
-			var oldRelationsProcessedDictionary = new Dictionary<Guid, bool>();
-			var relationsNameDictionary = new Dictionary<string, DbEntityRelation>();
 
 			//Roles
 			var currentRoleList = new List<EntityRecord>();
@@ -85,14 +82,6 @@ namespace WebVella.Erp.Plugins.SDK.Services
 			}
 			#endregion
 
-			#region << Generate relations list >>
-			foreach (var relation in currentRelationsList)
-			{
-				relationsNameDictionary[relation.Name] = relation;
-			}
-
-			#endregion
-
 			if (includeEntityMeta)
 			{
 				#region << Process entity >>
@@ -110,7 +99,7 @@ namespace WebVella.Erp.Plugins.SDK.Services
 						changeRow.Name = entity.Name;
 						response.Changes.Add(changeRow);
 						string entityCode = "";
-						CreateEntityCode(entity, relationsNameDictionary, out entityCode);
+						CreateEntityCode(entity, out entityCode);
 						response.Code += entityCode;
 					}
 					else
@@ -161,17 +150,27 @@ namespace WebVella.Erp.Plugins.SDK.Services
 			{
 				#region << Process relations >>
 
-				#region << Init >>
+
 				foreach (var relation in oldRelationsList)
 				{
-					oldRelationsDictionary[relation.Id] = relation;
+					if (!currentRelationsList.Any(x => x.Id == relation.Id))
+					{
+						//// DELETED
+						/////////////////////////////////////////////////////
+						changeRow = new MetaChangeModel();
+						changeRow.Element = "relation";
+						changeRow.Type = "deleted";
+						changeRow.Name = relation.Name;
+						response.Changes.Add(changeRow);
+						response.Code += DeleteRelationCode(relation);
+					}
 				}
-				#endregion
 
-				#region << Logic >>
+
 				foreach (var relation in currentRelationsList)
 				{
-					if (!oldRelationsDictionary.ContainsKey(relation.Id))
+					var oldRelation = oldRelationsList.SingleOrDefault(x => x.Id == relation.Id);
+					if (oldRelation == null)
 					{
 						//// CREATED
 						/////////////////////////////////////////////////////
@@ -192,7 +191,7 @@ namespace WebVella.Erp.Plugins.SDK.Services
 					{
 						//// POSSIBLE UPDATE
 						/////////////////////////////////////////////////////
-						var changeCheckResponse = UpdateRelationCode(relation, oldRelationsDictionary[relation.Id]);
+						var changeCheckResponse = UpdateRelationCode(relation, oldRelation);
 						if (changeCheckResponse.HasUpdate)
 						{
 							//1.1 Updated
@@ -204,30 +203,9 @@ namespace WebVella.Erp.Plugins.SDK.Services
 							response.Changes.Add(changeRow);
 							response.Code += changeCheckResponse.Code;
 						}
-
-						// MARK ID AS PROCESSED
-						/////////////////////////////////////////////////////
-						oldRelationsProcessedDictionary[relation.Id] = true;
 					}
 
 				}
-
-				foreach (var relation in oldRelationsList)
-				{
-					if (!oldRelationsProcessedDictionary.ContainsKey(relation.Id))
-					{
-						//// DELETED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "relation";
-						changeRow.Type = "deleted";
-						changeRow.Name = relation.Name;
-						response.Changes.Add(changeRow);
-						response.Code += DeleteRelationCode(relation);
-					}
-				}
-
-				#endregion
 
 				#endregion
 			}
@@ -1206,7 +1184,7 @@ namespace WebVella.Erp.Plugins.SDK.Services
 		#region << Entity >>
 
 
-		private void CreateEntityCode(DbEntity entity, Dictionary<string, DbEntityRelation> relationsNameDictionary, out string entityResponse)
+		private void CreateEntityCode(DbEntity entity, out string entityResponse)
 		{
 			entityResponse = "";
 			//escape some possible quotes
