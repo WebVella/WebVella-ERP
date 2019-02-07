@@ -17,5 +17,8 @@
 				  empty-value-message="@fieldModel.EmptyValueMessage" required="@fieldModel.Required" placeholder="@fieldModel.Placeholder"
 				  description="@fieldModel.Description" locale="@fieldModel.Locale" min="@options.Min"
 				  max="@options.Max" decimal-digits="@options.DecimalDigits">
-	@*<wv-field-prepend><span class='input-group-text'><i class='fa fa-fw fa-percent'></i></span></wv-field-prepend>*@
+	@if (options.ShowIcon)
+	{
+		<wv-field-prepend><span class='input-group-text'><i class='fa fa-fw fa-percent'></i></span></wv-field-prepend>
+	}
 </wv-field-percent>

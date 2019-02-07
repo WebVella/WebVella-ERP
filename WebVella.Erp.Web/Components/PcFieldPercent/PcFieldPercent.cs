@@ -38,6 +38,9 @@ namespace WebVella.Erp.Web.Components
 			public int DecimalDigits { get; set; } = 2;
 
 
+			[JsonProperty(PropertyName = "show_icon")]
+			public bool ShowIcon { get; set; } = false;
+
 			public static PcFieldPercentOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldPercentOptions

@@ -16,5 +16,8 @@
 					  entity-name="@fieldModel.EntityName" api-url="@fieldModel.ApiUrl" access-denied-message="@fieldModel.AccessDeniedMessage"
 					  empty-value-message="@fieldModel.EmptyValueMessage" required="@fieldModel.Required" placeholder="@fieldModel.Placeholder"
 					  description="@fieldModel.Description" locale="@fieldModel.Locale" options="@fieldModel.Options">
-	@*<wv-field-prepend><span class='input-group-text'><i class='fa fa-fw fa-indent'></i></span></wv-field-prepend>*@
+	@if (options.ShowIcon)
+	{
+		<wv-field-prepend><span class='input-group-text'><i class='fa fa-fw fa-indent'></i></span></wv-field-prepend>
+	}
 </wv-field-multiselect>

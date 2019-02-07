@@ -120,13 +120,11 @@ export class WvCreateModal {
         if (backdrop) {
             backdrop.parentNode.removeChild(backdrop);
         }
-        RecalculateComponentList(scope);
     }
     cancelNodeCreateHandler(event) {
         event.preventDefault();
         event.stopPropagation();
         this.filterString = "";
-        RecalculateComponentList(this);
         this.setNodeCreation(null);
     }
     filterChangeHandler(event) {
@@ -134,30 +132,27 @@ export class WvCreateModal {
         event.stopPropagation();
         this.filterString = event.target.value;
         this.page = 1;
-        RecalculateComponentList(this);
     }
     selectComponent(event, component) {
         event.preventDefault();
         event.stopPropagation();
         AddNewComponent(this, component);
         this.filterString = "";
-        RecalculateComponentList(this);
     }
     changeSort(ev, sort) {
         ev.preventDefault();
         this.sort = sort;
         this.page = 1;
-        RecalculateComponentList(this);
     }
     changePage(ev, page) {
         ev.preventDefault();
         if (page > 0) {
             this.page = page;
         }
-        RecalculateComponentList(this);
     }
     render() {
         let scope = this;
+        RecalculateComponentList(scope);
         let showModal = scope.isCreateModalVisible;
         if (!showModal) {
             scope.focused = false;

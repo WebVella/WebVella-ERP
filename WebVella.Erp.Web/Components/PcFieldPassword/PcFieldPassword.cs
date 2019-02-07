@@ -30,6 +30,9 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "max")]
 			public int? Max { get; set; } = null;
 
+			[JsonProperty(PropertyName = "show_icon")]
+			public bool ShowIcon { get; set; } = false;
+
 			public static PcFieldPasswordOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldPasswordOptions
