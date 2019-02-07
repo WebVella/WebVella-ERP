@@ -57,7 +57,7 @@ namespace WebVella.Erp.Hooks
 				List<HookInfo> hookObjs;
 				if (hooksDict.TryGetValue(typeof(T), out hookObjs))
 				{
-					foreach (var obj in hookObjs.Where(x => x.AttachAttribute.Key == key).OrderBy(x => x.AttachAttribute.Priority))
+					foreach (var obj in hookObjs.Where(x => x.AttachAttribute.Key == key).OrderByDescending(x => x.AttachAttribute.Priority))
 						result.Add((T)obj.Instance);
 				}
 			}
