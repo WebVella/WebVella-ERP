@@ -4,7 +4,7 @@ using System.Data;
 
 namespace WebVella.Erp.Web.Repositories
 {
-	public class PageDataSourceRepository : BaseDbRepository
+	internal class PageDataSourceRepository : BaseDbRepository
 	{
 		public PageDataSourceRepository(string conString) : base(conString) { }
 

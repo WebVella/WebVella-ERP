@@ -6,7 +6,7 @@ using System.Data;
 
 namespace WebVella.Erp.Web.Repositories
 {
-	public class SitemapAreaNodeRepository : BaseDbRepository
+	internal class SitemapAreaNodeRepository : BaseDbRepository
 	{
 		
 		public SitemapAreaNodeRepository(string conString) : base(conString) { }

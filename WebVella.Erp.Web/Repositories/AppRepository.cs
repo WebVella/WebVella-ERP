@@ -7,7 +7,7 @@ using System.Data;
 
 namespace WebVella.Erp.Web.Repositories
 {
-	public class AppRepository : BaseDbRepository
+	internal class AppRepository : BaseDbRepository
 	{
 		public AppRepository(string conString) : base(conString) { }
 

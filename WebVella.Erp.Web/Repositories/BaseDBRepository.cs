@@ -3,7 +3,7 @@ using System.Data;
 
 namespace WebVella.Erp.Web.Repositories
 {
-	public class BaseDbRepository
+	internal class BaseDbRepository
 	{
 		protected string connectionString;
 

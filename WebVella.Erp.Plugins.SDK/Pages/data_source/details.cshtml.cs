@@ -9,9 +9,11 @@ using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Api.Models.AutoMapper;
 using WebVella.Erp.Eql;
+using WebVella.Erp.Exceptions;
 using WebVella.Erp.Plugins.SDK.Utils;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Models;
+using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
 
 namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
@@ -66,34 +68,6 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 			}
 		}
 
-		//public string SampleData
-		//{
-		//	get
-		//	{
-		//		var dbDS = DataSourceObject as DatabaseDataSource;
-		//		if (dbDS != null)
-		//		{
-		//			try
-		//			{
-		//				List<EntityRecord> result = dsMan.Execute(dbDS.Id);
-		//				if (result != null)
-		//					return JsonConvert.SerializeObject(result, Formatting.Indented);
-		//			}
-		//			catch (EqlException eqlEx)
-		//			{
-		//				return eqlEx.Errors[0].Message;
-		//			}
-		//			catch (Exception ex)
-		//			{
-		//				return ex.Message;
-		//			}
-		//		}
-
-		//		//TODO process code
-		//		return string.Empty;
-		//	}
-		//}
-
 		public void PageInit()
 		{
 			Init();
@@ -108,9 +82,21 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 			var returnUrlEncoded = HttpUtility.UrlEncode(PageUtils.GetCurrentUrl(PageContext.HttpContext));
 
 			if (DataSourceObject is DatabaseDataSource)
+			{
+				var existingPageDataSources = new PageService().GetPageDataSourcesByDataSourceId(DataSourceObject.Id);
+				if(existingPageDataSources.Count > 0 )
+					HeaderActions.Add($"<button type='button' class='btn btn-white btn-sm disabled' tooltip='There are existing page data sources related'><i class='ti-lock'></i> Delete Locked</button>");
+				else
+					HeaderActions.Add($"<button type='button' onclick='DeleteDataSource()' class='btn btn-white btn-sm'><i class='ti-trash go-red'></i> Delete</button>");
+
 				HeaderActions.Add($"<a href='/sdk/objects/data_source/m/{RecordId}/manage?ReturnUrl={returnUrlEncoded}' class='btn btn-white btn-sm'><i class='ti-settings go-orange'></i> Manage</a>");
+				
+			}
 			else
-				HeaderActions.Add($"<button type='button' class='btn btn-white btn-sm disabled'><i class='ti-lock'></i> Locked</a>");
+			{
+				HeaderActions.Add($"<button type='button' class='btn btn-white btn-sm disabled'><i class='ti-lock'></i> Manage Locked</a>");
+				HeaderActions.Add($"<button type='button' class='btn btn-white btn-sm disabled'><i class='ti-lock'></i> Delete Locked</button>");
+			}
 
 		}
 
@@ -134,7 +120,29 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 			if (DataSourceObject == null)
 				return NotFound();
 
-			ErpRequestContext.PageContext = PageContext;
+			var existingPageDataSources = new PageService().GetPageDataSourcesByDataSourceId(DataSourceObject.Id);
+			if (existingPageDataSources.Count > 0)
+				return Redirect($"/sdk/objects/data_source/r/{DataSourceObject.Id}");
+
+			try
+			{
+				var operation = PageContext.HttpContext.Request.Query["op"];
+
+				if (operation == "delete")
+					dsMan.Delete(DataSourceObject.Id);
+				else
+					return NotFound();
+
+				if (!String.IsNullOrWhiteSpace(ReturnUrl))
+					return Redirect(ReturnUrl);
+				
+				return Redirect($"/sdk/objects/data_source/l/list");
+			}
+			catch (ValidationException ex)
+			{
+				Validation.Message = ex.Message;
+				Validation.Errors = ex.Errors;
+			}
 
 			BeforeRender();
 			return Page();
