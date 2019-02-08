@@ -4174,7 +4174,7 @@ border-bottom-style:dashed;
 
 .erp-list .sort-link {
 	text-decoration: none;
-	float: right;
+	/*float: right;*/
 	margin-left:5px;
 	height: 16px;
 }
@@ -5455,6 +5455,8 @@ wv-pb-manager .wv-pb-node > div > .row {
 	.login-card .card-header {
 		background: rgb(31, 40, 52);
 		color: white;
+		font-size:14px;
+		font-weight:normal;
 	}
 
 		.login-card .card-header img {

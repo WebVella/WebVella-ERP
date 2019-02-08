@@ -14,7 +14,7 @@ namespace WebVella.Erp.Plugins.Project.DataSource
 		public MonthSelectOptions() : base()
 		{
 			Id = new Guid("BD83B38B-0211-4AAB-9049-97E9E2847C57");
-			Name = "MonthSelectOptions";
+			Name = "WvProjectMonthSelectOptions";
 			Description = "List of all months with month number as value";
 			ResultModel = "List<SelectOption>";
 

@@ -14,7 +14,7 @@ namespace WebVella.Erp.Plugins.Project.DataSource
 		public TrackTimeTasks() : base()
 		{
 			Id = new Guid("473EE9B6-2131-4164-B5FE-D9B3073E9178");
-			Name = "TrackTimeTasks";
+			Name = "WvProjectTrackTimeTasks";
 			Description = "Current User's open tasks and track time info";
 			ResultModel = "List<EntityRecord>";
 

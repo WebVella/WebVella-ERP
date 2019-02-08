@@ -66,7 +66,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 			}
 
 			patchRecord["id"] = taskId;
-			patchRecord["key"] = projectAbbr + "-" + taskRecord["number"];
+			patchRecord["key"] = projectAbbr + "-" + ((decimal)taskRecord["number"]).ToString("N0"); ;
 
 			return patchRecord;
 		}
@@ -260,7 +260,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 			}
 			else
 			{
-				var eqlCommand = "SELECT created_on,type_id,$project_nn_task.id FROM task WHERE created_by = @currentUserId ORDER BY created_on PAGE 1 PAGESIZE 1";
+				var eqlCommand = "SELECT created_on,type_id,$project_nn_task.id FROM task WHERE created_by = @currentUserId ORDER BY created_on DESC PAGE 1 PAGESIZE 1";
 				var eqlParams = new List<EqlParameter>() { new EqlParameter("currentUserId", currentUser.Id) };
 				var eqlResult = new EqlCommand(eqlCommand, eqlParams).Execute();
 				if (eqlResult != null && eqlResult is EntityRecordList && eqlResult.Count > 0)
@@ -376,12 +376,72 @@ namespace WebVella.Erp.Plugins.Project.Services
 				body: taskSnippet, relatedRecords: relatedRecords, scope: scope, type: "task");
 		}
 
+		public void PostPreUpdateApiHookLogic(string entityName, EntityRecord record, List<ErrorModel> errors)
+		{
+			var eqlResult = new EqlCommand("SELECT id,number, $project_nn_task.id, $project_nn_task.abbr FROM task WHERE id = @taskId", new EqlParameter("taskId",(Guid)record["id"])).Execute();
+			if (eqlResult.Count > 0)
+			{
+				var oldRecord = eqlResult[0];
+				Guid? oldProjectId = null;
+				Guid? newProjectId = null;
+				var projectAbbr = "";
+				if (oldRecord.Properties.ContainsKey("$project_nn_task") && oldRecord["$project_nn_task"] is List<EntityRecord>)
+				{
+					var projectRecords = (List<EntityRecord>)oldRecord["$project_nn_task"];
+					if (projectRecords.Any()){
+						if (projectRecords[0].Properties.ContainsKey("id"))
+						{
+							oldProjectId = (Guid)projectRecords[0]["id"];
+						}
+						if (projectRecords[0].Properties.ContainsKey("abbr"))
+						{
+							projectAbbr = (string)projectRecords[0]["abbr"];
+						}
+					}
+				}
+
+				if (record.Properties.ContainsKey("$project_nn_task.id") && record["$project_nn_task.id"] != null) {
+					if(record["$project_nn_task.id"] is Guid)
+						newProjectId = (Guid)record["$project_nn_task.id"];
+					if (record["$project_nn_task.id"] is string)
+						newProjectId = new Guid(record["$project_nn_task.id"].ToString());
+				}
+
+				if (oldProjectId != null && newProjectId != null && oldProjectId != newProjectId)
+				{
+					var recMan = new RecordManager();
+					var relations = new EntityRelationManager().Read().Object;
+					var projectTaskRel = relations.First(x => x.Name == "project_nn_task");
+					if (projectTaskRel == null)
+						throw new Exception("project_nn_task relation not found");
+
+					//Remove all NN relation
+					var removeRelResponse = recMan.RemoveRelationManyToManyRecord(projectTaskRel.Id, oldProjectId, (Guid)record["id"]);
+					if (!removeRelResponse.Success)
+						throw new Exception(removeRelResponse.Message);
+
+					//Create new NN relation
+					var addRelResponse = recMan.RemoveRelationManyToManyRecord(projectTaskRel.Id, newProjectId, (Guid)record["id"]);
+					if (!addRelResponse.Success)
+						throw new Exception(addRelResponse.Message);
+
+					//change key
+					record["key"] = projectAbbr + "-" + ((decimal)oldRecord["number"]).ToString("N0");
+
+
+					//TODO - check if the new project owner is in the watcher list and add it if not
+				}
+			}
+		}
+
 		public void PostUpdateApiHookLogic(string entityName, EntityRecord record)
 		{
 			//Update key and search fields
 			Guid projectId = Guid.Empty;
 			Guid? projectOwnerId = null;
 			string taskSubject = "";
+
+
 			var patchRecord = new TaskService().SetCalculationFields((Guid)record["id"], subject: out taskSubject, projectId: out projectId, projectOwnerId: out projectOwnerId);
 			var updateResponse = new RecordManager(executeHooks: false).UpdateRecord("task", patchRecord);
 			if (!updateResponse.Success)
