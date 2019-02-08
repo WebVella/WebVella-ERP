@@ -10,47 +10,46 @@ namespace WebVella.Erp.Plugins.Mail.Api
 	public class SmtpService
 	{
 		[JsonProperty(PropertyName = "id")]
-		public Guid Id { get; private set; }
+		public Guid Id { get; internal set; }
 
 		[JsonProperty(PropertyName = "name")]
-		public string Name { get; private set; }
+		public string Name { get; internal set; }
 
 		[JsonProperty(PropertyName = "server")]
-		public string Server { get; private set; }
+		public string Server { get; internal set; }
 
 		[JsonProperty(PropertyName = "port")]
-		public int Port { get; private set; }
+		public int Port { get; internal set; }
 
 		[JsonProperty(PropertyName = "username")]
-		public string Username { get; private set; }
+		public string Username { get; internal set; }
 
 		[JsonProperty(PropertyName = "password")]
-		public string Password { get; private set; }
+		public string Password { get; internal set; }
 
 		[JsonProperty(PropertyName = "default_from_name")]
-		public string DefaultFromName { get; private set; }
+		public string DefaultFromName { get; internal set; }
 
 		[JsonProperty(PropertyName = "default_from_email")]
-		public string DefaultFromEmail { get; private set; }
+		public string DefaultFromEmail { get; internal set; }
 
 		[JsonProperty(PropertyName = "default_reply_to_email")]
-		public string DefaultReplyToEmail { get; private set; }
+		public string DefaultReplyToEmail { get; internal set; }
 
 		[JsonProperty(PropertyName = "max_retries_count")]
-		public int MaxRetriesCount { get; private set; }
+		public int MaxRetriesCount { get; internal set; }
 
-		[JsonProperty(PropertyName = "max_wait_minutes")]
-		public int RetryWaitMinutes { get; private set; }
+		[JsonProperty(PropertyName = "retry_wait_minutes")]
+		public int RetryWaitMinutes { get; internal set; }
 
 		[JsonProperty(PropertyName = "is_default")]
-		public bool IsDefault { get; private set; }
+		public bool IsDefault { get; internal set; }
 
 		[JsonProperty(PropertyName = "connection_security")]
-		public SecureSocketOptions ConnectionSecurity { get; private set; }
+		public SecureSocketOptions ConnectionSecurity { get; internal set; }
 
-		internal SmtpService(string name = null)
+		internal SmtpService()
 		{
-			//TODO load smtp service settings
 		}
 
 		public void SendEmail(string toName, string toEmail, string subject, string textBody, string htmlBody)
@@ -64,8 +63,8 @@ namespace WebVella.Erp.Plugins.Mail.Api
 				message.From.Add(new MailboxAddress(DefaultFromEmail));
 
 			if (!string.IsNullOrWhiteSpace(toName))
-				message.To.Add(new MailboxAddress(toName, toEmail));
-			else
+				message.To.Add(new MailboxAddress(toName, toEmail)); 
+			else 
 				message.To.Add(new MailboxAddress(toEmail));
 
 			if (!string.IsNullOrWhiteSpace(DefaultReplyToEmail))

@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>WebVella.Erp</id>
-		<version>1.0.1</version>
+		<version>1.0.2</version>
 		<title>WebVella.Erp</title>
 		<authors>WebVella</authors>
 		<owners>WebVella</owners>
@@ -18,7 +18,7 @@
 			<group targetFramework=".NETCoreApp2.2">
 				<dependency id="AutoMapper" version="8.0.0" />
 				<dependency id="CoreCompat.System.Drawing.v2" version="5.2.0-preview1-r131" />
-				<dependency id="CsvHelper" version="12.1.1" />
+				<dependency id="CsvHelper" version="12.1.2" />
 				<dependency id="Irony.NetCore" version="1.0.11" />
 				<dependency id="Microsoft.AspNetCore.Authentication.Cookies" version="2.2.0" />
 				<dependency id="Microsoft.AspNetCore.Diagnostics" version="2.2.0" />

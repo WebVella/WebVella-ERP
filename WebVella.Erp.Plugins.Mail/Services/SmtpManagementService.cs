@@ -337,7 +337,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 			if (rec.Properties.ContainsKey("is_default") && (bool)rec["is_default"])
 			{
 
-				var recMan = new RecordManager();
+				var recMan = new RecordManager(executeHooks: false);
 				var records = new EqlCommand("SELECT id,is_default FROM smtp_service").Execute();
 				foreach (var record in records)
 				{
