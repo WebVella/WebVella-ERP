@@ -211,7 +211,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					{
 						sortOrder = ViewContext.HttpContext.Request.Query[(String.IsNullOrWhiteSpace(Prefix) ? "" : Prefix) + QueryStringSortOrder];
 					}
-
+					thEl.InnerHtml.AppendHtml(column.Label);
 					if (column.Sortable)
 					{
 						var columnSortOrder = "";
@@ -237,7 +237,6 @@ namespace WebVella.Erp.Web.TagHelpers
 
 						thEl.InnerHtml.AppendHtml(sortLink);
 					}
-					thEl.InnerHtml.AppendHtml(column.Label);
 					trEl.InnerHtml.AppendHtml(thEl);
 				}
 

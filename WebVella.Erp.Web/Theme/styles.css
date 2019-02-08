@@ -4175,13 +4175,13 @@ border-bottom-style:dashed;
 .erp-list .sort-link {
 	text-decoration: none;
 	float: right;
-	opacity: 0;
+	margin-left:5px;
 	height: 16px;
 }
 
-.erp-list thead:hover .sort-link {
+/*.erp-list thead:hover .sort-link {
 	opacity: 1;
-}
+}*/
 
 .erp-list .sort-link em {
 	position: absolute;
@@ -4199,7 +4199,7 @@ border-bottom-style:dashed;
 .erp-list .sort-marker {
 	display: inline-block;
 	width: 12px;
-	height: 16px;
+	height: 12px;
 	font-size: 10px;
 	line-height: 16px;
 	overflow: hidden;
