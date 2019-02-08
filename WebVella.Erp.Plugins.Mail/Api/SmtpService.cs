@@ -3,7 +3,12 @@ using MailKit.Security;
 using MimeKit;
 using Newtonsoft.Json;
 using System;
-
+using WebVella.Erp.Api;
+using WebVella.Erp.Api.Models;
+using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Eql;
+using WebVella.Erp.Exceptions;
+using WebVella.Erp.Utilities;
 
 namespace WebVella.Erp.Plugins.Mail.Api
 {
@@ -54,7 +59,17 @@ namespace WebVella.Erp.Plugins.Mail.Api
 
 		public void SendEmail(string toName, string toEmail, string subject, string textBody, string htmlBody)
 		{
-			//todo validation
+			ValidationException ex = new ValidationException();
+			
+			if( string.IsNullOrEmpty(toEmail) )
+				ex.AddError("toEmail", "ToEmail is not specified.");
+			else if( toEmail.IsEmail() )
+				ex.AddError("toEmail", "ToEmail is not valid email address.");
+
+			if (string.IsNullOrEmpty(subject))
+				ex.AddError("subject", "Subject is required.");
+
+			ex.CheckAndThrow();
 
 			var message = new MimeMessage();
 			if (!string.IsNullOrWhiteSpace(DefaultFromName))
@@ -63,13 +78,13 @@ namespace WebVella.Erp.Plugins.Mail.Api
 				message.From.Add(new MailboxAddress(DefaultFromEmail));
 
 			if (!string.IsNullOrWhiteSpace(toName))
-				message.To.Add(new MailboxAddress(toName, toEmail)); 
-			else 
+				message.To.Add(new MailboxAddress(toName, toEmail));
+			else
 				message.To.Add(new MailboxAddress(toEmail));
 
 			if (!string.IsNullOrWhiteSpace(DefaultReplyToEmail))
 				message.ReplyTo.Add(new MailboxAddress(DefaultReplyToEmail));
-			
+
 			message.Subject = subject;
 
 			var bodyBuilder = new BodyBuilder();
@@ -84,17 +99,83 @@ namespace WebVella.Erp.Plugins.Mail.Api
 
 				client.Connect(Server, Port, ConnectionSecurity);
 
-				if( !string.IsNullOrWhiteSpace(Username) )
+				if (!string.IsNullOrWhiteSpace(Username))
 					client.Authenticate(Username, Password);
 
 				client.Send(message);
 				client.Disconnect(true);
 			}
+
+			Email email = new Email();
+			email.Id = Guid.NewGuid();
+			email.FromEmail = DefaultFromEmail;
+			email.FromName = DefaultFromName;
+			email.ReplyToEmail = DefaultReplyToEmail;
+			email.ToEmail = toEmail;
+			email.ToName = toName;
+			email.Subject = subject;
+			email.ContentHtml = htmlBody;
+			email.ContentText = textBody;
+			email.CreatedOn = DateTime.UtcNow;
+			email.SentOn = email.CreatedOn;
+			email.Priority = EmailPriority.Normal;
+			email.Status = EmailStatus.Sent;
+			email.ServerError = string.Empty;
+			email.LastRetry = null;
+			email.RetriesCount = 0;
+			email.ServiceId = Id;
+
+			SaveEmail(email);
 		}
 
-		public void QueueEmail(string toName, string toEmail, string subject, string textBody, string htmlBody)
+		public void QueueEmail(string toName, string toEmail, string subject, string textBody, string htmlBody, EmailPriority priority )
 		{
+			ValidationException ex = new ValidationException();
 
+			if (string.IsNullOrEmpty(toEmail))
+				ex.AddError("toEmail", "ToEmail is not specified.");
+			else if (toEmail.IsEmail())
+				ex.AddError("toEmail", "ToEmail is not valid email address.");
+
+			if (string.IsNullOrEmpty(subject))
+				ex.AddError("subject", "Subject is required.");
+
+			ex.CheckAndThrow();
+
+			Email email = new Email();
+			email.Id = Guid.NewGuid();
+			email.FromEmail = DefaultFromEmail;
+			email.FromName = DefaultFromName;
+			email.ReplyToEmail = DefaultReplyToEmail;
+			email.ToEmail = toEmail;
+			email.ToName = toName;
+			email.Subject = subject;
+			email.ContentHtml = htmlBody;
+			email.ContentText = textBody;
+			email.CreatedOn = DateTime.UtcNow;
+			email.SentOn = null;
+			email.Priority = priority;
+			email.Status = EmailStatus.Pending;
+			email.ServerError = string.Empty;
+			email.LastRetry = null;
+			email.RetriesCount = 0;
+			email.ServiceId = Id;
+			SaveEmail(email);
+		}
+
+		internal void SaveEmail(Email email)
+		{
+			RecordManager recMan = new RecordManager();
+			recMan.CreateRecord("email", email.MapTo<EntityRecord>());
+		}
+
+		internal Email GetEmail(Guid id)
+		{
+			var result = new EqlCommand("SELECT * FROM email WHERE id = @id", new EqlParameter("id", id)).Execute();
+			if (result.Count == 1)
+				return result[0].MapTo<Email>();
+
+			return null;
 		}
 	}
 }

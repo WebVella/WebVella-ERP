@@ -4,7 +4,6 @@ using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Database;
 using WebVella.Erp.Exceptions;
-using WebVella.Erp.Plugins.Mail.Model;
 
 namespace WebVella.Erp.Plugins.Mail
 {

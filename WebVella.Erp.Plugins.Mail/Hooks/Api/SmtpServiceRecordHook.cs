@@ -2,12 +2,14 @@
 using System.Linq;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Hooks;
+using WebVella.Erp.Plugins.Mail.Api;
 using WebVella.Erp.Plugins.Mail.Services;
 
 namespace WebVella.Erp.Plugins.Mail.Hooks.Api
 {
 	[HookAttachment("smtp_service")]
-	public class SmtpServiceRecordHook : IErpPreUpdateRecordHook, IErpPreCreateRecordHook
+	public class SmtpServiceRecordHook : IErpPreUpdateRecordHook, IErpPreCreateRecordHook,
+		IErpPostCreateRecordHook, IErpPostUpdateRecordHook, IErpPreDeleteRecordHook
 	{
 		SmtpManagementService smtpManagementService = new SmtpManagementService();
 
@@ -26,5 +28,21 @@ namespace WebVella.Erp.Plugins.Mail.Hooks.Api
 				return;
 			smtpManagementService.HandleDefaultServiceSetup(record,errors);
 		}
+
+		public void OnPostCreateRecord(string entityName, EntityRecord record)
+		{
+			ServiceManager.ClearCache();
+		}
+
+		public void OnPostUpdateRecord(string entityName, EntityRecord record)
+		{
+			ServiceManager.ClearCache();
+		}
+
+		public void OnPreDeleteRecord(string entityName, EntityRecord record, List<ErrorModel> errors)
+		{
+			ServiceManager.ClearCache();
+		}
+
 	}
 }
