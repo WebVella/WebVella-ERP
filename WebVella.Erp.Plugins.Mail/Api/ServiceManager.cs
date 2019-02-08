@@ -1,13 +1,82 @@
-﻿using MailKit.Security;
+﻿using Microsoft.Extensions.Caching.Memory;
 using System;
 using WebVella.Erp.Api.Models;
+using WebVella.Erp.Api.Models.AutoMapper;
 using WebVella.Erp.Eql;
 
 namespace WebVella.Erp.Plugins.Mail.Api
 {
 	public class ServiceManager
 	{
+		static ServiceManager()
+		{
+			InitCache();
+		}
+
+		#region <=== General Cache Methods ===>
+
+		private static IMemoryCache cache;
+
+		private static void InitCache()
+		{
+			if (cache != null)
+				cache.Dispose();
+
+			var cacheOptions = new MemoryCacheOptions();
+			cacheOptions.ExpirationScanFrequency = TimeSpan.FromHours(1);
+			cache = new MemoryCache(cacheOptions);
+		}
+
+		internal static void ClearCache()
+		{
+			InitCache();
+		}
+
+		private static void AddObjectToCache(string key, object obj)
+		{
+			var options = new MemoryCacheEntryOptions();
+			options.SetAbsoluteExpiration(TimeSpan.FromHours(1));
+			cache.Set(key, obj, options);
+		}
+
+		private static object GetObjectFromCache(string key)
+		{
+			object result = null;
+			bool found = cache.TryGetValue(key, out result);
+			return result;
+		}
+
+		#endregion
+
+		#region <=== SMTP Services ===>
+		
+		public SmtpService GetSmtpService(Guid id)
+		{
+			string cacheKey = $"SMTP-{id}";
+			SmtpService service = GetObjectFromCache(cacheKey) as SmtpService;
+			if (service == null)
+			{
+				service = GetSmtpServiceInternal(id);
+				if (service != null)
+					AddObjectToCache(cacheKey, service);
+			}
+			return service;
+		}
+
 		public SmtpService GetSmtpService(string name = null)
+		{
+			string cacheKey = $"SMTP-{name}";
+			SmtpService service = GetObjectFromCache(cacheKey) as SmtpService;
+			if (service == null)
+			{
+				service = GetSmtpServiceInternal(name);
+				if (service != null)
+					AddObjectToCache(cacheKey, service);
+			}
+			return service;
+		}
+
+		internal SmtpService GetSmtpServiceInternal(string name = null)
 		{
 			EntityRecord smtpServiceRec = null;
 			if (name != null)
@@ -28,22 +97,18 @@ namespace WebVella.Erp.Plugins.Mail.Api
 
 				smtpServiceRec = result[0];
 			}
-
-			SmtpService smtpService = new SmtpService();
-			smtpService.Id = (Guid)smtpServiceRec["id"];
-			smtpService.Name = (string)smtpServiceRec["name"];
-			smtpService.Server = (string)smtpServiceRec["server"];
-			smtpService.Port = (int)((decimal)smtpServiceRec["port"]);
-			smtpService.Username = (string)smtpServiceRec["username"];
-			smtpService.Password = (string)smtpServiceRec["password"];
-			smtpService.DefaultFromEmail = (string)smtpServiceRec["default_from_email"];
-			smtpService.DefaultFromName = (string)smtpServiceRec["default_from_name"];
-			smtpService.DefaultReplyToEmail = (string)smtpServiceRec["default_reply_to_email"];
-			smtpService.MaxRetriesCount = (int)((decimal)smtpServiceRec["max_retries_count"]);
-			smtpService.RetryWaitMinutes = (int)((decimal)smtpServiceRec["retry_wait_minutes"]);
-			smtpService.IsDefault = (bool)smtpServiceRec["is_default"];
-			smtpService.ConnectionSecurity = (SecureSocketOptions)(int.Parse((string)smtpServiceRec["connection_security"]));
-			return smtpService;
+			return smtpServiceRec.MapTo<SmtpService>();
 		}
+
+		internal SmtpService GetSmtpServiceInternal(Guid id)
+		{
+			var result = new EqlCommand("SELECT * FROM smtp_service WHERE id = @id", new EqlParameter("id", id)).Execute();
+			if (result.Count == 0)
+				throw new Exception($"SmtpService with id = '{id}' not found.");
+
+			return result[0].MapTo<SmtpService>();
+		}
+
+		#endregion
 	}
 }

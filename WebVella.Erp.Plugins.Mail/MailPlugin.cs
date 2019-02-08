@@ -1,7 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using AutoMapper.Configuration;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using WebVella.Erp.Api;
+using WebVella.Erp.Jobs;
 using WebVella.Erp.Plugins.Mail.Api;
+using WebVella.Erp.Plugins.Mail.Jobs;
 
 namespace WebVella.Erp.Plugins.Mail
 {
@@ -15,11 +19,74 @@ namespace WebVella.Erp.Plugins.Mail
 			using (var ctx = SecurityContext.OpenSystemScope())
 			{
 				ProcessPatches();
+				SetSchedulePlans();
 			}
 
 			//ServiceManager sm = new ServiceManager();
 			//var smtpService = sm.GetSmtpService();
 			//smtpService.SendEmail("rumen webvella", "rumen@webvella.com", "testing smtp service", "text body", "<html><body><h1>html body</h1></body></html>");
+		}
+
+		public override IEnumerable<Type> GetJobTypes()
+		{
+			var list = new List<Type>();
+			list.Add( typeof(ProcessSmtpQueueJob) );
+			return list;
+		}
+
+		public override void SetAutoMapperConfiguration(MapperConfigurationExpression cfg)
+		{
+			Api.AutoMapper.MailPluginAutoMapperConfiguration.Configure(cfg);
+			base.SetAutoMapperConfiguration(cfg);
+		}
+
+		private void SetSchedulePlans()
+		{
+			DateTime utcNow = DateTime.UtcNow;
+
+			#region << StartTasksOnStartDate >>
+			{
+				Guid checkBotSchedulePlanId = new Guid("8f410aca-a537-4c3f-b49b-927670534c07");
+				string planName = "Start tasks to process SMTP email queue";
+				SchedulePlan checkBotSchedulePlan = ScheduleManager.Current.GetSchedulePlan(checkBotSchedulePlanId);
+
+				if (checkBotSchedulePlan == null)
+				{
+					checkBotSchedulePlan = new SchedulePlan();
+					checkBotSchedulePlan.Id = checkBotSchedulePlanId;
+					checkBotSchedulePlan.Name = planName;
+					checkBotSchedulePlan.Type = SchedulePlanType.Interval;
+					checkBotSchedulePlan.StartDate = new DateTime(utcNow.Year, utcNow.Month, utcNow.Day, 0, 10, 0, DateTimeKind.Utc);
+					checkBotSchedulePlan.EndDate = null;
+					checkBotSchedulePlan.ScheduledDays = new SchedulePlanDaysOfWeek()
+					{
+						ScheduledOnMonday = true,
+						ScheduledOnTuesday = true,
+						ScheduledOnWednesday = true,
+						ScheduledOnThursday = true,
+						ScheduledOnFriday = true,
+						ScheduledOnSaturday = true,
+						ScheduledOnSunday = true
+					};
+					checkBotSchedulePlan.IntervalInMinutes = 10;
+					checkBotSchedulePlan.StartTimespan = 0;
+					checkBotSchedulePlan.EndTimespan = 1440;
+					checkBotSchedulePlan.JobTypeId = new Guid("9b301dca-6c81-40dd-887c-efd31c23bd77");
+					checkBotSchedulePlan.JobAttributes = null;
+					checkBotSchedulePlan.Enabled = true;
+					checkBotSchedulePlan.LastModifiedBy = null;
+
+					ScheduleManager.Current.CreateSchedulePlan(checkBotSchedulePlan);
+				}
+			}
+			#endregion
+
+		}
+
+		class PluginSettings
+		{
+			[JsonProperty(PropertyName = "version")]
+			public int Version { get; set; }
 		}
 	}
 }

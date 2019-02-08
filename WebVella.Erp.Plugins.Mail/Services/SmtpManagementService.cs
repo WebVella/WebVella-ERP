@@ -9,6 +9,9 @@ namespace WebVella.Erp.Plugins.Mail.Services
 {
 	internal class SmtpManagementService
 	{
+		private static object lockObject = new object();
+		private static bool queueProcessingInProgress = false;
+
 		public void ValidatePreCreateRecord(EntityRecord rec, List<ErrorModel> errors)
 		{
 			foreach (var prop in rec.Properties)
@@ -122,7 +125,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 							}
 							else
 							{
-								if (minutes < 1 || minutes > 1440 )
+								if (minutes < 1 || minutes > 1440)
 								{
 									errors.Add(new ErrorModel
 									{
@@ -175,7 +178,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 					case "name":
 						{
 							var result = new EqlCommand("SELECT * FROM smtp_service WHERE name = @name", new EqlParameter("name", rec["name"])).Execute();
-							if (result.Count > 1 )
+							if (result.Count > 1)
 							{
 								errors.Add(new ErrorModel
 								{
@@ -184,7 +187,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 									Message = "There is already existing service with that name. Name must be unique"
 								});
 							}
-							else if( result.Count == 1 && (Guid)result[0]["id"] != (Guid)rec["id"])
+							else if (result.Count == 1 && (Guid)result[0]["id"] != (Guid)rec["id"])
 							{
 								errors.Add(new ErrorModel
 								{
@@ -348,10 +351,10 @@ namespace WebVella.Erp.Plugins.Mail.Services
 					}
 				}
 			}
-			else if (rec.Properties.ContainsKey("is_default") && (bool)rec["is_default"] == false )
+			else if (rec.Properties.ContainsKey("is_default") && (bool)rec["is_default"] == false)
 			{
 				var currentRecord = new EqlCommand("SELECT * FROM smtp_service WHERE id = @id", new EqlParameter("id", rec["id"])).Execute();
-				if( (bool)currentRecord[0]["is_default"] )
+				if ((bool)currentRecord[0]["is_default"])
 				{
 					errors.Add(new ErrorModel
 					{
@@ -359,6 +362,29 @@ namespace WebVella.Erp.Plugins.Mail.Services
 						Value = ((bool)rec["is_default"]).ToString(),
 						Message = $"Forbidden. There should always be an active default service."
 					});
+				}
+			}
+		}
+
+		public void ProcessSmtpQueue()
+		{
+			lock (lockObject)
+			{
+				if (queueProcessingInProgress)
+					return;
+
+				queueProcessingInProgress = true;
+			}
+
+			try
+			{ 
+				//TODO implement email queue processing
+			}
+			finally
+			{
+				lock (lockObject)
+				{
+					queueProcessingInProgress = false;
 				}
 			}
 		}
