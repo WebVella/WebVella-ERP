@@ -165,17 +165,6 @@ namespace WebVella.Erp.Jobs
 			}
 
 			DataTable dtJobs = ExecuteQuerySqlCommand(sql, parameters);
-
-			var columnCount = dtJobs.Columns.Count;
-			foreach (DataRow dr in dtJobs.Rows)
-			{
-				for (int i = 0; i < columnCount; i++)
-				{
-					if (dr[i] is DateTime)
-						dr[i] = DateTime.SpecifyKind(((DateTime)dr[i]), DateTimeKind.Utc);
-				}
-			}
-
 			return dtJobs.Rows.MapTo<Job>();
 		}
 
@@ -242,20 +231,6 @@ namespace WebVella.Erp.Jobs
 			}
 
 			DataTable dtJobs = ExecuteQuerySqlCommand(sql, parameters);
-
-			var columnCount = dtJobs.Columns.Count;
-			foreach (DataRow dr in dtJobs.Rows)
-			{
-				for (int i = 0; i < columnCount; i++)
-				{
-					if (dr[i] is DateTime)
-					{
-						DateTime utcDate = DateTime.SpecifyKind(((DateTime)dr[i]), DateTimeKind.Utc);
-						dr[i] = utcDate;
-					}
-				}
-			}
-
 			return dtJobs.Rows.MapTo<Job>();
 		}
 
