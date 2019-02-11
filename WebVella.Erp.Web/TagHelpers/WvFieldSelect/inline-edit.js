@@ -112,7 +112,7 @@ function SelectInlineEditInit(fieldId, fieldName, entityName, recordId, config) 
 			data: JSON.stringify(submitObj),
 			success: function (response) {
 				if (response.success) {
-					SelectInlineEditInitSuccessCallback(response, fieldId, fieldName, entityName, recordId, config);
+					SelectInlineEditInitSuccessCallback(response, fieldId, fieldName, entityName, recordId,inputValue, config);
 				}
 				else {
 					SelectInlineEditInitErrorCallback(response, fieldId, fieldName, entityName, recordId, config);
@@ -130,10 +130,13 @@ function SelectInlineEditInit(fieldId, fieldName, entityName, recordId, config) 
 	});
 }
 
-function SelectInlineEditInitSuccessCallback(response, fieldId, fieldName, entityName, recordId, config) {
+function SelectInlineEditInitSuccessCallback(response, fieldId, fieldName, entityName, recordId,inputValue, config) {
 	var selectors = SelectInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
-	var newValue = ProcessNewValue(response, fieldName);
+	var newValue = inputValue;
 
+	if (!fieldName.startsWith("$")) {
+		newValue = ProcessNewValue(response, fieldName);
+	}
 
 	var selectOptions = $(selectors.inputEl + ' option');
 	var matchedOption = _.find(selectOptions, function (record) {
