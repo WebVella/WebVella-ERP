@@ -15,7 +15,7 @@ namespace WebVella.Erp.Plugins.Mail.Api
 
 		#region <=== General Cache Methods ===>
 
-		private static IMemoryCache cache;
+		private static IMemoryCache cache; 
 
 		private static void InitCache()
 		{

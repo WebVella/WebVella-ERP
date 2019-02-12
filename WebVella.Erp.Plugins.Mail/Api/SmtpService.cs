@@ -8,6 +8,7 @@ using WebVella.Erp.Api.Models;
 using WebVella.Erp.Api.Models.AutoMapper;
 using WebVella.Erp.Eql;
 using WebVella.Erp.Exceptions;
+using WebVella.Erp.Plugins.Mail.Services;
 using WebVella.Erp.Utilities;
 
 namespace WebVella.Erp.Plugins.Mail.Api
@@ -121,11 +122,11 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			email.Priority = EmailPriority.Normal;
 			email.Status = EmailStatus.Sent;
 			email.ServerError = string.Empty;
-			email.LastRetry = null;
+			email.ScheduledOn = null;
 			email.RetriesCount = 0;
 			email.ServiceId = Id;
 
-			SaveEmail(email);
+			new SmtpInternalService().SaveEmail(email);
 		}
 
 		public void QueueEmail(string toName, string toEmail, string subject, string textBody, string htmlBody, EmailPriority priority )
@@ -155,27 +156,12 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			email.CreatedOn = DateTime.UtcNow;
 			email.SentOn = null;
 			email.Priority = priority;
-			email.Status = EmailStatus.Pending;
+			email.Status = EmailStatus.Pending; 
 			email.ServerError = string.Empty;
-			email.LastRetry = null;
+			email.ScheduledOn = email.CreatedOn;
 			email.RetriesCount = 0;
 			email.ServiceId = Id;
-			SaveEmail(email);
-		}
-
-		internal void SaveEmail(Email email)
-		{
-			RecordManager recMan = new RecordManager();
-			recMan.CreateRecord("email", email.MapTo<EntityRecord>());
-		}
-
-		internal Email GetEmail(Guid id)
-		{
-			var result = new EqlCommand("SELECT * FROM email WHERE id = @id", new EqlParameter("id", id)).Execute();
-			if (result.Count == 1)
-				return result[0].MapTo<Email>();
-
-			return null;
+			new SmtpInternalService().SaveEmail(email);
 		}
 	}
 }
