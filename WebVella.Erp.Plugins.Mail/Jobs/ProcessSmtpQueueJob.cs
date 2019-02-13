@@ -11,7 +11,7 @@ namespace WebVella.Erp.Plugins.Mail.Jobs
 		{
 			using (SecurityContext.OpenSystemScope())
 			{
-				new SmtpManagementService().ProcessSmtpQueue();
+				new SmtpInternalService().ProcessSmtpQueue();
 			}
 		}
 	}

@@ -50,10 +50,13 @@ namespace WebVella.Erp.Plugins.Mail.Api
 		[JsonProperty(PropertyName = "server_error")]
 		public string ServerError { get; internal set; }
 
-		[JsonProperty(PropertyName = "last_retry")]
-		public DateTime? LastRetry { get; internal set; }
+		[JsonProperty(PropertyName = "scheduled_on")]
+		public DateTime? ScheduledOn { get; internal set; }
 
 		[JsonProperty(PropertyName = "retries_count")]
 		public int RetriesCount { get; internal set; }
+
+		[JsonProperty(PropertyName = "x_search")]
+		public string XSearch { get; internal set; }
 	}
 }

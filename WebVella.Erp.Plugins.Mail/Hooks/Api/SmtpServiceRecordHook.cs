@@ -11,7 +11,7 @@ namespace WebVella.Erp.Plugins.Mail.Hooks.Api
 	public class SmtpServiceRecordHook : IErpPreUpdateRecordHook, IErpPreCreateRecordHook,
 		IErpPostCreateRecordHook, IErpPostUpdateRecordHook, IErpPreDeleteRecordHook
 	{
-		SmtpManagementService smtpManagementService = new SmtpManagementService();
+		SmtpInternalService smtpManagementService = new SmtpInternalService();
 
 		public void OnPreCreateRecord(string entityName, EntityRecord record, List<ErrorModel> errors)
 		{

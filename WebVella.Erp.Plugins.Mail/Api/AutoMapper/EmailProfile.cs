@@ -31,11 +31,12 @@ namespace WebVella.Erp.Web.Models.AutoMapper.Profiles
 			model.ContentHtml = (string)rec["content_html"];
 			model.CreatedOn = (DateTime)rec["created_on"];
 			model.SentOn = (DateTime?)rec["sent_on"];
-			model.Status = (EmailStatus)((int)((decimal)rec["status"]));
-			model.Priority = (EmailPriority)((int)((decimal)rec["priority"]));
+			model.Status = (EmailStatus)(int.Parse((string)rec["status"]));
+			model.Priority = (EmailPriority)(int.Parse((string)rec["priority"]));
 			model.ServerError = (string)rec["server_error"];
-			model.LastRetry = (DateTime?)rec["last_retry"];
-			model.RetriesCount = (int)rec["retries_count"];
+			model.ScheduledOn = (DateTime?)rec["scheduled_on"];
+			model.RetriesCount = (int)((decimal)rec["retries_count"]);
+			model.XSearch = (string)rec["x_search"];
 			return model;
 		}
 
@@ -61,8 +62,9 @@ namespace WebVella.Erp.Web.Models.AutoMapper.Profiles
 			rec["status"] = ((int)model.Status).ToString();
 			rec["priority"] = ((int)model.Priority).ToString();
 			rec["server_error"] = model.ServerError;
-			rec["last_retry"] = model.LastRetry;
-			rec["retries_count"] = model.RetriesCount;
+			rec["scheduled_on"] = model.ScheduledOn;
+			rec["retries_count"] = (decimal)model.RetriesCount;
+			rec["x_search"] = model.XSearch;
 			return rec;
 		}
 	}

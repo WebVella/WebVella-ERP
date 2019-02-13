@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using WebVella.Erp.Api;
 using WebVella.Erp.Jobs;
-using WebVella.Erp.Plugins.Mail.Api;
 using WebVella.Erp.Plugins.Mail.Jobs;
 
 namespace WebVella.Erp.Plugins.Mail
@@ -21,10 +20,6 @@ namespace WebVella.Erp.Plugins.Mail
 				ProcessPatches();
 				SetSchedulePlans();
 			}
-
-			//ServiceManager sm = new ServiceManager();
-			//var smtpService = sm.GetSmtpService();
-			//smtpService.SendEmail("rumen webvella", "rumen@webvella.com", "testing smtp service", "text body", "<html><body><h1>html body</h1></body></html>");
 		}
 
 		public override IEnumerable<Type> GetJobTypes()
