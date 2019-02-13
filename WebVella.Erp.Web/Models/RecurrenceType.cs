@@ -14,7 +14,7 @@ namespace WebVella.Erp.Web.Models
 		MonthlyByDate = 3,
 		[SelectOption(Label = "monthly, same week day occurrence (eg. First Monday)")]
 		MonthlyByWeekDay = 4,
-		[SelectOption(Label = "annually, same date, day and hour")]
+		[SelectOption(Label = "annually, same date and hour")]
 		Annually = 5,
 		[SelectOption(Label = "every weekday, same hour")]
 		EveryWeekDay = 6,

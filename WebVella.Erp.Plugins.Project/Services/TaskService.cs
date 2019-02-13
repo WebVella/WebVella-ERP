@@ -43,7 +43,8 @@ namespace WebVella.Erp.Plugins.Project.Services
 				{
 					projectAbbr = (string)projectRecord["abbr"];
 				}
-				if (projectRecord != null) {
+				if (projectRecord != null)
+				{
 					projectId = (Guid)projectRecord["id"];
 					projectOwnerId = (Guid?)projectRecord["owner_id"];
 				}
@@ -71,7 +72,8 @@ namespace WebVella.Erp.Plugins.Project.Services
 			return patchRecord;
 		}
 
-		public EntityRecordList GetTaskStatuses() {
+		public EntityRecordList GetTaskStatuses()
+		{
 			var projectRecord = new EntityRecord();
 			var eqlCommand = "SELECT * from task_status";
 			var eqlParams = new List<EqlParameter>();
@@ -89,16 +91,17 @@ namespace WebVella.Erp.Plugins.Project.Services
 			var eqlParams = new List<EqlParameter>() { new EqlParameter("taskId", taskId) };
 
 			var eqlResult = new EqlCommand(eqlCommand, eqlParams).Execute();
-			if (!eqlResult.Any()) 
+			if (!eqlResult.Any())
 				return null;
-			else 
+			else
 				return eqlResult[0];
 		}
 
 		public EntityRecordList GetTaskQueue(Guid? projectId, Guid? userId, TasksDueType type = TasksDueType.All, int? limit = null, bool includeProjectData = false)
 		{
 			var selectedFields = "*";
-			if (includeProjectData) {
+			if (includeProjectData)
+			{
 				selectedFields += ",$project_nn_task.is_billable";
 			}
 
@@ -122,7 +125,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 				whereFilters.Add("(end_time >= @currentDateStart AND end_time < @currentDateEnd)");
 			if (type == TasksDueType.EndTimeNotDue)
 				whereFilters.Add("(end_time >= @currentDateEnd OR end_time = null)");
-			
+
 			// Project and user
 			if (projectId != null && userId != null)
 			{
@@ -135,7 +138,8 @@ namespace WebVella.Erp.Plugins.Project.Services
 				whereFilters.Add("$project_nn_task.id = @projectId");
 				eqlParams.Add(new EqlParameter("projectId", projectId));
 			}
-			else if (userId != null) {
+			else if (userId != null)
+			{
 				whereFilters.Add("owner_id = @userId");
 				eqlParams.Add(new EqlParameter("userId", userId));
 			}
@@ -169,7 +173,8 @@ namespace WebVella.Erp.Plugins.Project.Services
 
 
 			//Order
-			switch (type) {
+			switch (type)
+			{
 				case TasksDueType.All:
 					// No sort for optimization purposes
 					break;
@@ -194,7 +199,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 
 
 			//Limit
-			if(limit != null)
+			if (limit != null)
 				eqlCommand += $" PAGE 1 PAGESIZE {limit} ";
 
 
@@ -203,7 +208,8 @@ namespace WebVella.Erp.Plugins.Project.Services
 			return eqlResult;
 		}
 
-		public void GetTaskIconAndColor(string priorityValue, out string iconClass, out string color) {
+		public void GetTaskIconAndColor(string priorityValue, out string iconClass, out string color)
+		{
 			iconClass = "";
 			color = "#fff";
 
@@ -217,7 +223,8 @@ namespace WebVella.Erp.Plugins.Project.Services
 
 		}
 
-		public void StartTaskTimelog(Guid taskId) {
+		public void StartTaskTimelog(Guid taskId)
+		{
 			var patchRecord = new EntityRecord();
 			patchRecord["id"] = taskId;
 			patchRecord["timelog_started_on"] = DateTime.Now;
@@ -237,7 +244,8 @@ namespace WebVella.Erp.Plugins.Project.Services
 				throw new Exception(updateResponse.Message);
 		}
 
-		public EntityRecord GetPageHookLogic(BaseErpPageModel pageModel, EntityRecord record) {
+		public EntityRecord GetPageHookLogic(BaseErpPageModel pageModel, EntityRecord record)
+		{
 
 			if (record == null)
 				record = new EntityRecord();
@@ -283,7 +291,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 		}
 
 
-		public void PreCreateRecordPageHookLogic(string entityName, EntityRecord record, List<ErrorModel> errors) 
+		public void PreCreateRecordPageHookLogic(string entityName, EntityRecord record, List<ErrorModel> errors)
 		{
 			if (!record.Properties.ContainsKey("$project_nn_task.id"))
 			{
@@ -315,7 +323,8 @@ namespace WebVella.Erp.Plugins.Project.Services
 			}
 		}
 
-		public void PostCreateApiHookLogic(string entityName, EntityRecord record) {
+		public void PostCreateApiHookLogic(string entityName, EntityRecord record)
+		{
 			//Update key and search fields
 			Guid projectId = Guid.Empty;
 			Guid? projectOwnerId = null;
@@ -329,7 +338,8 @@ namespace WebVella.Erp.Plugins.Project.Services
 			var watchers = new List<Guid>();
 			{
 				var fieldName = "owner_id";
-				if (record.Properties.ContainsKey(fieldName) && record[fieldName] != null) {
+				if (record.Properties.ContainsKey(fieldName) && record[fieldName] != null)
+				{
 					var userId = (Guid)record[fieldName];
 					if (!watchers.Contains(userId))
 						watchers.Add(userId);
@@ -344,7 +354,8 @@ namespace WebVella.Erp.Plugins.Project.Services
 						watchers.Add(userId);
 				}
 			}
-			if (projectOwnerId != null) {
+			if (projectOwnerId != null)
+			{
 				if (!watchers.Contains(projectOwnerId.Value))
 					watchers.Add(projectOwnerId.Value);
 			}
@@ -378,17 +389,19 @@ namespace WebVella.Erp.Plugins.Project.Services
 
 		public void PostPreUpdateApiHookLogic(string entityName, EntityRecord record, List<ErrorModel> errors)
 		{
-			var eqlResult = new EqlCommand("SELECT id,number, $project_nn_task.id, $project_nn_task.abbr FROM task WHERE id = @taskId", new EqlParameter("taskId",(Guid)record["id"])).Execute();
+			var eqlResult = new EqlCommand("SELECT id,number, $project_nn_task.id, $project_nn_task.abbr, $user_nn_task_watchers.id FROM task WHERE id = @taskId", new EqlParameter("taskId", (Guid)record["id"])).Execute();
 			if (eqlResult.Count > 0)
 			{
 				var oldRecord = eqlResult[0];
 				Guid? oldProjectId = null;
 				Guid? newProjectId = null;
+				var taskWatcherIdList = new List<Guid>();
 				var projectAbbr = "";
 				if (oldRecord.Properties.ContainsKey("$project_nn_task") && oldRecord["$project_nn_task"] is List<EntityRecord>)
 				{
 					var projectRecords = (List<EntityRecord>)oldRecord["$project_nn_task"];
-					if (projectRecords.Any()){
+					if (projectRecords.Any())
+					{
 						if (projectRecords[0].Properties.ContainsKey("id"))
 						{
 							oldProjectId = (Guid)projectRecords[0]["id"];
@@ -400,12 +413,23 @@ namespace WebVella.Erp.Plugins.Project.Services
 					}
 				}
 
-				if (record.Properties.ContainsKey("$project_nn_task.id") && record["$project_nn_task.id"] != null) {
-					if(record["$project_nn_task.id"] is Guid)
+				if (record.Properties.ContainsKey("$project_nn_task.id") && record["$project_nn_task.id"] != null)
+				{
+					if (record["$project_nn_task.id"] is Guid)
 						newProjectId = (Guid)record["$project_nn_task.id"];
 					if (record["$project_nn_task.id"] is string)
 						newProjectId = new Guid(record["$project_nn_task.id"].ToString());
 				}
+
+				if (oldRecord.Properties.ContainsKey("$user_nn_task_watchers") && oldRecord["$user_nn_task_watchers"] is List<EntityRecord>)
+				{
+					var watcherRecords = (List<EntityRecord>)oldRecord["$user_nn_task_watchers"];
+					foreach (var watcherRecord in watcherRecords)
+					{
+						taskWatcherIdList.Add((Guid)watcherRecord["id"]);
+					}
+				}
+
 
 				if (oldProjectId != null && newProjectId != null && oldProjectId != newProjectId)
 				{
@@ -428,8 +452,31 @@ namespace WebVella.Erp.Plugins.Project.Services
 					//change key
 					record["key"] = projectAbbr + "-" + ((decimal)oldRecord["number"]).ToString("N0");
 
+					var projectEqlResult = new EqlCommand("SELECT id,owner_id FROM project WHERE id = @projectId",
+													new EqlParameter("projectId", newProjectId)).Execute();
+					Guid? projectOwnerId = null;
+					if (projectEqlResult != null && ((List<EntityRecord>)projectEqlResult).Any())
+					{
+						var newProjectRecord = ((List<EntityRecord>)projectEqlResult).First();
+						if (newProjectRecord.Properties.ContainsKey("owner_id") && newProjectRecord["owner_id"] != null)
+						{
+							if (newProjectRecord["owner_id"] is Guid)
+								projectOwnerId = (Guid)newProjectRecord["owner_id"];
+							if (newProjectRecord["owner_id"] is string)
+								projectOwnerId = new Guid(newProjectRecord["owner_id"].ToString());
+						}
+					}
+					//check if the new project owner is in the watcher list and add it if not
+					if (projectOwnerId != null && !taskWatcherIdList.Contains(projectOwnerId.Value)) {
+						var watcherTaskRel = relations.First(x => x.Name == "user_nn_task_watchers");
+						if (watcherTaskRel == null)
+							throw new Exception("user_nn_task_watchers relation not found");
 
-					//TODO - check if the new project owner is in the watcher list and add it if not
+						//Create new NN relation
+						var addWatcherRelResponse = recMan.RemoveRelationManyToManyRecord(watcherTaskRel.Id, projectOwnerId, (Guid)record["id"]);
+						if (!addWatcherRelResponse.Success)
+							throw new Exception(addWatcherRelResponse.Message);
+					}
 				}
 			}
 		}
@@ -448,14 +495,16 @@ namespace WebVella.Erp.Plugins.Project.Services
 				throw new Exception(updateResponse.Message);
 
 			//Check if owner is in watchers list. If not create relation
-			if (record.Properties.ContainsKey("owner_id") && record["owner_id"] != null) {
+			if (record.Properties.ContainsKey("owner_id") && record["owner_id"] != null)
+			{
 				var watchers = new List<Guid>();
 				var eqlCommand = "SELECT id, $user_nn_task_watchers.id FROM task WHERE id = @taskId";
 				var eqlParams = new List<EqlParameter>() { new EqlParameter("taskId", (Guid)record["id"]) };
 				var eqlResult = new EqlCommand(eqlCommand, eqlParams).Execute();
 				foreach (var relRecord in eqlResult)
 				{
-					if (relRecord.Properties.ContainsKey("$user_nn_task_watchers") && relRecord["$user_nn_task_watchers"] is List<EntityRecord>) {
+					if (relRecord.Properties.ContainsKey("$user_nn_task_watchers") && relRecord["$user_nn_task_watchers"] is List<EntityRecord>)
+					{
 						var currentWatchers = (List<EntityRecord>)relRecord["$user_nn_task_watchers"];
 						foreach (var watchRecord in currentWatchers)
 						{
@@ -463,7 +512,8 @@ namespace WebVella.Erp.Plugins.Project.Services
 						}
 					}
 				}
-				if (!watchers.Contains((Guid)record["owner_id"])){
+				if (!watchers.Contains((Guid)record["owner_id"]))
+				{
 					var watchRelation = new EntityRelationManager().Read("user_nn_task_watchers").Object;
 					if (watchRelation == null)
 						throw new Exception("Watch relation not found");
@@ -485,7 +535,8 @@ namespace WebVella.Erp.Plugins.Project.Services
 				throw new Exception(updateResponse.Message);
 		}
 
-		public List<EntityRecord> GetTasksThatNeedStarting() {
+		public List<EntityRecord> GetTasksThatNeedStarting()
+		{
 			var eqlCommand = "SELECT id FROM task WHERE status_id = @notStartedStatusId AND start_time <= @currentDate";
 			var eqlParams = new List<EqlParameter>() {
 				new EqlParameter("notStartedStatusId", new Guid("f3fdd750-0c16-4215-93b3-5373bd528d1f")),
