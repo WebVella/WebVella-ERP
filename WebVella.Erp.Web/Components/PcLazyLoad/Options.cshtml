@@ -1,8 +1,19 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web;
 @using WebVella.Erp.Web.Components;
 @{
 	var options = (PcLazyLoad.PcLazyLoadOptions)ViewBag.Options;
+	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
 }
 
-<wv-field-number name="scroll_distance" value="@options.ScrollDistance" label-text="Scroll distance"></wv-field-number>
+<wv-row>
+	<wv-column span="4">
+		<wv-field-datasource name="is_visible" label-text="Is Visible" value="@options.IsVisible" page-id="erpRequest.Page.Id" placeholder="true"></wv-field-datasource>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-number name="scroll_distance" value="@options.ScrollDistance" label-text="Scroll distance"></wv-field-number>
+	</wv-column>
+</wv-row>
+
+

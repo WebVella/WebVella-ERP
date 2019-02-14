@@ -12,6 +12,11 @@ namespace WebVella.Erp.Web.TagHelpers
 	{
 		public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
+			if (!isVisible)
+			{
+				output.SuppressOutput();
+				return Task.CompletedTask;
+			}
 			#region << Init >>
 			var initSuccess = InitFilter(context, output);
 

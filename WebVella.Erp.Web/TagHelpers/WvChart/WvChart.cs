@@ -21,6 +21,9 @@ namespace WebVella.Erp.Web.TagHelpers
 		[ViewContext]
 		public ViewContext ViewContext { get; set; }
 
+		[HtmlAttributeName("is-visible")]
+		public bool isVisible { get; set; } = true;
+
 		[HtmlAttributeName("width")]
 		public string Width { get; set; } = null;
 
@@ -122,6 +125,12 @@ namespace WebVella.Erp.Web.TagHelpers
 
 		public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
+			if (!isVisible)
+			{
+				output.SuppressOutput();
+				return;
+			}
+
 			#region << Init >>
 			var initSuccess = InitChart(context, output);
 

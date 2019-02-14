@@ -11,10 +11,13 @@
 }
 
 <wv-row>
-	<wv-column span="6">
+	<wv-column span="4">
+		<wv-field-datasource name="is_visible" label-text="Is Visible" value="@options.IsVisible" page-id="erpRequest.Page.Id" placeholder="true"></wv-field-datasource>
+	</wv-column>
+	<wv-column span="4">
 		<wv-field-datasource name="value" value="@options.Value" label-text="Value" page-id="erpRequest.Page.Id"></wv-field-datasource>
 	</wv-column>
-	<wv-column span="6">
+	<wv-column span="4">
 		<wv-field-text name="name" value="@options.Name" label-text="Name"></wv-field-text>
 	</wv-column>
 </wv-row>

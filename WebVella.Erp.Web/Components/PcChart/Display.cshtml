@@ -12,4 +12,4 @@
 	var width = (string)ViewBag.Width;
 	var type = (ErpChartType)ViewBag.Type;
 }
-<wv-chart type="@type" datasets="@datasets" height="@height" width="@width" show-legend="@showLegend" labels="@labels"></wv-chart>
+<wv-chart type="@type" datasets="@datasets" height="@height" width="@width" show-legend="@showLegend" labels="@labels" is-visible="(bool)ViewBag.IsVisible"></wv-chart>

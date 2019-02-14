@@ -25,7 +25,8 @@
 }
 
 <wv-page-header color="@color" icon-color="@iconColor" area-label="@areaLabel" area-sublabel="@areaSubLabel" title="@title"
-	subtitle="@subTitle" description="@description" icon-class="@iconClass" return-url="@returnUrl" page-switch-items="@pageSwitchItems">
+	subtitle="@subTitle" description="@description" icon-class="@iconClass" return-url="@returnUrl" 
+	page-switch-items="@pageSwitchItems" is-visible="(bool)ViewBag.IsVisible">
 	@if(actionsNodes.Count > 0){
 	<wv-page-header-actions>
 		@foreach (var childNode in actionsNodes)

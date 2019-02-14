@@ -15,6 +15,9 @@ namespace WebVella.Erp.Web.TagHelpers
 {
 	public abstract class WvFieldBase : TagHelper
 	{
+		[HtmlAttributeName("is-visible")]
+		public bool isVisible { get; set; } = true;
+
 		//Label
 		[HtmlAttributeName("label-mode")]
 		public LabelRenderMode LabelMode { get; set; } = LabelRenderMode.Undefined;

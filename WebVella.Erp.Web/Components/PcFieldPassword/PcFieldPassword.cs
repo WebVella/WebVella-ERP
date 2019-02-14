@@ -36,7 +36,8 @@ namespace WebVella.Erp.Web.Components
 			public static PcFieldPasswordOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldPasswordOptions
-				{ 
+				{
+					IsVisible = input.IsVisible,
 					LabelMode = input.LabelMode,
 					LabelText = input.LabelText,
 					Mode = input.Mode,
@@ -108,6 +109,20 @@ namespace WebVella.Erp.Web.Components
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
 				#endregion
 
+				var isVisible = true;
+				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+				{
+					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+					{
+						isVisible = outBool;
+					}
+				}
+				else if (isVisibleDS is Boolean)
+				{
+					isVisible = (bool)isVisibleDS;
+				}
+				ViewBag.IsVisible = isVisible;
 
 				ViewBag.Options = options;
 				ViewBag.Model = model;

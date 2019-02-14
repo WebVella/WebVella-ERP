@@ -23,6 +23,9 @@ namespace WebVella.Erp.Web.TagHelpers
 		[ViewContext]
 		public ViewContext ViewContext { get; set; }
 
+		[HtmlAttributeName("is-visible")]
+		public bool isVisible { get; set; } = true;
+
 		[HtmlAttributeName("title")]
 		public string Title { get; set; } = "";
 
@@ -50,67 +53,76 @@ namespace WebVella.Erp.Web.TagHelpers
 
 		public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
-			var embeddedContent = await output.GetChildContentAsync();
-
-			output.TagName = "div";
-			output.AddCssClass("icon-card-body");
-			if (!IsCard) {
-				output.AddCssClass(Class);
-			}
-
-
-			#region << Init wrappers >>
-			var cardWrapperEl = new TagBuilder("div");
-			cardWrapperEl.AddCssClass("card icon-card");
-			if (IsClickable) {
-				cardWrapperEl.AddCssClass("clickable");
-			}
-
-			cardWrapperEl.AddCssClass(Class);
-			if (HasShadow)
+			if (!isVisible)
 			{
-				cardWrapperEl.AddCssClass("shadow-sm");
+				output.SuppressOutput();
 			}
-
-			var cardBodyWrapperEl = new TagBuilder("div");
-			cardBodyWrapperEl.AddCssClass("card-body p-2");
-
-			if (IsCard) {
-				output.PreElement.AppendHtml(cardWrapperEl.RenderStartTag());
-				output.PreElement.AppendHtml(cardBodyWrapperEl.RenderStartTag());
-				output.PostElement.AppendHtml(cardBodyWrapperEl.RenderEndTag());
-
-				output.PostElement.AppendHtml(embeddedContent);
-				output.PostElement.AppendHtml(cardWrapperEl.RenderEndTag());
-			}
-
-			#endregion
-
-
-			var IconEl = new TagBuilder("i");
-			IconEl.AddCssClass("icon");
-			IconEl.AddCssClass(IconClass);
-			if (IconColor != ErpColor.Default)
+			else
 			{
-				IconEl.AddCssClass("go-" + IconColor.GetLabel());
+				var embeddedContent = await output.GetChildContentAsync();
+
+				output.TagName = "div";
+				output.AddCssClass("icon-card-body");
+				if (!IsCard)
+				{
+					output.AddCssClass(Class);
+				}
+
+
+				#region << Init wrappers >>
+				var cardWrapperEl = new TagBuilder("div");
+				cardWrapperEl.AddCssClass("card icon-card");
+				if (IsClickable)
+				{
+					cardWrapperEl.AddCssClass("clickable");
+				}
+
+				cardWrapperEl.AddCssClass(Class);
+				if (HasShadow)
+				{
+					cardWrapperEl.AddCssClass("shadow-sm");
+				}
+
+				var cardBodyWrapperEl = new TagBuilder("div");
+				cardBodyWrapperEl.AddCssClass("card-body p-2");
+
+				if (IsCard)
+				{
+					output.PreElement.AppendHtml(cardWrapperEl.RenderStartTag());
+					output.PreElement.AppendHtml(cardBodyWrapperEl.RenderStartTag());
+					output.PostElement.AppendHtml(cardBodyWrapperEl.RenderEndTag());
+
+					output.PostElement.AppendHtml(embeddedContent);
+					output.PostElement.AppendHtml(cardWrapperEl.RenderEndTag());
+				}
+
+				#endregion
+
+
+				var IconEl = new TagBuilder("i");
+				IconEl.AddCssClass("icon");
+				IconEl.AddCssClass(IconClass);
+				if (IconColor != ErpColor.Default)
+				{
+					IconEl.AddCssClass("go-" + IconColor.GetLabel());
+				}
+				output.Content.AppendHtml(IconEl);
+
+				var metaEl = new TagBuilder("div");
+				metaEl.AddCssClass("meta");
+
+				var metaTitleEl = new TagBuilder("div");
+				metaTitleEl.AddCssClass("title");
+				metaTitleEl.InnerHtml.AppendHtml(Title);
+				metaEl.InnerHtml.AppendHtml(metaTitleEl);
+
+				var metaDescriptionEl = new TagBuilder("div");
+				metaDescriptionEl.AddCssClass("description");
+				metaDescriptionEl.InnerHtml.AppendHtml(Description);
+				metaEl.InnerHtml.AppendHtml(metaDescriptionEl);
+
+				output.Content.AppendHtml(metaEl);
 			}
-			output.Content.AppendHtml(IconEl);
-
-			var metaEl = new TagBuilder("div");
-			metaEl.AddCssClass("meta");
-
-			var metaTitleEl = new TagBuilder("div");
-			metaTitleEl.AddCssClass("title");
-			metaTitleEl.InnerHtml.AppendHtml(Title);
-			metaEl.InnerHtml.AppendHtml(metaTitleEl);
-
-			var metaDescriptionEl = new TagBuilder("div");
-			metaDescriptionEl.AddCssClass("description");
-			metaDescriptionEl.InnerHtml.AppendHtml(Description);
-			metaEl.InnerHtml.AppendHtml(metaDescriptionEl);
-
-			output.Content.AppendHtml(metaEl);
-
 		}
 	}
 }

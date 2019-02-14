@@ -28,8 +28,10 @@ namespace WebVella.Erp.Web.TagHelpers
 			output.Content.AppendHtml(inputGroupEl);
 
 			return Task.CompletedTask;
+			#endregion
+
 		}
 
-		#endregion
+
 	}
 }

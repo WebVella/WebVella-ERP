@@ -23,6 +23,9 @@ namespace WebVella.Erp.Web.Components
 		{
 			//SHOULD HAVE # CONTAINERS => HEADER, BODY, FOOTER -> the body will be the repeater part, with options hasHeader, hasFooter
 
+			[JsonProperty(PropertyName = "is_visible")]
+			public string IsVisible { get; set; } = "";
+
 			[JsonProperty(PropertyName = "class")]
 			public string Class { get; set; } = "";
 
@@ -68,7 +71,21 @@ namespace WebVella.Erp.Web.Components
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
 				#endregion
 
-
+				var isVisible = true;
+				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(instanceOptions.IsVisible);
+				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+				{
+					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+					{
+						isVisible = outBool;
+					}
+				}
+				else if (isVisibleDS is Boolean)
+				{
+					isVisible = (bool)isVisibleDS;
+				}
+				if (!isVisible && context.Mode == ComponentMode.Display)
+					return await Task.FromResult<IViewComponentResult>(Content(""));
 
 				ViewBag.Options = instanceOptions;
 				ViewBag.Node = context.Node;

@@ -38,6 +38,7 @@ namespace WebVella.Erp.Web.Components
 			{
 				return new PcFieldCheckboxGridOptions
 				{
+					IsVisible = input.IsVisible,
 					LabelMode = input.LabelMode,
 					LabelText = input.LabelText,
 					Mode = input.Mode,
@@ -74,28 +75,28 @@ namespace WebVella.Erp.Web.Components
 				}
 
 				var baseOptions = InitPcFieldBaseOptions(context);
-				var instanceOptions = PcFieldCheckboxGridOptions.CopyFromBaseOptions(baseOptions);
+				var options = PcFieldCheckboxGridOptions.CopyFromBaseOptions(baseOptions);
 
 				if (context.Options != null)
 				{
-					instanceOptions = JsonConvert.DeserializeObject<PcFieldCheckboxGridOptions>(context.Options.ToString());
+					options = JsonConvert.DeserializeObject<PcFieldCheckboxGridOptions>(context.Options.ToString());
 				}
 				var modelFieldLabel = "";
-				var model = (PcFieldCheckboxGridModel)InitPcFieldBaseModel(context, instanceOptions, label: out modelFieldLabel, targetModel: "PcFieldCheckboxGridModel");
-				if (String.IsNullOrWhiteSpace(instanceOptions.LabelText))
+				var model = (PcFieldCheckboxGridModel)InitPcFieldBaseModel(context, options, label: out modelFieldLabel, targetModel: "PcFieldCheckboxGridModel");
+				if (String.IsNullOrWhiteSpace(options.LabelText))
 				{
-					instanceOptions.LabelText = modelFieldLabel;
+					options.LabelText = modelFieldLabel;
 				}
 				//PcFieldCheckboxGridModel model = PcFieldCheckboxGridModel.CopyFromBaseModel(baseModel);
 
 				//Implementing Inherit label mode
-				ViewBag.LabelMode = instanceOptions.LabelMode;
-				ViewBag.Mode = instanceOptions.Mode;
+				ViewBag.LabelMode = options.LabelMode;
+				ViewBag.Mode = options.Mode;
 
-				if (instanceOptions.LabelMode == LabelRenderMode.Undefined && baseOptions.LabelMode != LabelRenderMode.Undefined)
+				if (options.LabelMode == LabelRenderMode.Undefined && baseOptions.LabelMode != LabelRenderMode.Undefined)
 					ViewBag.LabelMode = baseOptions.LabelMode;
 
-				if (instanceOptions.Mode == FieldRenderMode.Undefined && baseOptions.Mode != FieldRenderMode.Undefined)
+				if (options.Mode == FieldRenderMode.Undefined && baseOptions.Mode != FieldRenderMode.Undefined)
 					ViewBag.Mode = baseOptions.Mode;
 
 
@@ -105,7 +106,7 @@ namespace WebVella.Erp.Web.Components
 				#region << Init DataSources >>
 				if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
 				{
-					dynamic valueResult = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Value);
+					dynamic valueResult = context.DataModel.GetPropertyValueByDataSource(options.Value);
 					if (valueResult == null)
 					{
 						model.Value = new List<KeyStringList>();
@@ -139,7 +140,7 @@ namespace WebVella.Erp.Web.Components
 						}
 					}
 					{
-						dynamic rowsOptions = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Rows);
+						dynamic rowsOptions = context.DataModel.GetPropertyValueByDataSource(options.Rows);
 						if (rowsOptions == null) { }
 						if (rowsOptions is List<SelectOption>)
 						{
@@ -180,7 +181,7 @@ namespace WebVella.Erp.Web.Components
 						}
 					}
 					{
-						dynamic columnsOptions = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Columns);
+						dynamic columnsOptions = context.DataModel.GetPropertyValueByDataSource(options.Columns);
 						if (columnsOptions == null) { }
 						if (columnsOptions is List<SelectOption>)
 						{
@@ -223,7 +224,23 @@ namespace WebVella.Erp.Web.Components
 				}
 
 				#endregion
-				ViewBag.Options = instanceOptions;
+
+				var isVisible = true;
+				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+				{
+					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+					{
+						isVisible = outBool;
+					}
+				}
+				else if (isVisibleDS is Boolean)
+				{
+					isVisible = (bool)isVisibleDS;
+				}
+				ViewBag.IsVisible = isVisible;
+
+				ViewBag.Options = options;
 				ViewBag.Model = model;
 				ViewBag.Node = context.Node;
 				ViewBag.ComponentMeta = componentMeta;

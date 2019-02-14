@@ -8,7 +8,7 @@
 	var node = (PageBodyNode)ViewBag.Node;
 	var componentContext = (PageComponentContext)ViewBag.ComponentContext;
 }
-<wv-button-toolbar size="@options.Size" is-vertical="@options.IsVertical" class="@options.Class" id="@options.Id">
+<wv-button-toolbar size="@options.Size" is-vertical="@options.IsVertical" class="@options.Class" id="@options.Id" is-visible="(bool)ViewBag.IsVisible">
 @foreach (var childNode in node.Nodes)
 {
 	var nodeComponentName = "";

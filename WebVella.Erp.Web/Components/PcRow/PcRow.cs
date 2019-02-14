@@ -23,6 +23,7 @@ namespace WebVella.Erp.Web.Components
 
 		public class PcRowOptions
 		{
+
 			[JsonProperty(PropertyName = "flex_vertical_alignment")]
 			public FlexVerticalAlignmentType FlexVerticalAlignment { get; set; } = FlexVerticalAlignmentType.None;
 
@@ -573,7 +574,6 @@ namespace WebVella.Erp.Web.Components
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
 
 				#endregion
-
 
 				ViewBag.Node = context.Node;
 				ViewBag.ComponentMeta = componentMeta;

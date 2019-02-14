@@ -20,6 +20,9 @@ namespace WebVella.Erp.Web.TagHelpers
 		[ViewContext]
 		public ViewContext ViewContext { get; set; }
 
+		[HtmlAttributeName("is-visible")]
+		public bool isVisible { get; set; } = true;
+
 		[HtmlAttributeName("id")]
 		public string Id { get; set; } = "";
 
@@ -40,6 +43,11 @@ namespace WebVella.Erp.Web.TagHelpers
 
 		public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
+			if (!isVisible)
+			{
+				output.SuppressOutput();
+				return Task.CompletedTask;
+			}
 
 			#region << Render >>
 			output.TagName = "div";

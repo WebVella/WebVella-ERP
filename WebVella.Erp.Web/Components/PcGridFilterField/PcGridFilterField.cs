@@ -24,6 +24,9 @@ namespace WebVella.Erp.Web.Components
 
 		public class PcGridFilterFieldOptions
 		{
+			[JsonProperty(PropertyName = "is_visible")]
+			public string IsVisible { get; set; } = "";
+
 			[JsonProperty(PropertyName = "name")]
 			public string Name { get; set; } = "field";
 
@@ -81,6 +84,21 @@ namespace WebVella.Erp.Web.Components
 
 				#endregion
 
+				var isVisible = true;
+				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+				{
+					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+					{
+						isVisible = outBool;
+					}
+				}
+				else if (isVisibleDS is Boolean)
+				{
+					isVisible = (bool)isVisibleDS;
+				}
+				if (!isVisible && context.Mode == ComponentMode.Display)
+					return await Task.FromResult<IViewComponentResult>(Content(""));
 
 				ViewBag.Options = options;
 				ViewBag.Node = context.Node;

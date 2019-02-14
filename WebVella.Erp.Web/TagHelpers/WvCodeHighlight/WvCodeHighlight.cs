@@ -13,6 +13,9 @@ namespace WebVella.Erp.Web.TagHelpers
         [ViewContext]
         public ViewContext ViewContext { get; set; }
 
+		[HtmlAttributeName("is-visible")]
+		public bool isVisible { get; set; } = true;
+
 		[HtmlAttributeName("wv-code-highlight")]
 		public string HighlightLanguage { get; set; } = "language-html";
 
@@ -26,6 +29,12 @@ namespace WebVella.Erp.Web.TagHelpers
 
 		public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
+			if (!isVisible)
+			{
+				output.SuppressOutput();
+				return Task.CompletedTask;
+			}
+
 			var prependTemplate = $@"<code class='{HighlightLanguage}'>";
 
 			var appendTemplate = $@"</code>";

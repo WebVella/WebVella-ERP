@@ -11,18 +11,21 @@
 }
 
 <wv-row>
-	<wv-column span="6">
+	<wv-column span="4">
+		<wv-field-datasource name="is_visible" label-text="Is Visible" value="@options.IsVisible" page-id="erpRequest.Page.Id" placeholder="true"></wv-field-datasource>
+	</wv-column>
+	<wv-column span="4">
 		<wv-field-datasource name="title" label-text="Title" value="@options.Title" page-id="erpRequest.Page.Id"></wv-field-datasource>
 	</wv-column>
-	<wv-column span="6">
+	<wv-column span="4">
 		<wv-field-text name="backdrop" label-text="Backdrop mode" value="@options.Backdrop" placeholder="true"></wv-field-text>
 	</wv-column>
 </wv-row>
 <wv-row>
-	<wv-column span="6">
+	<wv-column span="4">
 		<wv-field-select name="size" label-text="Size" value="@options.Size" options="sizeOptions"></wv-field-select>
 	</wv-column>
-	<wv-column span="6">
+	<wv-column span="4">
 		<wv-field-select name="position" label-text="Position" value="@options.Position" options="positionOptions"></wv-field-select>
 	</wv-column>
 </wv-row>
