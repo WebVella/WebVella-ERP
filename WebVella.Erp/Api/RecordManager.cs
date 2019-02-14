@@ -1550,6 +1550,7 @@ namespace WebVella.Erp.Api
 						RecordHookManager.ExecutePreDeleteRecordHooks(entity.Name, response.Object.Data[0], errors);
 						if (errors.Count > 0)
 						{
+							response.Message = errors[0].Message;
 							response.Success = false;
 							response.Object = null;
 							response.Errors = errors;
