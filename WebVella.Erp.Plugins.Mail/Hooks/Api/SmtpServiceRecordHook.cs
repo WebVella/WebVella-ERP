@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Hooks;
@@ -11,22 +12,22 @@ namespace WebVella.Erp.Plugins.Mail.Hooks.Api
 	public class SmtpServiceRecordHook : IErpPreUpdateRecordHook, IErpPreCreateRecordHook,
 		IErpPostCreateRecordHook, IErpPostUpdateRecordHook, IErpPreDeleteRecordHook
 	{
-		SmtpInternalService smtpManagementService = new SmtpInternalService();
+		SmtpInternalService smtpIntService = new SmtpInternalService();
 
 		public void OnPreCreateRecord(string entityName, EntityRecord record, List<ErrorModel> errors)
 		{
-			smtpManagementService.ValidatePreCreateRecord(record, errors);
+			smtpIntService.ValidatePreCreateRecord(record, errors);
 			if (errors.Any())
 				return;
-			smtpManagementService.HandleDefaultServiceSetup(record,errors);
+			smtpIntService.HandleDefaultServiceSetup(record,errors);
 		}
 
 		public void OnPreUpdateRecord(string entityName, EntityRecord record, List<ErrorModel> errors)
 		{
-			smtpManagementService.ValidatePreUpdateRecord(record, errors);
+			smtpIntService.ValidatePreUpdateRecord(record, errors);
 			if (errors.Any())
 				return;
-			smtpManagementService.HandleDefaultServiceSetup(record,errors);
+			smtpIntService.HandleDefaultServiceSetup(record,errors);
 		}
 
 		public void OnPostCreateRecord(string entityName, EntityRecord record)
@@ -41,7 +42,11 @@ namespace WebVella.Erp.Plugins.Mail.Hooks.Api
 
 		public void OnPreDeleteRecord(string entityName, EntityRecord record, List<ErrorModel> errors)
 		{
-			ServiceManager.ClearCache();
+			var service = new ServiceManager().GetSmtpService((Guid)record["id"]);
+			if( service != null && service.IsDefault )
+				errors.Add(new ErrorModel { Key = "id", Message = "Default smtp service cannot be deleted." });
+			else
+				ServiceManager.ClearCache();
 		}
 
 	}

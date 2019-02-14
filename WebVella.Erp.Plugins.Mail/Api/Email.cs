@@ -11,20 +11,20 @@ namespace WebVella.Erp.Plugins.Mail.Api
 		[JsonProperty(PropertyName = "service_id")]
 		public Guid ServiceId { get; internal set; }
 
-		[JsonProperty(PropertyName = "from_name")]
-		public string FromName { get; internal set; }
+		[JsonProperty(PropertyName = "sender_name")]
+		public string SenderName { get; internal set; }
 
-		[JsonProperty(PropertyName = "from_email")]
-		public string FromEmail { get; internal set; }
+		[JsonProperty(PropertyName = "sender_email")]
+		public string SenderEmail { get; internal set; }
 
 		[JsonProperty(PropertyName = "reply_to_email")]
 		public string ReplyToEmail { get; internal set; }
 
-		[JsonProperty(PropertyName = "to_email")]
-		public string ToEmail { get; internal set; }
+		[JsonProperty(PropertyName = "recipient_email")]
+		public string RecipientEmail { get; internal set; }
 
-		[JsonProperty(PropertyName = "from_email")]
-		public string ToName { get; internal set; }
+		[JsonProperty(PropertyName = "recipient_name")]
+		public string RecipientName { get; internal set; }
 
 		[JsonProperty(PropertyName = "subject")]
 		public string Subject { get; internal set; }

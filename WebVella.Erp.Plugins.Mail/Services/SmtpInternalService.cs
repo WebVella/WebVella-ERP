@@ -375,7 +375,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 			PrepareEmailXSearch(email);
 			RecordManager recMan = new RecordManager();
 			var response = recMan.Find(new EntityQuery("email", "*", EntityQuery.QueryEQ("id", email.Id)));
-			if( response.Object != null && response.Object.Data != null && response.Object.Data.Count != 0 )
+			if (response.Object != null && response.Object.Data != null && response.Object.Data.Count != 0)
 				recMan.UpdateRecord("email", email.MapTo<EntityRecord>());
 			else
 				recMan.CreateRecord("email", email.MapTo<EntityRecord>());
@@ -392,23 +392,37 @@ namespace WebVella.Erp.Plugins.Mail.Services
 
 		internal void PrepareEmailXSearch(Email email)
 		{
-			email.XSearch = $"{email.FromName} {email.FromEmail} {email.ToEmail} {email.ToName} {email.Subject} {email.ContentText} {email.ContentHtml}";
+			email.XSearch = $"{email.SenderName} {email.SenderEmail} {email.RecipientEmail} {email.RecipientName} {email.Subject} {email.ContentText} {email.ContentHtml}";
 		}
 
 		internal void SendEmail(Email email, SmtpService service)
 		{
 			try
 			{
-				var message = new MimeMessage();
-				if (!string.IsNullOrWhiteSpace(email.FromName))
-					message.From.Add(new MailboxAddress(email.FromName, email.FromEmail));
-				else
-					message.From.Add(new MailboxAddress(email.FromEmail));
 
-				if (!string.IsNullOrWhiteSpace(email.ToName))
-					message.To.Add(new MailboxAddress(email.ToName, email.ToEmail));
+				if (service == null)
+				{
+					email.ServerError = "SMTP service not found";
+					email.Status = EmailStatus.Aborted;
+					return; //save email in finally block will save changes
+				}
+				else if (!service.IsEnabled)
+				{
+					email.ServerError = "SMTP service is not enabled";
+					email.Status = EmailStatus.Aborted;
+					return; //save email in finally block will save changes
+				}
+
+				var message = new MimeMessage();
+				if (!string.IsNullOrWhiteSpace(email.SenderName))
+					message.From.Add(new MailboxAddress(email.SenderName, email.SenderEmail));
 				else
-					message.To.Add(new MailboxAddress(email.ToEmail));
+					message.From.Add(new MailboxAddress(email.SenderEmail));
+
+				if (!string.IsNullOrWhiteSpace(email.RecipientName))
+					message.To.Add(new MailboxAddress(email.RecipientName, email.RecipientEmail));
+				else
+					message.To.Add(new MailboxAddress(email.RecipientEmail));
 
 				if (!string.IsNullOrWhiteSpace(email.ReplyToEmail))
 					message.ReplyTo.Add(new MailboxAddress(email.ReplyToEmail));
@@ -440,6 +454,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 			}
 			catch (Exception ex)
 			{
+				email.SentOn = null;
 				email.ServerError = ex.Message;
 				email.RetriesCount++;
 				if (email.RetriesCount >= service.MaxRetriesCount)
@@ -452,7 +467,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 					email.ScheduledOn = DateTime.UtcNow.AddMinutes(service.RetryWaitMinutes);
 					email.Status = EmailStatus.Pending;
 				}
-				
+
 			}
 			finally
 			{
@@ -472,29 +487,34 @@ namespace WebVella.Erp.Plugins.Mail.Services
 
 			try
 			{
-				ServiceManager serviceManager = new ServiceManager();
-
-				var pendingEmails = new EqlCommand("SELECT * FROM email WHERE status = @status AND scheduled_on <> NULL" +
-												" AND scheduled_on < @scheduled_on  ORDER BY priority DESC, scheduled_on ASC PAGE 1 PAGESIZE 10",
-							new EqlParameter("status", ((int)EmailStatus.Pending).ToString()),
-							new EqlParameter("scheduled_on", DateTime.UtcNow)).Execute().MapTo<Email>();
-
-				foreach(var email in pendingEmails )
+				List<Email> pendingEmails = new List<Email>();
+				do
 				{
-					var service = serviceManager.GetSmtpService(email.ServiceId);
-					if( service == null )
+					ServiceManager serviceManager = new ServiceManager();
+
+					pendingEmails = new EqlCommand("SELECT * FROM email WHERE status = @status AND scheduled_on <> NULL" +
+													" AND scheduled_on < @scheduled_on  ORDER BY priority DESC, scheduled_on ASC PAGE 1 PAGESIZE 10",
+								new EqlParameter("status", ((int)EmailStatus.Pending).ToString()),
+								new EqlParameter("scheduled_on", DateTime.UtcNow)).Execute().MapTo<Email>();
+
+					foreach (var email in pendingEmails)
 					{
-						email.Status = EmailStatus.Aborted;
-						email.ServerError = "SMTP service not found.";
-						email.ScheduledOn = null;
-						SaveEmail(email);
-						continue;
-					}
-					else
-					{
-						SendEmail(email, service);
+						var service = serviceManager.GetSmtpService(email.ServiceId);
+						if (service == null)
+						{
+							email.Status = EmailStatus.Aborted;
+							email.ServerError = "SMTP service not found.";
+							email.ScheduledOn = null;
+							SaveEmail(email);
+							continue;
+						}
+						else
+						{
+							SendEmail(email, service);
+						}
 					}
 				}
+				while (pendingEmails.Count > 0);
 
 			}
 			finally

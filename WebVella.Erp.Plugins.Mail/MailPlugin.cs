@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using WebVella.Erp.Api;
 using WebVella.Erp.Jobs;
+using WebVella.Erp.Plugins.Mail.Api;
 using WebVella.Erp.Plugins.Mail.Jobs;
+using WebVella.Erp.Plugins.Mail.Services;
 
 namespace WebVella.Erp.Plugins.Mail
 {

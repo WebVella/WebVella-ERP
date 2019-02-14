@@ -33,11 +33,11 @@ namespace WebVella.Erp.Plugins.Mail.Api
 		[JsonProperty(PropertyName = "password")]
 		public string Password { get; internal set; }
 
-		[JsonProperty(PropertyName = "default_from_name")]
-		public string DefaultFromName { get; internal set; }
+		[JsonProperty(PropertyName = "default_sender_name")]
+		public string DefaultSenderName { get; internal set; }
 
-		[JsonProperty(PropertyName = "default_from_email")]
-		public string DefaultFromEmail { get; internal set; }
+		[JsonProperty(PropertyName = "default_sender_email")]
+		public string DefaultSenderEmail { get; internal set; }
 
 		[JsonProperty(PropertyName = "default_reply_to_email")]
 		public string DefaultReplyToEmail { get; internal set; }
@@ -51,6 +51,9 @@ namespace WebVella.Erp.Plugins.Mail.Api
 		[JsonProperty(PropertyName = "is_default")]
 		public bool IsDefault { get; internal set; }
 
+		[JsonProperty(PropertyName = "is_enabled")]
+		public bool IsEnabled { get; internal set; }
+
 		[JsonProperty(PropertyName = "connection_security")]
 		public SecureSocketOptions ConnectionSecurity { get; internal set; }
 
@@ -58,14 +61,14 @@ namespace WebVella.Erp.Plugins.Mail.Api
 		{
 		}
 
-		public void SendEmail(string toName, string toEmail, string subject, string textBody, string htmlBody)
+		public void SendEmail(string recipientName, string recipientEmail, string subject, string textBody, string htmlBody)
 		{
 			ValidationException ex = new ValidationException();
 			
-			if( string.IsNullOrEmpty(toEmail) )
-				ex.AddError("toEmail", "ToEmail is not specified.");
-			else if( toEmail.IsEmail() )
-				ex.AddError("toEmail", "ToEmail is not valid email address.");
+			if( string.IsNullOrEmpty(recipientEmail) )
+				ex.AddError("recipientEmail", "Recipient email is not specified.");
+			else if( !recipientEmail.IsEmail() )
+				ex.AddError("recipientEmail", "Recipient email is not valid email address.");
 
 			if (string.IsNullOrEmpty(subject))
 				ex.AddError("subject", "Subject is required.");
@@ -73,15 +76,15 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			ex.CheckAndThrow();
 
 			var message = new MimeMessage();
-			if (!string.IsNullOrWhiteSpace(DefaultFromName))
-				message.From.Add(new MailboxAddress(DefaultFromName, DefaultFromEmail));
+			if (!string.IsNullOrWhiteSpace(DefaultSenderName))
+				message.From.Add(new MailboxAddress(DefaultSenderName, DefaultSenderEmail));
 			else
-				message.From.Add(new MailboxAddress(DefaultFromEmail));
+				message.From.Add(new MailboxAddress(DefaultSenderEmail));
 
-			if (!string.IsNullOrWhiteSpace(toName))
-				message.To.Add(new MailboxAddress(toName, toEmail));
+			if (!string.IsNullOrWhiteSpace(recipientName))
+				message.To.Add(new MailboxAddress(recipientName, recipientEmail));
 			else
-				message.To.Add(new MailboxAddress(toEmail));
+				message.To.Add(new MailboxAddress(recipientEmail));
 
 			if (!string.IsNullOrWhiteSpace(DefaultReplyToEmail))
 				message.ReplyTo.Add(new MailboxAddress(DefaultReplyToEmail));
@@ -109,11 +112,11 @@ namespace WebVella.Erp.Plugins.Mail.Api
 
 			Email email = new Email();
 			email.Id = Guid.NewGuid();
-			email.FromEmail = DefaultFromEmail;
-			email.FromName = DefaultFromName;
+			email.SenderEmail = DefaultSenderEmail;
+			email.SenderName = DefaultSenderName;
 			email.ReplyToEmail = DefaultReplyToEmail;
-			email.ToEmail = toEmail;
-			email.ToName = toName;
+			email.RecipientEmail = recipientEmail;
+			email.RecipientName = recipientName;
 			email.Subject = subject;
 			email.ContentHtml = htmlBody;
 			email.ContentText = textBody;
@@ -129,14 +132,14 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			new SmtpInternalService().SaveEmail(email);
 		}
 
-		public void QueueEmail(string toName, string toEmail, string subject, string textBody, string htmlBody, EmailPriority priority )
+		public void QueueEmail(string recipientName, string recipientEmail, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal  )
 		{
 			ValidationException ex = new ValidationException();
 
-			if (string.IsNullOrEmpty(toEmail))
-				ex.AddError("toEmail", "ToEmail is not specified.");
-			else if (toEmail.IsEmail())
-				ex.AddError("toEmail", "ToEmail is not valid email address.");
+			if (string.IsNullOrEmpty(recipientEmail))
+				ex.AddError("recipientEmail", "Recipient email is not specified.");
+			else if (!recipientEmail.IsEmail())
+				ex.AddError("recipientEmail", "Recipient email is not valid email address.");
 
 			if (string.IsNullOrEmpty(subject))
 				ex.AddError("subject", "Subject is required.");
@@ -145,11 +148,11 @@ namespace WebVella.Erp.Plugins.Mail.Api
 
 			Email email = new Email();
 			email.Id = Guid.NewGuid();
-			email.FromEmail = DefaultFromEmail;
-			email.FromName = DefaultFromName;
+			email.SenderEmail = DefaultSenderEmail;
+			email.SenderName = DefaultSenderName;
 			email.ReplyToEmail = DefaultReplyToEmail;
-			email.ToEmail = toEmail;
-			email.ToName = toName;
+			email.RecipientEmail = recipientEmail;
+			email.RecipientName = recipientName;
 			email.Subject = subject;
 			email.ContentHtml = htmlBody;
 			email.ContentText = textBody;
