@@ -15,6 +15,9 @@ namespace WebVella.Erp.Web.TagHelpers
 	public class WvSection : TagHelper
 	{
 
+		[HtmlAttributeName("is-visible")]
+		public bool isVisible { get; set; } = true;
+
 		[HtmlAttributeName("id")]
 		public string Id { get; set; } = "";
 
@@ -51,6 +54,12 @@ namespace WebVella.Erp.Web.TagHelpers
 
 		public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
+			if (!isVisible)
+			{
+				output.SuppressOutput();
+				return Task.CompletedTask;
+			}
+
 			if (String.IsNullOrWhiteSpace(Id))
 			{
 				Id = Guid.NewGuid().ToString();

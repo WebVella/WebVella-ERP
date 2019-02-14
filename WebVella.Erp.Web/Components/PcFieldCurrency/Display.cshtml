@@ -16,7 +16,7 @@
 				entity-name="@fieldModel.EntityName" api-url="@fieldModel.ApiUrl" access-denied-message="@fieldModel.AccessDeniedMessage"
 				empty-value-message="@fieldModel.EmptyValueMessage" required="@fieldModel.Required" placeholder="@fieldModel.Placeholder"
 				description="@fieldModel.Description" locale="@fieldModel.Locale" min="@options.Min" max="@options.Max"
-				currency-code="@options.CurrencyCode" step="@options.Step">
+				currency-code="@options.CurrencyCode" step="@options.Step" is-visible="(bool)ViewBag.IsVisible">
 	@if (options.ShowCode)
 	{
 		<wv-field-prepend><span class='input-group-text'>@options.CurrencyCode</span></wv-field-prepend>

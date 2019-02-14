@@ -33,6 +33,7 @@ namespace WebVella.Erp.Web.Components
 			{
 				return new PcFieldCheckboxOptions
 				{
+					IsVisible = input.IsVisible,
 					LabelMode = input.LabelMode,
 					LabelText = input.LabelText,
 					Mode = input.Mode,
@@ -69,10 +70,10 @@ namespace WebVella.Erp.Web.Components
 				}
 
 				var baseOptions = InitPcFieldBaseOptions(context);
-				var instanceOptions = PcFieldCheckboxOptions.CopyFromBaseOptions(baseOptions);
+				var options = PcFieldCheckboxOptions.CopyFromBaseOptions(baseOptions);
 				if (context.Options != null)
 				{
-					instanceOptions = JsonConvert.DeserializeObject<PcFieldCheckboxOptions>(context.Options.ToString());
+					options = JsonConvert.DeserializeObject<PcFieldCheckboxOptions>(context.Options.ToString());
 					////Check for connection to entity field
 					//if (instanceOptions.TryConnectToEntity)
 					//{
@@ -90,20 +91,20 @@ namespace WebVella.Erp.Web.Components
 					//}
 				}
 				var modelFieldLabel = "";
-				var model = (PcFieldBaseModel)InitPcFieldBaseModel(context, instanceOptions, label: out modelFieldLabel);
-				if (String.IsNullOrWhiteSpace(instanceOptions.LabelText))
+				var model = (PcFieldBaseModel)InitPcFieldBaseModel(context, options, label: out modelFieldLabel);
+				if (String.IsNullOrWhiteSpace(options.LabelText))
 				{
-					instanceOptions.LabelText = modelFieldLabel;
+					options.LabelText = modelFieldLabel;
 				}
 
 				//Implementing Inherit label mode
-				ViewBag.LabelMode = instanceOptions.LabelMode;
-				ViewBag.Mode = instanceOptions.Mode;
+				ViewBag.LabelMode = options.LabelMode;
+				ViewBag.Mode = options.Mode;
 
-				if (instanceOptions.LabelMode == LabelRenderMode.Undefined && baseOptions.LabelMode != LabelRenderMode.Undefined)
+				if (options.LabelMode == LabelRenderMode.Undefined && baseOptions.LabelMode != LabelRenderMode.Undefined)
 					ViewBag.LabelMode = baseOptions.LabelMode;
 
-				if (instanceOptions.Mode == FieldRenderMode.Undefined && baseOptions.Mode != FieldRenderMode.Undefined)
+				if (options.Mode == FieldRenderMode.Undefined && baseOptions.Mode != FieldRenderMode.Undefined)
 					ViewBag.Mode = baseOptions.Mode;
 
 
@@ -113,7 +114,7 @@ namespace WebVella.Erp.Web.Components
 				#region << Init DataSources >>
 				if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
 				{
-					dynamic valueResult = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Value);
+					dynamic valueResult = context.DataModel.GetPropertyValueByDataSource(options.Value);
 					if (valueResult == null)
 					{
 						model.Value = false;
@@ -142,8 +143,22 @@ namespace WebVella.Erp.Web.Components
 
 				#endregion
 
+				var isVisible = true;
+				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+				{
+					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+					{
+						isVisible = outBool;
+					}
+				}
+				else if (isVisibleDS is Boolean)
+				{
+					isVisible = (bool)isVisibleDS;
+				}
+				ViewBag.IsVisible = isVisible;
 
-				ViewBag.Options = instanceOptions;
+				ViewBag.Options = options;
 				ViewBag.Model = model;
 				ViewBag.Node = context.Node;
 				ViewBag.ComponentMeta = componentMeta;

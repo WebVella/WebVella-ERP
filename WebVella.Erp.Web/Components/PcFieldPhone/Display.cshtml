@@ -15,7 +15,7 @@
 				init-errors="@fieldModel.InitErrors" validation-errors="@fieldModel.ValidationErrors" record-id="@fieldModel.RecordId"
 				entity-name="@fieldModel.EntityName" api-url="@fieldModel.ApiUrl" access-denied-message="@fieldModel.AccessDeniedMessage"
 				empty-value-message="@fieldModel.EmptyValueMessage" required="@fieldModel.Required" placeholder="@fieldModel.Placeholder"
-				description="@fieldModel.Description" locale="@fieldModel.Locale" maxlength="@options.MaxLength">
+				description="@fieldModel.Description" locale="@fieldModel.Locale" maxlength="@options.MaxLength" is-visible="(bool)ViewBag.IsVisible">
 	@if (options.ShowIcon)
 	{
 		<wv-field-prepend><span class='input-group-text'><i class='fa fa-fw fa-phone'></i></span></wv-field-prepend>

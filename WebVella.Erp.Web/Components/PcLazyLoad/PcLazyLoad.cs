@@ -21,6 +21,8 @@ namespace WebVella.Erp.Web.Components
 
 		public class PcLazyLoadOptions
 		{
+			[JsonProperty(PropertyName = "is_visible")]
+			public string IsVisible { get; set; } = "";
 
 			[JsonProperty(PropertyName = "scroll_distance")]
 			public int ScrollDistance { get; set; } = 100;
@@ -63,6 +65,21 @@ namespace WebVella.Erp.Web.Components
 
 				#endregion
 
+				var isVisible = true;
+				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(instanceOptions.IsVisible);
+				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+				{
+					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+					{
+						isVisible = outBool;
+					}
+				}
+				else if (isVisibleDS is Boolean)
+				{
+					isVisible = (bool)isVisibleDS;
+				}
+				if (!isVisible && context.Mode == ComponentMode.Display)
+					return await Task.FromResult<IViewComponentResult>(Content(""));
 
 				ViewBag.Options = instanceOptions;
 				ViewBag.Node = context.Node;

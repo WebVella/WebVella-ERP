@@ -17,6 +17,9 @@ namespace WebVella.Erp.Web.Components
 
 		public class PcFieldBaseOptions
 		{
+			[JsonProperty(PropertyName = "is_visible")]
+			public string IsVisible { get; set; } = "";
+
 			//Label
 			[JsonProperty(PropertyName = "label_mode")]
 			public LabelRenderMode LabelMode { get; set; } = LabelRenderMode.Undefined;

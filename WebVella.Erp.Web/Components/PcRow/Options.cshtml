@@ -1,5 +1,6 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web;
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Api.Models;
 @using WebVella.Erp.Web.Models;
@@ -8,6 +9,7 @@
 	var flexSelfAlignTypeOptions = (List<SelectOption>)ViewBag.FlexSelfAlignTypeOptions;
 	var flexVerticalAlignmentOptions = (List<SelectOption>)ViewBag.FlexVerticalAlignmentOptions;
 	var flexHorizontalAlignmentOptions = (List<SelectOption>)ViewBag.FlexHorizontalAlignmentOptions;
+	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
 }
 <wv-row>
 	<wv-column span="4">

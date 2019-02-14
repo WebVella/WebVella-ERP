@@ -25,6 +25,8 @@ namespace WebVella.Erp.Web.Components
 
 		public class PcGridOptions
 		{
+			[JsonProperty(PropertyName = "is_visible")]
+			public string IsVisible { get; set; } = "";
 
 			//[JsonProperty(PropertyName = "pager")]
 			//public string Pager { get; set; } = "1";
@@ -517,6 +519,21 @@ namespace WebVella.Erp.Web.Components
 
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
 				#endregion
+
+				var isVisible = true;
+				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+				{
+					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+					{
+						isVisible = outBool;
+					}
+				}
+				else if (isVisibleDS is Boolean)
+				{
+					isVisible = (bool)isVisibleDS;
+				}
+				ViewBag.IsVisible = isVisible;
 
 				ViewBag.CssBreakpointOptions = ModelExtensions.GetEnumAsSelectOptions<CssBreakpoint>();
 

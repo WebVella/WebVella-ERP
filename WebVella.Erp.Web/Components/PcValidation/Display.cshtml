@@ -9,4 +9,4 @@
 	var node = (PageBodyNode)ViewBag.Node;
 	var validation = (ValidationException)ViewBag.Validation;
 }
-<wv-validation show-errors="true" validation="@validation"></wv-validation>
+<wv-validation show-errors="true" validation="@validation" is-visible="(bool)ViewBag.IsVisible"></wv-validation>

@@ -14,6 +14,9 @@ namespace WebVella.Erp.Web.TagHelpers
 {
 	public abstract class WvFilterBase : TagHelper
 	{
+		[HtmlAttributeName("is-visible")]
+		public bool isVisible { get; set; } = true;
+
 		[HtmlAttributeName("init-errors")]
 		public List<string> InitErrors { get; set; } = new List<string>();
 

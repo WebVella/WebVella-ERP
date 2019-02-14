@@ -47,7 +47,8 @@ namespace WebVella.Erp.Web.Components
 			public static PcFieldImageOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldImageOptions
-				{ 
+				{
+					IsVisible = input.IsVisible,
 					LabelMode = input.LabelMode,
 					LabelText = input.LabelText,
 					Mode = input.Mode,
@@ -121,6 +122,20 @@ namespace WebVella.Erp.Web.Components
 				}
 				ViewBag.ResizeActionsOptions = ModelExtensions.GetEnumAsSelectOptions<ImageResizeMode>();
 
+				var isVisible = true;
+				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+				{
+					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+					{
+						isVisible = outBool;
+					}
+				}
+				else if (isVisibleDS is Boolean)
+				{
+					isVisible = (bool)isVisibleDS;
+				}
+				ViewBag.IsVisible = isVisible;
 
 				ViewBag.Options = options;
 				ViewBag.Model = model;

@@ -12,13 +12,24 @@
 
 <wv-row>
 	<wv-column span="4">
+		<wv-field-datasource name="is_visible" label-text="Is Visible" value="@options.IsVisible" page-id="erpRequest.Page.Id" placeholder="true"></wv-field-datasource>
+	</wv-column>
+	<wv-column span="4">
 		<wv-field-datasource name="title" label-text="Title" value="@options.Title" page-id="erpRequest.Page.Id"></wv-field-datasource>
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-text name="title_tag" label-text="Title tag" value="@options.TitleTag" placeholder="h3"></wv-field-text>
 	</wv-column>
+</wv-row>
+<wv-row>
 	<wv-column span="4">
 		<wv-field-checkbox name="is_card" label-text="Is Card" value="@options.IsCard" text-true="render as card"></wv-field-checkbox>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-checkbox name="is_collapsable" label-text="Is Collapsable" value="@options.IsCollapsable" text-true="render as collapsable"></wv-field-checkbox>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-checkbox name="is_collapsed" label-text="Is Collapsed" value="@options.IsCollapsed" text-true="initially collapsed"></wv-field-checkbox>
 	</wv-column>
 </wv-row>
 <wv-row>
@@ -28,9 +39,6 @@
 	<wv-column span="4">
 		<wv-field-text name="body_class" label-text="Body Class" value="@options.BodyClass"></wv-field-text>
 	</wv-column>
-	<wv-column span="4">
-		<wv-field-checkbox name="is_collapsable" label-text="Is Collapsable" value="@options.IsCollapsable" text-true="render as collapsable"></wv-field-checkbox>
-	</wv-column>
 </wv-row>
 <wv-row>
 	<wv-column span="4">
@@ -38,8 +46,5 @@
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-select name="field_mode" label-text="Field mode" value="@options.FieldMode" options="fieldRenderMode" description="can be inherited by any inserted fields"></wv-field-select>
-	</wv-column>
-	<wv-column span="4">
-		<wv-field-checkbox name="is_collapsed" label-text="Is Collapsed" value="@options.IsCollapsed" text-true="initially collapsed"></wv-field-checkbox>
 	</wv-column>
 </wv-row>

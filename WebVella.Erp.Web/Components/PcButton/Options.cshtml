@@ -48,16 +48,20 @@
 
 <wv-row>
 	<wv-column span="4">
+		<wv-field-datasource name="is_visible" label-text="Is Visible" value="@options.IsVisible" page-id="erpRequest.Page.Id" placeholder="true"></wv-field-datasource>
+	</wv-column>
+	<wv-column span="4">
 		<wv-field-checkbox name="is_active" label-text="Active" value="@options.isActive" text-true="active button"></wv-field-checkbox>
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-checkbox name="is_disabled" label-text="Disabled" value="@options.isDisabled" text-true="disabled button"></wv-field-checkbox>
 	</wv-column>
-	<wv-column span="4">
+</wv-row>
+<wv-row>
+	<wv-column span="12">
 		<wv-field-text name="onclick" label-text="OnClick" value="@options.OnClick"></wv-field-text>
 	</wv-column>
 </wv-row>
-
 <wv-row>
 	<wv-column span="4">
 		<wv-field-datasource page-id="erpRequest.Page.Id" name="href" label-text="Href" value="@options.Href"></wv-field-datasource>

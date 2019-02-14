@@ -1,15 +1,21 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
 @using WebVella.Erp.Web.Components;
-@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Web;
 @using WebVella.Erp.Api.Models;
 @{
 	var options = (PcForm.PcFormOptions)ViewBag.Options;
 	var labelRenderModeOptions = (List<SelectOption>)ViewBag.LabelRenderModeOptions;
 	var fieldRenderModeOptions = (List<SelectOption>)ViewBag.FieldRenderModeOptions;
 	var methodOptions = (List<SelectOption>)ViewBag.MethodOptions;
+	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
 }
 
+<wv-row>
+	<wv-column span="4">
+		<wv-field-datasource name="is_visible" label-text="Is Visible" value="@options.IsVisible" page-id="erpRequest.Page.Id" placeholder="true"></wv-field-datasource>
+	</wv-column>
+</wv-row>
 <wv-row>
 	<wv-column span="4">
 		<wv-field-text name="id" value="@options.Id" label-text="Id"></wv-field-text>

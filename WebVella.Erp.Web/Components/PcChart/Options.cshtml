@@ -13,6 +13,11 @@
 
 <wv-row>
 	<wv-column span="4">
+		<wv-field-datasource name="is_visible" label-text="Is Visible" value="@options.IsVisible" page-id="erpRequest.Page.Id" placeholder="true"></wv-field-datasource>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="4">
 		<wv-field-datasource name="datasets" value="@options.Datasets" label-text="Datasets" 
 			page-id="erpRequest.Page.Id" 
 			description="Supported data types: List&lt;ErpChartDataset>, List&lt;decimal>, CSV(decimal)"></wv-field-datasource>
