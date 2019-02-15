@@ -5,4 +5,4 @@ The system logs provides the built-in functionality for the plugins to log impor
 
 To review the log navigate to SDK Application > Server > Log
 
-![system log](doc-images\sdk-system-log.png)
+![system log](/doc-images/sdk-system-log.png)
