@@ -25,6 +25,9 @@ namespace WebVella.Erp.Exceptions
 
 		public void AddError(string fieldName, string message, long index = 0)
 		{
+			if (string.IsNullOrWhiteSpace(Message))
+				Message = message;
+
 			Errors.Add(new ValidationError(fieldName, message, false, index));
 		}
 
