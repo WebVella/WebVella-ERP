@@ -1,4 +1,5 @@
 ﻿using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Mvc;
 using MimeKit;
 using System;
 using System.Collections.Generic;
@@ -6,8 +7,12 @@ using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Api.Models.AutoMapper;
 using WebVella.Erp.Eql;
+using WebVella.Erp.Exceptions;
 using WebVella.Erp.Plugins.Mail.Api;
 using WebVella.Erp.Utilities;
+using WebVella.Erp.Web.Models;
+using WebVella.Erp.Web.Pages.Application;
+using WebVella.Erp.Web.Utils;
 
 namespace WebVella.Erp.Plugins.Mail.Services
 {
@@ -15,6 +20,8 @@ namespace WebVella.Erp.Plugins.Mail.Services
 	{
 		private static object lockObject = new object();
 		private static bool queueProcessingInProgress = false;
+
+		#region <--- Hooks Logic --->
 
 		public void ValidatePreCreateRecord(EntityRecord rec, List<ErrorModel> errors)
 		{
@@ -369,6 +376,106 @@ namespace WebVella.Erp.Plugins.Mail.Services
 				}
 			}
 		}
+
+		public IActionResult TestSmtpServiceOnPost(RecordDetailsPageModel pageModel)
+		{
+			SmtpService smtpService = null;
+			string recipientEmail = string.Empty;
+			string subject = string.Empty;
+			string content = string.Empty;
+
+			ValidationException valEx = new ValidationException();
+
+			if (pageModel.HttpContext.Request.Form == null)
+			{
+				valEx.AddError("form", "Smtp service test page missing form tag");
+				valEx.CheckAndThrow();
+			}
+
+
+			if (!pageModel.HttpContext.Request.Form.ContainsKey("recipient_email"))
+				valEx.AddError("recipient_email", "Recipient email is not specified.");
+			else
+			{
+				recipientEmail = pageModel.HttpContext.Request.Form["recipient_email"];
+				if (string.IsNullOrWhiteSpace(recipientEmail))
+					valEx.AddError("recipient_email", "Recipient email is not specified");
+				else if (!recipientEmail.IsEmail())
+					valEx.AddError("recipient_email", "Recipient email is not a valid email address");
+			}
+
+			if (!pageModel.HttpContext.Request.Form.ContainsKey("subject"))
+				valEx.AddError("subject", "Subject is not specified");
+			else
+			{
+				subject = pageModel.HttpContext.Request.Form["subject"];
+				if (string.IsNullOrWhiteSpace(subject))
+					valEx.AddError("subject", "Subject is required");
+			}
+
+			if (!pageModel.HttpContext.Request.Form.ContainsKey("content"))
+				valEx.AddError("content", "Content is not specified");
+			else
+			{
+				content = pageModel.HttpContext.Request.Form["content"];
+				if (string.IsNullOrWhiteSpace(content))
+					valEx.AddError("content", "Content is required");
+			}
+
+			var smtpServiceId = pageModel.DataModel.GetProperty("Record.id") as Guid?;
+
+			if (smtpServiceId == null)
+				valEx.AddError("serviceId", "Invalid smtp service id");
+			else
+			{
+				smtpService = new ServiceManager().GetSmtpService(smtpServiceId.Value);
+				if (smtpService == null)
+					valEx.AddError("serviceId", "Smtp service with specified id does not exist");
+			}
+
+			//we set current record to store properties which don't exist in current entity 
+			EntityRecord currentRecord = pageModel.DataModel.GetProperty("Record") as EntityRecord;
+			currentRecord["recipient_email"] = recipientEmail;
+			currentRecord["subject"] = subject;
+			currentRecord["content"] = content;
+			pageModel.DataModel.SetRecord(currentRecord);
+
+			valEx.CheckAndThrow();
+
+			try
+			{
+				smtpService.SendEmail(string.Empty, recipientEmail, subject, string.Empty, content);
+				pageModel.TempData.Put("ScreenMessage", new ScreenMessage() { Message = "Email was successfully sent", Type = ScreenMessageType.Success, Title = "Success" });
+				var returnUrl = pageModel.HttpContext.Request.Query["returnUrl"];
+				return new RedirectResult($"/mail/services/smtp/r/{smtpService.Id}/details?returnUrl={returnUrl}");
+			}
+			catch (Exception ex)
+			{
+				valEx.AddError("", ex.Message);
+				valEx.CheckAndThrow();
+				return null;
+			}
+		}
+
+		public IActionResult EmailSendNowOnPost(RecordDetailsPageModel pageModel)
+		{
+			var emailId = (Guid)pageModel.DataModel.GetProperty("Record.id");
+
+			var internalSmtpSrv = new SmtpInternalService();
+			Email email = internalSmtpSrv.GetEmail(emailId);
+			SmtpService smtpService = new ServiceManager().GetSmtpService(email.ServiceId);
+			internalSmtpSrv.SendEmail(email, smtpService);
+
+			if (email.Status == EmailStatus.Sent)
+				pageModel.TempData.Put("ScreenMessage", new ScreenMessage() { Message = "Email was successfully sent", Type = ScreenMessageType.Success, Title = "Success" });
+			else
+				pageModel.TempData.Put("ScreenMessage", new ScreenMessage() { Message = email.ServerError, Type = ScreenMessageType.Error, Title = "Error" });
+
+			var returnUrl = pageModel.HttpContext.Request.Query["returnUrl"];
+			return new RedirectResult($"/mail/emails/all/r/{emailId}/details?returnUrl={returnUrl}");
+		}
+
+		#endregion
 
 		public void SaveEmail(Email email)
 		{

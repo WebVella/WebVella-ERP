@@ -55,6 +55,29 @@ namespace WebVella.Erp.Plugins.Mail
 
 						#region << 3. Run methods based on the current installed version of the plugin >>
 
+						//Patch 20190215
+						{
+							var patchVersion = 20190215;
+							if (currentPluginSettings.Version < patchVersion)
+							{
+								try
+								{
+									currentPluginSettings.Version = patchVersion;
+									Patch20190215(entMan, relMan, recMan);
+								}
+								catch (ValidationException ex)
+								{
+									var exception = ex;
+									throw ex;
+								}
+								catch (Exception ex)
+								{
+									var exception = ex;
+									throw ex;
+								}
+							}
+						}
+
 						//Patch 20190123
 						//{
 						//	var patchVersion = 20190123;
