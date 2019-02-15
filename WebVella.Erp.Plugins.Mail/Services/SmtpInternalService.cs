@@ -45,12 +45,12 @@ namespace WebVella.Erp.Plugins.Mail.Services
 						break;
 					case "port":
 						{
-							if (!Int32.TryParse(rec["port"] as string, out int port))
+							if (!Int32.TryParse(rec["port"]?.ToString(), out int port))
 							{
 								errors.Add(new ErrorModel
 								{
 									Key = "port",
-									Value = (string)rec["port"],
+									Value = rec["port"]?.ToString(),
 									Message = $"Port must be an integer value between 1 and 65025"
 								});
 							}
@@ -61,7 +61,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 									errors.Add(new ErrorModel
 									{
 										Key = "port",
-										Value = (string)rec["port"],
+										Value = rec["port"]?.ToString(),
 										Message = $"Port must be an integer value between 1 and 65025"
 									});
 								}
@@ -100,12 +100,12 @@ namespace WebVella.Erp.Plugins.Mail.Services
 						break;
 					case "max_retries_count":
 						{
-							if (!Int32.TryParse(rec["max_retries_count"] as string, out int count))
+							if (!Int32.TryParse(rec["max_retries_count"]?.ToString(), out int count))
 							{
 								errors.Add(new ErrorModel
 								{
 									Key = "max_retries_count",
-									Value = (string)rec["max_retries_count"],
+									Value = rec["max_retries_count"]?.ToString(),
 									Message = $"Number of retries on error must be an integer value between 1 and 10"
 								});
 							}
@@ -116,7 +116,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 									errors.Add(new ErrorModel
 									{
 										Key = "max_retries_count",
-										Value = (string)rec["max_retries_count"],
+										Value = rec["max_retries_count"]?.ToString(),
 										Message = $"Number of retries on error must be an integer value between 1 and 10"
 									});
 								}
@@ -125,12 +125,12 @@ namespace WebVella.Erp.Plugins.Mail.Services
 						break;
 					case "retry_wait_minutes":
 						{
-							if (!Int32.TryParse(rec["retry_wait_minutes"] as string, out int minutes))
+							if (!Int32.TryParse(rec["retry_wait_minutes"]?.ToString(), out int minutes))
 							{
 								errors.Add(new ErrorModel
 								{
 									Key = "retry_wait_minutes",
-									Value = (string)rec["retry_wait_minutes"],
+									Value = rec["retry_wait_minutes"]?.ToString(),
 									Message = $"Wait period between retries must be an integer value between 1 and 1440 minutes"
 								});
 							}
@@ -141,7 +141,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 									errors.Add(new ErrorModel
 									{
 										Key = "retry_wait_minutes",
-										Value = (string)rec["retry_wait_minutes"],
+										Value = rec["retry_wait_minutes"]?.ToString(),
 										Message = $"Wait period between retries must be an integer value between 1 and 1440 minutes"
 									});
 								}
@@ -365,7 +365,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 			else if (rec.Properties.ContainsKey("is_default") && (bool)rec["is_default"] == false)
 			{
 				var currentRecord = new EqlCommand("SELECT * FROM smtp_service WHERE id = @id", new EqlParameter("id", rec["id"])).Execute();
-				if ((bool)currentRecord[0]["is_default"])
+				if (currentRecord.Count > 0 && (bool)currentRecord[0]["is_default"])
 				{
 					errors.Add(new ErrorModel
 					{
