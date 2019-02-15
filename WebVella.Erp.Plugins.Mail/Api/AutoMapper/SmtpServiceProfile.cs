@@ -26,12 +26,13 @@ namespace WebVella.Erp.Web.Models.AutoMapper.Profiles
 			model.Port = (int)((decimal)rec["port"]);
 			model.Username = (string)rec["username"];
 			model.Password = (string)rec["password"];
-			model.DefaultFromEmail = (string)rec["default_from_email"];
-			model.DefaultFromName = (string)rec["default_from_name"];
+			model.DefaultSenderEmail = (string)rec["default_sender_email"];
+			model.DefaultSenderName = (string)rec["default_sender_name"];
 			model.DefaultReplyToEmail = (string)rec["default_reply_to_email"];
 			model.MaxRetriesCount = (int)((decimal)rec["max_retries_count"]);
 			model.RetryWaitMinutes = (int)((decimal)rec["retry_wait_minutes"]);
 			model.IsDefault = (bool)rec["is_default"];
+			model.IsEnabled= (bool)rec["is_enabled"];
 			model.ConnectionSecurity = (SecureSocketOptions)(int.Parse((string)rec["connection_security"]));
 			return model;
 		}
@@ -49,12 +50,13 @@ namespace WebVella.Erp.Web.Models.AutoMapper.Profiles
 			rec["port"] = model.Port;
 			rec["username"] = model.Username;
 			rec["password"] = model.Password;
-			rec["default_from_email"] = model.DefaultFromEmail;
-			rec["default_from_name"] = model.DefaultFromName;
+			rec["default_sender_email"] = model.DefaultSenderEmail;
+			rec["default_sender_name"] = model.DefaultSenderName;
 			rec["default_reply_to_email"] = model.DefaultReplyToEmail;
 			rec["max_retries_count"] = (decimal)((int)model.MaxRetriesCount);
 			rec["retry_wait_minutes"] = (decimal)((int)model.RetryWaitMinutes);
 			rec["is_default"] = model.IsDefault;
+			rec["is_enabled"] = model.IsEnabled;
 			rec["connection_security"] = ((int)model.ConnectionSecurity).ToString();
 			return rec;
 		}

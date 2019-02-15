@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using NpgsqlTypes;
 using System;
 
 namespace WebVella.Erp.Eql
@@ -24,7 +25,22 @@ namespace WebVella.Erp.Eql
 
 		internal NpgsqlParameter ToNpgsqlParameter()
 		{
-			return new NpgsqlParameter(ParameterName, (object)Value ?? DBNull.Value);
+			if (Value is DateTime && ((DateTime)Value).Kind == DateTimeKind.Utc)
+			{
+				var par = new NpgsqlParameter(ParameterName, NpgsqlDbType.TimestampTz);
+				par.Value = Value;
+				return par;
+			}
+			else if ( Value != null && Value is DateTime? && ((DateTime?)Value).Value.Kind == DateTimeKind.Utc)
+			{
+				var par = new NpgsqlParameter(ParameterName, NpgsqlDbType.TimestampTz);
+				par.Value = Value;
+				return par;
+			}
+			else
+			{
+				return new NpgsqlParameter(ParameterName, (object)Value ?? DBNull.Value);
+			}
 		}
 	}
 }
