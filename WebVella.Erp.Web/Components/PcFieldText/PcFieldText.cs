@@ -29,12 +29,13 @@ namespace WebVella.Erp.Web.Components
 
 			public static PcFieldTextOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
-				return new PcFieldTextOptions { 
+				return new PcFieldTextOptions {
+					IsVisible = input.IsVisible,
 					LabelMode = input.LabelMode,
 					LabelText = input.LabelText,
 					Mode = input.Mode,
 					Name = input.Name,
-					MaxLength = null
+					MaxLength = input.MaxLength
 				};
 			}
 		}
@@ -70,29 +71,10 @@ namespace WebVella.Erp.Web.Components
 				if (context.Options != null)
 				{
 					options = JsonConvert.DeserializeObject<PcFieldTextOptions>(context.Options.ToString());
-					//Check for connection to entity field
-					Entity mappedEntity = null;
-					if (options.ConnectedEntityId != null)
+					if (context.Mode != ComponentMode.Options)
 					{
-						mappedEntity = new EntityManager().ReadEntity(options.ConnectedEntityId.Value).Object;
-					}
-					else
-					{
-						var entity = context.DataModel.GetProperty("Entity");
-						if (entity is Entity)
-						{
-							mappedEntity = (Entity)entity;
-						}
-					}
-					if (mappedEntity != null)
-					{
-						var fieldName = options.Name;
-						var entityField = mappedEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
-						if (entityField != null && entityField is TextField)
-						{
-							var castedEntityField = ((TextField)entityField);
-							options.MaxLength = castedEntityField.MaxLength;
-						}
+						if (options.MaxLength == null)
+							options.MaxLength = baseOptions.MaxLength;
 					}
 				}
 				var modelFieldLabel = "";
@@ -120,6 +102,21 @@ namespace WebVella.Erp.Web.Components
 				if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help) {
 					model.Value = context.DataModel.GetPropertyValueByDataSource(options.Value);
 				}
+
+				var isVisible = true;
+				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+				{
+					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+					{
+						isVisible = outBool;
+					}
+				}
+				else if (isVisibleDS is Boolean)
+				{
+					isVisible = (bool)isVisibleDS;
+				}
+				ViewBag.IsVisible = isVisible;
 
 				ViewBag.Options = options;
 				ViewBag.Model = model;

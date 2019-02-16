@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package >
+	<metadata>
+		<id>WebVella.Erp.Plugins.Mail</id>
+		<version>1.0.0</version>
+		<title>WebVella.Erp.Plugins.Mail</title>
+		<authors>WebVella</authors>
+		<owners>WebVella</owners>
+		<projectUrl>http://webvella.com/</projectUrl>
+		<iconUrl>http://webvella.com/favicon.ico</iconUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<license type="expression">Apache-2.0</license>
+		<description>The Mail Plugin for the open-source and free platform WebVella ERP. It provides API, services and management for sending emails through SMTP services.</description>
+		<releaseNotes></releaseNotes>
+		<copyright>Copyright 2019</copyright>
+		<tags></tags>
+		<dependencies>
+			<group targetFramework=".NETCoreApp2.2">
+				<dependency id="WebVella.Erp" version="1.0.2" />
+				<dependency id="WebVella.Erp.Web" version="1.0.2" />
+				<dependency id="MailKit" version="2.1.2" />
+			</group>
+		</dependencies>
+	</metadata>
+	<files>
+		<file src="bin\Release\netcoreapp2.2\WebVella.Erp.Plugins.Mail.dll" target="lib\netcoreapp2.2\WebVella.Erp.Plugins.Mail.dll" />
+		<!--<file src="bin\Release\netcoreapp2.2\WebVella.Erp.Plugins.Mail.Views.dll" target="lib\netcoreapp2.2\WebVella.Erp.Plugins.Mail.Views.dll" />-->
+	</files>
+</package>

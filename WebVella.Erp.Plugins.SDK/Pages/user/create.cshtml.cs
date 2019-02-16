@@ -65,6 +65,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.User
 		public IActionResult OnGet()
 		{
 			InitPage();
+			BeforeRender();
 			return Page();
 		}
 
@@ -96,19 +97,21 @@ namespace WebVella.Erp.Plugins.SDK.Pages.User
 					newUser.Roles.Add(role);
 				}
 				secMan.SaveUser(newUser);
-				
+				BeforeRender();
 				return Redirect(ReturnUrl);
 			}
 			catch (ValidationException ex)
 			{
 				Validation.Message = ex.Message;
 				Validation.Errors = ex.Errors;
+				BeforeRender();
 				return Page();
 			}
 			catch (Exception ex)
 			{
 				Validation.Message = ex.Message;
 				Validation.Errors.Add(new ValidationError("", ex.Message, isSystem: true));
+				BeforeRender();
 				return Page();
 			}
 		}

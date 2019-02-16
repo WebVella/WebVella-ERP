@@ -299,6 +299,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			}
 			#endregion
 
+
+			BeforeRender();
 			return Page();
 		}
 	}

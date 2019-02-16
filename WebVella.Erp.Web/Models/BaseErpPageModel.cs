@@ -166,9 +166,8 @@ namespace WebVella.Erp.Web.Models
 				//Calculate node Urls
 				foreach (var area in sitemap.Areas)
 				{
-					if (area.Nodes.Count > 0)
+					foreach (var currentNode in area.Nodes)
 					{
-						var currentNode = area.Nodes[0];
 						switch (currentNode.Type)
 						{
 							case SitemapNodeType.ApplicationPage:
@@ -189,7 +188,7 @@ namespace WebVella.Erp.Web.Models
 								}
 								break;
 							case SitemapNodeType.EntityList:
-								var firstListPage = appPages.FindAll(x => x.Type == PageType.RecordList).OrderBy(x => x.Weight).FirstOrDefault();
+								var firstListPage = appPages.FindAll(x => x.Type == PageType.RecordList && x.EntityId == currentNode.EntityId).OrderBy(x => x.Weight).FirstOrDefault();
 								if (firstListPage == null)
 									currentNode.Url = $"/{ErpRequestContext.App.Name}/{area.Name}/{currentNode.Name}/l/";
 								else
@@ -360,6 +359,10 @@ namespace WebVella.Erp.Web.Models
 		{
 
 			#region << Set BodyClass >>
+			ViewData["BodyBorderColor"] = "#192637";
+			if (ErpRequestContext.App != null && !String.IsNullOrWhiteSpace(ErpRequestContext.App.Color)) {
+				ViewData["BodyBorderColor"] = ErpRequestContext.App.Color;
+			}
 			if (ToolbarMenu.Count > 0)
 			{
 				var bodyClass = ViewData.ContainsKey("BodyClass") ? ViewData["BodyClass"].ToString().ToLowerInvariant() : "";

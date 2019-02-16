@@ -30,16 +30,20 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "max")]
 			public int? Max { get; set; } = null;
 
+			[JsonProperty(PropertyName = "show_icon")]
+			public bool ShowIcon { get; set; } = false;
+
 			public static PcFieldPasswordOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldPasswordOptions
-				{ 
+				{
+					IsVisible = input.IsVisible,
 					LabelMode = input.LabelMode,
 					LabelText = input.LabelText,
 					Mode = input.Mode,
 					Name = input.Name,
-					Min = null,
-					Max = null
+					Min = (int?)input.Min,
+					Max = (int?)input.Max
 				};
 			}
 		}
@@ -74,31 +78,15 @@ namespace WebVella.Erp.Web.Components
 				if (context.Options != null)
 				{
 					options = JsonConvert.DeserializeObject<PcFieldPasswordOptions>(context.Options.ToString());
-					//Check for connection to entity field
-					Entity mappedEntity = null;
-					if (options.ConnectedEntityId != null)
+					if (context.Mode != ComponentMode.Options)
 					{
-						mappedEntity = new EntityManager().ReadEntity(options.ConnectedEntityId.Value).Object;
+						if (options.Min == null)
+							options.Min = (int?)baseOptions.Min;
+
+						if (options.Max == null)
+							options.Max = (int?)baseOptions.Max;
 					}
-					else
-					{
-						var entity = context.DataModel.GetProperty("Entity");
-						if (entity is Entity)
-						{
-							mappedEntity = (Entity)entity;
-						}
-					}
-					if (mappedEntity != null)
-					{
-						var fieldName = options.Name;
-						var entityField = mappedEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
-						if (entityField != null && entityField is PasswordField)
-						{
-							var castedEntityField = ((PasswordField)entityField);
-							options.Min = castedEntityField.MinLength;
-							options.Max = castedEntityField.MaxLength;
-						}
-					}
+
 				}
 				var modelFieldLabel = "";
 				var model = (PcFieldBaseModel)InitPcFieldBaseModel(context, options, label: out modelFieldLabel);
@@ -121,6 +109,20 @@ namespace WebVella.Erp.Web.Components
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
 				#endregion
 
+				var isVisible = true;
+				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+				{
+					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+					{
+						isVisible = outBool;
+					}
+				}
+				else if (isVisibleDS is Boolean)
+				{
+					isVisible = (bool)isVisibleDS;
+				}
+				ViewBag.IsVisible = isVisible;
 
 				ViewBag.Options = options;
 				ViewBag.Model = model;

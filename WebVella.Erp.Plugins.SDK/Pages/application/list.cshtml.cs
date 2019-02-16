@@ -157,6 +157,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 			#endregion
 
 			ErpRequestContext.PageContext = PageContext;
+
+			BeforeRender();
 		}
 	}
 }

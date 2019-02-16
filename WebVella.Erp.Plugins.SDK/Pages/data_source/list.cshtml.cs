@@ -207,6 +207,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 
 			
 			ErpRequestContext.PageContext = PageContext;
+
+			BeforeRender();
 		}
 	}
 }

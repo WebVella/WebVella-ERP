@@ -24,8 +24,8 @@ namespace WebVella.Erp.Web.Components
 		public class PcApplicationsOptions
 		{
 
-			//[JsonProperty(PropertyName = "html")]
-			//public string Html { get; set; } = "html";
+			//[JsonProperty(PropertyName = "is_visible")]
+			//public string IsVisible { get; set; } = "";
 		}
 
 		public async Task<IViewComponentResult> InvokeAsync(PageComponentContext context)
@@ -61,7 +61,6 @@ namespace WebVella.Erp.Web.Components
 
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
 				#endregion
-
 
 				ViewBag.Options = instanceOptions;
 				ViewBag.Node = context.Node;

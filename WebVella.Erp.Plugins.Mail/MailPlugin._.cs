@@ -4,7 +4,6 @@ using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Database;
 using WebVella.Erp.Exceptions;
-using WebVella.Erp.Plugins.Mail.Model;
 
 namespace WebVella.Erp.Plugins.Mail
 {
@@ -55,6 +54,29 @@ namespace WebVella.Erp.Plugins.Mail
 						#endregion
 
 						#region << 3. Run methods based on the current installed version of the plugin >>
+
+						//Patch 20190215
+						{
+							var patchVersion = 20190215;
+							if (currentPluginSettings.Version < patchVersion)
+							{
+								try
+								{
+									currentPluginSettings.Version = patchVersion;
+									Patch20190215(entMan, relMan, recMan);
+								}
+								catch (ValidationException ex)
+								{
+									var exception = ex;
+									throw ex;
+								}
+								catch (Exception ex)
+								{
+									var exception = ex;
+									throw ex;
+								}
+							}
+						}
 
 						//Patch 20190123
 						//{

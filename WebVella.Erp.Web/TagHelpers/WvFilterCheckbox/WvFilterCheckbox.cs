@@ -9,6 +9,11 @@ namespace WebVella.Erp.Web.TagHelpers
 	{
 		public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
+			if (!isVisible)
+			{
+				output.SuppressOutput();
+				return Task.CompletedTask;
+			}
 			#region << Init >>
 			var initSuccess = InitFilter(context, output);
 
@@ -26,7 +31,7 @@ namespace WebVella.Erp.Web.TagHelpers
 			{
 				var valueSelect = new TagBuilder("select");
 				valueSelect.AddCssClass("form-control value");
-				
+
 				var undefinedOption = new TagBuilder("option");
 				undefinedOption.InnerHtml.Append("");
 				if (Value == null)
@@ -60,8 +65,9 @@ namespace WebVella.Erp.Web.TagHelpers
 			output.Content.AppendHtml(inputGroupEl);
 
 			return Task.CompletedTask;
+			#endregion
 		}
 
-		#endregion
+
 	}
 }

@@ -38,18 +38,22 @@ namespace WebVella.Erp.Web.Components
 			public int DecimalDigits { get; set; } = 2;
 
 
+			[JsonProperty(PropertyName = "show_icon")]
+			public bool ShowIcon { get; set; } = false;
+
 			public static PcFieldPercentOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldPercentOptions
-				{ 
+				{
+					IsVisible = input.IsVisible,
 					LabelMode = input.LabelMode,
 					LabelText = input.LabelText,
 					Mode = input.Mode,
 					Name = input.Name,
-					Min = null,
-					Max = null,
+					Min = input.Min,
+					Max = input.Max,
 					Step = null,
-					DecimalDigits = 2
+					DecimalDigits = input.DecimalDigits
 				};
 			}
 		}
@@ -84,32 +88,16 @@ namespace WebVella.Erp.Web.Components
 				if (context.Options != null)
 				{
 					options = JsonConvert.DeserializeObject<PcFieldPercentOptions>(context.Options.ToString());
-					//Check for connection to entity field
-					Entity mappedEntity = null;
-					if (options.ConnectedEntityId != null)
+					if (context.Mode != ComponentMode.Options)
 					{
-						mappedEntity = new EntityManager().ReadEntity(options.ConnectedEntityId.Value).Object;
-					}
-					else
-					{
-						var entity = context.DataModel.GetProperty("Entity");
-						if (entity is Entity)
-						{
-							mappedEntity = (Entity)entity;
-						}
-					}
+						if (options.Min == null)
+							options.Min = baseOptions.Min;
 
-					if (mappedEntity != null)
-					{
-						var fieldName = options.Name;
-						var entityField = mappedEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
-						if (entityField != null && entityField is PercentField)
-						{
-							var castedEntityField = ((PercentField)entityField);
-							options.Min = castedEntityField.MinValue;
-							options.Max = castedEntityField.MaxValue;
-							options.DecimalDigits = (int)(castedEntityField.DecimalPlaces ?? 0);
-						}
+						if (options.Max == null)
+							options.Max = baseOptions.Max;
+
+						if (options.DecimalDigits == null)
+							options.DecimalDigits = baseOptions.DecimalDigits;
 					}
 
 				}
@@ -138,6 +126,21 @@ namespace WebVella.Erp.Web.Components
 				{
 					model.Value = context.DataModel.GetPropertyValueByDataSource(options.Value);
 				}
+
+				var isVisible = true;
+				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+				{
+					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+					{
+						isVisible = outBool;
+					}
+				}
+				else if (isVisibleDS is Boolean)
+				{
+					isVisible = (bool)isVisibleDS;
+				}
+				ViewBag.IsVisible = isVisible;
 
 				ViewBag.Options = options;
 				ViewBag.Model = model;

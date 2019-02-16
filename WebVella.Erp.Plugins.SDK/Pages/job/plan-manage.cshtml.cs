@@ -118,6 +118,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Job
 			if (Plan.StartTimespan != null) StartTimespan = new DateTime(2000, 1, 1).AddMinutes(Plan.StartTimespan.Value);
 			if (Plan.EndTimespan != null) EndTimespan = new DateTime(2000, 1, 1).AddMinutes(Plan.EndTimespan.Value);
 
+			BeforeRender();
 			return Page();
 		}
 
@@ -226,12 +227,15 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Job
 
 				ScheduleManager.Current.UpdateSchedulePlan(Plan);
 
+				BeforeRender();
 				return Redirect(ReturnUrl);
 			}
 			catch (ValidationException ex)
 			{
 				Validation.Message = ex.Message;
 				Validation.Errors = ex.Errors;
+
+				BeforeRender();
 				return Page();
 			}
 		}

@@ -7,7 +7,7 @@ using WebVella.Erp.Web.Models;
 
 namespace WebVella.Erp.Web.Repositories
 {
-	public class ErpPageRepository : BaseDbRepository
+	internal class ErpPageRepository : BaseDbRepository
 	{
 		public ErpPageRepository(string conString) : base(conString) { }
 

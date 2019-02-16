@@ -2282,10 +2282,10 @@ textarea.autogrow {
 	top: -1px;
 }
 
-.form-check-inline .form-check-input {
+/*.form-check-inline .form-check-input {
 	position: relative;
 	top: 2px;
-}
+}*/
 
 
 .btn .icon {
@@ -2410,11 +2410,12 @@ dropdown-item.active {
 /*#region << Body Inner Wrapper >> */
 body {
 	background-color: --brand_background_color;
+	border-top:2px solid #999;
 }
 
 #body-inner-wrapper {
 	position: absolute;
-	top: 0;
+	top: 2px;
 	bottom: 0;
 	left: 0;
 	right: 0;
@@ -2577,7 +2578,7 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 	border: 1px solid --brand_background_color;
 	border-top: none;
 	background: #fff;
-	height: calc(100vh - 40px);
+	height: calc(100vh - 43px);
 	overflow-y: auto;
 	padding-top: 15px;
 	/*padding-bottom: 30px;*/
@@ -2603,7 +2604,7 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 	line-height: 40px;
 	box-sizing: content-box;
 	position: fixed;
-	top: 0;
+	top: 2px;
 	left: 0;
 	right: 0;
 	z-index: 50;
@@ -2909,6 +2910,16 @@ pre, code {
 
 
 /*#region << Erp Field >> */
+.erp-field.form-group.display.label-horizontal,
+.erp-field.form-group.simple.label-horizontal,
+.erp-field.form-group.inline-edit.label-horizontal{
+	margin-bottom:0.25rem;
+}
+
+.erp-field.form-group.form.label-horizontal {
+	margin-bottom:0.25rem;
+}
+
 .erp-field.display .form-control,
 .erp-field.display .form-control-plaintext,
 .erp-field.display .select2-container {
@@ -2954,14 +2965,17 @@ pre, code {
 		font-size:14px;
 	}
 
-.erp-field .col.label-horizontal {
+.erp-field.label-horizontal .col{
 	/*border-bottom: 1px solid #eee;*/
 }
 
-.erp-field.inline-edit .col.label-horizontal .view-wrapper .form-control,
-.erp-field.inline-edit .col.label-horizontal .view-wrapper .form-control-plaintext,
-.erp-field.display .col.label-horizontal .form-control, .erp-field.display .col.label-horizontal .form-control-plaintext, .erp-field.display .col.label-horizontal .select2-container,
-.erp-field.inline-edit .col.label-horizontal .view-wrapper .input-group-prepend, .erp-field.inline-edit .col.label-horizontal .view-wrapper .input-group-append{
+.erp-field.inline-edit.label-horizontal .view-wrapper .form-control,
+.erp-field.inline-edit.label-horizontal .view-wrapper .form-control-plaintext,
+.erp-field.display.label-horizontal .form-control, 
+.erp-field.display.label-horizontal .form-control-plaintext,
+.erp-field.display.label-horizontal .select2-container,
+.erp-field.inline-edit.label-horizontal .view-wrapper .input-group-prepend,
+.erp-field.inline-edit.label-horizontal .view-wrapper .input-group-append{
 	border-bottom:none;
 }
 
@@ -4160,14 +4174,14 @@ border-bottom-style:dashed;
 
 .erp-list .sort-link {
 	text-decoration: none;
-	float: right;
-	opacity: 0;
+	/*float: right;*/
+	margin-left:5px;
 	height: 16px;
 }
 
-.erp-list thead:hover .sort-link {
+/*.erp-list thead:hover .sort-link {
 	opacity: 1;
-}
+}*/
 
 .erp-list .sort-link em {
 	position: absolute;
@@ -4185,7 +4199,7 @@ border-bottom-style:dashed;
 .erp-list .sort-marker {
 	display: inline-block;
 	width: 12px;
-	height: 16px;
+	height: 12px;
 	font-size: 10px;
 	line-height: 16px;
 	overflow: hidden;
@@ -5441,6 +5455,8 @@ wv-pb-manager .wv-pb-node > div > .row {
 	.login-card .card-header {
 		background: rgb(31, 40, 52);
 		color: white;
+		font-size:14px;
+		font-weight:normal;
 	}
 
 		.login-card .card-header img {

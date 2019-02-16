@@ -15,6 +15,9 @@ namespace WebVella.Erp.Web.TagHelpers
 {
 	public abstract class WvFieldBase : TagHelper
 	{
+		[HtmlAttributeName("is-visible")]
+		public bool isVisible { get; set; } = true;
+
 		//Label
 		[HtmlAttributeName("label-mode")]
 		public LabelRenderMode LabelMode { get; set; } = LabelRenderMode.Undefined;
@@ -267,6 +270,10 @@ namespace WebVella.Erp.Web.TagHelpers
 			}
 			CssClassList.Add("form-group");
 			CssClassList.Add("erp-field");
+			if (LabelMode == LabelRenderMode.Horizontal)
+			{
+				CssClassList.Add("label-horizontal");
+			}
 			if (!String.IsNullOrWhiteSpace(Id))
 			{
 				output.Attributes.Add("id",Id);
@@ -402,9 +409,9 @@ namespace WebVella.Erp.Web.TagHelpers
 			#region << Field Outer Wrapper tag - StartTag >>
 			var fieldWrapper = new TagBuilder("div");
 			fieldWrapper.AddCssClass("col");
+
 			if (LabelMode == LabelRenderMode.Horizontal)
 			{
-				fieldWrapper.AddCssClass("label-horizontal");
 				output.PreContent.AppendHtml(fieldWrapper.RenderStartTag());
 			}
 			#endregion

@@ -373,7 +373,7 @@ namespace WebVella.Erp.Api
 
 		#region << Entity methods >>
 
-		public EntityResponse CreateEntity(InputEntity inputEntity,Dictionary<string,Guid> sysIdDictionary = null, bool createOnlyIdField = true )
+		public EntityResponse CreateEntity(InputEntity inputEntity, Dictionary<string, Guid> sysIdDictionary = null, bool createOnlyIdField = true)
 		{
 			EntityResponse response = new EntityResponse
 			{
@@ -412,11 +412,11 @@ namespace WebVella.Erp.Api
 					return response;
 				}
 
-				entity.Fields = CreateEntityDefaultFields(entity, sysIdDictionary, createOnlyIdField );
-				
+				entity.Fields = CreateEntityDefaultFields(entity, sysIdDictionary, createOnlyIdField);
+
 
 				DbEntity storageEntity = entity.MapTo<DbEntity>();
-				bool result = DbContext.Current.EntityRepository.Create(storageEntity, sysIdDictionary, createOnlyIdField );
+				bool result = DbContext.Current.EntityRepository.Create(storageEntity, sysIdDictionary, createOnlyIdField);
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -462,7 +462,7 @@ namespace WebVella.Erp.Api
 			entity.RecordPermissions.CanUpdate = allowedRolesUpdate ?? new List<Guid>() { SystemIds.AdministratorRoleId };
 			entity.RecordPermissions.CanDelete = allowedRolesDelete ?? new List<Guid>() { SystemIds.AdministratorRoleId };
 
-			return CreateEntity(entity,createOnlyIdField: createOnlyIdField);
+			return CreateEntity(entity, createOnlyIdField: createOnlyIdField);
 		}
 
 		public EntityResponse UpdateEntity(InputEntity inputEntity)
@@ -504,9 +504,9 @@ namespace WebVella.Erp.Api
 				storageEntity.LabelPlural = entity.LabelPlural;
 				storageEntity.System = entity.System;
 				storageEntity.IconName = entity.IconName;
-                storageEntity.Color = entity.Color;
+				storageEntity.Color = entity.Color;
 				storageEntity.RecordScreenIdField = entity.RecordScreenIdField;
-                //storageEntity.Weight = entity.Weight;
+				//storageEntity.Weight = entity.Weight;
 				storageEntity.RecordPermissions.CanRead = entity.RecordPermissions.CanRead;
 				storageEntity.RecordPermissions.CanCreate = entity.RecordPermissions.CanCreate;
 				storageEntity.RecordPermissions.CanUpdate = entity.RecordPermissions.CanUpdate;
@@ -556,7 +556,7 @@ namespace WebVella.Erp.Api
 			};
 
 			bool hasPermisstion = SecurityContext.HasMetaPermission();
-			
+
 
 			try
 			{
@@ -630,7 +630,7 @@ namespace WebVella.Erp.Api
 			try
 			{
 				List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
-                entities = storageEntityList.MapTo<Entity>();
+				entities = storageEntityList.MapTo<Entity>();
 
 				List<EntityRelation> relationList = new EntityRelationManager().Read(storageEntityList).Object;
 
@@ -650,14 +650,14 @@ namespace WebVella.Erp.Api
 
 				foreach (var entity in entities)
 				{
-                    #region Process Fields
+					#region Process Fields
 
-                    foreach(var field in entity.Fields)
-                    {
-                        field.EntityName = entity.Name;
-                    }
+					foreach (var field in entity.Fields)
+					{
+						field.EntityName = entity.Name;
+					}
 
-                    #endregion
+					#endregion
 
 					//compute hash code
 					entity.Hash = CryptoUtility.ComputeOddMD5Hash(JsonConvert.SerializeObject(entity));
@@ -1250,29 +1250,33 @@ namespace WebVella.Erp.Api
 				//Check relations
 				var relations = new EntityRelationManager().Read().Object;
 
-				foreach(var relation in relations) {
-					if(relation.OriginFieldId == id) {
-							var error = new ErrorModel();
-							error.Key = "relation";
-							error.Value = id.ToString();
-							error.Message = "Field used as Origin field in relation: " + relation.Name;
-							validationErrors.Add(error);						
+				foreach (var relation in relations)
+				{
+					if (relation.OriginFieldId == id)
+					{
+						var error = new ErrorModel();
+						error.Key = "relation";
+						error.Value = id.ToString();
+						error.Message = "Field used as Origin field in relation: " + relation.Name;
+						validationErrors.Add(error);
 					}
-					else if(relation.TargetFieldId == id) {
-							var error = new ErrorModel();
-							error.Key = "relation";
-							error.Value = id.ToString();
-							error.Message = "Field used as Target field in relation: " + relation.Name;
-							validationErrors.Add(error);						
+					else if (relation.TargetFieldId == id)
+					{
+						var error = new ErrorModel();
+						error.Key = "relation";
+						error.Value = id.ToString();
+						error.Message = "Field used as Target field in relation: " + relation.Name;
+						validationErrors.Add(error);
 					}
 				}
 
-				if(validationErrors.Count > 0) {
+				if (validationErrors.Count > 0)
+				{
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The field was not deleted. Validation error occurred!";
 					response.Errors = validationErrors;
-					return response;				
+					return response;
 				}
 				#endregion
 
@@ -1487,16 +1491,18 @@ namespace WebVella.Erp.Api
 
 		#region << Help methods >>
 
-		private List<Field> CreateEntityDefaultFields(Entity entity, Dictionary<string,Guid> sysFieldIdDictionary = null, bool createOnlyIdField = true)
+		private List<Field> CreateEntityDefaultFields(Entity entity, Dictionary<string, Guid> sysFieldIdDictionary = null, bool createOnlyIdField = true)
 		{
 			List<Field> fields = new List<Field>();
 
 			GuidField primaryKeyField = new GuidField();
 
-			if(sysFieldIdDictionary != null && sysFieldIdDictionary.ContainsKey("id")) {
+			if (sysFieldIdDictionary != null && sysFieldIdDictionary.ContainsKey("id"))
+			{
 				primaryKeyField.Id = sysFieldIdDictionary["id"];
 			}
-			else {
+			else
+			{
 				primaryKeyField.Id = Guid.NewGuid();
 			}
 			primaryKeyField.Name = "id";

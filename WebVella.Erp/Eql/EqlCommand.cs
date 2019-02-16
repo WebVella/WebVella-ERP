@@ -40,6 +40,24 @@ namespace WebVella.Erp.Eql
 		/// <summary>
 		/// Creates command
 		/// </summary>
+		public EqlCommand(string text, params EqlParameter[] parameters)
+		{
+			Text = text;
+
+			if (string.IsNullOrWhiteSpace(text))
+				throw new ArgumentException("Command text cannot be null or empty.");
+
+			NpgConnection = null;
+
+			Connection = null;
+
+			if (parameters != null && parameters.Length > 0)
+				Parameters.AddRange(parameters);
+		}
+
+		/// <summary>
+		/// Creates command
+		/// </summary>
 		public EqlCommand(string text, List<EqlParameter> parameters = null)
 		{
 			Text = text;

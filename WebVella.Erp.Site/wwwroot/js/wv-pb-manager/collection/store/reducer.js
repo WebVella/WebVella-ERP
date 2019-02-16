@@ -1,5 +1,6 @@
 import * as actionType from "./action-types";
 import _ from "lodash";
+import moment from "moment";
 const initialState = {};
 const rootReducer = (state = initialState, action) => {
     let newState = Object.assign({}, state);
@@ -88,6 +89,12 @@ const rootReducer = (state = initialState, action) => {
                 }
                 newState["isCreateModalVisible"] = false;
                 newState["createdNode"] = null;
+                let componentName = node["component_name"];
+                let libraryComponentIndex = _.findIndex(newState["library"], function (record) { return record["name"] === componentName; });
+                if (libraryComponentIndex > -1) {
+                    newState["library"][libraryComponentIndex]["usage_counter"]++;
+                    newState["library"][libraryComponentIndex]["last_used_on"] = moment().format('YYYY-MM-DDTHH:mm:ss');
+                }
             }
             return newState;
         case actionType.REMOVE_NODE:

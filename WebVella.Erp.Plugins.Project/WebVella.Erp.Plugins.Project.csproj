@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Components\PcTaskRepeatRecurrenceSet\service.js" />
     <None Remove="Components\PcFeedList\service.js" />
     <None Remove="Components\PcPostList\service.js" />
     <None Remove="Components\PcProjectWidgetBudgetChart\service.js" />
@@ -21,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Components\PcTaskRepeatRecurrenceSet\service.js" />
     <EmbeddedResource Include="Components\PcFeedList\service.js" />
     <EmbeddedResource Include="Components\PcPostList\service.js" />
     <EmbeddedResource Include="Components\PcProjectWidgetBudgetChart\service.js" />

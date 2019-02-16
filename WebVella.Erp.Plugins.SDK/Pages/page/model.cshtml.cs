@@ -62,6 +62,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Page
 
 			PageModel = PageModel.OrderBy(x => x.PageDataSourceName).ToList();
 
+			BeforeRender();
 			return Page();
 		}
 
@@ -108,6 +109,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Page
 
 			PageModel = PageModel.OrderBy(x => x.PageDataSourceName).ToList();
 
+			BeforeRender();
 			return Page();
 		}
 

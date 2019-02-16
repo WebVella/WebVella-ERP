@@ -11,6 +11,9 @@ namespace WebVella.Erp.Web.TagHelpers
 	[HtmlTargetElement("wv-validation")]
 	public class WvValidation : TagHelper
 	{
+		[HtmlAttributeName("is-visible")]
+		public bool isVisible { get; set; } = true;
+
 		[HtmlAttributeName("validation")]
 		public ValidationException Validation { get; set; } = new ValidationException();
 
@@ -19,6 +22,11 @@ namespace WebVella.Erp.Web.TagHelpers
 
 		public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
+			if (!isVisible)
+			{
+				output.SuppressOutput();
+				return Task.CompletedTask;
+			}
 			if (Validation.Errors.Count == 0 && String.IsNullOrWhiteSpace(Validation.Message))
 			{
 				output.SuppressOutput();

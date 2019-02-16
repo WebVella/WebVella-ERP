@@ -9,7 +9,7 @@
 	var componentContext = (PageComponentContext)ViewBag.ComponentContext;
 }
 <wv-drawer id="wv-@(node.Id)" title="@ViewBag.ProcessedTitle" title-action-html="@options.TitleActionHtml" width="@options.Width"
-	class="@options.Class" body-class="@options.BodyClass">
+	class="@options.Class" body-class="@options.BodyClass" is-visible="(bool)ViewBag.IsVisible">
 @foreach (var childNode in node.Nodes)
 {
 	var nodeComponentName = "";

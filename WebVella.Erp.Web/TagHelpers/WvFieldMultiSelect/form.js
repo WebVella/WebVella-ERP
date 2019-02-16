@@ -89,7 +89,7 @@ function MultiSelectFormInit(fieldId, fieldName, entityName, config) {
 					var response = {};
 				response.message = "";
 				if (jqXHR && jqXHR.responseJSON) {
-					response.message = jqXHR.responseJSON.message;
+					response = jqXHR.responseJSON;
 				}
 					addMultiSelectOptionErrorCallback(response, fieldId, fieldName, entityName, inputValue);
 				}

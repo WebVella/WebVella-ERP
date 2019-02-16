@@ -14,7 +14,7 @@ namespace WebVella.Erp.Plugins.Project.DataSource
 		public TrackTimeTasks() : base()
 		{
 			Id = new Guid("473EE9B6-2131-4164-B5FE-D9B3073E9178");
-			Name = "TrackTimeTasks";
+			Name = "WvProjectTrackTimeTasks";
 			Description = "Current User's open tasks and track time info";
 			ResultModel = "List<EntityRecord>";
 
@@ -60,7 +60,7 @@ namespace WebVella.Erp.Plugins.Project.DataSource
 				}
 			}
 
-			return userOpenTasks.OrderByDescending(x => (DateTime?)x["timelog_started_on"]).ThenByDescending(x => (DateTime)x["last_logged_on"]).ToList();
+			return userOpenTasks.OrderByDescending(x => (DateTime?)x["created_on"]).ToList();
 		}
 	}
 }

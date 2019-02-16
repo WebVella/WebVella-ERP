@@ -37,7 +37,7 @@
 
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.8.13" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.8.14" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="2.10.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.1" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="1.0.172" />
@@ -58,6 +58,7 @@
 
 
   <ItemGroup>
+    <Folder Include="wwwroot\js\wv-recurrence-template\" />
     <Folder Include="wwwroot\js\wv-timelog-list\" />
     <Folder Include="wwwroot\js\wv-post-list\" />
   </ItemGroup>

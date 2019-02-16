@@ -63,6 +63,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Tools
 		{
 			Init();
 			InitEntitySelectOptions();
+
+			BeforeRender();
 		}
 
 		public IActionResult OnPost()
@@ -107,7 +109,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Tools
 				Validation.AddError("", ex.Message );
 				ShowResults = false;
 			}
-
+			BeforeRender();
 			return Page();
 		}
 	}

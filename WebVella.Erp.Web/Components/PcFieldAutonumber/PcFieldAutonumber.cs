@@ -32,11 +32,12 @@ namespace WebVella.Erp.Web.Components
 			{
 				return new PcFieldAutonumberOptions
 				{ 
+					IsVisible = input.IsVisible,
 					LabelMode = input.LabelMode,
 					LabelText = input.LabelText,
 					Mode = input.Mode,
 					Name = input.Name,
-					Template = ""
+					Template = input.Template
 				};
 			}
 		}
@@ -71,31 +72,13 @@ namespace WebVella.Erp.Web.Components
 				if (context.Options != null)
 				{
 					options = JsonConvert.DeserializeObject<PcFieldAutonumberOptions>(context.Options.ToString());
-					//Check for connection to entity field
-					Entity mappedEntity = null;
-					if (options.ConnectedEntityId != null)
-					{
-						mappedEntity = new EntityManager().ReadEntity(options.ConnectedEntityId.Value).Object;
-					}
-					else
-					{
-						var entity = context.DataModel.GetProperty("Entity");
-						if (entity is Entity)
-						{
-							mappedEntity = (Entity)entity;
-						}
-					}
 
-					if (mappedEntity != null)
+					if (context.Mode != ComponentMode.Options)
 					{
-						var fieldName = options.Name;
-						var entityField = mappedEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
-						if (entityField != null && entityField is AutoNumberField)
-						{
-							var castedEntityField = ((AutoNumberField)entityField);
-							options.Template = castedEntityField.DisplayFormat;
-						}
+						if (String.IsNullOrWhiteSpace(options.Template))
+							options.Template = baseOptions.Template;
 					}
+					
 				}
 				var modelFieldLabel = "";
 				var model = (PcFieldBaseModel)InitPcFieldBaseModel(context, options, label: out modelFieldLabel);
@@ -122,6 +105,21 @@ namespace WebVella.Erp.Web.Components
 				{
 					model.Value = context.DataModel.GetPropertyValueByDataSource(options.Value);
 				}
+
+				var isVisible = true;
+				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+				{
+					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+					{
+						isVisible = outBool;
+					}
+				}
+				else if (isVisibleDS is Boolean)
+				{
+					isVisible = (bool)isVisibleDS;
+				}
+				ViewBag.IsVisible = isVisible;
 
 				ViewBag.Options = options;
 				ViewBag.Model = model;

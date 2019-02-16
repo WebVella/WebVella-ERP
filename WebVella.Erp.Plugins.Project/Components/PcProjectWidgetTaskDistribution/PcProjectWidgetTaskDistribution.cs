@@ -106,7 +106,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 
 						if (endTime != null)
 						{
-							if (endTime.Value < DateTime.Now.Date)
+							if (endTime.Value.AddDays(1) < DateTime.Now.Date)
 								currentRecord["overdue"] = ((int)currentRecord["overdue"]) + 1;
 							else if (endTime.Value >= DateTime.Now.Date && endTime.Value < DateTime.Now.Date.AddDays(1))
 								currentRecord["today"] = ((int)currentRecord["today"]) + 1;

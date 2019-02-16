@@ -36,18 +36,22 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "step")]
 			public decimal? Step { get; set; } = null;
 
+			[JsonProperty(PropertyName = "show_code")]
+			public bool ShowCode { get; set; } = false;
+
 			public static PcFieldCurrencyOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldCurrencyOptions
 				{
+					IsVisible = input.IsVisible,
 					LabelMode = input.LabelMode,
 					LabelText = input.LabelText,
 					Mode = input.Mode,
 					Name = input.Name,
-					Min = null,
-					Max = null,
+					Min = input.Min,
+					Max = input.Max,
 					Step = null,
-					CurrencyCode = "USD"
+					CurrencyCode = input.CurrencyCode
 				};
 			}
 		}
@@ -82,32 +86,16 @@ namespace WebVella.Erp.Web.Components
 				if (context.Options != null)
 				{
 					options = JsonConvert.DeserializeObject<PcFieldCurrencyOptions>(context.Options.ToString());
-					//Check for connection to entity field
-					Entity mappedEntity = null;
-					if (options.ConnectedEntityId != null)
+					if (context.Mode != ComponentMode.Options)
 					{
-						mappedEntity = new EntityManager().ReadEntity(options.ConnectedEntityId.Value).Object;
-					}
-					else 
-					{
-						var entity = context.DataModel.GetProperty("Entity");
-						if (entity is Entity)
-						{
-							mappedEntity = (Entity)entity;
-						}
-					}
+						if (options.Min == null)
+							options.Min = baseOptions.Min;
 
-					if (mappedEntity != null)
-					{
-						var fieldName = options.Name;
-						var entityField = mappedEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
-						if (entityField != null && entityField is CurrencyField)
-						{
-							var castedEntityField = ((CurrencyField)entityField);
-							options.CurrencyCode = castedEntityField.Currency.Code;
-							options.Min = castedEntityField.MinValue;
-							options.Max = castedEntityField.MaxValue;
-						}
+						if (options.Max == null)
+							options.Max = baseOptions.Max;
+
+						if (String.IsNullOrWhiteSpace(options.CurrencyCode))
+							options.CurrencyCode = baseOptions.CurrencyCode;
 					}
 				}
 				var modelFieldLabel = "";
@@ -135,6 +123,21 @@ namespace WebVella.Erp.Web.Components
 				{
 					model.Value = context.DataModel.GetPropertyValueByDataSource(options.Value);
 				}
+
+				var isVisible = true;
+				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+				{
+					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+					{
+						isVisible = outBool;
+					}
+				}
+				else if (isVisibleDS is Boolean)
+				{
+					isVisible = (bool)isVisibleDS;
+				}
+				ViewBag.IsVisible = isVisible;
 
 				ViewBag.Options = options;
 				ViewBag.Model = model;

@@ -57,6 +57,13 @@ namespace WebVella.Erp.Api.Models.AutoMapper.Profiles
 			if (src["created_by"] != DBNull.Value)
 				job.CreatedBy = (Guid?)src["created_by"];
 
+			if (job.StartedOn.HasValue && job.StartedOn.Value.Kind == DateTimeKind.Unspecified)
+				job.StartedOn = (DateTime?)DateTime.SpecifyKind(job.StartedOn.Value, DateTimeKind.Utc);
+			if (job.FinishedOn.HasValue && job.FinishedOn.Value.Kind == DateTimeKind.Unspecified)
+				job.FinishedOn = (DateTime?)DateTime.SpecifyKind(job.FinishedOn.Value, DateTimeKind.Utc);
+			if ( job.CreatedOn.Kind == DateTimeKind.Unspecified)
+				job.CreatedOn = DateTime.SpecifyKind(job.CreatedOn, DateTimeKind.Utc);
+
 			return job;
 		}
 

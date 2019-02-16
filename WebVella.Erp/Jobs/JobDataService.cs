@@ -89,15 +89,15 @@ namespace WebVella.Erp.Jobs
 				parameters.Add(new NpgsqlParameter("canceled_by", job.CanceledBy) { NpgsqlDbType = NpgsqlDbType.Uuid });
 			if (!string.IsNullOrWhiteSpace(job.ErrorMessage))
 				parameters.Add(new NpgsqlParameter("error_message", job.ErrorMessage) { NpgsqlDbType = NpgsqlDbType.Text });
-            
-            if (job.Result != null)
-            {
-                JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
-                string result = JsonConvert.SerializeObject(job.Result, settings);
-                parameters.Add(new NpgsqlParameter("result", result) { NpgsqlDbType = NpgsqlDbType.Text });
-            }
 
-            parameters.Add(new NpgsqlParameter("last_modified_on", DateTime.UtcNow) { NpgsqlDbType = NpgsqlDbType.Timestamp });
+			if (job.Result != null)
+			{
+				JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+				string result = JsonConvert.SerializeObject(job.Result, settings);
+				parameters.Add(new NpgsqlParameter("result", result) { NpgsqlDbType = NpgsqlDbType.Text });
+			}
+
+			parameters.Add(new NpgsqlParameter("last_modified_on", DateTime.UtcNow) { NpgsqlDbType = NpgsqlDbType.Timestamp });
 			if (job.LastModifiedBy.HasValue)
 				parameters.Add(new NpgsqlParameter("last_modified_by", job.LastModifiedBy) { NpgsqlDbType = NpgsqlDbType.Uuid });
 
@@ -165,7 +165,6 @@ namespace WebVella.Erp.Jobs
 			}
 
 			DataTable dtJobs = ExecuteQuerySqlCommand(sql, parameters);
-
 			return dtJobs.Rows.MapTo<Job>();
 		}
 
@@ -198,7 +197,7 @@ namespace WebVella.Erp.Jobs
 			}
 			if (!string.IsNullOrWhiteSpace(typeName))
 			{
-				var typeParameter = "%"+typeName+"%";
+				var typeParameter = "%" + typeName + "%";
 				parameters.Add(new NpgsqlParameter("type_name", typeParameter) { NpgsqlDbType = NpgsqlDbType.Text });
 				sql += " AND type_name ILIKE @type_name";
 			}
@@ -232,12 +231,11 @@ namespace WebVella.Erp.Jobs
 			}
 
 			DataTable dtJobs = ExecuteQuerySqlCommand(sql, parameters);
-
 			return dtJobs.Rows.MapTo<Job>();
 		}
 
 		internal long GetJobsTotalCount(DateTime? startFromDate = null, DateTime? startToDate = null, DateTime? finishedFromDate = null,
-			DateTime? finishedToDate = null, string typeName = null, int? status = null, int? priority = null, Guid? schedulePlanId = null )
+			DateTime? finishedToDate = null, string typeName = null, int? status = null, int? priority = null, Guid? schedulePlanId = null)
 		{
 			List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
 

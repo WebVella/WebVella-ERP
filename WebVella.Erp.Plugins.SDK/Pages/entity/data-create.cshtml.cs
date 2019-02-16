@@ -69,6 +69,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			if (ErpEntity == null)
 				return NotFound();
 
+			BeforeRender();
 			return Page();
 		}
 
@@ -112,6 +113,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 				Validation.Errors.Add(new ValidationError("", ex.Message, true));
 			}
 
+			BeforeRender();
 			return Page();
 		}
 

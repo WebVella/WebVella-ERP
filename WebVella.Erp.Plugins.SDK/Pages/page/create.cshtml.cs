@@ -71,6 +71,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Page
 			InitPage();
 
 			ErpRequestContext.PageContext = PageContext;
+
+			BeforeRender();
 			return Page();
 		}
 		public IActionResult OnPost()
@@ -94,6 +96,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Page
 
 
 			ErpRequestContext.PageContext = PageContext;
+
+			BeforeRender();
 			return Page();
 		}
 	}

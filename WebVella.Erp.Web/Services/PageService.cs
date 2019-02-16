@@ -95,7 +95,7 @@ namespace WebVella.Erp.Web.Services
 		public List<ErpPage> GetAppPages(Guid appId, NpgsqlTransaction transaction = null)
 		{
 			var pages = GetAll(transaction);
-			return pages.FindAll(x => x.AppId == appId && x.Type == PageType.Application).OrderBy(x => x.Weight).ThenBy(x => x.Label).ToList();
+			return pages.FindAll(x => x.AppId == appId).OrderBy(x => x.Weight).ThenBy(x => x.Label).ToList();
 		}
 
 		/// <summary>
@@ -362,7 +362,7 @@ namespace WebVella.Erp.Web.Services
 		private string GetRazorBodyFromFileSystem(Guid pageId, NpgsqlTransaction transaction = null)
 		{
 			var pageRepository = new ErpPageRepository(connectionString);
-			var pageRow = pageRepository.GetById(pageId, transaction );
+			var pageRow = pageRepository.GetById(pageId, transaction);
 			if (pageRow == null)
 				throw new ValidationException("Page is not found.");
 
@@ -692,7 +692,7 @@ namespace WebVella.Erp.Web.Services
 			string componentName, string containerId, string options, NpgsqlTransaction transaction = null)
 		{
 			PageBodyNodeRepository nodeRep = new PageBodyNodeRepository(connectionString);
-			DataRow node = nodeRep.GetById(id,transaction);
+			DataRow node = nodeRep.GetById(id, transaction);
 			if (node != null)
 				throw new Exception("Node with same ID already exists.");
 
@@ -741,7 +741,7 @@ namespace WebVella.Erp.Web.Services
 		{
 			PageBodyNodeRepository nodeRep = new PageBodyNodeRepository(connectionString);
 			DataRow node = nodeRep.GetById(id, transaction);
-			if( node == null )
+			if (node == null)
 				throw new Exception("Node you try to update does not exist.");
 
 			nodeRep.Update(id, options, transaction);
@@ -854,10 +854,28 @@ namespace WebVella.Erp.Web.Services
 		"RecordId", "RelatedRecordId","RelationId","PageContext","Page","ParentPage","Entity","ParentEntity","Message","Validation",
 		"Detection","App","SitemapNode","SitemapArea","RowRecord" };
 
+		/// <summary>
+		/// Returns all page data sources
+		/// </summary>
+		/// <param name="pageId"></param>
+		/// <param name="transaction"></param>
+		/// <returns></returns>
 		public List<PageDataSource> GetPageDataSources(Guid pageId, NpgsqlTransaction transaction = null)
 		{
 			var pageDataSourceRep = new PageDataSourceRepository(connectionString);
 			return pageDataSourceRep.GetByPageId(pageId, transaction).Rows.MapTo<PageDataSource>();
+		}
+
+		/// <summary>
+		/// Gets page data source records for specified data source id
+		/// </summary>
+		/// <param name="dataSourceId"></param>
+		/// <param name="transaction"></param>
+		/// <returns></returns>
+		public List<PageDataSource> GetPageDataSourcesByDataSourceId(Guid dataSourceId, NpgsqlTransaction transaction = null)
+		{
+			var pageDataSourceRep = new PageDataSourceRepository(connectionString);
+			return pageDataSourceRep.GetByDataSourceId(dataSourceId, transaction).Rows.MapTo<PageDataSource>();
 		}
 
 		/// <summary>
@@ -897,6 +915,42 @@ namespace WebVella.Erp.Web.Services
 		}
 
 		/// <summary>
+		/// Creates new page data source
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="pageId"></param>
+		/// <param name="dataSourceId"></param>
+		/// <param name="name"></param>
+		/// <param name="parameters"></param>
+		/// <param name="transaction"></param>
+		public void CreatePageDataSource(Guid id, Guid pageId, Guid dataSourceId, string name, string parametersJson, NpgsqlTransaction transaction = null)
+		{
+			var pageDataSourceRep = new PageDataSourceRepository(connectionString);
+			var existingDataSources = GetPageDataSources(pageId, transaction);
+			ValidationException ex = new ValidationException();
+
+			var pds = pageDataSourceRep.GetById(id, transaction);
+			if (pds != null)
+				ex.AddError("id", "There is an existing page data source with specified identifier.");
+
+			if (string.IsNullOrWhiteSpace(name))
+				ex.AddError("name", "Page data source name is not specified.");
+			else
+			{
+				if (existingDataSources.Any(x => x.Name.ToLowerInvariant() == name.ToLowerInvariant()))
+					ex.AddError("name", "Page data source with same name already exists.");
+
+				if (reservedDataSourcesNames.Any(x => x.ToLowerInvariant() == name.ToLowerInvariant()))
+					ex.AddError("name", "Specified page data source name is reserved.");
+			}
+
+			ex.CheckAndThrow();
+
+			pageDataSourceRep.Insert(id, pageId, dataSourceId, name, parametersJson, transaction);
+		}
+
+
+		/// <summary>
 		/// Updates existing page data source
 		/// </summary>
 		/// <param name="id"></param>
@@ -932,6 +986,40 @@ namespace WebVella.Erp.Web.Services
 		}
 
 		/// <summary>
+		/// Updates existing page data source
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="pageId"></param>
+		/// <param name="dataSourceId"></param>
+		/// <param name="name"></param>
+		/// <param name="parametersJson"></param>
+		/// <param name="transaction"></param>
+		public void UpdatePageDataSource(Guid id, Guid pageId, Guid dataSourceId, string name, string parametersJson, NpgsqlTransaction transaction = null)
+		{
+			var pageDataSourceRep = new PageDataSourceRepository(connectionString);
+			var existingDataSources = GetPageDataSources(pageId, transaction);
+			ValidationException ex = new ValidationException();
+
+			var pds = pageDataSourceRep.GetById(id, transaction);
+			if (pds == null)
+				ex.AddError("id", "There is no existing page data source with specified identifier.");
+
+			if (string.IsNullOrWhiteSpace(name))
+				ex.AddError("name", "Page data source name is not specified.");
+			else
+			{
+				if (existingDataSources.Any(x => x.Name.ToLowerInvariant() == name.ToLowerInvariant() && x.Id != id))
+					ex.AddError("name", "Page data source with same name already exists.");
+
+				if (reservedDataSourcesNames.Any(x => x.ToLowerInvariant() == name.ToLowerInvariant()))
+					ex.AddError("name", "Specified page data source name is reserved.");
+			}
+			ex.CheckAndThrow();
+			
+			pageDataSourceRep.Update(id, pageId, dataSourceId, name, parametersJson, transaction);
+		}
+
+		/// <summary>
 		/// Deletes page data source
 		/// </summary>
 		/// <param name="id"></param>
@@ -939,8 +1027,8 @@ namespace WebVella.Erp.Web.Services
 		public void DeletePageDataSource(Guid id, NpgsqlTransaction transaction = null)
 		{
 			PageDataSourceRepository dsRep = new PageDataSourceRepository(connectionString);
-			var ds = dsRep.GetById(id, transaction );
-			if( ds == null )
+			var ds = dsRep.GetById(id, transaction);
+			if (ds == null)
 				throw new Exception("Page data source you try to delete does not exist.");
 
 			dsRep.Delete(id, transaction);

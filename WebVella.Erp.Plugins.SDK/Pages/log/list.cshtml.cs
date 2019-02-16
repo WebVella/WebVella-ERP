@@ -100,7 +100,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Log
 			Records = new Diagnostics.Log().GetLogs(Pager, PagerSize, querySource, queryMessage);
 			TotalCount = Records.TotalCount;
 			#endregion
-
+			BeforeRender();
 		}
 	}
 }

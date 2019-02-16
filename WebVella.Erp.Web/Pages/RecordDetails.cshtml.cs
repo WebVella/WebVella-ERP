@@ -93,9 +93,17 @@ namespace WebVella.Erp.Web.Pages.Application
 				BeforeRender();
 				return Page();
 			}
+			catch (ValidationException valEx)
+			{
+				Validation.Message = valEx.Message;
+				Validation.Errors.AddRange(valEx.Errors);
+				BeforeRender();
+				return Page();
+			}
 			catch (Exception ex)
 			{
 				new Log().Create(LogType.Error, "RecordDetailsPageModel Error on POST", ex);
+				Validation.Message = ex.Message;
 				BeforeRender();
 				return Page();
 			}

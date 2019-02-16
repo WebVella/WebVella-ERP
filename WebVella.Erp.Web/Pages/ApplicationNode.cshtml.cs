@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using WebVella.Erp.Diagnostics;
+using WebVella.Erp.Exceptions;
 using WebVella.Erp.Hooks;
 using WebVella.Erp.Web.Hooks;
 using WebVella.Erp.Web.Models;
@@ -49,6 +50,7 @@ namespace WebVella.Erp.Web.Pages.Application
 			catch (Exception ex)
 			{
 				new Log().Create(LogType.Error, "ApplicationNodePageModel Error on GET", ex);
+				Validation.Message = ex.Message;
 				BeforeRender();
 				return Page();
 			}
@@ -83,17 +85,20 @@ namespace WebVella.Erp.Web.Pages.Application
 				BeforeRender();
 				return Page();
 			}
+			catch (ValidationException valEx)
+			{
+				Validation.Message = valEx.Message;
+				Validation.Errors.AddRange(valEx.Errors);
+				BeforeRender();
+				return Page();
+			}
 			catch (Exception ex)
 			{
 				new Log().Create(LogType.Error, "ApplicationNodePageModel Error on POST", ex);
+				Validation.Message = ex.Message;
 				BeforeRender();
 				return Page();
 			}
 		}
 	}
 }
-
-/*
- * system actions: none
- * custom actions: on post based on handler name
- */

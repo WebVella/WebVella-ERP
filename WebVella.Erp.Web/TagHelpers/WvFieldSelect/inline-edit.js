@@ -112,7 +112,7 @@ function SelectInlineEditInit(fieldId, fieldName, entityName, recordId, config) 
 			data: JSON.stringify(submitObj),
 			success: function (response) {
 				if (response.success) {
-					SelectInlineEditInitSuccessCallback(response, fieldId, fieldName, entityName, recordId, config);
+					SelectInlineEditInitSuccessCallback(response, fieldId, fieldName, entityName, recordId,inputValue, config);
 				}
 				else {
 					SelectInlineEditInitErrorCallback(response, fieldId, fieldName, entityName, recordId, config);
@@ -122,7 +122,7 @@ function SelectInlineEditInit(fieldId, fieldName, entityName, recordId, config) 
 				var response = {};
 				response.message = "";
 				if (jqXHR && jqXHR.responseJSON) {
-					response.message = jqXHR.responseJSON.message;
+					response = jqXHR.responseJSON;
 				}
 				SelectInlineEditInitErrorCallback(response, fieldId, fieldName, entityName, recordId, config);
 			}
@@ -130,10 +130,13 @@ function SelectInlineEditInit(fieldId, fieldName, entityName, recordId, config) 
 	});
 }
 
-function SelectInlineEditInitSuccessCallback(response, fieldId, fieldName, entityName, recordId, config) {
+function SelectInlineEditInitSuccessCallback(response, fieldId, fieldName, entityName, recordId,inputValue, config) {
 	var selectors = SelectInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
-	var newValue = ProcessNewValue(response, fieldName);
+	var newValue = inputValue;
 
+	if (!fieldName.startsWith("$")) {
+		newValue = ProcessNewValue(response, fieldName);
+	}
 
 	var selectOptions = $(selectors.inputEl + ' option');
 	var matchedOption = _.find(selectOptions, function (record) {
@@ -166,7 +169,12 @@ function SelectInlineEditInitSuccessCallback(response, fieldId, fieldName, entit
 function SelectInlineEditInitErrorCallback(response, fieldId, fieldName, entityName, recordId, config) {
 	var selectors = SelectInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
 	$(selectors.editWrapper + " .form-control").addClass("is-invalid");
-	$(selectors.editWrapper + " .input-group").after("<div class='invalid-feedback'>" + response.message + "</div>");
+	var errorMessage = response.message;
+	if (!errorMessage && response.errors && response.errors.length > 0) {
+		errorMessage = response.errors[0].message;
+	}
+		
+	$(selectors.editWrapper + " .input-group").after("<div class='invalid-feedback'>" + errorMessage + "</div>");
 	$(selectors.editWrapper + " .invalid-feedback").show();
 	$(selectors.editWrapper + " .save .fa").addClass("fa-check").removeClass("fa-spin fa-spinner");
 	$(selectors.editWrapper + " .save").attr("disabled", false);

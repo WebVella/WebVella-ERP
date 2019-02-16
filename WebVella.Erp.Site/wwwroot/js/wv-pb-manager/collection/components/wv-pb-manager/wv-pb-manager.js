@@ -160,7 +160,7 @@ export class WvPageManager {
         });
         let scope = this;
         let drake = dragula({
-            revertOnSpill: true,
+            revertOnSpill: false,
             direction: 'vertical',
         });
         drake.on('drop', function (el, target, source) {

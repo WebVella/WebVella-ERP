@@ -59,6 +59,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 			ComponentInitData = JsonConvert.SerializeObject(initData);
 
 			ErpRequestContext.PageContext = PageContext;
+
+			BeforeRender();
 			return Page();
 		}
 

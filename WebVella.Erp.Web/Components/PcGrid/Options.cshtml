@@ -13,6 +13,11 @@
 
 <wv-row>
 	<wv-column span="4">
+		<wv-field-datasource name="is_visible" label-text="Is Visible" value="@options.IsVisible" page-id="erpRequest.Page.Id" placeholder="true"></wv-field-datasource>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="4">
 		<wv-field-number min="1" max="7" name="visible_columns" value="@options.VisibleColumns" label-text="Visible Columns"></wv-field-number>
 	</wv-column>
 	<wv-column span="4">

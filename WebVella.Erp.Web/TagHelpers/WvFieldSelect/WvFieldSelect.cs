@@ -23,6 +23,11 @@ namespace WebVella.Erp.Web.TagHelpers
 
 		public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
+			if (!isVisible)
+			{
+				output.SuppressOutput();
+				return;
+			}
 			#region << Init >>
 			var initSuccess = InitField(context, output);
 
@@ -573,7 +578,8 @@ namespace WebVella.Erp.Web.TagHelpers
 						var scriptContent = FileService.GetEmbeddedTextResource("inline-edit.js", "WebVella.Erp.Web.TagHelpers.WvFieldSelect");
 						var scriptEl = new TagBuilder("script");
 						scriptEl.Attributes.Add("type", "text/javascript");
-						scriptEl.InnerHtml.AppendHtml(jsCompressor.Compress(scriptContent));
+						//scriptEl.InnerHtml.AppendHtml(jsCompressor.Compress(scriptContent));
+						scriptEl.InnerHtml.AppendHtml(scriptContent);
 						output.PostContent.AppendHtml(scriptEl);
 
 						ViewContext.HttpContext.Items[typeof(WvFieldSelect) + "-inline-edit"] = new WvTagHelperContext()

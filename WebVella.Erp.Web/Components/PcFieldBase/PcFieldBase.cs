@@ -2,13 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using WebVella.Erp.Api.Models;
-using WebVella.Erp.Web.Models;
-using WebVella.Erp.Web.Utils;
-using WebVella.Erp.Exceptions;
 using System.Linq;
-using WebVella.Erp.Web.Services;
 using WebVella.Erp.Api;
+using WebVella.Erp.Api.Models;
+using WebVella.Erp.Exceptions;
+using WebVella.Erp.Web.Models;
+using WebVella.Erp.Web.Services;
+using WebVella.Erp.Web.Utils;
 
 namespace WebVella.Erp.Web.Components
 {
@@ -17,6 +17,9 @@ namespace WebVella.Erp.Web.Components
 
 		public class PcFieldBaseOptions
 		{
+			[JsonProperty(PropertyName = "is_visible")]
+			public string IsVisible { get; set; } = "";
+
 			//Label
 			[JsonProperty(PropertyName = "label_mode")]
 			public LabelRenderMode LabelMode { get; set; } = LabelRenderMode.Undefined;
@@ -36,6 +39,31 @@ namespace WebVella.Erp.Web.Components
 
 			[JsonProperty(PropertyName = "connected_entity_id")]
 			public Guid? ConnectedEntityId { get; set; } = null;
+
+			[JsonProperty(PropertyName = "class")]
+			public string Class { get; set; } = "";
+
+			//Field specific options
+			[JsonProperty(PropertyName = "template")]
+			public string Template { get; set; } = "";
+
+			[JsonProperty(PropertyName = "currency_code")]
+			public string CurrencyCode { get; set; } = "USD";
+
+			[JsonProperty(PropertyName = "maxlength")]
+			public int? MaxLength { get; set; } = null;
+
+			[JsonProperty(PropertyName = "min")]
+			public decimal? Min { get; set; } = null;
+
+			[JsonProperty(PropertyName = "max")]
+			public decimal? Max { get; set; } = null;
+
+			[JsonProperty(PropertyName = "step")]
+			public decimal? Step { get; set; } = null;
+
+			[JsonProperty(PropertyName = "decimal_digits")]
+			public int DecimalDigits { get; set; } = 2;
 
 		}
 
@@ -109,6 +137,7 @@ namespace WebVella.Erp.Web.Components
 			public List<SelectOption> FieldRenderModeOptions { get; set; } = new List<SelectOption>();
 
 			public List<SelectOption> EntitySelectOptions { get; set; } = new List<SelectOption>();
+
 		}
 
 		public class PcFieldSelectModel : PcFieldBaseModel
@@ -194,7 +223,7 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "options")]
 			public List<SelectOption> Options { get; set; } = new List<SelectOption>();
 
-			public static PcFieldCheckboxListModel CopyFromBaseModel(PcFieldBaseModel input,List<SelectOption> options)
+			public static PcFieldCheckboxListModel CopyFromBaseModel(PcFieldBaseModel input, List<SelectOption> options)
 			{
 				return new PcFieldCheckboxListModel
 				{
@@ -325,10 +354,124 @@ namespace WebVella.Erp.Web.Components
 				options.Mode = FieldRenderMode.Form;
 			}
 
+			var baseOptions = JsonConvert.DeserializeObject<PcFieldBaseOptions>(context.Options.ToString());
+
+			Entity mappedEntity = null;
+			var entity = context.DataModel.GetProperty("Entity");
+			if (options.ConnectedEntityId != null)
+			{
+				mappedEntity = new EntityManager().ReadEntity(options.ConnectedEntityId.Value).Object;
+			}
+			else if (options.ConnectedEntityId == null && entity is Entity)
+			{
+				mappedEntity = (Entity)entity;
+			}
+
+			if (mappedEntity != null)
+			{
+				var fieldName = baseOptions.Name;
+
+				if (fieldName.StartsWith("$")) {
+					//Field with relation is set. Mapped entity should be changed
+					var fieldNameArray = fieldName.Replace("$", "").Split(".", StringSplitOptions.RemoveEmptyEntries);
+					if (fieldNameArray.Length == 2) {
+						var relationName = fieldNameArray[0];
+						fieldName = fieldNameArray[1];
+						var relation = new EntityRelationManager().Read(relationName).Object;
+						if (relation != null) {
+							if (relation.OriginEntityId == mappedEntity.Id)
+								mappedEntity = new EntityManager().ReadEntity(relation.TargetEntityId).Object;
+							else if (relation.TargetEntityId == mappedEntity.Id)
+								mappedEntity = new EntityManager().ReadEntity(relation.OriginEntityId).Object;
+						}
+
+					}
+
+				}
+
+				var entityField = mappedEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
+				if (entityField != null)
+				{
+					switch (entityField.GetFieldType())
+					{
+						case FieldType.AutoNumberField:
+							{
+								var fieldMeta = (AutoNumberField)entityField;
+								options.Template = fieldMeta.DisplayFormat;
+							}
+							break;
+						case FieldType.CurrencyField:
+							{
+								var fieldMeta = (CurrencyField)entityField;
+								options.Min = fieldMeta.MinValue;
+								options.Min = fieldMeta.MinValue;
+								options.CurrencyCode = fieldMeta.Currency.Code;
+							}
+							break;
+						case FieldType.EmailField:
+							{
+								var fieldMeta = (EmailField)entityField;
+								options.MaxLength = fieldMeta.MaxLength;
+							}
+							break;
+						case FieldType.NumberField:
+							{
+								var fieldMeta = (NumberField)entityField;
+								options.Min = fieldMeta.MinValue;
+								options.Min = fieldMeta.MinValue;
+								if (fieldMeta.DecimalPlaces != null)
+								{
+									if (int.TryParse(fieldMeta.DecimalPlaces.ToString(), out int outInt))
+									{
+										options.DecimalDigits = outInt;
+									}
+								}
+							}
+							break;
+						case FieldType.PasswordField:
+							{
+								var fieldMeta = (PasswordField)entityField;
+								options.Min = (decimal?)fieldMeta.MinLength;
+								options.Max = (decimal?)fieldMeta.MaxLength;
+							}
+							break;
+						case FieldType.PercentField:
+							{
+								var fieldMeta = (PercentField)entityField;
+								options.Min = fieldMeta.MinValue;
+								options.Min = fieldMeta.MinValue;
+								if (fieldMeta.DecimalPlaces != null)
+								{
+									if (int.TryParse(fieldMeta.DecimalPlaces.ToString(), out int outInt))
+									{
+										options.DecimalDigits = outInt;
+									}
+								}
+							}
+							break;
+						case FieldType.PhoneField:
+							{
+								var fieldMeta = (PhoneField)entityField;
+								options.MaxLength = fieldMeta.MaxLength;
+							}
+							break;
+						case FieldType.TextField:
+							{
+								var fieldMeta = (TextField)entityField;
+								options.MaxLength = fieldMeta.MaxLength;
+							}
+							break;
+						default:
+							break;
+					}
+				}
+			}
+
 			return options;
 		}
 
-		public dynamic InitPcFieldBaseModel(PageComponentContext context, PcFieldBaseOptions options,out string label, string targetModel = "PcFieldBaseModel") {
+		public dynamic InitPcFieldBaseModel(PageComponentContext context, PcFieldBaseOptions options, out string label, string targetModel = "PcFieldBaseModel")
+		{
 			label = "";
 			var model = new PcFieldBaseModel();
 
@@ -341,7 +484,7 @@ namespace WebVella.Erp.Web.Components
 
 			model.FieldRenderModeOptions = ModelExtensions.GetEnumAsSelectOptions<FieldRenderMode>();
 
-			if(context.Mode == ComponentMode.Options)
+			if (context.Mode == ComponentMode.Options)
 				model.EntitySelectOptions = new MetaService().GetEntitiesAsSelectOptions();
 
 			var recordId = context.DataModel.GetProperty("RecordId");
@@ -371,16 +514,45 @@ namespace WebVella.Erp.Web.Components
 			if (mappedEntity != null)
 			{
 				var fieldName = options.Name;
+
+				if (fieldName.StartsWith("$"))
+				{
+					//Field with relation is set. Mapped entity should be changed
+					var fieldNameArray = fieldName.Replace("$", "").Split(".", StringSplitOptions.RemoveEmptyEntries);
+					if (fieldNameArray.Length == 2)
+					{
+						var relationName = fieldNameArray[0];
+						fieldName = fieldNameArray[1];
+						var relation = new EntityRelationManager().Read(relationName).Object;
+						if (relation != null)
+						{
+							if (relation.OriginEntityId == mappedEntity.Id)
+								mappedEntity = new EntityManager().ReadEntity(relation.TargetEntityId).Object;
+							else if (relation.TargetEntityId == mappedEntity.Id)
+								mappedEntity = new EntityManager().ReadEntity(relation.OriginEntityId).Object;
+						}
+
+					}
+
+				}
+
 				var entityField = mappedEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
 				if (entityField != null)
 				{
-					//Connection success override the local options
-					//Init model
-					model.Placeholder = entityField.PlaceholderText;
-					model.Description = entityField.Description;
-					model.LabelHelpText = entityField.HelpText;
+					//Connection success set local options if needed
+					if (String.IsNullOrWhiteSpace(model.Placeholder))
+						model.Placeholder = entityField.PlaceholderText;
+
+					if (String.IsNullOrWhiteSpace(model.Description))
+						model.Description = entityField.Description;
+
+					if (String.IsNullOrWhiteSpace(model.LabelHelpText))
+						model.LabelHelpText = entityField.HelpText;
+
+					if (String.IsNullOrWhiteSpace(label))
+						label = entityField.Label;
+
 					model.Required = entityField.Required;
-					label = entityField.Label;
 
 					if (entityField.EnableSecurity)
 					{

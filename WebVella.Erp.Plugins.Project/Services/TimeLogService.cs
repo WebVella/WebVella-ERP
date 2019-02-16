@@ -157,7 +157,12 @@ namespace WebVella.Erp.Plugins.Project.Services
 					try
 					{
 						connection.BeginTransaction();
-						new TimeLogService().Create(null, currentUser.Id, DateTime.Now, loggedOn, minutes, isBillable, body, scope, relatedRecords);
+						new TaskService().StopTaskTimelog(taskId);
+						if (postForm["minutes"].ToString() != "0")
+						{
+							//Zero minutes are not logged
+							new TimeLogService().Create(null, currentUser.Id, DateTime.Now, loggedOn, minutes, isBillable, body, scope, relatedRecords);
+						}
 						connection.CommitTransaction();
 						return new RedirectResult("/projects/track-time/track-time/a/track-time");
 					}

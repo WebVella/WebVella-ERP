@@ -104,6 +104,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.User
 			TotalCount = Records.TotalCount;
 			#endregion
 
+			BeforeRender();
 		}
 	}
 }

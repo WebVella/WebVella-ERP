@@ -22,6 +22,9 @@ namespace WebVella.Erp.Web.TagHelpers
 		[ViewContext]
 		public ViewContext ViewContext { get; set; }
 
+		[HtmlAttributeName("is-visible")]
+		public bool isVisible { get; set; } = true;
+
 		[HtmlAttributeName("columns")]
 		public List<GridColumn> Columns { get; set; } = new List<GridColumn>();
 
@@ -89,6 +92,11 @@ namespace WebVella.Erp.Web.TagHelpers
 
 		public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
+			if (!isVisible)
+			{
+				output.SuppressOutput();
+				return;
+			}
 			#region << Init >>
 			if (String.IsNullOrWhiteSpace(Id))
 			{
@@ -211,7 +219,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					{
 						sortOrder = ViewContext.HttpContext.Request.Query[(String.IsNullOrWhiteSpace(Prefix) ? "" : Prefix) + QueryStringSortOrder];
 					}
-
+					thEl.InnerHtml.AppendHtml(column.Label);
 					if (column.Sortable)
 					{
 						var columnSortOrder = "";
@@ -237,7 +245,6 @@ namespace WebVella.Erp.Web.TagHelpers
 
 						thEl.InnerHtml.AppendHtml(sortLink);
 					}
-					thEl.InnerHtml.AppendHtml(column.Label);
 					trEl.InnerHtml.AppendHtml(thEl);
 				}
 

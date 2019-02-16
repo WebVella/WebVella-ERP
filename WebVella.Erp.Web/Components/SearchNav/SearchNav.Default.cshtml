@@ -3,10 +3,24 @@
 
 }
 <!--c:SearchNav_Default-->
-<div class="menu-nav-wrapper search pr-2 pl-2">
+<div class="menu-nav-wrapper search pr-2 pl-2 d-none">
 	<div id="search-nav">
 		<form class="form-inline">
 			<input type="text" class="form-control form-control-sm" placeholder="Search App">
 		</form>
 	</div>
 </div>
+<div class="menu-nav-wrapper">
+	<div class="menu-nav">
+		<a href="#" class="pl-2 pr-2" id="search-nav-btn">
+			<span class="ti-search icon"></span>
+		</a>
+	</div>
+</div>
+<script>
+$("#search-nav-btn").click(function () {
+	$("#search-nav-btn").closest(".menu-nav-wrapper").addClass("d-none");
+	$("#search-nav").closest(".search").removeClass("d-none");
+	$("#search-nav").closest(".search").find(".form-control").focus();
+});
+</script>

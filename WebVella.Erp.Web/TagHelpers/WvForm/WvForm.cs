@@ -24,6 +24,9 @@ namespace WebVella.Erp.Web.TagHelpers
 		[ViewContext]
 		public ViewContext ViewContext { get; set; }
 
+		[HtmlAttributeName("is-visible")]
+		public bool isVisible { get; set; } = true;
+
 		[HtmlAttributeName("id")]
 		public string Id { get; set; } = "";
 
@@ -73,8 +76,16 @@ namespace WebVella.Erp.Web.TagHelpers
 		[HtmlAttributeName("mode")]
 		public FieldRenderMode Mode { get; set; } = FieldRenderMode.Undefined; //To be inherited
 
+		[HtmlAttributeName("class")]
+		public string Class { get; set; } = "";
+
 		public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
+			if (!isVisible)
+			{
+				output.SuppressOutput();
+				return Task.CompletedTask;
+			}
 			#region << Init >>
 
 			if (LabelMode == LabelRenderMode.Undefined)
@@ -110,6 +121,11 @@ namespace WebVella.Erp.Web.TagHelpers
 				if (!String.IsNullOrWhiteSpace(Id))
 				{
 					output.Attributes.Add("id", Id);
+				}
+
+				if (!String.IsNullOrWhiteSpace(Class))
+				{
+					output.AddCssClass(Class);
 				}
 
 				if (!String.IsNullOrWhiteSpace(Name))
