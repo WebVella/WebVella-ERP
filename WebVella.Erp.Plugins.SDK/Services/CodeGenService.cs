@@ -1832,7 +1832,7 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 			}
 
 			response +=
-			$"\tcurrencyField.Currency = WebVella.ERP.Utilities.Helpers.GetCurrencyTypeObject(\"{field.Currency.Code}\");\n" +
+			$"\tcurrencyField.Currency = WebVella.Erp.Utilities.Helpers.GetCurrencyTypeObject(\"{field.Currency.Code}\");\n" +
 			$"\tcurrencyField.EnableSecurity = {(field.EnableSecurity).ToString().ToLowerInvariant()};\n" +
 			"\tcurrencyField.Permissions = new FieldPermissions();\n" +
 			"\tcurrencyField.Permissions.CanRead = new List<Guid>();\n" +
@@ -2509,10 +2509,10 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			var fieldOptions = field.Options.ToList();
 			if (fieldOptions.Count > 0)
 			{
-				response += "new List<MultiSelectFieldOption>\n\t{\n";
+				response += "new List<SelectOption>\n\t{\n";
 				for (int i = 0; i < fieldOptions.Count; i++)
 				{
-					response += $"\t\tnew MultiSelectFieldOption() {{ Label = \"{fieldOptions[i].Label}\", Value = \"{fieldOptions[i].Value}\", IconClass = \"{fieldOptions[i].IconClass}\", Color = \"{fieldOptions[i].Color}\"  }}";
+					response += $"\t\tnew SelectOption() {{ Label = \"{fieldOptions[i].Label}\", Value = \"{fieldOptions[i].Value}\" , IconClass = \"{fieldOptions[i].IconClass}\", Color = \"{fieldOptions[i].Color}\"}}";
 					if (i < fieldOptions.Count - 1)
 					{
 						response += ",\n";
@@ -3975,7 +3975,7 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 
 			response +=
-			$"\tcurrencyField.Currency = WebVella.ERP.Utilities.Helpers.GetCurrencyTypeObject(\"{currentField.Currency.Code}\");\n" +
+			$"\tcurrencyField.Currency = WebVella.Erp.Utilities.Helpers.GetCurrencyTypeObject(\"{currentField.Currency.Code}\");\n" +
 			$"\tcurrencyField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
 			"\tcurrencyField.Permissions = new FieldPermissions();\n" +
 			"\tcurrencyField.Permissions.CanRead = new List<Guid>();\n" +

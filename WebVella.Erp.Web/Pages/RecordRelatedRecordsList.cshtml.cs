@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using WebVella.Erp.Diagnostics;
+using WebVella.Erp.Exceptions;
 using WebVella.Erp.Hooks;
 using WebVella.Erp.Web.Hooks;
 using WebVella.Erp.Web.Models;
@@ -71,6 +72,13 @@ namespace WebVella.Erp.Web.Pages.Application
 					var result = inst.OnPost(this);
 					if (result != null) return result;
 				}
+				BeforeRender();
+				return Page();
+			}
+			catch (ValidationException valEx)
+			{
+				Validation.Message = valEx.Message;
+				Validation.Errors.AddRange(valEx.Errors);
 				BeforeRender();
 				return Page();
 			}
