@@ -25,6 +25,9 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 		public int FieldTypeId { get; set; } = 18;
 
 		[BindProperty]
+		public Guid? Id { get; set; } = null;
+
+		[BindProperty]
 		public string Name { get; set; } = "";
 
 		[BindProperty]
@@ -202,7 +205,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 			if (String.IsNullOrWhiteSpace(ReturnUrl))
 			{
-				ReturnUrl = $"/sdk/objects/entity/r/{RecordId}/rl/fields/c/select";
+				ReturnUrl = $"/sdk/objects/entity/r/{ParentRecordId}/rl/fields/c/select";
 			}
 
 			HeaderToolbar.AddRange(AdminPageUtils.GetEntityAdminSubNav(ErpEntity, "fields"));
@@ -237,6 +240,9 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			try
 			{
 				var newFieldId = Guid.NewGuid();
+				if (Id != null)
+					newFieldId = Id.Value;
+
 				var response = new FieldResponse();
 				InputField input = null;
 				switch (Type)

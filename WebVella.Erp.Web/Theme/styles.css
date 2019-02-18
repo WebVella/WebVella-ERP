@@ -4867,8 +4867,8 @@ a.lns-header[aria-expanded="false"] .icon:before {
 	.icon-card-body .description {
 		font-size: 13px;
 		line-height: 1.25em;
-		height: 16px;
-		white-space: nowrap;
+		height: 32px;
+		/*white-space: nowrap;*/
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
@@ -4877,6 +4877,14 @@ a.lns-header[aria-expanded="false"] .icon:before {
 		font-size: 13px;
 		color: #999;
 		height: 19px;
+	}
+
+	.icon-card-body .link em{
+		position:absolute;
+		top:0;
+		bottom:0;
+		left:0;
+		right:0;
 	}
 
 /*#endregion*/

@@ -22,8 +22,13 @@
 	<wv-section class="mt-4">
 		<wv-row>
 			<wv-column span="6">
+				<wv-field-guid label-text="Id (Guid)" value="@Model.Id" name="Id" placeholder="leave empty to autogenerate"></wv-field-guid>
+			</wv-column>
+			<wv-column span="6">
 				<wv-field-text label-text="Name" value="@Model.Name" name="Name" required="true"></wv-field-text>
 			</wv-column>
+		</wv-row>
+		<wv-row>
 			<wv-column span="6">
 				<wv-field-checkbox label-text="System" text-true="system entity" text-false="not a system entity" value="@Model.System" name="System"></wv-field-checkbox>
 			</wv-column>

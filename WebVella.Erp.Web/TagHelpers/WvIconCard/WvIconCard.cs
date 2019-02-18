@@ -50,6 +50,8 @@ namespace WebVella.Erp.Web.TagHelpers
 		[HtmlAttributeName("is-clickable")]
 		public bool IsClickable { get; set; } = true;
 
+		[HtmlAttributeName("body-link")]
+		public string BodyLink { get; set; } = "";
 
 		public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
@@ -90,6 +92,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				{
 					output.PreElement.AppendHtml(cardWrapperEl.RenderStartTag());
 					output.PreElement.AppendHtml(cardBodyWrapperEl.RenderStartTag());
+
 					output.PostElement.AppendHtml(cardBodyWrapperEl.RenderEndTag());
 
 					output.PostElement.AppendHtml(embeddedContent);
@@ -122,6 +125,14 @@ namespace WebVella.Erp.Web.TagHelpers
 				metaEl.InnerHtml.AppendHtml(metaDescriptionEl);
 
 				output.Content.AppendHtml(metaEl);
+				if (!String.IsNullOrWhiteSpace(BodyLink))
+				{
+					var linkEl = new TagBuilder("a");
+					linkEl.AddCssClass("link");
+					linkEl.Attributes.Add("href", BodyLink);
+					linkEl.InnerHtml.AppendHtml("<em></em>");
+					output.Content.AppendHtml(linkEl);
+				}
 			}
 		}
 	}

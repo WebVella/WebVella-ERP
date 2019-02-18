@@ -20,6 +20,9 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 		public Entity ErpEntity { get; set; }
 
 		[BindProperty]
+		public Guid? Id { get; set; } = null;
+
+		[BindProperty]
 		public string Name { get; set; } = "";
 
 		[BindProperty]
@@ -125,10 +128,15 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 				Guid targetEntityId = new Guid(targetSections[0]);
 				Guid targetFieldId = new Guid(targetSections[1]);
 
+				var relationId = Guid.NewGuid();
+				if (Id != null) {
+					relationId = Id.Value;
+				}
+
 				var relMan = new EntityRelationManager();
 				EntityRelation newRelation = new EntityRelation
 				{
-					Id = Guid.NewGuid(),
+					Id = relationId,
 					Name = Name,
 					Label = Name, //Label, Boz: removed for convinience
 					Description = "", //Description, Boz: removed for convinience

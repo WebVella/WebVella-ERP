@@ -33,6 +33,9 @@
 			<wv-column span="6">
 				<wv-field-select label-text="Type" value="@Model.Type" options="@Model.TypeOptions" name="Type"></wv-field-select>
 			</wv-column>
+			<wv-column span="6">
+				<wv-field-guid label-text="Id (Guid)" value="@Model.Id" name="Id" placeholder="leave empty to autogenerate"></wv-field-guid>
+			</wv-column>
 		</wv-row>
 		<wv-row>
 			<wv-column span="6">

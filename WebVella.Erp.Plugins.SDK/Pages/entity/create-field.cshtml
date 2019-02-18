@@ -1,4 +1,4 @@
-﻿@page "/sdk/objects/entity/r/{ParentRecordId}/rl/fields/c/{PageName?}"
+﻿@page "/sdk/objects/entity/r/{RecordId}/rl/fields/c/{PageName?}"
 
 @model WebVella.Erp.Plugins.SDK.Pages.ErpEntity.CreateFieldModel
 @{
@@ -44,6 +44,7 @@
 		</wv-row>
 		<wv-row>
 			<wv-column span="6">
+				<wv-field-guid label-text="Id (Guid)" value="@Model.Id" name="Id" placeholder="leave empty to autogenerate"></wv-field-guid>
 			</wv-column>
 			<wv-column span="6">
 				<wv-field-checkbox name="Required" value="Model.Required" label-text="Required" text-true="required field" text-false="not required field"></wv-field-checkbox>

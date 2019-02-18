@@ -19,6 +19,9 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 		public CreateModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
 
 		[BindProperty]
+		public Guid? Id { get; set; } = null;
+
+		[BindProperty]
 		public string Name { get; set; } = "";
 
 		[BindProperty]
@@ -116,9 +119,13 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			var entMan = new EntityManager();
 			try
 			{
+				var entityId = Guid.NewGuid();
+				if (Id != null)
+					entityId = Id.Value;
+
 				var input = new InputEntity()
 				{
-					Id = Guid.NewGuid(),
+					Id = entityId,
 					Name = Name,
 					Label = Label,
 					LabelPlural = LabelPlural,

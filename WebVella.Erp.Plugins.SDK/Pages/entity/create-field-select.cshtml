@@ -26,9 +26,8 @@
 <wv-row class="mt-4">
 	@foreach (var fieldCard in Model.FieldCards)
 	{
-		<wv-column span="4">
-			<wv-icon-card title="@fieldCard["label"]" class="mb-4" description="@fieldCard["description"]" icon-class="@fieldCard["class"]">
-				<div class="card-footer p-2"><a href="@Html.Raw(Model.CreateFieldUrl + fieldCard["type"])" class="btn btn-white btn-sm btn-block">select</a></div>
+		<wv-column span="4" span-xl="3">
+			<wv-icon-card title="@fieldCard["label"]" class="mb-3" description="@fieldCard["description"]" icon-class="@fieldCard["class"]" body-link="@Html.Raw(Model.CreateFieldUrl + fieldCard["type"])">
 			</wv-icon-card>
 		</wv-column>
 	}
