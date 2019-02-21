@@ -140,19 +140,25 @@ namespace WebVella.Erp.Web.TagHelpers
 				}
 				wrapper.Attributes.Add("data-field-value", (Value ?? "").ToString().ToLowerInvariant());
 
-				var iconEl = new TagBuilder("span");
-				iconEl.AddCssClass($"go-gray fa fa-{(Value ? "check" : "times")}");
-				wrapper.InnerHtml.AppendHtml(iconEl);
-				wrapper.InnerHtml.AppendHtml(Value ? TextTrue : TextFalse);
+				if (Value != null)
+				{
+					var iconEl = new TagBuilder("span");
+					iconEl.AddCssClass($"go-gray fa fa-{(Value ? "check" : "times")}");
+					wrapper.InnerHtml.AppendHtml(iconEl);
+					wrapper.InnerHtml.AppendHtml(Value ? TextTrue : TextFalse);
+				}
 				output.Content.AppendHtml(wrapper);
 
 			}
 			else if (Mode == FieldRenderMode.Simple)
 			{
-				var iconEl = new TagBuilder("span");
-				iconEl.AddCssClass($"{(Value ? "ti-check" : "go-gray")}");
-				iconEl.InnerHtml.Append($"{(Value ? "" : "-")}");
-				output.Content.AppendHtml(iconEl);
+				if (Value != null)
+				{
+					var iconEl = new TagBuilder("span");
+					iconEl.AddCssClass($"{(Value ? "ti-check" : "go-gray")}");
+					iconEl.InnerHtml.Append($"{(Value ? "" : "-")}");
+					output.Content.AppendHtml(iconEl);
+				}
 			}
 			else if (Mode == FieldRenderMode.InlineEdit)
 			{
@@ -171,7 +177,10 @@ namespace WebVella.Erp.Web.TagHelpers
 						prependEl.AddCssClass("input-group-text");
 
 						var prependIcon = new TagBuilder("span");
-						prependIcon.AddCssClass($"fa fa-fw fa-{(Value ? "check" : "times")}");
+						if (Value != null)
+						{
+							prependIcon.AddCssClass($"fa fa-fw fa-{(Value ? "check" : "times")}");
+						}
 						prependEl.InnerHtml.AppendHtml(prependIcon);
 						prependWrapper.InnerHtml.AppendHtml(prependEl);
 						viewWrapper.InnerHtml.AppendHtml(prependWrapper);
@@ -179,7 +188,10 @@ namespace WebVella.Erp.Web.TagHelpers
 						var viewFormControlEl = new TagBuilder("div");
 						viewFormControlEl.AddCssClass($"form-control erp-checkbox {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
 						viewFormControlEl.Attributes.Add("title", "double click to edit");
-						viewFormControlEl.InnerHtml.AppendHtml(Value ? TextTrue : TextFalse);
+						if (Value != null)
+						{
+							viewFormControlEl.InnerHtml.AppendHtml(Value ? TextTrue : TextFalse);
+						}
 						viewWrapper.InnerHtml.AppendHtml(viewFormControlEl);
 
 
@@ -215,13 +227,16 @@ namespace WebVella.Erp.Web.TagHelpers
 						var editInputEl = new TagBuilder("input");
 						editInputEl.Attributes.Add("type", "checkbox");
 						editInputEl.AddCssClass("form-check-input");
-						if (Value)
+						if (Value!= null && Value)
 						{
 							editInputEl.Attributes.Add("checked", "checked");
 						}
 						editInputEl.Attributes.Add("value", "true");
 						editFormLabelEl.InnerHtml.AppendHtml(editInputEl);
-						editFormLabelEl.InnerHtml.AppendHtml(Value ? TextTrue : TextFalse);
+						if (Value != null)
+						{
+							editFormLabelEl.InnerHtml.AppendHtml(Value ? TextTrue : TextFalse);
+						}
 						editFormCheckEl.InnerHtml.AppendHtml(editFormLabelEl);
 						editFormControlEl.InnerHtml.AppendHtml(editFormCheckEl);
 						inputGroupEl.InnerHtml.AppendHtml(editFormControlEl);

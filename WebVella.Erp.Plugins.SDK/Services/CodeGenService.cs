@@ -6440,8 +6440,8 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			{
 				foreach (var option in oldField.Options.ToList())
 				{
-					var currentFieldOption = currentField.Options.SingleOrDefault(x => x.Label == option.Label);
-					if (currentFieldOption == null || currentFieldOption.Value != option.Value ||
+					var currentFieldOption = currentField.Options.SingleOrDefault(x => x.Value == option.Value);
+					if (currentFieldOption == null || currentFieldOption.Label != option.Label ||
 						currentFieldOption.Color != option.Color || currentFieldOption.IconClass != option.IconClass)
 					{
 						hasUpdate = true;
