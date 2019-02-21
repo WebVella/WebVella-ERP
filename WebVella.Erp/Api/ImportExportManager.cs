@@ -282,11 +282,11 @@ namespace WebVella.Erp.Api
                     response.Success = false;
                     response.Object = null;
                     response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-                    response.Message = e.Message + e.StackTrace;
-#else
-							response.Message = "Import failed! An internal error occurred!";
-#endif
+					
+					if (ErpSettings.DevelopmentMode)
+						response.Message = e.Message + e.StackTrace;
+					else
+						response.Message = "Import failed! An internal error occurred!";
                 }
                 finally
                 {
@@ -1081,11 +1081,10 @@ namespace WebVella.Erp.Api
                         response.Success = false;
                         response.Object = evaluationObj;
                         response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-                        response.Message = e.Message + e.StackTrace;
-#else
+						if (ErpSettings.DevelopmentMode)
+							response.Message = e.Message + e.StackTrace;
+						else
 							response.Message = "Import failed! An internal error occurred!";
-#endif
                     }
                 }
 

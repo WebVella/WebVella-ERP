@@ -45,15 +45,18 @@ namespace WebVella.Erp.Web.Controllers
 		{
 			response.Timestamp = DateTime.UtcNow;
 			response.Success = false;
-#if DEBUG
-			if (ex != null)
+
+			if (ErpSettings.DevelopmentMode)
 			{
-				response.Message = ex.Message + ex.StackTrace;
+				if (ex != null)
+					response.Message = ex.Message + ex.StackTrace;
 			}
-#else
-			if (string.IsNullOrEmpty( message ))
-				response.Message = "An internal error occurred!";
-#endif
+			else
+			{
+				if (string.IsNullOrEmpty(message))
+					response.Message = "An internal error occurred!";
+			}
+
 			HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 			return Json(response);
 		}

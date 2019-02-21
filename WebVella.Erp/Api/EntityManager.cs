@@ -430,11 +430,12 @@ namespace WebVella.Erp.Api
 				response.Success = false;
 				response.Object = entity;
 				response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "The entity was not created. An internal error occurred!";
-#endif
+			
+				if( ErpSettings.DevelopmentMode )
+					response.Message = e.Message + e.StackTrace;
+				else
+					response.Message = "The entity was not created. An internal error occurred!";
+
 				return response;
 			}
 
@@ -530,11 +531,10 @@ namespace WebVella.Erp.Api
 				response.Success = false;
 				response.Object = entity;
 				response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "The entity was not updated. An internal error occurred!";
-#endif
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
+				else
+					response.Message = "The entity was not updated. An internal error occurred!";
 				return response;
 			}
 
@@ -596,11 +596,12 @@ namespace WebVella.Erp.Api
 
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "The entity was not deleted. An internal error occurred!";
-#endif
+
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
+				else
+					response.Message = "The entity was not deleted. An internal error occurred!";
+
 				return response;
 			}
 
@@ -671,11 +672,12 @@ namespace WebVella.Erp.Api
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "An internal error occurred!";
-#endif
+				
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
+				else
+					response.Message = "An internal error occurred!";
+
 				return response;
 			}
 
@@ -710,11 +712,12 @@ namespace WebVella.Erp.Api
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "An internal error occurred!";
-#endif
+				
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
+				else
+					response.Message = "An internal error occurred!";
+
 				return response;
 			}
 
@@ -749,11 +752,12 @@ namespace WebVella.Erp.Api
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "An internal error occurred!";
-#endif
+				
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
+				else
+					response.Message = "An internal error occurred!";
+
 				return response;
 			}
 
@@ -860,11 +864,12 @@ namespace WebVella.Erp.Api
 				response.Success = false;
 				response.Object = field;
 				response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "The field was not created. An internal error occurred!";
-#endif
+
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
+				else
+					response.Message = "The field was not created. An internal error occurred!";
+
 				return response;
 			}
 
@@ -1176,11 +1181,12 @@ namespace WebVella.Erp.Api
 				response.Success = false;
 				response.Object = field;
 				response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "The field was not updated. An internal error occurred!";
-#endif
+
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
+				else
+					response.Message = "The field was not updated. An internal error occurred!";
+
 				return response;
 			}
 
@@ -1313,11 +1319,12 @@ namespace WebVella.Erp.Api
 				Cache.ClearEntities();
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "The field was not deleted. An internal error occurred!";
-#endif
+				
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
+				else
+					response.Message = "The field was not deleted. An internal error occurred!";
+
 				return response;
 			}
 
@@ -1364,11 +1371,12 @@ namespace WebVella.Erp.Api
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "An internal error occurred!";
-#endif
+				
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
+				else
+					response.Message = "An internal error occurred!";
+
 				return response;
 			}
 
@@ -1417,11 +1425,12 @@ namespace WebVella.Erp.Api
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "An internal error occurred!";
-#endif
+				
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
+				else
+					response.Message = "An internal error occurred!";
+
 				return response;
 			}
 
@@ -1474,11 +1483,12 @@ namespace WebVella.Erp.Api
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "An internal error occurred!";
-#endif
+				
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
+				else
+					response.Message = "An internal error occurred!";
+
 				return response;
 			}
 

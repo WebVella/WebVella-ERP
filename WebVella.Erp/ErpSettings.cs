@@ -28,6 +28,7 @@ namespace WebVella.Erp
         public static string EmailTo { get; private set; }
 
 		public static bool ShowAccounting { get; set; }
+		public static bool DevelopmentMode { get; private set; }
 
 		//API URLs
 		public static string ApiUrlTemplateFieldInlineEdit { get; private set; }
@@ -64,7 +65,10 @@ namespace WebVella.Erp
             EmailFrom = configuration[$"Settings:EmailFrom"];
             EmailTo = configuration[$"Settings:EmailTo"];
 
+			DevelopmentMode = string.IsNullOrWhiteSpace(configuration[$"Settings:DevelopmentMode"]) ? false : bool.Parse(configuration[$"Settings:DevelopmentMode"]);
+
 			ShowAccounting = string.IsNullOrWhiteSpace(configuration[$"Settings:ShowAccounting"]) ? false : bool.Parse(configuration[$"Settings:ShowAccounting"]);
+			
 
 			ApiUrlTemplateFieldInlineEdit = string.IsNullOrWhiteSpace(configuration[$"ApiUrlTemplates:FieldInlineEdit"]) ? "/api/v3/en_US/record/{entityName}/{recordId}" : configuration[$"ApiUrlTemplates:FieldInlineEdit"];
 		}
