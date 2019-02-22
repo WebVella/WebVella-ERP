@@ -648,6 +648,10 @@ namespace WebVella.Erp.Api
 
 							storageRecordData.Add(new KeyValuePair<string, object>(field.Name, target));
 						}
+						else
+						{
+							storageRecordData.Add(new KeyValuePair<string, object>(field.Name, path));
+						}
 					}
 
 					recRepo.Create(entity.Name, storageRecordData);
