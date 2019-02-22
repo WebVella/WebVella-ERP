@@ -20,6 +20,7 @@
 	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
 	var componentContext = (PageComponentContext)ViewBag.ComponentContext;
 	var actionsNodes = node.Nodes.FindAll(x => x.ContainerId == "actions");
+	var actionsAuxNodes = node.Nodes.FindAll(x => x.ContainerId == "actions-aux");
 	var toolbarNodes = node.Nodes.FindAll(x => x.ContainerId == "toolbar");
 	var pageSwitchItems = (List<PageSwitchItem>)ViewBag.PageSwitchItems;
 }
@@ -46,6 +47,27 @@
 		}
 	</wv-page-header-actions>
 	}
+
+	@if(actionsAuxNodes.Count > 0){
+	<wv-page-header-actions-aux>
+		@foreach (var childNode in actionsAuxNodes)
+		{
+			var nodeComponentName = "";
+			if (childNode != null)
+			{
+				var nameArray = childNode.ComponentName.Split('.');
+				nodeComponentName = nameArray[nameArray.Length - 1];
+			}
+			if (!String.IsNullOrWhiteSpace(nodeComponentName))
+			{
+				var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+				var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+				@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+			}
+		}
+	</wv-page-header-actions-aux>
+	}
+
 	@if (toolbarNodes.Count > 0)
 	{
 	<wv-page-header-toolbar>
