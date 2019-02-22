@@ -29,7 +29,7 @@ namespace WebVella.Erp.Api
 		{
 		}
 
-		public RecordManager(bool ignoreSecurity = false, bool executeHooks = true )
+		public RecordManager(bool ignoreSecurity = false, bool executeHooks = true)
 		{
 			entityCache = new List<Entity>();
 			entityManager = new EntityManager();
@@ -69,7 +69,7 @@ namespace WebVella.Erp.Api
 				response.Success = false;
 				response.Object = null;
 				response.Timestamp = DateTime.UtcNow;
-				
+
 				if (ErpSettings.DevelopmentMode)
 					response.Message = e.Message + e.StackTrace;
 				else
@@ -109,7 +109,7 @@ namespace WebVella.Erp.Api
 				response.Success = false;
 				response.Object = null;
 				response.Timestamp = DateTime.UtcNow;
-				
+
 				if (ErpSettings.DevelopmentMode)
 					response.Message = e.Message + e.StackTrace;
 				else
@@ -212,7 +212,7 @@ namespace WebVella.Erp.Api
 
 					bool hooksExists = RecordHookManager.ContainsAnyHooksForEntity(entity.Name);
 
-					if (record.Properties.Any(p => p.Key.StartsWith("$")) || hooksExists )
+					if (record.Properties.Any(p => p.Key.StartsWith("$")) || hooksExists)
 					{
 						connection.BeginTransaction();
 						isTransactionActive = true;
@@ -235,7 +235,7 @@ namespace WebVella.Erp.Api
 							throw new Exception("Guid.Empty value cannot be used as valid value for record id.");
 					}
 
-					
+
 					List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 					List<dynamic> oneToOneRecordData = new List<dynamic>();
 					List<dynamic> oneToManyRecordData = new List<dynamic>();
@@ -329,7 +329,7 @@ namespace WebVella.Erp.Api
 								if (realtionSearchField == null)
 									throw new Exception(string.Format("Invalid relation '{0}'. Field does not exist.", pair.Key));
 
-								if (realtionSearchField.GetFieldType() == FieldType.MultiSelectField )
+								if (realtionSearchField.GetFieldType() == FieldType.MultiSelectField)
 									throw new Exception(string.Format("Invalid relation '{0}'. Fields from Multiselect type can't be used as relation fields.", pair.Key));
 
 								if (relation.RelationType == EntityRelationType.OneToOne &&
@@ -388,7 +388,7 @@ namespace WebVella.Erp.Api
 									}
 									else if (pair.Value is List<Guid>)
 									{
-										values = ((List<Guid>)pair.Value).Select(x=>x.ToString()).ToList();
+										values = ((List<Guid>)pair.Value).Select(x => x.ToString()).ToList();
 										if (values.Count > 0)
 										{
 											var newPair = new KeyValuePair<string, object>(pair.Key, values[0]);
@@ -607,7 +607,7 @@ namespace WebVella.Erp.Api
 
 					SetRecordRequiredFieldsDefaultData(entity, storageRecordData);
 
-					if (hooksExists && executeHooks )
+					if (hooksExists && executeHooks)
 					{
 						List<ErrorModel> errors = new List<ErrorModel>();
 						RecordHookManager.ExecutePreCreateRecordHooks(entity.Name, record, errors);
@@ -638,15 +638,21 @@ namespace WebVella.Erp.Api
 
 						if (field.Required && string.IsNullOrWhiteSpace(path))
 							storageRecordData.Add(new KeyValuePair<string, object>(field.Name, field.GetDefaultValue()));
-
-						if (!string.IsNullOrWhiteSpace(path) && path.StartsWith(DbFileRepository.FOLDER_SEPARATOR + DbFileRepository.TMP_FOLDER_NAME))
+						else
 						{
-							var fileName = path.Split(new[] { '/' }).Last();
-							string source = path;
-							string target = $"/{field.EntityName}/{record["id"]}/{fileName}";
-							var movedFile = fsRepository.Move(source, target, false);
+							if (!string.IsNullOrWhiteSpace(path) && path.StartsWith(DbFileRepository.FOLDER_SEPARATOR + DbFileRepository.TMP_FOLDER_NAME))
+							{
+								var fileName = path.Split(new[] { '/' }).Last();
+								string source = path;
+								string target = $"/{field.EntityName}/{record["id"]}/{fileName}";
+								var movedFile = fsRepository.Move(source, target, false);
 
-							storageRecordData.Add(new KeyValuePair<string, object>(field.Name, target));
+								storageRecordData.Add(new KeyValuePair<string, object>(field.Name, target));
+							}
+							else
+							{
+								storageRecordData.Add(new KeyValuePair<string, object>(field.Name, path));
+							}
 						}
 					}
 
@@ -661,7 +667,7 @@ namespace WebVella.Erp.Api
 					ignoreSecurity = oldIgnoreSecurity;
 
 					//if not created exit immediately
-					if (! (response.Object != null && response.Object.Data != null && response.Object.Data.Count > 0 ))
+					if (!(response.Object != null && response.Object.Data != null && response.Object.Data.Count > 0))
 					{
 						if (isTransactionActive)
 							connection.RollbackTransaction();
@@ -669,7 +675,7 @@ namespace WebVella.Erp.Api
 						response.Success = false;
 						response.Object = null;
 						response.Timestamp = DateTime.UtcNow;
-		                response.Message = "The entity record was not created. An internal error occurred!";
+						response.Message = "The entity record was not created. An internal error occurred!";
 						return response;
 					}
 
@@ -678,7 +684,7 @@ namespace WebVella.Erp.Api
 						bool ooHooksExists = RecordHookManager.ContainsAnyHooksForEntity(ooRelData.EntityName);
 
 						EntityRecord ooRecord = new EntityRecord();
-						if (ooHooksExists && executeHooks )
+						if (ooHooksExists && executeHooks)
 						{
 							//move values from ooRelData.RecordData to entity record
 							var data = (IEnumerable<KeyValuePair<string, object>>)ooRelData.RecordData;
@@ -708,7 +714,7 @@ namespace WebVella.Erp.Api
 
 						recRepo.Update(ooRelData.EntityName, ooRelData.RecordData);
 
-						if (ooHooksExists && executeHooks )
+						if (ooHooksExists && executeHooks)
 							RecordHookManager.ExecutePostUpdateRecordHooks(ooRelData.EntityName, ooRecord);
 					}
 
@@ -717,7 +723,7 @@ namespace WebVella.Erp.Api
 						bool ooHooksExists = RecordHookManager.ContainsAnyHooksForEntity(omRelData.EntityName);
 
 						EntityRecord ooRecord = new EntityRecord();
-						if (ooHooksExists && executeHooks )
+						if (ooHooksExists && executeHooks)
 						{
 							var data = (IEnumerable<KeyValuePair<string, object>>)omRelData.RecordData;
 							foreach (var obj in data)
@@ -784,7 +790,7 @@ namespace WebVella.Erp.Api
 					response.Success = false;
 					response.Object = null;
 					response.Timestamp = DateTime.UtcNow;
-					
+
 					if (ErpSettings.DevelopmentMode)
 						response.Message = e.Message + e.StackTrace;
 					else
@@ -899,7 +905,7 @@ namespace WebVella.Erp.Api
 
 					bool hooksExists = RecordHookManager.ContainsAnyHooksForEntity(entity.Name);
 
-					if (record.Properties.Any(p => p.Key.StartsWith("$")) || hooksExists )
+					if (record.Properties.Any(p => p.Key.StartsWith("$")) || hooksExists)
 					{
 						connection.BeginTransaction();
 						isTransactionActive = true;
@@ -1008,7 +1014,7 @@ namespace WebVella.Erp.Api
 								if (realtionSearchField == null)
 									throw new Exception(string.Format("Invalid relation '{0}'. Field does not exist.", pair.Key));
 
-								if (realtionSearchField.GetFieldType() == FieldType.MultiSelectField )
+								if (realtionSearchField.GetFieldType() == FieldType.MultiSelectField)
 									throw new Exception(string.Format("Invalid relation '{0}'. Fields from Multiselect type can't be used as relation fields.", pair.Key));
 
 								QueryObject filter = null;
@@ -1264,8 +1270,8 @@ namespace WebVella.Erp.Api
 
 					var recRepo = DbContext.Current.RecordRepository;
 
-					
-					if (hooksExists && executeHooks )
+
+					if (hooksExists && executeHooks)
 					{
 						List<ErrorModel> errors = new List<ErrorModel>();
 						RecordHookManager.ExecutePreUpdateRecordHooks(entity.Name, record, errors);
@@ -1329,14 +1335,14 @@ namespace WebVella.Erp.Api
 					var entityQuery = new EntityQuery(entity.Name, "*", query);
 
 					response = Find(entityQuery);
-					if (!( response.Object != null && response.Object.Data.Count > 0 ))
+					if (!(response.Object != null && response.Object.Data.Count > 0))
 					{
 						if (isTransactionActive)
 							connection.RollbackTransaction();
 						response.Success = false;
 						response.Object = null;
 						response.Timestamp = DateTime.UtcNow;
-		                response.Message = "The entity record was not update. An internal error occurred!";
+						response.Message = "The entity record was not update. An internal error occurred!";
 						return response;
 					}
 
@@ -1449,7 +1455,7 @@ namespace WebVella.Erp.Api
 					response.Success = false;
 					response.Object = null;
 					response.Timestamp = DateTime.UtcNow;
-					
+
 					if (ErpSettings.DevelopmentMode)
 						response.Message = e.Message + e.StackTrace;
 					else
@@ -2050,7 +2056,10 @@ namespace WebVella.Erp.Api
 
 			foreach (var field in entity.Fields)
 			{
-				if (field.Required && !recordData.Any(p => p.Key == field.Name) && field.GetFieldType() != FieldType.AutoNumberField)
+				if (field.Required && !recordData.Any(p => p.Key == field.Name)
+					&& field.GetFieldType() != FieldType.AutoNumberField
+					&& field.GetFieldType() != FieldType.FileField
+					&& field.GetFieldType() != FieldType.ImageField)
 				{
 					var defaultValue = field.GetDefaultValue();
 
