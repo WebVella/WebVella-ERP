@@ -262,9 +262,10 @@ namespace WebVella.Erp.Api
             catch (Exception e)
             {
                 response.Success = false;
-#if DEBUG
-                response.Message = e.Message + e.StackTrace;
-#endif
+				
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
+
                 return response;
             }
         }
@@ -303,9 +304,8 @@ namespace WebVella.Erp.Api
             catch (Exception e)
             {
                 response.Success = false;
-#if DEBUG
-                response.Message = e.Message + e.StackTrace;
-#endif
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
                 return response;
             }
         }
@@ -360,9 +360,8 @@ namespace WebVella.Erp.Api
                 response.Object = null;
 				response.Hash = null;
                 response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-                response.Message = e.Message + e.StackTrace;
-#endif
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
                 return response;
             }
         }
@@ -420,11 +419,12 @@ namespace WebVella.Erp.Api
                 response.Success = false;
                 response.Object = relation;
                 response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-                response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "The entity relation was not created. An internal error occurred!";
-#endif
+				
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
+				else
+					response.Message = "The entity relation was not created. An internal error occurred!";
+
                 return response;
             }
         }
@@ -478,11 +478,12 @@ namespace WebVella.Erp.Api
 				response.Success = false;
                 response.Object = relation;
                 response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-                response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "The entity relation was not updated. An internal error occurred!";
-#endif
+				
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
+				else
+					response.Message = "The entity relation was not updated. An internal error occurred!";
+
                 return response;
             }
         }
@@ -526,11 +527,12 @@ namespace WebVella.Erp.Api
             catch (Exception e)
             {
 				Cache.ClearRelations();
-#if DEBUG
-                response.Message = string.Format("Relation ID: {0}, /r/nMessage:{1}/r/nStackTrace:{2}", relationId, e.Message, e.StackTrace);
-#else
-                response.Message = "The entity relation was not delete. An internal error occurred!";
-#endif
+				
+				if (ErpSettings.DevelopmentMode)
+					response.Message = string.Format("Relation ID: {0}, /r/nMessage:{1}/r/nStackTrace:{2}", relationId, e.Message, e.StackTrace);
+				else
+					response.Message = "The entity relation was not delete. An internal error occurred!";
+
                 return response;
             }
         }

@@ -69,11 +69,12 @@ namespace WebVella.Erp.Api
 				response.Success = false;
 				response.Object = null;
 				response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "The entity relation record was not created. An internal error occurred!";
-#endif
+				
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
+				else
+					response.Message = "The entity relation record was not created. An internal error occurred!";
+
 				return response;
 			}
 		}
@@ -108,11 +109,12 @@ namespace WebVella.Erp.Api
 				response.Success = false;
 				response.Object = null;
 				response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "The entity relation record was not created. An internal error occurred!";
-#endif
+				
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
+				else
+					response.Message = "The entity relation record was not created. An internal error occurred!";
+
 				return response;
 			}
 		}
@@ -782,11 +784,12 @@ namespace WebVella.Erp.Api
 					response.Success = false;
 					response.Object = null;
 					response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-					response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "The entity record was not created. An internal error occurred!";
-#endif
+					
+					if (ErpSettings.DevelopmentMode)
+						response.Message = e.Message + e.StackTrace;
+					else
+						response.Message = "The entity record was not created. An internal error occurred!";
+
 					return response;
 				}
 			}
@@ -1446,11 +1449,12 @@ namespace WebVella.Erp.Api
 					response.Success = false;
 					response.Object = null;
 					response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-					response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "The entity record was not update. An internal error occurred!";
-#endif
+					
+					if (ErpSettings.DevelopmentMode)
+						response.Message = e.Message + e.StackTrace;
+					else
+						response.Message = "The entity record was not update. An internal error occurred!";
+
 					return response;
 				}
 			}
@@ -1579,11 +1583,12 @@ namespace WebVella.Erp.Api
 				response.Success = false;
 				response.Object = null;
 				response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "The entity record was not update. An internal error occurred!";
-#endif
+
+				if (ErpSettings.DevelopmentMode)
+					response.Message = e.Message + e.StackTrace;
+				else
+					response.Message = "The entity record was not update. An internal error occurred!";
+
 				return response;
 			}
 

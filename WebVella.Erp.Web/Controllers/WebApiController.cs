@@ -2740,15 +2740,16 @@ namespace WebVella.Erp.Web.Controllers
 			if (file == null)
 			{
 
-#if DEBUG
-				//Hardcoded image for development
-				WebClient wc = new WebClient();
-				byte[] bytes = wc.DownloadData($"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/assets/missing-image.png");
+				if (ErpSettings.DevelopmentMode)
+				{
+					//Hardcoded image for development
+					WebClient wc = new WebClient();
+					byte[] bytes = wc.DownloadData($"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/assets/missing-image.png");
 
-				return File(bytes, "image/png");
-#else
-				return DoPageNotFoundResponse();
-#endif
+					return File(bytes, "image/png");
+				}
+				else
+					return DoPageNotFoundResponse();
 			}
 			//check for modification
 			string headerModifiedSince = Request.Headers["If-Modified-Since"];
