@@ -17,7 +17,7 @@ using HtmlAgilityPack;
 namespace WebVella.Erp.Web.TagHelpers
 {
 	[HtmlTargetElement("wv-page-header")]
-	[RestrictChildren("wv-page-header-actions", "wv-page-header-toolbar")]
+	[RestrictChildren("wv-page-header-actions", "wv-page-header-toolbar", "wv-page-header-actions-aux")]
 	public class WvPageHeader : TagHelper
 	{
 
@@ -68,13 +68,20 @@ namespace WebVella.Erp.Web.TagHelpers
 				htmlDoc.LoadHtml(content.GetContent());
 
 				var actionsContentHtml = "";
+				var actionsAuxContentHtml = "";
 				var toolbarContentHtml = "";
 				var actionTagHelperList = htmlDoc.DocumentNode.Descendants("wv-page-header-actions");
+				var actionAuxTagHelperList = htmlDoc.DocumentNode.Descendants("wv-page-header-actions-aux");
 				var toolbarTagHelperList = htmlDoc.DocumentNode.Descendants("wv-page-header-toolbar");
 
 				foreach (var node in actionTagHelperList)
 				{
 					actionsContentHtml += node.InnerHtml.ToString();
+				}
+
+				foreach (var node in actionAuxTagHelperList)
+				{
+					actionsAuxContentHtml += node.InnerHtml.ToString();
 				}
 
 				foreach (var node in toolbarTagHelperList)
@@ -205,15 +212,9 @@ namespace WebVella.Erp.Web.TagHelpers
 				metaLabelEl.InnerHtml.AppendHtml(metaLabelTextEl);
 				metaColEl.InnerHtml.AppendHtml(metaLabelEl);
 
-				if (!String.IsNullOrWhiteSpace(Description))
-				{
-					var metaDescriptionEl = new TagBuilder("div");
-					metaDescriptionEl.AddCssClass("description");
-					metaDescriptionEl.InnerHtml.AppendHtml(Description);
-					metaColEl.InnerHtml.AppendHtml(metaDescriptionEl);
-				}
 				rowEl.InnerHtml.AppendHtml(metaColEl);
 
+				//Actions
 				if (!String.IsNullOrWhiteSpace(actionsContentHtml))
 				{
 					var actionColEl = new TagBuilder("div");
@@ -224,8 +225,51 @@ namespace WebVella.Erp.Web.TagHelpers
 				}
 
 
+
+
 				output.Content.AppendHtml(rowEl);
 
+				//Description
+
+				if (!String.IsNullOrWhiteSpace(Description) || !String.IsNullOrWhiteSpace(actionsAuxContentHtml))
+				{
+					var metaDescriptionWrapperEl = new TagBuilder("div");
+					metaDescriptionWrapperEl.AddCssClass("description-wrapper");
+					var metaDescriptionRowEl = new TagBuilder("div");
+					metaDescriptionRowEl.AddCssClass("row m-0 no-gutters");
+
+					var metaDescriptionLeftColumn = new TagBuilder("div");
+					metaDescriptionLeftColumn.AddCssClass("col-md align-self-center");
+
+					var metaDescriptionRightColumn = new TagBuilder("div");
+					metaDescriptionRightColumn.AddCssClass("col-md-auto align-self-center");
+
+
+					if (!String.IsNullOrWhiteSpace(Description))
+					{
+						var metaDescriptionEl = new TagBuilder("div");
+						metaDescriptionEl.AddCssClass("description");
+						metaDescriptionEl.InnerHtml.AppendHtml(Description);
+						metaDescriptionLeftColumn.InnerHtml.AppendHtml(metaDescriptionEl);
+					}
+
+					metaDescriptionRowEl.InnerHtml.AppendHtml(metaDescriptionLeftColumn);
+
+					// Aux actions
+					if (!String.IsNullOrWhiteSpace(actionsAuxContentHtml))
+					{
+						metaDescriptionRightColumn.InnerHtml.AppendHtml(actionsAuxContentHtml);
+						metaDescriptionRowEl.InnerHtml.AppendHtml(metaDescriptionRightColumn);
+					}
+
+					metaDescriptionWrapperEl.InnerHtml.AppendHtml(metaDescriptionRowEl);
+					output.Content.AppendHtml(metaDescriptionWrapperEl);
+				}
+
+
+
+
+				//Toolbar
 				if (!String.IsNullOrWhiteSpace(toolbarContentHtml))
 				{
 					var wrapEl = new TagBuilder("div");

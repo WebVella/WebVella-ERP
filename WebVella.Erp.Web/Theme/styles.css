@@ -4555,12 +4555,12 @@ border-bottom-style:dashed;
 	left: 9px;
 }
 
-.pc-page-header .description {
+.pc-page-header .description-wrapper {
 	font-size: 12px;
-	color: #818181;
-	margin-top: 5px;
-	margin-bottom: -5px;
-	margin-left: 0;
+    /*color: #818181;*/
+    margin-top: 10px;
+    margin-bottom: -3px;
+    margin-left: 0;
 }
 
 	.pc-page-header .description ul, .pc-page-header .description p {
@@ -4575,7 +4575,7 @@ border-bottom-style:dashed;
 
 	.pc-page-header .description strong {
 		font-weight: normal;
-		color: --orange_dark_color;
+		color: #818181;
 	}
 
 	.pc-page-header .description .list-inline-item:not(:last-child) {
