@@ -59,6 +59,13 @@ namespace WebVella.Erp.Web.TagHelpers.WvFieldImage
 				output.SuppressOutput();
 				return Task.CompletedTask;
 			}
+
+			if (Width == 0)
+				Width = null;
+
+			if (Height == 0)
+				Height = null;
+
 			#region << Init >>
 			var initSuccess = InitField(context, output);
 

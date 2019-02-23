@@ -2780,8 +2780,21 @@ namespace WebVella.Erp.Web.Controllers
 			string height = queryCollection.Keys.Any(x => x == "height") ? ((string)queryCollection["height"]).ToLowerInvariant() : "";
 			bool isImage = extension == ".jpg" || extension == ".jpeg" || extension == ".png" || extension == ".gif";
 
-			if (isImage && (!string.IsNullOrWhiteSpace(action) || !string.IsNullOrWhiteSpace(requestedMode) || !string.IsNullOrWhiteSpace(width) || !string.IsNullOrWhiteSpace(height)))
+			int widthInt = 0;
+			if (!String.IsNullOrWhiteSpace(width) && int.TryParse(width, out int outWidthInt)) {
+				widthInt = outWidthInt;
+			}
+			int heightInt = 0;
+			if (!String.IsNullOrWhiteSpace(height) && int.TryParse(height, out int outHeightInt))
 			{
+				heightInt = outHeightInt;
+			}
+
+			if (isImage && (widthInt > 0 || heightInt > 0))
+			{
+				if (string.IsNullOrWhiteSpace(action)) 
+					action = "resize";
+
 				var fileContent = file.GetBytes();
 				using (Image<Rgba32> image = SixLabors.ImageSharp.Image.Load(fileContent))
 				{
