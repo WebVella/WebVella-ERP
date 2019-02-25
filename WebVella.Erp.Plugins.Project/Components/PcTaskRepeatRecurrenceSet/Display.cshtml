@@ -1,8 +1,21 @@
-﻿<script src="/js/wv-recurrence-template/wv-recurrence-template.js"></script>
-<wv-recurrence-template recurrence-template='@ViewBag.RecurrenceTemplateString' 
-type-options='@ViewBag.RecurrenceTypeOptions'
-end-type-options='@ViewBag.RecurrenceEndTypeOptions'
-period-type-options='@ViewBag.PeriodTypeOptions'
-change-type-options='@ViewBag.RecurrenceChangeTypeOptions'
-template-default='@ViewBag.TemplateDefault'>
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+
+<script src="/js/wv-recurrence-template/wv-recurrence-template.js"></script>
+
+<wv-row>
+	<wv-column span="6">
+		<wv-field-date label-text="Start Date" value="@ViewBag.StartDate" name="start_time"></wv-field-date>
+	</wv-column>
+	<wv-column span="6">
+		<wv-field-date label-text="End Date" value="@ViewBag.EndDate" name="end_time"></wv-field-date>
+	</wv-column>
+</wv-row>
+
+<wv-recurrence-template recurrence-template='@ViewBag.RecurrenceTemplateString'
+						type-options='@ViewBag.RecurrenceTypeOptions'
+						end-type-options='@ViewBag.RecurrenceEndTypeOptions'
+						period-type-options='@ViewBag.PeriodTypeOptions'
+						change-type-options='@ViewBag.RecurrenceChangeTypeOptions'
+						template-default='@ViewBag.TemplateDefault'>
 </wv-recurrence-template>

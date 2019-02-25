@@ -76,12 +76,19 @@ namespace WebVella.Erp.Plugins.Project.Components
 				ViewBag.ComponentContext = context;
 				ViewBag.CurrentUser = SecurityContext.CurrentUser;
 				ViewBag.CurrentUserJson = JsonConvert.SerializeObject(SecurityContext.CurrentUser);
+				ViewBag.StartDate = null;
+				ViewBag.EndDate = null;
 
 				if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
 				{
 					var record = (EntityRecord)context.DataModel.GetProperty("Record");
 					if (record == null)
 						throw new ValidationException() { Message = "Record not found" };
+
+					if (record.Properties.ContainsKey("start_time") && record["start_time"] is DateTime?)
+						ViewBag.StartDate = record["start_time"];
+					if (record.Properties.ContainsKey("end_time") && record["end_time"] is DateTime?)
+						ViewBag.EndDate = record["end_time"];
 
 					ViewBag.RecurrenceTemplateString = "";
 					if (record.Properties.ContainsKey("recurrence_template") && record["recurrence_template"] is string)
