@@ -4,8 +4,8 @@ export default class RecurrenceTemplate {
         this.end_type = 0;
         this.end_date = null;
         this.end_count = 1;
-        this.repeat_period = 0;
-        this.repeat_count = 1;
+        this.repeat_period_type = 0;
+        this.interval = 1;
         this.timespan_start = null;
         this.timespan_end = null;
         this.allow_monday = true;
