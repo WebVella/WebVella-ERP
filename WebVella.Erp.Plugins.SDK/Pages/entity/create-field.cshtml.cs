@@ -506,8 +506,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 						break;
 					case FieldType.MultiSelectField:
 						{
-							var selectOptions = SelectOptions.Split(Environment.NewLine);
-							var defaultOptions = DefaultValue.Split(Environment.NewLine);
+							var selectOptions = (SelectOptions??string.Empty).Split(Environment.NewLine);
+							var defaultOptions = (DefaultValue??string.Empty).Split(Environment.NewLine);
 							var multiSelectOptions = new List<SelectOption>();
 							var defaultValues = new List<string>();
 
