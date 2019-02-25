@@ -10,6 +10,7 @@ using WebVella.Erp.Api.Models;
 using WebVella.Erp.Eql;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Plugins.Project.Utils;
+using WebVella.Erp.Recurrence;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
@@ -91,7 +92,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 
 					ViewBag.RecurrenceTypeOptions = JsonConvert.SerializeObject(ModelExtensions.GetEnumAsSelectOptions<RecurrenceType>());
 					ViewBag.RecurrenceEndTypeOptions = JsonConvert.SerializeObject(ModelExtensions.GetEnumAsSelectOptions<RecurrenceEndType>());
-					var periodTypes = ModelExtensions.GetEnumAsSelectOptions<PeriodType>();
+					var periodTypes = ModelExtensions.GetEnumAsSelectOptions<RecurrencePeriodType>();
 					periodTypes = periodTypes.FindAll(x => x.Value != "0" && x.Value != "1" && x.Value != "2").ToList(); // remove seconds minutes and hour
 					ViewBag.PeriodTypeOptions = JsonConvert.SerializeObject(periodTypes);
 					ViewBag.RecurrenceChangeTypeOptions = JsonConvert.SerializeObject(ModelExtensions.GetEnumAsSelectOptions<RecurrenceChangeType>());

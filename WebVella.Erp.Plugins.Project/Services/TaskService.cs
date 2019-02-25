@@ -1,11 +1,16 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Eql;
+using WebVella.Erp.Exceptions;
 using WebVella.Erp.Plugins.Project.Model;
+using WebVella.Erp.Recurrence;
 using WebVella.Erp.Web.Models;
+using WebVella.Erp.Web.Pages.Application;
 
 
 //TODO develop service
@@ -544,6 +549,29 @@ namespace WebVella.Erp.Plugins.Project.Services
 			};
 
 			return new EqlCommand(eqlCommand, eqlParams).Execute();
+		}
+
+		public IActionResult SetTaskRecurrenceOnPost(RecordDetailsPageModel pageModel)
+		{
+			ValidationException valEx = new ValidationException();
+
+			if ( !pageModel.HttpContext.Request.Form.ContainsKey("recurrence_template") )
+			{
+				valEx.AddError("recurrence_template", "Recurrence settings missing in post data");
+				throw valEx;
+			}
+
+			EntityRecord taskRecord = (EntityRecord)pageModel.DataModel.GetProperty("Record");
+			if( taskRecord["start_time"] == null )
+				valEx.AddError("start_time", "Start time should be specified before set task recurrence");
+
+			if (taskRecord["end_time"] == null)
+				valEx.AddError("end_time", "End time should be specified before set task recurrence");
+
+			valEx.CheckAndThrow();
+
+			RecurrenceTemplate recurrenceData = JsonConvert.DeserializeObject<RecurrenceTemplate>(pageModel.HttpContext.Request.Form["recurrence_template"]);
+			return null;
 		}
 	}
 }

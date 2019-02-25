@@ -2,7 +2,7 @@
 using System;
 using WebVella.Erp.Api.Models;
 
-namespace WebVella.Erp.Web.Models
+namespace WebVella.Erp.Recurrence
 {
 	public enum RecurrenceChangeType {
 		[SelectOption(Label = "only this")]

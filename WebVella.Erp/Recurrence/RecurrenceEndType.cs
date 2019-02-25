@@ -1,6 +1,6 @@
 ﻿using WebVella.Erp.Api.Models;
 
-namespace WebVella.Erp.Web.Models
+namespace WebVella.Erp.Recurrence
 {
 	public enum RecurrenceEndType
 	{
