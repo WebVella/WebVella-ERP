@@ -6,8 +6,8 @@ class RecurrenceTemplate {
         this.end_type = 0;
         this.end_date = null;
         this.end_count = 1;
-        this.repeat_period = 0;
-        this.repeat_count = 1;
+        this.repeat_period_type = 0;
+        this.interval = 1;
         this.timespan_start = null;
         this.timespan_end = null;
         this.allow_monday = true;
@@ -95,13 +95,13 @@ class WvDatasourceManage {
                     h("label", { class: "col-12 col-sm-auto col-form-label label-horizontal pr-0 pr-sm-2" }, "Repeat every:"),
                     h("div", { class: "col" },
                         h("div", { class: "input-group" },
-                            h("input", { class: "form-control flex-grow-0", style: { "width": "80px" }, value: scope.recurrence.repeat_count }),
+                            h("input", { class: "form-control flex-grow-0", style: { "width": "80px" }, value: scope.recurrence.interval, onChange: (e) => scope.valueChangeHandler(e, "interval", "int") }),
                             h("span", { class: "input-group-prepend input-group-append" },
                                 h("span", { class: "input-group-text p-0", style: { "width": "5px" } })),
-                            h("select", { class: "form-control form-control-sm  flex-grow-0", style: { "width": "100px" }, onChange: (e) => scope.valueChangeHandler(e, "repeat_period", "int") }, scope.periodTypeSelectOptions.map(function (option, index) {
-                                return (h("option", { key: index, value: option.value, selected: option.value == scope.recurrence.repeat_period.toString() }, option.label));
+                            h("select", { class: "form-control form-control-sm  flex-grow-0", style: { "width": "100px" }, onChange: (e) => scope.valueChangeHandler(e, "repeat_period_type", "int") }, scope.periodTypeSelectOptions.map(function (option, index) {
+                                return (h("option", { key: index, value: option.value, selected: option.value == scope.recurrence.repeat_period_type.toString() }, option.label));
                             }))))),
-                h("div", { class: "form-group erp-field label-horizontal row no-gutters form mt-3 " + (scope.recurrence.repeat_period === 4 ? "" : "d-none") },
+                h("div", { class: "form-group erp-field label-horizontal row no-gutters form mt-3 " + (scope.recurrence.repeat_period_type === 4 ? "" : "d-none") },
                     h("label", { class: "col-12 col-sm-auto col-form-label label-horizontal pr-0 pr-sm-2" }),
                     h("div", { class: "col" },
                         h("div", { class: "form-check form-check-inline" },
@@ -125,7 +125,7 @@ class WvDatasourceManage {
                         h("div", { class: "form-check form-check-inline" },
                             h("input", { class: "form-check-input", type: "checkbox", id: "Sunday", value: "true", checked: scope.recurrence.allow_sunday, onChange: (e) => scope.valueChangeHandler(e, "allow_sunday", "bool") }),
                             h("label", { class: "form-check-label", htmlFor: "Sunday" }, "Sunday")))),
-                h("div", { class: "form-group erp-field label-horizontal row no-gutters form mt-3 " + (scope.recurrence.repeat_period === 5 ? "" : "d-none") },
+                h("div", { class: "form-group erp-field label-horizontal row no-gutters form mt-3 " + (scope.recurrence.repeat_period_type === 5 ? "" : "d-none") },
                     h("label", { class: "col-12 col-sm-auto col-form-label label-horizontal pr-0 pr-sm-2" }),
                     h("div", { class: "col" },
                         h("div", { class: "form-check form-check-inline" },
