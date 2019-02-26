@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>WebVella.Erp</id>
-		<version>1.0.7</version>
+		<version>1.0.8</version>
 		<title>WebVella.Erp</title>
 		<authors>WebVella</authors>
 		<owners>WebVella</owners>
@@ -32,7 +32,7 @@
 				<dependency id="MimeMapping" version="1.0.1.12" />
 				<dependency id="Newtonsoft.Json" version="12.0.1" />
 				<dependency id="Npgsql" version="4.0.4" />
-				<dependency id="WebVella.ICal.NET" version="1.0.0" />
+				<dependency id="Ical.Net" version="4.1.10" />
 			</group>
 		</dependencies>
 	</metadata>
