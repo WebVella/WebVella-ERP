@@ -42,10 +42,6 @@
     <PackageReference Include="WebVella.ICal.NET" Version="1.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Recurrence\" />
-  </ItemGroup>
-
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
