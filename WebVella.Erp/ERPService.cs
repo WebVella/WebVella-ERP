@@ -957,6 +957,41 @@ namespace WebVella.Erp
 					command.ExecuteNonQuery();
 				}
 
+				
+				bool systemSearchTableExists = false;
+				command = connection.CreateCommand("SELECT EXISTS (  SELECT 1 FROM   information_schema.tables  WHERE  table_schema = 'public' AND table_name = 'system_search' ) ");
+				using (var reader = command.ExecuteReader())
+				{
+					reader.Read();
+					systemSearchTableExists = reader.GetBoolean(0);
+					reader.Close();
+				}
+
+				if (!systemSearchTableExists)
+				{
+					const string filesTableSql = @"CREATE TABLE public.system_search (
+  id UUID NOT NULL,
+  entities TEXT DEFAULT ''::text NOT NULL,
+  apps TEXT DEFAULT ''::text NOT NULL,
+  records TEXT DEFAULT ''::text NOT NULL,
+  content TEXT DEFAULT ''::text NOT NULL,
+  snippet TEXT DEFAULT ''::text NOT NULL,
+  url TEXT DEFAULT ''::text NOT NULL,
+  aux_data TEXT DEFAULT ''::text NOT NULL,
+  ""timestamp"" TIMESTAMP(0) WITH TIME ZONE NOT NULL,
+  stem_content TEXT DEFAULT ''::text NOT NULL,
+  CONSTRAINT system_search_pkey PRIMARY KEY(id)
+) 
+WITH(oids = false); ";
+
+					command = connection.CreateCommand(filesTableSql);
+					command.ExecuteNonQuery();
+
+					command = connection.CreateCommand("CREATE INDEX system_search_fts_idx ON system_search USING gin( to_tsvector( 'english', stem_content) )");
+					command.ExecuteNonQuery();
+				}
+
+
 				bool filesTableExists = false;
 				command = connection.CreateCommand("SELECT EXISTS (  SELECT 1 FROM   information_schema.tables  WHERE  table_schema = 'public' AND table_name = 'files' ) ");
 				using (var reader = command.ExecuteReader())

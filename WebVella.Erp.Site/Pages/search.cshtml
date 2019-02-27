@@ -1,0 +1,30 @@
+﻿@page
+@model WebVella.Erp.Site.Pages.SearchModel
+@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>Search Test Page</title> 
+</head>
+<body>
+	<form name="searchForm" id="searchForm" method="post">
+		@Html.AntiForgeryToken()
+		<input type="text" name="SearchText" value="@Model.SearchText" />
+		<input type="Submit" value="search" >
+	</form>
+
+	@foreach(var searchResult in @Model.SearchResults)
+	{
+		<div>
+			<p>@searchResult.Url</p>
+			<p>@searchResult.Snippet</p>
+		</div>
+	}
+
+</body>
+</html>
