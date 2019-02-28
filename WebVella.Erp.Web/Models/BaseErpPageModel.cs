@@ -262,6 +262,21 @@ namespace WebVella.Erp.Web.Models
 
 
 			DataModel = new PageDataModel(this);
+
+			List<Guid> currentUserRoles = new List<Guid>();
+			if (CurrentUser != null )
+				currentUserRoles.AddRange(CurrentUser.Roles.Select(x => x.Id));
+
+			if( ErpRequestContext.App != null )
+			{
+				if (ErpRequestContext.App.Access == null || ErpRequestContext.App.Access.Count == 0)
+					Request.HttpContext.Response.Redirect("/error?access_denied");
+
+				IEnumerable<Guid> rolesWithAccess = ErpRequestContext.App.Access.Intersect(currentUserRoles);
+				if (!rolesWithAccess.Any())
+					Request.HttpContext.Response.Redirect("/error?access_denied");
+			}
+
 			//Debug.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>> Base page init: " + sw.ElapsedMilliseconds);
 		}
 

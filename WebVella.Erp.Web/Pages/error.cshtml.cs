@@ -7,7 +7,10 @@ namespace WebVella.Erp.Site.Pages
     {
         public IActionResult OnGet()
         {
-            return Page();
+			if (HttpContext.Request.Query.ContainsKey("access_denied"))
+				Request.HttpContext.Response.StatusCode = 401; //access denied;
+
+			return Page();
         }
 
     }
