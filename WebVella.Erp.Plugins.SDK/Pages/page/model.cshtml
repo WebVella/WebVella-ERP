@@ -9,7 +9,7 @@
 	var modalDataFieldId = new Guid("AF4711C0-DD59-4223-9F11-08A21421CF50");
 	var paramsFieldId = new Guid("8D2A7071-9818-47C3-8C3A-0ED579A733C8");
 	ModelNode parentNode = null;
-	var pageIconClass = "ti-file";
+	var pageIconClass = "fa fa-file";
 	if (!String.IsNullOrWhiteSpace(Model.ErpPage.IconClass)){
 		pageIconClass = Model.ErpPage.IconClass;
 	}
@@ -64,7 +64,7 @@
 					</a>
 					<button id="copy-datasource-inject-string" type="button" class="btn btn-white" data-toggle="tooltip" data-placement="bottom" title="Copy to clipboard"
 							onclick="copyDataSourceValueToClipboard()">
-						copy <i class="ti-cloud-down ml-1"></i>
+						copy <i class="fa fa-cloud-download-alt ml-1"></i>
 					</button>
 				</div>
 				<input class="form-control" readonly value="" id="model-tree-value" />

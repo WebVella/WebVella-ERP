@@ -168,7 +168,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 				var targetColumnText = $"<div><span class='go-gray'>Entity: </span> {relation.TargetEntityName}</div><div><span class='go-gray'>Field: </span> {relation.TargetFieldName}</div>";
 
 				var record = new EntityRecord();
-				record["action"] = $"<a class='btn btn-sm btn-white' title='view relation details' href='/sdk/objects/entity/r/{ErpEntity.Id}/rl/relations/r/{relation.Id}?returnUrl={ReturnUrlEncoded}'><span class='ti-eye'></span></a>";
+				record["action"] = $"<a class='btn btn-sm btn-outline-secondary' title='view relation details' href='/sdk/objects/entity/r/{ErpEntity.Id}/rl/relations/r/{relation.Id}?returnUrl={ReturnUrlEncoded}'><span class='fa fa-eye'></span></a>";
 				record["name"] = nameColumnText;
 				record["origin"] = originColumnText;
 				record["target"] = targetColumnText;

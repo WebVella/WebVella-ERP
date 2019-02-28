@@ -214,7 +214,7 @@ namespace WebVella.Erp.Web.Models
 					{
 						var areaLink = $"<a href=\"javascript: void(0)\" title=\"{area.Label}\" data-navclick-handler>";
 						areaLink += $"<span class=\"menu-label\">{area.Label}</span>";
-						areaLink += $"<span class=\"menu-nav-icon ti-angle-down nav-caret\"></span>";
+						areaLink += $"<span class=\"menu-nav-icon fa fa-angle-down nav-caret\"></span>";
 						areaLink += $"</a>";
 						areaMenuItem = new MenuItem()
 						{
@@ -374,7 +374,7 @@ namespace WebVella.Erp.Web.Models
 		{
 
 			#region << Set BodyClass >>
-			ViewData["BodyBorderColor"] = "#192637";
+			ViewData["BodyBorderColor"] = "#555";
 			if (ErpRequestContext.App != null && !String.IsNullOrWhiteSpace(ErpRequestContext.App.Color)) {
 				ViewData["BodyBorderColor"] = ErpRequestContext.App.Color;
 			}

@@ -13,7 +13,7 @@ FilterType.EQ
 	var titleAction = "<a href=\"javascript:void(0)\" class=\"clear-filter-all\">clear all</a>";
 }
 <wv-page-header color="#dc3545" area-label="Pages" title="All pages list"
-				icon-class="ti-file" description="@Model.PageDescription">
+				icon-class="fa fa-file" description="@Model.PageDescription">
 
 	<wv-page-header-actions>
 		<a href='/sdk/objects/page/c?returnUrl=@Html.Raw(Model.ReturnUrlEncoded)' class='btn btn-white btn-sm'><span class='fa fa-plus go-green'></span> Create Page</a>
@@ -27,7 +27,7 @@ FilterType.EQ
 	{
 		<wv-grid-row>
 			<wv-grid-column>
-				<a class='btn btn-sm btn-white' href='/sdk/objects/page/r/@record["id"]?returnUrl=@Model.ReturnUrlEncoded'><span class='ti-eye'></span></a>
+				<a class='btn btn-sm btn-outline-secondary' href='/sdk/objects/page/r/@record["id"]?returnUrl=@Model.ReturnUrlEncoded'><span class='fa fa-eye'></span></a>
 			</wv-grid-column>
 			<wv-grid-column>
 				@record["label"]

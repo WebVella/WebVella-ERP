@@ -66,7 +66,7 @@ namespace WebVella.Erp
 							userEntity.LabelPlural = "Users";
 							userEntity.System = true;
 							userEntity.Color = "#f44336";
-							userEntity.IconName = "ti-user";
+							userEntity.IconName = "fa fa-user";
 							userEntity.RecordPermissions = new RecordPermissions();
 							userEntity.RecordPermissions.CanCreate = new List<Guid>();
 							userEntity.RecordPermissions.CanRead = new List<Guid>();
@@ -352,7 +352,7 @@ namespace WebVella.Erp
 							roleEntity.LabelPlural = "Roles";
 							roleEntity.System = true;
 							roleEntity.Color = "#f44336";
-							roleEntity.IconName = "ti-key";
+							roleEntity.IconName = "fa fa-key";
 							roleEntity.RecordPermissions = new RecordPermissions();
 							roleEntity.RecordPermissions.CanCreate = new List<Guid>();
 							roleEntity.RecordPermissions.CanRead = new List<Guid>();
@@ -542,7 +542,7 @@ namespace WebVella.Erp
 									entity.Label = "User File";
 									entity.LabelPlural = "User Files";
 									entity.System = true;
-									entity.IconName = "ti-file";
+									entity.IconName = "fa fa-file";
 									entity.Color = "#f44336";
 									//entity.Weight = (decimal)100.0;
 									entity.RecordPermissions = new RecordPermissions();

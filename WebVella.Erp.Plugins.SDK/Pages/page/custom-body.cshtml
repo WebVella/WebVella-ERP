@@ -4,7 +4,7 @@
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Page Customized Body";
-	var pageIconClass = "ti-file";
+	var pageIconClass = "fa fa-file";
 	if (!String.IsNullOrWhiteSpace(Model.ErpPage.IconClass)){
 		pageIconClass = Model.ErpPage.IconClass;
 	}
@@ -16,7 +16,7 @@
 		{
 		<a href='@Model.PagePublicUrl' target="_blank" class='btn btn-white btn-sm'><i class='fas fa-external-link-alt'></i> Visit Page</a>
 		}
-		<a href='/sdk/objects/page/m/@(Model.ErpPage != null ? Model.ErpPage.Id : Guid.Empty)/manage-custom?returnUrl=@HttpUtility.UrlEncode(Model.CurrentUrl)' class='btn btn-white btn-sm'><i class='ti-settings go-orange'></i> Manage Custom Body</a>
+		<a href='/sdk/objects/page/m/@(Model.ErpPage != null ? Model.ErpPage.Id : Guid.Empty)/manage-custom?returnUrl=@HttpUtility.UrlEncode(Model.CurrentUrl)' class='btn btn-white btn-sm'><i class='fa fa-cog go-orange'></i> Manage Custom Body</a>
 	</wv-page-header-actions>
 
 	<wv-page-header-toolbar>

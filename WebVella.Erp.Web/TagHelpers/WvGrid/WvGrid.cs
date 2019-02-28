@@ -146,6 +146,7 @@ namespace WebVella.Erp.Web.TagHelpers
 			#endregion
 
 			output.TagName = "table";
+
 			#region << Table >>
 			output.AddCssClass("table");
 
@@ -322,12 +323,12 @@ namespace WebVella.Erp.Web.TagHelpers
 					var pageNextDisabled = (TotalCount <= (PageSize * Page));
 
 					var btnGroupEl = new TagBuilder("div");
-					btnGroupEl.AddCssClass("btn btn-group float-left pager");
+					btnGroupEl.AddCssClass("btn-group float-left pager");
 
 					var prevBtnEl = new TagBuilder("button");
 					prevBtnEl.Attributes.Add("type", "button");
 					prevBtnEl.Attributes.Add("title", "Previous page");
-					prevBtnEl.AddCssClass($"btn btn-sm {(pagePrevDisabled ? "btn-outline-dark" : "btn-white")} {(pagePrevDisabled ? "disabled" : "")}");
+					prevBtnEl.AddCssClass($"btn-sm btn-outline-secondary {(pagePrevDisabled ? "disabled" : "")}");
 					if (pagePrevDisabled)
 					{
 						prevBtnEl.Attributes.Add("disabled", "disabled");
@@ -342,7 +343,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					var nextBtnEl = new TagBuilder("button");
 					nextBtnEl.Attributes.Add("type", "button");
 					nextBtnEl.Attributes.Add("title", "Next page");
-					nextBtnEl.AddCssClass($"btn btn-sm {(pageNextDisabled ? "btn-outline-dark" : "btn-white")} {(pageNextDisabled ? "disabled" : "")}");
+					nextBtnEl.AddCssClass($"btn btn-sm btn-outline-secondary {(pageNextDisabled ? "disabled" : "")}");
 					if (pageNextDisabled)
 					{
 						nextBtnEl.Attributes.Add("disabled", "disabled");
@@ -361,9 +362,6 @@ namespace WebVella.Erp.Web.TagHelpers
 				output.PostContent.AppendHtml(tfootEl);
 			}
 			#endregion
-
-
-
 
 			var jsCompressor = new JavaScriptCompressor();
 

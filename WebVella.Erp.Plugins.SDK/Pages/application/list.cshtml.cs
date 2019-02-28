@@ -147,7 +147,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 			foreach (var app in apps)
 			{
 				var record = new EntityRecord();
-				record["action"] = $"<a class='btn btn-sm btn-white' title='App details' href='/sdk/objects/application/r/{app.Id}?returnUrl={ReturnUrlEncoded}'><span class='ti-eye'></span></a>";
+				record["action"] = $"<a class='btn btn-sm btn-outline-secondary' title='App details' href='/sdk/objects/application/r/{app.Id}?returnUrl={ReturnUrlEncoded}'><span class='fa fa-eye'></span></a>";
 				record["name"] = app.Name;
 				record["label"] = app.Label;
 				record["icon"] = $"<div class='badge badge-pill' style='font-size:18px;color:{app.Color};'><span class='{app.IconClass}'></span></div>";

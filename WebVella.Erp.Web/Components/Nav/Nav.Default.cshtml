@@ -16,18 +16,18 @@
 		</div>
 	</div>
 	<vc:site-menu page-model="@pageModel"></vc:site-menu>
-	<div id="brand-logo" class="pl-3 pr-3 ml-2">
+	<div id="brand-logo" class="pl-3 pr-3">
 			@if (currentApp == null)
 			{
 				<a href="@ViewBag.AppDefaultLink">
 					<img src="@theme.BrandLogo" />
-					<span class="app-label">WebVella</span>			
+					<span class="app-label"  style="color:@ViewData["BodyBorderColor"]">WebVella</span>			
 				</a>
 			}
 			else {
 				<a href="@ViewBag.AppDefaultLink">
 					<img src="@theme.BrandLogo" />
-					<span class="app-label" title="@currentApp.Label">@ViewBag.AppShortName</span>			
+					<span class="app-label" title="@currentApp.Label"  style="color:@ViewData["BodyBorderColor"]">@currentApp.Label</span>			
 				</a>
 			}
 	</div>

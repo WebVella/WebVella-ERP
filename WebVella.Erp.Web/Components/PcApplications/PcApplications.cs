@@ -11,7 +11,7 @@ using WebVella.Erp.Web.Utils;
 
 namespace WebVella.Erp.Web.Components
 {
-	[PageComponent(Label = "Application list", Library = "WebVella", Description = "List of all available application", Version = "0.0.1", IconClass = "ti-layout-grid2")]
+	[PageComponent(Label = "Application list", Library = "WebVella", Description = "List of all available application", Version = "0.0.1", IconClass = "fas fa-th")]
 	public class PcApplications : PageComponent
 	{
 		protected ErpRequestContext ErpRequestContext { get; set; }

@@ -77,6 +77,10 @@ namespace WebVella.Erp.Web.Models
 		[JsonProperty("headings_font_color")]
 		public string HeadingsFontColor { get; set; } = "";
 
+		[JsonProperty("gray_border_color")]
+		public string GrayBorderColor { get; set; } = "#e1e4e8";
+
+
 		//Primary
 		[JsonProperty("primary_color")]
 		public string PrimaryColor { get; set; } = "#007bff";

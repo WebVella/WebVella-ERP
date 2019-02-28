@@ -78,7 +78,7 @@ namespace WebVella.Erp.Api
 				entity.RecordPermissions.CanDelete = new List<Guid>();
 
 			if (string.IsNullOrWhiteSpace(entity.IconName))
-				entity.IconName = "ti-server";
+				entity.IconName = "fa fa-database";
 
 			return errorList;
 		}

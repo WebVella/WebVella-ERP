@@ -8,9 +8,9 @@
 <wv-page-header color="@Model.App.Color" area-label="Applications" title="@Model.App.Label" subtitle="Details"
 	icon-class="@Model.App.IconClass" return-url="@Model.ReturnUrl">
 	<wv-page-header-actions>
-		<button type="button" onclick='ErpEvent.DISPATCH("WebVella.Erp.Web.Components.PcForm",{htmlId:"DeleteRecord",action:"submit",payload:null})' class="btn btn-white btn-sm"><i class="ti-trash go-red"></i> Delete App</button>
+		<button type="button" onclick='ErpEvent.DISPATCH("WebVella.Erp.Web.Components.PcForm",{htmlId:"DeleteRecord",action:"submit",payload:null})' class="btn btn-white btn-sm"><i class="fa fa-trash-alt go-red"></i> Delete App</button>
 		<a href="/sdk/objects/application/m/@(Model.App != null ? Model.App.Id : Guid.Empty)/manage?returnUrl=@(HttpUtility.UrlEncode(Model.CurrentUrl))" class="btn btn-white btn-sm">
-			<i class="ti-settings go-orange"></i> Manage
+			<i class="fa fa-cog go-orange"></i> Manage
 		</a>
 	</wv-page-header-actions>
 	<wv-page-header-toolbar>

@@ -102,14 +102,14 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 			if (ErpEntity.System)
 			{
-				HeaderActions.Add(PageUtils.GetActionTemplate(PageUtilsActionType.Disabled, label: "Delete locked", formId: "DeleteRecord", btnClass:"btn btn-white btn-sm", iconClass:"ti-trash", titleText:"System objects cannot be deleted"));
+				HeaderActions.Add(PageUtils.GetActionTemplate(PageUtilsActionType.Disabled, label: "Delete locked", formId: "DeleteRecord", btnClass:"btn btn-white btn-sm", iconClass:"fa fa-trash-alt", titleText:"System objects cannot be deleted"));
 			}
 			else
 			{
-				HeaderActions.Add(PageUtils.GetActionTemplate(PageUtilsActionType.ConfirmAndSubmitForm, label: "Delete Entity", formId: "DeleteRecord", btnClass: "btn btn-white btn-sm", iconClass:"ti-trash go-red"));
+				HeaderActions.Add(PageUtils.GetActionTemplate(PageUtilsActionType.ConfirmAndSubmitForm, label: "Delete Entity", formId: "DeleteRecord", btnClass: "btn btn-white btn-sm", iconClass:"fa fa-trash-alt go-red"));
 			};
 
-			HeaderActions.Add($"<a href='/sdk/objects/entity/m/{(ErpEntity != null ? ErpEntity.Id : Guid.Empty)}/manage?returnUrl={HttpUtility.UrlEncode(CurrentUrl)}' class='btn btn-white btn-sm'><i class='ti-settings go-orange'></i> Manage</a>");
+			HeaderActions.Add($"<a href='/sdk/objects/entity/m/{(ErpEntity != null ? ErpEntity.Id : Guid.Empty)}/manage?returnUrl={HttpUtility.UrlEncode(CurrentUrl)}' class='btn btn-white btn-sm'><i class='fa fa-cog go-orange'></i> Manage</a>");
 
 			HeaderToolbar.AddRange( AdminPageUtils.GetEntityAdminSubNav(ErpEntity, "details"));
 

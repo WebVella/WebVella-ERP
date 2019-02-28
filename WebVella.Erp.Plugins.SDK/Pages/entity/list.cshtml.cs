@@ -137,7 +137,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			foreach (var entity in allEntities)
 			{
 				var record = new EntityRecord();
-				record["action"] = $"<a class='btn btn-sm btn-white' title='Entity details' href='/sdk/objects/entity/r/{entity.Id}?returnUrl={ReturnUrlEncoded}'><span class='ti-eye'></span></a>";
+				record["action"] = $"<a class='btn btn-sm btn-outline-secondary' title='Entity details' href='/sdk/objects/entity/r/{entity.Id}?returnUrl={ReturnUrlEncoded}'><span class='fa fa-eye'></span></a>";
 				record["icon"] = $"<div class='badge badge-pill' style='font-size:18px;color:{(String.IsNullOrWhiteSpace(entity.Color) ? "#999999" : entity.Color)};'><span class='{entity.IconName}'></span></div>";
 				record["name"] = entity.Name;
 				record["fields"] = entity.Fields.Count.ToString();

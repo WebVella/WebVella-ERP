@@ -187,7 +187,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			#region << Actions >>
 			HeaderActions.AddRange(new List<string>() {
 
-				PageUtils.GetActionTemplate(PageUtilsActionType.SubmitForm, label: "Create Field",formId:"CreateRecord", btnClass:"btn btn-green btn-sm", iconClass:"ti-plus"),
+				PageUtils.GetActionTemplate(PageUtilsActionType.SubmitForm, label: "Create Field",formId:"CreateRecord", btnClass:"btn btn-green btn-sm", iconClass:"fa fa-plus"),
 				PageUtils.GetActionTemplate(PageUtilsActionType.Cancel, returnUrl: ReturnUrl)
 			});
 

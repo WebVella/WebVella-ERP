@@ -116,18 +116,6 @@ namespace WebVella.Erp.Web.Components
 				}
 				#endregion
 
-				#region << themify >>
-				{
-					if (!includedLinkTags.Any(x => x.Href.Contains("/themify")))
-					{
-						linkTagsToInclude.Add(new LinkTagInclude()
-						{
-							Href = "/js/themify-icons-0.1.2/css/themify-icons.css"
-						});
-					}
-				}
-				#endregion
-
 				#region << flatpickr >>
 				{
 					if (!includedLinkTags.Any(x => x.Href.Contains("/flatpickr")))

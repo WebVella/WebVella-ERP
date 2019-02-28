@@ -52,7 +52,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 
 			HeaderActions.AddRange(new List<string>() {
 
-				PageUtils.GetActionTemplate(PageUtilsActionType.SubmitForm, label: "Save",formId:"UpdateRecord", btnClass:"btn btn-primary btn-sm", iconClass:"ti-save"),
+				PageUtils.GetActionTemplate(PageUtilsActionType.SubmitForm, label: "Save",formId:"UpdateRecord", btnClass:"btn btn-primary btn-sm", iconClass:"fa fa-save"),
 				PageUtils.GetActionTemplate(PageUtilsActionType.Cancel, returnUrl: ReturnUrl)
 			});
 

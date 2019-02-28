@@ -90,6 +90,22 @@ namespace WebVella.Erp.Plugins.SDK
 							}
 						}
 
+						//this patch creates SDK application
+						//duplicate this IF for next patches
+						if (currentPluginSettings.Version < 20190227)
+						{
+							try
+							{
+								currentPluginSettings.Version = 20190227;
+								Patch20190227(entMan, relMan, recMan);
+							}
+							catch (Exception ex)
+							{
+								var exception = ex;
+								throw ex;
+							}
+						}
+
 						#endregion
 
 

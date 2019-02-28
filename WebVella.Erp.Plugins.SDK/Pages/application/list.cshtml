@@ -7,7 +7,7 @@
 	var titleAction = "<a href=\"javascript:void(0)\" class=\"clear-filter-all\">clear all</a>";
 }
 <wv-page-header color="#dc3545" area-label="Applications" title="All applications list" 
-	icon-class="ti-layout-grid2" description="@Model.PageDescription">
+	icon-class="fa fa-th" description="@Model.PageDescription">
 	<wv-page-header-actions>
 		<a href='/sdk/objects/application/c?returnUrl=@(Model.ReturnUrlEncoded)' class='btn btn-white btn-sm'><span class='fa fa-plus go-green'></span> Create App</a>
 		<button type='button' onclick="ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcDrawer','open')" class='btn btn-white btn-sm'><span class='fa fa-search'></span> Search</button>

@@ -64,7 +64,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 				{
 					var record = new EntityRecord();
 					var recordId = ds.Id;
-					record["action"] = $"<a class='btn btn-sm btn-white' title='Data source details' href='/sdk/objects/data_source/r/{recordId}?returnUrl={ReturnUrlEncoded}'><span class='ti-eye'></span></a>";
+					record["action"] = $"<a class='btn btn-sm btn-outline-secondary' title='Data source details' href='/sdk/objects/data_source/r/{recordId}?returnUrl={ReturnUrlEncoded}'><span class='fa fa-eye'></span></a>";
 					record["icon"] = PageUtils.GetDataSourceIconBadge(DataSourceType.DATABASE);
 					record["name"] = ds.Name;
 					record["target"] = ds.EntityName;
@@ -78,7 +78,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 				{
 					var record = new EntityRecord();
 					var recordId = ds.Id;
-					record["action"] = $"<a class='btn btn-sm btn-white' title='Data source details' href='/sdk/objects/data_source/r/{recordId}?returnUrl={ReturnUrlEncoded}'><span class='ti-eye'></span></a>";
+					record["action"] = $"<a class='btn btn-sm btn-outline-secondary' title='Data source details' href='/sdk/objects/data_source/r/{recordId}?returnUrl={ReturnUrlEncoded}'><span class='fa fa-eye'></span></a>";
 					record["icon"] = PageUtils.GetDataSourceIconBadge(DataSourceType.CODE);
 					record["name"] = ds.Name;
 					record["target"] = ds.GetType().FullName;

@@ -19,7 +19,7 @@ namespace WebVella.Erp.Plugins.SDK
 				Name = WEBVELLA_SDK_APP_NAME,
 				Label = "Software Development Kit",
 				Description = "SDK & Development Tools",
-				IconClass = "ti-settings",
+				IconClass = "fa fa-cogs",
 				Author = "WebVella",
 				Weight = 1000,
 				Color = "#dc3545",
@@ -38,7 +38,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Name = "objects",
 					Label = "Objects",
 					Description = "Schema and Layout management",
-					IconClass = "ti-ruler-pencil",
+					IconClass = "fas fa-pencil-ruler",
 					Weight = 1,
 					Color = "#2196F3"
 				};
@@ -52,7 +52,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Name = "access",
 					Label = "Access",
 					Description = "Manage users and roles",
-					IconClass = "ti-key",
+					IconClass = "fa fa-key",
 					Weight = 2,
 					Color = "#673AB7"
 				};
@@ -66,7 +66,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Name = "server",
 					Label = "Server",
 					Description = "Background jobs and maintenance",
-					IconClass = "ti-server",
+					IconClass = "fa fa-database",
 					Weight = 3,
 					Color = "#F44336"
 				};
@@ -83,7 +83,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Id = new Guid("5b132ac0-703e-4342-a13d-c7ff93d07a4f"),
 					Name = "page",
 					Label = "Pages",
-					IconClass = "ti-file",
+					IconClass = "fa fa-file",
 					Url = "/sdk/objects/page/l",
 					Weight = 1,
 					Type = SitemapNodeType.Url
@@ -97,7 +97,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Id = new Guid("9b30bf96-67d9-4d20-bf07-e6ef1c44d553"),
 					Name = "data_source",
 					Label = "Data sources",
-					IconClass = "ti-cloud-down",
+					IconClass = "fa fa-cloud-download-alt",
 					Url = "/sdk/objects/data_source/l/list",
 					Weight = 2,
 					Type = SitemapNodeType.Url
@@ -111,7 +111,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Id = new Guid("02d75ea5-8fc6-4f95-9933-0eed6b36ca49"),
 					Name = "application",
 					Label = "Applications",
-					IconClass = "ti-layout-grid2",
+					IconClass = "fa fa-th",
 					Url = "/sdk/objects/application/l/list",
 					Weight = 3,
 					Type = SitemapNodeType.Url
@@ -125,7 +125,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Id = new Guid("dfa7ec55-b55b-404f-b251-889f1d81df29"),
 					Name = "entity",
 					Label = "Entities",
-					IconClass = "ti-server",
+					IconClass = "fa fa-database",
 					Url = "/sdk/objects/entity/l",
 					Weight = 4,
 					Type = SitemapNodeType.Url
@@ -155,7 +155,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Id = new Guid("ff578868-817e-433d-988f-bb8d4e9baa0d"),
 					Name = "user",
 					Label = "Users",
-					IconClass = "ti-user",
+					IconClass = "fa fa-user",
 					Url = "/sdk/access/user/l/list",
 					Weight = 1,
 					Type = SitemapNodeType.Url
@@ -185,7 +185,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Id = new Guid("396ec481-3b2e-461c-b514-743fb3252003"),
 					Name = "job",
 					Label = "Background jobs",
-					IconClass = "ti-settings",
+					IconClass = "fa fa-cogs",
 					Url = "/sdk/server/job/l/plan",
 					Weight = 1,
 					Type = SitemapNodeType.Url
@@ -199,7 +199,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Id = new Guid("78a29ac8-d2aa-4379-b990-08f7f164a895"),
 					Name = "log",
 					Label = "Logs",
-					IconClass = "ti-notepad",
+					IconClass = "far fa-sticky-note",
 					Url = "/sdk/server/log/l/list",
 					Weight = 2,
 					Type = SitemapNodeType.Url

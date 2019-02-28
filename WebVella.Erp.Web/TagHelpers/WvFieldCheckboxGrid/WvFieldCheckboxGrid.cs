@@ -269,7 +269,7 @@ namespace WebVella.Erp.Web.TagHelpers
 						var columnTdEl = new TagBuilder("td");
 
 						var iconEl = new TagBuilder("span");
-						iconEl.AddCssClass($"{(isChecked ? "ti-check" : "go-gray")}");
+						iconEl.AddCssClass($"{(isChecked ? "fa fa-check" : "go-gray")}");
 						iconEl.InnerHtml.Append($"{(isChecked ? "" : "-")}");
 
 						columnTdEl.InnerHtml.AppendHtml(iconEl);

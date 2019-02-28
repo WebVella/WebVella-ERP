@@ -5,9 +5,9 @@
     ViewData["Title"] = "Login";
 }
 
-<div class="card login-card card-sm">
+<div class="card login-card card-sm shadow-sm">
 	<div class="card-header text-center"><img src="/assets/logo.png"/> WebVella Next</div>
-	<div class="card-body pt-3">
+	<div class="card-body pt-3 pb-3">
 		@if (!String.IsNullOrWhiteSpace(Model.Error))
 		{
 		<div class="alert alert-danger">@Model.Error</div>

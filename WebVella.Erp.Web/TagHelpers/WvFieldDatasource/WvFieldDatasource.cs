@@ -119,7 +119,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				igLinkBtnEl.Attributes.Add("title", "Link option to dynamic value");
 				igLinkBtnEl.AddCssClass("btn btn-white");
 				var igLinkBtnIconEl = new TagBuilder("i");
-				igLinkBtnIconEl.AddCssClass("ti-cloud-down fa-fw");
+				igLinkBtnIconEl.AddCssClass("fa fa-cloud-download-alt fa-fw");
 				igLinkBtnEl.InnerHtml.AppendHtml(igLinkBtnIconEl);
 
 				igAppendEl.InnerHtml.AppendHtml(igLinkBtnEl);

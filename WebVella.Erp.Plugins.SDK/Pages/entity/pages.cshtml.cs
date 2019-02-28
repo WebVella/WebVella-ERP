@@ -287,7 +287,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			foreach (var page in pages)
 			{
 				var record = new EntityRecord();
-				record["action"] = $"<a class='btn btn-sm btn-white' target='_blank' href='/sdk/objects/page/r/{page.Id}'><span class='ti-eye'></span></a>";
+				record["action"] = $"<a class='btn btn-sm btn-outline-secondary' target='_blank' href='/sdk/objects/page/r/{page.Id}'><span class='fa fa-eye'></span></a>";
 				record["label"] = page.Label;
 				record["name"] = page.Name;
 				record["app"] = page.AppId != null ? apps.First(x => x.Id == page.AppId).Name : "";

@@ -91,15 +91,15 @@ namespace WebVella.Erp.Web.TagHelpers
 
 
 				output.TagName = "div";
-				output.AddCssClass($"pc-page-header {(!String.IsNullOrWhiteSpace(ReturnUrl) ? "has-btn-back" : "")} {(String.IsNullOrWhiteSpace(IconClass) ? "no-icon" : "")}");
+				output.AddCssClass($"pc-page-header {(!String.IsNullOrWhiteSpace(toolbarContentHtml) ? "has-toolbar" : "")} {(!String.IsNullOrWhiteSpace(ReturnUrl) ? "has-btn-back" : "")} {(String.IsNullOrWhiteSpace(IconClass) ? "no-icon" : "")}");
 
 				if (!String.IsNullOrWhiteSpace(ReturnUrl))
 				{
 					var backBtnEl = new TagBuilder("a");
-					backBtnEl.AddCssClass("btn btn-sm btn-white btn-back");
+					backBtnEl.AddCssClass("btn btn-sm btn-outline-secondary btn-back");
 					backBtnEl.Attributes.Add("href", ReturnUrl);
 					var backBtnIconEl = new TagBuilder("span");
-					backBtnIconEl.AddCssClass("ti-arrow-left");
+					backBtnIconEl.AddCssClass("fa fa-arrow-left");
 					backBtnEl.InnerHtml.AppendHtml(backBtnIconEl);
 					output.Content.AppendHtml(backBtnEl);
 				}
@@ -165,7 +165,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				if (!String.IsNullOrWhiteSpace(SubTitle))
 				{
 					var divider = new TagBuilder("span");
-					divider.AddCssClass("ti-angle-right divider");
+					divider.AddCssClass("fa fa-angle-right divider");
 					metaLabelTextEl.InnerHtml.AppendHtml(divider);
 
 					var metaSubLabelTextEl = new TagBuilder("span");

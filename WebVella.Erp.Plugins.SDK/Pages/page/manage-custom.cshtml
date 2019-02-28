@@ -4,7 +4,7 @@
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Manage Page";
-	var pageIconClass = "ti-file";
+	var pageIconClass = "fa fa-file";
 	if (!String.IsNullOrWhiteSpace(Model.ErpPage.IconClass)){
 		pageIconClass = Model.ErpPage.IconClass;
 	}
@@ -13,7 +13,7 @@
 <wv-page-header color="#dc3545" area-label="Pages" title="@Model.ErpPage.Label" subtitle="Manage Custom body"
 				icon-class="@pageIconClass" return-url="@Model.ReturnUrl">
 	<wv-page-header-actions>
-		<button type='button' onclick='ErpEvent.DISPATCH("WebVella.Erp.Web.Components.PcForm","submit")' class='btn btn-blue btn-sm'><span class='ti-save go-white'></span> Save Custom Body</button>
+		<button type='button' onclick='ErpEvent.DISPATCH("WebVella.Erp.Web.Components.PcForm","submit")' class='btn btn-blue btn-sm'><span class='fa fa-save go-white'></span> Save Custom Body</button>
 		<a href='@Html.Raw(Model.ReturnUrl)' class='btn btn-white btn-sm'>Cancel</a>
 	</wv-page-header-actions>
 

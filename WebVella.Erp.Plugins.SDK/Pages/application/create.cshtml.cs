@@ -61,7 +61,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 
 			#region << Actions >>
 			HeaderActions.AddRange( new List<string>() {
-				$"<button type='button' onclick='ErpEvent.DISPATCH(\"WebVella.Erp.Web.Components.PcForm\",\"submit\")' class='btn btn-green btn-sm'><span class='ti-save go-white'></span> Create App</button>",
+				$"<button type='button' onclick='ErpEvent.DISPATCH(\"WebVella.Erp.Web.Components.PcForm\",\"submit\")' class='btn btn-green btn-sm'><span class='fa fa-save go-white'></span> Create App</button>",
 				$"<a href='{ReturnUrl}' class='btn btn-white btn-sm'>Cancel</a>"
 			});
 

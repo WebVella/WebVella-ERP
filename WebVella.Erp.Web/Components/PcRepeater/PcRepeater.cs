@@ -9,7 +9,7 @@ using WebVella.Erp.Web.Services;
 
 namespace WebVella.Erp.Web.Components
 {
-	[PageComponent(Label = "Repeater", Library = "WebVella", Description = "Repeats its content multiple times", Version = "0.0.1", IconClass = "ti-view-list")]
+	[PageComponent(Label = "Repeater", Library = "WebVella", Description = "Repeats its content multiple times", Version = "0.0.1", IconClass = "fas fa-grip-horizontal")]
 	public class PcRepeater : PageComponent
 	{
 		protected ErpRequestContext ErpRequestContext { get; set; }
