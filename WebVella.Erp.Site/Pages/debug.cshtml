@@ -1,118 +1,167 @@
 ﻿@page
 @model WebVella.Erp.Web.Pages.DebugModel
+@using WebVella.Erp.Web;
+@using WebVella.Erp.Web.Components;
+@using WebVella.Erp.Web.Services;
+@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Api.Models;
+@using WebVella.Erp;
+
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.Controls
+
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Desktop";
 
+
+	var fieldId = Guid.NewGuid();
+	var data = new List<EntityRecord>();
+	//var file = new EntityRecord();
+	//file["id"] = Guid.NewGuid();
+	//file["path"] = "/assets/avatar.png";
+	//file["size"] = (decimal)334;
+	//data.Add(file);
+
+	//var file2 = new EntityRecord();
+	//file2["id"] = Guid.NewGuid();
+	//file2["path"] = "/assets/logo.pdf";
+	//file2["size"] = (decimal)334232;
+	//data.Add(file2);
+	//var file3 = new EntityRecord();
+	//file3["id"] = Guid.NewGuid();
+	//file3["path"] = "/assets/logo.xls";
+	//file3["size"] = (decimal)33433232;
+	//data.Add(file3);
 }
+
+<style>
+
+	.erp-file-multiple-input{
+		margin-bottom:-1px;
+	}
+
+	.erp-file-multiple-input .input-group-append .btn:focus {
+		box-shadow:none;
+	}
+
+	.erp-file-multiple-input .form-control{
+		border-bottom-left-radius:0;
+		border-bottom-right-radius:0;
+	}
+
+		.erp-file-multiple-input .input-group-append .btn {
+			border-bottom-right-radius:0;	
+		}
+
+	.form-control.erp-file-multiple-list {
+		height:auto;
+	}
+
+		.form-control.erp-file-multiple-list.form {
+			border-top-left-radius:0;
+			border-top-right-radius:0;
+			background:#fafafa;
+		}
+
+	.erp-file-multiple-list .filerow {
+		display:flex;
+		flex-flow:row;
+		padding: 0.5rem 0.5rem;
+		margin: -0.25rem -0.5rem;
+	}
+
+		.erp-file-multiple-list .filerow:hover {
+			background:#f2f2f2;
+		}
+
+		/*.erp-file-multiple-list .filerow:first-child {
+			padding-top:0;
+		}
+		.erp-file-multiple-list .filerow:last-child {
+			padding-bottom:0;
+		}*/
+
+		.erp-file-multiple-list .filerow .icon {
+			flex-grow:0;
+			flex-shrink:1;
+			width: 24px;
+			text-align: left;
+			font-size: 20px;
+			align-self: center;
+			color:#aaa;
+		}
+		.erp-file-multiple-list .filerow .meta {
+			flex-grow:1;
+			flex-shrink:0;
+			line-height:1em;
+			position:relative;
+			padding-left:5px;
+		}
+
+			.erp-file-multiple-list .filerow .meta .link:hover {
+				text-decoration:none;
+				color:#1A237E;
+			}
+
+			.erp-file-multiple-list .filerow .meta .link em{
+				position:absolute;
+				top:0;
+				bottom:0;
+				left:0;
+				right:0;
+			}
+
+			.erp-file-multiple-list .filerow .meta .size {
+				font-size:0.75rem;
+				color:#999;
+			}
+
+		.erp-file-multiple-list .filerow .action {
+			flex-grow:0;
+			flex-shrink:1;
+			width:24px;
+			text-align:center;
+			align-self: center;
+		}
+
+			.erp-file-multiple-list .filerow .action .link {
+				display:none;
+				color:#F44336;
+			}
+			.erp-file-multiple-list .filerow .action.remove .link {
+				display:block;
+			}
+
+			.erp-file-multiple-list .filerow .action.remove .link:hover {
+				color:#D32F2F;
+			}
+
+			.erp-file-multiple-list .filerow .action .progress {
+				display:none;
+				color:#333;
+			}
+
+				.erp-file-multiple-list .filerow .action.progress .progress {
+					display:inline;
+				}
+</style>
 
 @*<div>Library</div>
 	<textarea style="height:150px" class="form-control">@ViewBag.LibraryJson</textarea>
 	<div class="mt-4">PageNodes</div>
 	<textarea style="height:150px" class="form-control">@ViewBag.PageNodeListJson</textarea>*@
+<wv-row>
+	<wv-column span="6">
+		<wv-field-user-file-multiple name="files" field-id="@fieldId" label-text="Files" value="@(data)"></wv-field-user-file-multiple>
+	</wv-column>
+	<wv-column>
+		<wv-field-file name="file" label-text="File"></wv-field-file>
+	</wv-column>
+</wv-row>
+	
 
-<div class="post" id="post-123">
-	<div class="header">
-		<div class="avatar">
-			<img src="~/assets/avatar.png" />
-		</div>
-		<div class="meta">
-			<div class="title"><a href="" class="username">administrator</a> created <a href="./">[NXT-1] First ticket</a></div>
-			<div class="title-aux">1 minute ago</div>
-		</div>
-	</div>
-	<div class="body">Bootdey is a gallery of free snippets resources templates and utilities for bootstrap css hmtl js framework. Codes for developers and web designers</div>
-	<div class="footer">
-		<div class="actions">
-			<a href="./" class="post-comment-btn">Comment</a>
-		</div>
-		<ul class="comment-list">
-			<li class="comment" id="comment-123">
-				<div class="avatar">
-					<img src="~/assets/avatar.png" />
-				</div>
-				<div class="meta">
-					<div class="header">
-						<div class="title"><a href="./" class="username">administrator</a></div>
-						<div class="title-aux">5 minutes ago</div>
-					</div>
-					<div class="body">Sure, oooooooooooooooohhhhhhhhhhhhhhhh</div>
-					<div class="actions"><a href="./" class="comment-reply-btn">Reply</a></div>
-					<ul class="comment-list">
-						<li class="comment">
-							<div class="avatar">
-								<img src="~/assets/avatar.png" />
-							</div>
-							<div class="meta">
-								<div class="header">
-									<div class="title"><a href="./" class="username">administrator</a></div>
-									<div class="title-aux">5 minutes ago</div>
-								</div>
-								<div class="body">Sure, oooooooooooooooohhhhhhhhhhhhhhhh</div>
-							</div>
-						</li>
-						<li class="comment">
-							<div class="avatar">
-								<img src="~/assets/avatar.png" />
-							</div>
-							<div class="meta">
-								<div class="header">
-									<div class="title"><a href="./" class="username">administrator</a></div>
-									<div class="title-aux">5 minutes ago</div>
-								</div>
-								<div class="body">Sure, oooooooooooooooohhhhhhhhhhhhhhhh</div>
-							</div>
-						</li>
-						<li class="add-new d-none">
-							<div class="avatar">
-								<img src="~/assets/avatar.png" />
-							</div>
-							<div class="meta">
-								<div class="input-group">
-									<textarea class="form-control" placeholder="Write a Reply"></textarea>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</div>
-			</li>
-			<li class="comment" id="comment-234">
-				<div class="avatar">
-					<img src="~/assets/avatar.png" />
-				</div>
-				<div class="meta">
-					<div class="header">
-						<div class="title"><a href="./" class="username">administrator</a></div>
-						<div class="title-aux">5 minutes ago</div>
-					</div>
-					<div class="body">Sure, oooooooooooooooohhhhhhhhhhhhhhhh</div>
-					<div class="actions"><a href="./" class="comment-reply-btn">Reply</a></div>
-					<ul class="comment-list">
-						<li class="add-new d-none">
-							<div class="avatar">
-								<img src="~/assets/avatar.png" />
-							</div>
-							<div class="meta">
-								<div class="input-group">
-									<textarea class="form-control" placeholder="Write a Reply"></textarea>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</div>
-			</li>
-		</ul>
-
-		<div class="add-new d-none">
-			<div class="avatar">
-				<img src="~/assets/avatar.png" />
-			</div>
-			<div class="meta">
-				<div class="input-group">
-					<textarea class="form-control" placeholder="Write a Reply"></textarea>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+	
 

@@ -13,6 +13,11 @@
      <EmbeddedResource Remove="CsEval\**" />
      <None Remove="CsEval\**" />
    </ItemGroup>
+
+   <ItemGroup>
+     <None Remove="TagHelpers\WvFieldUserFileMultiple\form.js" />
+     <None Remove="TagHelpers\WvFieldUserFileMultiple\inline-edit.js" />
+   </ItemGroup>
  
   <ItemGroup>
 	<EmbeddedResource Include="Components\Nav\script.js" />
@@ -62,6 +67,8 @@
 	<EmbeddedResource Include="Components\PcHtmlBlock\service.js" />
 	<EmbeddedResource Include="Components\PcRow\service.js" />
     <EmbeddedResource Include="TagHelpers\WvDrawer\drawer.js" />
+    <EmbeddedResource Include="TagHelpers\WvFieldUserFileMultiple\form.js" />
+    <EmbeddedResource Include="TagHelpers\WvFieldUserFileMultiple\inline-edit.js" />
     <EmbeddedResource Include="TagHelpers\WvFieldRadioList\inline-edit.js" />
     <EmbeddedResource Include="TagHelpers\WvFieldCheckboxList\inline-edit.js" />
     <EmbeddedResource Include="TagHelpers\WvFieldCheckboxGrid\form.js" />

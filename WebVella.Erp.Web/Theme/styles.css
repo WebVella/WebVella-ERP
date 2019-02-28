@@ -3310,7 +3310,7 @@ input[type=date].form-control, input[type=datetime-local].form-control {
 	background-color: rgba(33, 150, 243,0.1);
 	display: none;
 	line-height: 31px;
-	padding-left: 1rem;
+	padding-left: 10px;
 	color: #999;
 }
 

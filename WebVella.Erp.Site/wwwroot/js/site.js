@@ -332,7 +332,7 @@ function checkEmail(data) {
 function GetPathTypeIcon(filePath) {
     var fontAwesomeIconName = "fa-file";
     if (filePath.endsWith(".txt")) {
-        fontAwesomeIconName = "fa-file-text";
+        fontAwesomeIconName = "fa-file-alt";
     }
     else if (filePath.endsWith(".pdf")) {
         fontAwesomeIconName = "fa-file-pdf";

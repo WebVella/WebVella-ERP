@@ -109,7 +109,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					selectFileLink.Attributes.Add("type", $"button");
 					selectFileLink.AddCssClass("btn btn-white");
 					selectFileLink.Attributes.Add("onclick", $"document.getElementById('file-{FieldId}').click();");
-					selectFileLink.InnerHtml.AppendHtml("select");
+					selectFileLink.InnerHtml.AppendHtml("browse");
 					appendEl.InnerHtml.AppendHtml(selectFileLink);
 
 					inputGroupEl.InnerHtml.AppendHtml(appendEl);

@@ -2912,6 +2912,96 @@ namespace WebVella.Erp.Web.Controllers
 
 		}
 
+
+		[AcceptVerbs(new[] { "POST" }, Route = "/fs/upload-user-file-multiple/")]
+		[ResponseCache(NoStore = true, Duration = 0)]
+		public IActionResult UploadUserFileMultiple([FromForm] List<IFormFile> files)
+		{
+
+			var resultRecords = new List<EntityRecord>();
+			var response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				connection.BeginTransaction();
+
+				try
+				{
+
+					var currentUser = AuthService.GetUser(User);
+
+					foreach (var file in files)
+					{
+						var fileBuffer = ReadFully(file.OpenReadStream());
+						var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.ToString().Trim().ToLowerInvariant();
+						if (fileName.StartsWith("\"", StringComparison.InvariantCulture))
+							fileName = fileName.Substring(1);
+
+						if (fileName.EndsWith("\"", StringComparison.InvariantCulture))
+							fileName = fileName.Substring(0, fileName.Length - 1);
+
+						var recMan = new RecordManager();
+						DbFileRepository fsRepository = new DbFileRepository();
+						string section = Guid.NewGuid().ToString().Replace("-", "").ToLowerInvariant();
+						var filePath = "/user_file/" + currentUser.Id + "/" + section + "/" + fileName;
+						var createdFile = fsRepository.Create(filePath, fileBuffer, DateTime.Now, currentUser.Id);
+						var userFileId = Guid.NewGuid();
+
+						var userFileRecord = new EntityRecord();
+						#region << record fill >>
+						userFileRecord["id"] = userFileId;
+						userFileRecord["created_on"] = DateTime.Now;
+						userFileRecord["name"] = fileName;
+						userFileRecord["size"] = Math.Round((decimal)(file.Length/1024),0);
+						userFileRecord["path"] = filePath;
+
+						var mimeType = MimeMapping.MimeUtility.GetMimeMapping(filePath);
+						var fileExtension = Path.GetExtension(filePath);
+						if (mimeType.StartsWith("image"))
+						{
+							var dimensionsRecord = Helpers.GetImageDimension(fileBuffer);
+							userFileRecord["width"] = (decimal)dimensionsRecord["width"];
+							userFileRecord["height"] = (decimal)dimensionsRecord["height"];
+							userFileRecord["type"] = "image";
+						}
+						else if (mimeType.StartsWith("video"))
+						{
+							userFileRecord["type"] = "video";
+						}
+						else if (mimeType.StartsWith("audio"))
+						{
+							userFileRecord["type"] = "audio";
+						}
+						else if (fileExtension == ".doc" || fileExtension == ".docx" || fileExtension == ".odt" || fileExtension == ".rtf"
+						 || fileExtension == ".txt" || fileExtension == ".pdf" || fileExtension == ".html" || fileExtension == ".htm" || fileExtension == ".ppt"
+						  || fileExtension == ".pptx" || fileExtension == ".xls" || fileExtension == ".xlsx" || fileExtension == ".ods" || fileExtension == ".odp")
+						{
+							userFileRecord["type"] = "document";
+						}
+						else
+						{
+							userFileRecord["type"] = "other";
+						}
+						#endregion
+
+						var recordCreateResult = recMan.CreateRecord("user_file", userFileRecord);
+						resultRecords.Add(userFileRecord);
+					}
+					connection.CommitTransaction();
+					response.Success = true;
+					response.Object = resultRecords;
+					return DoResponse(response);
+				}
+				catch (Exception ex)
+				{
+					connection.RollbackTransaction();
+					response.Success = false;
+					response.Message = ex.Message;
+					return DoResponse(response);
+				}
+			}
+		}
+
 		[AcceptVerbs(new[] { "POST" }, Route = "/fs/move/")]
 		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult MoveFile([FromBody]JObject submitObj)

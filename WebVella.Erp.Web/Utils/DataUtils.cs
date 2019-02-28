@@ -11,7 +11,7 @@ namespace WebVella.Erp.Web.Utils
 {
 	public static class DataUtils
 	{
-		public static void ValidateValueToFieldType(FieldType fieldType, dynamic InValue, out dynamic OutValue, out List<string> errorList) {
+		public static void ValidateValueToFieldType(FieldType? fieldType, dynamic InValue, out dynamic OutValue, out List<string> errorList) {
 			OutValue = null;
 			errorList = new List<string>();
 			if(InValue != null && InValue is Enum){
@@ -186,7 +186,14 @@ namespace WebVella.Erp.Web.Utils
 						}
 					}
 					break;
-				default:
+				case FieldType.FileField:
+				case FieldType.ImageField:
+				case FieldType.MultiLineTextField:
+				case FieldType.PasswordField:
+				case FieldType.PhoneField:
+				case FieldType.SelectField:
+				case FieldType.TextField:
+				case FieldType.UrlField:
 					{
 						if (InValue == null || InValue.ToString() == "")
 						{
@@ -196,6 +203,11 @@ namespace WebVella.Erp.Web.Utils
 						{
 							OutValue = InValue.ToString();
 						}
+					}
+					break;
+				default:
+					{
+						OutValue = InValue;
 					}
 					break;
 			}

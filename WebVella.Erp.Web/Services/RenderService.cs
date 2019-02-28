@@ -22,7 +22,7 @@ namespace WebVella.Erp.Web.Services
 			var fontAwesomeIconName = "fa-file";
 			if (filePath.EndsWith(".txt"))
 			{
-				fontAwesomeIconName = "fa-file-text";
+				fontAwesomeIconName = "fa-file-alt";
 			}
 			else if (filePath.EndsWith(".pdf"))
 			{

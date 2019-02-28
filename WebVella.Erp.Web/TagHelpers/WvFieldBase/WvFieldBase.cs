@@ -189,7 +189,7 @@ namespace WebVella.Erp.Web.TagHelpers
 			#region << Init Value >>
 			var tagName = context.TagName;
 			var errorList = new List<string>();
-			var fieldType = FieldType.TextField;
+			FieldType? fieldType = FieldType.TextField;
 			switch (context.TagName)
 			{
 				case "wv-field-autonumber":
@@ -204,11 +204,11 @@ namespace WebVella.Erp.Web.TagHelpers
 					}
 					break;
 				case "wv-field-currency":
-				case "wv-field-number":
-				case "wv-field-percent":
-					fieldType = FieldType.NumberField;
+					fieldType = FieldType.CurrencyField;
 					break;
 				case "wv-field-date":
+					fieldType = FieldType.DateField;
+					break;
 				case "wv-field-datetime":
 				case "wv-field-time":
 					fieldType = FieldType.DateTimeField;
@@ -216,11 +216,17 @@ namespace WebVella.Erp.Web.TagHelpers
 				case "wv-field-email":
 					fieldType = FieldType.EmailField;
 					break;
-				case "wv-field-guid":
-					fieldType = FieldType.GuidField;
+				case "wv-field-file":
+					fieldType = FieldType.FileField;
 					break;
 				case "wv-field-html":
 					fieldType = FieldType.HtmlField;
+					break;
+				case "wv-field-image":
+					fieldType = FieldType.ImageField;
+					break;
+				case "wv-field-textarea":
+					fieldType = FieldType.MultiLineTextField;
 					break;
 				case "wv-field-multiselect":
 				case "wv-field-checkbox-list":
@@ -229,7 +235,8 @@ namespace WebVella.Erp.Web.TagHelpers
 					{
 
 					}
-					else if (Value is List<SelectOption>) {
+					else if (Value is List<SelectOption>)
+					{
 						var newListString = new List<string>();
 						foreach (var option in (List<SelectOption>)Value)
 						{
@@ -237,12 +244,37 @@ namespace WebVella.Erp.Web.TagHelpers
 						}
 						Value = newListString;
 					}
-					else {
+					else
+					{
 						throw new Exception("Expected multiselect value is List<string> or List<SelectOption>");
 					}
 					break;
-				default:
+				case "wv-field-number":
+					fieldType = FieldType.NumberField;
+					break;
+				case "wv-field-password":
+					fieldType = FieldType.PasswordField;
+					break;
+				case "wv-field-percent":
+					fieldType = FieldType.PercentField;
+					break;
+				case "wv-field-phone":
+					fieldType = FieldType.PhoneField;
+					break;
+				case "wv-field-guid":
+					fieldType = FieldType.GuidField;
+					break;
+				case "wv-field-select":
+					fieldType = FieldType.SelectField;
+					break;
+				case "wv-field-text":
 					fieldType = FieldType.TextField;
+					break;
+				case "wv-field-url":
+					fieldType = FieldType.UrlField;
+					break;
+				default:
+					fieldType = null;
 					break;
 			}
 			dynamic valueResult = null;
