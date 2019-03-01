@@ -5,7 +5,7 @@ export declare class WvNode {
     store: Store;
     nodeId: string;
     isLoading: boolean;
-    reloadNodeIdList: string;
+    reloadNodeIdList: Array<string>;
     removeReloadNodeIds: Action;
     componentWillLoad(): void;
     nodeIndexUpdateHandler(newValue: any): void;

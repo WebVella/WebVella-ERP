@@ -950,7 +950,7 @@ textarea.autogrow {
 	.btn-white:not([disabled]):not(.disabled):active, .btn-white:not([disabled]):not(.disabled).active, .show > .btn-white.dropdown-toggle,
 	.btn-secondary:not([disabled]):not(.disabled):active, .btn-secondary:not([disabled]):not(.disabled).active, .show > .btn-secondary.dropdown-toggle {
 		color: #212121;
-		/*background-color: #f5f5f5;*/
+		/*background-color: #fafafa;*/
 		border-color: #eee;
 		/*box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.5);*/
 	}
@@ -999,7 +999,7 @@ textarea.autogrow {
 
 	.btn-outline-secondary:hover {
 		color: #212121;
-		background-color: #f5f5f5;
+		background-color: #fafafa;
 		border-color: #bbb;
 	}
 
@@ -2457,7 +2457,7 @@ dropdown-item.active {
 }
 
 .input-group-text {
-	background:#f5f5f5;
+	background:#fafafa;
 }
 
 .card {
@@ -2468,7 +2468,7 @@ dropdown-item.active {
 .card-header {
 	padding: 0.25rem 0.5rem;
 	/*background: --blue_gray_light_color;*/
-	background:#f5f5f5;
+	background:#fff;
 	color: #999;
 	/*text-transform: uppercase;*/
 	font-size: 12px;
@@ -2845,7 +2845,7 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 .menu-nav-wrapper.search .form-control {
 	border: none;
 	/*border-radius: 15px;*/
-	background: #f5f5f5;
+	background: #fafafa;
 	color: #333;
 	transition: none;
 	width: 170px;
@@ -3393,7 +3393,7 @@ input[type=date].form-control, input[type=datetime-local].form-control {
 }
 
 	.erp-field .flatpickr-input:hover, .erp-field .flatpickr-input-active:hover {
-		background-color: #f5f5f5 !important;
+		background-color: #fafafa !important;
 	}
 
 .flatpickr-calendar.animate.open {
@@ -4543,7 +4543,7 @@ border-bottom-style:dashed;
 .pc-page-header {
 	min-height: 48px;
 	/*background: --blue_gray_light_color;*/
-	background:#f5f5f5;
+	background:#fafafa;
 	border-bottom: 1px solid --gray_border_color;
 	position: relative;
 	padding: 10px 15px;
@@ -4774,8 +4774,7 @@ border-bottom-style:dashed;
 }
 
 .lns-header {
-	font-size: 12px;
-	font-weight: bold;
+	font-size: 13px;
 	position: relative;
 	margin-bottom:1rem;
 }
@@ -4783,7 +4782,7 @@ border-bottom-style:dashed;
 .lns.with-background .lns-header {
 	border-bottom: 1px solid #ccc;
 	margin-bottom: 1rem;
-	background: #f5f5f5;
+	background: #fafafa;
 	padding: 5px 5px;
 }
 
@@ -5298,7 +5297,7 @@ wv-pb-inspector .erp-field .col-form-label, wv-pb-inspector .erp-field .control-
 		text-transform: uppercase;
 		display: flex;
 		flex-flow: row;
-		background: #f5f5f5;
+		background: #fafafa;
 		border-bottom: 1px solid #ccc;
 		min-height: 23px;
 		text-align: left;
@@ -5581,7 +5580,7 @@ wv-pb-manager .wv-pb-node > div > .row {
 }
 
 	.login-card .card-header {
-		background: #f5f5f5;
+		background: #fafafa;
 		color: #333;
 		font-size:14px;
 		font-weight:normal;

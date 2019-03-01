@@ -8993,6 +8993,7 @@ function LoadTemplate(scope) {
 class WvNode {
     constructor() {
         this.isLoading = false;
+        this.reloadNodeIdList = new Array();
     }
     componentWillLoad() {
         let scope = this;

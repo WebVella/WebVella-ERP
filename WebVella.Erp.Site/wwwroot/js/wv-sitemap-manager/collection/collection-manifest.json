@@ -222,8 +222,8 @@
   "collections": [],
   "compiler": {
     "name": "@stencil/core",
-    "version": "0.16.1",
-    "typescriptVersion": "3.1.6"
+    "version": "0.18.0",
+    "typescriptVersion": "3.3.3"
   },
   "bundles": []
 }
