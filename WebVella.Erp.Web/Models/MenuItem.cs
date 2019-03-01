@@ -8,7 +8,10 @@ namespace WebVella.Erp.Web.Models
 		[JsonProperty("content")]
 		public string Content { get; set; } = "";//What to render
 
-		[JsonProperty("is_html")]
+        [JsonProperty("class")]
+        public string Class { get; set; } = "";//specific class to attach - like active
+
+        [JsonProperty("is_html")]
 		public bool IsHtml { get; set; } = true;
 
 		[JsonProperty("render_wrapper")]

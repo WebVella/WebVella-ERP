@@ -12,7 +12,7 @@
 
 <wv-row>
 	<wv-column span="4">
-		<wv-field-datasource name="is_visible" label-text="Is Visible" value="@options.IsVisible" page-id="erpRequest.Page.Id" placeholder="true"></wv-field-datasource>
+		<wv-field-datasource name="is_visible" label-text="Is Rendered" value="@options.IsVisible" page-id="erpRequest.Page.Id" placeholder="true"></wv-field-datasource>
 	</wv-column>
 </wv-row>
 <h4 class="mt-2 mb-0">Label</h4>
@@ -42,6 +42,9 @@
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-number name="maxlength" value="@options.MaxLength" label-text="MaxLength" description="empty or 0 for no limit"></wv-field-number>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="placeholder" value="@options.Placeholder" label-text="Placeholder"></wv-field-text>
 	</wv-column>
 </wv-row>
 

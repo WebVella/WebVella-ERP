@@ -2789,6 +2789,7 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 
 	.menu-nav-wrapper.active a {
 		position: relative;
+        font-weight:bold;
 	}
 
 		/*.menu-nav-wrapper.active:after {

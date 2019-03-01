@@ -24,8 +24,8 @@ namespace WebVella.Erp.Web.Components
 
 		public class PcFieldTextOptions : PcFieldBaseOptions
 		{
-			[JsonProperty(PropertyName = "maxlength")]
-			public int? MaxLength { get; set; } = null;
+			[JsonProperty(PropertyName = "placeholder")]
+			public string Placeholder { get; set; } = "";
 
 			public static PcFieldTextOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
@@ -82,6 +82,9 @@ namespace WebVella.Erp.Web.Components
 				if (String.IsNullOrWhiteSpace(options.LabelText))
 				{
 					options.LabelText = modelFieldLabel;
+				}
+				if (String.IsNullOrWhiteSpace(options.Placeholder)) {
+					options.Placeholder = model.Placeholder;
 				}
 
 				//Implementing Inherit label mode

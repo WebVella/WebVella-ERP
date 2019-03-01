@@ -1,11 +1,12 @@
 ﻿@using WebVella.Erp.Web.Models;
 @{
-	var menu = (MenuItem)Model;
+    var menu = (MenuItem)Model;
+
 }
 
 @if (menu.RenderWrapper)
 {
-	<div class="menu-nav-wrapper">
+	<div class="menu-nav-wrapper @menu.Class">
 		<div class="menu-nav @(menu.Nodes.Count > 0 ? "dropdown" : "")">
 			@if (menu.IsHtml)
 			{
