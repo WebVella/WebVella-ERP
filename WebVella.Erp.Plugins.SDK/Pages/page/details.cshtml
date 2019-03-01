@@ -68,6 +68,16 @@
 			<wv-column span="6">
 				<wv-field-text label-text="Layout" value="@Model.Layout" name="Layout"></wv-field-text>
 			</wv-column>
+			<wv-column span="6">
+				@if (Model.Access.Count > 0)
+				{
+					<wv-field-multiselect label-text="Access (inherited from application)" value="@Model.Access" name="Access" options="Model.RoleOptions"></wv-field-multiselect>
+				}
+				else
+				{
+					<wv-field-plaintext label-text="Access (inherited from application)" value="@("<span class='go-gray'>no access restrictions</span>")"></wv-field-plaintext>
+				}
+			</wv-column>
 		</wv-row>
 		<wv-row>
 			<wv-column>

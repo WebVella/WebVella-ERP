@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Plugins.SDK.Utils;
@@ -54,6 +56,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Page
 
 		public List<string> HeaderToolbar { get; private set; } = new List<string>();
 
+		public List<string> Access { get; set; } = new List<string>();
+
+		public List<SelectOption> RoleOptions { get; set; } = new List<SelectOption>();
+
 		public void PageInit()
 		{
 			Init();
@@ -83,6 +89,30 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Page
 			if (String.IsNullOrWhiteSpace(ReturnUrl))
 				ReturnUrl = "/sdk/objects/page/l/list";
 
+			#region << Init App >>
+			var appServ = new AppService();
+			var app = appServ.GetApplication(ErpPage.AppId ?? Guid.Empty);
+			if (app != null)
+			{
+				if (app.Access != null && app.Access.Count > 0)
+				{
+					Access = app.Access.Select(x => x.ToString()).ToList();
+				}
+
+			}
+			#endregion
+
+			#region << Init User Role Options >>
+			var roles = new SecurityManager().GetAllRoles().OrderBy(x => x.Name).ToList();
+			foreach (var role in roles)
+			{
+				RoleOptions.Add(new SelectOption()
+				{
+					Value = role.Id.ToString(),
+					Label = role.Name
+				});
+			}
+			#endregion
 
 			HeaderToolbar.AddRange(AdminPageUtils.GetPageAdminSubNav(ErpPage, "details"));
 
