@@ -415,8 +415,8 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 			return Json(response);
 		}
 
-		//[AllowAnonymous] //Needed only when webcomponent development
-		[Authorize(Roles = "administrator")]
+		[AllowAnonymous] //Needed only when webcomponent development
+		//[Authorize(Roles = "administrator")]
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v3.0/p/sdk/sitemap/node/get-aux-info")]
 		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetNodeAuxData([FromQuery]Guid? appId = null)
@@ -436,8 +436,9 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 			{
 				var responseObject = new EntityRecord();
 				var entitiesSelectOptions = new List<SelectOption>();
-				var pageSelectOptions = new List<EntityRecord>();
-				var typesSelectOptions = new List<SelectOption>();
+				var appPageRecords = new List<EntityRecord>();
+                var allEntityPageRecords = new List<EntityRecord>();
+                var typesSelectOptions = new List<SelectOption>();
 				var entities = new EntityManager().ReadEntities().Object;
 				foreach (var entity in entities)
 				{
@@ -465,19 +466,38 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 				}
 				responseObject["node_types"] = typesSelectOptions.OrderBy(x => x.Label).ToList();
 
-				var appPages = new PageService().GetAppPages(appId ?? Guid.Empty).ToList();
-
+                var pageService = new PageService();
+                //Get App pages
+                var appPages = pageService.GetAppPages(appId ?? Guid.Empty);
 				var allAppPagesWithoutNodes = appPages.FindAll(x=> x.NodeId == null).OrderBy(x => x.Name).ToList();
 				foreach (var page in allAppPagesWithoutNodes)
 				{
 					var selectOption = new EntityRecord();
 					selectOption["page_id"] = page.Id.ToString();
 					selectOption["page_name"] = page.Name;
-					selectOption["node_id"] = page.NodeId != null ? (page.NodeId ?? Guid.Empty).ToString() : "";
-					pageSelectOptions.Add(selectOption);
+                    selectOption["node_id"] = page.NodeId != null ? (page.NodeId ?? Guid.Empty).ToString() : "";
+					appPageRecords.Add(selectOption);
 				}
-				responseObject["all_pages"] = pageSelectOptions.OrderBy(x => (string)x["page_name"]).ToList();
-				response.Object = responseObject;
+				responseObject["app_pages"] = appPageRecords.OrderBy(x => (string)x["page_name"]).ToList();
+
+                //Get EntityPages
+                var allEntityPages = pageService.GetAll();
+                foreach (var page in allEntityPages)
+                {
+                    if (page.EntityId != null)
+                    {
+                        var selectOption = new EntityRecord();
+                        selectOption["page_id"] = page.Id.ToString();
+                        selectOption["page_name"] = page.Name;
+                        selectOption["entity_id"] = page.EntityId;
+                        selectOption["type"] = ((int)page.Type).ToString();
+                        selectOption["node_id"] = page.NodeId != null ? (page.NodeId ?? Guid.Empty).ToString() : "";
+                        allEntityPageRecords.Add(selectOption);
+                    }
+                }
+                responseObject["all_entity_pages"] = allEntityPageRecords.OrderBy(x => (string)x["page_name"]).ToList();
+
+                response.Object = responseObject;
 			}
 			catch (Exception ex)
 			{

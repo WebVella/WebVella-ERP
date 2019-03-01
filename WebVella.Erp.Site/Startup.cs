@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Swashbuckle.AspNetCore.Swagger;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using WebVella.Erp.Plugins.SDK;
 
 namespace WebVella.Erp.Site
 {
@@ -33,7 +34,7 @@ namespace WebVella.Erp.Site
 			services.AddCors(options =>
 			{
 				options.AddPolicy("AllowNodeJsLocalhost",
-					builder => builder.WithOrigins("http://localhost:3000", "http://localhost").AllowAnyMethod().AllowCredentials());
+					builder => builder.WithOrigins("http://localhost:3333","http://localhost:3000", "http://localhost").AllowAnyMethod().AllowCredentials());
 			});
 
 			services.AddDetectionCore().AddDevice();
@@ -83,7 +84,8 @@ namespace WebVella.Erp.Site
 			app.UseAuthentication();
 
 			app
-			.UseErp()
+            .UseErpPlugin<SdkPlugin>()
+            .UseErp()
 			.UseErpMiddleware();
 
 			//env.EnvironmentName = EnvironmentName.Production;

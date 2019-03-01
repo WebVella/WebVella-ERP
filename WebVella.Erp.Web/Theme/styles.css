@@ -2787,7 +2787,7 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 	position: relative;
 }
 
-	.menu-nav-wrapper.active a {
+	.menu-nav-wrapper.current > .menu-nav > a {
 		position: relative;
         font-weight:bold;
 	}
@@ -2849,7 +2849,7 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 	background: #f5f5f5;
 	color: #333;
 	transition: none;
-	width: 170px;
+	width: 240px;
 	height: calc(1.5rem + 2px);
 }
 
@@ -4762,6 +4762,10 @@ border-bottom-style:dashed;
 				content: "";
 				display: inline-block;
 			}
+
+.pc-page-header .page-search .erp-text{
+       width:240px;
+}
 
 /*#endregion*/
 

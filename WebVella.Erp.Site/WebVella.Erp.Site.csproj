@@ -31,6 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WebVella.Erp.Plugins.SDK\WebVella.Erp.Plugins.SDK.csproj" />
     <ProjectReference Include="..\WebVella.Erp.Web\WebVella.Erp.Web.csproj" />
     <ProjectReference Include="..\WebVella.Erp\WebVella.Erp.csproj" />
   </ItemGroup>

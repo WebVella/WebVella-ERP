@@ -241,7 +241,7 @@ namespace WebVella.Erp.Web.Models
 						};
 					}
                     if (area.Id == ErpRequestContext.SitemapArea.Id)
-                        areaMenuItem.Class = "active";
+                        areaMenuItem.Class = "current";
 
 					ApplicationMenu.Add(areaMenuItem);
 				}

@@ -45,7 +45,7 @@ export class WvSitemapAreaModal {
             modalTitle = "Create area";
         }
         return (h("div", { class: "modal d-block" },
-            h("div", { class: "modal-dialog modal-lg" },
+            h("div", { class: "modal-dialog modal-xl" },
                 h("div", { class: "modal-content" },
                     h("form", { onSubmit: (e) => this.handleSubmit(e) },
                         h("div", { class: "modal-header" },

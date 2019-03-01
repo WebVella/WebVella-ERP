@@ -1,3 +1,4 @@
+import axios from 'axios';
 export class WvSitemapManager {
     constructor() {
         this.sitemapObj = null;
@@ -37,28 +38,26 @@ export class WvSitemapManager {
             apiUrl += "/" + submittedArea["id"];
         }
         apiUrl += "?appId=" + this.appId;
-        let thisEl = this;
-        fetch(apiUrl, {
-            method: 'POST',
-            headers: new Headers({
-                'Content-Type': 'application/json',
+        let requestConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
                 'Accept-Encoding': 'gzip',
-                'Accept': 'application/json',
-            }),
-            body: JSON.stringify(submittedArea)
-        })
+                'Accept': 'application/json'
+            }
+        };
+        let thisEl = this;
+        let requestBody = JSON.stringify(submittedArea);
+        axios.post(apiUrl, requestBody, requestConfig)
             .then(function (response) {
-            response.json().then(function (data) {
-                let responseData = data;
-                if (response.status !== 200 || responseData == null || !responseData["success"]) {
-                    thisEl.apiResponse = Object.assign({}, responseData);
-                    thisEl.managedArea = Object.assign({}, submittedArea);
-                    return;
-                }
-                thisEl.sitemapObj = Object.assign({}, responseData.object["sitemap"]);
-                thisEl.nodePageDict = Object.assign({}, responseData.object["node_page_dict"]);
-                thisEl.areaModalClose();
-            });
+            let responseData = response.data;
+            if (response.status !== 200 || responseData == null || !responseData["success"]) {
+                thisEl.apiResponse = Object.assign({}, responseData);
+                thisEl.managedArea = Object.assign({}, submittedArea);
+                return;
+            }
+            thisEl.sitemapObj = Object.assign({}, responseData.object["sitemap"]);
+            thisEl.nodePageDict = Object.assign({}, responseData.object["node_page_dict"]);
+            thisEl.areaModalClose();
         })
             .catch(function (err) {
             var responseError = {
@@ -74,25 +73,23 @@ export class WvSitemapManager {
         let areaId = event.detail;
         let apiUrl = this.apiRoot + "sitemap/area/" + areaId + "/delete" + "?appId=" + this.appId;
         let thisEl = this;
-        fetch(apiUrl, {
-            method: 'POST',
-            headers: new Headers({
+        let requestConfig = {
+            headers: {
                 'Content-Type': 'application/json',
                 'Accept-Encoding': 'gzip',
                 'Accept': 'application/json',
-            })
-        })
+            }
+        };
+        axios.post(apiUrl, null, requestConfig)
             .then(function (response) {
-            response.json().then(function (data) {
-                let responseData = data;
-                if (response.status !== 200 || responseData == null || !responseData["success"]) {
-                    alert(responseData.message);
-                    return;
-                }
-                thisEl.sitemapObj = Object.assign({}, responseData.object["sitemap"]);
-                thisEl.nodePageDict = Object.assign({}, responseData.object["node_page_dict"]);
-                thisEl.areaModalClose();
-            });
+            let responseData = response.data;
+            if (response.status !== 200 || responseData == null || !responseData["success"]) {
+                alert(responseData.message);
+                return;
+            }
+            thisEl.sitemapObj = Object.assign({}, responseData.object["sitemap"]);
+            thisEl.nodePageDict = Object.assign({}, responseData.object["node_page_dict"]);
+            thisEl.areaModalClose();
         })
             .catch(function (err) {
             alert(err.message);
@@ -116,29 +113,26 @@ export class WvSitemapManager {
             apiUrl += "/" + submittedNode["id"];
         }
         apiUrl += "?appId=" + this.appId + "&areaId=" + areaId;
-        let thisEl = this;
-        fetch(apiUrl, {
-            method: 'POST',
-            headers: new Headers({
+        let requestConfig = {
+            headers: {
                 'Content-Type': 'application/json',
                 'Accept-Encoding': 'gzip',
                 'Accept': 'application/json',
-            }),
-            body: JSON.stringify(submittedNode)
-        })
+            }
+        };
+        let thisEl = this;
+        axios.post(apiUrl, JSON.stringify(submittedNode), requestConfig)
             .then(function (response) {
-            response.json().then(function (data) {
-                let responseData = data;
-                if (response.status !== 200 || responseData == null || !responseData["success"]) {
-                    thisEl.apiResponse = Object.assign({}, responseData);
-                    thisEl.managedNodeObj = Object.assign({}, event.detail);
-                    return;
-                }
-                thisEl.sitemapObj = Object.assign({}, responseData.object["sitemap"]);
-                thisEl.nodePageDict = Object.assign({}, responseData.object["node_page_dict"]);
-                thisEl.nodeModalCloseEventHandler();
-                thisEl.nodeAuxDataUpdateEventHandler(null);
-            });
+            let responseData = response.data;
+            if (response.status !== 200 || responseData == null || !responseData["success"]) {
+                thisEl.apiResponse = Object.assign({}, responseData);
+                thisEl.managedNodeObj = Object.assign({}, event.detail);
+                return;
+            }
+            thisEl.sitemapObj = Object.assign({}, responseData.object["sitemap"]);
+            thisEl.nodePageDict = Object.assign({}, responseData.object["node_page_dict"]);
+            thisEl.nodeModalCloseEventHandler();
+            thisEl.nodeAuxDataUpdateEventHandler(null);
         })
             .catch(function (err) {
             var responseError = {
@@ -153,26 +147,24 @@ export class WvSitemapManager {
         this.apiResponse = { message: "", errors: [], success: true };
         let nodeId = event.detail;
         let apiUrl = this.apiRoot + "sitemap/node/" + nodeId + "/delete" + "?appId=" + this.appId;
-        let thisEl = this;
-        fetch(apiUrl, {
-            method: 'POST',
-            headers: new Headers({
+        let requestConfig = {
+            headers: {
                 'Content-Type': 'application/json',
                 'Accept-Encoding': 'gzip',
                 'Accept': 'application/json',
-            })
-        })
+            }
+        };
+        let thisEl = this;
+        axios.post(apiUrl, null, requestConfig)
             .then(function (response) {
-            response.json().then(function (data) {
-                let responseData = data;
-                if (response.status !== 200 || responseData == null || !responseData["success"]) {
-                    alert(responseData.message);
-                    return;
-                }
-                thisEl.sitemapObj = Object.assign({}, responseData.object["sitemap"]);
-                thisEl.nodePageDict = Object.assign({}, responseData.object["node_page_dict"]);
-                thisEl.nodeModalCloseEventHandler();
-            });
+            let responseData = response.data;
+            if (response.status !== 200 || responseData == null || !responseData["success"]) {
+                alert(responseData.message);
+                return;
+            }
+            thisEl.sitemapObj = Object.assign({}, responseData.object["sitemap"]);
+            thisEl.nodePageDict = Object.assign({}, responseData.object["node_page_dict"]);
+            thisEl.nodeModalCloseEventHandler();
         })
             .catch(function (err) {
             alert(err.message);

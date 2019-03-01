@@ -1,3 +1,4 @@
+import axios from 'axios';
 export class WvSitemapNodeModal {
     constructor() {
         this.nodeObj = { areaId: null, node: null };
@@ -44,7 +45,7 @@ export class WvSitemapNodeModal {
     LoadData() {
         let apiUrl = this.apiRoot + "sitemap/node/get-aux-info" + "?appId=" + this.appId;
         let thisEl = this;
-        fetch(apiUrl, {
+        axios.get(apiUrl, {
             method: 'GET',
             headers: new Headers({
                 'Content-Type': 'application/json',
@@ -53,25 +54,23 @@ export class WvSitemapNodeModal {
             })
         })
             .then(function (response) {
-            response.json().then(function (data) {
-                let responseData = data;
-                if (response.status !== 200 || responseData == null || !responseData["success"]) {
-                    if (responseData != null) {
-                        alert(responseData["message"]);
-                    }
-                    else {
-                        alert("Error: " + response.status + " - " + response.statusText);
-                    }
-                    return;
+            let responseData = response.data;
+            if (response.status !== 200 || responseData == null || !responseData["success"]) {
+                if (responseData != null) {
+                    alert(responseData["message"]);
                 }
-                var dataAuxObj = {};
-                dataAuxObj["allEntities"] = responseData["object"]["all_entities"];
-                dataAuxObj["nodeTypes"] = responseData["object"]["node_types"];
-                dataAuxObj["allPages"] = responseData["object"]["all_pages"];
-                dataAuxObj["nodePageDict"] = responseData["object"]["node_page_dict"];
-                dataAuxObj["selectedNodeObj"] = thisEl.nodeObj;
-                thisEl.wvSitemapManagerNodeAuxDataUpdateEvent.emit(dataAuxObj);
-            });
+                else {
+                    alert("Error: " + response.status + " - " + response.statusText);
+                }
+                return;
+            }
+            var dataAuxObj = {};
+            dataAuxObj["allEntities"] = responseData["object"]["all_entities"];
+            dataAuxObj["nodeTypes"] = responseData["object"]["node_types"];
+            dataAuxObj["allPages"] = responseData["object"]["all_pages"];
+            dataAuxObj["nodePageDict"] = responseData["object"]["node_page_dict"];
+            dataAuxObj["selectedNodeObj"] = thisEl.nodeObj;
+            thisEl.wvSitemapManagerNodeAuxDataUpdateEvent.emit(dataAuxObj);
         })
             .catch(function (err) {
             alert(err.message);
@@ -118,7 +117,7 @@ export class WvSitemapNodeModal {
         }
         if (this.nodeAuxData == null) {
             return (h("div", { class: "modal d-block" },
-                h("div", { class: "modal-dialog modal-lg" },
+                h("div", { class: "modal-dialog modal-xl" },
                     h("div", { class: "modal-content" },
                         h("div", { class: "modal-header" },
                             h("h5", { class: "modal-title" }, modalTitle)),
