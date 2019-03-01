@@ -934,7 +934,7 @@ textarea.autogrow {
 
 	.btn-white:hover, .btn-secondary:hover {
 		color: #212121;
-		background-color: #fafafa;
+		background-color: #f5f5f5;
 		border-color: #bbb;
 	}
 
@@ -950,7 +950,7 @@ textarea.autogrow {
 	.btn-white:not([disabled]):not(.disabled):active, .btn-white:not([disabled]):not(.disabled).active, .show > .btn-white.dropdown-toggle,
 	.btn-secondary:not([disabled]):not(.disabled):active, .btn-secondary:not([disabled]):not(.disabled).active, .show > .btn-secondary.dropdown-toggle {
 		color: #212121;
-		/*background-color: #fafafa;*/
+		/*background-color: #f5f5f5;*/
 		border-color: #eee;
 		/*box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.5);*/
 	}
@@ -999,7 +999,7 @@ textarea.autogrow {
 
 	.btn-outline-secondary:hover {
 		color: #212121;
-		background-color: #fafafa;
+		background-color: #f5f5f5;
 		border-color: #bbb;
 	}
 
@@ -2457,7 +2457,7 @@ dropdown-item.active {
 }
 
 .input-group-text {
-	background:#fafafa;
+	background:#f5f5f5;
 }
 
 .card {
@@ -2845,7 +2845,7 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 .menu-nav-wrapper.search .form-control {
 	border: none;
 	/*border-radius: 15px;*/
-	background: #fafafa;
+	background: #f5f5f5;
 	color: #333;
 	transition: none;
 	width: 170px;
@@ -3279,7 +3279,7 @@ pre, code {
 }
 
 .erp-field.inline-edit .view-wrapper:hover .input-group-text {
-	background: #fafafa;
+	background: #f5f5f5;
 }
 
 
@@ -3324,7 +3324,7 @@ pre, code {
 }
 
 	.erp-field.inline-edit .view-wrapper:hover .form-control {
-		background: #fafafa;
+		background: #f5f5f5;
 	}
 
 .erp-field.inline-edit .view-wrapper .input-group-append .action {
@@ -3333,7 +3333,7 @@ pre, code {
 }
 
 .erp-field.inline-edit .view-wrapper:hover .input-group-append .action {
-	background: #fafafa;
+	background: #f5f5f5;
 	border: none;
 	opacity: 1;
 }
@@ -3393,7 +3393,7 @@ input[type=date].form-control, input[type=datetime-local].form-control {
 }
 
 	.erp-field .flatpickr-input:hover, .erp-field .flatpickr-input-active:hover {
-		background-color: #fafafa !important;
+		background-color: #f5f5f5 !important;
 	}
 
 .flatpickr-calendar.animate.open {
@@ -3403,7 +3403,7 @@ input[type=date].form-control, input[type=datetime-local].form-control {
 .erp-field div.form-control {
 	min-height: 31px;
 	line-height: 1.35rem;
-	/*background: #fafafa;*/
+	/*background: #f5f5f5;*/
 }
 
 	.erp-field div.form-control [class^="fa"],
@@ -3462,7 +3462,7 @@ input[type=date].form-control, input[type=datetime-local].form-control {
 
 .erp-field .erp-image.image-wrapper {
 	position: relative;
-	/*background: #fafafa;*/
+	/*background: #f5f5f5;*/
 	min-height: 40px;
 	min-width: 80px;
 	overflow: hidden;
@@ -3609,7 +3609,7 @@ input[type=date].form-control, input[type=datetime-local].form-control {
 }
 
 .erp-field .select2.disabled .select2-selection {
-	background-color: #fafafa;
+	background-color: #f5f5f5;
 }
 
 .select2-container--default .select2-results>.select2-results__options::-webkit-scrollbar {
@@ -3651,7 +3651,7 @@ input[type=date].form-control, input[type=datetime-local].form-control {
 .erp-field .select2:not(.disabled) .select2-selection__choice,
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
 	color: #333 !important;
-	background: #fafafa !important;
+	background: #f5f5f5 !important;
 	border-color: #ccc !important;
 	/*color: rgba(0, 150, 136,1) !important;
     background: rgba(0, 150, 136,0.25) !important;
@@ -4021,7 +4021,7 @@ erp-field.inline-edit .select2-container--default .select2-search--inline .selec
 
 .erp-view.raised .card-body {
 	box-shadow: 0 0 10px rgba(0,0,0,0.1),inset 0 0 30px rgba(0,0,0,0.1);
-	/*background: #fafafa;*/
+	/*background: #f5f5f5;*/
 }
 
 
@@ -4066,7 +4066,7 @@ erp-field.inline-edit .select2-container--default .select2-search--inline .selec
 	}
 
 	.erp-view .region-section .card-header {
-		background: linear-gradient(to right, #eee, #fafafa);
+		background: linear-gradient(to right, #eee, #f5f5f5);
 		border-bottom: none;
 		padding-left: 0;
 		border-radius: 0;
@@ -4078,7 +4078,7 @@ erp-field.inline-edit .select2-container--default .select2-search--inline .selec
 	}
 
 		.erp-view .region-section .card-header:hover {
-			background: linear-gradient(to right, #e5e5e5, #fafafa);
+			background: linear-gradient(to right, #e5e5e5, #f5f5f5);
 		}
 
 /*.card .erp-view .region-section {
@@ -4200,7 +4200,7 @@ border-bottom-style:dashed;
 
 
 .erp-list .table thead .filter-row {
-	background: #fafafa;
+	background: #f5f5f5;
 }
 
 	.erp-list .table thead .filter-row td {
@@ -4219,7 +4219,7 @@ border-bottom-style:dashed;
 }
 
 .erp-list .table tfoot {
-	/*background: #fafafa;*/
+	/*background: #f5f5f5;*/
 }
 
 .erp-list .table.table-clean tfoot {
@@ -4345,7 +4345,7 @@ border-bottom-style:dashed;
 
 .list-filter-modal .nav-wrapper {
 	padding: 10px;
-	background: #fafafa;
+	background: #f5f5f5;
 }
 
 	.list-filter-modal .nav-wrapper .nav-pills .nav-link.active {
@@ -4374,11 +4374,11 @@ border-bottom-style:dashed;
 		}
 
 .filter-date.form-control.flatpickr-input {
-	background-color: #fafafa;
+	background-color: #f5f5f5;
 }
 
 .filter-datetime.form-control.flatpickr-input {
-	background-color: #fafafa;
+	background-color: #f5f5f5;
 }
 
 .erp-list .erp-list-filter {
@@ -4391,7 +4391,7 @@ border-bottom-style:dashed;
 	margin-right: -15px;
 	padding: 15px;
 	border-bottom: 1px solid #d2d2d2;
-	background: #fafafa;
+	background: #f5f5f5;
 }
 
 .erp-list .erp-list-filter .filters li {
@@ -4543,7 +4543,7 @@ border-bottom-style:dashed;
 .pc-page-header {
 	min-height: 48px;
 	/*background: --blue_gray_light_color;*/
-	background:#fafafa;
+	background:#f5f5f5;
 	border-bottom: 1px solid --gray_border_color;
 	position: relative;
 	padding: 10px 15px;
@@ -4782,7 +4782,7 @@ border-bottom-style:dashed;
 .lns.with-background .lns-header {
 	border-bottom: 1px solid #ccc;
 	margin-bottom: 1rem;
-	background: #fafafa;
+	background: #f5f5f5;
 	padding: 5px 5px;
 }
 
@@ -4790,7 +4790,7 @@ border-bottom-style:dashed;
 .lns-c .lns-header:hover a,
 .lns-c .lns-header:hover span.title {
 	cursor: pointer;
-	background: #fafafa;
+	background: #f5f5f5;
 }
 
 .lns-header a,
@@ -5222,7 +5222,7 @@ wv-pb-node-container .wv-container {
 wv-pb-inspector,
 wv-pb-tree,
 .fake-inspector {
-	/*background: #fafafa;*/
+	/*background: #f5f5f5;*/
 	border: 1px solid #ccc;
 	margin-left: 5px;
 	flex: 1;
@@ -5297,7 +5297,7 @@ wv-pb-inspector .erp-field .col-form-label, wv-pb-inspector .erp-field .control-
 		text-transform: uppercase;
 		display: flex;
 		flex-flow: row;
-		background: #fafafa;
+		background: #f5f5f5;
 		border-bottom: 1px solid #ccc;
 		min-height: 23px;
 		text-align: left;
@@ -5444,7 +5444,7 @@ wv-pb-manager .wv-pb-node > div > .row {
 }
 
 .jstree-default .jstree-hovered {
-	background: #fafafa !important;
+	background: #f5f5f5 !important;
 	box-shadow: inset 0 0 1px #aaa !important;
 }
 
@@ -5580,7 +5580,7 @@ wv-pb-manager .wv-pb-node > div > .row {
 }
 
 	.login-card .card-header {
-		background: #fafafa;
+		background: #f5f5f5;
 		color: #333;
 		font-size:14px;
 		font-weight:normal;
