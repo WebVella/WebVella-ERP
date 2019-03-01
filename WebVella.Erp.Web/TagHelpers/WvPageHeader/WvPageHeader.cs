@@ -218,7 +218,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				if (!String.IsNullOrWhiteSpace(actionsContentHtml))
 				{
 					var actionColEl = new TagBuilder("div");
-					actionColEl.AddCssClass("col-md-auto align-self-end");
+					actionColEl.AddCssClass("col-md-auto align-self-center");
 					actionColEl.InnerHtml.AppendHtml(actionsContentHtml);
 
 					rowEl.InnerHtml.AppendHtml(actionColEl);
