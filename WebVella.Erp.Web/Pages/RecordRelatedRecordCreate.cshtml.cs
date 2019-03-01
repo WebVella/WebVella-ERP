@@ -76,8 +76,8 @@ namespace WebVella.Erp.Web.Pages.Application
 					if (result != null) return result;
 				}
 
-
-				ValidateRecordSubmission(PostObject, ErpRequestContext.Entity, Validation);
+				//record submission validates required fields and auto number - these fields are validated in recordmanager
+				//ValidateRecordSubmission(PostObject, ErpRequestContext.Entity, Validation);
 				if (Validation.Errors.Count == 0)
 				{
 					using (var connection = DbContext.Current.CreateConnection())

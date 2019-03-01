@@ -293,39 +293,39 @@ namespace WebVella.Erp.Web.Models
 			return true;
 		}
 
-		protected void ValidateRecordSubmission(EntityRecord postObject, Entity entity, ValidationException validation)
-		{
-			if (entity == null || postObject == null || postObject.Properties.Count == 0 || validation == null)
-				return;
+		//protected void ValidateRecordSubmission(EntityRecord postObject, Entity entity, ValidationException validation)
+		//{
+		//	if (entity == null || postObject == null || postObject.Properties.Count == 0 || validation == null)
+		//		return;
 
-			foreach (var property in postObject.Properties)
-			{
-				//TODO relations validation
-				if (property.Key.StartsWith("$"))
-					continue;
+		//	foreach (var property in postObject.Properties)
+		//	{
+		//		//TODO relations validation
+		//		if (property.Key.StartsWith("$"))
+		//			continue;
 
-				Field fieldMeta = entity.Fields.FirstOrDefault(x => x.Name == property.Key);
-				if (fieldMeta != null)
-				{
-					switch (fieldMeta.GetFieldType())
-					{
-						case FieldType.AutoNumberField:
-							if (property.Value != null && !String.IsNullOrWhiteSpace(property.Value.ToString()))
-							{
-								validation.Errors.Add(new ValidationError(property.Key, "Autonumber field value should be null or empty string"));
-							}
-							break;
-						default:
-							if (fieldMeta.Required &&
-								(property.Value == null || String.IsNullOrWhiteSpace(property.Value.ToString())))
-							{
-								validation.Errors.Add(new ValidationError(property.Key, "Required"));
-							}
-							break;
-					}
-				}
-			}
-		}
+		//		Field fieldMeta = entity.Fields.FirstOrDefault(x => x.Name == property.Key);
+		//		if (fieldMeta != null)
+		//		{
+		//			switch (fieldMeta.GetFieldType())
+		//			{
+		//				case FieldType.AutoNumberField:
+		//					if (property.Value != null && !String.IsNullOrWhiteSpace(property.Value.ToString()))
+		//					{
+		//						validation.Errors.Add(new ValidationError(property.Key, "Autonumber field value should be null or empty string"));
+		//					}
+		//					break;
+		//				default:
+		//					if (fieldMeta.Required &&
+		//						(property.Value == null || String.IsNullOrWhiteSpace(property.Value.ToString())))
+		//					{
+		//						validation.Errors.Add(new ValidationError(property.Key, "Required"));
+		//					}
+		//					break;
+		//			}
+		//		}
+		//	}
+		//}
 
 		public object TryGetDataSourceProperty(string propertyName)
 		{
