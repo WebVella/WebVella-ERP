@@ -7729,11 +7729,28 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 			foreach (Guid roleId in node.Access)
 				response += $"\taccess.Add( new Guid(\"{roleId.ToString()}\") );\n";
 
-			response += $"\tvar labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();\n";
+                response += $"\tvar entityListPages = new List<Guid>();\n";
+			    foreach (Guid pageId in node.EntityListPages)
+				    response += $"\tentityListPages.Add( new Guid(\"{pageId.ToString()}\") );\n";
+
+                response += $"\tvar entityCreatePages = new List<Guid>();\n";
+                foreach (Guid pageId in node.EntityCreatePages)
+                    response += $"\tentityCreatePages.Add( new Guid(\"{pageId.ToString()}\") );\n";
+
+                response += $"\tvar entityDetailsPages = new List<Guid>();\n";
+                foreach (Guid pageId in node.EntityDetailsPages)
+                    response += $"\tentityDetailsPages.Add( new Guid(\"{pageId.ToString()}\") );\n";
+
+                response += $"\tvar entityManagePages = new List<Guid>();\n";
+                foreach (Guid pageId in node.EntityManagePages)
+                    response += $"\tentityManagePages.Add( new Guid(\"{pageId.ToString()}\") );\n";
+
+
+            response += $"\tvar labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();\n";
 			foreach (var res in node.LabelTranslations ?? new List<TranslationResource>())
 				response += $"\tlabelTranslations.Add( new WebVella.Erp.Web.Models.TranslationResource{{ Locale=\"{res.Locale}\", Key= \"{res.Key}\", Value= @\"{res.Value.EscapeMultiline()}\"  }} );\n";
 
-			response += "\n\tnew WebVella.Erp.Web.Services.AppService().CreateAreaNode(id,areaId,name,label,labelTranslations,iconClass,url,type,entityId,weight,access,WebVella.Erp.Database.DbContext.Current.Transaction);\n" +
+			response += "\n\tnew WebVella.Erp.Web.Services.AppService().CreateAreaNode(id,areaId,name,label,labelTranslations,iconClass,url,type,entityId,weight,access,entityListPages,entityCreatePages,entityDetailsPages,entityManagePages,WebVella.Erp.Database.DbContext.Current.Transaction);\n" +
 			"}\n" +
 			"#endregion\n\n";
 
@@ -7808,7 +7825,112 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 				response.ChangeList.Add($"<span class='go-green label-block'>sitemap node access</span>  access role list changed</span>");
 			}
 
-			if (currentNode.LabelTranslations != null && oldNode.LabelTranslations != null)
+            if (currentNode.EntityListPages.Count > 0 && oldNode.EntityListPages.Count > 0)
+            {
+                bool pageChanged = currentNode.EntityListPages.Count != oldNode.EntityListPages.Count;
+                if (!pageChanged)
+                {
+                    foreach (Guid id in currentNode.EntityListPages)
+                    {
+                        if (!oldNode.EntityListPages.Any(x => x == id))
+                        {
+                            pageChanged = true;
+                            break;
+                        }
+                    }
+                }
+                if (pageChanged)
+                {
+                    response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity list array changed</span>");
+                    response.HasUpdate = true;
+                }
+            }
+            else if (!(currentNode.EntityListPages.Count == 0 && oldNode.EntityListPages.Count == 0))
+            {
+                response.HasUpdate = true;
+                response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity list array changed</span>");
+            }
+
+            if (currentNode.EntityCreatePages.Count > 0 && oldNode.EntityCreatePages.Count > 0)
+            {
+                bool pageChanged = currentNode.EntityCreatePages.Count != oldNode.EntityCreatePages.Count;
+                if (!pageChanged)
+                {
+                    foreach (Guid id in currentNode.EntityCreatePages)
+                    {
+                        if (!oldNode.EntityCreatePages.Any(x => x == id))
+                        {
+                            pageChanged = true;
+                            break;
+                        }
+                    }
+                }
+                if (pageChanged)
+                {
+                    response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity create array changed</span>");
+                    response.HasUpdate = true;
+                }
+            }
+            else if (!(currentNode.EntityCreatePages.Count == 0 && oldNode.EntityCreatePages.Count == 0))
+            {
+                response.HasUpdate = true;
+                response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity create array changed</span>");
+            }
+
+
+            if (currentNode.EntityDetailsPages.Count > 0 && oldNode.EntityDetailsPages.Count > 0)
+            {
+                bool pageChanged = currentNode.EntityDetailsPages.Count != oldNode.EntityDetailsPages.Count;
+                if (!pageChanged)
+                {
+                    foreach (Guid id in currentNode.EntityDetailsPages)
+                    {
+                        if (!oldNode.EntityDetailsPages.Any(x => x == id))
+                        {
+                            pageChanged = true;
+                            break;
+                        }
+                    }
+                }
+                if (pageChanged)
+                {
+                    response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity details array changed</span>");
+                    response.HasUpdate = true;
+                }
+            }
+            else if (!(currentNode.EntityDetailsPages.Count == 0 && oldNode.EntityDetailsPages.Count == 0))
+            {
+                response.HasUpdate = true;
+                response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity details array changed</span>");
+            }
+
+            if (currentNode.EntityManagePages.Count > 0 && oldNode.EntityManagePages.Count > 0)
+            {
+                bool pageChanged = currentNode.EntityManagePages.Count != oldNode.EntityManagePages.Count;
+                if (!pageChanged)
+                {
+                    foreach (Guid id in currentNode.EntityManagePages)
+                    {
+                        if (!oldNode.EntityManagePages.Any(x => x == id))
+                        {
+                            pageChanged = true;
+                            break;
+                        }
+                    }
+                }
+                if (pageChanged)
+                {
+                    response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity manage array changed</span>");
+                    response.HasUpdate = true;
+                }
+            }
+            else if (!(currentNode.EntityManagePages.Count == 0 && oldNode.EntityManagePages.Count == 0))
+            {
+                response.HasUpdate = true;
+                response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity manage array changed</span>");
+            }
+
+            if (currentNode.LabelTranslations != null && oldNode.LabelTranslations != null)
 			{
 				bool translationChanged = currentNode.LabelTranslations.Count != oldNode.LabelTranslations.Count;
 				if (!translationChanged)
@@ -7851,11 +7973,27 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 				foreach (Guid roleId in currentNode.Access)
 					response.Code += $"\taccess.Add( new Guid(\"{roleId.ToString()}\") );\n";
 
-				response.Code += $"\tvar labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();\n";
+                response.Code += $"\tvar entityListPages = new List<Guid>();\n";
+                foreach (Guid pageId in currentNode.EntityListPages)
+                    response.Code += $"\tentityListPages.Add( new Guid(\"{pageId.ToString()}\") );\n";
+
+                response.Code += $"\tvar entityCreatePages = new List<Guid>();\n";
+                foreach (Guid pageId in currentNode.EntityCreatePages)
+                    response.Code += $"\tentityCreatePages.Add( new Guid(\"{pageId.ToString()}\") );\n";
+
+                response.Code += $"\tvar entityDetailsPages = new List<Guid>();\n";
+                foreach (Guid pageId in currentNode.EntityDetailsPages)
+                    response.Code += $"\tentityDetailsPages.Add( new Guid(\"{pageId.ToString()}\") );\n";
+
+                response.Code += $"\tvar entityManagePages = new List<Guid>();\n";
+                foreach (Guid pageId in currentNode.EntityManagePages)
+                    response.Code += $"\tentityManagePages.Add( new Guid(\"{pageId.ToString()}\") );\n";
+
+                response.Code += $"\tvar labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();\n";
 				foreach (var res in currentNode.LabelTranslations ?? new List<TranslationResource>())
 					response.Code += $"\tlabelTranslations.Add( new WebVella.Erp.Web.Models.TranslationResource{{ Locale=\"{res.Locale}\", Key= \"{res.Key}\", Value= @\"{res.Value.EscapeMultiline()}\"  }} );\n";
 
-				response.Code += "\n\tnew WebVella.Erp.Web.Services.AppService().UpdateAreaNode(id,areaId,name,label,labelTranslations,iconClass,url,type,entityId,weight,access,WebVella.Erp.Database.DbContext.Current.Transaction);\n" +
+				response.Code += "\n\tnew WebVella.Erp.Web.Services.AppService().UpdateAreaNode(id,areaId,name,label,labelTranslations,iconClass,url,type,entityId,weight,access,entityListPages,entityCreatePages,entityDetailsPages,entityManagePages,WebVella.Erp.Database.DbContext.Current.Transaction);\n" +
 				"}\n" +
 				"#endregion\n\n";
 			}

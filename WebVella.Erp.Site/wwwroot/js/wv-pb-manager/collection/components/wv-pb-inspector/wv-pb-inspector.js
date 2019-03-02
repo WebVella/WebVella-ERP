@@ -51,7 +51,7 @@ function RenderAction(props) {
     if (scope.activeNodeId) {
         return (h("a", { class: "go-red", href: "#", onClick: (e) => { if (window.confirm('Are you sure you wish to delete this component?'))
                 scope.deleteNodeHandler(e); } },
-            h("i", { class: "ti-trash" }),
+            h("i", { class: "fa fa-trash-alt" }),
             " delete node"));
     }
 }

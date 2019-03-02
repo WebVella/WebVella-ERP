@@ -200,7 +200,7 @@ export class WvCreateModal {
                                 let compIndex = index + subIndex;
                                 if (compIndex < scope.componentList.length && index % 4 === 0) {
                                     let component = scope.componentList[compIndex];
-                                    let iconClass = "ti-file";
+                                    let iconClass = "fa fa-file";
                                     if (component["icon_class"]) {
                                         iconClass = component["icon_class"];
                                     }

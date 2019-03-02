@@ -860,7 +860,10 @@ namespace WebVella.Erp
 						}
 						#endregion
 					}
-
+                    if (currentVersion < 2) {
+                        systemSettings.Version = 2;
+                        UpdatePageNodeTable();
+                    }
 
 					new DbSystemSettingsRepository().Save(new DbSystemSettings { Id = systemSettings.Id, Version = systemSettings.Version });
 
@@ -1411,5 +1414,18 @@ CREATE INDEX fki_app_page_data_fkc_page_id ON public.app_page_data_source
 			}
 		}
 
+        private void UpdatePageNodeTable() {
+            using (var connection = DbContext.Current.CreateConnection())
+            {
+                const string updateTable = @"ALTER TABLE public.app_sitemap_area_node 
+                    ADD COLUMN entity_list_pages uuid[] NOT NULL DEFAULT array[]::uuid[],
+                    ADD COLUMN entity_create_pages uuid[] NOT NULL DEFAULT array[]::uuid[],
+                    ADD COLUMN entity_details_pages uuid[] NOT NULL DEFAULT array[]::uuid[],
+                    ADD COLUMN entity_manage_pages uuid[] NOT NULL DEFAULT array[]::uuid[];";
+
+                var command = connection.CreateCommand(updateTable);
+                command.ExecuteNonQuery();
+            }
+        }
 	}
 }

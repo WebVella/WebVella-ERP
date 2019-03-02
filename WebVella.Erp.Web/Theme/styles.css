@@ -4609,13 +4609,19 @@ border-bottom-style:dashed;
 	}
 
 	.pc-page-header .meta-label .page-switch {
-		font-size: 0.85rem;
-		margin-left: 10px;
+        color: #333;
 	}
 
 		.pc-page-header .meta-label .page-switch:hover {
 			text-decoration: none;
+            color:#000;
 		}
+
+    .pc-page-header .meta-label .page-switch .icon{
+        font-size: 1rem;
+        color: #555;
+        margin-right: 5px;
+    }
 
 .pc-page-header .meta-icon {
 	width: 32px;

@@ -10,5 +10,6 @@ namespace WebVella.Erp.Plugins.SDK.Model
 	{
 		[JsonProperty("pages")]
 		public List<Guid> Pages { get; set; } = new List<Guid>();
-	}
+
+    }
 }

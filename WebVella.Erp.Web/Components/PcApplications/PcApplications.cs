@@ -70,9 +70,25 @@ namespace WebVella.Erp.Web.Components
 				ViewBag.ComponentContext = context;
 
 				if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help) {
-					var apps = new AppService().GetAllApplications().OrderBy(x => x.Weight).ToList();
-					//Generate Url
-					foreach (var app in apps)
+                    var currentUser = AuthService.GetUser(HttpContext.User);
+
+                    var currentUserRoles = currentUser.Roles.Select(x => x.Id);
+                    var apps = new AppService().GetAllApplications().OrderBy(x => x.Weight).ToList();
+                    var allowedApps = new List<App>();
+                    if (apps != null)
+                    {
+                        foreach (var app in apps)
+                        {
+                            if (app.Access == null || app.Access.Count == 0)
+                                continue;
+
+                            IEnumerable<Guid> accessRoles = app.Access.Intersect(currentUserRoles);
+                            if (accessRoles.Any())
+                                allowedApps.Add(app);
+                        }
+                    }
+                    //Generate Url
+                    foreach (var app in allowedApps)
 					{
 						app.HomePages = app.HomePages.OrderBy(x => x.Weight).ToList();
 						foreach (var area in app.Sitemap.Areas)
@@ -84,7 +100,7 @@ namespace WebVella.Erp.Web.Components
 						}
 						app.Sitemap = new AppService().OrderSitemap(app.Sitemap);
 					}
-					ViewBag.Apps = apps;
+					ViewBag.Apps = allowedApps;
 				}
 
 

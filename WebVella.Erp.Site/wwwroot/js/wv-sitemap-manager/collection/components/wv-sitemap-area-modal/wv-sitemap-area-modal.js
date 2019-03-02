@@ -91,10 +91,10 @@ export class WvSitemapAreaModal {
                             h("div", { class: "alert alert-info" }, "Label and Description translations, and access are currently not managable")),
                         h("div", { class: "modal-footer" },
                             h("button", { type: "submit", class: "btn btn-green btn-sm " + (this.area == null ? "" : "d-none") },
-                                h("span", { class: "ti-plus" }),
+                                h("span", { class: "fa fa-plus" }),
                                 " Create area"),
                             h("button", { type: "submit", class: "btn btn-blue btn-sm " + (this.area != null ? "" : "d-none") },
-                                h("span", { class: "ti-save" }),
+                                h("span", { class: "far fa-save" }),
                                 " Save area"),
                             h("button", { type: "button", class: "btn btn-white btn-sm ml-1", onClick: () => this.closeModal() }, "Close")))))));
     }

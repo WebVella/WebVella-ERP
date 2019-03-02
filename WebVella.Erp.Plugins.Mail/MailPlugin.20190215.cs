@@ -1088,7 +1088,7 @@ namespace WebVella.Erp.Plugins.Mail
 				var access = new List<Guid>();
 				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
 
-				new WebVella.Erp.Web.Services.AppService().CreateAreaNode(id, areaId, name, label, labelTranslations, iconClass, url, type, entityId, weight, access, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.AppService().CreateAreaNode(id, areaId, name, label, labelTranslations, iconClass, url, type, entityId, weight, access, new List<Guid>(), new List<Guid>(), new List<Guid>(), new List<Guid>(), WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 
@@ -1106,7 +1106,7 @@ namespace WebVella.Erp.Plugins.Mail
 				var access = new List<Guid>();
 				var labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();
 
-				new WebVella.Erp.Web.Services.AppService().CreateAreaNode(id, areaId, name, label, labelTranslations, iconClass, url, type, entityId, weight, access, WebVella.Erp.Database.DbContext.Current.Transaction);
+				new WebVella.Erp.Web.Services.AppService().CreateAreaNode(id, areaId, name, label, labelTranslations, iconClass, url, type, entityId, weight, access, new List<Guid>(), new List<Guid>(), new List<Guid>(), new List<Guid>(), WebVella.Erp.Database.DbContext.Current.Transaction);
 			}
 			#endregion
 

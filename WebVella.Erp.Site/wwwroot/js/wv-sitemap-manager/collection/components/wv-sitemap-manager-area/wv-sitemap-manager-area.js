@@ -38,7 +38,7 @@ export class WvSitemapManagerArea {
         if (this.area["color"]) {
             areaColor = this.area["color"];
         }
-        var areaIconClass = "ti-help";
+        var areaIconClass = "far fa-question-circle";
         if (this.area["icon_class"]) {
             areaIconClass = this.area["icon_class"];
         }
@@ -52,10 +52,10 @@ export class WvSitemapManagerArea {
                     this.area["label"]),
                 h("div", { class: "btn-group btn-group-sm action" },
                     h("button", { type: "button", class: "btn btn-link", onClick: (e) => this.deleteArea(e) },
-                        h("span", { class: "ti-trash go-red" }),
+                        h("span", { class: "fa fa-trash-alt go-red" }),
                         " delete"),
                     h("button", { type: "button", class: "btn btn-link", onClick: () => this.manageArea() },
-                        h("span", { class: "ti-settings" }),
+                        h("span", { class: "fa fa-cog" }),
                         " config"))),
             h("div", { class: "area-body " + (this.area["nodes"].length > 0 ? "" : "d-none") },
                 h("button", { type: "button", class: "btn btn-white btn-sm", onClick: () => this.createNode() },
@@ -100,10 +100,10 @@ export class WvSitemapManagerArea {
                             h("td", null,
                                 h("div", { class: "btn-group btn-group-sm action" },
                                     h("button", { type: "button", class: "btn btn-link", onClick: (e) => areaCmpt.deleteNode(e, node) },
-                                        h("span", { class: "ti-trash go-red" }),
+                                        h("span", { class: "fa fa-trash-alt go-red" }),
                                         " delete"),
                                     h("button", { type: "button", class: "btn btn-link", onClick: () => areaCmpt.manageNode(node) },
-                                        h("span", { class: "ti-settings" }),
+                                        h("span", { class: "fa fa-cog" }),
                                         " config")))));
                     })))),
             h("div", { class: "area-body " + (this.area["nodes"].length > 0 ? "d-none" : "") },

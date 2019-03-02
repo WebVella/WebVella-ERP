@@ -89,7 +89,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Type = SitemapNodeType.Url
 				};
 				appSrv.CreateAreaNode(appNode.Id, WEBVELLA_SDK_APP_AREA_DESIGN_ID, appNode.Name, appNode.Label, appNode.LabelTranslations, appNode.IconClass, appNode.Url,
-					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, DbContext.Current.Transaction);
+					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, new List<Guid>(), new List<Guid>(), new List<Guid>(), new List<Guid>(), DbContext.Current.Transaction);
 			}
 			{
 				var appNode = new SitemapNode()
@@ -103,7 +103,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Type = SitemapNodeType.Url
 				};
 				appSrv.CreateAreaNode(appNode.Id, WEBVELLA_SDK_APP_AREA_DESIGN_ID, appNode.Name, appNode.Label, appNode.LabelTranslations, appNode.IconClass, appNode.Url,
-					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, DbContext.Current.Transaction);
+					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, new List<Guid>(), new List<Guid>(), new List<Guid>(), new List<Guid>(), DbContext.Current.Transaction);
 			}
 			{
 				var appNode = new SitemapNode()
@@ -117,7 +117,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Type = SitemapNodeType.Url
 				};
 				appSrv.CreateAreaNode(appNode.Id, WEBVELLA_SDK_APP_AREA_DESIGN_ID, appNode.Name, appNode.Label, appNode.LabelTranslations, appNode.IconClass, appNode.Url,
-					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, DbContext.Current.Transaction);
+					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, new List<Guid>(), new List<Guid>(), new List<Guid>(), new List<Guid>(), DbContext.Current.Transaction);
 			}
 			{
 				var appNode = new SitemapNode()
@@ -131,7 +131,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Type = SitemapNodeType.Url
 				};
 				appSrv.CreateAreaNode(appNode.Id, WEBVELLA_SDK_APP_AREA_DESIGN_ID, appNode.Name, appNode.Label, appNode.LabelTranslations, appNode.IconClass, appNode.Url,
-					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, DbContext.Current.Transaction);
+					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, new List<Guid>(), new List<Guid>(), new List<Guid>(), new List<Guid>(), DbContext.Current.Transaction);
 			}
 			{
 				var appNode = new SitemapNode()
@@ -145,7 +145,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Type = SitemapNodeType.Url
 				};
 				appSrv.CreateAreaNode(appNode.Id, WEBVELLA_SDK_APP_AREA_DESIGN_ID, appNode.Name, appNode.Label, appNode.LabelTranslations, appNode.IconClass, appNode.Url,
-					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, DbContext.Current.Transaction);
+					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, new List<Guid>(), new List<Guid>(), new List<Guid>(), new List<Guid>(), DbContext.Current.Transaction);
 			}
 
 			//Access
@@ -161,7 +161,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Type = SitemapNodeType.Url
 				};
 				appSrv.CreateAreaNode(appNode.Id, WEBVELLA_SDK_APP_AREA_ACCESS_ID, appNode.Name, appNode.Label, appNode.LabelTranslations, appNode.IconClass, appNode.Url,
-					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, DbContext.Current.Transaction);
+					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, new List<Guid>(), new List<Guid>(), new List<Guid>(), new List<Guid>(), DbContext.Current.Transaction);
 			}
 			{
 				var appNode = new SitemapNode()
@@ -175,7 +175,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Type = SitemapNodeType.Url
 				};
 				appSrv.CreateAreaNode(appNode.Id, WEBVELLA_SDK_APP_AREA_ACCESS_ID, appNode.Name, appNode.Label, appNode.LabelTranslations, appNode.IconClass, appNode.Url,
-					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, DbContext.Current.Transaction);
+					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, new List<Guid>(), new List<Guid>(), new List<Guid>(), new List<Guid>(), DbContext.Current.Transaction);
 			}
 
 			//Server
@@ -191,7 +191,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Type = SitemapNodeType.Url
 				};
 				appSrv.CreateAreaNode(appNode.Id, WEBVELLA_SDK_APP_AREA_SERVER_ID, appNode.Name, appNode.Label, appNode.LabelTranslations, appNode.IconClass, appNode.Url,
-					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, DbContext.Current.Transaction);
+					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, new List<Guid>(), new List<Guid>(), new List<Guid>(), new List<Guid>(), DbContext.Current.Transaction);
 			}
 			{
 				var appNode = new SitemapNode()
@@ -205,7 +205,7 @@ namespace WebVella.Erp.Plugins.SDK
 					Type = SitemapNodeType.Url
 				};
 				appSrv.CreateAreaNode(appNode.Id, WEBVELLA_SDK_APP_AREA_SERVER_ID, appNode.Name, appNode.Label, appNode.LabelTranslations, appNode.IconClass, appNode.Url,
-					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, DbContext.Current.Transaction);
+					(int)appNode.Type, appNode.EntityId, appNode.Weight, appNode.Access, new List<Guid>(), new List<Guid>(), new List<Guid>(), new List<Guid>(), DbContext.Current.Transaction);
 			}
 			#endregion
 		}

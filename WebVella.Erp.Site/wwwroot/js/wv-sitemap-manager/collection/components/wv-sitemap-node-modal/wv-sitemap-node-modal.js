@@ -67,7 +67,8 @@ export class WvSitemapNodeModal {
             var dataAuxObj = {};
             dataAuxObj["allEntities"] = responseData["object"]["all_entities"];
             dataAuxObj["nodeTypes"] = responseData["object"]["node_types"];
-            dataAuxObj["allPages"] = responseData["object"]["all_pages"];
+            dataAuxObj["appPages"] = responseData["object"]["app_pages"];
+            dataAuxObj["allEntityPages"] = responseData["object"]["all_entity_pages"];
             dataAuxObj["nodePageDict"] = responseData["object"]["node_page_dict"];
             dataAuxObj["selectedNodeObj"] = thisEl.nodeObj;
             thisEl.wvSitemapManagerNodeAuxDataUpdateEvent.emit(dataAuxObj);
@@ -105,7 +106,8 @@ export class WvSitemapNodeModal {
         if (!newObj["node"][propertyName] || newObj["node"][propertyName].length === 0) {
             newObj["node"][propertyName] = null;
         }
-        else if (newObj["node"][propertyName].length == 1 && propertyName != "pages") {
+        else if (newObj["node"][propertyName].length == 1 && propertyName != "pages" && propertyName != "entity_list_pages" && propertyName != "entity_create_pages"
+            && propertyName != "entity_details_pages" && propertyName != "entity_manage_pages") {
             newObj["node"][propertyName] = newObj["node"][propertyName][0];
         }
         this.modalNodeObj = newObj;
@@ -131,25 +133,51 @@ export class WvSitemapNodeModal {
         if (!this.modalNodeObj["node"]["entity_id"]) {
             this.modalNodeObj["node"]["entity_id"] = String(this.nodeAuxData["allEntities"][0]["value"]);
         }
-        var allPagesPlusNode = [];
-        var addedPages = [];
+        let appPagesPlusNode = [];
+        let addedPages = [];
+        let entityListPages = [];
+        let entityCreatePages = [];
+        let entityDetailsPages = [];
+        let entityManagePages = [];
         this.modalNodeObj["node_pages"].forEach(element => {
-            allPagesPlusNode.push(element);
+            appPagesPlusNode.push(element);
             addedPages.push(element["value"]);
         });
-        this.nodeAuxData["allPages"].forEach(element => {
+        this.nodeAuxData["appPages"].forEach(element => {
             if (addedPages.length == 0 || (addedPages.length > 0 && addedPages.indexOf(element["page_id"]) === -1)) {
                 if (!element["node_id"] || element["node_id"] === this.modalNodeObj["node"]["id"]) {
                     var selectOption = {
                         value: element["page_id"],
                         label: element["page_name"]
                     };
-                    allPagesPlusNode.push(selectOption);
+                    appPagesPlusNode.push(selectOption);
+                }
+            }
+        });
+        this.nodeAuxData["allEntityPages"].forEach(element => {
+            if (String(this.modalNodeObj["node"]["type"]) === "1" && this.modalNodeObj["node"]["entity_id"]) {
+                if (element["entity_id"] === this.modalNodeObj["node"]["entity_id"]) {
+                    switch (element["type"]) {
+                        case "3":
+                            entityListPages.push(element);
+                            break;
+                        case "4":
+                            entityCreatePages.push(element);
+                            break;
+                        case "5":
+                            entityDetailsPages.push(element);
+                            break;
+                        case "6":
+                            entityManagePages.push(element);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         });
         return (h("div", { class: "modal d-block" },
-            h("div", { class: "modal-dialog modal-lg" },
+            h("div", { class: "modal-dialog modal-xl" },
                 h("div", { class: "modal-content" },
                     h("form", { onSubmit: (e) => this.handleSubmit(e) },
                         h("div", { class: "modal-header" },
@@ -193,7 +221,7 @@ export class WvSitemapNodeModal {
                                     ? (h("div", { class: "col col-sm-6" },
                                         h("div", { class: "form-group erp-field" },
                                             h("label", { class: "control-label" }, "App Pages without nodes"),
-                                            h("select", { class: "form-control", multiple: true, name: "pages", onChange: (event) => this.handleSelectChange(event) }, allPagesPlusNode.map(function (type) {
+                                            h("select", { class: "form-control", multiple: true, name: "pages", onChange: (event) => this.handleSelectChange(event) }, appPagesPlusNode.map(function (type) {
                                                 let nodeSelected = false;
                                                 if (this.modalNodeObj["node"]["pages"] && this.modalNodeObj["node"]["pages"].length > 0 && this.modalNodeObj["node"]["pages"].indexOf(type.value) > -1) {
                                                     nodeSelected = true;
@@ -207,16 +235,63 @@ export class WvSitemapNodeModal {
                                             h("label", { class: "control-label" }, "Url"),
                                             h("input", { class: "form-control", name: "url", value: this.modalNodeObj["node"]["url"], onInput: (event) => this.handleChange(event) }))))
                                     : null),
-                            h("div", { class: "alert alert-info" }, "Label and Description translations, and access are currently not managable")),
+                            String(this.modalNodeObj["node"]["type"]) === "1" && this.modalNodeObj["node"]["entity_id"]
+                                ? (h("div", null,
+                                    h("div", { class: "row" },
+                                        h("div", { class: "col-3" },
+                                            h("div", { class: "form-group erp-field" },
+                                                h("label", { class: "control-label" }, "list pages"),
+                                                h("select", { class: "form-control", multiple: true, name: "entity_list_pages", onChange: (event) => this.handleSelectChange(event) }, entityListPages.map(function (type) {
+                                                    let nodeSelected = false;
+                                                    if (this.modalNodeObj["node"]["entity_list_pages"] && this.modalNodeObj["node"]["entity_list_pages"].length > 0 && this.modalNodeObj["node"]["entity_list_pages"].indexOf(type.page_id) > -1) {
+                                                        nodeSelected = true;
+                                                    }
+                                                    return (h("option", { value: type["page_id"], selected: nodeSelected }, type["page_name"]));
+                                                }.bind(this))))),
+                                        h("div", { class: "col-3" },
+                                            h("div", { class: "form-group erp-field" },
+                                                h("label", { class: "control-label" }, "create pages"),
+                                                h("select", { class: "form-control", multiple: true, name: "entity_create_pages", onChange: (event) => this.handleSelectChange(event) }, entityCreatePages.map(function (type) {
+                                                    let nodeSelected = false;
+                                                    if (this.modalNodeObj["node"]["entity_create_pages"] && this.modalNodeObj["node"]["entity_create_pages"].length > 0 && this.modalNodeObj["node"]["entity_create_pages"].indexOf(type.page_id) > -1) {
+                                                        nodeSelected = true;
+                                                    }
+                                                    return (h("option", { value: type["page_id"], selected: nodeSelected }, type["page_name"]));
+                                                }.bind(this))))),
+                                        h("div", { class: "col-3" },
+                                            h("div", { class: "form-group erp-field" },
+                                                h("label", { class: "control-label" }, "details pages"),
+                                                h("select", { class: "form-control", multiple: true, name: "entity_details_pages", onChange: (event) => this.handleSelectChange(event) }, entityDetailsPages.map(function (type) {
+                                                    let nodeSelected = false;
+                                                    if (this.modalNodeObj["node"]["entity_details_pages"] && this.modalNodeObj["node"]["entity_details_pages"].length > 0 && this.modalNodeObj["node"]["entity_details_pages"].indexOf(type.page_id) > -1) {
+                                                        nodeSelected = true;
+                                                    }
+                                                    return (h("option", { value: type["page_id"], selected: nodeSelected }, type["page_name"]));
+                                                }.bind(this))))),
+                                        h("div", { class: "col-3" },
+                                            h("div", { class: "form-group erp-field" },
+                                                h("label", { class: "control-label" }, "manage pages"),
+                                                h("select", { class: "form-control", multiple: true, name: "entity_manage_pages", onChange: (event) => this.handleSelectChange(event) }, entityManagePages.map(function (type) {
+                                                    let nodeSelected = false;
+                                                    if (this.modalNodeObj["node"]["entity_manage_pages"] && this.modalNodeObj["node"]["entity_manage_pages"].length > 0 && this.modalNodeObj["node"]["entity_manage_pages"].indexOf(type.page_id) > -1) {
+                                                        nodeSelected = true;
+                                                    }
+                                                    return (h("option", { value: type["page_id"], selected: nodeSelected }, type["page_name"]));
+                                                }.bind(this)))))),
+                                    h("div", { class: "go-gray" },
+                                        h("i", { class: "fa fa-info-circle go-blue" }),
+                                        " If no page is selected in certain type, all will be used")))
+                                : null,
+                            h("div", { class: "alert alert-info d-none" }, "Label and Description translations, and access are currently not managable")),
                         this.nodeAuxData == null
                             ? (null)
                             : (h("div", { class: "modal-footer" },
                                 h("div", null,
                                     h("button", { type: "submit", class: "btn btn-green btn-sm " + (this.modalNodeObj["node"] == null ? "" : "d-none") },
-                                        h("span", { class: "ti-plus" }),
+                                        h("span", { class: "fa fa-plus" }),
                                         " Create node"),
                                     h("button", { type: "submit", class: "btn btn-blue btn-sm " + (this.modalNodeObj["node"] != null ? "" : "d-none") },
-                                        h("span", { class: "ti-save" }),
+                                        h("span", { class: "far fa-disk-alt" }),
                                         " Save node"),
                                     h("button", { type: "button", class: "btn btn-white btn-sm ml-1", onClick: () => this.closeModal() }, "Close")))))))));
     }

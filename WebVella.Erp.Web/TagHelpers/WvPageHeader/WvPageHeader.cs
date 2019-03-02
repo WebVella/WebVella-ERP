@@ -157,57 +157,74 @@ namespace WebVella.Erp.Web.TagHelpers
 					metaLabelEl.InnerHtml.AppendHtml(metaLabelIconWrapperEl);
 				}
 
+                var metaLabelTextEl = new TagBuilder("span");
+                metaLabelTextEl.AddCssClass("text");
 
-				var metaLabelTextEl = new TagBuilder("span");
-				metaLabelTextEl.AddCssClass("text");
-				metaLabelTextEl.InnerHtml.AppendHtml(Title);
+                if (PageSwitchItems.Count > 1)
+                {
+                    //If only the current page there is no switch needed
+                    var switchDropdownEl = new TagBuilder("div");
+                    switchDropdownEl.AddCssClass("dropdown");
+                    switchDropdownEl.AddCssClass("d-inline-block");
 
-				if (!String.IsNullOrWhiteSpace(SubTitle))
-				{
-					var divider = new TagBuilder("span");
-					divider.AddCssClass("fa fa-angle-right divider");
-					metaLabelTextEl.InnerHtml.AppendHtml(divider);
+                    //link
+                    var metaSubLabelTextEl = new TagBuilder("a");
+                    metaSubLabelTextEl.AddCssClass("page-switch");
+                    //metaSubLabelTextEl.AddCssClass("dropdown-toggle");
+                    metaSubLabelTextEl.Attributes.Add("data-toggle", "dropdown");
+                    metaSubLabelTextEl.Attributes.Add("href", "#");
+                    //metaSubLabelTextEl.InnerHtml.AppendHtml("switch");
+                    metaSubLabelTextEl.InnerHtml.AppendHtml("<i class='icon fas fa-caret-down'></i>" + Title);
+                    switchDropdownEl.InnerHtml.AppendHtml(metaSubLabelTextEl);
 
-					var metaSubLabelTextEl = new TagBuilder("span");
-					metaSubLabelTextEl.AddCssClass("subtext");
-					metaSubLabelTextEl.InnerHtml.AppendHtml(SubTitle);
-					metaLabelTextEl.InnerHtml.AppendHtml(metaSubLabelTextEl);
-				}
+                    //Dropdown
+                    var switchDDMenuEl = new TagBuilder("div");
+                    switchDDMenuEl.AddCssClass("dropdown-menu");
+                    foreach (var pageSwitchItem in PageSwitchItems)
+                    {
+                        var switchItemEl = new TagBuilder("a");
+                        switchItemEl.AddCssClass("dropdown-item pl-2 pr-2");
+                        if (pageSwitchItem.IsSelected)
+                            switchItemEl.InnerHtml.AppendHtml("<i class=\"fas fa-fw fa-angle-right\"></i>");
+                        else
+                            switchItemEl.InnerHtml.AppendHtml("<i class=\"fa fa-fw\"></i>");
 
-				if (PageSwitchItems.Count > 1)
-				{ //If only the current page there is no switch needed
-					var switchDropdownEl = new TagBuilder("div");
-					switchDropdownEl.AddCssClass("dropdown");
-					switchDropdownEl.AddCssClass("d-inline-block");
+                        switchItemEl.Attributes.Add("href", pageSwitchItem.Url);
+                        switchItemEl.InnerHtml.AppendHtml(pageSwitchItem.Label);
+                        switchDDMenuEl.InnerHtml.AppendHtml(switchItemEl);
+                    }
+                    switchDropdownEl.InnerHtml.AppendHtml(switchDDMenuEl);
+                    metaLabelTextEl.InnerHtml.AppendHtml(switchDropdownEl);
 
-					//link
-					var metaSubLabelTextEl = new TagBuilder("a");
-					metaSubLabelTextEl.AddCssClass("page-switch");
-					metaSubLabelTextEl.AddCssClass("dropdown-toggle");
-					metaSubLabelTextEl.Attributes.Add("data-toggle", "dropdown");
-					metaSubLabelTextEl.Attributes.Add("href", "#");
-					metaSubLabelTextEl.InnerHtml.AppendHtml("switch");
-					switchDropdownEl.InnerHtml.AppendHtml(metaSubLabelTextEl);
+                    if (!String.IsNullOrWhiteSpace(SubTitle))
+                    {
+                        var divider = new TagBuilder("span");
+                        divider.AddCssClass("fa fa-angle-right divider");
+                        metaLabelTextEl.InnerHtml.AppendHtml(divider);
 
-					//Dropdown
-					var switchDDMenuEl = new TagBuilder("div");
-					switchDDMenuEl.AddCssClass("dropdown-menu");
-					foreach (var pageSwitchItem in PageSwitchItems)
-					{
-						var switchItemEl = new TagBuilder("a");
-						switchItemEl.AddCssClass("dropdown-item pl-2 pr-2");
-						if (pageSwitchItem.IsSelected)
-							switchItemEl.InnerHtml.AppendHtml("<i class=\"fas fa-fw fa-angle-right\"></i>");
-						else
-							switchItemEl.InnerHtml.AppendHtml("<i class=\"fa fa-fw\"></i>");
+                        var metaSubLabelTextEl2 = new TagBuilder("span");
+                        metaSubLabelTextEl2.AddCssClass("subtext");
+                        metaSubLabelTextEl2.InnerHtml.AppendHtml(SubTitle);
+                        metaLabelTextEl.InnerHtml.AppendHtml(metaSubLabelTextEl2);
+                    }
+                }
+                else
+                {
+                    metaLabelTextEl.InnerHtml.AppendHtml(Title);
 
-						switchItemEl.Attributes.Add("href", pageSwitchItem.Url);
-						switchItemEl.InnerHtml.AppendHtml(pageSwitchItem.Label);
-						switchDDMenuEl.InnerHtml.AppendHtml(switchItemEl);
-					}
-					switchDropdownEl.InnerHtml.AppendHtml(switchDDMenuEl);
-					metaLabelTextEl.InnerHtml.AppendHtml(switchDropdownEl);
-				}
+                    if (!String.IsNullOrWhiteSpace(SubTitle))
+                    {
+                        var divider = new TagBuilder("span");
+                        divider.AddCssClass("fa fa-angle-right divider");
+                        metaLabelTextEl.InnerHtml.AppendHtml(divider);
+
+                        var metaSubLabelTextEl = new TagBuilder("span");
+                        metaSubLabelTextEl.AddCssClass("subtext");
+                        metaSubLabelTextEl.InnerHtml.AppendHtml(SubTitle);
+                        metaLabelTextEl.InnerHtml.AppendHtml(metaSubLabelTextEl);
+                    }
+                }
+
 
 				metaLabelEl.InnerHtml.AppendHtml(metaLabelTextEl);
 				metaColEl.InnerHtml.AppendHtml(metaLabelEl);

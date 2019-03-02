@@ -41,7 +41,6 @@ export class WvSitemapManager {
         let requestConfig = {
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
-                'Accept-Encoding': 'gzip',
                 'Accept': 'application/json'
             }
         };
@@ -76,7 +75,6 @@ export class WvSitemapManager {
         let requestConfig = {
             headers: {
                 'Content-Type': 'application/json',
-                'Accept-Encoding': 'gzip',
                 'Accept': 'application/json',
             }
         };
@@ -116,7 +114,6 @@ export class WvSitemapManager {
         let requestConfig = {
             headers: {
                 'Content-Type': 'application/json',
-                'Accept-Encoding': 'gzip',
                 'Accept': 'application/json',
             }
         };
@@ -150,7 +147,6 @@ export class WvSitemapManager {
         let requestConfig = {
             headers: {
                 'Content-Type': 'application/json',
-                'Accept-Encoding': 'gzip',
                 'Accept': 'application/json',
             }
         };
@@ -175,7 +171,8 @@ export class WvSitemapManager {
             var newNodeAuxData = {
                 allEntities: event.detail.allEntities,
                 nodeTypes: event.detail.nodeTypes,
-                allPages: event.detail.allPages,
+                appPages: event.detail.appPages,
+                allEntityPages: event.detail.allEntityPages,
                 nodePageDict: event.detail.nodePageDict
             };
             this.nodeAuxData = Object.assign({}, newNodeAuxData);

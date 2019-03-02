@@ -73,8 +73,11 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 			InitPage();
 
 			ErpRequestContext.PageContext = PageContext;
+            //Add Admin as the default roles
+            Access.Add(SystemIds.AdministratorRoleId.ToString());
 
-			BeforeRender();
+
+            BeforeRender();
 			return Page();
 		}
 		public IActionResult OnPost()

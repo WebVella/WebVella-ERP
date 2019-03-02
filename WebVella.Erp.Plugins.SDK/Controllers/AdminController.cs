@@ -239,7 +239,7 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 			try
 			{
 				appSrv.CreateAreaNode(node.Id, areaId ?? Guid.Empty, node.Name, node.Label, node.LabelTranslations, 
-					node.IconClass,node.Url,(int)node.Type,node.EntityId,node.Weight,node.Access);
+					node.IconClass,node.Url,(int)node.Type,node.EntityId,node.Weight,node.Access,node.EntityListPages,node.EntityCreatePages,node.EntityDetailsPages,node.EntityManagePages);
 				if (node.Pages == null) {
 					node.Pages = new List<Guid>();
 				}
@@ -277,7 +277,7 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 			var response = new ResponseModel();
 			response.Message = "Success";
 			response.Success = true;
-
+            
 			if (node == null)
 			{
 				response.Message = "Wrong object model submitted. Could not restore!";
@@ -310,7 +310,7 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 			try
 			{
 				appSrv.UpdateAreaNode(node.Id, areaId ?? Guid.Empty, node.Name, node.Label, node.LabelTranslations,
-					node.IconClass,node.Url, (int)node.Type,node.EntityId, node.Weight, node.Access);
+					node.IconClass,node.Url, (int)node.Type,node.EntityId, node.Weight, node.Access, node.EntityListPages,node.EntityCreatePages,node.EntityDetailsPages,node.EntityManagePages);
 
 				var allAppPages = pageSrv.GetAppPages(appId ?? Guid.Empty);
 
@@ -415,8 +415,8 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 			return Json(response);
 		}
 
-		[AllowAnonymous] //Needed only when webcomponent development
-		//[Authorize(Roles = "administrator")]
+		//[AllowAnonymous] //Needed only when webcomponent development
+		[Authorize(Roles = "administrator")]
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v3.0/p/sdk/sitemap/node/get-aux-info")]
 		[ResponseCache(NoStore = true, Duration = 0)]
 		public IActionResult GetNodeAuxData([FromQuery]Guid? appId = null)
@@ -468,7 +468,7 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 
                 var pageService = new PageService();
                 //Get App pages
-                var appPages = pageService.GetAppPages(appId ?? Guid.Empty);
+                var appPages = pageService.GetAppPages(appId.Value);
 				var allAppPagesWithoutNodes = appPages.FindAll(x=> x.NodeId == null).OrderBy(x => x.Name).ToList();
 				foreach (var page in allAppPagesWithoutNodes)
 				{

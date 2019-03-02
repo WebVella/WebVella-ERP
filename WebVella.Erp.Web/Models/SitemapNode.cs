@@ -40,5 +40,17 @@ namespace WebVella.Erp.Web.Models
 
 		[JsonProperty("entity_id")]
 		public Guid? EntityId { get; set; } = null;
-	}
+
+        [JsonProperty("entity_list_pages")]
+        public List<Guid> EntityListPages { get; set; } = new List<Guid>();
+
+        [JsonProperty("entity_create_pages")]
+        public List<Guid> EntityCreatePages { get; set; } = new List<Guid>();
+
+        [JsonProperty("entity_details_pages")]
+        public List<Guid> EntityDetailsPages { get; set; } = new List<Guid>();
+
+        [JsonProperty("entity_manage_pages")]
+        public List<Guid> EntityManagePages { get; set; } = new List<Guid>();
+    }
 }

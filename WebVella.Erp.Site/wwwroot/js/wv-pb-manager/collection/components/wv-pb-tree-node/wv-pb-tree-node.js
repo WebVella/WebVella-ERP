@@ -59,7 +59,7 @@ export class WvPbTreeNode {
         let scope = this;
         let componentMeta = GetMeta(scope);
         let childNodes = GetChildNodes(scope);
-        let iconClass = "ti-file";
+        let iconClass = "fa-file";
         if (componentMeta["icon_class"]) {
             iconClass = componentMeta["icon_class"];
         }

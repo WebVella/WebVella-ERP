@@ -32,8 +32,7 @@ namespace WebVella.Erp.Plugins.SDK.Utils
 			{
 				$"<a href='/sdk/objects/application/r/{(app != null ? app.Id : Guid.Empty)}' class='btn btn-link btn-sm  {(pageName == "details" || pageName == "manage" ? "active" : "")}'>Details</a>",
 				$"<a href='/sdk/objects/application/r/{(app != null ? app.Id : Guid.Empty)}/sitemap' class='btn btn-link btn-sm {(pageName == "sitemap" || pageName == "sitemap-manage" ? "active" : "")}'>Sitemap</a>",
-				$"<a href='/sdk/objects/application/r/{(app != null ? app.Id : Guid.Empty)}/pages' class='btn btn-link btn-sm {(pageName == "pages"  ? "active" : "")}'>Home Pages</a>",
-				$"<a href='/sdk/objects/application/r/{(app != null ? app.Id : Guid.Empty)}/entities' class='btn btn-link btn-sm {(pageName == "entities" ? "active" : "")}'>App Entities</a>"
+				$"<a href='/sdk/objects/application/r/{(app != null ? app.Id : Guid.Empty)}/pages' class='btn btn-link btn-sm {(pageName == "pages"  ? "active" : "")}'>Home Pages</a>"
 			};
 		}
 
