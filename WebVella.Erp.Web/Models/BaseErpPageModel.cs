@@ -223,7 +223,7 @@ namespace WebVella.Erp.Web.Models
 
 						foreach (var node in area.Nodes)
 						{
-							var nodeLink = $"<a class=\"dropdown-item\" href=\"{node.Url}\" title=\"{node.Label}\"><span class=\"{node.IconClass} icon\"></span> {node.Label}</a>";
+							var nodeLink = $"<a class=\"dropdown-item\" href=\"{node.Url}\" title=\"{node.Label}\"><span class=\"{node.IconClass} icon fa-fw\"></span> {node.Label}</a>";
 							areaMenuItem.Nodes.Add(new MenuItem()
 							{
 								Content = nodeLink
