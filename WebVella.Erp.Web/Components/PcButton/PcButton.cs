@@ -68,7 +68,10 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "icon_class")]
 			public string IconClass { get; set; } = "";
 
-			[JsonProperty(PropertyName = "form")]
+            [JsonProperty(PropertyName = "icon_right")]
+            public bool IconRight { get; set; } = false;
+
+            [JsonProperty(PropertyName = "form")]
 			public string Form { get; set; } = "";
 
 		}

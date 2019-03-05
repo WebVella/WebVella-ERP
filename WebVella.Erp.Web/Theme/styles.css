@@ -2396,8 +2396,14 @@ textarea.autogrow {
 	margin-right: 5px;
 }
 
+.btn .icon.right {
+	margin-right: 0;
+    margin-left:5px;
+}
+
 .btn-icon.btn .icon {
-	margin-right: 0px;
+	margin-right: 0;
+    margin-left:0;
 }
 
 .list-group-sm .list-group-item {

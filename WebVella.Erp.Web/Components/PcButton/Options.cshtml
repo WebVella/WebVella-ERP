@@ -48,7 +48,7 @@
 
 <wv-row>
 	<wv-column span="4">
-		<wv-field-datasource name="is_visible" label-text="Is Rendered" value="@options.IsVisible" page-id="erpRequest.Page.Id" placeholder="true"></wv-field-datasource>
+		<wv-field-checkbox name="icon_right" label-text="Icon on the right" value="@options.IconRight" text-true="render the icon on the right"></wv-field-checkbox>
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-checkbox name="is_active" label-text="Active" value="@options.isActive" text-true="active button"></wv-field-checkbox>
@@ -58,7 +58,10 @@
 	</wv-column>
 </wv-row>
 <wv-row>
-	<wv-column span="12">
+	<wv-column span="4">
+		<wv-field-datasource name="is_visible" label-text="Is Rendered" value="@options.IsVisible" page-id="erpRequest.Page.Id" placeholder="true"></wv-field-datasource>
+	</wv-column>
+	<wv-column span="8">
 		<wv-field-text name="onclick" label-text="OnClick" value="@options.OnClick"></wv-field-text>
 	</wv-column>
 </wv-row>

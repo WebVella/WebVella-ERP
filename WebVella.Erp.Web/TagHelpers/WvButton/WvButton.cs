@@ -53,7 +53,10 @@ namespace WebVella.Erp.Web.TagHelpers
 		[HtmlAttributeName("icon-class")]
 		public string IconClass { get; set; } = "";
 
-		[HtmlAttributeName("is-block")]
+        [HtmlAttributeName("icon-right")]
+        public bool IconRight { get; set; } = false;
+
+        [HtmlAttributeName("is-block")]
 		public bool isBlock { get; set; } = false;
 
 
@@ -219,14 +222,20 @@ namespace WebVella.Erp.Web.TagHelpers
 			}
 			#endregion
 
-			#region << Icon >>
+			#region << Left Icon >>
 			if (!String.IsNullOrWhiteSpace(IconClass))
 			{
 				var iconEl = new TagBuilder("i");
 				iconEl.AddCssClass(IconClass);
 				iconEl.AddCssClass("icon");
-				output.PreContent.AppendHtml(iconEl);
-			}
+                if (!IconRight)
+                    output.PreContent.AppendHtml(iconEl);
+                else
+                {
+                    iconEl.AddCssClass("right");
+                    output.PostContent.AppendHtml(iconEl);
+                }
+            }
 			#endregion
 
 			#region << Text and BtnIcon >>
@@ -237,9 +246,9 @@ namespace WebVella.Erp.Web.TagHelpers
 			else {
 				classList.Add("btn-icon");
 			}
-			#endregion
+            #endregion
 
-			output.Attributes.SetAttribute("class", String.Join(" ", classList));
+            output.Attributes.SetAttribute("class", String.Join(" ", classList));
 			return Task.CompletedTask;
 		}
 	}
