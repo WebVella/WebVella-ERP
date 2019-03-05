@@ -17,7 +17,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 				var createTask = new MenuItem()
 				{
 					IsHtml = true,
-					Content = "<div class'menu-nav-wrapper'><div class='menu-nav'><a href='/projects/tasks/tasks/c/create'><i class='fa fa-plus'></i> Create Task</a></div></div>",
+					Content = "<div class='menu-nav-wrapper'><div class='menu-nav'><a href='/projects/tasks/tasks/c/create'><i class='fa fa-plus'></i> Create Task</a></div></div>",
 					isDropdownRight = false,
 					RenderWrapper = false,
 					SortOrder = 1
