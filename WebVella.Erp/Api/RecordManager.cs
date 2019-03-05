@@ -218,6 +218,23 @@ namespace WebVella.Erp.Api
 						isTransactionActive = true;
 					}
 
+					if (hooksExists && executeHooks)
+					{
+						List<ErrorModel> errors = new List<ErrorModel>();
+						RecordHookManager.ExecutePreCreateRecordHooks(entity.Name, record, errors);
+						if (errors.Count > 0)
+						{
+							if (isTransactionActive)
+								connection.RollbackTransaction();
+
+							response.Success = false;
+							response.Object = null;
+							response.Errors = errors;
+							response.Timestamp = DateTime.UtcNow;
+							return response;
+						}
+					}
+
 					Guid recordId = Guid.Empty;
 					if (!record.Properties.ContainsKey("id"))
 						recordId = Guid.NewGuid();
@@ -607,22 +624,7 @@ namespace WebVella.Erp.Api
 
 					SetRecordRequiredFieldsDefaultData(entity, storageRecordData);
 
-					if (hooksExists && executeHooks)
-					{
-						List<ErrorModel> errors = new List<ErrorModel>();
-						RecordHookManager.ExecutePreCreateRecordHooks(entity.Name, record, errors);
-						if (errors.Count > 0)
-						{
-							if (isTransactionActive)
-								connection.RollbackTransaction();
-
-							response.Success = false;
-							response.Object = null;
-							response.Errors = errors;
-							response.Timestamp = DateTime.UtcNow;
-							return response;
-						}
-					}
+					
 
 					foreach (var item in fileFields)
 					{
@@ -909,6 +911,23 @@ namespace WebVella.Erp.Api
 					{
 						connection.BeginTransaction();
 						isTransactionActive = true;
+					}
+
+					if (hooksExists && executeHooks)
+					{
+						List<ErrorModel> errors = new List<ErrorModel>();
+						RecordHookManager.ExecutePreUpdateRecordHooks(entity.Name, record, errors);
+						if (errors.Count > 0)
+						{
+							if (isTransactionActive)
+								connection.RollbackTransaction();
+
+							response.Success = false;
+							response.Object = null;
+							response.Errors = errors;
+							response.Timestamp = DateTime.UtcNow;
+							return response;
+						}
 					}
 
 					QueryObject filterObj = EntityQuery.QueryEQ("id", recordId);
@@ -1271,22 +1290,7 @@ namespace WebVella.Erp.Api
 					var recRepo = DbContext.Current.RecordRepository;
 
 
-					if (hooksExists && executeHooks)
-					{
-						List<ErrorModel> errors = new List<ErrorModel>();
-						RecordHookManager.ExecutePreUpdateRecordHooks(entity.Name, record, errors);
-						if (errors.Count > 0)
-						{
-							if (isTransactionActive)
-								connection.RollbackTransaction();
-
-							response.Success = false;
-							response.Object = null;
-							response.Errors = errors;
-							response.Timestamp = DateTime.UtcNow;
-							return response;
-						}
-					}
+				
 					DbFileRepository fsRepository = new DbFileRepository();
 					foreach (var item in fileFields)
 					{
