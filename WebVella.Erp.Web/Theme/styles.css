@@ -4773,6 +4773,11 @@ border-bottom-style:dashed;
        width:240px;
 }
 
+
+.page-search.btn-group > .btn.current {
+    z-index:2;
+}
+
 /*#endregion*/
 
 /*#region << Tag Helpers >>*/
