@@ -1201,41 +1201,41 @@ namespace WebVella.Erp.Web.Services
                         {
                             case PageType.RecordList:
                                 if (currentNode.EntityListPages == null || currentNode.EntityListPages.Count == 0)
-                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id
+                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.AppId == currentApp.Id && x.EntityId == currentEntity.Id
                                                        && (x.NodeId == currentNode.Id || x.NodeId == null)
                                                        && x.Name == pageName);
                                 else
-                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id
+                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.AppId == currentApp.Id && x.EntityId == currentEntity.Id
                                     && (x.NodeId == currentNode.Id || x.NodeId == null)
                                     && x.Name == pageName && currentNode.EntityListPages.Contains(x.Id));
                                 break;
                             case PageType.RecordCreate:
                                 if (currentNode.EntityCreatePages == null || currentNode.EntityCreatePages.Count == 0)
-                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id
+                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.AppId == currentApp.Id && x.EntityId == currentEntity.Id
                                                        && (x.NodeId == currentNode.Id || x.NodeId == null)
                                                        && x.Name == pageName);
                                 else
-                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id
+                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.AppId == currentApp.Id && x.EntityId == currentEntity.Id
                                     && (x.NodeId == currentNode.Id || x.NodeId == null)
                                     && x.Name == pageName && currentNode.EntityCreatePages.Contains(x.Id));
                                 break;
                             case PageType.RecordDetails:
                                 if (currentNode.EntityDetailsPages == null || currentNode.EntityDetailsPages.Count == 0)
-                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id
+                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.AppId == currentApp.Id && x.EntityId == currentEntity.Id
                                                        && (x.NodeId == currentNode.Id || x.NodeId == null)
                                                        && x.Name == pageName);
                                 else
-                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id
+                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.AppId == currentApp.Id && x.EntityId == currentEntity.Id
                                     && (x.NodeId == currentNode.Id || x.NodeId == null)
                                     && x.Name == pageName && currentNode.EntityDetailsPages.Contains(x.Id));
                                 break;
                             case PageType.RecordManage:
                                 if (currentNode.EntityManagePages == null || currentNode.EntityManagePages.Count == 0)
-                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id
+                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.AppId == currentApp.Id && x.EntityId == currentEntity.Id
                                                        && (x.NodeId == currentNode.Id || x.NodeId == null)
                                                        && x.Name == pageName);
                                 else
-                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id
+                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.AppId == currentApp.Id && x.EntityId == currentEntity.Id
                                     && (x.NodeId == currentNode.Id || x.NodeId == null)
                                     && x.Name == pageName && currentNode.EntityManagePages.Contains(x.Id));
                                 break;
@@ -1256,37 +1256,37 @@ namespace WebVella.Erp.Web.Services
                         {
                             case PageType.RecordList:
                                 if (currentNode.EntityListPages.Count == 0)
-                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id
+                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.AppId == currentApp.Id && x.EntityId == currentEntity.Id
                                         && (x.NodeId == currentNode.Id || x.NodeId == null));
                                 else
-                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id
+                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.AppId == currentApp.Id && x.EntityId == currentEntity.Id
                                         && (x.NodeId == currentNode.Id || x.NodeId == null)
                                         && currentNode.EntityListPages.Contains(x.Id));
                                 break;
                             case PageType.RecordCreate:
                                 if (currentNode.EntityCreatePages.Count == 0)
-                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id
+                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.AppId == currentApp.Id && x.EntityId == currentEntity.Id
                                        && (x.NodeId == currentNode.Id || x.NodeId == null));
                                 else
-                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id
+                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.AppId == currentApp.Id && x.EntityId == currentEntity.Id
                                         && (x.NodeId == currentNode.Id || x.NodeId == null)
                                         && currentNode.EntityCreatePages.Contains(x.Id));
                                 break;
                             case PageType.RecordDetails:
                                 if (currentNode.EntityDetailsPages.Count == 0)
-                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id
+                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.AppId == currentApp.Id && x.EntityId == currentEntity.Id
                                        && (x.NodeId == currentNode.Id || x.NodeId == null));
                                 else
-                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id
+                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.AppId == currentApp.Id && x.EntityId == currentEntity.Id
                                         && (x.NodeId == currentNode.Id || x.NodeId == null)
                                         && currentNode.EntityDetailsPages.Contains(x.Id));
                                 break;
                             case PageType.RecordManage:
                                 if (currentNode.EntityManagePages.Count == 0)
-                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id
+                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.AppId == currentApp.Id && x.EntityId == currentEntity.Id
                                       && (x.NodeId == currentNode.Id || x.NodeId == null));
                                 else
-                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.EntityId == currentEntity.Id
+                                    resultPage = pages.FirstOrDefault(x => x.Type == pathPageType && x.AppId == currentApp.Id && x.EntityId == currentEntity.Id
                                     && (x.NodeId == currentNode.Id || x.NodeId == null)
                                     && currentNode.EntityManagePages.Contains(x.Id));
                                 break;

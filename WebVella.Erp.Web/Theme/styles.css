@@ -4785,7 +4785,7 @@ border-bottom-style:dashed;
 }
 
 .lns-header {
-	font-size: 13px;
+	display:block;
 	position: relative;
 	margin-bottom:1rem;
 }

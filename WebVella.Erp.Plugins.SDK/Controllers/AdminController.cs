@@ -484,7 +484,7 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
                 var allEntityPages = pageService.GetAll();
                 foreach (var page in allEntityPages)
                 {
-                    if (page.EntityId != null)
+                    if (page.EntityId != null && page.AppId == appId.Value)
                     {
                         var selectOption = new EntityRecord();
                         selectOption["page_id"] = page.Id.ToString();
