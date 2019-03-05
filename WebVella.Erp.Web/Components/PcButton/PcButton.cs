@@ -123,7 +123,11 @@ namespace WebVella.Erp.Web.Components
 				}
 				ViewBag.IsVisible = isVisible;
 
-				ViewBag.Options = instanceOptions;
+                instanceOptions.Text = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Text) as string;
+                instanceOptions.Class = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Class) as string;
+                instanceOptions.IconClass = context.DataModel.GetPropertyValueByDataSource(instanceOptions.IconClass) as string;
+
+                ViewBag.Options = instanceOptions;
 				ViewBag.Node = context.Node;
 				ViewBag.ComponentMeta = componentMeta;
 				ViewBag.RequestContext = ErpRequestContext;
