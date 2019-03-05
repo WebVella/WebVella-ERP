@@ -26,7 +26,10 @@ namespace WebVella.Erp.Web.TagHelpers
 		[HtmlAttributeName("is-visible")]
 		public bool isVisible { get; set; } = true;
 
-		[HtmlAttributeName("title")]
+        [HtmlAttributeName("id")]
+        public string Id { get; set; } = "";
+
+        [HtmlAttributeName("title")]
 		public string Title { get; set; } = "";
 
 		[HtmlAttributeName("description")]
@@ -84,8 +87,11 @@ namespace WebVella.Erp.Web.TagHelpers
 				{
 					cardWrapperEl.AddCssClass("shadow-sm");
 				}
+                if(!String.IsNullOrWhiteSpace(Id))
+                    cardWrapperEl.Attributes.Add("id",Id);
 
-				var cardBodyWrapperEl = new TagBuilder("div");
+
+                var cardBodyWrapperEl = new TagBuilder("div");
 				cardBodyWrapperEl.AddCssClass("card-body p-2");
 
 				if (IsCard)

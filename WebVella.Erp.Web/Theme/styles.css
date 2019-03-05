@@ -4742,6 +4742,7 @@ border-bottom-style:dashed;
 	border-top: 1px solid --gray_border_color;
 	border-bottom: 1px solid --gray_border_color;
 	padding-left: 10px !important;
+    padding-right: 10px !important;
 }
 
 	.pc-page-header .page-header-toolbar a {
