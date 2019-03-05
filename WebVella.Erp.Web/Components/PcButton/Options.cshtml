@@ -17,7 +17,7 @@
 		<wv-field-select name="type" label-text="Type" value="@((int)options.Type)" options="typeOptions"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-text name="text" label-text="Button text" value="@options.Text"></wv-field-text>
+		<wv-field-datasource name="text" label-text="Button text" value="@options.Text" page-id="erpRequest.Page.Id"></wv-field-datasource>
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-select name="color" label-text="Color" value="@((int)options.Color)" options="colorOptions"></wv-field-select>
@@ -28,7 +28,7 @@
 		<wv-field-select name="size" label-text="Size" value="@((int)options.Size)" options="cssSizeOptions"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-text name="class" label-text="Css class" value="@options.Class"></wv-field-text>
+		<wv-field-datasource name="class" label-text="Css class" value="@options.Class" page-id="erpRequest.Page.Id"></wv-field-datasource>
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-text name="id" label-text="Id" value="@options.Id"></wv-field-text>
@@ -36,7 +36,7 @@
 </wv-row>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-text name="icon_class" label-text="Icon class" value="@options.IconClass"></wv-field-text>
+		<wv-field-datasource name="icon_class" label-text="Icon class" value="@options.IconClass" page-id="erpRequest.Page.Id"></wv-field-datasource>
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-checkbox name="is_block" label-text="Width" value="@options.isBlock" text-true="display full width button"></wv-field-checkbox>
