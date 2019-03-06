@@ -20,7 +20,7 @@ function MultiSelectFormInit(fieldId, fieldName, entityName, config) {
 		closeOnSelect: true,
 		language: "en",
 		minimumResultsForSearch: 10,
-		width: 'style'
+		width: 'element'
 	});
 	//Stops remove selection click opening the dropdown
 	$(selectors.inputEl).on("select2:unselect", function (evt) {

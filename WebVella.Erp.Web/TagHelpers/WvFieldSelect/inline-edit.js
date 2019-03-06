@@ -32,7 +32,7 @@ function SelectInlineEditPreEnableCallback(fieldId, fieldName, entityName, recor
 		minimumResultsForSearch: 10,
 		placeholder: 'not selected',
 		allowClear:!$(selectors.inputEl).prop('required'),
-		width: 'style',
+        width: 'element',
 		escapeMarkup: function (markup) {
 			return markup;
 		},

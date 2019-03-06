@@ -34,7 +34,7 @@ function SelectFormInit(fieldId, fieldName, entityName, config) {
 		closeOnSelect: true,
 		placeholder: 'not selected',
 		allowClear:!$(selectors.inputEl).prop('required'),
-		width: 'style',
+        width: 'element',
 		escapeMarkup: function (markup) {
 			return markup;
 		},

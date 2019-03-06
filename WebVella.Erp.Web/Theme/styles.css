@@ -3582,7 +3582,7 @@ input[type=date].form-control, input[type=datetime-local].form-control {
 
 
 .erp-field .select2-container {
-	flex-grow: 1;
+	flex-grow: 0;
 }
 
 .select2-container--open .select2-dropdown--below {
