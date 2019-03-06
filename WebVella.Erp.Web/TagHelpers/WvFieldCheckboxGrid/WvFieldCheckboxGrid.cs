@@ -287,7 +287,8 @@ namespace WebVella.Erp.Web.TagHelpers
 			}
 			else if (Mode == FieldRenderMode.Simple)
 			{
-				var alertEl = new TagBuilder("div");
+                output.SuppressOutput();
+                var alertEl = new TagBuilder("div");
 				alertEl.AddCssClass($"alert alert-danger");
 				alertEl.InnerHtml.Append($"Not Implemented yet");
 				output.Content.AppendHtml(alertEl);

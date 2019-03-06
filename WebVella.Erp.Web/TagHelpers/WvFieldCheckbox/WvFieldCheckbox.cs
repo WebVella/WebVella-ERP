@@ -154,7 +154,8 @@ namespace WebVella.Erp.Web.TagHelpers
 			{
 				if (Value != null)
 				{
-					var iconEl = new TagBuilder("span");
+                    output.SuppressOutput();
+                    var iconEl = new TagBuilder("span");
 					iconEl.AddCssClass($"{(Value ? "fa fa-check" : "go-gray")}");
 					iconEl.InnerHtml.Append($"{(Value ? "" : "-")}");
 					output.Content.AppendHtml(iconEl);

@@ -158,7 +158,8 @@ namespace WebVella.Erp.Web.TagHelpers
 					}
 				}
 				else {
-					output.Content.AppendHtml("");
+                    output.SuppressOutput();
+                    output.Content.AppendHtml("");
 				}
 				return Task.CompletedTask;
 			}

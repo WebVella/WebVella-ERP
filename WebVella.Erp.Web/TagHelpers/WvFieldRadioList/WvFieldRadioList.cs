@@ -93,7 +93,8 @@ namespace WebVella.Erp.Web.TagHelpers
 			}
 			else if (Mode == FieldRenderMode.Simple)
 			{
-				output.Content.AppendHtml(String.Join(", ", ((List<string>)Value)));
+                output.SuppressOutput();
+                output.Content.AppendHtml(String.Join(", ", ((List<string>)Value)));
 			}
 			else if (Mode == FieldRenderMode.InlineEdit)
 			{
