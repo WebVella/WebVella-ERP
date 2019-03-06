@@ -4975,6 +4975,11 @@ a.lns-header[aria-expanded="false"] .icon:before {
 	cursor: pointer;
 }
 
+.icon-card.active {
+    border-color: #4CAF50;
+    background: #F1F8E9;
+}
+
 .icon-card-body {
 	display: flex;
 	flex-direction: row;
@@ -4982,7 +4987,9 @@ a.lns-header[aria-expanded="false"] .icon:before {
 	padding: 5px 0;
 }
 
-
+.icon-card.active .icon-card-body .icon{
+    color: #4CAF50 !important;
+}
 	.icon-card-body .icon {
 		font-size: 32px;
 		width: 60px;
