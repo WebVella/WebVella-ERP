@@ -120,13 +120,13 @@ namespace WebVella.Erp.Web.TagHelpers
 						var iconEl = new TagBuilder("span");
 						if (IsCollapsed)
 						{
-							iconEl.AddCssClass("icon far fa-fw fa-caret-square-right");
+							iconEl.AddCssClass("icon fas fa-fw fa-caret-right");
 							collapseLink.AddCssClass("collapsed");
 							collapseLink.Attributes.Add("aria-expanded", "false");
 						}
 						else
 						{
-							iconEl.AddCssClass("icon far fa-fw fa-caret-square-down");
+							iconEl.AddCssClass("icon fas fa-fw fa-caret-down");
 							collapseLink.Attributes.Add("aria-expanded", "true");
 						}
 						collapseLink.InnerHtml.AppendHtml(iconEl);
