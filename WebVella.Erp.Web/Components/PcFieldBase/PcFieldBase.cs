@@ -378,7 +378,7 @@ namespace WebVella.Erp.Web.Components
 						var relationName = fieldNameArray[0];
 						fieldName = fieldNameArray[1];
 						var relation = new EntityRelationManager().Read(relationName).Object;
-						if (relation != null) {
+						if (relation != null && relation.RelationType != EntityRelationType.ManyToMany) {
 							if (relation.OriginEntityId == mappedEntity.Id)
 								mappedEntity = new EntityManager().ReadEntity(relation.TargetEntityId).Object;
 							else if (relation.TargetEntityId == mappedEntity.Id)
