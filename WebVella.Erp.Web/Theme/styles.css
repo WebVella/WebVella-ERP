@@ -3605,6 +3605,19 @@ input[type=date].form-control, input[type=datetime-local].form-control {
 		color: #F44336 !important;
 	}
 
+.input-group .select2 .select2-selection {
+	border-radius: 0 !important;
+}
+
+	.input-group-prepend.separator,
+	.input-group-append.separator{
+		width:3px;
+	}
+
+	.input-group .separator .input-group-text{
+		background-color: #ced4da;
+	}	
+
 .erp-field .select2-selection__choice__remove {
 	float: right;
 	margin-right: 0 !important;
