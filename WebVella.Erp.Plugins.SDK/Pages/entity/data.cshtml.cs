@@ -180,7 +180,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 				var column = new GridColumn()
 				{
 					Name = field.Name,
-					Label = field.Label,
+					Label = field.Name, //should present just the name not to confuse
 					Sortable = searchAndSortAvailable,
 					Searchable = searchAndSortAvailable
 				};
