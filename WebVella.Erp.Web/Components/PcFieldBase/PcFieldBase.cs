@@ -371,14 +371,15 @@ namespace WebVella.Erp.Web.Components
 			{
 				var fieldName = baseOptions.Name;
 
+				EntityRelation relation = null;
 				if (fieldName.StartsWith("$")) {
 					//Field with relation is set. Mapped entity should be changed
 					var fieldNameArray = fieldName.Replace("$", "").Split(".", StringSplitOptions.RemoveEmptyEntries);
 					if (fieldNameArray.Length == 2) {
 						var relationName = fieldNameArray[0];
 						fieldName = fieldNameArray[1];
-						var relation = new EntityRelationManager().Read(relationName).Object;
-						if (relation != null && relation.RelationType != EntityRelationType.ManyToMany) {
+						relation = new EntityRelationManager().Read(relationName).Object;
+						if (relation != null) {
 							if (relation.OriginEntityId == mappedEntity.Id)
 								mappedEntity = new EntityManager().ReadEntity(relation.TargetEntityId).Object;
 							else if (relation.TargetEntityId == mappedEntity.Id)
@@ -390,6 +391,12 @@ namespace WebVella.Erp.Web.Components
 				}
 
 				var entityField = mappedEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
+
+				//for many to many relation field is always ID and that is not correct
+				//so hide this field meta as field is not found
+				if (relation != null && relation.RelationType == EntityRelationType.ManyToMany)
+					entityField = null;
+
 				if (entityField != null)
 				{
 					switch (entityField.GetFieldType())
