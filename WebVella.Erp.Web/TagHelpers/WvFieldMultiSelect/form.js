@@ -6,7 +6,13 @@
 	}
 	else {
 		selectors.inputEl = "#input-" + config.prefix + "-" + fieldId;
-	}
+    }
+    if (!config.prefix || config === "") {
+        selectors.dummyInputEl = "#dummy-" + fieldId;
+    }
+    else {
+        selectors.dummyInputEl = "#dummy-" + config.prefix + "-" + fieldId;
+    }
 	selectors.modalEl = "#add-option-modal-" + fieldId;
 	selectors.primaryBtnEl = "#add-option-modal-" + fieldId + " .btn-primary";
 	selectors.modalFormEl = "#add-option-form-" + fieldId;
@@ -38,13 +44,35 @@ function MultiSelectFormInit(fieldId, fieldName, entityName, config) {
 	});
 
 	$(selectors.inputEl).on('change', function(event) {
-		var customEvent = new Event('WvFieldSelect_Change');
+        var customEvent = new Event('WvFieldSelect_Change');
 		var inputElement = document.getElementById('input-' + fieldId);
 		var selectedJson = $(selectors.inputEl).select2('data');
 		var selectedKeys = [];
 		for (var i= 0; i < selectedJson.length; i++) {
 			selectedKeys.push(selectedJson[i].id); //this is a single select
-		}
+        }
+        var fieldname = $(selectors.inputEl).attr("data-field-name");
+        if (selectedKeys.length === 0) {
+            var attrDummy = $(selectors.dummyInputEl).attr('name');
+            $(selectors.inputEl).removeAttr("name");
+            if (typeof attrDummy !== typeof undefined && attrDummy !== false) {
+                // Element has this attribute
+            }
+            else {
+                $(selectors.dummyInputEl).attr('name', fieldname);
+            }
+        }
+        else {
+            var attr = $(selectors.inputEl).attr('name');
+            $(selectors.dummyInputEl).removeAttr("name");
+            if (typeof attr !== typeof undefined && attr !== false) {
+                // Element has this attribute
+            }
+            else {
+                $(selectors.inputEl).attr('name', fieldname);
+            }
+        }
+
 		customEvent.payload = {
 			value: selectedKeys,
 			fieldId: fieldId,

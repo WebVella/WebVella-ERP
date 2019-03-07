@@ -106,11 +106,27 @@ namespace WebVella.Erp.Web.TagHelpers
 						}
 						inputGroupEl.InnerHtml.AppendHtml(prependEl);
 					}
-					//Control
-					var selectEl = new TagBuilder("select");
+                    //Hidden Control to be posted when no option is selected
+                    var dummyHiddenInput = new TagBuilder("input");
+                    dummyHiddenInput.Attributes.Add("type", "hidden");
+                    dummyHiddenInput.Attributes.Add("id", $"dummy-{FieldId}");
+                    if (Value == null || ((List<string>)Value).Count == 0)
+                    {
+                        dummyHiddenInput.Attributes.Add("name", $"{Name}");
+                    }
+                    dummyHiddenInput.Attributes.Add("value", "");
+                    inputGroupEl.InnerHtml.AppendHtml(dummyHiddenInput);
+
+                    //Control
+                    var selectEl = new TagBuilder("select");
 					selectEl.Attributes.Add("id", $"input-{FieldId}");
-					selectEl.Attributes.Add("name", $"{Name}");
-					var inputElCssClassList = new List<string>();
+                    //Name will be attached and removed depending on if there is selected values or not, in order for the dummy to post
+                    if (Value != null && ((List<string>)Value).Count > 0)
+                    {
+                        selectEl.Attributes.Add("name", $"{Name}");
+                    }
+                    selectEl.Attributes.Add("data-field-name", $"{Name}");
+                    var inputElCssClassList = new List<string>();
 					inputElCssClassList.Add("form-control erp-multiselect invisible");
 					if (ValidationErrors.Count > 0)
 					{
@@ -121,6 +137,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					{
 						selectEl.Attributes.Add("required", null);
 					}
+
 					selectEl.Attributes.Add("multiple", "multiple");
 
 					foreach (var option in Options)

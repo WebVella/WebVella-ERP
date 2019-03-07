@@ -142,13 +142,13 @@ namespace WebVella.Erp.Web.TagHelpers
 					{
 						var optionEl = new TagBuilder("option");
                         // Should work only with <option></option> and the select2 placeholder to be presented
-						//optionEl.Attributes.Add("value", "");
-						//if (String.IsNullOrWhiteSpace(Value))
-						//{
-						//	optionEl.Attributes.Add("selected", null);
-						//}
-						//optionEl.InnerHtml.Append("not selected");
-						selectEl.InnerHtml.AppendHtml(optionEl);
+                        //optionEl.Attributes.Add("value", "");
+                        //if (String.IsNullOrWhiteSpace(Value))
+                        //{
+                        //    optionEl.Attributes.Add("selected", null);
+                        //}
+                        //optionEl.InnerHtml.Append("not selected");
+                        selectEl.InnerHtml.AppendHtml(optionEl);
 					}
 
 					foreach (var option in Options)
