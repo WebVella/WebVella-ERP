@@ -28,16 +28,16 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "is_visible")]
 			public string IsVisible { get; set; } = "";
 
-			//[JsonProperty(PropertyName = "pager")]
-			//public string Pager { get; set; } = "1";
+            //[JsonProperty(PropertyName = "pager")]
+            //public string Pager { get; set; } = "1";
 
-			//[JsonProperty(PropertyName = "total_count")]
-			//public string TotalCount { get; set; } = "0";
+            //[JsonProperty(PropertyName = "total_count")]
+            //public string TotalCount { get; set; } = "0";
 
-			//[JsonProperty(PropertyName = "page_size")]
-			//public string PageSize { get; set; } = "0";
+            [JsonProperty(PropertyName = "page_size")]
+            public int? PageSize { get; set; } = 10;
 
-			[JsonProperty(PropertyName = "records")]
+            [JsonProperty(PropertyName = "records")]
 			public string Records { get; set; } = "";
 
 			[JsonProperty(PropertyName = "striped")]
@@ -547,7 +547,16 @@ namespace WebVella.Erp.Web.Components
 
 				ViewBag.Page = 1;
 				ViewBag.TotalCount = 0;
-				ViewBag.PageSize = 15;
+
+                if(options.PageSize != null)
+                {
+                    ViewBag.PageSize = options.PageSize;
+                }
+                else
+                {
+                    ViewBag.PageSize = 0;
+                }
+				
 
 				if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
 				{

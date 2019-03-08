@@ -15,6 +15,9 @@
 	<wv-column span="4">
 		<wv-field-datasource name="is_visible" label-text="Is Rendered" value="@options.IsVisible" page-id="erpRequest.Page.Id" placeholder="true"></wv-field-datasource>
 	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="id" value="@options.Id" label-text="Id"></wv-field-text>
+	</wv-column>
 </wv-row>
 <wv-row>
 	<wv-column span="4">
@@ -24,7 +27,7 @@
 		<wv-field-datasource name="records" value="@options.Records" label-text="Records" page-id="erpRequest.Page.Id"></wv-field-datasource>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-text name="id" value="@options.Id" label-text="Id"></wv-field-text>
+		<wv-field-number name="page_size" value="@options.PageSize" label-text="Page size" placeholder="empty or 0 for unlimited"></wv-field-number>
 	</wv-column>
 </wv-row>
 <wv-row>
@@ -74,8 +77,8 @@
 
 @for (int i = 1; i <= 12; i++)
 {
-	<div id="@($"section-column{i}")" class="mt-3 @(options.VisibleColumns > i - 1 ? "" : "d-none")">
-		<h4 class="go-teal">@("Column " + i)</h4>
+    <wv-section id="@($"section-column{i}")" class="mt-3 with-background @(options.VisibleColumns > i - 1 ? "" : "d-none")"
+        is-collapsable="true" is-collapsed="true" title="@("Column " + i)" title-tag="h5" is-card="true">
 		<wv-row>
 			@{
 				var columnLabel = (options.GetType().GetProperty($"Container{i}Label").GetValue(options, null) ?? "").ToString();
@@ -121,7 +124,7 @@
 				<wv-field-select name="@($"container{i}_horizontal_align")" value="@horizontalAlign" label-text="@($"Column {i} Horizontal Align")" options="@horizontalAlignmentOptions"></wv-field-select>
 			</wv-column>
 		</wv-row>
-	</div>
+    </wv-section>
 }
 
 
