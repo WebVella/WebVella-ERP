@@ -290,7 +290,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				if (!String.IsNullOrWhiteSpace(toolbarContentHtml))
 				{
 					var wrapEl = new TagBuilder("div");
-					wrapEl.AddCssClass("page-header-toolbar pl-2 pr-2");
+					wrapEl.AddCssClass("page-header-toolbar");
 					wrapEl.InnerHtml.AppendHtml(toolbarContentHtml);
 					output.Content.AppendHtml(wrapEl);
 				}

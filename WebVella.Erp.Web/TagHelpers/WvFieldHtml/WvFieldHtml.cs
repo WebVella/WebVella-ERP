@@ -292,15 +292,15 @@ namespace WebVella.Erp.Web.TagHelpers
 						editModalFooter.AddCssClass("modal-footer");
 						var editModalFooterSave = new TagBuilder("button");
 						editModalFooterSave.Attributes.Add("type", "button");
-						editModalFooterSave.AddCssClass("btn btn-primary save");
+						editModalFooterSave.AddCssClass("btn btn-primary save btn-sm");
 						var editModalFooterSaveIcon = new TagBuilder("span");
 						editModalFooterSaveIcon.AddCssClass("fa fa-check");
 						editModalFooterSave.InnerHtml.AppendHtml(editModalFooterSaveIcon);
-						editModalFooterSave.InnerHtml.AppendHtml("save");
+						editModalFooterSave.InnerHtml.AppendHtml(" save");
 						editModalFooter.InnerHtml.AppendHtml(editModalFooterSave);
 						var editModalFooterCancel = new TagBuilder("button");
 						editModalFooterCancel.Attributes.Add("type", "button");
-						editModalFooterCancel.AddCssClass("btn btn-secondary cancel");
+						editModalFooterCancel.AddCssClass("btn btn-secondary cancel btn-sm");
 						editModalFooterCancel.InnerHtml.Append("cancel");
 						editModalFooter.InnerHtml.AppendHtml(editModalFooterCancel);
 						editModalContent.InnerHtml.AppendHtml(editModalFooter);

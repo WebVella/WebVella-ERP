@@ -74,7 +74,12 @@ textarea.autogrow {
     vertical-align:middle;    
 }
 
-
+a {
+    color:#2196F3;
+}
+a:hover {
+    color:#0D47A1;
+}
 /*#endregion*/
 
 /*#region << Colors >> */
@@ -5665,109 +5670,112 @@ wv-pb-manager .wv-pb-node > div > .row {
 
 /*#region << Path >>*/
 
-  .path{
-        display:flex;
-        align-items:flex-start;
-        flex-flow:row;
-        overflow:hidden;
-        list-style:none;
-        margin:0;
-        padding:0;
-        font-size:12px;
+
+.path {
+    display: flex;
+    align-items: flex-start;
+    flex-flow: row;
+    overflow: hidden;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+}
+
+    .path .item {
+        position: relative;
+        flex: 1;
+        min-width: 5em;
+        text-align: center;
+        margin-left: .375em;
+        margin-right: .4375em;
+        background: #ecebea;
+        color: #555;
+        list-style: none;
     }
 
-        .path .item {
-            position:relative;
-            flex:1;
-            min-width:5em;
-            text-align:center;
-            margin-left: .375em;
-            margin-right:.4375em;
-            background:#ecebea;
-            color:#555;
-            list-style:none;
+        .path .item:first-child {
+            margin-left: 0;
+            border-top-left-radius: 2em;
+            border-bottom-left-radius: 2em;
+            padding-left: .625em;
         }
 
-            .path .item:first-child {
-                margin-left: 0;
-                border-top-left-radius:2em;
-                border-bottom-left-radius:2em;
-                padding-left:.625em;
-            }
+        .path .item:last-child {
+            margin-right: 0;
+            border-top-right-radius: 2em;
+            border-bottom-right-radius: 2em;
+            padding-right: .625em;
+        }
 
-            .path .item:last-child {
-                margin-right:0;
-                border-top-right-radius:2em;
-                border-bottom-right-radius:2em;
-                padding-right:.625em;
-            }
+        .path .item:before,
+        .path .item:after {
+            content: "";
+            position: absolute;
+            left: -.25em;
+            right: -.3125em;
+            /*cursor: pointer;*/
+            background: #ecebea;
+        }
 
-                .path .item:before,
-                .path .item:after {
-                    content:"";
-                    position:absolute;
-                    left:-.25em;
-                    right:-.3125em;
-                    cursor:pointer;
-                    background:#ecebea;
-                }
+        .path .item:before {
+            top: 0;
+            height: calc((2em/2) + 0.0625em);
+            transform: skew(28deg) translate3d(0,0,0);
+        }
 
-            .path .item:before {
-                top:0;
-                height:calc((2em/2) + 0.0625em);
-                transform:skew(28deg) translate3d(0,0,0);
-            }
+        .path .item:after {
+            bottom: 0;
+            height: 1em;
+            transform: skew(-30deg) translate3d(0,0,0);
+        }
 
-            .path .item:after {
-                bottom:0;
-                height:1em;
-                transform:skew(-30deg) translate3d(0,0,0);
-            }
+        .path .item:first-child:before,
+        .path .item:first-child:after {
+            left: 1.125em;
+        }
 
-                .path .item:first-child:before,
-                .path .item:first-child:after{
-                    left:1.125em;
-                }
-
-                .path .item:last-child:before,
-                .path .item:last-child:after{
-                    right:.625em;
-                }
+        .path .item:last-child:before,
+        .path .item:last-child:after {
+            right: .625em;
+        }
 
 
-            .path .item .link {
-                position:relative;
-                display:flex;
-                justify-content:center;
-                align-items:center;
-                height:2em;
-                padding:.5em .25em .5em .5em;
-                text-decoration:none;
-                z-index:5;
-                cursor:pointer;
-            }
+        .path .item .link {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 2em;
+            padding: .5em .25em .5em .5em;
+            text-decoration: none;
+            z-index: 5;
+            /*cursor: pointer;*/
+        }
 
-            .path .item.completed,
-            .path .item.completed:before,
-            .path .item.completed:after{
-                color:white;
-                background:#4CAF50;
-            }
+        .path .item.completed,
+        .path .item.completed:before,
+        .path .item.completed:after,
+        .path .item.current.completed,
+        .path .item.current.completed:before,
+        .path .item.current.completed:after {
+            color: white;
+            background: #66BB6A;
+        }
 
-            .path .item.current,
-            .path .item.current:before,
-            .path .item.current:after{
-                color:white;
-                background:#2196F3;
-            }
+        .path .item.current,
+        .path .item.current:before,
+        .path .item.current:after {
+            color: white;
+            background: #42A5F5;
+        }
 
             .path .item.current.danger,
             .path .item.current.danger:before,
-            .path .item.current.danger:after{
-                color:white;
-                background:#F44336;
+            .path .item.current.danger:after {
+                color: white;
+                background: #EF5350;
             }
-
 /*#endregion*/
 
 /*#endregion*/
