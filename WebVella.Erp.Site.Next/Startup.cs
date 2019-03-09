@@ -64,7 +64,7 @@ namespace WebVella.Erp.Site.Next
 						options.LoginPath = new PathString("/login");
 						options.LogoutPath = new PathString("/logout");
 						options.AccessDeniedPath = new PathString("/error?access_denied");
-						options.ReturnUrlParameter = "ret_url";
+						options.ReturnUrlParameter = "returnUrl";
 					});
 
 			services.AddErp();

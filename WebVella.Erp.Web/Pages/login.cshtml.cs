@@ -18,7 +18,7 @@ namespace WebVella.Erp.Web.Pages
 		[BindProperty]
 		public string Password { get; set; }
 
-		[BindProperty]
+		[BindProperty (Name = "returnUrl")]
 		public new string ReturnUrl { get; set; }
 
 		[BindProperty]
