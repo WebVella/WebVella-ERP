@@ -30,7 +30,7 @@ namespace WebVella.Erp.Web.Components
 			public string Title { get; set; } = "";
 
 			[JsonProperty(PropertyName = "title_tag")]
-			public string TitleTag { get; set; } = "h3";
+			public string TitleTag { get; set; } = "h4";
 
 			[JsonProperty(PropertyName = "class")]
 			public string Class { get; set; } = "";
