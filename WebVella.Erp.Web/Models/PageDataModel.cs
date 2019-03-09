@@ -527,6 +527,8 @@ namespace WebVella.Erp.Web.Models
 						var result = ExecDataSource(dsw);
 						if (result is List<EntityRecord> || result is EntityRecordList)
 							mpw = new MPW(MPT.ListEntityRecords, result);
+						else if (result is EntityRecord )
+							mpw = new MPW(MPT.EntityRecord, result);
 						else
 							mpw = new MPW(MPT.Object, result);
 					}
