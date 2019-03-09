@@ -264,72 +264,106 @@ namespace WebVella.Erp.Web.TagHelpers
 				}
 				else if (Access == FieldAccess.ReadOnly)
 				{
-					var inputGroupEl = new TagBuilder("div");
-					inputGroupEl.AddCssClass("input-group");
+                    //Have to render it as a normal select as readonly prop does not work with select 2. Also in order for the select not to work it should be disabled,
+                    //which will not pass the value, this the hidden input
 
-					//Prepend
-					if (PrependHtml.Count > 0)
-					{
-						var prependEl = new TagBuilder("span");
-						prependEl.AddCssClass($"input-group-prepend {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
-						foreach (var htmlString in PrependHtml)
-						{
-							prependEl.InnerHtml.AppendHtml(htmlString);
-						}
-						inputGroupEl.InnerHtml.AppendHtml(prependEl);
-					}
-					//Control
-					var formControlEl = new TagBuilder("div");
-					formControlEl.AddCssClass("form-control erp-select");
-					formControlEl.Attributes.Add("disabled",null);
-					formControlEl.Attributes.Add("name", Name);
+                    //Hidden input
+                    var hiddenEl = new TagBuilder("input");
+                    hiddenEl.Attributes.Add("id", $"input-{FieldId}");
+                    hiddenEl.Attributes.Add("name", $"{Name}");
+                    hiddenEl.Attributes.Add("value", (Value ?? "").ToString());
+                    hiddenEl.Attributes.Add("type", "hidden");
+                    output.Content.AppendHtml(hiddenEl);
 
-					var optionEl = new TagBuilder("span");
-					var selectedOption = Options.FirstOrDefault(x => x.Value == (Value ?? "").ToString());
-					if (selectedOption == null)
-					{
-						optionEl.InnerHtml.Append((Value ?? "").ToString());
-						if (Value != null && (Value.ToString() != "")){
-							var optionElIcon = new TagBuilder("span");
-							optionElIcon.AddCssClass("fa fa-fw fa-exclamation-circle go-red");
-							optionElIcon.Attributes.Add("title", "the value is not supported by this field anymore");
-							optionEl.InnerHtml.AppendHtml(optionElIcon);
-						}
-					}
-					else {
-						optionEl.Attributes.Add("title", selectedOption.Label);
-						optionEl.Attributes.Add("data-key", (Value ?? "").ToString());
-						if (String.IsNullOrWhiteSpace(selectedOption.IconClass))
-						{
-							optionEl.InnerHtml.Append(selectedOption.Label);
-						}
-						else
-						{
-							var color = "#999";
-							if (!String.IsNullOrWhiteSpace(selectedOption.Color))
-								color = selectedOption.Color;
+                    var inputGroupEl = new TagBuilder("div");
+                    if (PrependHtml.Count > 0 || AppendHtml.Count > 0)
+                    {
+                        inputGroupEl.AddCssClass("input-group");
+                    }
+                    else
+                    {
+                        inputGroupEl.AddCssClass("d-flex");
+                    }
+                    //Prepend
+                    if (PrependHtml.Count > 0)
+                    {
+                        var prependEl = new TagBuilder("span");
+                        prependEl.AddCssClass($"input-group-prepend {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
+                        foreach (var htmlString in PrependHtml)
+                        {
+                            prependEl.InnerHtml.AppendHtml(htmlString);
+                        }
+                        inputGroupEl.InnerHtml.AppendHtml(prependEl);
+                    }
 
-							optionEl.InnerHtml.AppendHtml($"<i class=\"{selectedOption.IconClass}\" style=\"color:{color}\"></i> {selectedOption.Label}");
-						}
-					}
-					formControlEl.InnerHtml.AppendHtml(optionEl);
-					inputGroupEl.InnerHtml.AppendHtml(formControlEl);
+                    //Dummy disabled select
+                    var selectEl = new TagBuilder("select");
+                    selectEl.Attributes.Add("id", $"select-{FieldId}");
+                    selectEl.Attributes.Add("readonly", null);
+                    selectEl.Attributes.Add("disabled", "disabled");
+                    var inputElCssClassList = new List<string>();
+                    inputElCssClassList.Add("form-control erp-select");
+                    if (ValidationErrors.Count > 0)
+                    {
+                        inputElCssClassList.Add("is-invalid");
+                    }
+                    selectEl.Attributes.Add("class", String.Join(' ', inputElCssClassList));
+                    if (Required)
+                    {
+                        selectEl.Attributes.Add("required", null);
 
-					//Append
-					if (AppendHtml.Count > 0)
-					{
-						var appendEl = new TagBuilder("span");
-						appendEl.AddCssClass($"input-group-append {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
+                        if (String.IsNullOrWhiteSpace(Value))
+                        {
+                            var defaultOption = Options.FirstOrDefault(x => x.Value == DefaultValue);
 
-						foreach (var htmlString in AppendHtml)
-						{
-							appendEl.InnerHtml.AppendHtml(htmlString);
-						}
-						inputGroupEl.InnerHtml.AppendHtml(appendEl);
-					}
+                            if (defaultOption != null)
+                            {
+                                Value = DefaultValue;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var optionEl = new TagBuilder("option");
+                        // Should work only with <option></option> and the select2 placeholder to be presented
+                        //optionEl.Attributes.Add("value", "");
+                        //if (String.IsNullOrWhiteSpace(Value))
+                        //{
+                        //    optionEl.Attributes.Add("selected", null);
+                        //}
+                        //optionEl.InnerHtml.Append("not selected");
+                        selectEl.InnerHtml.AppendHtml(optionEl);
+                    }
 
-					output.Content.AppendHtml(inputGroupEl);
-				}
+                    foreach (var option in Options)
+                    {
+                        var optionEl = new TagBuilder("option");
+                        optionEl.Attributes.Add("value", option.Value);
+                        if (option.Value == (Value ?? "").ToString())
+                        {
+                            optionEl.Attributes.Add("selected", null);
+                        }
+                        optionEl.Attributes.Add("data-icon", option.IconClass);
+                        optionEl.Attributes.Add("data-color", option.Color);
+                        optionEl.InnerHtml.Append(option.Label);
+                        selectEl.InnerHtml.AppendHtml(optionEl);
+                    }
+                    inputGroupEl.InnerHtml.AppendHtml(selectEl);
+                    //Append
+                    if (AppendHtml.Count > 0)
+                    {
+                        var appendEl = new TagBuilder("span");
+                        appendEl.AddCssClass($"input-group-append {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
+
+                        foreach (var htmlString in AppendHtml)
+                        {
+                            appendEl.InnerHtml.AppendHtml(htmlString);
+                        }
+                        inputGroupEl.InnerHtml.AppendHtml(appendEl);
+                    }
+
+                    output.Content.AppendHtml(inputGroupEl);
+                }
 			}
 			else if (Mode == FieldRenderMode.Display)
 			{

@@ -250,91 +250,79 @@ namespace WebVella.Erp.Web.TagHelpers
 				}
 				else if (Access == FieldAccess.ReadOnly)
 				{
-					var inputGroupEl = new TagBuilder("div");
-					inputGroupEl.AddCssClass("input-group");
+                    //Have to render it as a normal select as readonly prop does not work with select 2. Also in order for the select not to work it should be disabled,
+                    //which will not pass the value, this the hidden input
 
-					//Prepend
-					if (PrependHtml.Count > 0)
-					{
-						var prependEl = new TagBuilder("span");
-						prependEl.AddCssClass($"input-group-prepend {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
-						foreach (var htmlString in PrependHtml)
-						{
-							prependEl.InnerHtml.AppendHtml(htmlString);
-						}
-						inputGroupEl.InnerHtml.AppendHtml(prependEl);
-					}
-					//Control
-					var formControlEl = new TagBuilder("div");
-					formControlEl.AddCssClass("form-control erp-multiselect");
+                    var hiddenInput = new TagBuilder("input");
+                    hiddenInput.Attributes.Add("type", "hidden");
+                    hiddenInput.Attributes.Add("id", $"input-{FieldId}");
+                    hiddenInput.Attributes.Add("name", $"{Name}");
+                    hiddenInput.Attributes.Add("value", (Value ?? "").ToString());
+                    output.Content.AppendHtml(hiddenInput);
 
-					var select2ContainerEl = new TagBuilder("span");
-					select2ContainerEl.AddCssClass("select2 select2-container select2-container--default d-block");
 
-					var select2SelectionEl = new TagBuilder("span");
-					select2SelectionEl.AddCssClass("selection");
+                    var inputGroupEl = new TagBuilder("div");
+                    inputGroupEl.AddCssClass("input-group");
+                    //Prepend
+                    if (PrependHtml.Count > 0)
+                    {
+                        var prependEl = new TagBuilder("span");
+                        prependEl.AddCssClass($"input-group-prepend {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
+                        foreach (var htmlString in PrependHtml)
+                        {
+                            prependEl.InnerHtml.AppendHtml(htmlString);
+                        }
+                        inputGroupEl.InnerHtml.AppendHtml(prependEl);
+                    }
 
-					var select2SelectionInnerEl = new TagBuilder("span");
-					select2SelectionInnerEl.AddCssClass("select2-selection select2-selection--multiple");
 
-					var select2SelectionUlEl = new TagBuilder("ul");
-					select2SelectionUlEl.AddCssClass("select2-selection__rendered");
+                    //Control
+                    var selectEl = new TagBuilder("select");
+                    selectEl.Attributes.Add("id", $"select-{FieldId}");
+                    selectEl.Attributes.Add("readonly", null);
+                    selectEl.Attributes.Add("disabled", $"disabled");
+                    var inputElCssClassList = new List<string>();
+                    inputElCssClassList.Add("form-control erp-multiselect invisible");
+                    if (ValidationErrors.Count > 0)
+                    {
+                        inputElCssClassList.Add("is-invalid");
+                    }
+                    selectEl.Attributes.Add("class", String.Join(' ', inputElCssClassList));
+                    if (Required)
+                    {
+                        selectEl.Attributes.Add("required", null);
+                    }
 
-					foreach (var dataKey in Value)
-					{
-						var optionEl = new TagBuilder("li");
-						var option = Options.FirstOrDefault(x => x.Value == dataKey);
-						if (option == null)
-						{
-							optionEl.AddCssClass("select2-selection__choice missing");
-							optionEl.Attributes.Add("title", dataKey);
-							optionEl.Attributes.Add("data-key", dataKey);
-							optionEl.InnerHtml.Append(dataKey);
-							if (Value != null && (Value.ToString() != ""))
-							{
-								var optionElIcon = new TagBuilder("span");
-								optionElIcon.AddCssClass("fa fa-fw fa-exclamation-circle go-red");
-								optionElIcon.Attributes.Add("title", "the value is not supported by this field anymore");
-								optionEl.InnerHtml.AppendHtml(optionElIcon);
-							}
-						}
-						else {
-							optionEl.AddCssClass("select2-selection__choice");
-							optionEl.Attributes.Add("title", option.Label);
-							optionEl.Attributes.Add("data-key", dataKey);
-							optionEl.InnerHtml.Append(option.Label);
-						}
-						select2SelectionUlEl.InnerHtml.AppendHtml(optionEl);
-					}
+                    selectEl.Attributes.Add("multiple", "multiple");
 
-					select2SelectionInnerEl.InnerHtml.AppendHtml(select2SelectionUlEl);
-					select2SelectionEl.InnerHtml.AppendHtml(select2SelectionInnerEl);
-					select2ContainerEl.InnerHtml.AppendHtml(select2SelectionEl);
-					formControlEl.InnerHtml.AppendHtml(select2ContainerEl);
-					inputGroupEl.InnerHtml.AppendHtml(formControlEl);
-					//Append
-					if (AppendHtml.Count > 0)
-					{
-						var appendEl = new TagBuilder("span");
-						appendEl.AddCssClass($"input-group-append {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
+                    foreach (var option in Options)
+                    {
+                        var optionEl = new TagBuilder("option");
+                        optionEl.Attributes.Add("value", option.Value);
+                        if (Value != null && ((List<string>)Value).Any(x => x == option.Value))
+                        {
+                            optionEl.Attributes.Add("selected", null);
+                        }
+                        optionEl.InnerHtml.Append(option.Label);
+                        selectEl.InnerHtml.AppendHtml(optionEl);
+                    }
 
-						foreach (var htmlString in AppendHtml)
-						{
-							appendEl.InnerHtml.AppendHtml(htmlString);
-						}
-						inputGroupEl.InnerHtml.AppendHtml(appendEl);
-					}
+                    inputGroupEl.InnerHtml.AppendHtml(selectEl);
+                    //Append
+                    if (AppendHtml.Count > 0)
+                    {
+                        var appendEl = new TagBuilder("span");
+                        appendEl.AddCssClass($"input-group-append {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
 
-					//Hidden input with the value
-					var hiddenInput = new TagBuilder("input");
-					hiddenInput.Attributes.Add("type", "hidden");
-					hiddenInput.Attributes.Add("id", $"input-{FieldId}");
-					hiddenInput.Attributes.Add("name", Name);
-					hiddenInput.Attributes.Add("value", (Value ?? "").ToString());
-					output.Content.AppendHtml(hiddenInput);
+                        foreach (var htmlString in AppendHtml)
+                        {
+                            appendEl.InnerHtml.AppendHtml(htmlString);
+                        }
+                        inputGroupEl.InnerHtml.AppendHtml(appendEl);
+                    }
 
-					output.Content.AppendHtml(inputGroupEl);
-				}
+                    output.Content.AppendHtml(inputGroupEl);
+                }
 			}
 			else if (Mode == FieldRenderMode.Display)
 			{
