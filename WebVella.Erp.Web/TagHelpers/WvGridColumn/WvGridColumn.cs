@@ -35,7 +35,10 @@ namespace WebVella.Erp.Web.TagHelpers
 		[HtmlAttributeName("class")]
 		public string Class { get; set; } = null;
 
-		[HtmlAttributeName("width")]
+        [HtmlAttributeName("colspan")]
+        public int? Colspan { get; set; } = null;
+
+        [HtmlAttributeName("width")]
 		public string Width { get; set; } = "";
 
 		public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
@@ -102,6 +105,10 @@ namespace WebVella.Erp.Web.TagHelpers
 			if (styleList.Count > 0) {
 				output.Attributes.Add("style", String.Join("; ",styleList));
 			}
+
+            if (Colspan != null) {
+                output.Attributes.Add("colspan", Colspan);
+            }
 
 			#endregion
 

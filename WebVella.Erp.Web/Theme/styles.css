@@ -4802,7 +4802,7 @@ border-bottom-style:dashed;
 				position: absolute;
 				left: 0;
 				right: 0;
-				bottom: -2px;
+				bottom: 0;
 				height: 3px;
 				content: "";
 				display: inline-block;
