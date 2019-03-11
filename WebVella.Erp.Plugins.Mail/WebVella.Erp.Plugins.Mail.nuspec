@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>WebVella.Erp.Plugins.Mail</id>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 		<title>WebVella.Erp.Plugins.Mail</title>
 		<authors>WebVella</authors>
 		<owners>WebVella</owners>
@@ -16,9 +16,9 @@
 		<tags></tags>
 		<dependencies>
 			<group targetFramework=".NETCoreApp2.2">
-				<dependency id="WebVella.Erp" version="1.0.2" />
-				<dependency id="WebVella.Erp.Web" version="1.0.2" />
-				<dependency id="MailKit" version="2.1.2" />
+				<dependency id="WebVella.Erp" version="1.0.16" />
+				<dependency id="WebVella.Erp.Web" version="1.0.16" />
+				<dependency id="MailKit" version="2.1.3" />
 			</group>
 		</dependencies>
 	</metadata>
