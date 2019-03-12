@@ -11,7 +11,7 @@ namespace WebVella.Erp.Web.DataSource
 		public EntityRecordListToSelectOptionConverter() : base()
 		{
 			Id = new Guid("12dcdf08-af03-4347-8015-bd9bace17514");
-			Name = "EntityRecordToSelectOption";
+			Name = "EntityRecordToSelectOptions";
 			Description = "Mapper for EntityRecord to SelectOption";
 			ResultModel = "List<SelectOption>";
 
