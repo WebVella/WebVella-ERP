@@ -8029,6 +8029,7 @@ var doc$1 = document;
 var documentElement = doc$1.documentElement;
 
 function dragula (initialContainers, options) {
+	//console.log("dragula loaded boz");
   var len = arguments.length;
   if (len === 1 && Array.isArray(initialContainers) === false) {
     options = initialContainers;
@@ -8061,7 +8062,9 @@ function dragula (initialContainers, options) {
   if (o.direction === void 0) { o.direction = 'vertical'; }
   if (o.ignoreInputTextSelection === void 0) { o.ignoreInputTextSelection = true; }
   if (o.mirrorContainer === void 0) { o.mirrorContainer = doc$1.body; }
-
+	if (o.slideFactorY === void 0) { o.slideFactorY = 25; }
+  if (o.slideFactorX === void 0) { o.slideFactorX = 25; }
+  
   var drake = emitter({
     containers: o.containers,
     start: manualStart,
@@ -8146,7 +8149,9 @@ function dragula (initialContainers, options) {
       return; // when text is selected on an input and then dragged, mouseup doesn't fire. this is our only hope
     }
     // truthy check fixes #239, equality fixes #207
-    if (e.clientX !== void 0 && e.clientX === _moveX && e.clientY !== void 0 && e.clientY === _moveY) {
+	if ((e.clientX !== void 0 && Math.abs(e.clientX - _moveX) <= (o.slideFactorX || 0)) &&
+       (e.clientY !== void 0 && Math.abs(e.clientY - _moveY) <= (o.slideFactorY || 0))) {
+		   //console.log("boz");
       return;
     }
     if (o.ignoreInputTextSelection) {

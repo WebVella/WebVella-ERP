@@ -328,7 +328,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					var prevBtnEl = new TagBuilder("button");
 					prevBtnEl.Attributes.Add("type", "button");
 					prevBtnEl.Attributes.Add("title", "Previous page");
-					prevBtnEl.AddCssClass($"btn-sm btn-outline-secondary {(pagePrevDisabled ? "disabled" : "")}");
+					prevBtnEl.AddCssClass($"btn btn-sm btn-outline-secondary {(pagePrevDisabled ? "disabled" : "")}");
 					if (pagePrevDisabled)
 					{
 						prevBtnEl.Attributes.Add("disabled", "disabled");
