@@ -45,8 +45,6 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 
 		private void InitPage()
 		{
-			Init();
-
 			#region << Init Roles >>
 			var roles = new SecurityManager().GetAllRoles().OrderBy(x => x.Name).ToList();
 			foreach (var role in roles)
@@ -70,6 +68,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 
 		public IActionResult OnGet()
 		{
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			InitPage();
 
 			ErpRequestContext.PageContext = PageContext;
@@ -83,6 +85,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 		public IActionResult OnPost()
 		{
 			if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
+
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
 
 			InitPage();
 

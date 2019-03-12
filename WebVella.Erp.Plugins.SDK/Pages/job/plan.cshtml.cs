@@ -36,9 +36,12 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Job
 
 		public List<string> HeaderToolbar { get; private set; } = new List<string>();
 
-		public void OnGet()
+		public IActionResult OnGet()
 		{
-			Init();
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 
 			#region << InitPage >>
 
@@ -120,6 +123,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Job
 			#endregion
 
 			BeforeRender();
+			return Page();
 		}
 
 		public IActionResult OnPost()

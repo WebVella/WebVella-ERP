@@ -35,9 +35,11 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Page
 
 		public string ReturnUrlEncoded { get; set; } = "";
 
-		public void OnGet()
+		public IActionResult OnGet()
 		{
-			Init();
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
 
 			#region << InitPage >>
 			int pager = 0;
@@ -271,11 +273,15 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Page
 			#endregion
 
 			BeforeRender();
+			return Page();
 		}
 
 		public IActionResult OnPost()
 		{
-			Init();
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			var pageServ = new PageService();
 
 			if (!PageContext.HttpContext.Request.Query.ContainsKey("pageId"))

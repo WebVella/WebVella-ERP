@@ -51,8 +51,6 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 
 		private void InitPage()
 		{
-			Init();
-
 			#region << Init App >>
 			var appServ = new AppService();
 			App = appServ.GetApplication(RecordId ?? Guid.Empty);
@@ -98,6 +96,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 
 		public IActionResult OnGet()
 		{
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			InitPage();
 
 			if (App == null)
@@ -114,6 +116,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 		public IActionResult OnPost()
 		{
 			if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
+
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
 
 			InitPage();
 

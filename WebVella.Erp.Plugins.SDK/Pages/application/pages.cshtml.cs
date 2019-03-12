@@ -34,8 +34,6 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 
 		public void PageInit()
 		{
-			Init();
-
 			#region << Init App >>
 			var appServ = new AppService();
 			App = appServ.GetApplication(RecordId ?? Guid.Empty);
@@ -57,6 +55,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 
 		public IActionResult OnGet()
 		{
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			PageInit();
 			if (App == null)
 				return NotFound();
@@ -85,8 +87,5 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 			BeforeRender();
 			return Page();
 		}
-
-
-
 	}
 }

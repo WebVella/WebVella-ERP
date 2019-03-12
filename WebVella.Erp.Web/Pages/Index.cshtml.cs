@@ -24,8 +24,8 @@ namespace WebVella.Erp.Web.Pages
         {
 			try
 			{
-				Init();
-
+				var initResult = Init();
+				if (initResult != null) return initResult;
 				if (ErpRequestContext.Page == null) return NotFound();
 
 				var globalHookInstances = HookManager.GetHookedInstances<IPageHook>(HookKey);
@@ -59,7 +59,8 @@ namespace WebVella.Erp.Web.Pages
 			try
 			{
 				if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
-				Init();
+				var initResult = Init();
+				if (initResult != null) return initResult;
 				if (ErpRequestContext.Page == null) return NotFound();
 
 				var globalHookInstances = HookManager.GetHookedInstances<IPageHook>(HookKey);

@@ -67,8 +67,6 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Job
 
 		private void InitPage()
 		{
-			Init();
-
 			HeaderToolbar.AddRange(AdminPageUtils.GetJobAdminSubNav("plan"));
 
 			if (RecordId != null)
@@ -83,6 +81,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Job
 
 		public IActionResult OnGet()
 		{
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			InitPage();
 
 			if (Plan == null)
@@ -125,6 +127,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Job
 		public IActionResult OnPost()
 		{
 			if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
+
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
 
 			InitPage();
 

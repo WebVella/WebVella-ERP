@@ -12,8 +12,8 @@ namespace WebVella.Erp.Web.Pages
 
 		public IActionResult OnGet([FromServices]AuthService authService)
         {
-			Init();
-
+			var initResult = Init();
+			if (initResult != null) return initResult;
 			authService.Logout();
 
 			var globalHookInstances = HookManager.GetHookedInstances<IPageHook>(HookKey);
@@ -35,8 +35,8 @@ namespace WebVella.Erp.Web.Pages
 
 		public IActionResult OnPost([FromServices]AuthService authService)
 		{
-			Init();
-
+			var initResult = Init();
+			if (initResult != null) return initResult;
 			authService.Logout();
 
 			var globalHookInstances = HookManager.GetHookedInstances<IPageHook>(HookKey);

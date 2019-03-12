@@ -55,8 +55,6 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 		public void InitPage()
 		{
-			Init();
-
 			if (String.IsNullOrWhiteSpace(ReturnUrl))
 				ReturnUrl = "/sdk/objects/entity/l/list";
 
@@ -102,6 +100,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 		public IActionResult OnGet()
 		{
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			InitPage();
 
 			ErpRequestContext.PageContext = PageContext;
@@ -113,6 +115,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 		public IActionResult OnPost()
 		{
 			if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
+
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
 
 			InitPage();
 

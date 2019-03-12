@@ -55,8 +55,6 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 		public void PageInit()
 		{
-			Init();
-
 			if (String.IsNullOrWhiteSpace(ReturnUrl))
 				ReturnUrl = $"/sdk/objects/entity/r/{ErpEntity.Id}/rl/relations/l";
 
@@ -94,6 +92,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 		public IActionResult OnGet()
 		{
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			PageInit();
 			if (ErpEntity == null)
 				return NotFound();
@@ -106,6 +108,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 		public IActionResult OnPost()
 		{
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			PageInit();
 			if (ErpEntity == null)
 				return NotFound();

@@ -35,7 +35,6 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 
 		public void InitPage()
 		{
-			Init();
 
 			HeaderActions.AddRange(new List<string>() {
 
@@ -47,6 +46,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 
 		public IActionResult OnGet()
         {
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			InitPage();
 
 			ErpRequestContext.PageContext = PageContext;
@@ -58,6 +61,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 		public IActionResult OnPost()
 		{
 			if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
+
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
 
 			InitPage();
 		

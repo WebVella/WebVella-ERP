@@ -40,7 +40,9 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 		public IActionResult OnGet()
 		{
-			Init();
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
 
 			var entMan = new EntityManager();
 			var relMan = new EntityRelationManager();
