@@ -1432,7 +1432,9 @@ namespace WebVella.Erp.Web.Services
 
             }
 
-            var mappedRecord = new EntityRecord();
+			List<string> propertiesToRemove = new List<string>();
+            
+			var mappedRecord = new EntityRecord();
             foreach (var key in resultRecord.Properties.Keys)
             {
                 if (fieldTypeDictionary.ContainsKey(key))
@@ -1441,11 +1443,26 @@ namespace WebVella.Erp.Web.Services
                     if (relationsFieldTypeDictionary.ContainsKey(key))
                         relatedFieldType = relationsFieldTypeDictionary[key];
 
-                    MapRecordToModelType(mappedRecord, resultRecord, key, fieldTypeDictionary[key], relatedFieldType);
+					try
+					{
+						MapRecordToModelType(mappedRecord, resultRecord, key, fieldTypeDictionary[key], relatedFieldType);
+					}
+					catch(Exception ex)
+					{
+						//we remove properties (relational type) where value is not from expected type.
+						//this is because there are pages with forms which posts custom, non related to entity meta data
+						if (ex.Message == "1000")
+							propertiesToRemove.Add(key);
+
+						throw;
+					}
                 }
             }
 
-            return mappedRecord;
+			foreach (string key in propertiesToRemove)
+				resultRecord.Properties.Remove(key);
+
+			return mappedRecord;
         }
 
 
@@ -1837,7 +1854,7 @@ namespace WebVella.Erp.Web.Services
                 case FieldType.RelationField:
                     {
                         if (relatedFieldType == null)
-                            throw new Exception("Related field type is not specified for selection.");
+                            throw new Exception("1000");
 
                         var value = resultRecord[key];
                         bool isArray = value.GetType().IsArray;
@@ -1863,7 +1880,7 @@ namespace WebVella.Erp.Web.Services
                                 }
                                 break;
                             default:
-                                throw new Exception("Not supported related field type is not specified for selection.");
+                                throw new Exception("1000");
                         }
                     }
                     break;
