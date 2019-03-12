@@ -132,6 +132,77 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			new SmtpInternalService().SaveEmail(email);
 		}
 
+		public void SendEmail(string recipientName, string recipientEmail, string senderName, string senderEmail, string subject, string textBody, string htmlBody)
+		{
+			ValidationException ex = new ValidationException();
+
+			if (string.IsNullOrEmpty(recipientEmail))
+				ex.AddError("recipientEmail", "Recipient email is not specified.");
+			else if (!recipientEmail.IsEmail())
+				ex.AddError("recipientEmail", "Recipient email is not valid email address.");
+
+			if (string.IsNullOrEmpty(subject))
+				ex.AddError("subject", "Subject is required.");
+
+			ex.CheckAndThrow();
+
+			var message = new MimeMessage();
+			if (!string.IsNullOrWhiteSpace(senderName))
+				message.From.Add(new MailboxAddress(senderName, senderEmail));
+			else
+				message.From.Add(new MailboxAddress(senderEmail));
+
+			if (!string.IsNullOrWhiteSpace(recipientName))
+				message.To.Add(new MailboxAddress(recipientName, recipientEmail));
+			else
+				message.To.Add(new MailboxAddress(recipientEmail));
+
+			if (!string.IsNullOrWhiteSpace(DefaultReplyToEmail))
+				message.ReplyTo.Add(new MailboxAddress(DefaultReplyToEmail));
+
+			message.Subject = subject;
+
+			var bodyBuilder = new BodyBuilder();
+			bodyBuilder.HtmlBody = htmlBody;
+			bodyBuilder.TextBody = textBody;
+			message.Body = bodyBuilder.ToMessageBody();
+
+			using (var client = new SmtpClient())
+			{
+				//accept all SSL certificates (in case the server supports STARTTLS)
+				client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+
+				client.Connect(Server, Port, ConnectionSecurity);
+
+				if (!string.IsNullOrWhiteSpace(Username))
+					client.Authenticate(Username, Password);
+
+				client.Send(message);
+				client.Disconnect(true);
+			}
+
+			Email email = new Email();
+			email.Id = Guid.NewGuid();
+			email.SenderEmail = DefaultSenderEmail;
+			email.SenderName = DefaultSenderName;
+			email.ReplyToEmail = DefaultReplyToEmail;
+			email.RecipientEmail = recipientEmail;
+			email.RecipientName = recipientName;
+			email.Subject = subject;
+			email.ContentHtml = htmlBody;
+			email.ContentText = textBody;
+			email.CreatedOn = DateTime.UtcNow;
+			email.SentOn = email.CreatedOn;
+			email.Priority = EmailPriority.Normal;
+			email.Status = EmailStatus.Sent;
+			email.ServerError = string.Empty;
+			email.ScheduledOn = null;
+			email.RetriesCount = 0;
+			email.ServiceId = Id;
+
+			new SmtpInternalService().SaveEmail(email);
+		}
+
 		public void QueueEmail(string recipientName, string recipientEmail, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal  )
 		{
 			ValidationException ex = new ValidationException();
@@ -160,6 +231,41 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			email.SentOn = null;
 			email.Priority = priority;
 			email.Status = EmailStatus.Pending; 
+			email.ServerError = string.Empty;
+			email.ScheduledOn = email.CreatedOn;
+			email.RetriesCount = 0;
+			email.ServiceId = Id;
+			new SmtpInternalService().SaveEmail(email);
+		}
+
+		public void QueueEmail(string recipientName, string recipientEmail, string senderName, string senderEmail, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal)
+		{
+			ValidationException ex = new ValidationException();
+
+			if (string.IsNullOrEmpty(recipientEmail))
+				ex.AddError("recipientEmail", "Recipient email is not specified.");
+			else if (!recipientEmail.IsEmail())
+				ex.AddError("recipientEmail", "Recipient email is not valid email address.");
+
+			if (string.IsNullOrEmpty(subject))
+				ex.AddError("subject", "Subject is required.");
+
+			ex.CheckAndThrow();
+
+			Email email = new Email();
+			email.Id = Guid.NewGuid();
+			email.SenderEmail = senderEmail;
+			email.SenderName = senderName;
+			email.ReplyToEmail = DefaultReplyToEmail;
+			email.RecipientEmail = recipientEmail;
+			email.RecipientName = recipientName;
+			email.Subject = subject;
+			email.ContentHtml = htmlBody;
+			email.ContentText = textBody;
+			email.CreatedOn = DateTime.UtcNow;
+			email.SentOn = null;
+			email.Priority = priority;
+			email.Status = EmailStatus.Pending;
 			email.ServerError = string.Empty;
 			email.ScheduledOn = email.CreatedOn;
 			email.RetriesCount = 0;
