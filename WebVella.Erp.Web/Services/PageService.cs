@@ -1453,8 +1453,8 @@ namespace WebVella.Erp.Web.Services
 						//this is because there are pages with forms which posts custom, non related to entity meta data
 						if (ex.Message == "1000")
 							propertiesToRemove.Add(key);
-
-						throw;
+						else 
+							throw;
 					}
                 }
             }
