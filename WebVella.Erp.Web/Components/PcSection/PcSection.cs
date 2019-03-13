@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Threading.Tasks;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Models;
@@ -80,42 +82,119 @@ namespace WebVella.Erp.Web.Components
 					return await Task.FromResult<IViewComponentResult>(Content("Error: The page Id is required to be set as query param 'pid', when requesting this component"));
 				}
 
-				var instanceOptions = new PcSectionOptions();
+				var options = new PcSectionOptions();
 				if (context.Options != null)
 				{
-					instanceOptions = JsonConvert.DeserializeObject<PcSectionOptions>(context.Options.ToString());
+					options = JsonConvert.DeserializeObject<PcSectionOptions>(context.Options.ToString());
 				}
 
 				//Check if it is defined in form group
-				if (instanceOptions.LabelMode == LabelRenderMode.Undefined)
+				if (options.LabelMode == LabelRenderMode.Undefined)
 				{
 					if (context.Items.ContainsKey(typeof(LabelRenderMode)))
 					{
-						instanceOptions.LabelMode = (LabelRenderMode)context.Items[typeof(LabelRenderMode)];
+						options.LabelMode = (LabelRenderMode)context.Items[typeof(LabelRenderMode)];
 					}
 					else
 					{
-						instanceOptions.LabelMode = LabelRenderMode.Stacked;
+						options.LabelMode = LabelRenderMode.Stacked;
 					}
 				}
 
 				//Check if it is defined in form group
-				if (instanceOptions.FieldMode == FieldRenderMode.Undefined)
+				if (options.FieldMode == FieldRenderMode.Undefined)
 				{
 					if (context.Items.ContainsKey(typeof(FieldRenderMode)))
 					{
-						instanceOptions.FieldMode = (FieldRenderMode)context.Items[typeof(FieldRenderMode)];
+						options.FieldMode = (FieldRenderMode)context.Items[typeof(FieldRenderMode)];
 					}
 					else
 					{
-						instanceOptions.FieldMode = FieldRenderMode.Form;
+						options.FieldMode = FieldRenderMode.Form;
 					}
 				}
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
-				#endregion
 
-				var isVisible = true;
-				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(instanceOptions.IsVisible);
+                //Init IsCollapsed from userPreferences
+                if (HttpContext.User != null) {
+                    var currentUser = AuthService.GetUser(HttpContext.User);
+                    if (currentUser != null) {
+                        var componentData = new UserPreferencies().GetComponentData(currentUser.Id, "WebVella.Erp.Web.Components.PcSection");
+                        if (componentData != null)
+                        {
+                            var collapsedNodeIds = new List<Guid>();
+                            var uncollapsedNodeIds = new List<Guid>();
+                            if (componentData.Properties.ContainsKey("collapsed_node_ids") && componentData["collapsed_node_ids"] != null)
+                            {
+                                if (componentData["collapsed_node_ids"] is string)
+                                {
+                                    try
+                                    {
+                                        collapsedNodeIds = JsonConvert.DeserializeObject<List<Guid>>((string)componentData["collapsed_node_ids"]);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw new Exception("WebVella.Erp.Web.Components.PcSection component data object in user preferences not in the correct format. collapsed_node_ids should be List<Guid>");
+                                    }
+                                }
+                                else if (componentData["collapsed_node_ids"] is List<Guid>)
+                                {
+                                    collapsedNodeIds = (List<Guid>)componentData["collapsed_node_ids"];
+                                }
+                                else if (componentData["collapsed_node_ids"] is JArray)
+                                {
+                                    collapsedNodeIds = ((JArray)componentData["collapsed_node_ids"]).ToObject<List<Guid>>();
+                                }
+                                else
+                                {
+                                    throw new Exception("Unknown format of collapsed_node_ids");
+                                }
+                            }
+                            if (componentData.Properties.ContainsKey("uncollapsed_node_ids") && componentData["uncollapsed_node_ids"] != null)
+                            {
+                                if (componentData["uncollapsed_node_ids"] is string)
+                                {
+                                    try
+                                    {
+                                        uncollapsedNodeIds = JsonConvert.DeserializeObject<List<Guid>>((string)componentData["uncollapsed_node_ids"]);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw new Exception("WebVella.Erp.Web.Components.PcSection component data object in user preferences not in the correct format. uncollapsed_node_ids should be List<Guid>");
+                                    }
+                                }
+                                else if (componentData["uncollapsed_node_ids"] is List<Guid>)
+                                {
+                                    uncollapsedNodeIds = (List<Guid>)componentData["uncollapsed_node_ids"];
+                                }
+                                else if (componentData["uncollapsed_node_ids"] is JArray)
+                                {
+                                    uncollapsedNodeIds = ((JArray)componentData["uncollapsed_node_ids"]).ToObject<List<Guid>>();
+                                }
+                                else
+                                {
+                                    throw new Exception("Unknown format of uncollapsed_node_ids");
+                                }
+                            }
+                            if (collapsedNodeIds.Contains(context.Node.Id)) {
+                                options.IsCollapsed = true;
+                            }
+                            else if (uncollapsedNodeIds.Contains(context.Node.Id))
+                            {
+                                options.IsCollapsed = false;
+                            }
+                        }
+                        
+                    }
+                }
+
+                
+
+
+                #endregion
+
+                var isVisible = true;
+				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
 				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString())) {
 					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool)) {
 						isVisible = outBool;
@@ -126,7 +205,7 @@ namespace WebVella.Erp.Web.Components
 				}
 				ViewBag.IsVisible = isVisible;
 
-				ViewBag.Options = instanceOptions;
+				ViewBag.Options = options;
 				ViewBag.Node = context.Node;
 				ViewBag.ComponentMeta = componentMeta;
 				ViewBag.RequestContext = ErpRequestContext;
@@ -136,11 +215,11 @@ namespace WebVella.Erp.Web.Components
 
 				if (context.Mode == ComponentMode.Display || context.Mode == ComponentMode.Design)
 				{
-					ViewBag.ProcessedTitle = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Title);
+					ViewBag.ProcessedTitle = context.DataModel.GetPropertyValueByDataSource(options.Title);
 				}
 
-				context.Items[typeof(LabelRenderMode)] = instanceOptions.LabelMode;
-				context.Items[typeof(FieldRenderMode)] = instanceOptions.FieldMode;
+				context.Items[typeof(LabelRenderMode)] = options.LabelMode;
+				context.Items[typeof(FieldRenderMode)] = options.FieldMode;
 
 				switch (context.Mode)
 				{

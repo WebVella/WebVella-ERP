@@ -13,7 +13,10 @@ namespace WebVella.Erp.Api.Models
 		[JsonProperty("component_usage")]
 		public List<UserComponentUsage> ComponentUsage { get; set; } = new List<UserComponentUsage>();
 
-		public bool Compare(ErpUserPreferences prefs)
+        [JsonProperty("component_data_dictionary")]
+        public EntityRecord ComponentDataDictionary { get; set; } = new EntityRecord(); // full.component.name: EntityRecord
+
+        public bool Compare(ErpUserPreferences prefs)
 		{
 			if (prefs == null)
 				return false;
@@ -24,7 +27,10 @@ namespace WebVella.Erp.Api.Models
 			if (JsonConvert.SerializeObject(ComponentUsage) != JsonConvert.SerializeObject(prefs.ComponentUsage))
 				return false;
 
-			return true;
+            if (JsonConvert.SerializeObject(ComponentDataDictionary) != JsonConvert.SerializeObject(prefs.ComponentDataDictionary))
+                return false;
+
+            return true;
 		}
 	}
 }
