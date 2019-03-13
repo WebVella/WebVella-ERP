@@ -394,7 +394,9 @@ namespace WebVella.Erp.Api
             {
                 var storageRelation = relation.MapTo<DbEntityRelation>();
 
-                if (storageRelation.Id == Guid.Empty)
+				storageRelation.Name = storageRelation.Name.Trim();
+
+				if (storageRelation.Id == Guid.Empty)
                     storageRelation.Id = Guid.NewGuid();
 
                 var success = DbContext.Current.RelationRepository.Create(storageRelation);
@@ -456,7 +458,8 @@ namespace WebVella.Erp.Api
             try
             {
                 var storageRelation = relation.MapTo<DbEntityRelation>();
-                var success = DbContext.Current.RelationRepository.Update(storageRelation);
+				storageRelation.Name = storageRelation.Name.Trim();
+				var success = DbContext.Current.RelationRepository.Update(storageRelation);
 				Cache.ClearRelations();
                 if (success)
                 {
