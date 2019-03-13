@@ -34,9 +34,11 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 
 		public string PageDescription { get; set; } = "";
 
-		public void OnGet()
+		public IActionResult OnGet()
 		{
-			Init();
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
 
 			#region << InitPage >>
 			int pager = 0;
@@ -159,6 +161,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 			ErpRequestContext.PageContext = PageContext;
 
 			BeforeRender();
+			return Page();
 		}
 	}
 }

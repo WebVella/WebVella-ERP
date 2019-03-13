@@ -47,7 +47,6 @@ namespace WebVella.Erp.Plugins.SDK.Pages.User
 
 		private void InitPage()
 		{
-			Init();
 			var roles = new EqlCommand("select * from role").Execute();
 			foreach (var role in roles)
 			{
@@ -64,6 +63,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.User
 
 		public IActionResult OnGet()
 		{
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			InitPage();
 			BeforeRender();
 			return Page();
@@ -72,6 +75,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.User
 		public IActionResult OnPost()
 		{
 			if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
+
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
 
 			InitPage();
 

@@ -154,9 +154,15 @@ namespace WebVella.Erp.Recurrence
 					break;
 				case RecurrenceType.EveryWeekDay:
 					{
-						recurrenceRule = new RecurrencePattern(FrequencyType.Weekly, interval: 1)
+						var weekDays = new List<WeekDay>();
+						weekDays.Add(new WeekDay { DayOfWeek = DayOfWeek.Monday });
+						weekDays.Add(new WeekDay { DayOfWeek = DayOfWeek.Tuesday });
+						weekDays.Add(new WeekDay { DayOfWeek = DayOfWeek.Wednesday });
+						weekDays.Add(new WeekDay { DayOfWeek = DayOfWeek.Thursday });
+						weekDays.Add(new WeekDay { DayOfWeek = DayOfWeek.Friday });
+						recurrenceRule = new RecurrencePattern(FrequencyType.Daily, interval: 1)
 						{
-							ByDay = new List<WeekDay> { new WeekDay { DayOfWeek = startTime.DayOfWeek } },
+							ByDay = weekDays,
 							Until = calculationEndTime,
 							RestrictionType = RecurrenceRestrictionType.NoRestriction
 						};

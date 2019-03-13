@@ -62,8 +62,6 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Page
 
 		public void PageInit()
 		{
-			Init();
-
 			#region << Init Page >>
 			var pageServ = new PageService();
 			ErpPage = pageServ.GetPage(RecordId ?? Guid.Empty);
@@ -121,6 +119,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Page
 
 		public IActionResult OnGet()
 		{
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			PageInit();
 			if (ErpPage == null)
 				return NotFound();

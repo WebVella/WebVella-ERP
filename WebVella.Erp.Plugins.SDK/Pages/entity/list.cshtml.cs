@@ -38,9 +38,11 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 		public List<string> HeaderActions { get; private set; } = new List<string>();
 
-		public void OnGet()
+		public IActionResult OnGet()
 		{
-			Init();
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
 
 			var entMan = new EntityManager();
 
@@ -156,6 +158,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			ErpRequestContext.PageContext = PageContext;
 
 			BeforeRender();
+			return Page();
 		}
 	}
 }

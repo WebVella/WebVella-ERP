@@ -26,8 +26,6 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 
 		public void PageInit()
 		{
-			Init();
-
 			ApiUrlRoot = PageContext.HttpContext.Request.Scheme + "://" + PageContext.HttpContext.Request.Host;
 
 			#region << Init App >>
@@ -48,6 +46,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Application
 
 		public IActionResult OnGet()
 		{
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			PageInit();
 			if (App == null)
 				return NotFound();

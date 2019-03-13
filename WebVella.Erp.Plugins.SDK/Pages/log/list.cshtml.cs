@@ -26,9 +26,11 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Log
 
 		public QuerySortType SortOrder { get; set; } = QuerySortType.Ascending;
 
-		public void OnGet()
+		public IActionResult OnGet()
 		{
-			Init();
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
 
 			#region << InitPage >>
 			int pager = 0;
@@ -101,6 +103,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Log
 			TotalCount = Records.TotalCount;
 			#endregion
 			BeforeRender();
+			return Page();
 		}
 	}
 }

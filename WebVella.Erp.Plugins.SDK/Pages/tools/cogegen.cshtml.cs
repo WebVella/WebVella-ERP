@@ -59,18 +59,26 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Tools
 			}
 		}
 
-		public void OnGet()
+		public IActionResult OnGet()
 		{
-			Init();
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			InitEntitySelectOptions();
 
 			BeforeRender();
+			return Page();
 		}
 
 		public IActionResult OnPost()
 		{
 			if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
-			Init();
+			
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+			
 			InitEntitySelectOptions();
 
 			try

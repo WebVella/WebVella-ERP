@@ -83,7 +83,7 @@ namespace WebVella.Erp.Web.Models
 			}
 		}
 
-		public void Init(string appName = "", string areaName = "", string nodeName = "",
+		public IActionResult Init(string appName = "", string areaName = "", string nodeName = "",
 						string pageName = "", Guid? recordId = null, Guid? relationId = null, Guid? parentRecordId = null)
 		{
 			//Stopwatch sw = new Stopwatch();
@@ -240,7 +240,11 @@ namespace WebVella.Erp.Web.Models
 							Content = areaLink
 						};
 					}
-                    if (area.Id == ErpRequestContext.SitemapArea.Id)
+
+					if( ErpRequestContext.SitemapArea == null )
+						return new NotFoundResult();
+
+					if (area.Id == ErpRequestContext.SitemapArea.Id)
                         areaMenuItem.Class = "current";
 
 					ApplicationMenu.Add(areaMenuItem);
@@ -273,14 +277,15 @@ namespace WebVella.Erp.Web.Models
 			if( ErpRequestContext.App != null )
 			{
 				if (ErpRequestContext.App.Access == null || ErpRequestContext.App.Access.Count == 0)
-					Request.HttpContext.Response.Redirect("/error?access_denied");
+					new LocalRedirectResult("/error?401");
 
 				IEnumerable<Guid> rolesWithAccess = ErpRequestContext.App.Access.Intersect(currentUserRoles);
 				if (!rolesWithAccess.Any())
-					Request.HttpContext.Response.Redirect("/error?access_denied");
+					new LocalRedirectResult("/error?401");
 			}
 
 			//Debug.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>> Base page init: " + sw.ElapsedMilliseconds);
+			return null;
 		}
 
 		protected bool RecordsExists()

@@ -42,9 +42,11 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 
 		public List<string> HeaderActions { get; private set; } = new List<string>();
 
-		public void OnGet()
+		public IActionResult OnGet()
 		{
-			Init();
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
 
 			DataSourceManager dsMan = new DataSourceManager();
 
@@ -209,6 +211,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 			ErpRequestContext.PageContext = PageContext;
 
 			BeforeRender();
+			return Page();
 		}
 	}
 }

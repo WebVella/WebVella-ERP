@@ -30,8 +30,6 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 		public void PageInit()
 		{
-			Init();
-
 			var entMan = new EntityManager();
 			var recMan = new RecordManager();
 
@@ -74,6 +72,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 		public IActionResult OnGet()
 		{
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			PageInit();
 			if (Record == null)
 				return NotFound();
@@ -86,6 +88,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 		public IActionResult OnPost()
 		{
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			PageInit();
 			if (Record == null)
 				return NotFound();

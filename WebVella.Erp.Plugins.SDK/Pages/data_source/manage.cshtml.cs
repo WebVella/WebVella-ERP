@@ -41,8 +41,6 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 
 		public void InitPage()
 		{
-			Init();
-
 			if (String.IsNullOrWhiteSpace(ReturnUrl))
 				ReturnUrl = "/sdk/objects/data_source/l/list";
 
@@ -61,6 +59,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 
 		public IActionResult OnGet()
 		{
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			InitPage();
 
 			if (DataSourceObject == null)
@@ -89,6 +91,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 		public IActionResult OnPost()
 		{
 			if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
+
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
 
 			InitPage();
 

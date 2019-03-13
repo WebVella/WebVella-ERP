@@ -70,8 +70,6 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 
 		public void PageInit()
 		{
-			Init();
-
 			if (String.IsNullOrWhiteSpace(ReturnUrl))
 				ReturnUrl = "/sdk/objects/data_source/l/list";
 
@@ -102,6 +100,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 
 		public IActionResult OnGet()
 		{
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			PageInit();
 
 			if (DataSourceObject == null)
@@ -115,6 +117,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 
 		public IActionResult OnPost()
 		{
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			PageInit();
 
 			if (DataSourceObject == null)

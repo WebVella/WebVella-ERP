@@ -18,13 +18,17 @@ namespace WebVella.Erp.Web.Pages
 		public DebugModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
 
 
-		public void OnGet()
+		public IActionResult OnGet()
         {
 			//var list = new PageComponentLibraryService().GetPageComponentsList();
 
 			//ViewBag.LibraryJson = JsonConvert.SerializeObject(new PageComponentLibraryService().GetPageComponentsList());
 			//ViewBag.PageNodeListJson = JsonConvert.SerializeObject(new PageService().GetPageNodes(new System.Guid("129937b1-7cbe-42a0-b699-e61bebd28619")));
-			Init();
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
+			return Page();
 		}
     }
 }

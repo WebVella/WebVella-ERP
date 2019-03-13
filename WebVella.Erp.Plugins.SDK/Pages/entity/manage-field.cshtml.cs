@@ -125,8 +125,6 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 		public void InitPage()
 		{
-			Init();
-
 			var entMan = new EntityManager();
 			ErpEntity = entMan.ReadEntity(ParentRecordId ?? Guid.Empty).Object;
 			if (ErpEntity == null) return;
@@ -584,6 +582,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 		}
 		public IActionResult OnGet()
 		{
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			InitPage();
 
 			if (ErpEntity == null)
@@ -606,6 +608,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 		public IActionResult OnPost()
 		{
 			if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
+
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
 
 			InitPage();
 

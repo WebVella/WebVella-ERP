@@ -31,9 +31,11 @@ namespace WebVella.Erp.Plugins.SDK.Pages.User
 
 		public QuerySortType SortOrder { get; set; } = QuerySortType.Ascending;
 
-		public void OnGet()
+		public IActionResult OnGet()
 		{
-			Init();
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
 
 			#region << InitPage >>
 
@@ -105,6 +107,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.User
 			#endregion
 
 			BeforeRender();
+			return Page();
 		}
 	}
 }

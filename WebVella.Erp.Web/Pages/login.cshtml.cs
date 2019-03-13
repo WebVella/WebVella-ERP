@@ -28,8 +28,8 @@ namespace WebVella.Erp.Web.Pages
 
 		public IActionResult OnGet( [FromServices]AuthService authService)
 		{
-			Init();
-
+			var initResult = Init();
+			if (initResult != null) return initResult;
 			var globalHookInstances = HookManager.GetHookedInstances<IPageHook>(HookKey);
 			foreach (IPageHook inst in globalHookInstances)
 			{
@@ -44,7 +44,8 @@ namespace WebVella.Erp.Web.Pages
 		{
 			if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
 
-			Init();
+			var initResult = Init();
+			if (initResult != null) return initResult;
 
 			var globalHookInstances = HookManager.GetHookedInstances<IPageHook>(HookKey);
 			foreach (IPageHook inst in globalHookInstances)
