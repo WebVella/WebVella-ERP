@@ -160,7 +160,7 @@ namespace WebVella.Erp.Recurrence
 						weekDays.Add(new WeekDay { DayOfWeek = DayOfWeek.Wednesday });
 						weekDays.Add(new WeekDay { DayOfWeek = DayOfWeek.Thursday });
 						weekDays.Add(new WeekDay { DayOfWeek = DayOfWeek.Friday });
-						recurrenceRule = new RecurrencePattern(FrequencyType.Weekly, interval: 1)
+						recurrenceRule = new RecurrencePattern(FrequencyType.Daily, interval: 1)
 						{
 							ByDay = weekDays,
 							Until = calculationEndTime,
