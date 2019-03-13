@@ -139,6 +139,7 @@ namespace WebVella.Erp.Web.TagHelpers
                 {
                     var collapseWrapper = new TagBuilder("div");
                     collapseWrapper.AddCssClass("collapse multi-collapse");
+                    collapseWrapper.AddCssClass(BodyClass);
                     if (!IsCollapsed)
                     {
                         collapseWrapper.AddCssClass("show");
