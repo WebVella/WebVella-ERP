@@ -1382,8 +1382,9 @@ namespace WebVella.Erp.Web.Services
 
             var fieldTypeDictionary = new Dictionary<string, FieldType>();
             var relationsFieldTypeDictionary = new Dictionary<string, FieldType>();
+			var relationsFieldRelationTypeDictionary = new Dictionary<string, EntityRelationType>();
 
-            if (entity == null) return new EntityRecord();
+			if (entity == null) return new EntityRecord();
 
             var entityRelations = new EntityRelationManager().Read().Object.Where(x => (x.OriginEntityId == entity.Id || x.TargetEntityId == entity.Id)).ToList();
 
@@ -1420,7 +1421,9 @@ namespace WebVella.Erp.Web.Services
 
 					fieldTypeDictionary[key] = FieldType.RelationField;
                     relationsFieldTypeDictionary[key] = field.GetFieldType();
-                }
+					relationsFieldRelationTypeDictionary[key] = relation.RelationType;
+
+				}
 
                 //A new struct Microsoft.Framework.Primitives.StringValues has been introduced to streamline handling of values that may be empty, single strings, or multiple strings. The value is implicitly convertable to and from string and string[], and also provides helpers like Concat and IsNullOrEmpty.
                 if (StringValues.IsNullOrEmpty(postedValue))
@@ -1439,13 +1442,18 @@ namespace WebVella.Erp.Web.Services
             {
                 if (fieldTypeDictionary.ContainsKey(key))
                 {
+					EntityRelationType? relationType = null;
                     FieldType? relatedFieldType = null;
-                    if (relationsFieldTypeDictionary.ContainsKey(key))
-                        relatedFieldType = relationsFieldTypeDictionary[key];
+					if (relationsFieldTypeDictionary.ContainsKey(key))
+						relatedFieldType = relationsFieldTypeDictionary[key];
+					
+					if (relationsFieldRelationTypeDictionary.ContainsKey(key))
+						relationType = relationsFieldRelationTypeDictionary[key];
+					
 
 					try
 					{
-						MapRecordToModelType(mappedRecord, resultRecord, key, fieldTypeDictionary[key], relatedFieldType);
+						MapRecordToModelType(mappedRecord, resultRecord, key, fieldTypeDictionary[key], relatedFieldType, relationType);
 					}
 					catch(Exception ex)
 					{
@@ -1759,7 +1767,7 @@ namespace WebVella.Erp.Web.Services
 
         #region <--- Private Utility Methods --->
 
-        private void MapRecordToModelType(EntityRecord mappedRecord, EntityRecord resultRecord, string key, FieldType fieldType, FieldType? relatedFieldType)
+        private void MapRecordToModelType(EntityRecord mappedRecord, EntityRecord resultRecord, string key, FieldType fieldType, FieldType? relatedFieldType, EntityRelationType? relationType )
         {
             switch (fieldType)
             {
@@ -1862,21 +1870,29 @@ namespace WebVella.Erp.Web.Services
                         {
                             case FieldType.GuidField:
                                 {
-                                    List<Guid> list = new List<Guid>();
-                                    if (isArray)
-                                    {
-                                        foreach (var guidString in (string[])value)
-                                        {
-                                            if (Guid.TryParse(guidString, out Guid guidValue))
-                                                list.Add(guidValue);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (Guid.TryParse(value.ToString(), out Guid guidValue))
-                                            list.Add(guidValue);
-                                    }
-                                    mappedRecord[key] = list;
+									if (relationType.HasValue && relationType == EntityRelationType.ManyToMany)
+									{
+										List<Guid> list = new List<Guid>();
+										if (isArray)
+										{
+											foreach (var guidString in (string[])value)
+											{
+												if (Guid.TryParse(guidString, out Guid guidValue))
+													list.Add(guidValue);
+											}
+										}
+										else
+										{
+											if (Guid.TryParse(value.ToString(), out Guid guidValue))
+												list.Add(guidValue);
+										}
+										mappedRecord[key] = list;
+									}
+									else
+									{
+										if (Guid.TryParse(value.ToString(), out Guid guidValue))
+											mappedRecord[key] = guidValue.ToString();
+									}
                                 }
                                 break;
                             default:
