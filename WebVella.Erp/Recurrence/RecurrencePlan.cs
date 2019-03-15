@@ -293,6 +293,10 @@ namespace WebVella.Erp.Recurrence
 					break;
 				}
 			}
+			if (EndType == RecurrenceEndType.Occurrences && result.Count > OccurrencesCount)
+			{
+				result.RemoveRange(OccurrencesCount, result.Count - OccurrencesCount);
+			}
 			return result;
 		}
 
