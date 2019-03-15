@@ -1039,7 +1039,7 @@ a:hover {
 .btn-red,
 .btn-danger {
 	color: #fff;
-	background-image:#F44336;
+	background-color:#F44336;
 	/*background-image: linear-gradient(to bottom, #F44336 0%, #B71C1C 100%);
 	background-repeat: repeat-x;
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F44336', endColorstr='#B71C1C', GradientType=0);
@@ -3068,6 +3068,10 @@ pre, code {
 
 .form-control::placeholder {
 	color: #ccc;
+}
+
+.erp-field .input-group {
+    flex-wrap:nowrap;
 }
 
 .erp-field .input-group-addon {
