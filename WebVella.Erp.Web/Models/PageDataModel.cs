@@ -515,8 +515,13 @@ namespace WebVella.Erp.Web.Models
 						return currentPropDict[testName].Value;
 				}
 
-				if (!currentPropDict.ContainsKey(pName))
-					throw new PropertyDoesNotExistException($"Property name '{currentPropertyNamePath}' not found.");
+                if (!currentPropDict.ContainsKey(pName))
+                {
+                    if(!currentPropertyNamePath.EndsWith("]"))
+                        throw new PropertyDoesNotExistException($"Property name '{currentPropertyNamePath}' not found.");
+                    else
+                        throw new PropertyDoesNotExistException($"Property name is found, but list index is out of bounds.");
+                }
 
 				mpw = currentPropDict[pName];
 				if (mpw != null && mpw.Type == MPT.DataSource)
