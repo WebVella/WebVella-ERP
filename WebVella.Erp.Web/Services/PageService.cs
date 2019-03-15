@@ -92,10 +92,10 @@ namespace WebVella.Erp.Web.Services
         /// </summary>
         /// <param name="appId"></param>
         /// <returns></returns>
-        public List<ErpPage> GetAppPages(Guid appId, NpgsqlTransaction transaction = null)
+        public List<ErpPage> GetAppControlledPages(Guid appId, NpgsqlTransaction transaction = null)
         {
             var pages = GetAll(transaction);
-            return pages.FindAll(x => x.AppId == appId && x.EntityId == null).OrderBy(x => x.Weight).ThenBy(x => x.Label).ToList();
+            return pages.FindAll(x => x.AppId == appId).OrderBy(x => x.Weight).ThenBy(x => x.Label).ToList();
         }
 
         /// <summary>
@@ -1705,8 +1705,8 @@ namespace WebVella.Erp.Web.Services
                             var currentApp = requestContext.App;
                             if (currentApp != null)
                             {
-                                var appPages = GetAppPages(currentApp.Id);
-                                appPages = appPages.FindAll(x => x.Id != currentPage.Id).ToList();
+                                var appPages = GetAppControlledPages(currentApp.Id);
+                                appPages = appPages.FindAll(x => x.Id != currentPage.Id && x.Type == PageType.Application).ToList();
 
                                 if (currentPage.AreaId != null)
                                 {

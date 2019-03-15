@@ -162,7 +162,7 @@ namespace WebVella.Erp.Web.Models
 			if (ErpRequestContext.App != null)
 			{
 				var sitemap = ErpRequestContext.App.Sitemap;
-				var appPages = new PageService().GetAppPages(ErpRequestContext.App.Id);
+				var appPages = new PageService().GetAppControlledPages(ErpRequestContext.App.Id);
 				//Calculate node Urls
 				foreach (var area in sitemap.Areas)
 				{

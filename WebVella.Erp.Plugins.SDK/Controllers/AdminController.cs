@@ -312,7 +312,7 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 				appSrv.UpdateAreaNode(node.Id, areaId ?? Guid.Empty, node.Name, node.Label, node.LabelTranslations,
 					node.IconClass,node.Url, (int)node.Type,node.EntityId, node.Weight, node.Access, node.EntityListPages,node.EntityCreatePages,node.EntityDetailsPages,node.EntityManagePages);
 
-				var allAppPages = pageSrv.GetAppPages(appId ?? Guid.Empty);
+				var allAppPages = pageSrv.GetAppControlledPages(appId ?? Guid.Empty);
 
 				var currentAttachedNodePages = allAppPages.FindAll(x => x.NodeId == node.Id).Select(x => x.Id).ToList();
 				var currentAttachedPagesHashSet = new HashSet<Guid>();
@@ -468,8 +468,8 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 
                 var pageService = new PageService();
                 //Get App pages
-                var appPages = pageService.GetAppPages(appId.Value);
-				var allAppPagesWithoutNodes = appPages.FindAll(x=> x.NodeId == null).OrderBy(x => x.Name).ToList();
+                var appPages = pageService.GetAppControlledPages(appId.Value);
+				var allAppPagesWithoutNodes = appPages.FindAll(x=> x.NodeId == null && x.Type == PageType.Application).OrderBy(x => x.Name).ToList();
 				foreach (var page in allAppPagesWithoutNodes)
 				{
 					var selectOption = new EntityRecord();

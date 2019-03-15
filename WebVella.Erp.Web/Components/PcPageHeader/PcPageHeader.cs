@@ -147,12 +147,12 @@ namespace WebVella.Erp.Web.Components
 				}
 				else if (instanceOptions.ShowPageSwitch && currentPage != null && currentPage.AppId != null && currentPage.Type == PageType.Application)
 				{
-					var allPages = new PageService().GetAll();
+					var allPages = new PageService().GetAppControlledPages(currentPage.AppId.Value);
 					switchItemPages = allPages.FindAll(x => x.Weight > 0 && x.Type == currentPage.Type && x.AppId == currentApp.Id && x.NodeId == currentPage.NodeId).ToList();
 				}
 				if (instanceOptions.ShowPageSwitch && currentPage != null && currentSitemapNode != null) {
                     var allPossiblePages = new PageService().GetAll().FindAll(x => x.Type == currentPage.Type 
-                        && x.EntityId == currentSitemapNode.EntityId).ToList();
+                        && x.EntityId == currentSitemapNode.EntityId && (x.AppId == null || x.AppId == currentPage.AppId.Value)).ToList();
 
                     switch (currentPage.Type)
                     {
