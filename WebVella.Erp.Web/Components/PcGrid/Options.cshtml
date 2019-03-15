@@ -78,7 +78,7 @@
 @for (int i = 1; i <= 12; i++)
 {
     <wv-section id="@($"section-column{i}")" class="mt-3 with-background @(options.VisibleColumns > i - 1 ? "" : "d-none")"
-        is-collapsable="true" is-collapsed="true" title="@("Column " + i)" title-tag="h5" is-card="true">
+        is-collapsable="true" is-collapsed="true" title="@("Column " + i)" title-tag="h5">
 		<wv-row>
 			@{
 				var columnLabel = (options.GetType().GetProperty($"Container{i}Label").GetValue(options, null) ?? "").ToString();
