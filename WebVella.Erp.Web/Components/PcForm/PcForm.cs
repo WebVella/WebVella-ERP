@@ -49,7 +49,10 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "class")]
 			public string Class { get; set; } = "";
 
-		}
+            [JsonProperty(PropertyName = "show_validation")]
+            public bool ShowValidation { get; set; } = true;
+
+        }
 
 		public async Task<IViewComponentResult> InvokeAsync(PageComponentContext context)
 		{

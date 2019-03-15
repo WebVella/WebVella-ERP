@@ -13,7 +13,10 @@
 	var validation = (ValidationException)ViewBag.Validation;
 	var action = (string)ViewBag.Action;
 }
+@if (options.ShowValidation)
+{
 <wv-validation show-errors="false" validation="@validation"></wv-validation>
+}
 <wv-form method="@options.Method" id="@options.Id" name="@options.Name" label-mode="@options.LabelMode" 
 	mode="@options.Mode" action="@action" validation="@validation" class="@options.Class" is-visible="(bool)ViewBag.IsVisible">
 	@foreach (var childNode in node.Nodes) {
