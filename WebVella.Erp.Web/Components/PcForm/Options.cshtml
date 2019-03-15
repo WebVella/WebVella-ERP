@@ -29,18 +29,21 @@
 </wv-row>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-select name="method" value="@options.Method" label-text="Method" options="@methodOptions"></wv-field-select>
+		<wv-field-select name="method" value="@options.Method" label-text="Method" options="@methodOptions" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-select name="label_mode" value="@options.LabelMode" label-text="Label mode" options="@labelRenderModeOptions"></wv-field-select>
+		<wv-field-select name="label_mode" value="@options.LabelMode" label-text="Label mode" options="@labelRenderModeOptions" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-select name="mode" value="@options.Mode" label-text="Mode" options="@fieldRenderModeOptions"></wv-field-select>
+		<wv-field-select name="mode" value="@options.Mode" label-text="Mode" options="@fieldRenderModeOptions" required="true"></wv-field-select>
 	</wv-column>
 </wv-row>
 <wv-row>
 	<wv-column span="4">
 		<wv-field-text name="class" label-text="Css class" value="@options.Class"></wv-field-text>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-checkbox name="show_validation" label-text="Show Validation" value="@options.ShowValidation" text-true="show page validation object as message"></wv-field-checkbox>
 	</wv-column>
 </wv-row>
 

@@ -147,30 +147,30 @@ namespace WebVella.Erp.Web.Components
 				}
 				else if (instanceOptions.ShowPageSwitch && currentPage != null && currentPage.AppId != null && currentPage.Type == PageType.Application)
 				{
-					var allPages = new PageService().GetAll();
+					var allPages = new PageService().GetAppControlledPages(currentPage.AppId.Value);
 					switchItemPages = allPages.FindAll(x => x.Weight > 0 && x.Type == currentPage.Type && x.AppId == currentApp.Id && x.NodeId == currentPage.NodeId).ToList();
 				}
 				if (instanceOptions.ShowPageSwitch && currentPage != null && currentSitemapNode != null) {
                     var allPossiblePages = new PageService().GetAll().FindAll(x => x.Type == currentPage.Type 
-                        && x.EntityId == currentSitemapNode.EntityId).ToList();
+                        && x.EntityId == currentSitemapNode.EntityId && (x.AppId == null || x.AppId == currentPage.AppId.Value)).ToList();
 
                     switch (currentPage.Type)
                     {
                         case PageType.RecordList:
                             if (currentSitemapNode.EntityListPages != null && currentSitemapNode.EntityListPages.Count > 0)
-                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityListPages.Contains(x.Id)).ToList();
+                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityListPages.Contains(x.Id) && x.Weight > 0).ToList();
                             break;
                         case PageType.RecordCreate:
                             if (currentSitemapNode.EntityCreatePages != null && currentSitemapNode.EntityCreatePages.Count > 0)
-                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityCreatePages.Contains(x.Id)).ToList();
+                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityCreatePages.Contains(x.Id) && x.Weight > 0).ToList();
                             break;
                         case PageType.RecordDetails:
                             if (currentSitemapNode.EntityDetailsPages != null && currentSitemapNode.EntityDetailsPages.Count > 0)
-                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityDetailsPages.Contains(x.Id)).ToList();
+                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityDetailsPages.Contains(x.Id) && x.Weight > 0).ToList();
                             break;
                         case PageType.RecordManage:
                             if (currentSitemapNode.EntityManagePages != null && currentSitemapNode.EntityManagePages.Count > 0)
-                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityManagePages.Contains(x.Id)).ToList();
+                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityManagePages.Contains(x.Id) && x.Weight > 0).ToList();
                             break;
                         default:
                             break;

@@ -162,7 +162,7 @@ namespace WebVella.Erp.Web.Models
 			if (ErpRequestContext.App != null)
 			{
 				var sitemap = ErpRequestContext.App.Sitemap;
-				var appPages = new PageService().GetAppPages(ErpRequestContext.App.Id);
+				var appPages = new PageService().GetAppControlledPages(ErpRequestContext.App.Id);
 				//Calculate node Urls
 				foreach (var area in sitemap.Areas)
 				{
@@ -258,10 +258,13 @@ namespace WebVella.Erp.Web.Models
 			var sitePages = pageSrv.GetSitePages();
 			foreach (var sitePage in sitePages)
 			{
-				SiteMenu.Add(new MenuItem()
-				{
-					Content = $"<a class=\"dropdown-item\" href=\"/s/{sitePage.Name}\">{sitePage.Label}</a>"
-				});
+                if (sitePage.Weight > 0)
+                {
+                    SiteMenu.Add(new MenuItem()
+                    {
+                        Content = $"<a class=\"dropdown-item\" href=\"/s/{sitePage.Name}\">{sitePage.Label}</a>"
+                    });
+                }
 			}
 
 

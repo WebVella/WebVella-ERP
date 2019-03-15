@@ -37,7 +37,15 @@ namespace WebVella.Erp.Web.Pages
 				if (result != null) return result;
 			}
 
-			return Page();
+            if (CurrentUser != null)
+            {
+                if (!string.IsNullOrWhiteSpace(ReturnUrl))
+                    return new LocalRedirectResult(ReturnUrl);
+                else
+                    return new LocalRedirectResult("/");
+            }
+
+            return Page();
         }
 
 		public IActionResult OnPost([FromServices]AuthService authService )

@@ -8062,8 +8062,8 @@ function dragula (initialContainers, options) {
   if (o.direction === void 0) { o.direction = 'vertical'; }
   if (o.ignoreInputTextSelection === void 0) { o.ignoreInputTextSelection = true; }
   if (o.mirrorContainer === void 0) { o.mirrorContainer = doc$1.body; }
-	if (o.slideFactorY === void 0) { o.slideFactorY = 25; }
-  if (o.slideFactorX === void 0) { o.slideFactorX = 25; }
+	if (o.slideFactorY === void 0) { o.slideFactorY = 10; }
+  if (o.slideFactorX === void 0) { o.slideFactorX = 10; }
   
   var drake = emitter({
     containers: o.containers,

@@ -223,7 +223,7 @@ namespace WebVella.Erp.Web.Utils
 			}
 			else
 			{
-				appPages = pageSrv.GetAppPages(appId ?? Guid.Empty);
+				appPages = pageSrv.GetAppControlledPages(appId ?? Guid.Empty);
 			}
 			var nodePagesDict = new Dictionary<Guid, List<SelectOption>>();
 			foreach (var page in appPages)

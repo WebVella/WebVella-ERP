@@ -174,7 +174,7 @@ namespace WebVella.Erp.Web.TagHelpers
                     metaSubLabelTextEl.Attributes.Add("data-toggle", "dropdown");
                     metaSubLabelTextEl.Attributes.Add("href", "#");
                     //metaSubLabelTextEl.InnerHtml.AppendHtml("switch");
-                    metaSubLabelTextEl.InnerHtml.AppendHtml("<i class='icon fas fa-caret-down'></i>" + Title);
+                    metaSubLabelTextEl.InnerHtml.AppendHtml("<i class='icon fas fa-ellipsis-v'></i>" + Title);
                     switchDropdownEl.InnerHtml.AppendHtml(metaSubLabelTextEl);
 
                     //Dropdown
