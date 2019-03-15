@@ -158,19 +158,19 @@ namespace WebVella.Erp.Web.Components
                     {
                         case PageType.RecordList:
                             if (currentSitemapNode.EntityListPages != null && currentSitemapNode.EntityListPages.Count > 0)
-                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityListPages.Contains(x.Id)).ToList();
+                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityListPages.Contains(x.Id) && x.Weight > 0).ToList();
                             break;
                         case PageType.RecordCreate:
                             if (currentSitemapNode.EntityCreatePages != null && currentSitemapNode.EntityCreatePages.Count > 0)
-                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityCreatePages.Contains(x.Id)).ToList();
+                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityCreatePages.Contains(x.Id) && x.Weight > 0).ToList();
                             break;
                         case PageType.RecordDetails:
                             if (currentSitemapNode.EntityDetailsPages != null && currentSitemapNode.EntityDetailsPages.Count > 0)
-                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityDetailsPages.Contains(x.Id)).ToList();
+                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityDetailsPages.Contains(x.Id) && x.Weight > 0).ToList();
                             break;
                         case PageType.RecordManage:
                             if (currentSitemapNode.EntityManagePages != null && currentSitemapNode.EntityManagePages.Count > 0)
-                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityManagePages.Contains(x.Id)).ToList();
+                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityManagePages.Contains(x.Id) && x.Weight > 0).ToList();
                             break;
                         default:
                             break;
