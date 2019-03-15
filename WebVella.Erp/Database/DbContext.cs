@@ -110,9 +110,10 @@ namespace WebVella.Erp.Database
 					throw new DbException("Trying to release database context in transactional state. There is open transaction in created connections.");
 				}
 
-				if (current.Value.connectionStack.Count > 0)
-					throw new DbException("Trying to release database context with already opened connection. Close connection before");
-
+				//if (current.Value.connectionStack.Count > 0)
+				//{
+				//	throw new DbException("Trying to release database context with already opened connection. Close connection before");
+				//}
 			}
 
 			current.Value = null;
