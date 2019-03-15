@@ -258,10 +258,13 @@ namespace WebVella.Erp.Web.Models
 			var sitePages = pageSrv.GetSitePages();
 			foreach (var sitePage in sitePages)
 			{
-				SiteMenu.Add(new MenuItem()
-				{
-					Content = $"<a class=\"dropdown-item\" href=\"/s/{sitePage.Name}\">{sitePage.Label}</a>"
-				});
+                if (sitePage.Weight > 0)
+                {
+                    SiteMenu.Add(new MenuItem()
+                    {
+                        Content = $"<a class=\"dropdown-item\" href=\"/s/{sitePage.Name}\">{sitePage.Label}</a>"
+                    });
+                }
 			}
 
 
