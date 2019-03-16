@@ -8,5 +8,6 @@
 }
 @foreach (var menuItem in applicationMenu)
 {
-	@Html.Partial("NavMenu", menuItem)
+	@*@Html.Partial("NavMenu", menuItem)*@
+    <partial name="NavMenu" for="@menuItem"/>
 }
