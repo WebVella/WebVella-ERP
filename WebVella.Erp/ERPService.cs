@@ -26,6 +26,8 @@ namespace WebVella.Erp
 			{
 				//setup necessary extensions
 				DbRepository.CreatePostgresqlExtensions();
+				//setup casts
+				DbRepository.CreatePostgresqlCasts();
 
 				try
 				{
