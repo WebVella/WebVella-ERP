@@ -614,7 +614,7 @@ $$$TABS$$$ WHERE {10}.{11} = {12}.{13} )d  )::jsonb AS ""{0}"",";
 			string firstOperandString = ProcessExpressionOperandNode(expNode.FirstOperand, entityName, relationsUsedInWhere, out firstOperandField);
 			string secondOperandString = ProcessExpressionOperandNode(expNode.SecondOperand, entityName, relationsUsedInWhere, out secondOperandField);
 
-			if (!( firstOperandString.StartsWith(" (") || firstOperandString.StartsWith(" to_tsvector")) && firstOperandField == null)
+			if (!( firstOperandString.StartsWith(" (") || firstOperandString.StartsWith(" to_tsvector") || firstOperandString.StartsWith("@") ) && firstOperandField == null)
 				throw new EqlException($"WHERE: First operand in where expressions should always be an entity field name . '{firstOperandString}' is not a field name.");
 
 			if ((firstOperandString == "NULL" || secondOperandString == "NULL") && (expNode.Operator != "=" && expNode.Operator != "<>" && expNode.Operator != "!="))
@@ -623,8 +623,21 @@ $$$TABS$$$ WHERE {10}.{11} = {12}.{13} )d  )::jsonb AS ""{0}"",";
 			switch (expNode.Operator)
 			{
 				case "=":
+					if (firstOperandString == "NULL") //keyword NULL
+						return $" ( {secondOperandString} IS NULL ) ";
 					if (secondOperandString == "NULL") //keyword NULL
 						return $" ( {firstOperandString} IS NULL ) ";
+					
+					if (firstOperandString.StartsWith("@")) //parameter
+					{
+						string paramName = firstOperandString;
+						var param = Parameters.SingleOrDefault(x => x.ParameterName == paramName);
+						if (param == null)
+							throw new EqlException($"WHERE: Parameter '{paramName}' not found.");
+
+						if (param.Value == null || param.Value == DBNull.Value)
+							return $" ( {secondOperandString} IS NULL ) ";
+					}
 					if (secondOperandString.StartsWith("@")) //parameter
 					{
 						string paramName = secondOperandString;
