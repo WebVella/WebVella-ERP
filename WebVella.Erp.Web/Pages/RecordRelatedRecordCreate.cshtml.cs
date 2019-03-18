@@ -64,7 +64,7 @@ namespace WebVella.Erp.Web.Pages.Application
 				if (ErpRequestContext.Page == null) return NotFound();
 
 				//Standard Page functionality
-				var PostObject = (EntityRecord)new PageService().ConvertFormPostToEntityRecord(PageContext.HttpContext, entity: ErpRequestContext.Entity);
+				var PostObject = (EntityRecord)new PageService().ConvertFormPostToEntityRecord(PageContext.HttpContext, entity: ErpRequestContext.Entity, recordId: RecordId );
 
 				if (!PostObject.Properties.ContainsKey("id"))
 					PostObject["id"] = Guid.NewGuid();

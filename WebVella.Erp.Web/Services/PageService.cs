@@ -1375,7 +1375,7 @@ namespace WebVella.Erp.Web.Services
             return null;
         }
 
-        public EntityRecord ConvertFormPostToEntityRecord(HttpContext httpContext, Entity entity = null)
+        public EntityRecord ConvertFormPostToEntityRecord(HttpContext httpContext, Guid? recordId, Entity entity = null )
         {
             var resultRecord = new EntityRecord();
             var allEntities = new EntityManager().ReadEntities().Object;
@@ -1466,9 +1466,12 @@ namespace WebVella.Erp.Web.Services
 					}
                 }
             }
-
+			
 			foreach (string key in propertiesToRemove)
 				resultRecord.Properties.Remove(key);
+
+			if(!resultRecord.Properties.ContainsKey("id") && recordId.HasValue )
+				resultRecord["id"] = recordId.Value;
 
 			return mappedRecord;
         }

@@ -88,7 +88,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 			try
 			{
-				Record = (EntityRecord)new PageService().ConvertFormPostToEntityRecord(PageContext.HttpContext, ErpEntity);
+				Record = (EntityRecord)new PageService().ConvertFormPostToEntityRecord(PageContext.HttpContext, RecordId, ErpEntity);
 
 				//clear empty password properties from record, only update if new password is set
 				//this is because browsers don't render password inputs and don't submit any value, if no user input

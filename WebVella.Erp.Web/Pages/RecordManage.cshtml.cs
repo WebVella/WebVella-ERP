@@ -67,7 +67,7 @@ namespace WebVella.Erp.Web.Pages.Application
 					return Redirect($"/{ErpRequestContext.App.Name}/{ErpRequestContext.SitemapArea.Name}/{ErpRequestContext.SitemapNode.Name}/m/{ErpRequestContext.RecordId}/{ErpRequestContext.Page.Name}");
 
 				//Standard Page functionality
-				var PostObject = new PageService().ConvertFormPostToEntityRecord(PageContext.HttpContext, entity: ErpRequestContext.Entity);
+				var PostObject = new PageService().ConvertFormPostToEntityRecord(PageContext.HttpContext, entity: ErpRequestContext.Entity, recordId: RecordId);
 				DataModel.SetRecord(PostObject);
 
 				var globalHookInstances = HookManager.GetHookedInstances<IPageHook>(HookKey);
