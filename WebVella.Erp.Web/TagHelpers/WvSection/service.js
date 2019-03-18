@@ -26,7 +26,7 @@ function WvSectionInit(sectionId) {
     $(".lns-header").click(function (event) {
         if (event.target.className === this.className) {
             event.preventDefault();
-            event.stopPropagation();
+            //event.stopPropagation();
             var linkEl = $(this).find("a[data-toggle]");
             if (linkEl) {
                 $(linkEl).trigger('click');
