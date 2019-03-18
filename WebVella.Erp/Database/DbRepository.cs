@@ -9,6 +9,19 @@ namespace WebVella.Erp.Database
 {
 	public static class DbRepository
 	{
+		public static void CreatePostgresqlCasts()
+		{
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				string sql = @" DROP CAST IF EXISTS(varchar AS uuid);
+								DROP CAST IF EXISTS(text AS uuid);
+								CREATE CAST(text AS uuid) WITH INOUT AS IMPLICIT;
+								CREATE CAST(varchar AS uuid) WITH INOUT AS IMPLICIT; ";
+				NpgsqlCommand command = connection.CreateCommand(sql);
+				command.ExecuteNonQuery();
+			}
+		}
+
 		public static void CreatePostgresqlExtensions()
 		{
 			using (var connection = DbContext.Current.CreateConnection())
@@ -56,11 +69,11 @@ namespace WebVella.Erp.Database
 			}
 		}
 
-		public static void CreateColumn(string tableName, string name, FieldType type, bool isPrimaryKey, object defaultValue, bool isNullable = false, bool isUnique = false )
+		public static void CreateColumn(string tableName, string name, FieldType type, bool isPrimaryKey, object defaultValue, bool isNullable = false, bool isUnique = false)
 		{
 			string pgType = DbTypeConverter.ConvertToDatabaseSqlType(type);
 
-			if( type == FieldType.AutoNumberField )
+			if (type == FieldType.AutoNumberField)
 			{
 				CreateAutoNumberColumn(tableName, name);
 				return;
@@ -80,7 +93,7 @@ namespace WebVella.Erp.Database
 					//parameter.Value = defaultValue;
 					//parameter.NpgsqlDbType = DbTypeConverter.ConvertToDatabaseType(type);
 					//command.Parameters.Add(parameter);
-					if (type == FieldType.GuidField && isUnique )
+					if (type == FieldType.GuidField && isUnique)
 					{
 						sql += @" DEFAULT  uuid_generate_v1() ";
 					}
@@ -102,7 +115,7 @@ namespace WebVella.Erp.Database
 			}
 		}
 
-		private static void CreateAutoNumberColumn(string tableName, string name )
+		private static void CreateAutoNumberColumn(string tableName, string name)
 		{
 			string pgType = DbTypeConverter.ConvertToDatabaseSqlType(FieldType.AutoNumberField);
 
@@ -183,7 +196,7 @@ namespace WebVella.Erp.Database
 			}
 		}
 
-		public static void DropUniqueConstraint(string constraintName, string tableName )
+		public static void DropUniqueConstraint(string constraintName, string tableName)
 		{
 			using (var connection = DbContext.Current.CreateConnection())
 			{
@@ -193,7 +206,7 @@ namespace WebVella.Erp.Database
 			}
 		}
 
-		public static void SetColumnNullable(string tableName, string columnName, bool nullable )
+		public static void SetColumnNullable(string tableName, string columnName, bool nullable)
 		{
 			using (var connection = DbContext.Current.CreateConnection())
 			{
@@ -206,12 +219,12 @@ namespace WebVella.Erp.Database
 			}
 		}
 
-		public static void SetColumnDefaultValue(string tableName, string columnName, FieldType type, object value, bool overrideNulls )
+		public static void SetColumnDefaultValue(string tableName, string columnName, FieldType type, object value, bool overrideNulls)
 		{
 			using (var connection = DbContext.Current.CreateConnection())
 			{
 				var defVal = ConvertDefaultValue(type, value);
-				if( value != null && overrideNulls )
+				if (value != null && overrideNulls)
 				{
 					string updateNullRecordsSql = $"UPDATE \"{tableName}\" SET \"{columnName}\" = {defVal} WHERE \"{columnName}\" IS NULL";
 					var updateCommand = connection.CreateCommand(updateNullRecordsSql);
@@ -246,14 +259,14 @@ namespace WebVella.Erp.Database
 			CreateTable(relTableName);
 			CreateColumn(relTableName, "origin_id", FieldType.GuidField, false, null, false);
 			CreateColumn(relTableName, "target_id", FieldType.GuidField, false, null, false);
-			
+
 			SetPrimaryKey(relTableName, new List<string> { "origin_id", "target_id" });
-			
+
 			CreateRelation($"{relName}_origin", originTableName, originFieldName, relTableName, "origin_id");
 			CreateRelation($"{relName}_target", targetTableName, targetFieldName, relTableName, "target_id");
 
-			CreateIndex("idx_"+ relName +"_origin_id", relTableName, "origin_id");
-			CreateIndex("idx_"+ relName +"_target_id", relTableName, "target_id");
+			CreateIndex("idx_" + relName + "_origin_id", relTableName, "origin_id");
+			CreateIndex("idx_" + relName + "_target_id", relTableName, "target_id");
 
 			if (originFieldName != "id")
 			{
@@ -291,7 +304,7 @@ namespace WebVella.Erp.Database
 			DeleteTable(relTableName, false);
 		}
 
-		public static void CreateIndex( string indexName, string tableName, string columnName, bool unique = false, bool ascending = true, bool nullable = false )
+		public static void CreateIndex(string indexName, string tableName, string columnName, bool unique = false, bool ascending = true, bool nullable = false)
 		{
 			if (!TableExists(tableName))
 				return;
@@ -302,7 +315,7 @@ namespace WebVella.Erp.Database
 				if (unique)
 					sql = $"CREATE UNIQUE INDEX IF NOT EXISTS \"{indexName}\" ON \"{tableName}\" (\"{columnName}\"";
 
-				if( !ascending )
+				if (!ascending)
 					sql = sql + " DESC";
 
 				sql = sql + ")";
@@ -322,7 +335,7 @@ namespace WebVella.Erp.Database
 			}
 		}
 
-		public static void CreateFtsIndexIfNotExists(string indexName, string tableName, string columnName )
+		public static void CreateFtsIndexIfNotExists(string indexName, string tableName, string columnName)
 		{
 			if (!TableExists(tableName))
 				return;
@@ -336,7 +349,7 @@ namespace WebVella.Erp.Database
 		}
 
 
-		public static void DropIndex(string indexName )
+		public static void DropIndex(string indexName)
 		{
 			using (var connection = DbContext.Current.CreateConnection())
 			{
