@@ -3603,6 +3603,15 @@ input[type=date].form-control, input[type=datetime-local].form-control {
 		color: white;
 	}
 
+.erp-field.inline-edit .erp-image.image-wrapper.view-wrapper .action {
+    display:none;
+}
+
+.erp-field.inline-edit .erp-image.image-wrapper.view-wrapper:hover .action {
+    display:inline-block;
+}
+
+
 
 .erp-field .select2-container {
 	flex-grow:1;
@@ -4769,14 +4778,14 @@ border-bottom-style:dashed;
 }
 
 .pc-page-header .page-header-toolbar {
-	background: #fff;
 	margin-top: 15px;
 	margin-left: -15px;
 	margin-right: -15px;
 	margin-bottom: -11px;
 	color: --dark_color;
-	border-top: 1px solid --gray_border_color;
-	border-bottom: 1px solid --gray_border_color;
+    background:#e0e0e0;
+    border-top:1px solid #BDBDBD;
+    border-bottom:1px solid #BDBDBD;
 	padding-left: 10px !important;
     padding-right: 10px !important;
 }
