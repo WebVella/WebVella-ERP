@@ -393,7 +393,7 @@ $$$TABS$$$ WHERE {10}.{11} = {12}.{13} )d  )::jsonb AS ""{0}"",";
 					}
 					else
 					{
-						if (info.RelationInfo.Direction == EqlRelationDirectionType.TargetOrigin)
+						if (info.RelationInfo.Direction == EqlRelationDirectionType.OriginTarget)
 						{
 							string alias = $"{RECORD_COLLECTION_PREFIX}{info.Relation.OriginEntityName}";
 							if (info.Parent != null && info.Parent.Relation != null)
