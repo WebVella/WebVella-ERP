@@ -102,10 +102,10 @@ namespace WebVella.Erp.Web.Components
 			public string Container1Id { get; set; } = "column1";
 
 			[JsonProperty(PropertyName = "container1_name")]
-			public string Container1Name { get; set; } = "column1"; //For URL purposes
+			public string Container1Name { get; set; } = ""; //For URL purposes
 
 			[JsonProperty(PropertyName = "container1_label")]
-			public string Container1Label { get; set; } = "column1";
+			public string Container1Label { get; set; } = "";
 
 			[JsonProperty(PropertyName = "container1_width")]
 			public string Container1Width { get; set; } = "";
@@ -135,10 +135,10 @@ namespace WebVella.Erp.Web.Components
 			public string Container2Id { get; set; } = "column2";
 
 			[JsonProperty(PropertyName = "container2_name")]
-			public string Container2Name { get; set; } = "column2"; //For URL purposes
+			public string Container2Name { get; set; } = ""; //For URL purposes
 
 			[JsonProperty(PropertyName = "container2_label")]
-			public string Container2Label { get; set; } = "column2";
+			public string Container2Label { get; set; } = "";
 
 			[JsonProperty(PropertyName = "container2_width")]
 			public string Container2Width { get; set; } = "";
@@ -167,10 +167,10 @@ namespace WebVella.Erp.Web.Components
 			public string Container3Id { get; set; } = "column3";
 
 			[JsonProperty(PropertyName = "container3_name")]
-			public string Container3Name { get; set; } = "column3"; //For URL purposes
+			public string Container3Name { get; set; } = ""; //For URL purposes
 
 			[JsonProperty(PropertyName = "container3_label")]
-			public string Container3Label { get; set; } = "column3";
+			public string Container3Label { get; set; } = "";
 
 			[JsonProperty(PropertyName = "container3_width")]
 			public string Container3Width { get; set; } = "";
@@ -199,10 +199,10 @@ namespace WebVella.Erp.Web.Components
 			public string Container4Id { get; set; } = "column4";
 
 			[JsonProperty(PropertyName = "container4_name")]
-			public string Container4Name { get; set; } = "column4"; //For URL purposes
+			public string Container4Name { get; set; } = ""; //For URL purposes
 
 			[JsonProperty(PropertyName = "container4_label")]
-			public string Container4Label { get; set; } = "column4";
+			public string Container4Label { get; set; } = "";
 
 			[JsonProperty(PropertyName = "container4_width")]
 			public string Container4Width { get; set; } = "";
@@ -231,10 +231,10 @@ namespace WebVella.Erp.Web.Components
 			public string Container5Id { get; set; } = "column5";
 
 			[JsonProperty(PropertyName = "container5_name")]
-			public string Container5Name { get; set; } = "column5"; //For URL purposes
+			public string Container5Name { get; set; } = ""; //For URL purposes
 
 			[JsonProperty(PropertyName = "container5_label")]
-			public string Container5Label { get; set; } = "column5";
+			public string Container5Label { get; set; } = "";
 
 			[JsonProperty(PropertyName = "container5_width")]
 			public string Container5Width { get; set; } = "";
@@ -263,10 +263,10 @@ namespace WebVella.Erp.Web.Components
 			public string Container6Id { get; set; } = "column6";
 
 			[JsonProperty(PropertyName = "container6_name")]
-			public string Container6Name { get; set; } = "column6"; //For URL purposes
+			public string Container6Name { get; set; } = ""; //For URL purposes
 
 			[JsonProperty(PropertyName = "container6_label")]
-			public string Container6Label { get; set; } = "column6";
+			public string Container6Label { get; set; } = "";
 
 			[JsonProperty(PropertyName = "container6_width")]
 			public string Container6Width { get; set; } = "";
@@ -295,10 +295,10 @@ namespace WebVella.Erp.Web.Components
 			public string Container7Id { get; set; } = "column7";
 
 			[JsonProperty(PropertyName = "container7_name")]
-			public string Container7Name { get; set; } = "column7"; //For URL purposes
+			public string Container7Name { get; set; } = ""; //For URL purposes
 
 			[JsonProperty(PropertyName = "container7_label")]
-			public string Container7Label { get; set; } = "column7";
+			public string Container7Label { get; set; } = "";
 
 			[JsonProperty(PropertyName = "container7_width")]
 			public string Container7Width { get; set; } = "";
@@ -327,10 +327,10 @@ namespace WebVella.Erp.Web.Components
 			public string Container8Id { get; set; } = "column8";
 
 			[JsonProperty(PropertyName = "container8_name")]
-			public string Container8Name { get; set; } = "column8"; //For URL purposes
+			public string Container8Name { get; set; } = ""; //For URL purposes
 
 			[JsonProperty(PropertyName = "container8_label")]
-			public string Container8Label { get; set; } = "column8";
+			public string Container8Label { get; set; } = "";
 
 			[JsonProperty(PropertyName = "container8_width")]
 			public string Container8Width { get; set; } = "";
@@ -359,10 +359,10 @@ namespace WebVella.Erp.Web.Components
 			public string Container9Id { get; set; } = "column9";
 
 			[JsonProperty(PropertyName = "container9_name")]
-			public string Container9Name { get; set; } = "column9"; //For URL purposes
+			public string Container9Name { get; set; } = ""; //For URL purposes
 
 			[JsonProperty(PropertyName = "container9_label")]
-			public string Container9Label { get; set; } = "column9";
+			public string Container9Label { get; set; } = "";
 
 			[JsonProperty(PropertyName = "container9_width")]
 			public string Container9Width { get; set; } = "";
@@ -391,10 +391,10 @@ namespace WebVella.Erp.Web.Components
 			public string Container10Id { get; set; } = "column10";
 
 			[JsonProperty(PropertyName = "container10_name")]
-			public string Container10Name { get; set; } = "column10"; //For URL purposes
+			public string Container10Name { get; set; } = ""; //For URL purposes
 
 			[JsonProperty(PropertyName = "container10_label")]
-			public string Container10Label { get; set; } = "column10";
+			public string Container10Label { get; set; } = "";
 
 			[JsonProperty(PropertyName = "container10_width")]
 			public string Container10Width { get; set; } = "";
@@ -423,10 +423,10 @@ namespace WebVella.Erp.Web.Components
 			public string Container11Id { get; set; } = "column11";
 
 			[JsonProperty(PropertyName = "container11_name")]
-			public string Container11Name { get; set; } = "column11"; //For URL purposes
+			public string Container11Name { get; set; } = ""; //For URL purposes
 
 			[JsonProperty(PropertyName = "container11_label")]
-			public string Container11Label { get; set; } = "column11";
+			public string Container11Label { get; set; } = "";
 
 			[JsonProperty(PropertyName = "container11_width")]
 			public string Container11Width { get; set; } = "";
@@ -455,10 +455,10 @@ namespace WebVella.Erp.Web.Components
 			public string Container12Id { get; set; } = "column12";
 
 			[JsonProperty(PropertyName = "container12_name")]
-			public string Container12Name { get; set; } = "column12"; //For URL purposes
+			public string Container12Name { get; set; } = ""; //For URL purposes
 
 			[JsonProperty(PropertyName = "container12_label")]
-			public string Container12Label { get; set; } = "column12";
+			public string Container12Label { get; set; } = "";
 
 			[JsonProperty(PropertyName = "container12_width")]
 			public string Container12Width { get; set; } = "";
