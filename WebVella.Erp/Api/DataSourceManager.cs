@@ -346,6 +346,9 @@ namespace WebVella.Erp.Api
 						if (string.IsNullOrWhiteSpace(dsParameter.Value))
 							return null;
 
+						if (dsParameter.Value.ToLowerInvariant() == "null")
+							return null;
+
 						if (dsParameter.Value.ToLowerInvariant() == "guid.empty")
 							return Guid.Empty;
 
@@ -362,6 +365,9 @@ namespace WebVella.Erp.Api
 						if (Int32.TryParse(dsParameter.Value, out int value))
 							return value;
 
+						if (dsParameter.Value.ToLowerInvariant() == "null")
+							return null;
+
 						throw new Exception($"Invalid int value for parameter: " + dsParameter.Name);
 					}
 				case "decimal":
@@ -377,6 +383,9 @@ namespace WebVella.Erp.Api
 				case "date":
 					{
 						if (string.IsNullOrWhiteSpace(dsParameter.Value))
+							return null;
+
+						if (dsParameter.Value.ToLowerInvariant() == "null")
 							return null;
 
 						if (dsParameter.Value.ToLowerInvariant() == "now")
@@ -402,6 +411,9 @@ namespace WebVella.Erp.Api
 					}
 				case "bool":
 					{
+						if (dsParameter.Value.ToLowerInvariant() == "null")
+							return null;
+
 						if (dsParameter.Value.ToLowerInvariant() == "true")
 							return true;
 
