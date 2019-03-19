@@ -1763,44 +1763,48 @@ namespace WebVella.Erp.Api
 
 					return decimal.Round(decimalValue, ((CurrencyField)field).Currency.DecimalDigits, MidpointRounding.AwayFromZero);
 				}
-				else if (field is DateField)
+				else if (field is DateField || field is DateTimeField)
 				{
 					if (pair.Value == null)
 						return null;
 
 					DateTime? date = null;
 					if (pair.Value is string)
-						date = DateTime.Parse(pair.Value as string);
-					else
-						date = pair.Value as DateTime?;
-
-					if (date != null)
 					{
+						if (string.IsNullOrWhiteSpace(pair.Value as string))
+							return null;
+						date = DateTime.Parse(pair.Value as string);
 						switch (date.Value.Kind)
 						{
 							case DateTimeKind.Utc:
+								return date;
 							case DateTimeKind.Local:
-								date = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(date.Value, ErpSettings.TimeZoneName);
-								date = DateTime.SpecifyKind(date.Value, DateTimeKind.Unspecified);
-								break;
+								return date.Value.ToUniversalTime();
 							case DateTimeKind.Unspecified:
-								//do nothing, it is already in erp timezone
-								break;
+								{
+									var erpTimeZone = TimeZoneInfo.FindSystemTimeZoneById(ErpSettings.TimeZoneName);
+									return TimeZoneInfo.ConvertTimeToUtc(date.Value, erpTimeZone);
+								}
 						}
-
-						return new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, DateTimeKind.Unspecified);
 					}
-				}
-				else if (field is DateTimeField)
-				{
+					else
+					{
+						date = pair.Value as DateTime?;
 
-					if (pair.Value == null)
-						return null;
-
-					if (pair.Value is string)
-						return DateTime.Parse(pair.Value as string);
-
-					return pair.Value as DateTime?;
+						switch (date.Value.Kind)
+						{
+							case DateTimeKind.Utc:
+								return date;
+							case DateTimeKind.Local:
+								return date.Value.ToUniversalTime();
+							case DateTimeKind.Unspecified:
+								{
+									var erpTimeZone = TimeZoneInfo.FindSystemTimeZoneById(ErpSettings.TimeZoneName);
+									return TimeZoneInfo.ConvertTimeToUtc(date.Value, erpTimeZone);
+								}
+						}
+					}
+					return date;
 				}
 				else if (field is EmailField)
 					return pair.Value as string;
