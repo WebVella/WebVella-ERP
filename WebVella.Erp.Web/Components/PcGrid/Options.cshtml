@@ -75,9 +75,13 @@
 	</wv-column>
 </wv-row>
 
+<div class="alert alert-info p-2">
+    In nested components, use <code>RowRecord</code> datasource as a reference to the record renedered in the current row
+</div>
+
 @for (int i = 1; i <= 12; i++)
 {
-    <wv-section id="@($"section-column{i}")" class="mt-3 with-background @(options.VisibleColumns > i - 1 ? "" : "d-none")"
+    <wv-section id="@($"section-column{i}")" class="mt-3 @(options.VisibleColumns > i - 1 ? "" : "d-none")"
         is-collapsable="true" is-collapsed="true" title="@("Column " + i)" title-tag="h5">
 		<wv-row>
 			@{
@@ -92,7 +96,7 @@
 				<wv-field-text name="@($"container{i}_width")" value="@columnWidth" label-text="@($"Column {i} Width")"></wv-field-text>
 			</wv-column>
 			<wv-column span="4">
-				<wv-field-text name="@($"container{i}_name")" value="@columnName" label-text="@($"Column {i} Name")"></wv-field-text>
+				<wv-field-text name="@($"container{i}_name")" value="@columnName" label-text="@($"Column {i} Name (for JS purposes)")"></wv-field-text>
 			</wv-column>
 		</wv-row>
 		<wv-row>
