@@ -60,7 +60,11 @@ namespace WebVella.Erp.Web.Components
 				}
 
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
-				#endregion
+                #endregion
+
+                if (String.IsNullOrWhiteSpace(options.Validation)) {
+                    options.Validation = "Validation";
+                }
 
 				ViewBag.Validation = context.DataModel.GetPropertyValueByDataSource(options.Validation) as ValidationException;
 
