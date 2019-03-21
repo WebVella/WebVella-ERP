@@ -557,3 +557,5 @@ To attach to such a hook you need to create your own ViewComponent and decorate 
 		}
 	}
 ```
+
+IMPORTANT: In our application master page there are already render hooks included for: `head-top`, `head-bottom`,`body-toop`, `body-bottom`.

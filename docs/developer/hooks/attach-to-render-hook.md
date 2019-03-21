@@ -3,6 +3,8 @@
 
 You can easily attach any ViewComponent to a render hook by decorating it with the correct attribute and placeholder name.
 
+IMPORTANT: In our application master page there are already render hooks included for: `head-top`, `head-bottom`,`body-toop`, `body-bottom`.
+
 ```csharp
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
