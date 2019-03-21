@@ -1,0 +1,59 @@
+﻿@addTagHelper *, WebVella.Erp.Plugins.Core
+@addTagHelper *, WebVella.Erp.Web
+@using WebVella.Erp.Web.Components;
+@using WebVella.Erp.Web.Models;
+@using WebVella.Erp.Api.Models;
+@using WebVella.Erp.Web;
+@{
+	var options = (PcFieldMultiFileUpload.PcFieldMultiFileUploadOptions)ViewBag.Options;
+	var fieldModel = (PcFieldFile.PcFieldBaseModel)ViewBag.Model;
+	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
+}
+
+<wv-row>
+	<wv-column span="4">
+		<wv-field-datasource name="is_visible" label-text="Is Rendered" value="@options.IsVisible" page-id="erpRequest.Page.Id" placeholder="true"></wv-field-datasource>
+	</wv-column>
+</wv-row>
+<h4 class="mt-2 mb-0">Label</h4>
+<wv-row>
+	<wv-column span="4">
+		<wv-field-select name="label_mode" value="@((int)options.LabelMode)" label-text="Label mode" options="@fieldModel.LabelRenderModeOptions" required="true"></wv-field-select>		
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="label_text" value="@options.LabelText" label-text="Label text"></wv-field-text>
+	</wv-column>
+</wv-row>
+<h4 class="mt-4 mb-0">Field</h4>
+<wv-row>
+	<wv-column span="4">
+		<wv-field-select name="mode" value="@((int)options.Mode)" label-text="Mode" options="@fieldModel.FieldRenderModeOptions" required="true"></wv-field-select>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-datasource name="value" value="@options.Value" label-text="Value (List<EntityRecord>)" page-id="erpRequest.Page.Id"></wv-field-datasource>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="name" value="@options.Name" label-text="Name"></wv-field-text>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="4">
+		<wv-field-text name="class" label-text="Css class" value="@options.Class"></wv-field-text>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="accept" value="@options.Accept" label-text="Accept"></wv-field-text>
+	</wv-column>
+</wv-row>
+
+<wv-section is-collapsable="true" is-collapsed="true" title="advanced options" class="mt-3">
+	<wv-row>
+		<wv-column span="4">
+			<wv-field-select name="connected_entity_id" value="@options.ConnectedEntityId" label-text="Connected Entity" options="@fieldModel.EntitySelectOptions"></wv-field-select>
+		</wv-column>
+		<wv-column span="4">
+			<div class="go-bkg-gray-light border p-2">
+				<span class="go-blue"><i class="fa fa-info-circle"></i> Note: </span>The platform will try getting the advanced field properties by mapping the field name to the selected entity field name. If "<strong>label</strong>" or "<strong>options</strong>" are specified above, they will be applied with priority. If no entity is selected, the system will use the page's entity, if any is found!
+			</div>
+		</wv-column>
+	</wv-row>
+</wv-section>

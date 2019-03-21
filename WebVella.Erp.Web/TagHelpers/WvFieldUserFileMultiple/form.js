@@ -1,4 +1,4 @@
-﻿function FieldUserFileFormGenerateSelectors(fieldId, config) {
+﻿function FieldUserMultiFileFormGenerateSelectors(fieldId, config) {
 	//Method for generating selector strings of some of the presentation elements
 	var selectors = {};
 	selectors.inputEl = "#input-" + fieldId;
@@ -10,43 +10,67 @@
 	return selectors;
 }
 
-function FieldUserFileRemoveFileRow(e) {
+function FieldUserMultiFileRemoveFileRow(e) {
 	e.preventDefault();
-	e.stopPropagation();
-	if (confirm("Are you sure?")) {
-		var fileRow = $(this).closest(".filerow");
-		var fileId = fileRow.attr("data-file-id").toLowerCase();
-		var fileRowList = $(this).closest(".erp-file-multiple-list");
-		var fieldId = fileRowList.attr("id").replace("fake-list-","");
+    e.stopPropagation();
+    var clickedBtn = event.target;
+    var fileId = $(clickedBtn).closest(".filerow").attr("data-file-id");
 
-		var selectors = FileMultipleFormGenerateSelectors(fieldId, {});
-		var inputValue = $(selectors.inputEl).val();
-		if (inputValue && inputValue.indexOf(fileId) > -1) {
-			var idArray = [];
-			if (inputValue) {
-				idArray = inputValue.toLowerCase().split(',');
-			}
-			var filteredArray = _.filter(idArray, function (recordId) {return recordId !== fileId});
-			$(selectors.inputEl).val(filteredArray.join(','));
-			$(fileRow).remove();
-			if (filteredArray.length === 0) {
-				$(selectors.fileListEl).addClass("d-none");
-			}
-		}
-		else {
-			console.error("File Id: " + fileId + " not found in the hidden input value");
-		}
+    if (confirm("Are you sure?")) {
+
+        $.ajax({
+            type: "DELETE",
+            url: '/api/v3/en_US/record/user_file/' + fileId,
+            success: function () {
+                var fileRow = $(clickedBtn).closest(".filerow");
+                var fieldId = $(clickedBtn).closest(".erp-file-multiple-list").attr("id").replace("fake-list-", "");
+                var selectors = FieldUserMultiFileFormGenerateSelectors(fieldId, {});
+                var inputValue = $(selectors.inputEl).val();
+                if (inputValue && inputValue.indexOf(fileId) > -1) {
+                    var idArray = [];
+                    if (inputValue) {
+                        idArray = inputValue.toLowerCase().split(',');
+                    }
+                    var filteredArray = _.filter(idArray, function (recordId) { return recordId !== fileId });
+                    $(selectors.inputEl).val(filteredArray.join(','));
+                    $(fileRow).remove();
+                    if (filteredArray.length === 0) {
+                        $(selectors.fileListEl).addClass("d-none");
+                    }
+                }
+                else {
+                    console.error("File Id: " + fileId + " not found in the hidden input value");
+                }
+            },
+            error: function (xhr, status, p3, p4) {
+                var err = "Error " + " " + status;
+                if (p3) {
+                    err += " " + p3;
+                }
+                if (p4) {
+                    err += " " + p4;
+                }
+                if (xhr.responseText && xhr.responseText.startsWith("{")) {
+                    err = JSON.parse(xhr.responseText).message;
+                }
+
+                toastr.error("An error occurred", 'Error!', { closeButton: true, tapToDismiss: true });
+                console.log(err);
+            }
+        });
+
+
 	}
 }
 
-function FieldUserFileFormInit(fieldId, config) {
+function FieldUserMultiFileFormInit(fieldId, config) {
 	config = ProcessConfig(config);
-	var selectors = FileMultipleFormGenerateSelectors(fieldId, config);
+    var selectors = FieldUserMultiFileFormGenerateSelectors(fieldId, config);
 	//Remove value
-	$(selectors.removeFileLink).on('click', FileMultipleRemoveFileRow);
+	$(selectors.removeFileLink).on('click', FieldUserMultiFileRemoveFileRow);
 
-	$(selectors.fileUploadEl).first().on('change', function (e) {
-		var files = e.target.files;
+    $(selectors.fileUploadEl).first().on('change', function (e) {
+        var files = e.target.files;
 		if (files.length > 0) {
 			if (window.FormData !== undefined) {
 				var inputEl = $(selectors.inputEl);
@@ -123,7 +147,7 @@ function FieldUserFileFormInit(fieldId, config) {
 									fileRowActionLink.className = "link";
 									fileRowActionLink.href = "#";
 									fileRowActionLink.innerHTML = '<i class="fa fa-times-circle"></i>';
-									fileRowActionLink.onclick = FileMultipleRemoveFileRow;
+									fileRowActionLink.onclick = FieldUserMultiFileRemoveFileRow;
 									fileRowAction.appendChild(fileRowActionLink);
 									fileRowEl.appendChild(fileRowAction);
 									

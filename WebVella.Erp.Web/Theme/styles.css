@@ -5791,5 +5791,54 @@ wv-pb-manager .wv-pb-node > div > .row {
             }
 /*#endregion*/
 
+/*#region << Multiple field upload */
+
+.erp-field .erp-file-multiple-list {
+    height:auto;
+    margin-top:5px;
+}
+
+.erp-field .filerow {
+    display:flex;
+    flex-flow: row;
+    align-items: center;
+    padding:3px 0;
+}
+
+
+    .erp-field .filerow:hover {
+        background:#fafafa;
+    }
+
+    .erp-field .filerow .icon {
+        flex-grow:0;
+        flex-shrink:0;
+        width:24px;
+    }
+
+    .erp-field .filerow .meta {
+        flex-grow:1;
+        flex-shrink:0;
+    }
+
+        .erp-field .filerow .meta .size {
+            color:#999;
+            font-size:12px;
+            line-height:1em;
+        }
+
+    .erp-field .filerow .action {
+        flex-grow:0;
+        flex-shrink:0;
+        width:24px;
+
+    }
+
+        .erp-field .filerow .action.remove a {
+            color:#F44336;
+        }
+
+/*#endregion*/
+
 /*#endregion*/
 

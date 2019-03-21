@@ -15,6 +15,7 @@
    </ItemGroup>
 
    <ItemGroup>
+     <None Remove="Components\PcFieldMultiFileUpload\service.js" />
      <None Remove="TagHelpers\WvFieldUserFileMultiple\form.js" />
      <None Remove="TagHelpers\WvFieldUserFileMultiple\inline-edit.js" />
    </ItemGroup>
@@ -23,6 +24,7 @@
 	<EmbeddedResource Include="Components\Nav\script.js" />
 	<EmbeddedResource Include="Components\PcBtnToolbar\service.js" />
 	<EmbeddedResource Include="Components\PcBtnGroup\service.js" />
+	<EmbeddedResource Include="Components\PcFieldMultiFileUpload\service.js" />
 	<EmbeddedResource Include="Components\PcFieldHidden\service.js" />
 	<EmbeddedResource Include="Components\PcFieldCheckboxList\service.js" />
 	<EmbeddedResource Include="Components\PcFieldRadioList\service.js" />
