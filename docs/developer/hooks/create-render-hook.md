@@ -34,6 +34,8 @@ The hook supports the following properties, which will be also provided as param
 |                               | An unique name defining the position
 +-------------------------------+-----------------------------------+
 
+IMPORTANT: In our application master page there are already render hooks included for: `head-top`, `head-bottom`,`body-toop`, `body-bottom`.
+
 ## Example 
 Paste the following code in a Razor view:
 
