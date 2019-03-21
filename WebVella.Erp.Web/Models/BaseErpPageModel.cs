@@ -258,7 +258,7 @@ namespace WebVella.Erp.Web.Models
 			var sitePages = pageSrv.GetSitePages();
 			foreach (var sitePage in sitePages)
 			{
-                if (sitePage.Weight > 0)
+                if (sitePage.Weight < 1000)
                 {
                     SiteMenu.Add(new MenuItem()
                     {
