@@ -9,6 +9,7 @@ using WebVella.Erp.Database;
 using WebVella.Erp.Utilities.Dynamic;
 using System.Dynamic;
 using WebVella.Erp.Hooks;
+using WebVella.Erp.Exceptions;
 
 namespace WebVella.Erp.Api
 {
@@ -61,8 +62,45 @@ namespace WebVella.Erp.Api
 					return response;
 				}
 
-				relationRepository.CreateManyToManyRecord(relationId, originValue, targetValue);
-				return response;
+				bool hooksExists = RecordHookManager.ContainsAnyHooksForRelation(relation.Name);
+				if( hooksExists )
+				{
+					using (var connection = DbContext.Current.CreateConnection())
+					{
+						try
+						{
+							connection.BeginTransaction();
+
+							List<ErrorModel> errors = new List<ErrorModel>();
+							RecordHookManager.ExecutePreCreateManyToManyRelationHook(relation.Name, originValue, targetValue, errors);
+							if (errors.Count > 0)
+							{
+								connection.RollbackTransaction();
+								response.Success = false;
+								response.Object = null;
+								response.Errors = errors;
+								response.Timestamp = DateTime.UtcNow;
+								return response;
+							}
+
+							relationRepository.CreateManyToManyRecord(relationId, originValue, targetValue);
+							RecordHookManager.ExecutePostCreateManyToManyRelationHook(relation.Name, originValue, targetValue);
+
+							connection.CommitTransaction();
+							return response;
+						}
+						catch
+						{
+							connection.RollbackTransaction();
+							throw;
+						}
+					}
+				}
+				else
+				{
+					relationRepository.CreateManyToManyRecord(relationId, originValue, targetValue);
+					return response;
+				}
 			}
 			catch (Exception e)
 			{
@@ -101,8 +139,46 @@ namespace WebVella.Erp.Api
 					return response;
 				}
 
-				relationRepository.DeleteManyToManyRecord(relationId, originValue, targetValue);
-				return response;
+
+				bool hooksExists = RecordHookManager.ContainsAnyHooksForRelation(relation.Name);
+				if (hooksExists)
+				{
+					using (var connection = DbContext.Current.CreateConnection())
+					{
+						try
+						{
+							connection.BeginTransaction();
+
+							List<ErrorModel> errors = new List<ErrorModel>();
+							RecordHookManager.ExecutePreDeleteManyToManyRelationHook(relation.Name, originValue, targetValue, errors);
+							if (errors.Count > 0)
+							{
+								connection.RollbackTransaction();
+								response.Success = false;
+								response.Object = null;
+								response.Errors = errors;
+								response.Timestamp = DateTime.UtcNow;
+								return response;
+							}
+
+							relationRepository.DeleteManyToManyRecord(relationId, originValue, targetValue);
+							RecordHookManager.ExecutePostDeleteManyToManyRelationHook(relation.Name, originValue, targetValue);
+
+							connection.CommitTransaction();
+							return response;
+						}
+						catch
+						{
+							connection.RollbackTransaction();
+							throw;
+						}
+					}
+				}
+				else
+				{
+					relationRepository.DeleteManyToManyRecord(relationId, originValue, targetValue);
+					return response;
+				}
 			}
 			catch (Exception e)
 			{
