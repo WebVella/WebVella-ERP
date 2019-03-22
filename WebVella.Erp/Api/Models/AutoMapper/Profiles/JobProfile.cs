@@ -97,6 +97,8 @@ namespace WebVella.Erp.Api.Models.AutoMapper.Profiles
 			schedulePlan.JobTypeId = (Guid)src["job_type_id"];
 			if (JobManager.JobTypes.Any(t => t.Id == schedulePlan.JobTypeId))
 				schedulePlan.JobType = JobManager.JobTypes.FirstOrDefault(t => t.Id == schedulePlan.JobTypeId);
+			else
+				throw new Exception($"JobType with id='{schedulePlan.JobTypeId}' not found.");
 			if (!string.IsNullOrWhiteSpace(src["job_attributes"].ToString()))
 				schedulePlan.JobAttributes = JsonConvert.DeserializeObject<ExpandoObject>((string)src["job_attributes"], settings);
 			schedulePlan.Enabled = (bool)src["enabled"];
