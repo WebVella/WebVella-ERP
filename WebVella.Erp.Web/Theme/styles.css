@@ -2842,7 +2842,11 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 }
 
 	.menu-nav a {
-		display: block;
+		display: flex;
+        height:100%;
+        width:100%;
+        flex-flow:row;
+        align-items:center;
 		/*color: --gray_semi_light_color;*/
 		color:#555;
 		padding-left: 0.75rem;
