@@ -3797,6 +3797,9 @@ namespace WebVella.Erp.Web.Controllers
                         #endregion
 
                         var recordCreateResult = recMan.CreateRecord("user_file", userFileRecord);
+                        if (!recordCreateResult.Success) {
+                            throw new Exception(recordCreateResult.Message);
+                        }
                         resultRecords.Add(userFileRecord);
                     }
                     connection.CommitTransaction();
