@@ -244,7 +244,7 @@ namespace WebVella.Erp.Web.Models
 					if( ErpRequestContext.SitemapArea == null && ErpRequestContext.Page != null && ErpRequestContext.Page.Type != PageType.Application)
 						return new NotFoundResult();
 
-					if (area.Id == ErpRequestContext.SitemapArea.Id)
+					if (ErpRequestContext.SitemapArea != null && area.Id == ErpRequestContext.SitemapArea.Id)
                         areaMenuItem.Class = "current";
 
 					ApplicationMenu.Add(areaMenuItem);
