@@ -90,7 +90,7 @@ namespace WebVella.Erp.Web.Components
                     //Generate Url
                     foreach (var app in allowedApps)
 					{
-						app.HomePages = app.HomePages.OrderBy(x => x.Weight).ToList();
+						app.HomePages = app.HomePages.FindAll(x => x.Weight < 1000).OrderBy(x => x.Weight).ToList();
 						foreach (var area in app.Sitemap.Areas)
 						{
 							foreach (var node in area.Nodes)
