@@ -211,9 +211,9 @@ namespace WebVella.Erp.Web.TagHelpers
 					#region << Init Scripts >>
 					var tagHelperInitialized = false;
 					var fileName = "form";
-					if (ViewContext.HttpContext.Items.ContainsKey(typeof(WvFieldFile) + fileName))
+					if (ViewContext.HttpContext.Items.ContainsKey(typeof(WvFieldUserFileMultiple) + fileName))
 					{
-						var tagHelperContext = (WvTagHelperContext)ViewContext.HttpContext.Items[typeof(WvFieldFile) + fileName];
+						var tagHelperContext = (WvTagHelperContext)ViewContext.HttpContext.Items[typeof(WvFieldUserFileMultiple) + fileName];
 						tagHelperInitialized = tagHelperContext.Initialized;
 					}
 					if (!tagHelperInitialized)
@@ -225,7 +225,7 @@ namespace WebVella.Erp.Web.TagHelpers
                         scriptEl.InnerHtml.AppendHtml(jsCompressor.Compress(scriptContent));
                         output.PostContent.AppendHtml(scriptEl);
 
-						ViewContext.HttpContext.Items[typeof(WvFieldFile) + fileName] = new WvTagHelperContext()
+						ViewContext.HttpContext.Items[typeof(WvFieldUserFileMultiple) + fileName] = new WvTagHelperContext()
 						{
 							Initialized = true
 						};
