@@ -110,10 +110,6 @@ namespace WebVella.Erp.Web.Components
                 {
                     model.Value = context.DataModel.GetPropertyValueByDataSource(options.Value);
 
-                    ViewBag.UploadModeOptions = ModelExtensions.GetEnumAsSelectOptions<HtmlUploadMode>();
-                    ViewBag.ToolbarModeOptions = ModelExtensions.GetEnumAsSelectOptions<HtmlToolbarMode>();
-
-
                     var isVisible = true;
                     var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
                     if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
@@ -129,6 +125,9 @@ namespace WebVella.Erp.Web.Components
                     }
                     ViewBag.IsVisible = isVisible;
                 }
+
+                ViewBag.UploadModeOptions = ModelExtensions.GetEnumAsSelectOptions<HtmlUploadMode>();
+                ViewBag.ToolbarModeOptions = ModelExtensions.GetEnumAsSelectOptions<HtmlToolbarMode>();
 
                 switch (context.Mode)
 				{

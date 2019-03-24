@@ -140,16 +140,16 @@ namespace WebVella.Erp.Web.Components
 
                     ViewBag.ProcessedHref = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Href);
 
-                    #region << Select options >>
-                    ViewBag.CssSize = ModelExtensions.GetEnumAsSelectOptions<CssSize>();
-
-                    ViewBag.ColorOptions = ModelExtensions.GetEnumAsSelectOptions<ErpColor>().OrderBy(x => x.Label).ToList();
-
-                    ViewBag.TypeOptions = ModelExtensions.GetEnumAsSelectOptions<ButtonType>();
-
-                    #endregion
                 }
-				switch (context.Mode)
+                #region << Select options >>
+                ViewBag.CssSize = ModelExtensions.GetEnumAsSelectOptions<CssSize>();
+
+                ViewBag.ColorOptions = ModelExtensions.GetEnumAsSelectOptions<ErpColor>().OrderBy(x => x.Label).ToList();
+
+                ViewBag.TypeOptions = ModelExtensions.GetEnumAsSelectOptions<ButtonType>();
+
+                #endregion
+                switch (context.Mode)
 				{
 					case ComponentMode.Display:
 						return await Task.FromResult<IViewComponentResult>(View("Display"));

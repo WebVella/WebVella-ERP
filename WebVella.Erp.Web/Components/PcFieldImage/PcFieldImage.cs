@@ -143,8 +143,9 @@ namespace WebVella.Erp.Web.Components
                     ViewBag.IsVisible = isVisible;
 
                     model.Value = context.DataModel.GetPropertyValueByDataSource(options.Value);
-                    ViewBag.ResizeActionsOptions = ModelExtensions.GetEnumAsSelectOptions<ImageResizeMode>();
                 }
+
+                ViewBag.ResizeActionsOptions = ModelExtensions.GetEnumAsSelectOptions<ImageResizeMode>();
 
                 switch (context.Mode)
 				{

@@ -113,6 +113,11 @@ namespace WebVella.Erp.Web.Components
                 context.Items[typeof(LabelRenderMode)] = instanceOptions.LabelMode;
                 context.Items[typeof(FieldRenderMode)] = instanceOptions.Mode;
 
+                ViewBag.MethodOptions = new List<SelectOption>() {
+                    new SelectOption("get","get"),
+                    new SelectOption("post","post")
+                    };
+
                 if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
                 {
                     var isVisible = true;
@@ -150,11 +155,6 @@ namespace WebVella.Erp.Web.Components
 
                         ViewBag.Action = string.Format(HttpContext.Request.Path + "?{0}", string.Join("&", queryList.Select(kvp => string.Format("{0}={1}", kvp.Value, kvp.Label))));
                     }
-
-                    ViewBag.MethodOptions = new List<SelectOption>() {
-                    new SelectOption("get","get"),
-                    new SelectOption("post","post")
-                    };
                 }
 
 

@@ -173,16 +173,17 @@ namespace WebVella.Erp.Web.Components
 
                     ViewBag.DataSets = dataSets;
                     ViewBag.Labels = labels;
-                    var chartTypeOptions = ModelExtensions.GetEnumAsSelectOptions<ErpChartType>();
-                    chartTypeOptions.First(x => x.Value == "4").Label = "area";
-                    ViewBag.ChartTypeOptions = chartTypeOptions;
                     ViewBag.ShowLegend = options.ShowLegend;
                     ViewBag.Height = options.Height;
                     ViewBag.Width = options.Width;
                     ViewBag.Type = (ErpChartType)options.Type;
                 }
 
-				switch (context.Mode)
+                var chartTypeOptions = ModelExtensions.GetEnumAsSelectOptions<ErpChartType>();
+                chartTypeOptions.First(x => x.Value == "4").Label = "area";
+                ViewBag.ChartTypeOptions = chartTypeOptions;
+
+                switch (context.Mode)
 				{
 					case ComponentMode.Display:
 						return await Task.FromResult<IViewComponentResult>(View("Display"));

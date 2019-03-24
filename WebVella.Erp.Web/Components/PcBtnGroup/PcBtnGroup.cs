@@ -100,11 +100,11 @@ namespace WebVella.Erp.Web.Components
                         isVisible = (bool)isVisibleDS;
                     }
                     ViewBag.IsVisible = isVisible;
-
-                    ViewBag.CssSize = ModelExtensions.GetEnumAsSelectOptions<CssSize>();
                 }
 
-				switch (context.Mode)
+                ViewBag.CssSize = ModelExtensions.GetEnumAsSelectOptions<CssSize>();
+
+                switch (context.Mode)
 				{
 					case ComponentMode.Display:
 						return await Task.FromResult<IViewComponentResult>(View("Display"));
