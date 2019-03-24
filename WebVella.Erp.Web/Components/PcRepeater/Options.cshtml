@@ -4,26 +4,29 @@
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Api.Models;
 @{
-	var options = (PcRepeater.PcRepeaterOptions)ViewBag.Options;
-	var listSelectOptions = (List<SelectOption>)ViewBag.ListSelectOptions;
-	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
+    var options = (PcRepeater.PcRepeaterOptions)ViewBag.Options;
+    var listSelectOptions = (List<SelectOption>)ViewBag.ListSelectOptions;
+    var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
 }
 
 <wv-row>
-	<wv-column span="6">
-		<wv-field-datasource name="is_visible" label-text="Is Rendered" value="@options.IsVisible" page-id="erpRequest.Page.Id" placeholder="true"></wv-field-datasource>
-	</wv-column>
-	<wv-column span="6">
-		<wv-field-text name="class" value="@options.Class" label-text="CSS Class"></wv-field-text>
-	</wv-column>
+    <wv-column span="4">
+        <wv-field-datasource name="is_visible" label-text="Is Rendered" value="@options.IsVisible" page-id="erpRequest.Page.Id" placeholder="true"></wv-field-datasource>
+    </wv-column>
+    <wv-column span="4">
+        <wv-field-datasource name="records" value="@options.Records" label-text="Records" page-id="erpRequest.Page.Id"></wv-field-datasource>
+    </wv-column>
+    <wv-column span="4">
+        <wv-field-text name="class" value="@options.Class" label-text="CSS Class"></wv-field-text>
+    </wv-column>
 </wv-row>
 <wv-row>
-	<wv-column span="6">
-		<wv-field-checkbox name="has_header" value="@options.HasHeader" label-text="Header" text-true="Repeater has header"></wv-field-checkbox>
-	</wv-column>
-	<wv-column span="6">
-		<wv-field-checkbox name="has_footer" value="@options.HasFooter" label-text="Footer" text-true="Repeater has footer"></wv-field-checkbox>
-	</wv-column>
+    <wv-column span="4">
+        <wv-field-checkbox name="has_header" value="@options.HasHeader" label-text="Header" text-true="Repeater has header"></wv-field-checkbox>
+    </wv-column>
+    <wv-column span="4">
+        <wv-field-checkbox name="has_footer" value="@options.HasFooter" label-text="Footer" text-true="Repeater has footer"></wv-field-checkbox>
+    </wv-column>
 </wv-row>
 
 

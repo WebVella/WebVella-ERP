@@ -520,23 +520,6 @@ namespace WebVella.Erp.Web.Components
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
 				#endregion
 
-				var isVisible = true;
-				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
-				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
-				{
-					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
-					{
-						isVisible = outBool;
-					}
-				}
-				else if (isVisibleDS is Boolean)
-				{
-					isVisible = (bool)isVisibleDS;
-				}
-				ViewBag.IsVisible = isVisible;
-
-				ViewBag.CssBreakpointOptions = ModelExtensions.GetEnumAsSelectOptions<CssBreakpoint>();
-
 
 				ViewBag.Options = options;
 				ViewBag.Node = context.Node;
@@ -545,7 +528,9 @@ namespace WebVella.Erp.Web.Components
 				ViewBag.AppContext = ErpAppContext.Current;
 				ViewBag.ComponentContext = context;
 
-				ViewBag.Page = 1;
+
+                ViewBag.CssBreakpointOptions = ModelExtensions.GetEnumAsSelectOptions<CssBreakpoint>();
+                ViewBag.Page = 1;
 				ViewBag.TotalCount = 0;
 
                 if(options.PageSize != null)
@@ -560,7 +545,22 @@ namespace WebVella.Erp.Web.Components
 
 				if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
 				{
-					ViewBag.Records = context.DataModel.GetPropertyValueByDataSource(options.Records) as List<EntityRecord> ?? new List<EntityRecord>();
+                    var isVisible = true;
+                    var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+                    if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+                    {
+                        if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+                        {
+                            isVisible = outBool;
+                        }
+                    }
+                    else if (isVisibleDS is Boolean)
+                    {
+                        isVisible = (bool)isVisibleDS;
+                    }
+                    ViewBag.IsVisible = isVisible;
+
+                    ViewBag.Records = context.DataModel.GetPropertyValueByDataSource(options.Records) as EntityRecordList ?? new EntityRecordList();
 
 					if (ViewBag.Records is EntityRecordList)
 					{

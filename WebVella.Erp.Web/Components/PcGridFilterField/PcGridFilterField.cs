@@ -84,29 +84,35 @@ namespace WebVella.Erp.Web.Components
 
 				#endregion
 
-				var isVisible = true;
-				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
-				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
-				{
-					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
-					{
-						isVisible = outBool;
-					}
-				}
-				else if (isVisibleDS is Boolean)
-				{
-					isVisible = (bool)isVisibleDS;
-				}
-				if (!isVisible && context.Mode == ComponentMode.Display)
-					return await Task.FromResult<IViewComponentResult>(Content(""));
-
 				ViewBag.Options = options;
 				ViewBag.Node = context.Node;
 				ViewBag.ComponentMeta = componentMeta;
 				ViewBag.RequestContext = ErpRequestContext;
 				ViewBag.AppContext = ErpAppContext.Current;
 				ViewBag.ComponentContext = context;
-				if (options.QueryOptions == null)
+
+                if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
+                {
+                    var isVisible = true;
+                    var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+                    if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+                    {
+                        if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+                        {
+                            isVisible = outBool;
+                        }
+                    }
+                    else if (isVisibleDS is Boolean)
+                    {
+                        isVisible = (bool)isVisibleDS;
+                    }
+                    if (!isVisible && context.Mode == ComponentMode.Display)
+                        return await Task.FromResult<IViewComponentResult>(Content(""));
+
+
+                }
+
+                if (options.QueryOptions == null)
 					options.QueryOptions = new List<FilterType>();
 
 				var selectedQueryOptionsConverted = new List<string>();

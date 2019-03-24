@@ -193,18 +193,6 @@ namespace WebVella.Erp.Web.Components
 
                 #endregion
 
-                var isVisible = true;
-				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
-				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString())) {
-					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool)) {
-						isVisible = outBool;
-					}
-				}
-				else if (isVisibleDS is Boolean) {
-					isVisible = (bool)isVisibleDS;
-				}
-				ViewBag.IsVisible = isVisible;
-
 				ViewBag.Options = options;
 				ViewBag.Node = context.Node;
 				ViewBag.ComponentMeta = componentMeta;
@@ -215,7 +203,22 @@ namespace WebVella.Erp.Web.Components
 
 				if (context.Mode == ComponentMode.Display || context.Mode == ComponentMode.Design)
 				{
-					ViewBag.ProcessedTitle = context.DataModel.GetPropertyValueByDataSource(options.Title);
+                    var isVisible = true;
+                    var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+                    if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+                    {
+                        if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+                        {
+                            isVisible = outBool;
+                        }
+                    }
+                    else if (isVisibleDS is Boolean)
+                    {
+                        isVisible = (bool)isVisibleDS;
+                    }
+                    ViewBag.IsVisible = isVisible;
+
+                    ViewBag.ProcessedTitle = context.DataModel.GetPropertyValueByDataSource(options.Title);
 				}
 
 				context.Items[typeof(LabelRenderMode)] = options.LabelMode;

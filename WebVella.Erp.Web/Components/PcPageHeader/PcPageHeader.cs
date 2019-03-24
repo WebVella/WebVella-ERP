@@ -91,21 +91,6 @@ namespace WebVella.Erp.Web.Components
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
 				#endregion
 
-				var isVisible = true;
-				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(instanceOptions.IsVisible);
-				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
-				{
-					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
-					{
-						isVisible = outBool;
-					}
-				}
-				else if (isVisibleDS is Boolean)
-				{
-					isVisible = (bool)isVisibleDS;
-				}
-				ViewBag.IsVisible = isVisible;
-
 				ViewBag.Options = instanceOptions;
 				ViewBag.Node = context.Node;
 				ViewBag.ComponentMeta = componentMeta;
@@ -114,152 +99,171 @@ namespace WebVella.Erp.Web.Components
 				ViewBag.InstanceOptions = instanceOptions;
 				ViewBag.ComponentContext = context;
 
-
-
-				ViewBag.ProccessedTitle = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Title);
-				ViewBag.ProccessedSubTitle = context.DataModel.GetPropertyValueByDataSource(instanceOptions.SubTitle);
-				ViewBag.ProccessedAreaLabel = context.DataModel.GetPropertyValueByDataSource(instanceOptions.AreaLabel);
-				ViewBag.ProccessedAreaSubLabel = context.DataModel.GetPropertyValueByDataSource(instanceOptions.AreaSubLabel);
-				ViewBag.ProccessedDescription = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Description);
-				ViewBag.ProccessedColor = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Color);
-				ViewBag.ProccessedIconColor = context.DataModel.GetPropertyValueByDataSource(instanceOptions.IconColor);
-				ViewBag.ProccessedIconClass = context.DataModel.GetPropertyValueByDataSource(instanceOptions.IconClass);
-
-				if (!String.IsNullOrWhiteSpace(instanceOptions.ReturnUrl))
-				{
-					ViewBag.ProccessedReturnUrl = context.DataModel.GetPropertyValueByDataSource(instanceOptions.ReturnUrl);
-				}
-
-				else if (ErpRequestContext != null && ErpRequestContext.PageContext != null && ErpRequestContext.PageContext.HttpContext.Request.Query.ContainsKey("returnUrl")
-					&& !String.IsNullOrWhiteSpace(ErpRequestContext.PageContext.HttpContext.Request.Query["returnUrl"]))
-				{
-					ViewBag.ProccessedReturnUrl = ErpRequestContext.PageContext.HttpContext.Request.Query["returnUrl"].ToString();
-				}
-
-				var switchItemPages = new List<ErpPage>();
-				var currentSitemapArea = ErpRequestContext.SitemapArea;
-				var currentSitemapNode = ErpRequestContext.SitemapNode;
-				var currentApp = ErpRequestContext.App;
-				if (instanceOptions.ShowPageSwitch && currentPage != null && currentPage.Type == PageType.Site)
-				{
-					var allPages = new PageService().GetAll();
-					switchItemPages = allPages.FindAll(x => x.Weight < 1000 && x.Type == currentPage.Type).ToList();
-				}
-				else if (instanceOptions.ShowPageSwitch && currentPage != null && currentPage.AppId != null && currentPage.Type == PageType.Application)
-				{
-					var allPages = new PageService().GetAppControlledPages(currentPage.AppId.Value);
-					switchItemPages = allPages.FindAll(x => x.Weight < 1000 && x.Type == currentPage.Type && x.AppId == currentApp.Id && x.NodeId == currentPage.NodeId).ToList();
-				}
-				if (instanceOptions.ShowPageSwitch && currentPage != null && currentSitemapNode != null) {
-                    var allPossiblePages = new PageService().GetAll().FindAll(x => x.Type == currentPage.Type 
-                        && x.EntityId == currentSitemapNode.EntityId && (x.AppId == null || x.AppId == currentPage.AppId.Value)).ToList();
-
-                    switch (currentPage.Type)
+                if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
+                {
+                    var isVisible = true;
+                    var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(instanceOptions.IsVisible);
+                    if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
                     {
-                        case PageType.RecordList:
-                            if (currentSitemapNode.EntityListPages != null && currentSitemapNode.EntityListPages.Count > 0)
-                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityListPages.Contains(x.Id) && x.Weight < 1000).ToList();
-                            break;
-                        case PageType.RecordCreate:
-                            if (currentSitemapNode.EntityCreatePages != null && currentSitemapNode.EntityCreatePages.Count > 0)
-                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityCreatePages.Contains(x.Id) && x.Weight < 1000).ToList();
-                            break;
-                        case PageType.RecordDetails:
-                            if (currentSitemapNode.EntityDetailsPages != null && currentSitemapNode.EntityDetailsPages.Count > 0)
-                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityDetailsPages.Contains(x.Id) && x.Weight < 1000).ToList();
-                            break;
-                        case PageType.RecordManage:
-                            if (currentSitemapNode.EntityManagePages != null && currentSitemapNode.EntityManagePages.Count > 0)
-                                allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityManagePages.Contains(x.Id) && x.Weight < 1000).ToList();
-                            break;
-                        default:
-                            break;
+                        if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+                        {
+                            isVisible = outBool;
+                        }
+                    }
+                    else if (isVisibleDS is Boolean)
+                    {
+                        isVisible = (bool)isVisibleDS;
+                    }
+                    ViewBag.IsVisible = isVisible;
+
+                    ViewBag.ProccessedTitle = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Title);
+                    ViewBag.ProccessedSubTitle = context.DataModel.GetPropertyValueByDataSource(instanceOptions.SubTitle);
+                    ViewBag.ProccessedAreaLabel = context.DataModel.GetPropertyValueByDataSource(instanceOptions.AreaLabel);
+                    ViewBag.ProccessedAreaSubLabel = context.DataModel.GetPropertyValueByDataSource(instanceOptions.AreaSubLabel);
+                    ViewBag.ProccessedDescription = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Description);
+                    ViewBag.ProccessedColor = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Color);
+                    ViewBag.ProccessedIconColor = context.DataModel.GetPropertyValueByDataSource(instanceOptions.IconColor);
+                    ViewBag.ProccessedIconClass = context.DataModel.GetPropertyValueByDataSource(instanceOptions.IconClass);
+
+                    if (!String.IsNullOrWhiteSpace(instanceOptions.ReturnUrl))
+                    {
+                        ViewBag.ProccessedReturnUrl = context.DataModel.GetPropertyValueByDataSource(instanceOptions.ReturnUrl);
                     }
 
-					foreach (var page in allPossiblePages)
-					{
-						switchItemPages.Add(page);
-					}
-				}
+                    else if (ErpRequestContext != null && ErpRequestContext.PageContext != null && ErpRequestContext.PageContext.HttpContext.Request.Query.ContainsKey("returnUrl")
+                        && !String.IsNullOrWhiteSpace(ErpRequestContext.PageContext.HttpContext.Request.Query["returnUrl"]))
+                    {
+                        ViewBag.ProccessedReturnUrl = ErpRequestContext.PageContext.HttpContext.Request.Query["returnUrl"].ToString();
+                    }
 
-				switchItemPages = switchItemPages.OrderBy(x => x.Weight).ToList();
+                    var switchItemPages = new List<ErpPage>();
+                    var currentSitemapArea = ErpRequestContext.SitemapArea;
+                    var currentSitemapNode = ErpRequestContext.SitemapNode;
+                    var currentApp = ErpRequestContext.App;
+                    if (instanceOptions.ShowPageSwitch && currentPage != null && currentPage.Type == PageType.Site)
+                    {
+                        var allPages = new PageService().GetAll();
+                        switchItemPages = allPages.FindAll(x => x.Weight < 1000 && x.Type == currentPage.Type).ToList();
+                    }
+                    else if (instanceOptions.ShowPageSwitch && currentPage != null && currentPage.AppId != null && currentPage.Type == PageType.Application)
+                    {
+                        var allPages = new PageService().GetAppControlledPages(currentPage.AppId.Value);
+                        switchItemPages = allPages.FindAll(x => x.Weight < 1000 && x.Type == currentPage.Type && x.AppId == currentApp.Id && x.NodeId == currentPage.NodeId).ToList();
+                    }
+                    if (instanceOptions.ShowPageSwitch && currentPage != null && currentSitemapNode != null)
+                    {
+                        var allPossiblePages = new PageService().GetAll().FindAll(x => x.Type == currentPage.Type
+                            && x.EntityId == currentSitemapNode.EntityId && (x.AppId == null || x.AppId == currentPage.AppId.Value)).ToList();
 
-				var switchItems = new List<PageSwitchItem>();
-				var currentEntity = ErpRequestContext.Entity;
-				var parentEntity = ErpRequestContext.ParentEntity;
-				var currentUrlTemplate = "/";
-				//Site pages
-				if (currentPage.Type == PageType.Site)
-				{
-					currentUrlTemplate = $"/s/[[pageName]]";
-				}
-				//App pages without nodes
-				else if (currentApp != null && currentSitemapNode == null) {
-					currentUrlTemplate = $"/{currentApp.Name}/a/[[pageName]]";
-				}
-				//App pages with sitemap node				
-				else if (currentApp != null && currentSitemapArea != null && currentSitemapNode != null)
-				{
-					//App pages
-					if (currentPage.Type == PageType.Application)
-					{
-						currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/a/[[pageName]]";
-					}
-					//Record create page, No relation
-					else if (currentPage.Type == PageType.RecordCreate && parentEntity == null) {
-						currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/c/[[pageName]]";
-					}
-					//Record create page, With relation
-					else if (currentPage.Type == PageType.RecordCreate && parentEntity != null)
-					{
-						currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/r/{ErpRequestContext.ParentRecordId}/rl/{ErpRequestContext.RelationId}/c/[[pageName]]";
-					}
-					//Record manage page, No relation
-					else if (currentPage.Type == PageType.RecordManage && parentEntity == null)
-					{
-						currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/m/{ErpRequestContext.RecordId}/[[pageName]]";
-					}
-					//Record manage page, With relation
-					else if (currentPage.Type == PageType.RecordManage && parentEntity != null)
-					{
-						currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/r/{ErpRequestContext.ParentRecordId}/rl/{ErpRequestContext.RelationId}/m/{ErpRequestContext.RecordId}/[[pageName]]";
-					}
-					//Record details page, No relation
-					else if (currentPage.Type == PageType.RecordDetails && parentEntity == null)
-					{
-						currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/r/{ErpRequestContext.RecordId}/[[pageName]]";
-					}
-					//Record details page, With relation
-					else if (currentPage.Type == PageType.RecordDetails && parentEntity != null)
-					{
-						currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/r/{ErpRequestContext.ParentRecordId}/rl/{ErpRequestContext.RelationId}/r/{ErpRequestContext.RecordId}/[[pageName]]";
-					}
-					//Record list page, No relation
-					else if (currentPage.Type == PageType.RecordList && parentEntity == null)
-					{
-						currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/l/[[pageName]]";
-					}
-					//Record list page, With relation
-					else if (currentPage.Type == PageType.RecordList && parentEntity != null)
-					{
-						currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/r/{ErpRequestContext.ParentRecordId}/rl/{ErpRequestContext.RelationId}/l/[[pageName]]";
-					}
-				}
+                        switch (currentPage.Type)
+                        {
+                            case PageType.RecordList:
+                                if (currentSitemapNode.EntityListPages != null && currentSitemapNode.EntityListPages.Count > 0)
+                                    allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityListPages.Contains(x.Id) && x.Weight < 1000).ToList();
+                                break;
+                            case PageType.RecordCreate:
+                                if (currentSitemapNode.EntityCreatePages != null && currentSitemapNode.EntityCreatePages.Count > 0)
+                                    allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityCreatePages.Contains(x.Id) && x.Weight < 1000).ToList();
+                                break;
+                            case PageType.RecordDetails:
+                                if (currentSitemapNode.EntityDetailsPages != null && currentSitemapNode.EntityDetailsPages.Count > 0)
+                                    allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityDetailsPages.Contains(x.Id) && x.Weight < 1000).ToList();
+                                break;
+                            case PageType.RecordManage:
+                                if (currentSitemapNode.EntityManagePages != null && currentSitemapNode.EntityManagePages.Count > 0)
+                                    allPossiblePages = allPossiblePages.FindAll(x => currentSitemapNode.EntityManagePages.Contains(x.Id) && x.Weight < 1000).ToList();
+                                break;
+                            default:
+                                break;
+                        }
 
-				foreach (var switchPage in switchItemPages)
-				{
-					var isSelected = false;
-					if (currentPage != null && switchPage.Id == currentPage.Id)
-						isSelected = true;
-					switchItems.Add(new PageSwitchItem() { 
-						IsSelected = isSelected,
-						Label = switchPage.Label,
-						Url = currentUrlTemplate.Replace("[[pageName]]",switchPage.Name)
-					});
-				}
+                        foreach (var page in allPossiblePages)
+                        {
+                            switchItemPages.Add(page);
+                        }
+                    }
 
-				ViewBag.PageSwitchItems = switchItems;
+                    switchItemPages = switchItemPages.OrderBy(x => x.Weight).ToList();
 
+                    var switchItems = new List<PageSwitchItem>();
+                    var currentEntity = ErpRequestContext.Entity;
+                    var parentEntity = ErpRequestContext.ParentEntity;
+                    var currentUrlTemplate = "/";
+                    //Site pages
+                    if (currentPage.Type == PageType.Site)
+                    {
+                        currentUrlTemplate = $"/s/[[pageName]]";
+                    }
+                    //App pages without nodes
+                    else if (currentApp != null && currentSitemapNode == null)
+                    {
+                        currentUrlTemplate = $"/{currentApp.Name}/a/[[pageName]]";
+                    }
+                    //App pages with sitemap node				
+                    else if (currentApp != null && currentSitemapArea != null && currentSitemapNode != null)
+                    {
+                        //App pages
+                        if (currentPage.Type == PageType.Application)
+                        {
+                            currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/a/[[pageName]]";
+                        }
+                        //Record create page, No relation
+                        else if (currentPage.Type == PageType.RecordCreate && parentEntity == null)
+                        {
+                            currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/c/[[pageName]]";
+                        }
+                        //Record create page, With relation
+                        else if (currentPage.Type == PageType.RecordCreate && parentEntity != null)
+                        {
+                            currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/r/{ErpRequestContext.ParentRecordId}/rl/{ErpRequestContext.RelationId}/c/[[pageName]]";
+                        }
+                        //Record manage page, No relation
+                        else if (currentPage.Type == PageType.RecordManage && parentEntity == null)
+                        {
+                            currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/m/{ErpRequestContext.RecordId}/[[pageName]]";
+                        }
+                        //Record manage page, With relation
+                        else if (currentPage.Type == PageType.RecordManage && parentEntity != null)
+                        {
+                            currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/r/{ErpRequestContext.ParentRecordId}/rl/{ErpRequestContext.RelationId}/m/{ErpRequestContext.RecordId}/[[pageName]]";
+                        }
+                        //Record details page, No relation
+                        else if (currentPage.Type == PageType.RecordDetails && parentEntity == null)
+                        {
+                            currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/r/{ErpRequestContext.RecordId}/[[pageName]]";
+                        }
+                        //Record details page, With relation
+                        else if (currentPage.Type == PageType.RecordDetails && parentEntity != null)
+                        {
+                            currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/r/{ErpRequestContext.ParentRecordId}/rl/{ErpRequestContext.RelationId}/r/{ErpRequestContext.RecordId}/[[pageName]]";
+                        }
+                        //Record list page, No relation
+                        else if (currentPage.Type == PageType.RecordList && parentEntity == null)
+                        {
+                            currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/l/[[pageName]]";
+                        }
+                        //Record list page, With relation
+                        else if (currentPage.Type == PageType.RecordList && parentEntity != null)
+                        {
+                            currentUrlTemplate = $"/{currentApp.Name}/{currentSitemapArea.Name}/{currentSitemapNode.Name}/r/{ErpRequestContext.ParentRecordId}/rl/{ErpRequestContext.RelationId}/l/[[pageName]]";
+                        }
+                    }
+
+                    foreach (var switchPage in switchItemPages)
+                    {
+                        var isSelected = false;
+                        if (currentPage != null && switchPage.Id == currentPage.Id)
+                            isSelected = true;
+                        switchItems.Add(new PageSwitchItem()
+                        {
+                            IsSelected = isSelected,
+                            Label = switchPage.Label,
+                            Url = currentUrlTemplate.Replace("[[pageName]]", switchPage.Name)
+                        });
+                    }
+
+                    ViewBag.PageSwitchItems = switchItems;
+                }
 				switch (context.Mode)
 				{
 					case ComponentMode.Display:

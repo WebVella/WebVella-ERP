@@ -119,26 +119,6 @@ namespace WebVella.Erp.Web.Components
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
 				#endregion
 
-				if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
-				{
-					model.Value = context.DataModel.GetPropertyValueByDataSource(options.Value);
-				}
-
-				var isVisible = true;
-				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
-				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
-				{
-					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
-					{
-						isVisible = outBool;
-					}
-				}
-				else if (isVisibleDS is Boolean)
-				{
-					isVisible = (bool)isVisibleDS;
-				}
-				ViewBag.IsVisible = isVisible;
-
 				ViewBag.Options = options;
 				ViewBag.Model = model;
 				ViewBag.Node = context.Node;
@@ -146,7 +126,27 @@ namespace WebVella.Erp.Web.Components
 				ViewBag.RequestContext = ErpRequestContext;
 				ViewBag.AppContext = ErpAppContext.Current;
 
-				switch (context.Mode)
+                if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
+                {
+                    var isVisible = true;
+                    var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+                    if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+                    {
+                        if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+                        {
+                            isVisible = outBool;
+                        }
+                    }
+                    else if (isVisibleDS is Boolean)
+                    {
+                        isVisible = (bool)isVisibleDS;
+                    }
+                    ViewBag.IsVisible = isVisible;
+
+                    model.Value = context.DataModel.GetPropertyValueByDataSource(options.Value);
+                }
+
+                switch (context.Mode)
 				{
 					case ComponentMode.Display:
 						return await Task.FromResult<IViewComponentResult>(View("Display"));

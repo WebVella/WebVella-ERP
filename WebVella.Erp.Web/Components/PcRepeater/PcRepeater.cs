@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WebVella.Erp.Api.Models;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
@@ -34,7 +35,10 @@ namespace WebVella.Erp.Web.Components
 
 			[JsonProperty(PropertyName = "has_footer")]
 			public bool HasFooter { get; set; } = false;
-		}
+
+            [JsonProperty(PropertyName = "records")]
+            public string Records { get; set; } = "";
+        }
 
 
 		public async Task<IViewComponentResult> InvokeAsync(PageComponentContext context)
@@ -62,39 +66,44 @@ namespace WebVella.Erp.Web.Components
 					return await Task.FromResult<IViewComponentResult>(Content("Error: PageModel does not have Page property or it is not from ErpPage Type"));
 				}
 
-				var instanceOptions = new PcRepeaterOptions();
+				var options = new PcRepeaterOptions();
 				if (context.Options != null)
 				{
-					instanceOptions = JsonConvert.DeserializeObject<PcRepeaterOptions>(context.Options.ToString());
+					options = JsonConvert.DeserializeObject<PcRepeaterOptions>(context.Options.ToString());
 				}
 
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
 				#endregion
 
-				var isVisible = true;
-				var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(instanceOptions.IsVisible);
-				if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
-				{
-					if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
-					{
-						isVisible = outBool;
-					}
-				}
-				else if (isVisibleDS is Boolean)
-				{
-					isVisible = (bool)isVisibleDS;
-				}
-				if (!isVisible && context.Mode == ComponentMode.Display)
-					return await Task.FromResult<IViewComponentResult>(Content(""));
-
-				ViewBag.Options = instanceOptions;
+				ViewBag.Options = options;
 				ViewBag.Node = context.Node;
 				ViewBag.ComponentMeta = componentMeta;
 				ViewBag.AppContext = ErpAppContext.Current;
 				ViewBag.RequestContext = ErpRequestContext;
 				ViewBag.ComponentContext = context;
 
-				switch (context.Mode)
+                if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
+                {
+                    var isVisible = true;
+                    var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+                    if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+                    {
+                        if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+                        {
+                            isVisible = outBool;
+                        }
+                    }
+                    else if (isVisibleDS is Boolean)
+                    {
+                        isVisible = (bool)isVisibleDS;
+                    }
+                    if (!isVisible && context.Mode == ComponentMode.Display)
+                        return await Task.FromResult<IViewComponentResult>(Content(""));
+
+                    ViewBag.Records = context.DataModel.GetPropertyValueByDataSource(options.Records) as EntityRecordList ?? new EntityRecordList();
+                }
+
+                switch (context.Mode)
 				{
 					case ComponentMode.Display:
 						return await Task.FromResult<IViewComponentResult>(View("Display"));

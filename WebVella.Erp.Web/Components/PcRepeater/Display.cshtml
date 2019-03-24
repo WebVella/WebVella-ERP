@@ -6,64 +6,70 @@
 @using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Api.Models;
 @{
-	var options = (PcRepeater.PcRepeaterOptions)ViewBag.Options;
-	var node = (PageBodyNode)ViewBag.Node;
-	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
-	var componentContext = (PageComponentContext)ViewBag.ComponentContext;
-	var headerNodes = node.Nodes.FindAll(x => x.ContainerId == "header");
-	var bodyNodes = node.Nodes.FindAll(x => x.ContainerId == "body");
-	var footerNodes = node.Nodes.FindAll(x => x.ContainerId == "footer");
+    var options = (PcRepeater.PcRepeaterOptions)ViewBag.Options;
+    var node = (PageBodyNode)ViewBag.Node;
+    var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
+    var componentContext = (PageComponentContext)ViewBag.ComponentContext;
+    var headerNodes = node.Nodes.FindAll(x => x.ContainerId == "header");
+    var bodyNodes = node.Nodes.FindAll(x => x.ContainerId == "body");
+    var footerNodes = node.Nodes.FindAll(x => x.ContainerId == "footer");
+    var records = (List<EntityRecord>)ViewBag.Records;
 }
 
 @if (options.HasHeader)
 {
-	@foreach (var childNode in headerNodes)
-	{
-		var nodeComponentName = "";
-		if (childNode != null)
-		{
-			var nameArray = childNode.ComponentName.Split('.');
-			nodeComponentName = nameArray[nameArray.Length - 1];
-		}
-		if (!String.IsNullOrWhiteSpace(nodeComponentName))
-		{
-			var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
-			var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
-			@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
-		}
-	}
+    @foreach (var childNode in headerNodes)
+    {
+        var nodeComponentName = "";
+        if (childNode != null)
+        {
+            var nameArray = childNode.ComponentName.Split('.');
+            nodeComponentName = nameArray[nameArray.Length - 1];
+        }
+        if (!String.IsNullOrWhiteSpace(nodeComponentName))
+        {
+            var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+            var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+            @await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+        }
+    }
 }
-@foreach (var childNode in bodyNodes)
+
+@foreach (var record in records)
 {
-	var nodeComponentName = "";
-	if (childNode != null)
-	{
-		var nameArray = childNode.ComponentName.Split('.');
-		nodeComponentName = nameArray[nameArray.Length - 1];
-	}
-	if (!String.IsNullOrWhiteSpace(nodeComponentName))
-	{
-		var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
-		var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
-		@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
-	}
+    @foreach (var childNode in bodyNodes)
+    {
+        var nodeComponentName = "";
+        if (childNode != null)
+        {
+            var nameArray = childNode.ComponentName.Split('.');
+            nodeComponentName = nameArray[nameArray.Length - 1];
+        }
+        if (!String.IsNullOrWhiteSpace(nodeComponentName))
+        {
+            var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+            var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+            pcContext.DataModel.SetRowRecord(record);
+            @await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+        }
+    }
 }
 
 @if (options.HasFooter)
 {
-	@foreach (var childNode in footerNodes)
-	{
-		var nodeComponentName = "";
-		if (childNode != null)
-		{
-			var nameArray = childNode.ComponentName.Split('.');
-			nodeComponentName = nameArray[nameArray.Length - 1];
-		}
-		if (!String.IsNullOrWhiteSpace(nodeComponentName))
-		{
-			var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
-			var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
-			@await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
-		}
-	}
+    @foreach (var childNode in footerNodes)
+    {
+        var nodeComponentName = "";
+        if (childNode != null)
+        {
+            var nameArray = childNode.ComponentName.Split('.');
+            nodeComponentName = nameArray[nameArray.Length - 1];
+        }
+        if (!String.IsNullOrWhiteSpace(nodeComponentName))
+        {
+            var childOptions = PageUtils.ConvertStringToJObject(childNode.Options.ToString());
+            var pcContext = new PageComponentContext(childNode, componentContext.DataModel, ComponentMode.Display, childOptions, componentContext.Items);
+            @await Component.InvokeAsync(nodeComponentName, new { context = pcContext })
+        }
+    }
 }
