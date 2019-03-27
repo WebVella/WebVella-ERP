@@ -231,7 +231,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				case "wv-field-multiselect":
 				case "wv-field-checkbox-list":
 					fieldType = FieldType.MultiSelectField;
-                    if (Value = null)
+                    if (Value == null)
                     {
                         Value = new List<string>();
                     }

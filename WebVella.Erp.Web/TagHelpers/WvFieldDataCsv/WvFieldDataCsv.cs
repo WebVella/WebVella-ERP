@@ -18,11 +18,17 @@ namespace WebVella.Erp.Web.TagHelpers
         [HtmlAttributeName("height")]
         public string Height { get; set; } = "140px";
 
-        [HtmlAttributeName("delimiter")]
-        public ErpDataCsvDelimiterType Delimiter { get; set; } = ErpDataCsvDelimiterType.COMMA;
+        [HtmlAttributeName("delimiter-field-name")]
+        public string DelimiterFieldName { get; set; } = "";
 
-        [HtmlAttributeName("has-header")]
-        public bool HasHeader { get; set; } = true;
+        [HtmlAttributeName("delimiter-value")]
+        public ErpDataCsvDelimiterType DelimiterValue { get; set; } = ErpDataCsvDelimiterType.COMMA;
+
+        [HtmlAttributeName("has-header-field-name")]
+        public string HasHeaderFieldName { get; set; } = "";
+
+        [HtmlAttributeName("has-header-value")]
+        public bool HasHeaderValue { get; set; } = true;
 
         [HtmlAttributeName("lang")]
         public string Lang { get; set; } = "en";
@@ -41,6 +47,15 @@ namespace WebVella.Erp.Web.TagHelpers
             if (!initSuccess)
             {
                 return;
+            }
+
+            if (String.IsNullOrWhiteSpace(DelimiterFieldName)) {
+                DelimiterFieldName = Name + "_delimiter";
+            }
+
+            if (String.IsNullOrWhiteSpace(HasHeaderFieldName))
+            {
+                HasHeaderFieldName = Name + "_has_header";
             }
 
             #endregion
@@ -157,9 +172,9 @@ namespace WebVella.Erp.Web.TagHelpers
                 hasHeaderWrapper.AddCssClass("form-check form-check-inline mr-5");
 
                 var hasHeaderCheck = new TagBuilder("input");
-                hasHeaderCheck.Attributes.Add("name", Name + "_has_header");
+                hasHeaderCheck.Attributes.Add("name", HasHeaderFieldName);
                 hasHeaderCheck.Attributes.Add("type", "hidden");
-                if (HasHeader)
+                if (HasHeaderValue)
                 {
                     hasHeaderCheck.Attributes.Add("value", "true");
                 }
@@ -173,8 +188,8 @@ namespace WebVella.Erp.Web.TagHelpers
                 inputFake.Attributes.Add("id", $"input-hasheader-fake-{FieldId}");
                 inputFake.Attributes.Add("type", "checkbox");
                 inputFake.Attributes.Add("value", "true");
-                inputFake.Attributes.Add("data-field-name", Name + "_has_header");
-                if (HasHeader)
+                inputFake.Attributes.Add("data-field-name", HasHeaderFieldName);
+                if (HasHeaderValue)
                 {
                     inputFake.Attributes.Add("checked", "checked");
                 }
@@ -212,10 +227,10 @@ namespace WebVella.Erp.Web.TagHelpers
                 var delimiterCommaInputEl = new TagBuilder("input");
                 delimiterCommaInputEl.AddCssClass("form-check-input");
                 delimiterCommaInputEl.Attributes.Add("type", "radio");
-                delimiterCommaInputEl.Attributes.Add("name", $"{Name}_delimiter");
+                delimiterCommaInputEl.Attributes.Add("name", DelimiterFieldName);
                 delimiterCommaInputEl.Attributes.Add("id", $"{FieldId}-delimiter-comma");
                 delimiterCommaInputEl.Attributes.Add("value", "comma");
-                if (Delimiter == ErpDataCsvDelimiterType.COMMA)
+                if (DelimiterValue == ErpDataCsvDelimiterType.COMMA)
                 {
                     delimiterCommaInputEl.Attributes.Add("checked", "checked");
                 }
@@ -242,10 +257,10 @@ namespace WebVella.Erp.Web.TagHelpers
                 var delimiterTabInputEl = new TagBuilder("input");
                 delimiterTabInputEl.AddCssClass("form-check-input");
                 delimiterTabInputEl.Attributes.Add("type", "radio");
-                delimiterTabInputEl.Attributes.Add("name", $"{Name}_delimiter");
+                delimiterTabInputEl.Attributes.Add("name", DelimiterFieldName);
                 delimiterTabInputEl.Attributes.Add("id", $"{FieldId}-delimiter-tab");
                 delimiterTabInputEl.Attributes.Add("value", "tab");
-                if (Delimiter == ErpDataCsvDelimiterType.TAB)
+                if (DelimiterValue == ErpDataCsvDelimiterType.TAB)
                 {
                     delimiterTabInputEl.Attributes.Add("checked", "checked");
                 }

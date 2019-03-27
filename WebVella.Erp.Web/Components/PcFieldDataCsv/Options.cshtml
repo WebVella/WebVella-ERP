@@ -46,13 +46,21 @@
 </wv-row>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-datasource name="delimiter_ds" label-text="Delimiter" value="@options.DelimiterDs" page-id="erpRequest.Page.Id"></wv-field-datasource>
+		<wv-field-datasource name="delimiter_ds" label-text="Delimiter" value="@options.DelimiterValueDs" page-id="erpRequest.Page.Id"></wv-field-datasource>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-datasource name="has_header_ds" label-text="Has Header" value="@options.HasHeaderDs" page-id="erpRequest.Page.Id"></wv-field-datasource>
+		<wv-field-datasource name="has_header_ds" label-text="Has Header" value="@options.HasHeaderValueDs" page-id="erpRequest.Page.Id"></wv-field-datasource>
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-datasource name="lang_ds" label-text="Lang" value="@options.LangDs" page-id="erpRequest.Page.Id"></wv-field-datasource>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="4">
+		<wv-field-text name="delimiter_field_name" label-text="Delimiter Field Name" value="@options.DelimiterFieldName"></wv-field-text>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="has_header_field_name" value="@options.HasHeaderFieldName" label-text="Has Header field name"></wv-field-text>
 	</wv-column>
 </wv-row>
 

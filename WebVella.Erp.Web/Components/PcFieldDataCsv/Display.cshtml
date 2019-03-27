@@ -13,11 +13,12 @@
     var delimiter = (ErpDataCsvDelimiterType)ViewBag.Delimiter;
     var hasHeader = (bool)ViewBag.HasHeader;
 }
-<wv-field-data-csv label-mode="@labelMode" label-text="@options.LabelText" label-warning-text="@fieldModel.LabelWarningText"
-				label-error-text="@fieldModel.LabelErrorText" label-help-text="@fieldModel.LabelHelpText" field-id="@fieldModel.FieldId"
-				name="@options.Name" class="@options.Class" value="@fieldModel.Value" mode="@mode" access="@fieldModel.Access"
-				init-errors="@fieldModel.InitErrors" validation-errors="@fieldModel.ValidationErrors" record-id="@fieldModel.RecordId"
-				entity-name="@fieldModel.EntityName" api-url="@fieldModel.ApiUrl" access-denied-message="@fieldModel.AccessDeniedMessage"
-				empty-value-message="@fieldModel.EmptyValueMessage" required="@fieldModel.Required" placeholder="@fieldModel.Placeholder"
-				description="@fieldModel.Description" locale="@fieldModel.Locale" height="@options.Height" is-visible="(bool)ViewBag.IsVisible"
-                delimiter="@delimiter" lang="@ViewBag.Lang" has-header="@hasHeader"></wv-field-data-csv>
+	<wv-field-data-csv label-mode="@labelMode" label-text="@options.LabelText" label-warning-text="@fieldModel.LabelWarningText"
+				   label-error-text="@fieldModel.LabelErrorText" label-help-text="@fieldModel.LabelHelpText" field-id="@fieldModel.FieldId"
+				   name="@options.Name" class="@options.Class" value="@fieldModel.Value" mode="@mode" access="@fieldModel.Access"
+				   init-errors="@fieldModel.InitErrors" validation-errors="@fieldModel.ValidationErrors" record-id="@fieldModel.RecordId"
+				   entity-name="@fieldModel.EntityName" api-url="@fieldModel.ApiUrl" access-denied-message="@fieldModel.AccessDeniedMessage"
+				   empty-value-message="@fieldModel.EmptyValueMessage" required="@fieldModel.Required" placeholder="@fieldModel.Placeholder"
+				   description="@fieldModel.Description" locale="@fieldModel.Locale" height="@options.Height"
+                    delimiter-value="@delimiter" lang="@ViewBag.Lang" has-header-value="@hasHeader"
+delimiter-field-name="@options.DelimiterFieldName" has-header-field-name="@options.HasHeaderFieldName"></wv-field-data-csv>

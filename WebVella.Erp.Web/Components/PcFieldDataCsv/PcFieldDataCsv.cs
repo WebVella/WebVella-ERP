@@ -26,11 +26,17 @@ namespace WebVella.Erp.Web.Components
             [JsonProperty(PropertyName = "height")]
             public string Height { get; set; } = "";
 
-            [JsonProperty(PropertyName = "delimiter_ds")]
-            public string DelimiterDs { get; set; } = "comma";
+            [JsonProperty(PropertyName = "delimiter_value_ds")]
+            public string DelimiterValueDs { get; set; } = "comma";
 
-            [JsonProperty(PropertyName = "has_header_ds")]
-            public string HasHeaderDs { get; set; } = "true";
+            [JsonProperty(PropertyName = "delimiter_field_name")]
+            public string DelimiterFieldName { get; set; } = "";
+
+            [JsonProperty(PropertyName = "has_header_value_ds")]
+            public string HasHeaderValueDs { get; set; } = "true";
+
+            [JsonProperty(PropertyName = "has_header_field_name")]
+            public string HasHeaderFieldName { get; set; } = "";
 
             [JsonProperty(PropertyName = "lang_ds")]
             public string LangDs { get; set; } = "en";
@@ -45,8 +51,10 @@ namespace WebVella.Erp.Web.Components
                     Mode = input.Mode,
                     Name = input.Name,
                     Height = "",
-                    DelimiterDs = "",
-                    HasHeaderDs = "",
+                    DelimiterValueDs = "",
+                    HasHeaderValueDs = "",
+                    DelimiterFieldName = "",
+                    HasHeaderFieldName = "",
                     LangDs = "en",
                 };
             }
@@ -131,9 +139,9 @@ namespace WebVella.Erp.Web.Components
                     }
                     ViewBag.IsVisible = isVisible;
 
-                    var delimiter = context.DataModel.GetPropertyValueByDataSource(options.DelimiterDs) as string;
+                    var delimiter = context.DataModel.GetPropertyValueByDataSource(options.DelimiterValueDs) as string;
                     var lang = context.DataModel.GetPropertyValueByDataSource(options.LangDs) as string;
-                    var hasHeader = context.DataModel.GetPropertyValueByDataSource(options.HasHeaderDs) as bool?;
+                    var hasHeader = context.DataModel.GetPropertyValueByDataSource(options.HasHeaderValueDs) as bool?;
 
                     ViewBag.Delimiter = ErpDataCsvDelimiterType.COMMA;
                     if (!String.IsNullOrWhiteSpace(delimiter) && delimiter == "tab") {
