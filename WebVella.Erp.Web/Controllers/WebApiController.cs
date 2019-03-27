@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using CsvHelper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
@@ -12,9 +13,11 @@ using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Api.Models.AutoMapper;
@@ -173,7 +176,8 @@ namespace WebVella.Erp.Web.Controllers
                         {
                             collapsedNodeIds = ((JArray)componentData["collapsed_node_ids"]).ToObject<List<Guid>>();
                         }
-                        else {
+                        else
+                        {
                             throw new Exception("Unknown format of collapsed_node_ids");
                         }
                     }
@@ -214,7 +218,8 @@ namespace WebVella.Erp.Web.Controllers
                     if (!collapsedNodeIds.Contains(nodeId.Value))
                         collapsedNodeIds.Add(nodeId.Value);
                 }
-                else {
+                else
+                {
                     //new state is uncollapsed
                     //1. remove it is in collapsed
                     collapsedNodeIds = collapsedNodeIds.FindAll(x => x != nodeId.Value).ToList();
@@ -833,6 +838,9 @@ namespace WebVella.Erp.Web.Controllers
         //	}
         //}
 
+
+        #region << UI component support >>
+
         [Produces("application/json")]
         [Route("api/v3.0/p/core/related-field-multiselect")]
         [AcceptVerbs("GET", "POST")]
@@ -1033,6 +1041,94 @@ namespace WebVella.Erp.Web.Controllers
             }
             return new JsonResult(response);
         }
+
+        [Produces("text/html")]
+        [Route("api/v3.0/{lang}/p/core/ui/field-table-data/generate/preview")]
+        [AcceptVerbs("POST")]
+        [ResponseCache(NoStore = true, Duration = 0)]
+        public IActionResult FieldTableDataPreview([FromRoute] string lang, [FromBody]JObject submitObj)
+        {
+            var hasHeader = true;
+            string csvData = "";
+            string delimiterName = "";
+            #region << Init SubmitObj >>
+            foreach (var prop in submitObj.Properties())
+            {
+                switch (prop.Name.ToLower())
+                {
+                    case "hasheader":
+                        if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
+                        {
+                            var hasHeaderString = prop.Value.ToString();
+                            if (hasHeaderString.ToLowerInvariant() == "false") {
+                                hasHeader = false;
+                            }
+                        }
+                        break;
+                    case "csv":
+                        if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
+                        {
+                            csvData = prop.Value.ToString();
+                        }
+                        break;
+                    case "delimiter":
+                        if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
+                        {
+                            delimiterName = prop.Value.ToString(); //Does not work if first checked for empty string
+                        }
+                        break;
+                }
+            }
+
+            var records = new List<dynamic>();
+            try
+            {
+                using (TextReader reader = new StringReader(csvData))
+                {
+                    using (var csv = new CsvReader(reader))
+                    {
+                        csv.Configuration.HasHeaderRecord = hasHeader;
+
+                        switch (delimiterName)
+                        {
+                            case "tab":
+                                csv.Configuration.Delimiter = "\t";
+                                break;
+                            default:
+                                break;
+                        }
+
+                        csv.Configuration.Encoding = Encoding.UTF8;
+                        csv.Configuration.IgnoreBlankLines = true;
+                        csv.Configuration.TrimOptions = CsvHelper.Configuration.TrimOptions.Trim;
+                        records = csv.GetRecords<dynamic>().ToList();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (lang == "bg")
+                {
+                    return Content("<div class='alert alert-danger p-2'>Грешен формат на данните. Опитайте с друг разделител.</div>");
+                }
+                else
+                {
+                    return Content("<div class='alert alert-danger p-2'>Error in parsing data. Check another delimiter</div>");
+                }
+            }
+
+            #endregion
+
+            var result = new EntityRecord();
+            result["hasHeader"] = hasHeader;
+            result["data"] = records;
+            result["lang"] = lang;
+            return PartialView("FieldTableDataPreview", result);
+        }
+
+
+
+        #endregion
 
         #region << Entity Meta >>
 
@@ -3797,7 +3893,8 @@ namespace WebVella.Erp.Web.Controllers
                         #endregion
 
                         var recordCreateResult = recMan.CreateRecord("user_file", userFileRecord);
-                        if (!recordCreateResult.Success) {
+                        if (!recordCreateResult.Success)
+                        {
                             throw new Exception(recordCreateResult.Message);
                         }
                         resultRecords.Add(userFileRecord);
@@ -3818,6 +3915,19 @@ namespace WebVella.Erp.Web.Controllers
         }
 
 
+        #endregion
+
+        #region << Utils >>
+
+        public static Stream GenerateStreamFromString(string s)
+        {
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream);
+            writer.Write(s);
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
+        }
         #endregion
     }
 }

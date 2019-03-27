@@ -3273,12 +3273,15 @@ pre, code {
 
 
 
-.erp-field textarea.erp-multilinetext {
+.erp-field textarea.erp-multilinetext,
+.erp-field textarea.erp-data-csv{
 	min-height: 60px;
 }
 
 .erp-field .input-group-prepend.erp-multilinetext > *,
-.erp-field .input-group-append.erp-multilinetext > * {
+.erp-field .input-group-append.erp-multilinetext > *,
+.erp-field .input-group-prepend.erp-data-csv > *,
+.erp-field .input-group-append.erp-data-csv > *{
 	height: 100%;
 }
 
@@ -3469,14 +3472,17 @@ input[type=date].form-control, input[type=datetime-local].form-control {
 }
 
 .erp-field.inline-edit .erp-html .action,
-.erp-field.inline-edit .erp-multilinetext.action {
+.erp-field.inline-edit .erp-multilinetext.action,
+.erp-field.inline-edit .erp-data-csv.action{
 	align-items: stretch;
 }
 
 	.erp-field.inline-edit .erp-html.form-control.disabled,
 	.erp-field.inline-edit .erp-multilinetext.form-control.disabled,
+    .erp-field.inline-edit .erp-data-csv.form-control.disabled,
 	.erp-field.inline-edit .erp-html .action .input-group-text,
-	.erp-field.inline-edit .erp-multilinetext.action .input-group-text {
+	.erp-field.inline-edit .erp-multilinetext.action .input-group-text,
+	.erp-field.inline-edit .erp-data-csv.action .input-group-text {
 		height: auto;
 	}
 
@@ -3491,11 +3497,13 @@ input[type=date].form-control, input[type=datetime-local].form-control {
 	border-color: #ced4da;
 }
 
-.erp-field.inline-edit .form-control.erp-multilinetext[readonly] {
+.erp-field.inline-edit .form-control.erp-multilinetext[readonly],
+.erp-field.inline-edit .form-control.erp-data-csv[readonly] {
 	background: #fff;
 }
 
-	.erp-field.inline-edit .form-control.erp-multilinetext[readonly]:hover {
+	.erp-field.inline-edit .form-control.erp-multilinetext[readonly]:hover,
+	.erp-field.inline-edit .form-control.erp-data-csv[readonly]:hover {
 		cursor: pointer;
 	}
 
@@ -4587,6 +4595,13 @@ border-bottom-style:dashed;
 
 /*#endregion*/
 
+/*#region << DoubleScroll >>*/
+    .doublescroll-wrapper1, .doublescroll-wrapper2 { width: 100%; overflow-x: auto; overflow-y: hidden; }
+    .doublescroll-wrapper1 { height: 20px; }
+    .doublescroll-inner1 { height: 20px; }
+    .doublescroll-inner2 { overflow: none; }
+/*#endregion*/
+
 /*#region << Alerts >>*/
 
 .alert .title {
@@ -5515,6 +5530,10 @@ wv-pb-manager .wv-pb-node > div > .row {
 
 /*#region << pc-tab-nav >>*/
 
+.card.tabs {
+    border:none;
+}
+
 .card.tabs .card-header {
 	padding: 0;
 }
@@ -5524,6 +5543,11 @@ wv-pb-manager .wv-pb-node > div > .row {
 		margin-top: 10px;
 		padding: 0 10px;
 	}
+
+.card.tabs .card-body {
+    border:1px solid #e1e4e8;
+    border-top:none;
+}
 
 .wv-pb-node .card.tabs .card-body {
 	padding: 0 5px;
@@ -5847,6 +5871,18 @@ wv-pb-manager .wv-pb-node > div > .row {
         .erp-field .filerow .action.remove a {
             color:#F44336;
         }
+
+/*#endregion*/
+
+
+/*#region << loading page >>*/
+.loading-pane {
+    width:100%;
+    min-height:40px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
 
 /*#endregion*/
 

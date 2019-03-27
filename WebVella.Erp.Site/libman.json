@@ -1,187 +1,187 @@
 {
 	"version": "1.0",
 	"defaultProvider": "cdnjs",
-	"libraries": [
-		{
-			"provider": "cdnjs",
-			"library": "URI.js@1.19.1",
-			"destination": "wwwroot/lib/URI.js/",
-			"files": [
-				"URI.min.js"
-			]
-		},
-		{
-			"provider": "cdnjs",
-			"library": "ace@1.4.2",
-			"destination": "wwwroot/lib/ace/",
-			"files": [
-				"ace.js",
-				"ext-beautify.js",
-				"ext-elastic_tabstops_lite.js",
-				"ext-emmet.js",
-				"ext-keybinding_menu.js",
-				"ext-error_marker.js",
-				"ext-language_tools.js",
-				"ext-linking.js",
-				"ext-modelist.js",
-				"ext-options.js",
-				"ext-rtl.js",
-				"ext-searchbox.js",
-				"ext-settings_menu.js",
-				"ext-spellcheck.js",
-				"ext-split.js",
-				"ext-static_highlight.js",
-				"ext-statusbar.js",
-				"ext-textarea.js",
-				"ext-themelist.js",
-				"ext-whitespace.js",
-				"keybinding-emacs.js",
-				"keybinding-vim.js",
-				"mode-csharp.js",
-				"mode-css.js",
-				"mode-html.js",
-				"mode-io.js",
-				"mode-javascript.js",
-				"mode-json.js",
-				"mode-jsoniq.js",
-				"mode-jsx.js",
-				"mode-markdown.js",
-				"mode-makefile.js",
-				"mode-pgsql.js",
-				"mode-plain_text.js",
-				"mode-razor.js",
-				"mode-sql.js",
-				"mode-text.js",
-				"mode-typescript.js",
-				"mode-xml.js",
-				"theme-cobalt.js",
-				"worker-css.js",
-				"worker-html.js",
-				"worker-javascript.js",
-				"worker-json.js",
-				"worker-xml.js"
-			]
-		},
-		{
-			"provider": "cdnjs",
-			"library": "twitter-bootstrap@4.2.1",
-			"destination": "wwwroot/lib/twitter-bootstrap/",
-			"files": [
-				"js/bootstrap.bundle.min.js",
-				"js/bootstrap.bundle.min.js.map",
-				"css/bootstrap.css",
-				"css/bootstrap.css.map"
-			]
-		},
-		{
-			"provider": "cdnjs",
-			"library": "Chart.js@2.7.3",
-			"destination": "wwwroot/lib/Chart.js/",
-			"files": [
-				"Chart.bundle.min.js"
-			]
-		},
-		{
-			"provider": "cdnjs",
-			"library": "spectrum@1.8.0",
-			"destination": "wwwroot/lib/spectrum/",
-			"files": [
-				"spectrum.min.js",
-				"spectrum.min.css"
-			]
-		},
-		{
-			"library": "decimal.js@10.0.2",
-			"destination": "wwwroot/lib/decimal.js/",
-			"files": [
-				"decimal.min.js"
-			]
-		},
-		{
-			"library": "flatpickr@4.5.2",
-			"destination": "wwwroot/lib/flatpickr/",
-			"files": [
-				"flatpickr.min.js",
-				"flatpickr.min.css"
-			]
-		},
-		{
-			"provider": "cdnjs",
-			"library": "jquery@3.3.1",
-			"destination": "wwwroot/lib/jquery/",
-			"files": [
-				"jquery.min.js",
-				"jquery.min.map"
-			]
-		},
-		{
-			"provider": "cdnjs",
-			"library": "js-cookie@2.2.0",
-			"destination": "wwwroot/lib/js-cookie/",
-			"files": [
-				"js.cookie.min.js",
-				"js.cookie.min.js.map"
-			]
-		},
-		{
-			"provider": "cdnjs",
-			"library": "jstree@3.3.7",
-			"destination": "wwwroot/lib/jstree/",
-			"files": [
-				"jstree.min.js",
-				"themes/default/32px.png",
-				"themes/default/40px.png",
-				"themes/default/style.min.css",
-				"themes/default/throbber.gif"
-			]
-		},
-		{
-			"provider": "cdnjs",
-			"library": "lodash.js@4.17.11",
-			"destination": "wwwroot/lib/lodash.js/",
-			"files": [
-				"lodash.min.js"
-			]
-		},
-		{
-			"provider": "cdnjs",
-			"library": "moment.js@2.23.0",
-			"destination": "wwwroot/lib/moment.js/",
-			"files": [
-				"moment.min.js"
-			]
-		},
-		{
-			"provider": "cdnjs",
-			"library": "select2@4.0.6-rc.1",
-			"destination": "wwwroot/lib/select2/",
-			"files": [
-				"js/select2.min.js",
-				"css/select2.min.css"
-			]
-		},
-		{
-			"provider": "cdnjs",
-			"library": "toastr.js@2.1.4",
-			"destination": "wwwroot/lib/toastr.js/",
-			"files": [
-				"toastr.min.js",
-				"toastr.js.map",
-				"toastr.min.css"
-			]
-		},
-		{
-			"provider": "cdnjs",
-			"library": "bootstrap-3-typeahead@4.0.2",
-			"destination": "wwwroot/lib/bootstrap-3-typeahead/",
-			"files": [
-				"bootstrap3-typeahead.min.js"
-			]
-		},
-		{
-			"provider": "cdnjs",
-			"library": "ckeditor@4.11.2",
-			"destination": "wwwroot/lib/ckeditor/",
+  "libraries": [
+    {
+      "provider": "cdnjs",
+      "library": "URI.js@1.19.1",
+      "destination": "wwwroot/lib/URI.js/",
+      "files": [
+        "URI.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "ace@1.4.2",
+      "destination": "wwwroot/lib/ace/",
+      "files": [
+        "ace.js",
+        "ext-beautify.js",
+        "ext-elastic_tabstops_lite.js",
+        "ext-emmet.js",
+        "ext-keybinding_menu.js",
+        "ext-error_marker.js",
+        "ext-language_tools.js",
+        "ext-linking.js",
+        "ext-modelist.js",
+        "ext-options.js",
+        "ext-rtl.js",
+        "ext-searchbox.js",
+        "ext-settings_menu.js",
+        "ext-spellcheck.js",
+        "ext-split.js",
+        "ext-static_highlight.js",
+        "ext-statusbar.js",
+        "ext-textarea.js",
+        "ext-themelist.js",
+        "ext-whitespace.js",
+        "keybinding-emacs.js",
+        "keybinding-vim.js",
+        "mode-csharp.js",
+        "mode-css.js",
+        "mode-html.js",
+        "mode-io.js",
+        "mode-javascript.js",
+        "mode-json.js",
+        "mode-jsoniq.js",
+        "mode-jsx.js",
+        "mode-markdown.js",
+        "mode-makefile.js",
+        "mode-pgsql.js",
+        "mode-plain_text.js",
+        "mode-razor.js",
+        "mode-sql.js",
+        "mode-text.js",
+        "mode-typescript.js",
+        "mode-xml.js",
+        "theme-cobalt.js",
+        "worker-css.js",
+        "worker-html.js",
+        "worker-javascript.js",
+        "worker-json.js",
+        "worker-xml.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "twitter-bootstrap@4.2.1",
+      "destination": "wwwroot/lib/twitter-bootstrap/",
+      "files": [
+        "js/bootstrap.bundle.min.js",
+        "js/bootstrap.bundle.min.js.map",
+        "css/bootstrap.css",
+        "css/bootstrap.css.map"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "Chart.js@2.7.3",
+      "destination": "wwwroot/lib/Chart.js/",
+      "files": [
+        "Chart.bundle.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "spectrum@1.8.0",
+      "destination": "wwwroot/lib/spectrum/",
+      "files": [
+        "spectrum.min.js",
+        "spectrum.min.css"
+      ]
+    },
+    {
+      "library": "decimal.js@10.0.2",
+      "destination": "wwwroot/lib/decimal.js/",
+      "files": [
+        "decimal.min.js"
+      ]
+    },
+    {
+      "library": "flatpickr@4.5.2",
+      "destination": "wwwroot/lib/flatpickr/",
+      "files": [
+        "flatpickr.min.js",
+        "flatpickr.min.css"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "jquery@3.3.1",
+      "destination": "wwwroot/lib/jquery/",
+      "files": [
+        "jquery.min.js",
+        "jquery.min.map"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "js-cookie@2.2.0",
+      "destination": "wwwroot/lib/js-cookie/",
+      "files": [
+        "js.cookie.min.js",
+        "js.cookie.min.js.map"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "jstree@3.3.7",
+      "destination": "wwwroot/lib/jstree/",
+      "files": [
+        "jstree.min.js",
+        "themes/default/32px.png",
+        "themes/default/40px.png",
+        "themes/default/style.min.css",
+        "themes/default/throbber.gif"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "lodash.js@4.17.11",
+      "destination": "wwwroot/lib/lodash.js/",
+      "files": [
+        "lodash.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "moment.js@2.23.0",
+      "destination": "wwwroot/lib/moment.js/",
+      "files": [
+        "moment.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "select2@4.0.6-rc.1",
+      "destination": "wwwroot/lib/select2/",
+      "files": [
+        "js/select2.min.js",
+        "css/select2.min.css"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "toastr.js@2.1.4",
+      "destination": "wwwroot/lib/toastr.js/",
+      "files": [
+        "toastr.min.js",
+        "toastr.js.map",
+        "toastr.min.css"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "bootstrap-3-typeahead@4.0.2",
+      "destination": "wwwroot/lib/bootstrap-3-typeahead/",
+      "files": [
+        "bootstrap3-typeahead.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "ckeditor@4.11.2",
+      "destination": "wwwroot/lib/ckeditor/",
       "files": [
         "ckeditor.js",
         "config.js",
@@ -285,6 +285,6 @@
         "plugins/scayt/dialogs/toolbar.css",
         "plugins/scayt/skins/moono-lisa/scayt.css"
       ]
-		}
-	]
+    }
+  ]
 }

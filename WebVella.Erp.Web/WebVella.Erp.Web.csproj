@@ -16,6 +16,9 @@
 
    <ItemGroup>
      <None Remove="Components\PcFieldMultiFileUpload\service.js" />
+     <None Remove="Components\PcFieldDataCsv\service.js" />
+     <None Remove="TagHelpers\WvFieldDataCsv\form.js" />
+     <None Remove="TagHelpers\WvFieldDataCsv\inline-edit.js" />
      <None Remove="TagHelpers\WvFieldUserFileMultiple\form.js" />
      <None Remove="TagHelpers\WvFieldUserFileMultiple\inline-edit.js" />
    </ItemGroup>
@@ -32,6 +35,7 @@
 	<EmbeddedResource Include="Components\PcGridFilterField\service.js" />
 	<EmbeddedResource Include="Components\PcChart\service.js" />
 	<EmbeddedResource Include="Components\PcApplications\service.js" />
+	<EmbeddedResource Include="Components\PcFieldDataCsv\service.js" />
 	<EmbeddedResource Include="Components\PcValidation\service.js" />
 	<EmbeddedResource Include="Components\PcJavaScriptBlock\service.js" />
 	<EmbeddedResource Include="Components\PcSection\service.js" />
@@ -69,6 +73,8 @@
 	<EmbeddedResource Include="Components\PcHtmlBlock\service.js" />
 	<EmbeddedResource Include="Components\PcRow\service.js" />
     <EmbeddedResource Include="TagHelpers\WvDrawer\drawer.js" />
+    <EmbeddedResource Include="TagHelpers\WvFieldDataCsv\form.js" />
+    <EmbeddedResource Include="TagHelpers\WvFieldDataCsv\inline-edit.js" />
     <EmbeddedResource Include="TagHelpers\WvFieldUserFileMultiple\form.js" />
     <EmbeddedResource Include="TagHelpers\WvFieldUserFileMultiple\inline-edit.js" />
     <EmbeddedResource Include="TagHelpers\WvFieldRadioList\inline-edit.js" />

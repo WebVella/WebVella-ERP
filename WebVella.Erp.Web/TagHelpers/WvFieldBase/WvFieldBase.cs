@@ -249,7 +249,9 @@ namespace WebVella.Erp.Web.TagHelpers
                         Value = newListString;
                     }
                     else if (Value is string) {
-                        Value = new List<string>() { Value.ToString() };
+                        var stringValue = Value.ToString();
+  
+                        Value = new List<string>() { stringValue };
                     }
                     else
                     {

@@ -1,0 +1,48 @@
+﻿@using WebVella.Erp.Web.Models;
+@{
+    var record = (EntityRecord)Model;
+    var rows = (List<dynamic>)record["data"];
+    var hasHeader = (bool)record["hasHeader"];
+    var lang = (string)record["lang"];
+    var columns = new List<GridColumn>();
+    if (rows.Count > 0)
+    {
+        var sample = (IDictionary<string, object>)rows[0];
+        var index = 1;
+        foreach (var prop in sample.Keys)
+        {
+            columns.Add(new GridColumn()
+            {
+                Label = hasHeader ? prop : "Field" + index,
+                Name = "Field" + index
+            });
+            index++;
+        }
+    }
+    var noRecordsMessage = "No records found in data";
+    if (lang == "bg")
+    {
+        noRecordsMessage = "Няма открити запизи";
+    }
+}
+
+@if (rows.Count > 0)
+{
+    <wv-grid small="true" bordered="true" hover="true" has-tfoot="false" has-thead="hasHeader" columns="columns">
+        @foreach (IDictionary<string, object> row in rows)
+        {
+            <wv-grid-row>
+                @foreach (var column in columns)
+                {
+                    <wv-grid-column>
+                         @(row[column.Label])
+                    </wv-grid-column>
+                }
+            </wv-grid-row>
+        }
+    </wv-grid>
+}
+else
+{
+    <div class="alert alert-info p-2">@noRecordsMessage</div>
+}

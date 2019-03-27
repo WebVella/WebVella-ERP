@@ -23,19 +23,87 @@
 }
 
 <style>
-   
+   .wrapper1, .wrapper2 { width: 100%; overflow-x: auto; overflow-y: hidden; }
+    .wrapper1 { height: 20px; }
+    .div1 { height: 20px; }
+    .div2 { overflow: none; }
 </style>
 
 <div class="row">
     <div class="col-6">
+        <wv-field-data-csv name="csv" label-text="CSV"></wv-field-data-csv>
 
+        <div class="mt-5"></div>
 
-
+        <wv-form method="post" action="/api/v3.0/p/core/ui/field-table-data/generate/preview" id="submit-form">
+            <wv-field-textarea name="csv" label-text="Csv"></wv-field-textarea>
+            <wv-field-checkbox name="hasHeader" label-text="Has header" value="@(true)"></wv-field-checkbox>
+            <wv-button type="Submit" text="Submit"></wv-button>
+        </wv-form>
+        <div class="doublescroll">
+            <div class="wrapper1">
+                <div class="div1"></div>
+            </div>
+            <div class="wrapper2">
+                <div class="div2">
+                    <div id="preview"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>
 
+<script>
+    var csvEl = $("textarea[name='csv']");
+    var chkBx = $("input[name='hasHeader']");
+    $(function(){
+        $("#submit-form").submit(function (event) {
+            event.preventDefault();
+            var payload = {
+                csv: csvEl.val(),
+                hasHeader: chkBx.val(),
+                delimiter:"tab"
+            }
+            $.ajax({
+                type: "POST",
+                url: "/api/v3.0/p/core/ui/field-table-data/generate/preview",
+                // The key needs to match your method's input parameter (case-sensitive).
+                data: JSON.stringify(payload),
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                success: function (data) {
+                    $('.div1').css("width", '');
+                    $('.div2').css("width", '');
+                    $("#preview").html(data);
+                    $('.div1').width($('table').width());
+                    $('.div2').width($('table').width());
+                },
+                failure: function (errMsg) {
+                    toastr.error("Възникна системна грешка", 'Грешка!', { tapToDismiss: true });
+                    console.error(errMsg);
+                    $selectors.submitBtn.removeClass("disabled");
+                    $selectors.submitBtn.text("публикувай");
+                }
+            });            
+        });
 
+    });
+
+
+$(function () {
+    $('.wrapper1').on('scroll', function (e) {
+        $('.wrapper2').scrollLeft($('.wrapper1').scrollLeft());
+    }); 
+    $('.wrapper2').on('scroll', function (e) {
+        $('.wrapper1').scrollLeft($('.wrapper2').scrollLeft());
+    });
+});
+$(window).on('load', function (e) {
+    $('.div1').width($('table').width());
+    $('.div2').width($('table').width());
+});
+</script>
 
 
 
