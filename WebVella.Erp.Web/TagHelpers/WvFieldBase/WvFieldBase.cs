@@ -226,7 +226,8 @@ namespace WebVella.Erp.Web.TagHelpers
 					fieldType = FieldType.ImageField;
 					break;
 				case "wv-field-textarea":
-					fieldType = FieldType.MultiLineTextField;
+                case "wv-field-data-csv":
+                    fieldType = FieldType.MultiLineTextField;
 					break;
 				case "wv-field-multiselect":
 				case "wv-field-checkbox-list":

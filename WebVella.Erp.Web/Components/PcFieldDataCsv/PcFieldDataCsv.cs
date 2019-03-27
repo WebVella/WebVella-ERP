@@ -139,6 +139,8 @@ namespace WebVella.Erp.Web.Components
                     }
                     ViewBag.IsVisible = isVisible;
 
+                    model.Value = context.DataModel.GetPropertyValueByDataSource(options.Value);
+
                     var delimiter = context.DataModel.GetPropertyValueByDataSource(options.DelimiterValueDs) as string;
                     var lang = context.DataModel.GetPropertyValueByDataSource(options.LangDs) as string;
                     var hasHeader = context.DataModel.GetPropertyValueByDataSource(options.HasHeaderValueDs) as bool?;

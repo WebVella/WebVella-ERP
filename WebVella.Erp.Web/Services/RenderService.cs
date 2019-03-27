@@ -1,9 +1,11 @@
-﻿using HtmlAgilityPack;
+﻿using CsvHelper;
+using HtmlAgilityPack;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -438,5 +440,31 @@ namespace WebVella.Erp.Web.Services
 			}
 			return result;
 		}
+
+        public List<dynamic> GetCsvData(string csvData, bool hasHeader = true, string delimiterName = "") {
+            var records = new List<dynamic>();
+            using (TextReader reader = new StringReader(csvData))
+            {
+                using (var csv = new CsvReader(reader))
+                {
+                    csv.Configuration.HasHeaderRecord = hasHeader;
+
+                    switch (delimiterName)
+                    {
+                        case "tab":
+                            csv.Configuration.Delimiter = "\t";
+                            break;
+                        default:
+                            break;
+                    }
+
+                    csv.Configuration.Encoding = Encoding.UTF8;
+                    csv.Configuration.IgnoreBlankLines = true;
+                    csv.Configuration.TrimOptions = CsvHelper.Configuration.TrimOptions.Trim;
+                    records = csv.GetRecords<dynamic>().ToList();
+                }
+            }
+            return records;
+        }
 	}
 }

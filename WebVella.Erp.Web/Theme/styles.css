@@ -3366,8 +3366,17 @@ pre, code {
 	cursor: pointer;
 }
 
+.erp-field.inline-edit .view-wrapper.erp-data-csv:hover {
+	cursor: inherit;
+}
+
+
 	.erp-field.inline-edit .view-wrapper:hover .form-control {
 		background: #f5f5f5;
+	}
+
+	.erp-field.inline-edit .view-wrapper.erp-data-csv:hover .form-control {
+		background: transparent;
 	}
 
 .erp-field.inline-edit .view-wrapper .input-group-append .action {

@@ -1,5 +1,5 @@
 ﻿
-function DataCsvFormInitGenerateSelectors(fieldId,name) {
+function DataCsvFormInitGenerateSelectors(fieldId, name, delimiterName, hasHeaderName, lang) {
 	//Method for generating selector strings of some of the presentation elements
     var $selectors = {};
     $selectors.card = $("#card-" + fieldId);
@@ -10,10 +10,10 @@ function DataCsvFormInitGenerateSelectors(fieldId,name) {
     $selectors.doubleScrollInner1 = $selectors.card.find(".doublescroll-inner1");
     $selectors.doubleScrollInner2 = $selectors.card.find(".doublescroll-inner2");
     $selectors.previewWrapper = $selectors.card.find(".preview");
-    $selectors.inputHasHeaderEl = $selectors.card.find("input[name='" + name + "_has_header']");
+    $selectors.inputHasHeaderEl = $selectors.card.find("input[name='" + hasHeaderName + "']");
     $selectors.inputHasHeaderFakeEl = $selectors.card.find("#input-hasheader-fake-" + fieldId);
     $selectors.inputEl = $selectors.card.find("textarea[name='" + name + "']");
-    $selectors.inputDelimiterEl = $selectors.card.find("input[name='" + name + "_delimiter']");
+    $selectors.inputDelimiterEl = $selectors.card.find("input[name='" + delimiterName + "']");
 
 	$selectors.viewWrapper = "#view-" + fieldId;
 	$selectors.editWrapper = "#edit-" + fieldId;
@@ -21,8 +21,8 @@ function DataCsvFormInitGenerateSelectors(fieldId,name) {
 }
 
 
-function DataCsvFormInit(fieldId,name, lang) {
-    var $selectors = DataCsvFormInitGenerateSelectors(fieldId, name);
+function DataCsvFormInit(fieldId,name,delimiterName,hasHeaderName,lang) {
+    var $selectors = DataCsvFormInitGenerateSelectors(fieldId, name, delimiterName, hasHeaderName, lang);
 
     $selectors.doubleScrollWrapper1.on('scroll', function (e) {
         $selectors.doubleScrollWrapper2.scrollLeft($selectors.doubleScrollWrapper1.scrollLeft());
@@ -44,7 +44,7 @@ function DataCsvFormInit(fieldId,name, lang) {
             hasHeader = false;
         }
 
-        var delimiter = $selectors.card.find("input[name='" + name + "_delimiter']:checked").val();
+        var delimiter = $selectors.card.find("input[name='" + delimiterName + "']:checked").val();
 
         if (tabId === "preview") {
             var payload = {

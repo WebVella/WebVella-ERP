@@ -1083,27 +1083,7 @@ namespace WebVella.Erp.Web.Controllers
             var records = new List<dynamic>();
             try
             {
-                using (TextReader reader = new StringReader(csvData))
-                {
-                    using (var csv = new CsvReader(reader))
-                    {
-                        csv.Configuration.HasHeaderRecord = hasHeader;
-
-                        switch (delimiterName)
-                        {
-                            case "tab":
-                                csv.Configuration.Delimiter = "\t";
-                                break;
-                            default:
-                                break;
-                        }
-
-                        csv.Configuration.Encoding = Encoding.UTF8;
-                        csv.Configuration.IgnoreBlankLines = true;
-                        csv.Configuration.TrimOptions = CsvHelper.Configuration.TrimOptions.Trim;
-                        records = csv.GetRecords<dynamic>().ToList();
-                    }
-                }
+                records = new RenderService().GetCsvData(csvData, hasHeader, delimiterName);
             }
             catch (Exception ex)
             {
