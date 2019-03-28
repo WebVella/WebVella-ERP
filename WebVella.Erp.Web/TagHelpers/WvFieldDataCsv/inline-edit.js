@@ -1,120 +1,122 @@
 ﻿
-function MultiLineTextInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config) {
+function DataCsvInlineEditGenerateSelectors(fieldId, fieldName, delimiterFieldName, hasHeaderFieldName, entityName, recordId, config) {
 	//Method for generating selector strings of some of the presentation elements
-	var selectors = {};
-	selectors.viewWrapper = "#view-" + fieldId;
-	selectors.editWrapper = "#edit-" + fieldId;
-	return selectors;
+    var $selectors = {};
+    $selectors.card = $("#card-" + fieldId);
+    $selectors.cardDs = $("#doublescroll-" + fieldId);
+    $selectors.tabLink = $selectors.card.find(".nav-link");
+    $selectors.tabPane = $selectors.card.find(".tab-pane");
+    $selectors.doubleScrollWrapper1 = $selectors.cardDs.find(".doublescroll-wrapper1");
+    $selectors.doubleScrollWrapper2 = $selectors.cardDs.find(".doublescroll-wrapper2");
+    $selectors.doubleScrollInner1 = $selectors.cardDs.find(".doublescroll-inner1");
+    $selectors.doubleScrollInner2 = $selectors.cardDs.find(".doublescroll-inner2");
+    $selectors.previewWrapper = $selectors.cardDs.find(".preview");
+    $selectors.modal = $("#modal-" + fieldId);
+    $selectors.modalInputHasHeaderEl = $selectors.modal.find("input[name='" + hasHeaderFieldName + "']");
+    $selectors.modalInputHasHeaderFakeEl = $selectors.modal.find("#input-hasheader-fake-" + fieldId);
+    $selectors.modalInputEl = $selectors.modal.find("#modal-textarea-" + fieldId);
+    $selectors.modalInputDelimiterEl = $selectors.modal.find("input[name='" + delimiterFieldName + "']");
+    $selectors.modalSubmitBtn = $selectors.modal.find(".submit");
+    return $selectors;
 }
 
-function MultiLineTextInlineEditPreEnableCallback(fieldId, fieldName, entityName, recordId, config) {
-	var selectors = MultiLineTextInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
-	$(selectors.viewWrapper).hide();
-	$(selectors.editWrapper).show();
-	$(selectors.editWrapper + " .form-control").focus();
-}
 
-function MultiLineTextInlineEditPreDisableCallback(fieldId, fieldName, entityName, recordId, config) {
-	var selectors = MultiLineTextInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
-	$(selectors.editWrapper + " .invalid-feedback").remove();
-	$(selectors.editWrapper + " .form-control").removeClass("is-invalid");
-	$(selectors.editWrapper + " .save .fa").addClass("fa-check").removeClass("fa-spin fa-spinner");
-	$(selectors.editWrapper + " .save").attr("disabled", false);
-	$(selectors.viewWrapper).show();
-	$(selectors.editWrapper).hide();
-}
-
-function MultiLineTextInlineEditInit(fieldId, fieldName, entityName, recordId, config) {
+function DataCsvInlineEditInit(fieldId, fieldName, delimiterFieldName, hasHeaderFieldName, entityName, recordId, config) {
 	config = ProcessConfig(config);
-	var selectors = MultiLineTextInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
-	//Init enable action click
-	$(selectors.viewWrapper + " .action.btn").on("click", function (event) {
-		event.stopPropagation();
-		event.preventDefault();
-		MultiLineTextInlineEditPreEnableCallback(fieldId, fieldName, entityName, recordId, config);
-	});
-	//Init enable action dblclick
-	$(selectors.viewWrapper + " .form-control").on("dblclick", function (event) {
-		event.stopPropagation();
-		event.preventDefault();
-		MultiLineTextInlineEditPreEnableCallback(fieldId, fieldName, entityName, recordId, config);
-		//clearSelection();//double click causes text to be selected.
-		setTimeout(function () {
-			$(selectors.editWrapper + " .form-control").get(0).focus();
-		}, 200);
-	});
-	//Disable inline edit action
-	$(selectors.editWrapper + " .cancel").on("click", function (event) {
-		event.stopPropagation();
-		event.preventDefault();
-		MultiLineTextInlineEditPreDisableCallback(fieldId, fieldName, entityName, recordId, config);
-	});
-	//Save inline changes
-	$(selectors.editWrapper + " .save").on("click", function (event) {
-		event.stopPropagation();
-		event.preventDefault();
-		var inputValue = $(selectors.editWrapper + " .form-control").val();
-		var submitObj = {};
-		submitObj.id = recordId;
-		submitObj[fieldName] = inputValue;
-		$(selectors.editWrapper + " .save .fa").removeClass("fa-check").addClass("fa-spin fa-spinner");
-		$(selectors.editWrapper + " .save").attr("disabled", true);
-		$(selectors.editWrapper + " .invalid-feedback").remove();
-		$(selectors.editWrapper + " .form-control").removeClass("is-invalid");
-		var apiUrl = ApiBaseUrl + "/record/" + entityName + "/" + recordId;
-		if (config.api_url) {
-			apiUrl = config.api_url;
-		}
-		$.ajax({
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json'
-			},
-			url: apiUrl,
-			type: 'PATCH',
-			data: JSON.stringify(submitObj),
-			success: function (response) {
-				if (response.success) {
-					MultiLineTextInlineEditInitSuccessCallback(response, fieldId, fieldName, entityName, recordId, config);
-				}
-				else {
-					MultiLineTextInlineEditInitErrorCallback(response, fieldId, fieldName, entityName, recordId, config);
-				}
-			},
-			error: function (jqXHR, textStatus, errorThrown) {
-				var response = {};
-				response.message = "";
-				if (jqXHR && jqXHR.responseJSON) {
-					response = jqXHR.responseJSON;
-				}
-				MultiLineTextInlineEditInitErrorCallback(response, fieldId, fieldName, entityName, recordId, config);
-			}
-		});
-	});
-}
+    var $selectors = DataCsvInlineEditGenerateSelectors(fieldId, fieldName,delimiterFieldName, hasHeaderFieldName, entityName, recordId, config);
 
-function MultiLineTextInlineEditInitSuccessCallback(response, fieldId, fieldName, entityName, recordId, config) {
-	var selectors = MultiLineTextInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
-	var newValue = ProcessNewValue(response, fieldName);
-	$(selectors.viewWrapper + " .form-control").html(newValue);
-	$(selectors.editWrapper + " .form-control").val(newValue);
-	MultiLineTextInlineEditPreDisableCallback(fieldId, fieldName, entityName, recordId, config);
-	toastr.success("The new value is successfull saved", 'Success!', { closeButton: true, tapToDismiss: true });
-}
+    $selectors.doubleScrollWrapper1.on('scroll', function (e) {
+        $selectors.doubleScrollWrapper2.scrollLeft($selectors.doubleScrollWrapper1.scrollLeft());
+    });
+    $selectors.doubleScrollWrapper2.on('scroll', function (e) {
+        $selectors.doubleScrollWrapper1.scrollLeft($selectors.doubleScrollWrapper2.scrollLeft());
+    });
 
-function MultiLineTextInlineEditInitErrorCallback(response, fieldId, fieldName, entityName, recordId, config) {
-	var selectors = MultiLineTextInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
-	$(selectors.editWrapper + " .form-control").addClass("is-invalid");
-	var errorMessage = response.message;
-	if (!errorMessage && response.errors && response.errors.length > 0) {
-		errorMessage = response.errors[0].message;
-	}
-		
-	$(selectors.editWrapper + " .input-group").after("<div class='invalid-feedback'>" + errorMessage + "</div>");
-	$(selectors.editWrapper + " .invalid-feedback").show();
-	$(selectors.editWrapper + " .save .fa").addClass("fa-check").removeClass("fa-spin fa-spinner");
-	$(selectors.editWrapper + " .save").attr("disabled", false);
-	toastr.error("An error occurred", 'Error!', { closeButton: true, tapToDismiss: true });
-	console.log("error", response);
+    $selectors.doubleScrollInner1.width($selectors.doubleScrollInner2.find('.table').width());
+    $selectors.doubleScrollInner1.width($selectors.doubleScrollInner2.find('.table').width());
+
+
+    $selectors.tabLink.click(function (event) {
+        event.preventDefault();
+        if ($(this).hasClass("edit")) {
+            $selectors.modal.modal("show");
+        }
+        else {
+            var tabId = $(this).attr("data-tab-id");
+            $selectors.tabLink.removeClass("active");
+            $selectors.tabPane.removeClass("active");
+            $selectors.card.find("#" + fieldId + "-tab-" + tabId).addClass("active");
+            $(this).addClass("active");
+        }
+    });
+
+
+    $selectors.modalInputHasHeaderFakeEl.on('change', function () {
+        if ($(this).prop('checked')) {
+            $($selectors.modalInputHasHeaderEl).val("true");
+            $($selectors.modalInputHasHeaderEl).trigger("change");
+        }
+        else {
+            $($selectors.modalInputHasHeaderEl).val("false");
+            $($selectors.modalInputHasHeaderEl).trigger("change");
+        }
+    });
+
+    $selectors.modalSubmitBtn.click(function (event) {
+        event.preventDefault();
+        var hasHeader = true;
+        if ($selectors.modalInputHasHeaderEl.val() === "false") {
+            hasHeader = false;
+        }
+        var delimiter = $selectors.modal.find("input[name='" + delimiterFieldName + "']:checked").val();
+
+        var payload = {};
+        payload[fieldName] = $selectors.modalInputEl.val();
+        payload[hasHeaderFieldName] = hasHeader;
+        payload[delimiterFieldName] = delimiter;
+
+        var apiUrl = ApiBaseUrl + "/record/" + entityName + "/" + recordId;
+        if (config.api_url) {
+            apiUrl = config.api_url;
+        }
+
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: apiUrl,
+            type: 'PATCH',
+            data: JSON.stringify(payload),
+            success: function (response) {
+                if (response.success) {
+                    DataCsvInlineEditInitSuccessCallback();
+                }
+                else {
+                    DataCsvInlineEditInitErrorCallback(response);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                var response = {};
+                response.message = "";
+                if (jqXHR && jqXHR.responseJSON) {
+                    response = jqXHR.responseJSON;
+                }
+                DataCsvInlineEditInitErrorCallback(response);
+            }
+        });
+    });
+
+    function DataCsvInlineEditInitSuccessCallback() {
+        toastr.success("The new value is successfull saved", 'Success!', { closeButton: true, tapToDismiss: true });
+        location.reload();
+    }
+
+    function DataCsvInlineEditInitErrorCallback(response) {
+
+        toastr.error("An error occurred", 'Error!', { closeButton: true, tapToDismiss: true });
+        console.log("error", response);
+        location.reload();
+    }
 }
 

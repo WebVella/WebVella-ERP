@@ -382,428 +382,948 @@ namespace WebVella.Erp.Web.TagHelpers
 
 
             }
-            else if (Mode == FieldRenderMode.Display || Mode == FieldRenderMode.Simple || (Mode == FieldRenderMode.InlineEdit && Access == FieldAccess.ReadOnly))
+            else if (Mode == FieldRenderMode.Display || (Mode == FieldRenderMode.InlineEdit && Access == FieldAccess.ReadOnly))
             {
 
-                if (!String.IsNullOrWhiteSpace(Value))
+                //>> Tab
+                var tabEl = new TagBuilder("div");
+                tabEl.AddCssClass("card tabs");
+                tabEl.Attributes.Add("id", $"card-{FieldId}");
+
+                #region << Tab header >>
+                //>> Tab > Header
+                var tabHeaderEl = new TagBuilder("div");
+                tabHeaderEl.AddCssClass("card-header");
+
+                //>> Tab > Header > Ul
+                var tabHeaderUlEl = new TagBuilder("ul");
+                tabHeaderUlEl.AddCssClass("nav nav-tabs");
+
+                //>> Tab > Header > Ul > LiData
+                var tabHeaderUlLiDataEl = new TagBuilder("li");
+                tabHeaderUlLiDataEl.AddCssClass("nav-item");
+                var textCsv = "CSV text";
+                if (Lang == "bg")
                 {
-                    //>> Ds
-                    var dsEl = new TagBuilder("div");
-                    dsEl.AddCssClass("doublescroll");
-                    dsEl.Attributes.Add("id", "doublescroll-" + FieldId);
+                    textCsv = "CSV текст";
+                }
+                tabHeaderUlLiDataEl.InnerHtml.AppendHtml($"<a class=\"nav-link\" href=\"#\" data-tab-id=\"csv\">{textCsv}</a>");
+                tabHeaderUlEl.InnerHtml.AppendHtml(tabHeaderUlLiDataEl);
 
-                    //>> Ds >> Wrapper 1
-                    var dsWrapper1El = new TagBuilder("div");
-                    dsWrapper1El.AddCssClass("doublescroll-wrapper1");
-                    dsWrapper1El.InnerHtml.AppendHtml("<div class='doublescroll-inner1'></div>");
-                    dsEl.InnerHtml.AppendHtml(dsWrapper1El);
+                //>> Tab > Header > Ul > LiPreview
+                var tabHeaderUlLiPreviewEl = new TagBuilder("li");
+                tabHeaderUlLiPreviewEl.AddCssClass("nav-item");
+                var textPreview = "Table Preview";
+                if (Lang == "bg")
+                {
+                    textPreview = "Табличен Преглед";
+                }
+                tabHeaderUlLiPreviewEl.InnerHtml.AppendHtml($"<a class=\"nav-link active\" href=\"#\" data-tab-id=\"preview\">{textPreview}</a>");
+                tabHeaderUlEl.InnerHtml.AppendHtml(tabHeaderUlLiPreviewEl);
 
-                    //>> Ds >> Wrapper 2
-                    var dsWrapper2El = new TagBuilder("div");
-                    dsWrapper2El.AddCssClass("doublescroll-wrapper2");
+                //<< Tab > Header > Ul
+                tabHeaderEl.InnerHtml.AppendHtml(tabHeaderUlEl);
 
-                    //>> Ds >> Wrapper 2 >> inner 2
-                    var dsWrapper2Inner2El = new TagBuilder("div");
-                    dsWrapper2Inner2El.AddCssClass("doublescroll-inner2");
+                //<< Tab > Header
+                tabEl.InnerHtml.AppendHtml(tabHeaderEl);
 
-                    //>> Ds >> Wrapper 2 >> inner 2 >> preview
-                    var dsWrapper2Inner2PreviewEl = new TagBuilder("div");
-                    dsWrapper2Inner2PreviewEl.AddCssClass("preview");
+                #endregion
 
-                    ////////////////////////////////////////////////////////////////////////////////////////////////////
-                    ///Table generation
+                #region << Tab body >>
+                //>> Tab > Body
+                var tabBodyEl = new TagBuilder("div");
+                tabBodyEl.AddCssClass("card-body p-2");
 
-                    var records = new List<dynamic>();
-                    try
+
+                //>> Tab > Body > TabContent
+                var tabBodyTabContentEl = new TagBuilder("div");
+                tabBodyTabContentEl.AddCssClass("tab-content");
+
+                ///////////////////////////
+                /// CSV
+                /////////////////////////////////////////////////
+
+                //>> Tab > Body > TabContent >> CsvPane
+                var tabBodyTabContentCsvPaneEl = new TagBuilder("div");
+                tabBodyTabContentCsvPaneEl.AddCssClass("tab-pane");
+                tabBodyTabContentCsvPaneEl.Attributes.Add("id", $"{FieldId}-tab-csv");
+
+                //Control
+                var inputEl = new TagBuilder("textarea");
+                inputEl.AddCssClass("form-control erp-data-csv");
+                if (!String.IsNullOrWhiteSpace(Height))
+                {
+                    inputEl.Attributes.Add("style", $"height:{Height};");
+                }
+                else
+                {
+                    inputEl.Attributes.Add("style", $"height:140px;");
+                }
+                inputEl.InnerHtml.AppendHtml((Value ?? "").ToString());
+                inputEl.Attributes.Add("id", $"textarea-{FieldId}");
+                inputEl.Attributes.Add("readonly", null);
+                tabBodyTabContentCsvPaneEl.InnerHtml.AppendHtml(inputEl);
+
+                //<< Tab > Body > TabContent >> CsvPane
+                tabBodyTabContentEl.InnerHtml.AppendHtml(tabBodyTabContentCsvPaneEl);
+
+
+                ///////////////////////////
+                /// PREVIEW
+                /////////////////////////////////////////////////
+
+                //>> Tab > Body > TabContent >> PreviewPane
+                var tabBodyTabContentPreviewPaneEl = new TagBuilder("div");
+                tabBodyTabContentPreviewPaneEl.AddCssClass("tab-pane active");
+                tabBodyTabContentPreviewPaneEl.Attributes.Add("id", $"{FieldId}-tab-preview");
+
+                #region << Double scroll >>
+                //>> Ds
+                var dsEl = new TagBuilder("div");
+                dsEl.AddCssClass("doublescroll");
+                dsEl.Attributes.Add("id", "doublescroll-" + FieldId);
+
+
+                //>> Ds >> Wrapper 1
+                var dsWrapper1El = new TagBuilder("div");
+                dsWrapper1El.AddCssClass("doublescroll-wrapper1");
+                dsWrapper1El.InnerHtml.AppendHtml("<div class='doublescroll-inner1'></div>");
+                dsEl.InnerHtml.AppendHtml(dsWrapper1El);
+
+                //>> Ds >> Wrapper 2
+                var dsWrapper2El = new TagBuilder("div");
+                dsWrapper2El.AddCssClass("doublescroll-wrapper2");
+
+                //>> Ds >> Wrapper 2 >> inner 2
+                var dsWrapper2Inner2El = new TagBuilder("div");
+                dsWrapper2Inner2El.AddCssClass("doublescroll-inner2");
+
+                //>> Ds >> Wrapper 2 >> inner 2 >> preview
+                var dsWrapper2Inner2PreviewEl = new TagBuilder("div");
+                dsWrapper2Inner2PreviewEl.AddCssClass("preview");
+
+                ////////////////////////////////////////////////////////////////////////////////////////////////////
+                ///Table generation
+
+                var records = new List<dynamic>();
+                try
+                {
+                    var delimiterName = "";
+                    if (DelimiterValue == ErpDataCsvDelimiterType.TAB)
+                        delimiterName = "tab";
+
+                    records = new RenderService().GetCsvData(Value, HasHeaderValue, delimiterName);
+
+                    if (records.Count > 0)
                     {
-                        var delimiterName = "";
-                        if (DelimiterValue == ErpDataCsvDelimiterType.TAB)
-                            delimiterName = "tab";
 
-                        records = new RenderService().GetCsvData(Value, HasHeaderValue, delimiterName);
-
-                        if (records.Count > 0)
+                        //>> table
+                        var tableEl = new TagBuilder("table");
+                        tableEl.AddCssClass("table table-bordered table-hover table-sm");
+                        var columns = new List<GridColumn>();
+                        var sample = (IDictionary<string, object>)records[0];
+                        var index = 1;
+                        foreach (var prop in sample.Keys)
                         {
-
-                            //>> table
-                            var tableEl = new TagBuilder("table");
-                            tableEl.AddCssClass("table table-bordered table-hover table-sm");
-                            var columns = new List<GridColumn>();
-                            var sample = (IDictionary<string, object>)records[0];
-                            var index = 1;
-                            foreach (var prop in sample.Keys)
+                            columns.Add(new GridColumn()
                             {
-                                columns.Add(new GridColumn()
-                                {
-                                    Label = HasHeaderValue ? prop : "Field" + index
-                                });
+                                Label = HasHeaderValue ? prop : "Field" + index
+                            });
+                            index++;
+                        }
+
+                        if (HasHeaderValue)
+                        {
+                            //>> table > thead
+                            var theadEl = new TagBuilder("thead");
+                            var theadTrEl = new TagBuilder("tr");
+                            foreach (var column in columns)
+                            {
+                                var thEl = new TagBuilder("th");
+                                thEl.InnerHtml.Append(column.Label);
+                                theadTrEl.InnerHtml.AppendHtml(thEl);
                                 index++;
                             }
 
-                            if (HasHeaderValue)
-                            {
-                                //>> table > thead
-                                var theadEl = new TagBuilder("thead");
-                                var theadTrEl = new TagBuilder("tr");
-                                foreach (var column in columns)
-                                {
-                                    var thEl = new TagBuilder("th");
-                                    thEl.InnerHtml.Append(column.Label);
-                                    theadTrEl.InnerHtml.AppendHtml(thEl);
-                                    index++;
-                                }
-
-                                theadEl.InnerHtml.AppendHtml(theadTrEl);
-                                tableEl.InnerHtml.AppendHtml(theadEl);
-                            }
-
-
-
-                            //>> table > tbody
-                            var tbodyEl = new TagBuilder("tbody");
-                            foreach (IDictionary<string, object> row in records)
-                            {
-                                var tbodyTrEl = new TagBuilder("tr");
-                                foreach (var column in columns)
-                                {
-                                    var tbodyTdEl = new TagBuilder("td");
-                                    tbodyTdEl.InnerHtml.Append((string)row[column.Label]);
-                                    tbodyTrEl.InnerHtml.AppendHtml(tbodyTdEl);
-                                }
-                                tbodyEl.InnerHtml.AppendHtml(tbodyTrEl);
-                            }
-                            tableEl.InnerHtml.AppendHtml(tbodyEl);
-
-                            dsWrapper2Inner2PreviewEl.InnerHtml.AppendHtml(tableEl);
+                            theadEl.InnerHtml.AppendHtml(theadTrEl);
+                            tableEl.InnerHtml.AppendHtml(theadEl);
                         }
-                        else
+
+
+
+                        //>> table > tbody
+                        var tbodyEl = new TagBuilder("tbody");
+                        foreach (IDictionary<string, object> row in records)
                         {
-                            var alertEl = new TagBuilder("div");
-                            alertEl.AddCssClass("alert alert-info p-2");
-                            if (Lang == "bg")
+                            var tbodyTrEl = new TagBuilder("tr");
+                            foreach (var column in columns)
                             {
-                                alertEl.InnerHtml.Append("Няма открити записи");
+                                var tbodyTdEl = new TagBuilder("td");
+                                tbodyTdEl.InnerHtml.Append((string)row[column.Label]);
+                                tbodyTrEl.InnerHtml.AppendHtml(tbodyTdEl);
                             }
-                            else
-                            {
-                                alertEl.InnerHtml.Append("No records found in data");
-                            }
-                            dsWrapper2Inner2PreviewEl.InnerHtml.AppendHtml(alertEl);
+                            tbodyEl.InnerHtml.AppendHtml(tbodyTrEl);
                         }
+                        tableEl.InnerHtml.AppendHtml(tbodyEl);
 
+                        dsWrapper2Inner2PreviewEl.InnerHtml.AppendHtml(tableEl);
                     }
-                    catch
+                    else
                     {
                         var alertEl = new TagBuilder("div");
-                        alertEl.AddCssClass("alert alert-danger p-2");
+                        alertEl.AddCssClass("alert alert-info p-2");
                         if (Lang == "bg")
                         {
-                            alertEl.InnerHtml.Append("Грешен формат на данните. Опитайте с друг разделител.");
+                            alertEl.InnerHtml.Append("Няма открити записи");
                         }
                         else
                         {
-                            alertEl.InnerHtml.Append("Error in parsing data. Check another delimiter");
+                            alertEl.InnerHtml.Append("No records found in data");
                         }
                         dsWrapper2Inner2PreviewEl.InnerHtml.AppendHtml(alertEl);
                     }
 
-
-                    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                    //<< Ds >> Wrapper 2 >> inner 2 >> preview
-                    dsWrapper2Inner2El.InnerHtml.AppendHtml(dsWrapper2Inner2PreviewEl);
-
-                    //<< Ds >> Wrapper 2 >> inner 2
-                    dsWrapper2El.InnerHtml.AppendHtml(dsWrapper2Inner2El);
-
-                    //<< Ds >> Wrapper 2
-                    dsEl.InnerHtml.AppendHtml(dsWrapper2El);
-                    //<< Ds
-                    output.Content.AppendHtml(dsEl);
-
-                    var jsCompressor = new JavaScriptCompressor();
-                    #region << Init Scripts >>
-                    var tagHelperInitialized = false;
-                    var fileName = "display.js";
-                    if (ViewContext.HttpContext.Items.ContainsKey(typeof(WvFieldDataCsv) + fileName))
+                }
+                catch
+                {
+                    var alertEl = new TagBuilder("div");
+                    alertEl.AddCssClass("alert alert-danger p-2");
+                    if (Lang == "bg")
                     {
-                        var tagHelperContext = (WvTagHelperContext)ViewContext.HttpContext.Items[typeof(WvFieldDataCsv) + fileName];
-                        tagHelperInitialized = tagHelperContext.Initialized;
+                        alertEl.InnerHtml.Append("Грешен формат на данните. Опитайте с друг разделител.");
                     }
-                    if (!tagHelperInitialized)
+                    else
                     {
-                        var scriptContent = FileService.GetEmbeddedTextResource(fileName, "WebVella.Erp.Web.TagHelpers.WvFieldDataCsv");
-                        var scriptEl = new TagBuilder("script");
-                        scriptEl.Attributes.Add("type", "text/javascript");
-                        scriptEl.InnerHtml.AppendHtml(jsCompressor.Compress(scriptContent));
-                        output.PostContent.AppendHtml(scriptEl);
-
-                        ViewContext.HttpContext.Items[typeof(WvFieldDataCsv) + fileName] = new WvTagHelperContext()
-                        {
-                            Initialized = true
-                        };
-
+                        alertEl.InnerHtml.Append("Error in parsing data. Check another delimiter");
                     }
-                    #endregion
+                    dsWrapper2Inner2PreviewEl.InnerHtml.AppendHtml(alertEl);
+                }
 
-                    #region << Add Inline Init Script for this instance >>
-                    var initScript = new TagBuilder("script");
-                    initScript.Attributes.Add("type", "text/javascript");
-                    var scriptTemplate = @"
-						$(function(){
-							DataCsvDisplayInit(""{{FieldId}}"");
-						});";
-                    scriptTemplate = scriptTemplate.Replace("{{FieldId}}", FieldId.Value.ToString());
 
-                    var fieldConfig = new WvFieldTextareaConfig()
+                ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                //<< Ds >> Wrapper 2 >> inner 2 >> preview
+                dsWrapper2Inner2El.InnerHtml.AppendHtml(dsWrapper2Inner2PreviewEl);
+
+                //<< Ds >> Wrapper 2 >> inner 2
+                dsWrapper2El.InnerHtml.AppendHtml(dsWrapper2Inner2El);
+
+                //<< Ds >> Wrapper 2
+                dsEl.InnerHtml.AppendHtml(dsWrapper2El);
+                //<< Ds
+                #endregion
+
+                //<< Tab > Body > TabContent >> PreviewPane >> DoubleScroll
+                tabBodyTabContentPreviewPaneEl.InnerHtml.AppendHtml(dsEl);
+
+                //<< Tab > Body > TabContent >> PreviewPane
+                tabBodyTabContentEl.InnerHtml.AppendHtml(tabBodyTabContentPreviewPaneEl);
+
+                //<< Tab > Body > TabContent
+                tabBodyEl.InnerHtml.AppendHtml(tabBodyTabContentEl);
+
+                //<< Tab > Body
+                tabEl.InnerHtml.AppendHtml(tabBodyEl);
+
+                //<< Tab
+                output.Content.AppendHtml(tabEl);
+
+                #endregion
+
+                var jsCompressor = new JavaScriptCompressor();
+                #region << Init Scripts >>
+                var tagHelperInitialized = false;
+                var fileName = "display.js";
+                if (ViewContext.HttpContext.Items.ContainsKey(typeof(WvFieldDataCsv) + fileName))
+                {
+                    var tagHelperContext = (WvTagHelperContext)ViewContext.HttpContext.Items[typeof(WvFieldDataCsv) + fileName];
+                    tagHelperInitialized = tagHelperContext.Initialized;
+                }
+                if (!tagHelperInitialized)
+                {
+                    var scriptContent = FileService.GetEmbeddedTextResource(fileName, "WebVella.Erp.Web.TagHelpers.WvFieldDataCsv");
+                    var scriptEl = new TagBuilder("script");
+                    scriptEl.Attributes.Add("type", "text/javascript");
+                    scriptEl.InnerHtml.AppendHtml(jsCompressor.Compress(scriptContent));
+                    output.PostContent.AppendHtml(scriptEl);
+
+                    ViewContext.HttpContext.Items[typeof(WvFieldDataCsv) + fileName] = new WvTagHelperContext()
                     {
-                        ApiUrl = ApiUrl,
-                        CanAddValues = Access == FieldAccess.FullAndCreate ? true : false
+                        Initialized = true
                     };
 
-                    scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));
-
-                    initScript.InnerHtml.AppendHtml(jsCompressor.Compress(scriptTemplate));
-
-                    output.PostContent.AppendHtml(initScript);
-                    #endregion
-
-
-
                 }
-                else
+                #endregion
+
+                #region << Add Inline Init Script for this instance >>
+                var initScript = new TagBuilder("script");
+                initScript.Attributes.Add("type", "text/javascript");
+                var scriptTemplate = @"
+					$(function(){
+						DataCsvDisplayInit(""{{FieldId}}"");
+					});";
+                scriptTemplate = scriptTemplate.Replace("{{FieldId}}", FieldId.Value.ToString());
+
+                var fieldConfig = new WvFieldTextareaConfig()
                 {
-                    output.Content.AppendHtml(EmptyValEl);
+                    ApiUrl = ApiUrl,
+                    CanAddValues = Access == FieldAccess.FullAndCreate ? true : false
+                };
+
+                scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));
+
+                initScript.InnerHtml.AppendHtml(jsCompressor.Compress(scriptTemplate));
+
+                output.PostContent.AppendHtml(initScript);
+                #endregion
+
+            }
+            else if (Mode == FieldRenderMode.Simple)
+            {
+                #region << Double scroll >>
+                //>> Ds
+                var dsEl = new TagBuilder("div");
+                dsEl.AddCssClass("doublescroll");
+                dsEl.Attributes.Add("id", "doublescroll-" + FieldId);
+
+
+                //>> Ds >> Wrapper 1
+                var dsWrapper1El = new TagBuilder("div");
+                dsWrapper1El.AddCssClass("doublescroll-wrapper1");
+                dsWrapper1El.InnerHtml.AppendHtml("<div class='doublescroll-inner1'></div>");
+                dsEl.InnerHtml.AppendHtml(dsWrapper1El);
+
+                //>> Ds >> Wrapper 2
+                var dsWrapper2El = new TagBuilder("div");
+                dsWrapper2El.AddCssClass("doublescroll-wrapper2");
+
+                //>> Ds >> Wrapper 2 >> inner 2
+                var dsWrapper2Inner2El = new TagBuilder("div");
+                dsWrapper2Inner2El.AddCssClass("doublescroll-inner2");
+
+                //>> Ds >> Wrapper 2 >> inner 2 >> preview
+                var dsWrapper2Inner2PreviewEl = new TagBuilder("div");
+                dsWrapper2Inner2PreviewEl.AddCssClass("preview");
+
+                ////////////////////////////////////////////////////////////////////////////////////////////////////
+                ///Table generation
+
+                var records = new List<dynamic>();
+                try
+                {
+                    var delimiterName = "";
+                    if (DelimiterValue == ErpDataCsvDelimiterType.TAB)
+                        delimiterName = "tab";
+
+                    records = new RenderService().GetCsvData(Value, HasHeaderValue, delimiterName);
+
+                    if (records.Count > 0)
+                    {
+
+                        //>> table
+                        var tableEl = new TagBuilder("table");
+                        tableEl.AddCssClass("table table-bordered table-hover table-sm");
+                        var columns = new List<GridColumn>();
+                        var sample = (IDictionary<string, object>)records[0];
+                        var index = 1;
+                        foreach (var prop in sample.Keys)
+                        {
+                            columns.Add(new GridColumn()
+                            {
+                                Label = HasHeaderValue ? prop : "Field" + index
+                            });
+                            index++;
+                        }
+
+                        if (HasHeaderValue)
+                        {
+                            //>> table > thead
+                            var theadEl = new TagBuilder("thead");
+                            var theadTrEl = new TagBuilder("tr");
+                            foreach (var column in columns)
+                            {
+                                var thEl = new TagBuilder("th");
+                                thEl.InnerHtml.Append(column.Label);
+                                theadTrEl.InnerHtml.AppendHtml(thEl);
+                                index++;
+                            }
+
+                            theadEl.InnerHtml.AppendHtml(theadTrEl);
+                            tableEl.InnerHtml.AppendHtml(theadEl);
+                        }
+
+
+
+                        //>> table > tbody
+                        var tbodyEl = new TagBuilder("tbody");
+                        foreach (IDictionary<string, object> row in records)
+                        {
+                            var tbodyTrEl = new TagBuilder("tr");
+                            foreach (var column in columns)
+                            {
+                                var tbodyTdEl = new TagBuilder("td");
+                                tbodyTdEl.InnerHtml.Append((string)row[column.Label]);
+                                tbodyTrEl.InnerHtml.AppendHtml(tbodyTdEl);
+                            }
+                            tbodyEl.InnerHtml.AppendHtml(tbodyTrEl);
+                        }
+                        tableEl.InnerHtml.AppendHtml(tbodyEl);
+
+                        dsWrapper2Inner2PreviewEl.InnerHtml.AppendHtml(tableEl);
+                    }
+                    else
+                    {
+                        var alertEl = new TagBuilder("div");
+                        alertEl.AddCssClass("alert alert-info p-2");
+                        if (Lang == "bg")
+                        {
+                            alertEl.InnerHtml.Append("Няма открити записи");
+                        }
+                        else
+                        {
+                            alertEl.InnerHtml.Append("No records found in data");
+                        }
+                        dsWrapper2Inner2PreviewEl.InnerHtml.AppendHtml(alertEl);
+                    }
+
                 }
+                catch
+                {
+                    var alertEl = new TagBuilder("div");
+                    alertEl.AddCssClass("alert alert-danger p-2");
+                    if (Lang == "bg")
+                    {
+                        alertEl.InnerHtml.Append("Грешен формат на данните. Опитайте с друг разделител.");
+                    }
+                    else
+                    {
+                        alertEl.InnerHtml.Append("Error in parsing data. Check another delimiter");
+                    }
+                    dsWrapper2Inner2PreviewEl.InnerHtml.AppendHtml(alertEl);
+                }
+
+
+                ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                //<< Ds >> Wrapper 2 >> inner 2 >> preview
+                dsWrapper2Inner2El.InnerHtml.AppendHtml(dsWrapper2Inner2PreviewEl);
+
+                //<< Ds >> Wrapper 2 >> inner 2
+                dsWrapper2El.InnerHtml.AppendHtml(dsWrapper2Inner2El);
+
+                //<< Ds >> Wrapper 2
+                dsEl.InnerHtml.AppendHtml(dsWrapper2El);
+                //<< Ds
+                output.Content.AppendHtml(dsEl);
+                #endregion
+                var jsCompressor = new JavaScriptCompressor();
+                #region << Init Scripts >>
+                var tagHelperInitialized = false;
+                var fileName = "display.js";
+                if (ViewContext.HttpContext.Items.ContainsKey(typeof(WvFieldDataCsv) + fileName))
+                {
+                    var tagHelperContext = (WvTagHelperContext)ViewContext.HttpContext.Items[typeof(WvFieldDataCsv) + fileName];
+                    tagHelperInitialized = tagHelperContext.Initialized;
+                }
+                if (!tagHelperInitialized)
+                {
+                    var scriptContent = FileService.GetEmbeddedTextResource(fileName, "WebVella.Erp.Web.TagHelpers.WvFieldDataCsv");
+                    var scriptEl = new TagBuilder("script");
+                    scriptEl.Attributes.Add("type", "text/javascript");
+                    scriptEl.InnerHtml.AppendHtml(jsCompressor.Compress(scriptContent));
+                    output.PostContent.AppendHtml(scriptEl);
+
+                    ViewContext.HttpContext.Items[typeof(WvFieldDataCsv) + fileName] = new WvTagHelperContext()
+                    {
+                        Initialized = true
+                    };
+
+                }
+                #endregion
+
+                #region << Add Inline Init Script for this instance >>
+                var initScript = new TagBuilder("script");
+                initScript.Attributes.Add("type", "text/javascript");
+                var scriptTemplate = @"
+					$(function(){
+						DataCsvDisplayInit(""{{FieldId}}"");
+					});";
+                scriptTemplate = scriptTemplate.Replace("{{FieldId}}", FieldId.Value.ToString());
+
+                var fieldConfig = new WvFieldTextareaConfig()
+                {
+                    ApiUrl = ApiUrl,
+                    CanAddValues = Access == FieldAccess.FullAndCreate ? true : false
+                };
+
+                scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));
+
+                initScript.InnerHtml.AppendHtml(jsCompressor.Compress(scriptTemplate));
+
+                output.PostContent.AppendHtml(initScript);
+                #endregion
             }
             else if (Mode == FieldRenderMode.InlineEdit)
             {
 
-                #region << View Wrapper >>
+                //>> Tab
+                var tabEl = new TagBuilder("div");
+                tabEl.AddCssClass("card tabs");
+                tabEl.Attributes.Add("id", $"card-{FieldId}");
+
+                #region << Tab header >>
+                //>> Tab > Header
+                var tabHeaderEl = new TagBuilder("div");
+                tabHeaderEl.AddCssClass("card-header");
+
+                //>> Tab > Header > Ul
+                var tabHeaderUlEl = new TagBuilder("ul");
+                tabHeaderUlEl.AddCssClass("nav nav-tabs");
+
+                //>> Tab > Header > Ul > LiData
+                var tabHeaderUlLiDataEl = new TagBuilder("li");
+                tabHeaderUlLiDataEl.AddCssClass("nav-item");
+                var textCsv = "CSV text";
+                if (Lang == "bg")
                 {
-                    var viewWrapperEl = new TagBuilder("div");
-                    viewWrapperEl.AddCssClass("input-group view-wrapper erp-data-csv");
-                    viewWrapperEl.Attributes.Add("title", "double click to edit");
-                    viewWrapperEl.Attributes.Add("id", $"view-{FieldId}");
-                    //Prepend
-                    if (PrependHtml.Count > 0)
+                    textCsv = "CSV текст";
+                }
+                tabHeaderUlLiDataEl.InnerHtml.AppendHtml($"<a class=\"nav-link\" href=\"#\" data-tab-id=\"csv\">{textCsv}</a>");
+                tabHeaderUlEl.InnerHtml.AppendHtml(tabHeaderUlLiDataEl);
+
+                //>> Tab > Header > Ul > LiPreview
+                var tabHeaderUlLiPreviewEl = new TagBuilder("li");
+                tabHeaderUlLiPreviewEl.AddCssClass("nav-item");
+                var textPreview = "Table Preview";
+                if (Lang == "bg")
+                {
+                    textPreview = "Табличен Преглед";
+                }
+                tabHeaderUlLiPreviewEl.InnerHtml.AppendHtml($"<a class=\"nav-link active\" href=\"#\" data-tab-id=\"preview\">{textPreview}</a>");
+                tabHeaderUlEl.InnerHtml.AppendHtml(tabHeaderUlLiPreviewEl);
+
+                //>> Tab > Header > Ul > LiEdit
+                if (Access == FieldAccess.Full || Access == FieldAccess.FullAndCreate)
+                {
+                    var tabHeaderUlLiEditEl = new TagBuilder("li");
+                    tabHeaderUlLiEditEl.AddCssClass("nav-item");
+                    var textEdit = "Edit";
+                    if (Lang == "bg")
                     {
-                        var viewInputPrepend = new TagBuilder("span");
-                        viewInputPrepend.AddCssClass("input-group-prepend erp-data-csv");
-                        foreach (var htmlString in PrependHtml)
-                        {
-                            viewInputPrepend.InnerHtml.AppendHtml(htmlString);
-                        }
-                        viewWrapperEl.InnerHtml.AppendHtml(viewInputPrepend);
+                        textEdit = "Редакция";
                     }
-                    //Control
-                    var dsEl = new TagBuilder("div");
-                    dsEl.AddCssClass("form-control erp-data-csv doublescroll");
-                    dsEl.Attributes.Add("id", "doublescroll-" + FieldId);
+                    tabHeaderUlLiEditEl.InnerHtml.AppendHtml($"<a class=\"nav-link edit\" href=\"#\">{textEdit}</a>");
+                    tabHeaderUlEl.InnerHtml.AppendHtml(tabHeaderUlLiEditEl);
+                }
+
+                //<< Tab > Header > Ul
+                tabHeaderEl.InnerHtml.AppendHtml(tabHeaderUlEl);
+
+                //<< Tab > Header
+                tabEl.InnerHtml.AppendHtml(tabHeaderEl);
+
+                #endregion
+
+                #region << Tab body >>
+                //>> Tab > Body
+                var tabBodyEl = new TagBuilder("div");
+                tabBodyEl.AddCssClass("card-body p-2");
 
 
-                    //>> Ds >> Wrapper 1
-                    var dsWrapper1El = new TagBuilder("div");
-                    dsWrapper1El.AddCssClass("doublescroll-wrapper1");
-                    dsWrapper1El.InnerHtml.AppendHtml("<div class='doublescroll-inner1'></div>");
-                    dsEl.InnerHtml.AppendHtml(dsWrapper1El);
+                //>> Tab > Body > TabContent
+                var tabBodyTabContentEl = new TagBuilder("div");
+                tabBodyTabContentEl.AddCssClass("tab-content");
 
-                    //>> Ds >> Wrapper 2
-                    var dsWrapper2El = new TagBuilder("div");
-                    dsWrapper2El.AddCssClass("doublescroll-wrapper2");
+                ///////////////////////////
+                /// CSV
+                /////////////////////////////////////////////////
 
-                    //>> Ds >> Wrapper 2 >> inner 2
-                    var dsWrapper2Inner2El = new TagBuilder("div");
-                    dsWrapper2Inner2El.AddCssClass("doublescroll-inner2");
+                //>> Tab > Body > TabContent >> CsvPane
+                var tabBodyTabContentCsvPaneEl = new TagBuilder("div");
+                tabBodyTabContentCsvPaneEl.AddCssClass("tab-pane");
+                tabBodyTabContentCsvPaneEl.Attributes.Add("id", $"{FieldId}-tab-csv");
 
-                    //>> Ds >> Wrapper 2 >> inner 2 >> preview
-                    var dsWrapper2Inner2PreviewEl = new TagBuilder("div");
-                    dsWrapper2Inner2PreviewEl.AddCssClass("preview");
+                //Control
+                var inputEl = new TagBuilder("textarea");
+                inputEl.AddCssClass("form-control erp-data-csv");
 
-                    ////////////////////////////////////////////////////////////////////////////////////////////////////
-                    ///Table generation
+                if (!String.IsNullOrWhiteSpace(Height))
+                {
+                    inputEl.Attributes.Add("style", $"height:{Height};cursor: inherit;");
+                }
+                else
+                {
+                    inputEl.Attributes.Add("style", $"height:140px;cursor: inherit;");
+                }
+                inputEl.InnerHtml.AppendHtml((Value ?? "").ToString());
+                inputEl.Attributes.Add("id", $"textarea-{FieldId}");
+                inputEl.Attributes.Add("readonly", null);
+                tabBodyTabContentCsvPaneEl.InnerHtml.AppendHtml(inputEl);
 
-                    var records = new List<dynamic>();
-                    try
+                //<< Tab > Body > TabContent >> CsvPane
+                tabBodyTabContentEl.InnerHtml.AppendHtml(tabBodyTabContentCsvPaneEl);
+
+
+                ///////////////////////////
+                /// PREVIEW
+                /////////////////////////////////////////////////
+
+                //>> Tab > Body > TabContent >> PreviewPane
+                var tabBodyTabContentPreviewPaneEl = new TagBuilder("div");
+                tabBodyTabContentPreviewPaneEl.AddCssClass("tab-pane active");
+                tabBodyTabContentPreviewPaneEl.Attributes.Add("id", $"{FieldId}-tab-preview");
+
+                #region << Double scroll >>
+                //>> Ds
+                var dsEl = new TagBuilder("div");
+                dsEl.AddCssClass("doublescroll");
+                dsEl.Attributes.Add("id", "doublescroll-" + FieldId);
+
+
+                //>> Ds >> Wrapper 1
+                var dsWrapper1El = new TagBuilder("div");
+                dsWrapper1El.AddCssClass("doublescroll-wrapper1");
+                dsWrapper1El.InnerHtml.AppendHtml("<div class='doublescroll-inner1'></div>");
+                dsEl.InnerHtml.AppendHtml(dsWrapper1El);
+
+                //>> Ds >> Wrapper 2
+                var dsWrapper2El = new TagBuilder("div");
+                dsWrapper2El.AddCssClass("doublescroll-wrapper2");
+
+                //>> Ds >> Wrapper 2 >> inner 2
+                var dsWrapper2Inner2El = new TagBuilder("div");
+                dsWrapper2Inner2El.AddCssClass("doublescroll-inner2");
+
+                //>> Ds >> Wrapper 2 >> inner 2 >> preview
+                var dsWrapper2Inner2PreviewEl = new TagBuilder("div");
+                dsWrapper2Inner2PreviewEl.AddCssClass("preview");
+
+                ////////////////////////////////////////////////////////////////////////////////////////////////////
+                ///Table generation
+
+                var records = new List<dynamic>();
+                try
+                {
+                    var delimiterName = "";
+                    if (DelimiterValue == ErpDataCsvDelimiterType.TAB)
+                        delimiterName = "tab";
+
+                    records = new RenderService().GetCsvData(Value, HasHeaderValue, delimiterName);
+
+                    if (records.Count > 0)
                     {
-                        var delimiterName = "";
-                        if (DelimiterValue == ErpDataCsvDelimiterType.TAB)
-                            delimiterName = "tab";
 
-                        records = new RenderService().GetCsvData(Value, HasHeaderValue, delimiterName);
-
-                        if (records.Count > 0)
+                        //>> table
+                        var tableEl = new TagBuilder("table");
+                        tableEl.AddCssClass("table table-bordered table-hover table-sm");
+                        var columns = new List<GridColumn>();
+                        var sample = (IDictionary<string, object>)records[0];
+                        var index = 1;
+                        foreach (var prop in sample.Keys)
                         {
-
-                            //>> table
-                            var tableEl = new TagBuilder("table");
-                            tableEl.AddCssClass("table table-bordered table-hover table-sm");
-                            var columns = new List<GridColumn>();
-                            var sample = (IDictionary<string, object>)records[0];
-                            var index = 1;
-                            foreach (var prop in sample.Keys)
+                            columns.Add(new GridColumn()
                             {
-                                columns.Add(new GridColumn()
-                                {
-                                    Label = HasHeaderValue ? prop : "Field" + index
-                                });
+                                Label = HasHeaderValue ? prop : "Field" + index
+                            });
+                            index++;
+                        }
+
+                        if (HasHeaderValue)
+                        {
+                            //>> table > thead
+                            var theadEl = new TagBuilder("thead");
+                            var theadTrEl = new TagBuilder("tr");
+                            foreach (var column in columns)
+                            {
+                                var thEl = new TagBuilder("th");
+                                thEl.InnerHtml.Append(column.Label);
+                                theadTrEl.InnerHtml.AppendHtml(thEl);
                                 index++;
                             }
 
-                            if (HasHeaderValue)
-                            {
-                                //>> table > thead
-                                var theadEl = new TagBuilder("thead");
-                                var theadTrEl = new TagBuilder("tr");
-                                foreach (var column in columns)
-                                {
-                                    var thEl = new TagBuilder("th");
-                                    thEl.InnerHtml.Append(column.Label);
-                                    theadTrEl.InnerHtml.AppendHtml(thEl);
-                                    index++;
-                                }
-
-                                theadEl.InnerHtml.AppendHtml(theadTrEl);
-                                tableEl.InnerHtml.AppendHtml(theadEl);
-                            }
-
-
-
-                            //>> table > tbody
-                            var tbodyEl = new TagBuilder("tbody");
-                            foreach (IDictionary<string, object> row in records)
-                            {
-                                var tbodyTrEl = new TagBuilder("tr");
-                                foreach (var column in columns)
-                                {
-                                    var tbodyTdEl = new TagBuilder("td");
-                                    tbodyTdEl.InnerHtml.Append((string)row[column.Label]);
-                                    tbodyTrEl.InnerHtml.AppendHtml(tbodyTdEl);
-                                }
-                                tbodyEl.InnerHtml.AppendHtml(tbodyTrEl);
-                            }
-                            tableEl.InnerHtml.AppendHtml(tbodyEl);
-
-                            dsWrapper2Inner2PreviewEl.InnerHtml.AppendHtml(tableEl);
+                            theadEl.InnerHtml.AppendHtml(theadTrEl);
+                            tableEl.InnerHtml.AppendHtml(theadEl);
                         }
-                        else
+
+
+
+                        //>> table > tbody
+                        var tbodyEl = new TagBuilder("tbody");
+                        foreach (IDictionary<string, object> row in records)
                         {
-                            var alertEl = new TagBuilder("div");
-                            alertEl.AddCssClass("alert alert-info p-2");
-                            if (Lang == "bg")
+                            var tbodyTrEl = new TagBuilder("tr");
+                            foreach (var column in columns)
                             {
-                                alertEl.InnerHtml.Append("Няма открити записи");
+                                var tbodyTdEl = new TagBuilder("td");
+                                tbodyTdEl.InnerHtml.Append((string)row[column.Label]);
+                                tbodyTrEl.InnerHtml.AppendHtml(tbodyTdEl);
                             }
-                            else
-                            {
-                                alertEl.InnerHtml.Append("No records found in data");
-                            }
-                            dsWrapper2Inner2PreviewEl.InnerHtml.AppendHtml(alertEl);
+                            tbodyEl.InnerHtml.AppendHtml(tbodyTrEl);
                         }
+                        tableEl.InnerHtml.AppendHtml(tbodyEl);
 
+                        dsWrapper2Inner2PreviewEl.InnerHtml.AppendHtml(tableEl);
                     }
-                    catch
+                    else
                     {
                         var alertEl = new TagBuilder("div");
-                        alertEl.AddCssClass("alert alert-danger p-2");
+                        alertEl.AddCssClass("alert alert-info p-2");
                         if (Lang == "bg")
                         {
-                            alertEl.InnerHtml.Append("Грешен формат на данните. Опитайте с друг разделител.");
+                            alertEl.InnerHtml.Append("Няма открити записи");
                         }
                         else
                         {
-                            alertEl.InnerHtml.Append("Error in parsing data. Check another delimiter");
+                            alertEl.InnerHtml.Append("No records found in data");
                         }
                         dsWrapper2Inner2PreviewEl.InnerHtml.AppendHtml(alertEl);
                     }
 
-
-                    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                    //<< Ds >> Wrapper 2 >> inner 2 >> preview
-                    dsWrapper2Inner2El.InnerHtml.AppendHtml(dsWrapper2Inner2PreviewEl);
-
-                    //<< Ds >> Wrapper 2 >> inner 2
-                    dsWrapper2El.InnerHtml.AppendHtml(dsWrapper2Inner2El);
-
-                    //<< Ds >> Wrapper 2
-                    dsEl.InnerHtml.AppendHtml(dsWrapper2El);
-
-
-                    viewWrapperEl.InnerHtml.AppendHtml(dsEl);
-
-                    //Append
-                    var viewInputActionEl = new TagBuilder("span");
-                    viewInputActionEl.AddCssClass("input-group-append erp-data-csv");
-                    foreach (var htmlString in AppendHtml)
-                    {
-                        viewInputActionEl.InnerHtml.AppendHtml(htmlString);
-                    }
-                    viewInputActionEl.InnerHtml.AppendHtml("<button type=\"button\" class='btn btn-white action' title='edit'><i class='fa fa-fw fa-pencil-alt'></i></button>");
-                    viewWrapperEl.InnerHtml.AppendHtml(viewInputActionEl);
-
-                    output.Content.AppendHtml(viewWrapperEl);
                 }
+                catch
+                {
+                    var alertEl = new TagBuilder("div");
+                    alertEl.AddCssClass("alert alert-danger p-2");
+                    if (Lang == "bg")
+                    {
+                        alertEl.InnerHtml.Append("Грешен формат на данните. Опитайте с друг разделител.");
+                    }
+                    else
+                    {
+                        alertEl.InnerHtml.Append("Error in parsing data. Check another delimiter");
+                    }
+                    dsWrapper2Inner2PreviewEl.InnerHtml.AppendHtml(alertEl);
+                }
+
+
+                ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                //<< Ds >> Wrapper 2 >> inner 2 >> preview
+                dsWrapper2Inner2El.InnerHtml.AppendHtml(dsWrapper2Inner2PreviewEl);
+
+                //<< Ds >> Wrapper 2 >> inner 2
+                dsWrapper2El.InnerHtml.AppendHtml(dsWrapper2Inner2El);
+
+                //<< Ds >> Wrapper 2
+                dsEl.InnerHtml.AppendHtml(dsWrapper2El);
+                //<< Ds
                 #endregion
 
-                #region << Edit Wrapper>>
+                //<< Tab > Body > TabContent >> PreviewPane >> DoubleScroll
+                tabBodyTabContentPreviewPaneEl.InnerHtml.AppendHtml(dsEl);
+
+                //<< Tab > Body > TabContent >> PreviewPane
+                tabBodyTabContentEl.InnerHtml.AppendHtml(tabBodyTabContentPreviewPaneEl);
+
+                //<< Tab > Body > TabContent
+                tabBodyEl.InnerHtml.AppendHtml(tabBodyTabContentEl);
+
+                //<< Tab > Body
+                tabEl.InnerHtml.AppendHtml(tabBodyEl);
+
+                //<< Tab
+                output.Content.AppendHtml(tabEl);
+
+
+                if (Access == FieldAccess.Full || Access == FieldAccess.FullAndCreate)
                 {
-                    var editWrapperEl = new TagBuilder("div");
-                    editWrapperEl.Attributes.Add("id", $"edit-{FieldId}");
-                    editWrapperEl.Attributes.Add("style", $"display:none;");
-                    editWrapperEl.AddCssClass("edit-wrapper");
+                    //>> modal 
+                    var modalEl = new TagBuilder("div");
+                    modalEl.Attributes.Add("id","modal-"+ FieldId);
+                    modalEl.AddCssClass("modal");
 
-                    var editInputGroupEl = new TagBuilder("div");
-                    editInputGroupEl.AddCssClass("input-group");
-                    //Prepend
-                    if (PrependHtml.Count > 0)
-                    {
-                        var editInputPrepend = new TagBuilder("span");
-                        editInputPrepend.AddCssClass("input-group-prepend  erp-data-csv");
-                        foreach (var htmlString in PrependHtml)
-                        {
-                            editInputPrepend.InnerHtml.AppendHtml(htmlString);
-                        }
-                        editInputGroupEl.InnerHtml.AppendHtml(editInputPrepend);
+                    //>> modal >> dialog
+                    var modalDialogEl = new TagBuilder("div");
+                    modalDialogEl.AddCssClass("modal-dialog modal-xl");
+
+                    //>> modal >> dialog >> content
+                    var modalDialogContentEl = new TagBuilder("div");
+                    modalDialogContentEl.AddCssClass("modal-content");
+
+                    //>> modal >> dialog >> content >> header
+                    var modalDialogContentHeaderEl = new TagBuilder("div");
+                    modalDialogContentHeaderEl.AddCssClass("modal-header");
+                    var titleText = "Edit Csv Data";
+                    if (Lang == "bg") {
+                        titleText = "Редакция на CSV данни";
                     }
-                    //Control
+                    modalDialogContentHeaderEl.InnerHtml.AppendHtml($"<h5 class=\"modal-title\">{titleText}</h5>");
+                    modalDialogContentEl.InnerHtml.AppendHtml(modalDialogContentHeaderEl);
 
-                    var editInputEl = new TagBuilder("textarea");
-                    editInputEl.AddCssClass("form-control erp-data-csv");
+                    //>> modal >> dialog >> content >> body
+                    var modalDialogContentBodyEl = new TagBuilder("div");
+                    modalDialogContentBodyEl.AddCssClass("modal-body");
+
+                    //Control
+                    var modalInputEl = new TagBuilder("textarea");
+                    modalInputEl.AddCssClass("form-control erp-data-csv");
 
                     if (!String.IsNullOrWhiteSpace(Height))
                     {
-                        editInputEl.Attributes.Add("style", $"height:{Height};");
+                        modalInputEl.Attributes.Add("style", $"height:{Height};cursor: inherit;");
                     }
-                    if (Required)
+                    else
                     {
-                        editInputEl.Attributes.Add("required", null);
+                        modalInputEl.Attributes.Add("style", $"height:140px;cursor: inherit;");
                     }
-                    if (!String.IsNullOrWhiteSpace(Placeholder))
+                    modalInputEl.InnerHtml.AppendHtml((Value ?? "").ToString());
+                    modalInputEl.Attributes.Add("id", $"modal-textarea-{FieldId}");
+                    modalDialogContentBodyEl.InnerHtml.AppendHtml(modalInputEl);
+
+
+                    //Aux
+                    var auxInputWrapper = new TagBuilder("div");
+                    auxInputWrapper.AddCssClass("mt-2 d-flex align-items-center");
+
+                    //hasHeader
+                    var hasHeaderWrapper = new TagBuilder("div");
+                    hasHeaderWrapper.AddCssClass("form-check form-check-inline mr-5");
+
+                    var hasHeaderCheck = new TagBuilder("input");
+                    hasHeaderCheck.Attributes.Add("name", HasHeaderFieldName);
+                    hasHeaderCheck.Attributes.Add("type", "hidden");
+                    if (HasHeaderValue)
                     {
-                        editInputEl.Attributes.Add("placeholder", Placeholder);
+                        hasHeaderCheck.Attributes.Add("value", "true");
                     }
-                    editInputEl.InnerHtml.AppendHtml((Value ?? "").ToString());
-                    editInputGroupEl.InnerHtml.AppendHtml(editInputEl);
-
-
-
-                    //Append
-                    var editInputGroupAppendEl = new TagBuilder("span");
-                    editInputGroupAppendEl.AddCssClass("input-group-append erp-data-csv");
-
-                    foreach (var htmlString in AppendHtml)
+                    else
                     {
-                        editInputGroupAppendEl.InnerHtml.AppendHtml(htmlString);
+                        hasHeaderCheck.Attributes.Add("value", "false");
                     }
-                    editInputGroupAppendEl.InnerHtml.AppendHtml("<button type=\"button\" class='btn btn-white save' title='save'><i class='fa fa-fw fa-check go-green'></i></button>");
-                    editInputGroupAppendEl.InnerHtml.AppendHtml("<button type=\"button\" class='btn btn-white cancel' title='cancel'><i class='fa fa-fw fa-times go-gray'></i></button>");
+                    hasHeaderWrapper.InnerHtml.AppendHtml(hasHeaderCheck);
 
-                    editInputGroupEl.InnerHtml.AppendHtml(editInputGroupAppendEl);
-                    editWrapperEl.InnerHtml.AppendHtml(editInputGroupEl);
+                    var inputFake = new TagBuilder("input");
+                    inputFake.AddCssClass("form-check-input");
+                    inputFake.Attributes.Add("id", $"input-hasheader-fake-{FieldId}");
+                    inputFake.Attributes.Add("type", "checkbox");
+                    inputFake.Attributes.Add("value", "true");
+                    inputFake.Attributes.Add("data-field-name", HasHeaderFieldName);
+                    if (HasHeaderValue)
+                    {
+                        inputFake.Attributes.Add("checked", "checked");
+                    }
+                    hasHeaderWrapper.InnerHtml.AppendHtml(inputFake);
 
-                    output.Content.AppendHtml(editWrapperEl);
+                    var labelWrapper = new TagBuilder("label");
+                    labelWrapper.AddCssClass("form-check-label");
+                    labelWrapper.Attributes.Add("for", "input-hasheader-fake-" + FieldId);
+                    var textHeadHeader = "data has header row";
+                    if (Lang == "bg")
+                    {
+                        textHeadHeader = "данните включват заглавен ред";
+                    }
+                    labelWrapper.InnerHtml.AppendHtml(textHeadHeader);
+
+                    hasHeaderWrapper.InnerHtml.AppendHtml(labelWrapper);
+                    auxInputWrapper.InnerHtml.AppendHtml(hasHeaderWrapper);
+
+
+                    //Delimiter > Label
+                    var delimiterLabel = new TagBuilder("div");
+                    delimiterLabel.AddCssClass("form-check form-check-inline");
+                    var delimiterLabelText = "Delimiter";
+                    if (Lang == "bg")
+                    {
+                        delimiterLabelText = "Разделител";
+                    }
+                    delimiterLabel.InnerHtml.AppendHtml($"<label class='go-gray form-check-label'>{delimiterLabelText}: </label>");
+                    auxInputWrapper.InnerHtml.AppendHtml(delimiterLabel);
+
+
+                    //Delimiter > Comma
+                    var delimiterComma = new TagBuilder("div");
+                    delimiterComma.AddCssClass("form-check form-check-inline");
+
+                    var delimiterCommaInputEl = new TagBuilder("input");
+                    delimiterCommaInputEl.AddCssClass("form-check-input");
+                    delimiterCommaInputEl.Attributes.Add("type", "radio");
+                    delimiterCommaInputEl.Attributes.Add("name", DelimiterFieldName);
+                    delimiterCommaInputEl.Attributes.Add("id", $"{FieldId}-delimiter-comma");
+                    delimiterCommaInputEl.Attributes.Add("value", "comma");
+                    if (DelimiterValue == ErpDataCsvDelimiterType.COMMA)
+                    {
+                        delimiterCommaInputEl.Attributes.Add("checked", "checked");
+                    }
+                    delimiterComma.InnerHtml.AppendHtml(delimiterCommaInputEl);
+
+                    var delimiterCommaLabelEl = new TagBuilder("label");
+                    delimiterCommaLabelEl.AddCssClass("form-check-label");
+                    delimiterCommaLabelEl.Attributes.Add("for", $"{FieldId}-delimiter-comma");
+                    var textComma = "comma";
+                    if (Lang == "bg")
+                    {
+                        textComma = "запетая";
+                    }
+                    delimiterCommaLabelEl.InnerHtml.Append(textComma);
+
+                    delimiterComma.InnerHtml.AppendHtml(delimiterCommaLabelEl);
+
+                    auxInputWrapper.InnerHtml.AppendHtml(delimiterComma);
+
+                    //Delimiter > Tab
+                    var delimiterTab = new TagBuilder("div");
+                    delimiterTab.AddCssClass("form-check form-check-inline");
+
+                    var delimiterTabInputEl = new TagBuilder("input");
+                    delimiterTabInputEl.AddCssClass("form-check-input");
+                    delimiterTabInputEl.Attributes.Add("type", "radio");
+                    delimiterTabInputEl.Attributes.Add("name", DelimiterFieldName);
+                    delimiterTabInputEl.Attributes.Add("id", $"{FieldId}-delimiter-tab");
+                    delimiterTabInputEl.Attributes.Add("value", "tab");
+                    if (DelimiterValue == ErpDataCsvDelimiterType.TAB)
+                    {
+                        delimiterTabInputEl.Attributes.Add("checked", "checked");
+                    }
+                    delimiterTab.InnerHtml.AppendHtml(delimiterTabInputEl);
+
+                    var delimiterTabLabelEl = new TagBuilder("label");
+                    delimiterTabLabelEl.AddCssClass("form-check-label");
+                    delimiterTabLabelEl.Attributes.Add("for", $"{FieldId}-delimiter-tab");
+                    var textTab = "tab";
+                    if (Lang == "bg")
+                    {
+                        textTab = "табулация";
+                    }
+                    delimiterTabLabelEl.InnerHtml.Append(textTab);
+                    delimiterTab.InnerHtml.AppendHtml(delimiterTabLabelEl);
+
+                    auxInputWrapper.InnerHtml.AppendHtml(delimiterTab);
+
+                    modalDialogContentBodyEl.InnerHtml.AppendHtml(auxInputWrapper);
+
+
+                    //<< modal >> dialog >> content >> body
+                    modalDialogContentEl.InnerHtml.AppendHtml(modalDialogContentBodyEl);
+
+
+                    //>> modal >> dialog >> content >> footer
+                    var modalDialogContentFooterEl = new TagBuilder("div");
+                    modalDialogContentFooterEl.AddCssClass("modal-footer");
+                    var saveText = "Save";
+                    var cancelText = "Cancel";
+                    if (Lang == "bg")
+                    {
+                        saveText = "Запомни";
+                        cancelText = "Отказ";
+                    }
+                    modalDialogContentFooterEl.InnerHtml.AppendHtml($"<button type=\"button\" class=\"btn btn-sm btn-primary submit\"><i class=\"fa fa-save\"></i> {saveText}</button>");
+                    modalDialogContentFooterEl.InnerHtml.AppendHtml($"<button type=\"button\" class=\"btn btn-sm btn-secondary cancel\" data-dismiss=\"modal\">{cancelText}</button>");
+
+                    //<< modal >> dialog >> content >> footer
+                    modalDialogContentEl.InnerHtml.AppendHtml(modalDialogContentFooterEl);
+
+
+                    //<< modal >> dialog >> content
+                    modalDialogEl.InnerHtml.AppendHtml(modalDialogContentEl);
+
+                    //<< modal >> dialog
+                    modalEl.InnerHtml.AppendHtml(modalDialogEl);
+
+                    //<< modal
+                    output.Content.AppendHtml(modalEl);
                 }
+
+
                 #endregion
 
                 var jsCompressor = new JavaScriptCompressor();
@@ -836,10 +1356,12 @@ namespace WebVella.Erp.Web.TagHelpers
                 initScript.Attributes.Add("type", "text/javascript");
                 var scriptTemplate = @"
 						$(function(){
-							DataCsvInlineEditInit(""{{FieldId}}"",""{{Name}}"",""{{EntityName}}"",""{{RecordId}}"",{{ConfigJson}});
+							DataCsvInlineEditInit(""{{FieldId}}"",""{{Name}}"",""{{DelimiterFieldName}}"",""{{HasHeaderFieldName}}"",""{{EntityName}}"",""{{RecordId}}"",{{ConfigJson}});
 						});";
                 scriptTemplate = scriptTemplate.Replace("{{FieldId}}", (FieldId ?? null).ToString());
                 scriptTemplate = scriptTemplate.Replace("{{Name}}", Name);
+                scriptTemplate = scriptTemplate.Replace("{{DelimiterFieldName}}", DelimiterFieldName);
+                scriptTemplate = scriptTemplate.Replace("{{HasHeaderFieldName}}", HasHeaderFieldName);
                 scriptTemplate = scriptTemplate.Replace("{{EntityName}}", EntityName);
                 scriptTemplate = scriptTemplate.Replace("{{RecordId}}", (RecordId ?? null).ToString());
 

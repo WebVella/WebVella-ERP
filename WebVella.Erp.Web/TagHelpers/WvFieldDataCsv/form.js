@@ -15,8 +15,6 @@ function DataCsvFormInitGenerateSelectors(fieldId, name, delimiterName, hasHeade
     $selectors.inputEl = $selectors.card.find("textarea[name='" + name + "']");
     $selectors.inputDelimiterEl = $selectors.card.find("input[name='" + delimiterName + "']");
 
-	$selectors.viewWrapper = "#view-" + fieldId;
-	$selectors.editWrapper = "#edit-" + fieldId;
 	return $selectors;
 }
 
