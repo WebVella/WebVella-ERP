@@ -417,7 +417,7 @@ namespace WebVella.Erp.Web.Models
 					ViewData["BodyClass"] = bodyClass + classAddon;
 				}
 			}
-
+            ViewData["AppName"] = ErpSettings.AppName;
             ViewData["SystemMasterBodyStyle"] = "";
             if (!String.IsNullOrWhiteSpace(ErpSettings.SystemMasterBackgroundImageUrl)) {
                 ViewData["SystemMasterBodyStyle"] = "background-image: url('" + ErpSettings.SystemMasterBackgroundImageUrl + "');background-position: top center;background-repeat: repeat;min-height: 100vh; ";

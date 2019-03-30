@@ -15,7 +15,10 @@
     "EmailSMTPUsername": "",
     "EmailSMTPPassword": "",
     "EmailFrom": "",
-    "EmailTo": ""
+    "EmailTo": "",
+    "AppName": "WebVella Next",
+    "NavLogoUrl": "",
+    "SystemMasterBackgroundImageUrl": ""
   },
 	"Development": {
 		"TestEntityName": "test",

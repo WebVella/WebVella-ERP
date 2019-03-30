@@ -6,7 +6,7 @@
 }
 
 <div class="card login-card card-sm shadow-sm">
-	<div class="card-header text-center"><img src="@Model.BrandLogo"/> WebVella Next</div>
+	<div class="card-header text-center"><img src="@Model.BrandLogo"/> @ViewData["AppName"]</div>
 	<div class="card-body pt-3 pb-3">
 		@if (!String.IsNullOrWhiteSpace(Model.Error))
 		{

@@ -29,6 +29,7 @@ namespace WebVella.Erp
 
         public static string NavLogoUrl { get; private set; }
         public static string SystemMasterBackgroundImageUrl { get; private set; }
+        public static string AppName { get; private set; }
 
         public static bool ShowAccounting { get; set; }
 		public static bool DevelopmentMode { get; private set; }
@@ -70,6 +71,7 @@ namespace WebVella.Erp
 
             NavLogoUrl = configuration[$"Settings:NavLogoUrl"];
             SystemMasterBackgroundImageUrl = configuration[$"Settings:SystemMasterBackgroundImageUrl"];
+            AppName = configuration[$"Settings:AppName"];
 
             DevelopmentMode = string.IsNullOrWhiteSpace(configuration[$"Settings:DevelopmentMode"]) ? false : bool.Parse(configuration[$"Settings:DevelopmentMode"]);
 
