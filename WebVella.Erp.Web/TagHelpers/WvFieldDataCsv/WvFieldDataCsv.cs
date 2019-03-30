@@ -231,17 +231,17 @@ namespace WebVella.Erp.Web.TagHelpers
                 delimiterCommaInputEl.AddCssClass("form-check-input");
                 delimiterCommaInputEl.Attributes.Add("type", "radio");
                 delimiterCommaInputEl.Attributes.Add("name", DelimiterFieldName);
-                delimiterCommaInputEl.Attributes.Add("id", $"{FieldId}-delimiter-comma");
+                delimiterCommaInputEl.Attributes.Add("id", $"delimiter-comma-{FieldId}");
                 delimiterCommaInputEl.Attributes.Add("value", "comma");
                 if (DelimiterValue == ErpDataCsvDelimiterType.COMMA)
                 {
-                    delimiterCommaInputEl.Attributes.Add("checked", "checked");
+                    delimiterCommaInputEl.Attributes.Add("checked", null);
                 }
                 delimiterComma.InnerHtml.AppendHtml(delimiterCommaInputEl);
 
                 var delimiterCommaLabelEl = new TagBuilder("label");
                 delimiterCommaLabelEl.AddCssClass("form-check-label");
-                delimiterCommaLabelEl.Attributes.Add("for", $"{FieldId}-delimiter-comma");
+                delimiterCommaLabelEl.Attributes.Add("for", $"delimiter-comma-{FieldId}");
                 var textComma = "comma";
                 if (Lang == "bg")
                 {
@@ -261,17 +261,17 @@ namespace WebVella.Erp.Web.TagHelpers
                 delimiterTabInputEl.AddCssClass("form-check-input");
                 delimiterTabInputEl.Attributes.Add("type", "radio");
                 delimiterTabInputEl.Attributes.Add("name", DelimiterFieldName);
-                delimiterTabInputEl.Attributes.Add("id", $"{FieldId}-delimiter-tab");
+                delimiterTabInputEl.Attributes.Add("id", $"delimiter-tab-{FieldId}");
                 delimiterTabInputEl.Attributes.Add("value", "tab");
                 if (DelimiterValue == ErpDataCsvDelimiterType.TAB)
                 {
-                    delimiterTabInputEl.Attributes.Add("checked", "checked");
+                    delimiterTabInputEl.Attributes.Add("checked", null);
                 }
                 delimiterTab.InnerHtml.AppendHtml(delimiterTabInputEl);
 
                 var delimiterTabLabelEl = new TagBuilder("label");
                 delimiterTabLabelEl.AddCssClass("form-check-label");
-                delimiterTabLabelEl.Attributes.Add("for", $"{FieldId}-delimiter-tab");
+                delimiterTabLabelEl.Attributes.Add("for", $"delimiter-tab-{FieldId}");
                 var textTab = "tab";
                 if (Lang == "bg")
                 {
@@ -1238,17 +1238,17 @@ namespace WebVella.Erp.Web.TagHelpers
                     delimiterCommaInputEl.AddCssClass("form-check-input");
                     delimiterCommaInputEl.Attributes.Add("type", "radio");
                     delimiterCommaInputEl.Attributes.Add("name", DelimiterFieldName);
-                    delimiterCommaInputEl.Attributes.Add("id", $"{FieldId}-delimiter-comma");
+                    delimiterCommaInputEl.Attributes.Add("id", $"delimiter-comma-{FieldId}");
                     delimiterCommaInputEl.Attributes.Add("value", "comma");
                     if (DelimiterValue == ErpDataCsvDelimiterType.COMMA)
                     {
-                        delimiterCommaInputEl.Attributes.Add("checked", "checked");
+                        delimiterCommaInputEl.Attributes.Add("checked", null);
                     }
                     delimiterComma.InnerHtml.AppendHtml(delimiterCommaInputEl);
 
                     var delimiterCommaLabelEl = new TagBuilder("label");
                     delimiterCommaLabelEl.AddCssClass("form-check-label");
-                    delimiterCommaLabelEl.Attributes.Add("for", $"{FieldId}-delimiter-comma");
+                    delimiterCommaLabelEl.Attributes.Add("for", $"delimiter-comma-{FieldId}");
                     var textComma = "comma";
                     if (Lang == "bg")
                     {
@@ -1268,17 +1268,17 @@ namespace WebVella.Erp.Web.TagHelpers
                     delimiterTabInputEl.AddCssClass("form-check-input");
                     delimiterTabInputEl.Attributes.Add("type", "radio");
                     delimiterTabInputEl.Attributes.Add("name", DelimiterFieldName);
-                    delimiterTabInputEl.Attributes.Add("id", $"{FieldId}-delimiter-tab");
+                    delimiterTabInputEl.Attributes.Add("id", $"delimiter-tab-{FieldId}");
                     delimiterTabInputEl.Attributes.Add("value", "tab");
                     if (DelimiterValue == ErpDataCsvDelimiterType.TAB)
                     {
-                        delimiterTabInputEl.Attributes.Add("checked", "checked");
+                        delimiterTabInputEl.Attributes.Add("checked", null);
                     }
                     delimiterTab.InnerHtml.AppendHtml(delimiterTabInputEl);
 
                     var delimiterTabLabelEl = new TagBuilder("label");
                     delimiterTabLabelEl.AddCssClass("form-check-label");
-                    delimiterTabLabelEl.Attributes.Add("for", $"{FieldId}-delimiter-tab");
+                    delimiterTabLabelEl.Attributes.Add("for", $"delimiter-tab-{FieldId}");
                     var textTab = "tab";
                     if (Lang == "bg")
                     {

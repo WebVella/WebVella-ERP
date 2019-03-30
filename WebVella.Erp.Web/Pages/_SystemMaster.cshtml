@@ -5,7 +5,7 @@
 	<vc:render-hook placeholder="head-top" page-model="@Model"  model="null"></vc:render-hook>
 	<vc:render-hook placeholder="head-bottom" page-model="@Model"  model="null"></vc:render-hook>
 </head>
-<body class="@ViewData["BodyClass"] system">
+<body class="@ViewData["BodyClass"] system" style="@ViewData["SystemMasterBodyStyle"]">
     @RenderBody()
 	<vc:render-hook placeholder="body-top" page-model="@Model"  model="null"></vc:render-hook>
 	<vc:render-hook placeholder="body-bottom" page-model="@Model"  model="null"></vc:render-hook>

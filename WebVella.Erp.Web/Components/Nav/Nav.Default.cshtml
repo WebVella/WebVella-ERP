@@ -20,13 +20,13 @@
 			@if (currentApp == null)
 			{
 				<a href="@ViewBag.AppDefaultLink">
-					<img src="@theme.BrandLogo" />
+					<img src="@ViewBag.BrandLogo" />
 					<span class="app-label"  style="color:@ViewData["BodyBorderColor"]">WebVella</span>			
 				</a>
 			}
 			else {
 				<a href="@ViewBag.AppDefaultLink">
-					<img src="@theme.BrandLogo" />
+					<img src="@ViewBag.BrandLogo" />
 					<span class="app-label" title="@currentApp.Label"  style="color:@ViewData["BodyBorderColor"]">@currentApp.Label</span>			
 				</a>
 			}

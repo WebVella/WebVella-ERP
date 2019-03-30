@@ -27,7 +27,10 @@ namespace WebVella.Erp
         public static string EmailFrom { get; private set; }
         public static string EmailTo { get; private set; }
 
-		public static bool ShowAccounting { get; set; }
+        public static string NavLogoUrl { get; private set; }
+        public static string SystemMasterBackgroundImageUrl { get; private set; }
+
+        public static bool ShowAccounting { get; set; }
 		public static bool DevelopmentMode { get; private set; }
 
 		//API URLs
@@ -65,7 +68,10 @@ namespace WebVella.Erp
             EmailFrom = configuration[$"Settings:EmailFrom"];
             EmailTo = configuration[$"Settings:EmailTo"];
 
-			DevelopmentMode = string.IsNullOrWhiteSpace(configuration[$"Settings:DevelopmentMode"]) ? false : bool.Parse(configuration[$"Settings:DevelopmentMode"]);
+            NavLogoUrl = configuration[$"Settings:NavLogoUrl"];
+            SystemMasterBackgroundImageUrl = configuration[$"Settings:SystemMasterBackgroundImageUrl"];
+
+            DevelopmentMode = string.IsNullOrWhiteSpace(configuration[$"Settings:DevelopmentMode"]) ? false : bool.Parse(configuration[$"Settings:DevelopmentMode"]);
 
 			ShowAccounting = string.IsNullOrWhiteSpace(configuration[$"Settings:ShowAccounting"]) ? false : bool.Parse(configuration[$"Settings:ShowAccounting"]);
 			

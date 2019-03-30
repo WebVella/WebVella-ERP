@@ -5082,11 +5082,10 @@ a.lns-header[aria-expanded="false"] .icon:before {
 }
 	.icon-card-body .icon {
 		font-size: 32px;
-		width: 60px;
+		width: 50px;
 		text-align: center;
 		flex-grow: 0;
 		flex-shrink: 0;
-		padding-right: 10px;
 		align-self: center;
 		color: --blue_color;
 	}
@@ -5094,6 +5093,7 @@ a.lns-header[aria-expanded="false"] .icon:before {
 	.icon-card-body .meta {
 		align-self: center;
 		min-width: 0;
+        padding-left:10px;
 	}
 
 	.icon-card-body .title {
@@ -5714,6 +5714,9 @@ wv-pb-manager .wv-pb-node > div > .row {
 		color: #333;
 		font-size:14px;
 		font-weight:normal;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 	}
 
 		.login-card .card-header img {
@@ -5846,8 +5849,18 @@ wv-pb-manager .wv-pb-node > div > .row {
     display:flex;
     flex-flow: row;
     align-items: center;
-    padding:3px 0;
+    padding:10px 0;
+    border-bottom:1px solid #e1e4e8;
 }
+
+    .erp-field .filerow:first-child {
+        padding-top:5px;
+    }
+
+    .erp-field .filerow:last-child {
+        border-bottom:none;
+        padding-bottom:5px;
+    }
 
 
     .erp-field .filerow:hover {

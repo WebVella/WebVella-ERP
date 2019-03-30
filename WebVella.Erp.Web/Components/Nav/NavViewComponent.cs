@@ -27,7 +27,13 @@ namespace WebVella.Erp.Web.Components
 			ViewBag.CurrentApp = currentApp;
             ViewBag.CurrentArea = ErpRequestContext.SitemapArea;
             ViewBag.CurrentNode = ErpRequestContext.SitemapNode;
-            ViewBag.Theme = appContext.Theme;
+            var theme = appContext.Theme;
+            ViewBag.Theme = theme;
+            ViewBag.BrandLogo = theme.BrandLogo;
+            if (!String.IsNullOrWhiteSpace(ErpSettings.NavLogoUrl)) {
+                ViewBag.BrandLogo = ErpSettings.NavLogoUrl;
+            }
+
 			ViewBag.AppShortName = "";
 			ViewBag.AppDefaultLink = "/";
 			if (currentApp != null) {

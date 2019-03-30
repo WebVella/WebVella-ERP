@@ -417,8 +417,13 @@ namespace WebVella.Erp.Web.Models
 					ViewData["BodyClass"] = bodyClass + classAddon;
 				}
 			}
-			#endregion
-		}
+
+            ViewData["SystemMasterBodyStyle"] = "";
+            if (!String.IsNullOrWhiteSpace(ErpSettings.SystemMasterBackgroundImageUrl)) {
+                ViewData["SystemMasterBodyStyle"] = "background-image: url('" + ErpSettings.SystemMasterBackgroundImageUrl + "');background-position: top center;background-repeat: repeat;min-height: 100vh; ";
+            }
+            #endregion
+        }
 
 	}
 }

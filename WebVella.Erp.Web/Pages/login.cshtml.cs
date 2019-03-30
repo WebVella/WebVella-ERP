@@ -24,7 +24,9 @@ namespace WebVella.Erp.Web.Pages
 		[BindProperty]
 		public string Error { get; set; }
 
-		public LoginModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
+        public string BrandLogo { get; set; }
+
+        public LoginModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
 
 		public IActionResult OnGet( [FromServices]AuthService authService)
 		{
@@ -45,6 +47,15 @@ namespace WebVella.Erp.Web.Pages
                     return new LocalRedirectResult("/");
             }
 
+            var appContext = ErpAppContext.Current;
+            var currentApp = ErpRequestContext.App;
+            var theme = appContext.Theme;
+            BrandLogo = theme.BrandLogo;
+            if (!String.IsNullOrWhiteSpace(ErpSettings.NavLogoUrl))
+            {
+                BrandLogo = ErpSettings.NavLogoUrl;
+            }
+            BeforeRender();
             return Page();
         }
 
@@ -80,7 +91,8 @@ namespace WebVella.Erp.Web.Pages
 			if (user == null)
 			{
 				Error = "Invalid username or password";
-				return Page();
+                BeforeRender();
+                return Page();
 			}
 
 			if (!string.IsNullOrWhiteSpace(ReturnUrl))
