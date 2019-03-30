@@ -32,13 +32,13 @@ namespace WebVella.Erp.Database
 				LastModifiedBy = (Guid?)row["modified_by"];
 		}
 
-		private Stream GetContentStream(DbConnection connection, FileAccess fileAccess = FileAccess.ReadWrite)
+		private Stream GetContentStream(DbConnection connection, FileAccess fileAccess = FileAccess.ReadWrite, FileShare fileShare = FileShare.ReadWrite )
 		{
 			if (ErpSettings.EnableFileSystemStorage && ObjectId == 0)
 			{
 				var path = DbFileRepository.GetFileSystemPath(this);
 				if (File.Exists(path))
-					return File.Open(path, FileMode.Open, fileAccess);
+					return File.Open(path, FileMode.Open, fileAccess, fileShare);
 
 				throw new Exception($"File '{path}' was not found.");
 			}
@@ -63,7 +63,7 @@ namespace WebVella.Erp.Database
 
 		public byte[] GetBytes(DbConnection connection)
 		{
-			using (var contentStream = GetContentStream(connection, FileAccess.Read))
+			using (var contentStream = GetContentStream(connection, FileAccess.Read, FileShare.Read ))
 			{
 				return contentStream.Length == 0 ? null : new BinaryReader(contentStream).ReadBytes((int)contentStream.Length);
 			}
