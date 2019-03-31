@@ -9,7 +9,8 @@ namespace WebVella.Erp
 		public static string ConnectionString { get; private set; }
 		public static string Lang { get; private set; }
         public static string Locale { get; private set; }
-		public static bool EnableBackgroungJobs { get; private set; }
+        public static string CacheKey { get; private set; }
+        public static bool EnableBackgroungJobs { get; private set; }
 		public static bool EnableFileSystemStorage { get; private set; }
 		public static string FileSystemStorageFolder { get; set; }
         public static string DevelopmentTestEntityName { get; set; }
@@ -48,6 +49,8 @@ namespace WebVella.Erp
 			JsonDateTimeFormat = string.IsNullOrWhiteSpace(configuration["Settings:JsonDateTimeFormat"]) ? "yyyy-MM-ddTHH:mm:ss.fff" : configuration["Settings:JsonDateTimeFormat"];
 
             Locale = string.IsNullOrWhiteSpace(configuration["Settings:Locale"]) ? "en-US" : configuration["Settings:Locale"];
+            CacheKey = string.IsNullOrWhiteSpace(configuration["Settings:CacheKey"]) ? @"123" : configuration["Settings:CacheKey"];
+
             EnableFileSystemStorage = string.IsNullOrWhiteSpace(configuration["Settings:EnableFileSystemStorage"]) ? false : bool.Parse(configuration["Settings:EnableFileSystemStorage"]);
 			FileSystemStorageFolder = string.IsNullOrWhiteSpace(configuration["Settings:FileSystemStorageFolder"]) ? @"c:\erp-files" : configuration["Settings:FileSystemStorageFolder"];
 			EnableBackgroungJobs = string.IsNullOrWhiteSpace(configuration["Settings:EnableBackgroungJobs"]) ? true : bool.Parse(configuration["Settings:EnableBackgroungJobs"]);

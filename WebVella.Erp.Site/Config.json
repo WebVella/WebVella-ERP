@@ -5,6 +5,7 @@
     "Lang": "en",
     "Locale": "en-US",
     "TimeZoneName": "FLE Standard Time",
+    "CacheKey": "123",
     "DevelopmentMode": "true",
     "EnableBackgroungJobs": "true",
     "EnableFileSystemStorage": "false",
