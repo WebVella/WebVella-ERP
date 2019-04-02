@@ -1855,7 +1855,7 @@ namespace WebVella.Erp.Api
 							case DateTimeKind.Utc:
 								return date.Value.ConvertToAppDate();
 							case DateTimeKind.Local:
-								return date.Value.ToUniversalTime();
+								return date.Value.ConvertToAppDate();
 							case DateTimeKind.Unspecified:
 								return date.Value;
 						}
@@ -1868,7 +1868,7 @@ namespace WebVella.Erp.Api
 							case DateTimeKind.Utc:
 								return date.Value.ConvertToAppDate();
 							case DateTimeKind.Local:
-								return date.Value.ToUniversalTime();
+								return date.Value.ConvertToAppDate();
 							case DateTimeKind.Unspecified:
 								return date.Value;
 						}
