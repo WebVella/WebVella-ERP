@@ -1839,7 +1839,43 @@ namespace WebVella.Erp.Api
 
 					return decimal.Round(decimalValue, ((CurrencyField)field).Currency.DecimalDigits, MidpointRounding.AwayFromZero);
 				}
-				else if (field is DateField || field is DateTimeField)
+				else if (field is DateField)
+				{
+					if (pair.Value == null)
+						return null;
+
+					DateTime? date = null;
+					if (pair.Value is string)
+					{
+						if (string.IsNullOrWhiteSpace(pair.Value as string))
+							return null;
+						date = DateTime.Parse(pair.Value as string);
+						switch (date.Value.Kind)
+						{
+							case DateTimeKind.Utc:
+								return date.Value.ConvertToAppDate();
+							case DateTimeKind.Local:
+								return date.Value.ToUniversalTime();
+							case DateTimeKind.Unspecified:
+								return date.Value;
+						}
+					}
+					else
+					{
+						date = pair.Value as DateTime?;
+						switch (date.Value.Kind)
+						{
+							case DateTimeKind.Utc:
+								return date.Value.ConvertToAppDate();
+							case DateTimeKind.Local:
+								return date.Value.ToUniversalTime();
+							case DateTimeKind.Unspecified:
+								return date.Value;
+						}
+					}
+					return date;
+				}
+				else if (field is DateTimeField)
 				{
 					if (pair.Value == null)
 						return null;
