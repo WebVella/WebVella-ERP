@@ -3,7 +3,7 @@
 	var erpUser = (ErpUser)ViewBag.CurrentUser;
 	var pageEditUrl = $"/sdk/objects/page/r/{ViewBag.PageId}/generated-body";
 	var showSettings = false;
-	if (ViewBag.PageId != null)
+	if (ViewBag.PageId != null && erpUser != null && erpUser.IsAdmin)
 	{
 		showSettings = true;
 	}
