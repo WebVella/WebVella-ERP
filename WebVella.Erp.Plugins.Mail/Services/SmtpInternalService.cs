@@ -533,6 +533,8 @@ namespace WebVella.Erp.Plugins.Mail.Services
 
 				if (!string.IsNullOrWhiteSpace(email.ReplyToEmail))
 					message.ReplyTo.Add(new MailboxAddress(email.ReplyToEmail));
+				else
+					message.ReplyTo.Add(new MailboxAddress(email.SenderEmail));
 
 				message.Subject = email.Subject;
 
