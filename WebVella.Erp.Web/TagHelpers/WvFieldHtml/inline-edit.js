@@ -119,7 +119,7 @@ function HtmlInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordI
 
 function HtmlInlineEditPreEnableCallback(fieldId, fieldName, entityName, recordId, config) {
 	var selectors = HtmlInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
-	$(selectors.viewWrapper).hide();
+	//$(selectors.viewWrapper).hide();
 	$(selectors.editWrapper).on('shown.bs.modal', function () {
 		setTimeout(function () {
 			InitHtmlFieldCKEditor(fieldId, config);
@@ -139,7 +139,7 @@ function HtmlInlineEditPreDisableCallback(fieldId, fieldName, entityName, record
 	$(selectors.editWrapper + " .form-control").removeClass("is-invalid");
 	$(selectors.editWrapper + " .save .fa").addClass("fa-check").removeClass("fa-spin fa-spinner");
 	$(selectors.editWrapper + " .save").attr("disabled", false);
-	$(selectors.viewWrapper).show();
+	//$(selectors.viewWrapper).show();
 	$(selectors.editWrapper).modal('hide');
 	//Destroy ckeditor
 	var editor = CKEDITOR.instances['input-' + fieldId];

@@ -2,6 +2,17 @@
 
   <PropertyGroup>
 	<TargetFramework>netcoreapp2.2</TargetFramework>
+	<Version>1.0.45</Version>
+	<PackageId>WebVella.Erp.Plugins.SDK</PackageId>
+	<Authors>WebVella</Authors>
+	<Product />
+	<PackageProjectUrl>https://webvella.com</PackageProjectUrl>
+	<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+	<PackageIconUrl>http://webvella.com/favicon.ico</PackageIconUrl>
+	<Description>The SDK Plugin for the open-source and free platform WebVella ERP. It helps to create, manage and delete main ERP objects, entities, relations and data.</Description>
+	<Company>WebVella</Company>
+	<Copyright>Copyright 2019</Copyright>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

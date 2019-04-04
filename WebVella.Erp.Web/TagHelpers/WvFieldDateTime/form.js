@@ -23,7 +23,7 @@ function InitFlatPickrDateTime(fieldId) {
 				fp.clear();
 			}
 			else {
-				$(selector).val('');
+				$(selector).val(null);
 			}
 			clearLink.addClass("d-none");
 		});
@@ -32,7 +32,8 @@ function InitFlatPickrDateTime(fieldId) {
 		if (!fp) {
 			var options = { 
 				time_24hr: true, 
-				dateFormat: flatPickrServerDateTimeFormat,
+                dateFormat: flatPickrServerDateTimeFormat,
+                defaultDate: null,
 				//locale: BulgarianDateTimeLocale,
 				enableTime: true,
 				minuteIncrement: 1,
