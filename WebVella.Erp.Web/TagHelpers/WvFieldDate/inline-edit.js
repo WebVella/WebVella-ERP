@@ -13,6 +13,7 @@ function InitFlatPickrDateInlineEdit(editWrapperSelector) {
 		time_24hr: true,
 		defaultDate: defaultDate,
         dateFormat: flatPickrServerDateFormat,
+        "static": true,
 		//locale: BulgarianDateTimeLocale,
 		altInput: true,
 		altFormat: flatPickrUiDateFormat };

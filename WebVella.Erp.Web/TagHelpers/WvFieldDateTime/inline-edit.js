@@ -13,7 +13,8 @@ function InitFlatPickrDateTimeInlineEdit(editWrapperSelector) {
 		defaultDate: defaultDate,
 		dateFormat: flatPickrServerDateTimeFormat,
 		//locale: BulgarianDateTimeLocale,
-		enableTime: true,
+        enableTime: true,
+        "static": true,
 		minuteIncrement: 1,
 		altInput: true,
 		altFormat: flatPickrUiDateTimeFormat
