@@ -5,11 +5,14 @@ var flatPickrServerDateFormat = "Y-m-dTH:i:S";
 var flatPickrUiDateFormat = "d M Y";
 //From the server dates will be received yyyy-MM-ddTHH:mm:ss.fff
 function InitFlatPickrDateInlineEdit(editWrapperSelector) {
-	var defaultDate = $(editWrapperSelector).attr("data-default-date");
+    var defaultDate = $(editWrapperSelector).attr("data-default-date");
+    if (defaultDate === "") {
+        defaultDate = null;
+    }
 	var options = { 
 		time_24hr: true,
 		defaultDate: defaultDate,
-		dateFormat: flatPickrServerDateFormat,
+        dateFormat: flatPickrServerDateFormat,
 		//locale: BulgarianDateTimeLocale,
 		altInput: true,
 		altFormat: flatPickrUiDateFormat };
@@ -82,6 +85,10 @@ function DateInlineEditInit(fieldId, fieldName, entityName, recordId, config) {
 			toastr.error("invalid date", 'Error!', { closeButton: true, tapToDismiss: true });
 			return;
 		}
+
+        if (inputValue === "") {
+            inputValue = null;
+        }
 
 		var submitObj = {};
 		submitObj.id = recordId;
