@@ -35,7 +35,7 @@ namespace WebVella.Erp.Web.Services
 				{
 					AllowRefresh = true,
 					ExpiresUtc = DateTimeOffset.UtcNow.AddYears(100),
-					IsPersistent = true,
+					IsPersistent = false,
 					IssuedUtc = DateTimeOffset.UtcNow,
 				};
 
