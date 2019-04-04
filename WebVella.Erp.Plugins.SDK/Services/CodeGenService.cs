@@ -795,6 +795,9 @@ namespace WebVella.Erp.Plugins.SDK.Services
 
 				foreach (var id in entityRecordsToCompare)
 				{
+					if (id == null)
+						continue;
+
 					//compare only if entity exists in both databases
 					Guid entityId = new Guid(id);
 					if (oldEntityDictionary.ContainsKey(entityId) && currentEntityList.Any(x => x.Id == entityId))
@@ -1832,7 +1835,7 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 			}
 
 			response +=
-			$"\tcurrencyField.Currency = WebVella.Erp.Utilities.Helpers.GetCurrencyTypeObject(\"{field.Currency.Code}\");\n" +
+			$"\tcurrencyField.Currency = WebVella.Erp.Utilities.Helpers.GetCurrencyType(\"{field.Currency.Code}\");\n" +
 			$"\tcurrencyField.EnableSecurity = {(field.EnableSecurity).ToString().ToLowerInvariant()};\n" +
 			"\tcurrencyField.Permissions = new FieldPermissions();\n" +
 			"\tcurrencyField.Permissions.CanRead = new List<Guid>();\n" +
@@ -3975,7 +3978,7 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 
 			response +=
-			$"\tcurrencyField.Currency = WebVella.Erp.Utilities.Helpers.GetCurrencyTypeObject(\"{currentField.Currency.Code}\");\n" +
+			$"\tcurrencyField.Currency = WebVella.Erp.Utilities.Helpers.GetCurrencyType(\"{currentField.Currency.Code}\");\n" +
 			$"\tcurrencyField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
 			"\tcurrencyField.Permissions = new FieldPermissions();\n" +
 			"\tcurrencyField.Permissions.CanRead = new List<Guid>();\n" +
