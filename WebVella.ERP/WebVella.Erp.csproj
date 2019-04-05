@@ -7,7 +7,14 @@
     <PackageId>WebVella.Erp</PackageId>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Description>WebVella core erp libraries</Description>
+    <Description>The core library of the open-source and free platform WebVella ERP.	It allows a quick and painless creation of business web applications.</Description>
+    <Version>1.0.46</Version>
+    <Authors>WebVella</Authors>
+    <Company>WebVella</Company>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <Copyright>Copyright 2019</Copyright>
+    <PackageProjectUrl>https://webvella.com</PackageProjectUrl>
+    <PackageIconUrl>https://webvella.com/favicon.ico</PackageIconUrl>
   </PropertyGroup>
 
   <ItemGroup>
