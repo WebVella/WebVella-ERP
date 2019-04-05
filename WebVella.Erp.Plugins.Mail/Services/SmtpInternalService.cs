@@ -483,9 +483,13 @@ namespace WebVella.Erp.Plugins.Mail.Services
 			RecordManager recMan = new RecordManager();
 			var response = recMan.Find(new EntityQuery("email", "*", EntityQuery.QueryEQ("id", email.Id)));
 			if (response.Object != null && response.Object.Data != null && response.Object.Data.Count != 0)
-				recMan.UpdateRecord("email", email.MapTo<EntityRecord>());
+				response = recMan.UpdateRecord("email", email.MapTo<EntityRecord>());
 			else
-				recMan.CreateRecord("email", email.MapTo<EntityRecord>());
+				response = recMan.CreateRecord("email", email.MapTo<EntityRecord>());
+
+			if (!response.Success)
+				throw new Exception(response.Message);
+			
 		}
 
 		public Email GetEmail(Guid id)
