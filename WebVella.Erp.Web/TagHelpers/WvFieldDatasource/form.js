@@ -229,6 +229,7 @@ function DataSourceFormEditInit(fieldId, propertyNameLibrary) {
 	DataSourceFormSimpleCode += "using System.Collections.Generic;\n";
 	DataSourceFormSimpleCode += "using WebVella.Erp.Web.Models;\n";
 	DataSourceFormSimpleCode += "using WebVella.Erp.Api.Models;\n";
+    DataSourceFormSimpleCode += "using Newtonsoft.Json;\n";
 	DataSourceFormSimpleCode += "\n";
 	DataSourceFormSimpleCode += "public class SampleCodeVariable : ICodeVariable\n";
 	DataSourceFormSimpleCode += "{\n";
@@ -248,8 +249,9 @@ function DataSourceFormEditInit(fieldId, propertyNameLibrary) {
 	DataSourceFormGetDatasourceCode += "using System.Collections.Generic;\n";
 	DataSourceFormGetDatasourceCode += "using WebVella.Erp.Web.Models;\n";
 	DataSourceFormGetDatasourceCode += "using WebVella.Erp.Api.Models;\n";
+    DataSourceFormGetDatasourceCode += "using Newtonsoft.Json;\n";
 	DataSourceFormGetDatasourceCode += "\n";
-	DataSourceFormGetDatasourceCode += "public class SelectOptionsConvertCodeVariable : ICodeVariable\n";
+	DataSourceFormGetDatasourceCode += "public class GetDatasourceValueCodeVariable : ICodeVariable\n";
 	DataSourceFormGetDatasourceCode += "{\n";
 	DataSourceFormGetDatasourceCode += "\tpublic object Evaluate(BaseErpPageModel pageModel)\n";
 	DataSourceFormGetDatasourceCode += "\t{\n";
@@ -280,6 +282,7 @@ function DataSourceFormEditInit(fieldId, propertyNameLibrary) {
 	DataSourceFormGetDatasourceEntityRecordToSelectOptionsCode += "using System.Collections.Generic;\n";
 	DataSourceFormGetDatasourceEntityRecordToSelectOptionsCode += "using WebVella.Erp.Web.Models;\n";
 	DataSourceFormGetDatasourceEntityRecordToSelectOptionsCode += "using WebVella.Erp.Api.Models;\n";
+    DataSourceFormGetDatasourceEntityRecordToSelectOptionsCode += "using Newtonsoft.Json;\n";
 	DataSourceFormGetDatasourceEntityRecordToSelectOptionsCode += "\n";
 	DataSourceFormGetDatasourceEntityRecordToSelectOptionsCode += "public class SelectOptionsConvertCodeVariable : ICodeVariable\n";
 	DataSourceFormGetDatasourceEntityRecordToSelectOptionsCode += "{\n";

@@ -1085,6 +1085,18 @@ namespace WebVella.Erp.Web.Controllers
             {
                 records = new RenderService().GetCsvData(csvData, hasHeader, delimiterName);
             }
+            catch (CsvHelperException ex)
+            {
+                //ex.Data.Values has more info...
+                if (lang == "bg")
+                {
+                    return Content("<div class='alert alert-danger p-2'>Грешен формат на данните. Опитайте с друг разделител.</div>");
+                }
+                else
+                {
+                    return Content("<div class='alert alert-danger p-2'>Error in parsing data. Check another delimiter</div>");
+                }
+            }
             catch (Exception ex)
             {
                 if (lang == "bg")
