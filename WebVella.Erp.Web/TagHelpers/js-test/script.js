@@ -1,153 +1,55 @@
-﻿
-//JS DateTime picker init method
-var flatPickrServerDateTimeFormat = "Z";//"Y-m-dTH:i:S";
+﻿//JS DateTime picker init method
+var dateTimePickerDictionary = {};
+var flatPickrServerDateTimeFormat = "Y-m-dTH:i:S";//"Z";
 //From the server dates will be received yyyy-MM-ddTHH:mm:ss.fff
 var flatPickrUiDateTimeFormat = "d M Y H:i";
-function InitFlatPickrDateTimeInlineEdit(editWrapperSelector) {
-	var defaultDate = $(editWrapperSelector).attr("data-default-date");
-	var options = { 
-		time_24hr: true,
-		defaultDate: defaultDate,
-		dateFormat: flatPickrServerDateTimeFormat,
-		//locale: BulgarianDateTimeLocale,
-		enableTime: true,
-		minuteIncrement: 1,
-		altInput: true,
-		altFormat: flatPickrUiDateTimeFormat
-	};
-	flatpickr(editWrapperSelector + " .form-control", );
-}
+function InitFlatPickrDateTime(fieldId) {
+    var selector = "#input-" + fieldId;
+    if (document.querySelector(selector)) {
+        var inputGroulEl = $(selector).closest(".input-group");
+        //Inject clear link
+        inputGroulEl.append("<a href='#' class='clear-link d-none'><i class='fa fa-times'><i></a>");
 
-function DateTimeInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config) {
-	//Method for generating selector strings of some of the presentation elements
-	var selectors = {};
-	selectors.viewWrapper = "#view-" + fieldId;
-	selectors.editWrapper = "#edit-" + fieldId;
-	return selectors;
-}
+        var clearLink = inputGroulEl.find(".clear-link");
+        //Show clear link if value not null or empty
+        if ($(selector).val()) {
+            clearLink.removeClass("d-none");
+        }
 
-function DateTimeInlineEditPreEnableCallback(fieldId, fieldName, entityName, recordId, config) {
-	var selectors = DateTimeInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
-	//init pickr only when needed
-	InitFlatPickrDateTimeInlineEdit(selectors.editWrapper , "datetime");
-	$(selectors.viewWrapper).hide();
-	$(selectors.editWrapper).show();
-	$(selectors.editWrapper + " .form-control").focus();
-}
+        clearLink.click(function (event) {
+            event.preventDefault();
+            var fp = document.querySelector(selector)._flatpickr;
+            if (fp) {
+                fp.clear();
+            }
+            else {
+                $(selector).val(null);
+            }
+            clearLink.addClass("d-none");
+        });
 
-function DateTimeInlineEditPreDisableCallback(fieldId, fieldName, entityName, recordId, config) {
-	var selectors = DateTimeInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
-	$(selectors.editWrapper + " .invalid-feedback").remove();
-	$(selectors.editWrapper + " .form-control").removeClass("is-invalid");
-	$(selectors.editWrapper + " .save .fa").addClass("fa-check").removeClass("fa-spin fa-spinner");
-	$(selectors.editWrapper + " .save").attr("disabled", false);
-	$(selectors.viewWrapper).show();
-	$(selectors.editWrapper).hide();
-	var calendarInstance = document.querySelector(selectors.editWrapper + " .form-control")._flatpickr;
-	calendarInstance.destroy();
-}
+        var fp = document.querySelector(selector)._flatpickr;
+        if (!fp) {
+            var options = {
+                time_24hr: true,
+                dateFormat: flatPickrServerDateTimeFormat,
+                defaultDate: null,
+                //locale: BulgarianDateTimeLocale,
+                enableTime: true,
+                "static": true,
+                minuteIncrement: 1,
+                altInput: true,
+                altFormat: flatPickrUiDateTimeFormat,
+                onChange: function (selectedDates) {
+                    if (selectedDates && selectedDates.length > 0) {
+                        clearLink.removeClass("d-none");
+                    }
+                }
+            };
+            fp = flatpickr(selector, options);
+            return fp;
+        }
+        return fp;
 
-function DateTimeInlineEditInit(fieldId, fieldName, entityName, recordId, config) {
-	config = ProcessConfig(config);
-	var selectors = DateTimeInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
-	//Init enable action click
-	$(selectors.viewWrapper + " .action.btn").on("click", function (event) {
-		event.stopPropagation();
-		event.preventDefault();
-		DateTimeInlineEditPreEnableCallback(fieldId, fieldName, entityName, recordId, config);
-	});
-	//Init enable action dblclick
-	$(selectors.viewWrapper + " .form-control").on("dblclick", function (event) {
-		event.stopPropagation();
-		event.preventDefault();
-		DateTimeInlineEditPreEnableCallback(fieldId, fieldName, entityName, recordId, config);
-		//clearSelection();//double click causes text to be selected.
-		setTimeout(function () {
-			$(selectors.editWrapper + " .form-control").get(0).focus();
-		}, 200);
-	});
-	//Disable inline edit action
-	$(selectors.editWrapper + " .cancel").on("click", function (event) {
-		event.stopPropagation();
-		event.preventDefault();
-		DateTimeInlineEditPreDisableCallback(fieldId, fieldName, entityName, recordId, config);
-	});
-	//Save inline changes
-	$(selectors.editWrapper + " .save").on("click", function (event) {
-		event.stopPropagation();
-		event.preventDefault();
-		var inputValue = $(selectors.editWrapper + " .form-control").val();
-		if (!inputValue) {
-			inputValue = null;
-		}
-		else if (!moment(inputValue).isValid()) {
-			toastr.error("invalid date", 'Error!', { closeButton: true, tapToDismiss: true });
-			return;
-		}
-
-		var submitObj = {};
-		submitObj.id = recordId;
-		submitObj[fieldName] = inputValue;
-		$(selectors.editWrapper + " .save .fa").removeClass("fa-check").addClass("fa-spin fa-spinner");
-		$(selectors.editWrapper + " .save").attr("disabled", true);
-		$(selectors.editWrapper + " .invalid-feedback").remove();
-		$(selectors.editWrapper + " .form-control").removeClass("is-invalid");
-		var apiUrl = ApiBaseUrl + "/record/" + entityName + "/" + recordId;
-		if (config.api_url) {
-			apiUrl = config.api_url;
-		}
-		$.ajax({
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json'
-			},
-			url: apiUrl,
-			type: 'PATCH',
-			data: JSON.stringify(submitObj),
-			success: function (response) {
-				if (response.success) {
-					DateTimeInlineEditInitSuccessCallback(response, fieldId, fieldName, entityName, recordId, config);
-				}
-				else {
-					DateTimeInlineEditInitErrorCallback(response, fieldId, fieldName, entityName, recordId, config);
-				}
-			},
-			error: function (jqXHR, textStatus, errorThrown) {
-				var response = {};
-				response.message = "";
-				if (jqXHR && jqXHR.responseJSON) {
-					response.message = jqXHR.responseJSON.message;
-				}
-				DateTimeInlineEditInitErrorCallback(response, fieldId, fieldName, entityName, recordId, config);
-			}
-		});
-	});
-}
-
-function DateTimeInlineEditInitSuccessCallback(response, fieldId, fieldName, entityName, recordId, config) {
-	var selectors = DateTimeInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
-	var newValue = ProcessNewValue(response, fieldName);
-	if (newValue !== null) {
-		var formatedDate = moment(newValue).format("DD MMM YYYY HH:mm");
-		$(selectors.viewWrapper + " .form-control").html(formatedDate);
-	}
-	else {
-		$(selectors.viewWrapper + " .form-control").html(newValue);
-	}
-	$(selectors.viewWrapper + " .form-control").attr("title", newValue);
-	$(selectors.editWrapper + " .form-control").val(newValue);
-	$(selectors.editWrapper).attr("data-default-date",newValue);
-	DateTimeInlineEditPreDisableCallback(fieldId, fieldName, entityName, recordId, config);
-	toastr.success("The new value is successfull saved", 'Success!', { closeButton: true, tapToDismiss: true });
-}
-
-function DateTimeInlineEditInitErrorCallback(response, fieldId, fieldName, entityName, recordId, config) {
-	var selectors = DateTimeInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
-	$(selectors.editWrapper + " .form-control").addClass("is-invalid");
-	$(selectors.editWrapper + " .input-group").after("<div class='invalid-feedback'>" + response.message + "</div>");
-	$(selectors.editWrapper + " .invalid-feedback").show();
-	$(selectors.editWrapper + " .save .fa").addClass("fa-check").removeClass("fa-spin fa-spinner");
-	$(selectors.editWrapper + " .save").attr("disabled", false);
-	toastr.error("An error occurred", 'Error!', { closeButton: true, tapToDismiss: true });
-	console.log("error", response);
+    }
 }

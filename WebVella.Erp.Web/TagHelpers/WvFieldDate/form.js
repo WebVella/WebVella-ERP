@@ -35,6 +35,7 @@ function InitFlatPickrDate(fieldId) {
                 time_24hr: true,
                 dateFormat: flatPickrServerDateFormat,
                 defaultDate: null,
+                "static": true,
 				//locale: BulgarianDateTimeLocale, 
 				altInput: true, 
 				altFormat: flatPickrUiDateFormat,
