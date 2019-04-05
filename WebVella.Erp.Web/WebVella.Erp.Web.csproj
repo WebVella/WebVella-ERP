@@ -22,6 +22,7 @@
      <None Remove="TagHelpers\WvFieldDataCsv\inline-edit.js" />
      <None Remove="TagHelpers\WvFieldUserFileMultiple\form.js" />
      <None Remove="TagHelpers\WvFieldUserFileMultiple\inline-edit.js" />
+     <None Remove="TagHelpers\WvPageHeader\script.js" />
    </ItemGroup>
  
   <ItemGroup>
@@ -120,6 +121,7 @@
     <EmbeddedResource Include="TagHelpers\WvFilterPercent\percent.js" />
     <EmbeddedResource Include="TagHelpers\WvForm\form.js" />
     <EmbeddedResource Include="TagHelpers\WvModal\modal.js" />
+    <EmbeddedResource Include="TagHelpers\WvPageHeader\script.js" />
     <EmbeddedResource Include="TagHelpers\WvSection\service.js" />
     <EmbeddedResource Include="TagHelpers\WvGrid\sort-and-page.js" />
     <EmbeddedResource Include="Theme\styles.css">

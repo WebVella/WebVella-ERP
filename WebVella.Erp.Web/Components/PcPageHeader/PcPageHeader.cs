@@ -55,7 +55,10 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "show_page_switch")]
 			public bool ShowPageSwitch { get; set; } = true;
 
-		}
+            [JsonProperty(PropertyName = "fix_on_scroll")]
+            public bool FixOnScroll { get; set; } = false;
+
+        }
 
 
 		public async Task<IViewComponentResult> InvokeAsync(PageComponentContext context)

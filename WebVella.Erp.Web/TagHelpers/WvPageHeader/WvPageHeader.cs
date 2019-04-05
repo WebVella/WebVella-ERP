@@ -21,7 +21,11 @@ namespace WebVella.Erp.Web.TagHelpers
 	public class WvPageHeader : TagHelper
 	{
 
-		[HtmlAttributeName("is-visible")]
+        [HtmlAttributeNotBound]
+        [ViewContext]
+        public ViewContext ViewContext { get; set; }
+
+        [HtmlAttributeName("is-visible")]
 		public bool isVisible { get; set; } = true;
 
 		[HtmlAttributeName("color")]
@@ -51,7 +55,10 @@ namespace WebVella.Erp.Web.TagHelpers
 		[HtmlAttributeName("return-url")]
 		public string ReturnUrl { get; set; } = "";
 
-		[HtmlAttributeName("page-switch-items")]
+        [HtmlAttributeName("fix-on-scroll")]
+        public bool FixOnScroll { get; set; } = false;
+
+        [HtmlAttributeName("page-switch-items")]
 		public List<PageSwitchItem> PageSwitchItems { get; set; } = new List<PageSwitchItem>();
 
 		public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
@@ -62,7 +69,7 @@ namespace WebVella.Erp.Web.TagHelpers
 			}
 			else
 			{
-
+                var elementId = Guid.NewGuid();
 				var content = await output.GetChildContentAsync();
 				var htmlDoc = new HtmlDocument();
 				htmlDoc.LoadHtml(content.GetContent());
@@ -92,6 +99,7 @@ namespace WebVella.Erp.Web.TagHelpers
 
 				output.TagName = "div";
 				output.AddCssClass($"pc-page-header {(!String.IsNullOrWhiteSpace(toolbarContentHtml) ? "has-toolbar" : "")} {(!String.IsNullOrWhiteSpace(ReturnUrl) ? "has-btn-back" : "")} {(String.IsNullOrWhiteSpace(IconClass) ? "no-icon" : "")}");
+                output.Attributes.Add("id", $"wv-{elementId}");
 
 				if (!String.IsNullOrWhiteSpace(ReturnUrl))
 				{
@@ -295,9 +303,54 @@ namespace WebVella.Erp.Web.TagHelpers
 					output.Content.AppendHtml(wrapEl);
 				}
 
-			}
-			//return Task.CompletedTask;
-		}
+
+                if (FixOnScroll)
+                {
+                    var jsCompressor = new JavaScriptCompressor();
+
+                    #region << Init Scripts >>
+                    var tagHelperInitialized = false;
+                    var scriptFileName = "script.js";
+                    if (ViewContext.HttpContext.Items.ContainsKey(typeof(WvPageHeader) + scriptFileName))
+                    {
+                        var tagHelperContext = (WvTagHelperContext)ViewContext.HttpContext.Items[typeof(WvPageHeader) + scriptFileName];
+                        tagHelperInitialized = tagHelperContext.Initialized;
+                    }
+
+                    if (!tagHelperInitialized)
+                    {
+                        var scriptContent = FileService.GetEmbeddedTextResource("script.js", "WebVella.Erp.Web.TagHelpers.WvPageHeader");
+                        var scriptEl = new TagBuilder("script");
+                        scriptEl.Attributes.Add("type", "text/javascript");
+                        scriptEl.InnerHtml.AppendHtml(jsCompressor.Compress(scriptContent));
+                        //scriptEl.InnerHtml.AppendHtml(scriptContent);
+                        output.PostContent.AppendHtml(scriptEl);
+
+                        ViewContext.HttpContext.Items[typeof(WvPageHeader) + scriptFileName] = new WvTagHelperContext()
+                        {
+                            Initialized = true
+                        };
+
+                    }
+
+                    #endregion
+
+                    #region << Add Inline Init Script for this instance >>
+                    var initScript = new TagBuilder("script");
+                    initScript.Attributes.Add("type", "text/javascript");
+                    var scriptTemplate = @"
+						$(function(){
+							WebVellaErpWebComponentsPcPageHeader_Init(""{{ElementId}}"");
+						});";
+                    scriptTemplate = scriptTemplate.Replace("{{ElementId}}", elementId.ToString());
+                    initScript.InnerHtml.AppendHtml(jsCompressor.Compress(scriptTemplate));
+
+                    output.PostContent.AppendHtml(initScript);
+                    #endregion
+                }
+            }
+            //return Task.CompletedTask;
+        }
 
 
 	}
