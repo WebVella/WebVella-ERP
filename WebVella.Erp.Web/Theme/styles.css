@@ -2851,8 +2851,8 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
         align-items: center;
         /*color: --gray_semi_light_color;*/
         color: #555;
-        padding-left: 0.75rem;
-        padding-right: 0.75rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
     }
 
         .menu-nav a:hover,
