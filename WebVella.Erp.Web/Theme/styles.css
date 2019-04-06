@@ -2543,12 +2543,13 @@ body {
 }
 
 #body-inner-wrapper {
-    position: absolute;
+    /* Fixed layout*/
+    /*position: absolute;
     top: 2px;
     bottom: 0;
     left: 0;
     right: 0;
-    padding-top: 40px;
+    padding-top: 40px;*/
     /*background: --brand_inner_background_gradient;*/
 }
 
@@ -2707,14 +2708,14 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
     /*border: 1px solid --brand_background_color;*/
     border-top: none;
     background: #fff;
-    height: calc(100vh - 43px);
-    overflow-y: auto;
+    /*height: calc(100vh - 43px);
+    overflow-y: auto;*/
     padding-top: 15px;
     /*padding-bottom: 30px;*/
 }
 
 .has-toolbar #body-inner-wrapper-2 {
-    height: calc(100vh - 40px - 40px);
+    /*height: calc(100vh - 40px - 40px);*/
 }
 
 #body-inner-wrapper-2 > .container-fluid {
@@ -2731,12 +2732,12 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
     display: flex;
     height: 40px;
     line-height: 40px;
-    box-sizing: content-box;
-    position: fixed;
+    /*box-sizing: content-box;*/
+    /*position: fixed;
     top: 2px;
     left: 0;
     right: 0;
-    z-index: 50;
+    z-index: 50;*/
     /*background: rgba(0,0,0,0.25);*/
     border-bottom: 1px solid --gray_border_color;
 }
@@ -3277,6 +3278,9 @@ pre, code {
 }
 
 
+.erp-field .flatpickr-wrapper {
+    width:100%;
+}
 
 .erp-field textarea.erp-multilinetext,
 .erp-field textarea.erp-data-csv {
