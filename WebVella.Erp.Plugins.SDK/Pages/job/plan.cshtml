@@ -25,9 +25,9 @@
 		<wv-grid-row>
 			<wv-grid-column>
 				<wv-button-group size="Small">
-					<wv-button color="White" icon-class="fa fa-pencil-alt fa-fw" type="LinkAsButton" href="@($"/sdk/server/job/m/{record.Id}/plan")"></wv-button>
-					<wv-button color="White" icon-class="fas fa-play fa-fw" type="Submit" form=@($"triggerForm{record.Id}")></wv-button>
-					<wv-button color="White" icon-class="far fa-paper-plane fa-fw" type="LinkAsButton" href="@($"/sdk/server/job/l/list?q_type_id_t=EQ&q_type_id_v={record.Id}")"></wv-button>
+					<wv-button color="Secondary" is-outline="true" icon-class="fa fa-pencil-alt fa-fw" type="LinkAsButton" href="@($"/sdk/server/job/m/{record.Id}/plan")"></wv-button>
+					<wv-button color="Secondary" is-outline="true" icon-class="fas fa-play fa-fw" type="Submit" form=@($"triggerForm{record.Id}")></wv-button>
+					<wv-button color="Secondary" is-outline="true" icon-class="far fa-paper-plane fa-fw" type="LinkAsButton" href="@($"/sdk/server/job/l/list?q_type_id_t=EQ&q_type_id_v={record.Id}")"></wv-button>
 				</wv-button-group>
 				<wv-form mode="Form" name=@($"triggerForm{record.Id}") id=@($"triggerForm{record.Id}")>
 					<input type="hidden" value="@record.Id" name="TriggerPlanId" />
