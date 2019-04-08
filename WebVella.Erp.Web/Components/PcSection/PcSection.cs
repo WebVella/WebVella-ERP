@@ -46,8 +46,11 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "is_collapsable")]
 			public bool IsCollapsable { get; set; } = false;
 
-			[JsonProperty(PropertyName = "is_collapsed")]
-			public bool IsCollapsed { get; set; } = false;
+            [JsonProperty(PropertyName = "is_collapsed_ds")]
+            public string IsCollapsedDs { get; set; } = "";
+
+            [JsonProperty(PropertyName = "is_collapsed")]
+            public bool IsCollapsed { get; set; } = false;
 
 			[JsonProperty(PropertyName = "label_mode")]
 			public LabelRenderMode LabelMode { get; set; } = LabelRenderMode.Undefined; //To be inherited
@@ -188,10 +191,9 @@ namespace WebVella.Erp.Web.Components
                     }
                 }
 
-                
-
-
+  
                 #endregion
+
 
 				ViewBag.Options = options;
 				ViewBag.Node = context.Node;
@@ -219,7 +221,19 @@ namespace WebVella.Erp.Web.Components
                     ViewBag.IsVisible = isVisible;
 
                     ViewBag.ProcessedTitle = context.DataModel.GetPropertyValueByDataSource(options.Title);
-				}
+
+                    var isCollapsed = context.DataModel.GetPropertyValueByDataSource(options.IsCollapsedDs) as bool?;
+                    if (isCollapsed != null)
+                    {
+                        options.IsCollapsed = isCollapsed.Value;
+                        ViewBag.Options = options;
+                    }
+                    else if (options.IsCollapsedDs.ToLowerInvariant() == "true") {
+                        options.IsCollapsed = true;
+                        ViewBag.Options = options;
+                    }
+
+                }
 
 				context.Items[typeof(LabelRenderMode)] = options.LabelMode;
 				context.Items[typeof(FieldRenderMode)] = options.FieldMode;

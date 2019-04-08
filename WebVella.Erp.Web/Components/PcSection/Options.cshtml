@@ -29,7 +29,8 @@
 		<wv-field-checkbox name="is_collapsable" label-text="Is Collapsable" value="@options.IsCollapsable" text-true="render as collapsable"></wv-field-checkbox>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-checkbox name="is_collapsed" label-text="Is Collapsed" value="@options.IsCollapsed" text-true="initially collapsed"></wv-field-checkbox>
+        <wv-field-datasource name="is_collapsed_ds" label-text="Is Initially Collapsed" value="@options.IsCollapsed" page-id="erpRequest.Page.Id"></wv-field-datasource>
+		@*<wv-field-checkbox name="is_collapsed" label-text="Is Collapsed" value="@options.IsCollapsed" text-true="initially collapsed"></wv-field-checkbox>*@
 	</wv-column>
 </wv-row>
 <wv-row>
