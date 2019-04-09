@@ -2698,9 +2698,9 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
         margin-right: 5px;
     }
 
-#main-wrapper > .col {
+/*#main-wrapper > .col {
     overflow-y: auto;
-}
+}*/
 
 #body-inner-wrapper-2 {
     /*margin: 0 7px 7px 7px;*/
@@ -5668,9 +5668,13 @@ wv-pb-manager .wv-pb-node > div > .row {
     box-shadow: 1px 1px 10px rgba(0,0,0,0.5);
 }
 
-.toast.toast-success {
-    background: --green_color;
+#toast-container > div a {
+    text-decoration:underline;
 }
+
+    .toast.toast-success {
+        background: --green_color;
+    }
 
 .toast.toast-info {
     background: --light_blue_color;
