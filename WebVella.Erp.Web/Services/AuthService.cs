@@ -34,7 +34,7 @@ namespace WebVella.Erp.Web.Services
 				var authProperties = new AuthenticationProperties
 				{
 					AllowRefresh = true,
-					ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30),
+					ExpiresUtc = DateTimeOffset.UtcNow.AddYears(100),
 					IsPersistent = false,
 					IssuedUtc = DateTimeOffset.UtcNow,
 				};
