@@ -247,6 +247,20 @@ namespace WebVella.Erp.Web.Models
 					if (ErpRequestContext.SitemapArea != null && area.Id == ErpRequestContext.SitemapArea.Id)
                         areaMenuItem.Class = "current";
 
+					//Process the an unusual case when the area has a node type URL which has a link to an app Page or a site page.
+					//Then there is no SitemapArea in the ErpRequest as the URL does not has the information about one but still it needs to be 
+					//marked as current
+					if (ErpRequestContext.SitemapArea == null) {
+						var urlNodes = area.Nodes.FindAll(x => x.Type == SitemapNodeType.Url);
+						var path = HttpContext.Request.Path;
+						foreach (var urlNode in urlNodes)
+						{
+							if (path == urlNode.Url) {
+								areaMenuItem.Class = "current";
+							}
+						}
+					}
+
 					ApplicationMenu.Add(areaMenuItem);
 				}
 
