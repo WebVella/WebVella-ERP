@@ -102,16 +102,16 @@ namespace WebVella.Erp.Web.Components
 					return await Task.FromResult<IViewComponentResult>(Content("Error: The page Id is required to be set as query param 'pid', when requesting this component"));
 				}
 
-				var instanceOptions = new PcButtonOptions();
+				var options = new PcButtonOptions();
 				if (context.Options != null)
 				{
-					instanceOptions = JsonConvert.DeserializeObject<PcButtonOptions>(context.Options.ToString());
+					options = JsonConvert.DeserializeObject<PcButtonOptions>(context.Options.ToString());
 				}
 
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
 				#endregion
 
-                ViewBag.Options = instanceOptions;
+                ViewBag.Options = options;
 				ViewBag.Node = context.Node;
 				ViewBag.ComponentMeta = componentMeta;
 				ViewBag.RequestContext = ErpRequestContext;
@@ -120,7 +120,7 @@ namespace WebVella.Erp.Web.Components
                 if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
                 {
                     var isVisible = true;
-                    var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(instanceOptions.IsVisible);
+                    var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
                     if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
                     {
                         if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
@@ -134,11 +134,12 @@ namespace WebVella.Erp.Web.Components
                     }
                     ViewBag.IsVisible = isVisible;
 
-                    instanceOptions.Text = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Text) as string;
-                    instanceOptions.Class = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Class) as string;
-                    instanceOptions.IconClass = context.DataModel.GetPropertyValueByDataSource(instanceOptions.IconClass) as string;
+                    options.Text = context.DataModel.GetPropertyValueByDataSource(options.Text) as string;
+                    options.Class = context.DataModel.GetPropertyValueByDataSource(options.Class) as string;
+                    options.IconClass = context.DataModel.GetPropertyValueByDataSource(options.IconClass) as string;
+					options.OnClick = context.DataModel.GetPropertyValueByDataSource(options.OnClick) as string;
 
-                    ViewBag.ProcessedHref = context.DataModel.GetPropertyValueByDataSource(instanceOptions.Href);
+					ViewBag.ProcessedHref = context.DataModel.GetPropertyValueByDataSource(options.Href);
 
                 }
                 #region << Select options >>
