@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>WebVella.Erp.Web</id>
-		<version>1.0.49</version>
+		<version>1.0.51</version>
 		<title>WebVella.Erp.Web</title>
 		<authors>WebVella</authors>
 		<owners>WebVella</owners>
@@ -16,7 +16,7 @@
 		<tags></tags>
 		<dependencies>
 			<group targetFramework=".NETCoreApp2.2">
-				<dependency id="WebVella.Erp" version="1.0.48" />
+				<dependency id="WebVella.Erp" version="1.0.50" />
 				<dependency id="CS-Script.Core" version="1.0.6" />
 				<dependency id="Microsoft.AspNetCore.Mvc" version="2.2.0" />
 				<dependency id="HtmlAgilityPack" version="1.8.14" />
