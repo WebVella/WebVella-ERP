@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebVella.Erp.Web.Hooks;
 using WebVella.Erp.Web.Models;
+using WebVella.Erp.Web.Services;
 
 namespace WebVella.Erp.Web.Components
 {
@@ -15,7 +16,7 @@ namespace WebVella.Erp.Web.Components
         public async Task<IViewComponentResult> InvokeAsync(BaseErpPageModel pageModel)
         {
 			ViewBag.ScriptTags = new List<ScriptTagInclude>();
-
+			var cacheKey = new RenderService().GetCacheKey();
 			#region === <script> ===
 			{
 				var includedScriptTags = pageModel.HttpContext.Items.ContainsKey(typeof(List<ScriptTagInclude>)) ? (List<ScriptTagInclude>)pageModel.HttpContext.Items[typeof(List<ScriptTagInclude>)] : new List<ScriptTagInclude>();

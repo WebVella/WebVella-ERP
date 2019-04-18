@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebVella.Erp.Web.Hooks;
 using WebVella.Erp.Web.Models;
+using WebVella.Erp.Web.Services;
 
 namespace WebVella.Erp.Web.Components
 {
@@ -16,6 +17,8 @@ namespace WebVella.Erp.Web.Components
         {
 			ViewBag.ScriptTags = new List<ScriptTagInclude>();
 			ViewBag.LinkTags = new List<LinkTagInclude>();
+
+			var cacheKey = new RenderService().GetCacheKey();
 
 			#region === <link> ===
 			{
@@ -29,7 +32,7 @@ namespace WebVella.Erp.Web.Components
 					//Always include
 					linkTagsToInclude.Add(new LinkTagInclude()
 					{
-						Href = "/api/v3.0/p/core/styles.css",
+						Href = "/api/v3.0/p/core/styles.css?cb=" + cacheKey,
 						CacheBreaker = pageModel.ErpAppContext.StylesHash,
 						CrossOrigin = CrossOriginType.Anonymous,
 						Integrity = $"sha256-{pageModel.ErpAppContext.StylesHash}"
@@ -58,7 +61,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						scriptTagsToInclude.Add(new ScriptTagInclude()
 						{
-							Src = "/lib/jquery/jquery.min.js"
+							Src = "/lib/jquery/jquery.min.js?cb=" + cacheKey
 						});
 					}
 				}
@@ -69,7 +72,7 @@ namespace WebVella.Erp.Web.Components
 					//Always include
 					scriptTagsToInclude.Add(new ScriptTagInclude()
 					{
-						Src = "/js/site.js"
+						Src = "/js/site.js?cb=" + cacheKey
 					});
 				}
 				#endregion
@@ -80,7 +83,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						scriptTagsToInclude.Add(new ScriptTagInclude()
 						{
-							Src = "/lib/twitter-bootstrap/js/bootstrap.bundle.min.js"
+							Src = "/lib/twitter-bootstrap/js/bootstrap.bundle.min.js?cb=" + cacheKey
 						});
 					}
 				}
@@ -92,7 +95,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						scriptTagsToInclude.Add(new ScriptTagInclude()
 						{
-							Src = "/lib/URI.js/URI.min.js"
+							Src = "/lib/URI.js/URI.min.js?cb=" + cacheKey
 						});
 					}
 				}
@@ -104,7 +107,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						scriptTagsToInclude.Add(new ScriptTagInclude()
 						{
-							Src = "/lib/moment.js/moment.min.js"
+							Src = "/lib/moment.js/moment.min.js?cb=" + cacheKey
 						});
 					}
 				}
@@ -116,7 +119,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						scriptTagsToInclude.Add(new ScriptTagInclude()
 						{
-							Src = "/lib/ckeditor/ckeditor.js"
+							Src = "/lib/ckeditor/ckeditor.js?cb=" + cacheKey
 						});
 					}
 				}
@@ -128,7 +131,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						scriptTagsToInclude.Add(new ScriptTagInclude()
 						{
-							Src = "/lib/lodash.js/lodash.min.js"
+							Src = "/lib/lodash.js/lodash.min.js?cb=" + cacheKey
 						});
 					}
 				}
@@ -140,7 +143,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						scriptTagsToInclude.Add(new ScriptTagInclude()
 						{
-							Src = "/lib/flatpickr/flatpickr.min.js"
+							Src = "/lib/flatpickr/flatpickr.min.js?cb=" + cacheKey
 						});
 					}
 				}
@@ -152,7 +155,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						scriptTagsToInclude.Add(new ScriptTagInclude()
 						{
-							Src = "/lib/select2/js/select2.min.js"
+							Src = "/lib/select2/js/select2.min.js?cb=" + cacheKey
 						});
 					}
 				}
@@ -164,7 +167,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						scriptTagsToInclude.Add(new ScriptTagInclude()
 						{
-							Src = "/lib/js-cookie/js.cookie.min.js"
+							Src = "/lib/js-cookie/js.cookie.min.js?cb=" + cacheKey
 						});
 					}
 				}
@@ -176,7 +179,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						scriptTagsToInclude.Add(new ScriptTagInclude()
 						{
-							Src = "/lib/decimal.js/decimal.min.js"
+							Src = "/lib/decimal.js/decimal.min.js?cb=" + cacheKey
 						});
 					}
 				}
@@ -188,7 +191,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						scriptTagsToInclude.Add(new ScriptTagInclude()
 						{
-							Src = "/lib/toastr.js/toastr.min.js"
+							Src = "/lib/toastr.js/toastr.min.js?cb=" + cacheKey
 						});
 					}
 				}
@@ -200,7 +203,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						scriptTagsToInclude.Add(new ScriptTagInclude()
 						{
-							Src = "/lib/spectrum/spectrum.min.js"
+							Src = "/lib/spectrum/spectrum.min.js?cb=" + cacheKey
 						});
 					}
 				}
@@ -211,7 +214,7 @@ namespace WebVella.Erp.Web.Components
 					//Always add
 					scriptTagsToInclude.Add(new ScriptTagInclude()
 					{
-						Src = "/js/wv-lazyload/wv-lazyload.js"
+						Src = "/js/wv-lazyload/wv-lazyload.js?cb=" + cacheKey
 					});
 				}
 				#endregion
