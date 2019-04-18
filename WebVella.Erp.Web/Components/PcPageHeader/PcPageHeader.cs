@@ -26,19 +26,19 @@ namespace WebVella.Erp.Web.Components
 			public string IsVisible { get; set; } = "";
 
 			[JsonProperty(PropertyName = "color")]
-			public string Color { get; set; } = "#bbb";
+			public string Color { get; set; } = "{\"type\":\"0\",\"string\":\"App.Color\",\"default\":\"\"}";
 
 			[JsonProperty(PropertyName = "icon_color")]
 			public string IconColor { get; set; } = "#fff";
 
 			[JsonProperty(PropertyName = "area_label")]
-			public string AreaLabel { get; set; } = "Area";
+			public string AreaLabel { get; set; } = "{\"type\":\"0\",\"string\":\"Entity.LabelPlural\",\"default\":\"\"}";
 
 			[JsonProperty(PropertyName = "area_sublabel")]
 			public string AreaSubLabel { get; set; } = "";
 
 			[JsonProperty(PropertyName = "title")]
-			public string Title { get; set; } = "Page Title";
+			public string Title { get; set; } = "{\"type\":\"0\",\"string\":\"Page.Label\",\"default\":\"\"}";
 
 			[JsonProperty(PropertyName = "subtitle")]
 			public string SubTitle { get; set; } = "";
@@ -47,7 +47,7 @@ namespace WebVella.Erp.Web.Components
 			public string Description { get; set; }
 
 			[JsonProperty(PropertyName = "icon_class")]
-			public string IconClass { get; set; } = "fa fa-file";
+			public string IconClass { get; set; } = "{\"type\":\"0\",\"string\":\"Entity.IconName\",\"default\":\"\"}";
 
 			[JsonProperty(PropertyName = "return_url")]
 			public string ReturnUrl { get; set; } = "";
