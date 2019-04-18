@@ -685,9 +685,9 @@ $$$TABS$$$ WHERE {10}.{11} = {12}.{13} )d  )::jsonb AS ""{0}"",";
 							string paramName = secondOperandString;
 							var param = Parameters.SingleOrDefault(x => x.ParameterName == paramName);
 							if (param == null) 	throw new EqlException($"WHERE: Parameter '{paramName}' not found.");
-							param.Value = "%" + param.Value + "%";
+							//param.Value = "%" + param.Value + "%";
 
-							return $" ( {firstOperandString}  ILIKE  {secondOperandString} ) ";
+							return $" ( {firstOperandString}  ILIKE  CONCAT ( '%' , {secondOperandString} , '%' ) )";
 						}
 					}
 					else
@@ -698,9 +698,9 @@ $$$TABS$$$ WHERE {10}.{11} = {12}.{13} )d  )::jsonb AS ""{0}"",";
 						string paramName = secondOperandString;
 						var param = Parameters.SingleOrDefault(x => x.ParameterName == paramName);
 						if (param == null) throw new EqlException($"WHERE: Parameter '{paramName}' not found.");
-						param.Value = param.Value + "%";
+						//param.Value = param.Value + "%";
 
-						return $" ( {firstOperandString}  ILIKE  {secondOperandString} ) ";
+						return $" ( {firstOperandString}  ILIKE CONCAT ( '%' , {secondOperandString}  ) ) ";
 					}
 					else
 						throw new EqlException($"WHERE: STARTSWITH first operand should be a field name.");
