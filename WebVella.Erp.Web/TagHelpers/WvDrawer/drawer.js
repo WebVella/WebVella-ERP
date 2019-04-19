@@ -6,10 +6,10 @@ function OpenDrawer(drawerId) {
 	$("#body-inner-wrapper-2 > .container-fluid").css("position", "relative");
 	$("#body-inner-wrapper-2").css("position", "relative");
 	if (drawerId) {
-		$("#body-inner-wrapper-2").append("<div class='drawer-backdrop' data-drawer-id='" + drawerId + "'></div>");
+		$("body").append("<div class='drawer-backdrop' data-drawer-id='" + drawerId + "'></div>");
 	}
 	else {
-		$("#body-inner-wrapper-2").append("<div class='drawer-backdrop' data-drawer-id='none'></div>");
+		$("body").append("<div class='drawer-backdrop' data-drawer-id='none'></div>");
 	}
 	if (drawerId) {
 		$("#" + drawerId).addClass("d-block");
@@ -22,7 +22,7 @@ function OpenDrawer(drawerId) {
 function CloseDrawer(drawerId) {
 	$("#body-inner-wrapper-2 > .container-fluid").css("position", "unset");
 	$("#body-inner-wrapper-2").css("position", "unset");
-	$("#body-inner-wrapper-2 .drawer-backdrop").remove();
+	$("body .drawer-backdrop").remove();
 	if (drawerId && drawerId !== "none") {
 		$("#" + drawerId).removeClass("d-block");
 	}
