@@ -50,13 +50,20 @@ namespace WebVella.Erp.Api
 
 		public ErpUser GetUser(string email, string password)
 		{
-			var encryptedPassword = PasswordUtil.GetMd5Hash(password);
-			var result = new EqlCommand("SELECT *, $user_role.* FROM user WHERE email = @email AND password = @password",
-					 new List<EqlParameter> { new EqlParameter("email", email), new EqlParameter("password", encryptedPassword) }).Execute();
-			if (result.Count != 1)
-				return null;
+			if (string.IsNullOrWhiteSpace(email))
+				return null; 
 
-			return result[0].MapTo<ErpUser>();
+			var encryptedPassword = PasswordUtil.GetMd5Hash(password);
+			var result = new EqlCommand("SELECT *, $user_role.* FROM user WHERE email ~* @email AND password = @password",
+					 new List<EqlParameter> { new EqlParameter("email", email), new EqlParameter("password", encryptedPassword) }).Execute();
+
+			foreach(var rec in result)
+			{
+				if (((string)rec["email"]).ToLowerInvariant() == email.ToLowerInvariant())
+					return rec.MapTo<ErpUser>();
+			}
+			
+				return null;
 		}
 
 		public List<ErpUser> GetUsers(params Guid[] roleIds)
