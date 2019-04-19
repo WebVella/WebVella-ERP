@@ -6,9 +6,9 @@ using WebVella.Erp.Eql;
 
 namespace WebVella.Erp.Plugins.Mail.Api
 {
-	public class ServiceManager
+	public class EmailServiceManager
 	{
-		static ServiceManager()
+		static EmailServiceManager()
 		{
 			InitCache();
 		}

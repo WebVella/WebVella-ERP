@@ -32,21 +32,21 @@ namespace WebVella.Erp.Plugins.Mail.Hooks.Api
 
 		public void OnPostCreateRecord(string entityName, EntityRecord record)
 		{
-			ServiceManager.ClearCache();
+			EmailServiceManager.ClearCache();
 		}
 
 		public void OnPostUpdateRecord(string entityName, EntityRecord record)
 		{
-			ServiceManager.ClearCache();
+			EmailServiceManager.ClearCache();
 		}
 
 		public void OnPreDeleteRecord(string entityName, EntityRecord record, List<ErrorModel> errors)
 		{
-			var service = new ServiceManager().GetSmtpService((Guid)record["id"]);
+			var service = new EmailServiceManager().GetSmtpService((Guid)record["id"]);
 			if( service != null && service.IsDefault )
 				errors.Add(new ErrorModel { Key = "id", Message = "Default smtp service cannot be deleted." });
 			else
-				ServiceManager.ClearCache();
+				EmailServiceManager.ClearCache();
 		}
 
 	}
