@@ -3,10 +3,7 @@ using MailKit.Security;
 using MimeKit;
 using Newtonsoft.Json;
 using System;
-using WebVella.Erp.Api;
-using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
-using WebVella.Erp.Eql;
+using System.Collections.Generic;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Plugins.Mail.Services;
 using WebVella.Erp.Utilities;
@@ -15,6 +12,8 @@ namespace WebVella.Erp.Plugins.Mail.Api
 {
 	public class SmtpService
 	{
+		#region <--- Properties --->
+
 		[JsonProperty(PropertyName = "id")]
 		public Guid Id { get; internal set; }
 
@@ -57,18 +56,23 @@ namespace WebVella.Erp.Plugins.Mail.Api
 		[JsonProperty(PropertyName = "connection_security")]
 		public SecureSocketOptions ConnectionSecurity { get; internal set; }
 
-		internal SmtpService()
-		{
-		}
+		#endregion
 
-		public void SendEmail(string recipientName, string recipientEmail, string subject, string textBody, string htmlBody)
+		internal SmtpService() { }
+
+		public void SendEmail( EmailAddress recipient, string subject, string textBody, string htmlBody)
 		{
 			ValidationException ex = new ValidationException();
-			
-			if( string.IsNullOrEmpty(recipientEmail) )
-				ex.AddError("recipientEmail", "Recipient email is not specified.");
-			else if( !recipientEmail.IsEmail() )
-				ex.AddError("recipientEmail", "Recipient email is not valid email address.");
+
+			if (recipient == null)
+				ex.AddError("recipientEmail", "Recipient is not specified.");
+			else
+			{
+				if (string.IsNullOrEmpty(recipient.Address))
+					ex.AddError("recipientEmail", "Recipient email is not specified.");
+				else if (!recipient.Address.IsEmail())
+					ex.AddError("recipientEmail", "Recipient email is not valid email address.");
+			}
 
 			if (string.IsNullOrEmpty(subject))
 				ex.AddError("subject", "Subject is required.");
@@ -81,10 +85,10 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			else
 				message.From.Add(new MailboxAddress(DefaultSenderEmail));
 
-			if (!string.IsNullOrWhiteSpace(recipientName))
-				message.To.Add(new MailboxAddress(recipientName, recipientEmail));
+			if (!string.IsNullOrWhiteSpace(recipient.Name))
+				message.To.Add(new MailboxAddress(recipient.Name, recipient.Address));
 			else
-				message.To.Add(new MailboxAddress(recipientEmail));
+				message.To.Add(new MailboxAddress(recipient.Address));
 
 			if (!string.IsNullOrWhiteSpace(DefaultReplyToEmail))
 				message.ReplyTo.Add(new MailboxAddress(DefaultReplyToEmail));
@@ -112,11 +116,9 @@ namespace WebVella.Erp.Plugins.Mail.Api
 
 			Email email = new Email();
 			email.Id = Guid.NewGuid();
-			email.SenderEmail = DefaultSenderEmail;
-			email.SenderName = DefaultSenderName;
+			email.Sender = new EmailAddress { Address = DefaultSenderEmail, Name = DefaultSenderName };
 			email.ReplyToEmail = DefaultReplyToEmail;
-			email.RecipientEmail = recipientEmail;
-			email.RecipientName = recipientName;
+			email.Recipients = new List<EmailAddress> { recipient };
 			email.Subject = subject;
 			email.ContentHtml = htmlBody;
 			email.ContentText = textBody;
@@ -132,14 +134,29 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			new SmtpInternalService().SaveEmail(email);
 		}
 
-		public void SendEmail(string recipientName, string recipientEmail, string senderName, string senderEmail, string subject, string textBody, string htmlBody)
+		public void SendEmail( List<EmailAddress> recipients, string subject, string textBody, string htmlBody)
 		{
 			ValidationException ex = new ValidationException();
 
-			if (string.IsNullOrEmpty(recipientEmail))
-				ex.AddError("recipientEmail", "Recipient email is not specified.");
-			else if (!recipientEmail.IsEmail())
-				ex.AddError("recipientEmail", "Recipient email is not valid email address.");
+			if (recipients == null || recipients.Count == 0)
+			{
+				ex.AddError("recipientEmail", "Recipient is not specified.");
+			}
+			else
+			{
+				foreach (var recipient in recipients)
+				{
+					if (recipient == null)
+						ex.AddError("recipientEmail", "Recipient is not specified.");
+					else
+					{
+						if (string.IsNullOrEmpty(recipient.Address))
+							ex.AddError("recipientEmail", "Recipient email is not specified.");
+						else if (!recipient.Address.IsEmail())
+							ex.AddError("recipientEmail", "Recipient email is not valid email address.");
+					}
+				}
+			}
 
 			if (string.IsNullOrEmpty(subject))
 				ex.AddError("subject", "Subject is required.");
@@ -147,15 +164,18 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			ex.CheckAndThrow();
 
 			var message = new MimeMessage();
-			if (!string.IsNullOrWhiteSpace(senderName))
-				message.From.Add(new MailboxAddress(senderName, senderEmail));
+			if (!string.IsNullOrWhiteSpace(DefaultSenderName))
+				message.From.Add(new MailboxAddress(DefaultSenderName, DefaultSenderEmail));
 			else
-				message.From.Add(new MailboxAddress(senderEmail));
+				message.From.Add(new MailboxAddress(DefaultSenderEmail));
 
-			if (!string.IsNullOrWhiteSpace(recipientName))
-				message.To.Add(new MailboxAddress(recipientName, recipientEmail));
-			else
-				message.To.Add(new MailboxAddress(recipientEmail));
+			foreach (var recipient in recipients)
+			{
+				if (!string.IsNullOrWhiteSpace(recipient.Name))
+					message.To.Add(new MailboxAddress(recipient.Name, recipient.Address));
+				else
+					message.To.Add(new MailboxAddress(recipient.Address));
+			}
 
 			if (!string.IsNullOrWhiteSpace(DefaultReplyToEmail))
 				message.ReplyTo.Add(new MailboxAddress(DefaultReplyToEmail));
@@ -183,11 +203,9 @@ namespace WebVella.Erp.Plugins.Mail.Api
 
 			Email email = new Email();
 			email.Id = Guid.NewGuid();
-			email.SenderEmail = DefaultSenderEmail;
-			email.SenderName = DefaultSenderName;
+			email.Sender = new EmailAddress { Address = DefaultSenderEmail, Name = DefaultSenderName };
 			email.ReplyToEmail = DefaultReplyToEmail;
-			email.RecipientEmail = recipientEmail;
-			email.RecipientName = recipientName;
+			email.Recipients = recipients;
 			email.Subject = subject;
 			email.ContentHtml = htmlBody;
 			email.ContentText = textBody;
@@ -203,14 +221,180 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			new SmtpInternalService().SaveEmail(email);
 		}
 
-		public void QueueEmail(string recipientName, string recipientEmail, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal  )
+		public void SendEmail( EmailAddress recipient, EmailAddress sender, string subject, string textBody, string htmlBody)
 		{
 			ValidationException ex = new ValidationException();
 
-			if (string.IsNullOrEmpty(recipientEmail))
-				ex.AddError("recipientEmail", "Recipient email is not specified.");
-			else if (!recipientEmail.IsEmail())
-				ex.AddError("recipientEmail", "Recipient email is not valid email address.");
+			if (recipient == null)
+				ex.AddError("recipientEmail", "Recipient is not specified.");
+			else
+			{
+				if (string.IsNullOrEmpty(recipient.Address))
+					ex.AddError("recipientEmail", "Recipient email is not specified.");
+				else if (!recipient.Address.IsEmail())
+					ex.AddError("recipientEmail", "Recipient email is not valid email address.");
+			}
+
+			if (string.IsNullOrEmpty(subject))
+				ex.AddError("subject", "Subject is required.");
+
+			ex.CheckAndThrow();
+
+			var message = new MimeMessage();
+			if (!string.IsNullOrWhiteSpace(sender.Name))
+				message.From.Add(new MailboxAddress(sender.Name, sender.Address));
+			else
+				message.From.Add(new MailboxAddress(sender.Address));
+
+			if (!string.IsNullOrWhiteSpace(recipient.Name))
+				message.To.Add(new MailboxAddress(recipient.Name, recipient.Address));
+			else
+				message.To.Add(new MailboxAddress(recipient.Address));
+
+			if (!string.IsNullOrWhiteSpace(DefaultReplyToEmail))
+				message.ReplyTo.Add(new MailboxAddress(DefaultReplyToEmail));
+
+			message.Subject = subject;
+
+			var bodyBuilder = new BodyBuilder();
+			bodyBuilder.HtmlBody = htmlBody;
+			bodyBuilder.TextBody = textBody;
+			message.Body = bodyBuilder.ToMessageBody();
+
+			using (var client = new SmtpClient())
+			{
+				//accept all SSL certificates (in case the server supports STARTTLS)
+				client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+
+				client.Connect(Server, Port, ConnectionSecurity);
+
+				if (!string.IsNullOrWhiteSpace(Username))
+					client.Authenticate(Username, Password);
+
+				client.Send(message);
+				client.Disconnect(true);
+			}
+
+			Email email = new Email();
+			email.Id = Guid.NewGuid();
+			email.Sender = sender;
+			email.ReplyToEmail = DefaultReplyToEmail;
+			email.Recipients = new List<EmailAddress> { recipient };
+			email.Subject = subject;
+			email.ContentHtml = htmlBody;
+			email.ContentText = textBody;
+			email.CreatedOn = DateTime.UtcNow;
+			email.SentOn = email.CreatedOn;
+			email.Priority = EmailPriority.Normal;
+			email.Status = EmailStatus.Sent;
+			email.ServerError = string.Empty;
+			email.ScheduledOn = null;
+			email.RetriesCount = 0;
+			email.ServiceId = Id;
+
+			new SmtpInternalService().SaveEmail(email);
+		}
+
+		public void SendEmail(List<EmailAddress> recipients, EmailAddress sender, string subject, string textBody, string htmlBody)
+		{
+			ValidationException ex = new ValidationException();
+
+			if (recipients == null || recipients.Count == 0)
+			{
+				ex.AddError("recipientEmail", "Recipient is not specified.");
+			}
+			else
+			{
+				foreach (var recipient in recipients)
+				{
+					if (recipient == null)
+						ex.AddError("recipientEmail", "Recipient is not specified.");
+					else
+					{
+						if (string.IsNullOrEmpty(recipient.Address))
+							ex.AddError("recipientEmail", "Recipient email is not specified.");
+						else if (!recipient.Address.IsEmail())
+							ex.AddError("recipientEmail", "Recipient email is not valid email address.");
+					}
+				}
+			}
+
+			if (string.IsNullOrEmpty(subject))
+				ex.AddError("subject", "Subject is required.");
+
+			ex.CheckAndThrow();
+
+			var message = new MimeMessage();
+			if (!string.IsNullOrWhiteSpace(sender.Name))
+				message.From.Add(new MailboxAddress(sender.Name, sender.Address));
+			else
+				message.From.Add(new MailboxAddress(sender.Address));
+
+			foreach (var recipient in recipients)
+			{
+				if (!string.IsNullOrWhiteSpace(recipient.Name))
+					message.To.Add(new MailboxAddress(recipient.Name, recipient.Address));
+				else
+					message.To.Add(new MailboxAddress(recipient.Address));
+			}
+
+			if (!string.IsNullOrWhiteSpace(DefaultReplyToEmail))
+				message.ReplyTo.Add(new MailboxAddress(DefaultReplyToEmail));
+
+			message.Subject = subject;
+
+			var bodyBuilder = new BodyBuilder();
+			bodyBuilder.HtmlBody = htmlBody;
+			bodyBuilder.TextBody = textBody;
+			message.Body = bodyBuilder.ToMessageBody();
+
+			using (var client = new SmtpClient())
+			{
+				//accept all SSL certificates (in case the server supports STARTTLS)
+				client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+
+				client.Connect(Server, Port, ConnectionSecurity);
+
+				if (!string.IsNullOrWhiteSpace(Username))
+					client.Authenticate(Username, Password);
+
+				client.Send(message);
+				client.Disconnect(true);
+			}
+
+			Email email = new Email();
+			email.Id = Guid.NewGuid();
+			email.Sender = sender;
+			email.ReplyToEmail = DefaultReplyToEmail;
+			email.Recipients = recipients;
+			email.Subject = subject;
+			email.ContentHtml = htmlBody;
+			email.ContentText = textBody;
+			email.CreatedOn = DateTime.UtcNow;
+			email.SentOn = email.CreatedOn;
+			email.Priority = EmailPriority.Normal;
+			email.Status = EmailStatus.Sent;
+			email.ServerError = string.Empty;
+			email.ScheduledOn = null;
+			email.RetriesCount = 0;
+			email.ServiceId = Id;
+
+			new SmtpInternalService().SaveEmail(email);
+		}
+
+		public void QueueEmail(EmailAddress recipient, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal)
+		{
+			ValidationException ex = new ValidationException();
+
+			if (recipient == null)
+				ex.AddError("recipientEmail", "Recipient is not specified.");
+			else
+			{
+				if (string.IsNullOrEmpty(recipient.Address))
+					ex.AddError("recipientEmail", "Recipient email is not specified.");
+				else if (!recipient.Address.IsEmail())
+					ex.AddError("recipientEmail", "Recipient email is not valid email address.");
+			}
 
 			if (string.IsNullOrEmpty(subject))
 				ex.AddError("subject", "Subject is required.");
@@ -219,18 +403,16 @@ namespace WebVella.Erp.Plugins.Mail.Api
 
 			Email email = new Email();
 			email.Id = Guid.NewGuid();
-			email.SenderEmail = DefaultSenderEmail;
-			email.SenderName = DefaultSenderName;
+			email.Sender = new EmailAddress { Address = DefaultSenderEmail, Name = DefaultSenderName };
 			email.ReplyToEmail = DefaultReplyToEmail;
-			email.RecipientEmail = recipientEmail;
-			email.RecipientName = recipientName;
+			email.Recipients = new List<EmailAddress> { recipient };
 			email.Subject = subject;
 			email.ContentHtml = htmlBody;
 			email.ContentText = textBody;
 			email.CreatedOn = DateTime.UtcNow;
 			email.SentOn = null;
 			email.Priority = priority;
-			email.Status = EmailStatus.Pending; 
+			email.Status = EmailStatus.Pending;
 			email.ServerError = string.Empty;
 			email.ScheduledOn = email.CreatedOn;
 			email.RetriesCount = 0;
@@ -238,14 +420,29 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			new SmtpInternalService().SaveEmail(email);
 		}
 
-		public void QueueEmail(string recipientName, string recipientEmail, string senderName, string senderEmail, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal)
+		public void QueueEmail(List<EmailAddress> recipients, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal)
 		{
 			ValidationException ex = new ValidationException();
 
-			if (string.IsNullOrEmpty(recipientEmail))
-				ex.AddError("recipientEmail", "Recipient email is not specified.");
-			else if (!recipientEmail.IsEmail())
-				ex.AddError("recipientEmail", "Recipient email is not valid email address.");
+			if (recipients == null || recipients.Count == 0)
+			{
+				ex.AddError("recipientEmail", "Recipient is not specified.");
+			}
+			else
+			{
+				foreach (var recipient in recipients)
+				{
+					if (recipient == null)
+						ex.AddError("recipientEmail", "Recipient is not specified.");
+					else
+					{
+						if (string.IsNullOrEmpty(recipient.Address))
+							ex.AddError("recipientEmail", "Recipient email is not specified.");
+						else if (!recipient.Address.IsEmail())
+							ex.AddError("recipientEmail", "Recipient email is not valid email address.");
+					}
+				}
+			}
 
 			if (string.IsNullOrEmpty(subject))
 				ex.AddError("subject", "Subject is required.");
@@ -254,11 +451,95 @@ namespace WebVella.Erp.Plugins.Mail.Api
 
 			Email email = new Email();
 			email.Id = Guid.NewGuid();
-			email.SenderEmail = senderEmail;
-			email.SenderName = senderName;
+			email.Sender = new EmailAddress { Address = DefaultSenderEmail, Name = DefaultSenderName };
 			email.ReplyToEmail = DefaultReplyToEmail;
-			email.RecipientEmail = recipientEmail;
-			email.RecipientName = recipientName;
+			email.Recipients = recipients;
+			email.Subject = subject;
+			email.ContentHtml = htmlBody;
+			email.ContentText = textBody;
+			email.CreatedOn = DateTime.UtcNow;
+			email.SentOn = null;
+			email.Priority = priority;
+			email.Status = EmailStatus.Pending;
+			email.ServerError = string.Empty;
+			email.ScheduledOn = email.CreatedOn;
+			email.RetriesCount = 0;
+			email.ServiceId = Id;
+			new SmtpInternalService().SaveEmail(email);
+		}
+
+		public void QueueEmail(EmailAddress recipient, EmailAddress sender, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal)
+		{
+			ValidationException ex = new ValidationException();
+
+			if (recipient == null)
+				ex.AddError("recipientEmail", "Recipient is not specified.");
+			else
+			{
+				if (string.IsNullOrEmpty(recipient.Address))
+					ex.AddError("recipientEmail", "Recipient email is not specified.");
+				else if (!recipient.Address.IsEmail())
+					ex.AddError("recipientEmail", "Recipient email is not valid email address.");
+			}
+
+			if (string.IsNullOrEmpty(subject))
+				ex.AddError("subject", "Subject is required.");
+
+			ex.CheckAndThrow();
+
+			Email email = new Email();
+			email.Id = Guid.NewGuid();
+			email.Sender = sender ?? new EmailAddress { Address = DefaultSenderEmail, Name = DefaultSenderName };
+			email.ReplyToEmail = DefaultReplyToEmail;
+			email.Recipients = new List<EmailAddress> { recipient };
+			email.Subject = subject;
+			email.ContentHtml = htmlBody;
+			email.ContentText = textBody;
+			email.CreatedOn = DateTime.UtcNow;
+			email.SentOn = null;
+			email.Priority = priority;
+			email.Status = EmailStatus.Pending;
+			email.ServerError = string.Empty;
+			email.ScheduledOn = email.CreatedOn;
+			email.RetriesCount = 0;
+			email.ServiceId = Id;
+			new SmtpInternalService().SaveEmail(email);
+		}
+
+		public void QueueEmail(List<EmailAddress> recipients, EmailAddress sender, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal)
+		{
+			ValidationException ex = new ValidationException();
+
+			if (recipients == null || recipients.Count == 0)
+			{
+				ex.AddError("recipientEmail", "Recipient is not specified.");
+			}
+			else
+			{
+				foreach (var recipient in recipients)
+				{
+					if (recipient == null)
+						ex.AddError("recipientEmail", "Recipient is not specified.");
+					else
+					{
+						if (string.IsNullOrEmpty(recipient.Address))
+							ex.AddError("recipientEmail", "Recipient email is not specified.");
+						else if (!recipient.Address.IsEmail())
+							ex.AddError("recipientEmail", "Recipient email is not valid email address.");
+					}
+				}
+			}
+
+			if (string.IsNullOrEmpty(subject))
+				ex.AddError("subject", "Subject is required.");
+
+			ex.CheckAndThrow();
+
+			Email email = new Email();
+			email.Id = Guid.NewGuid();
+			email.Sender = sender ?? new EmailAddress { Address = DefaultSenderEmail, Name = DefaultSenderName };
+			email.ReplyToEmail = DefaultReplyToEmail;
+			email.Recipients = recipients;
 			email.Subject = subject;
 			email.ContentHtml = htmlBody;
 			email.ContentText = textBody;

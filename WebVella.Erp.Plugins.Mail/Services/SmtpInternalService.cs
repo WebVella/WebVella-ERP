@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MimeKit;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Api.Models.AutoMapper;
@@ -428,7 +429,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 				valEx.AddError("serviceId", "Invalid smtp service id");
 			else
 			{
-				smtpService = new ServiceManager().GetSmtpService(smtpServiceId.Value);
+				smtpService = new EmailServiceManager().GetSmtpService(smtpServiceId.Value);
 				if (smtpService == null)
 					valEx.AddError("serviceId", "Smtp service with specified id does not exist");
 			}
@@ -444,7 +445,8 @@ namespace WebVella.Erp.Plugins.Mail.Services
 
 			try
 			{
-				smtpService.SendEmail(string.Empty, recipientEmail, subject, string.Empty, content);
+				EmailAddress recipient = new EmailAddress( recipientEmail );
+				smtpService.SendEmail(recipient, subject, string.Empty, content);
 				pageModel.TempData.Put("ScreenMessage", new ScreenMessage() { Message = "Email was successfully sent", Type = ScreenMessageType.Success, Title = "Success" });
 				var returnUrl = pageModel.HttpContext.Request.Query["returnUrl"];
 				return new RedirectResult($"/mail/services/smtp/r/{smtpService.Id}/details?returnUrl={returnUrl}");
@@ -463,7 +465,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 
 			var internalSmtpSrv = new SmtpInternalService();
 			Email email = internalSmtpSrv.GetEmail(emailId);
-			SmtpService smtpService = new ServiceManager().GetSmtpService(email.ServiceId);
+			SmtpService smtpService = new EmailServiceManager().GetSmtpService(email.ServiceId);
 			internalSmtpSrv.SendEmail(email, smtpService);
 
 			if (email.Status == EmailStatus.Sent)
@@ -477,7 +479,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 
 		#endregion
 
-		public void SaveEmail(Email email)
+		internal void SaveEmail(Email email)
 		{
 			PrepareEmailXSearch(email);
 			RecordManager recMan = new RecordManager();
@@ -492,7 +494,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 			
 		}
 
-		public Email GetEmail(Guid id)
+		internal Email GetEmail(Guid id)
 		{
 			var result = new EqlCommand("SELECT * FROM email WHERE id = @id", new EqlParameter("id", id)).Execute();
 			if (result.Count == 1)
@@ -503,7 +505,8 @@ namespace WebVella.Erp.Plugins.Mail.Services
 
 		internal void PrepareEmailXSearch(Email email)
 		{
-			email.XSearch = $"{email.SenderName} {email.SenderEmail} {email.RecipientEmail} {email.RecipientName} {email.Subject} {email.ContentText} {email.ContentHtml}";
+			var recipientsText = string.Join(" ", email.Recipients.Select(x => $"{x.Name} {x.Address}") );
+			email.XSearch = $"{email.Sender?.Name} {email.Sender?.Address} {recipientsText} {email.Subject} {email.ContentText} {email.ContentHtml}";
 		}
 
 		internal void SendEmail(Email email, SmtpService service)
@@ -525,20 +528,23 @@ namespace WebVella.Erp.Plugins.Mail.Services
 				}
 
 				var message = new MimeMessage();
-				if (!string.IsNullOrWhiteSpace(email.SenderName))
-					message.From.Add(new MailboxAddress(email.SenderName, email.SenderEmail));
+				if (!string.IsNullOrWhiteSpace(email.Sender?.Name))
+					message.From.Add(new MailboxAddress(email.Sender?.Name, email.Sender?.Address));
 				else
-					message.From.Add(new MailboxAddress(email.SenderEmail));
+					message.From.Add(new MailboxAddress(email.Sender?.Address));
 
-				if (!string.IsNullOrWhiteSpace(email.RecipientName))
-					message.To.Add(new MailboxAddress(email.RecipientName, email.RecipientEmail));
-				else
-					message.To.Add(new MailboxAddress(email.RecipientEmail));
+				foreach (var recipient in email.Recipients)
+				{
+					if (!string.IsNullOrWhiteSpace(recipient.Name))
+						message.To.Add(new MailboxAddress(recipient.Name, recipient.Address));
+					else
+						message.To.Add(new MailboxAddress(recipient.Address));
+				}
 
 				if (!string.IsNullOrWhiteSpace(email.ReplyToEmail))
 					message.ReplyTo.Add(new MailboxAddress(email.ReplyToEmail));
 				else
-					message.ReplyTo.Add(new MailboxAddress(email.SenderEmail));
+					message.ReplyTo.Add(new MailboxAddress(email.Sender?.Address));
 
 				message.Subject = email.Subject;
 
@@ -603,7 +609,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 				List<Email> pendingEmails = new List<Email>();
 				do
 				{
-					ServiceManager serviceManager = new ServiceManager();
+					EmailServiceManager serviceManager = new EmailServiceManager();
 
 					pendingEmails = new EqlCommand("SELECT * FROM email WHERE status = @status AND scheduled_on <> NULL" +
 													" AND scheduled_on < @scheduled_on  ORDER BY priority DESC, scheduled_on ASC PAGE 1 PAGESIZE 10",

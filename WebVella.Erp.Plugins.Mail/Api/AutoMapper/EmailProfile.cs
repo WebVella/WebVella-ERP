@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Plugins.Mail.Api;
 
@@ -21,13 +23,11 @@ namespace WebVella.Erp.Web.Models.AutoMapper.Profiles
 			Email model = new Email();
 			model.Id = (Guid)rec["id"];
 			model.ServiceId = (Guid)rec["service_id"];
-			model.SenderName = (string)rec["sender_name"];
-			model.SenderEmail = (string)rec["sender_email"];
-			model.RecipientName = (string)rec["recipient_name"];
-			model.RecipientEmail = (string)rec["recipient_email"];
+			model.Sender = JsonConvert.DeserializeObject<EmailAddress>((string)rec["sender"]);
+			model.Recipients = JsonConvert.DeserializeObject<List<EmailAddress>>((string)rec["recipients"]);
 			model.ReplyToEmail = (string)rec["reply_to_email"];
-			model.Subject= (string)rec["subject"];
-			model.ContentText= (string)rec["content_text"];
+			model.Subject = (string)rec["subject"];
+			model.ContentText = (string)rec["content_text"];
 			model.ContentHtml = (string)rec["content_html"];
 			model.CreatedOn = (DateTime)rec["created_on"];
 			model.SentOn = (DateTime?)rec["sent_on"];
@@ -44,16 +44,13 @@ namespace WebVella.Erp.Web.Models.AutoMapper.Profiles
 		private static EntityRecord EmailToEntityRecordConvert(Email model)
 		{
 			if (model == null)
-				return null; 
+				return null;
 
 			EntityRecord rec = new EntityRecord();
 			rec["id"] = model.Id;
 			rec["service_id"] = model.ServiceId;
-			rec["sender_name"] = model.SenderName;
-			rec["sender_email"] = model.SenderEmail;
-			rec["recipient_name"] = model.RecipientName;
-			rec["recipient_email"] = model.RecipientEmail;
-			rec["reply_to_email"] = model.ReplyToEmail;
+			rec["sender"] = JsonConvert.SerializeObject(model.Sender ?? new EmailAddress());
+			rec["recipients"] = JsonConvert.SerializeObject(model.Recipients ?? new List<EmailAddress>());
 			rec["subject"] = model.Subject;
 			rec["content_text"] = model.ContentText;
 			rec["content_html"] = model.ContentHtml;
