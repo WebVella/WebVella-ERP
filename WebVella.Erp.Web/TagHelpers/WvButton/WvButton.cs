@@ -129,13 +129,16 @@ namespace WebVella.Erp.Web.TagHelpers
 			#region << Color and Outline >>
 			if (Type != ButtonType.ButtonLink)
 			{
-				if (isOutline)
+				if (Color != ErpColor.None)
 				{
-					classList.Add("btn-outline-" + Color.GetLabel());
-				}
-				else
-				{
-					classList.Add("btn-" + Color.GetLabel());
+					if (isOutline)
+					{
+						classList.Add("btn-outline-" + Color.GetLabel());
+					}
+					else
+					{
+						classList.Add("btn-" + Color.GetLabel());
+					}
 				}
 			}
 			else {

@@ -69,6 +69,8 @@ namespace WebVella.Erp.Web.Models
 		[SelectOption(Label = "blue-gray")]
 		BlueGray = 29,
 		[SelectOption(Label = "default")]
-		Default = 30
+		Default = 30,
+		[SelectOption(Label = "none")]
+		None = 31
 	}
 }
