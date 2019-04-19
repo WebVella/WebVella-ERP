@@ -81,6 +81,11 @@ a {
     a:hover {
         color: #0D47A1;
     }
+
+.form-control:focus {
+	box-shadow: none;
+}
+
 /*#endregion*/
 
 /*#region << Colors >> */
@@ -2493,6 +2498,13 @@ dropdown-item.active {
     /*text-transform: uppercase;*/
     font-size: 12px;
 }
+
+.tabs .card-header,
+.pills .card-header {
+	font-size:1rem;
+}
+
+
 
 .card-body {
     padding: 0.5rem;
