@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebVella.Erp.Web.Hooks;
 using WebVella.Erp.Web.Models;
+using WebVella.Erp.Web.Services;
 
 namespace WebVella.Erp.Web.Components
 {
@@ -17,6 +18,8 @@ namespace WebVella.Erp.Web.Components
 			ViewBag.MetaTags = new List<MetaTagInclude>();
 			ViewBag.LinkTags = new List<LinkTagInclude>();
 			ViewBag.ScriptTags = new List<ScriptTagInclude>();
+
+			var cacheKey = new RenderService().GetCacheKey();
 
 			#region == <title> ==
 			var includedTitle = pageModel.HttpContext.Items.ContainsKey("<title>") ? (string)pageModel.HttpContext.Items["<title>"] : "";
@@ -110,7 +113,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						linkTagsToInclude.Add(new LinkTagInclude()
 						{
-							Href = "/lib/twitter-bootstrap/css/bootstrap.css"
+							Href = "/lib/twitter-bootstrap/css/bootstrap.css?cb=" + cacheKey
 						});
 					}
 				}
@@ -122,7 +125,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						linkTagsToInclude.Add(new LinkTagInclude()
 						{
-							Href = "/lib/flatpickr/flatpickr.min.css"
+							Href = "/lib/flatpickr/flatpickr.min.css?cb=" + cacheKey
 						});
 					}
 				}
@@ -134,7 +137,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						linkTagsToInclude.Add(new LinkTagInclude()
 						{
-							Href = "/lib/select2/css/select2.min.css"
+							Href = "/lib/select2/css/select2.min.css?cb=" + cacheKey
 						});
 					}
 				}
@@ -146,7 +149,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						linkTagsToInclude.Add(new LinkTagInclude()
 						{
-							Href = "/js/font-awesome-5.4.1/css/all.min.css"
+							Href = "/js/font-awesome-5.4.1/css/all.min.css?cb=" + cacheKey
 						});
 					}
 				}
@@ -158,7 +161,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						linkTagsToInclude.Add(new LinkTagInclude()
 						{
-							Href = "/lib/toastr.js/toastr.min.css"
+							Href = "/lib/toastr.js/toastr.min.css?cb=" + cacheKey
 						});
 					}
 				}
@@ -170,7 +173,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						linkTagsToInclude.Add(new LinkTagInclude()
 						{
-							Href = "/lib/spectrum/spectrum.min.css"
+							Href = "/lib/spectrum/spectrum.min.css?cb=" + cacheKey
 						});
 					}
 				}

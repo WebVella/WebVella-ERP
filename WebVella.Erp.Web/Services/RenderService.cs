@@ -530,5 +530,14 @@ namespace WebVella.Erp.Web.Services
             return headerList;
 
         }
-    }
+
+		public string GetCacheKey()
+		{
+			var key = ErpSettings.CacheKey;
+			if (String.IsNullOrWhiteSpace(key))
+				key = DateTime.Now.ToString("yyyyMMddHHmmss");
+
+			return key;
+		}
+	}
 }
