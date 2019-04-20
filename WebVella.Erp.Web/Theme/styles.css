@@ -86,15 +86,19 @@ a {
 	box-shadow: none;
 }
 
+.btn-outline-secondary:not(:disabled):not(.disabled):active:focus, .btn-outline-secondary:not(:disabled):not(.disabled).active:focus, .show > .btn-outline-secondary.dropdown-toggle:focus {
+	box-shadow: none;
+}
+
+.text-muted {
+	color:#aaa;
+}
 /*#endregion*/
-
 /*#region << Colors >> */
-
-
 /*Red*/
 .go-red {
-    color: --red_color !important;
-    fill: --red_color !important;
+	color: --red_color !important;
+	fill: --red_color !important;
 }
 
     .go-red * {
@@ -3367,8 +3371,8 @@ pre, code {
     border-right: none;
     padding-left: 0;
     border-bottom-style: solid;
-    /*border-bottom-color: #eee;*/
-    border-bottom-color: #fff;
+    border-bottom-color: #eee;
+    /*border-bottom-color: #fff;*/
     padding-right: 10px;
 }
 
