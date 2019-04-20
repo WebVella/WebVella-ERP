@@ -180,7 +180,10 @@ namespace WebVella.Erp.Web.TagHelpers
 						//Control
 						var viewFormControlEl = new TagBuilder("div");
 						viewFormControlEl.AddCssClass("form-control erp-url");
-						viewFormControlEl.InnerHtml.Append((Value ?? "").ToString());
+						string processedHref = (Value ?? "").ToString();
+						if (!processedHref.StartsWith("http") && !processedHref.StartsWith("/"))
+							processedHref = "http://" + processedHref;
+						viewFormControlEl.InnerHtml.AppendHtml($"<a href='{processedHref}' target='_blank'>{(Value ?? "").ToString()}</a>");
 						viewWrapperEl.InnerHtml.AppendHtml(viewFormControlEl);
 
 						//Append
