@@ -3991,9 +3991,9 @@ erp-field.inline-edit .select2-container--default .select2-search--inline .selec
 
 
 .erp-field .input-group-prepend.d-none + .form-control {
-    border-left: 1px solid #ced4da !important;
-    border-top-left-radius: 0.2rem;
-    border-bottom-left-radius: 0.2rem;
+    /*border-left: 1px solid #ced4da !important;*/
+    /*border-top-left-radius: 0.2rem;
+    border-bottom-left-radius: 0.2rem;*/
 }
 
 .erp-field .ace_editor {
