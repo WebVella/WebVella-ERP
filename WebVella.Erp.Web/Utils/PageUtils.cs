@@ -148,12 +148,12 @@ namespace WebVella.Erp.Web.Utils
 
 			var descriptionList = new List<string>();
 			#region << Total Count >>
-			//var totalCountHtml = totalCount + " records";
-			//if (totalCount == 1)
-			//{
-			//	totalCountHtml = totalCount + " record";
-			//}
-			//descriptionList.Add(totalCountHtml);
+			var totalCountHtml = totalCount + " records";
+			if (totalCount == 1)
+			{
+				totalCountHtml = totalCount + " record";
+			}
+			descriptionList.Add(totalCountHtml);
 			#endregion
 
 			#region << Sorted by >>

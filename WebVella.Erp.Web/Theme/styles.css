@@ -91,7 +91,7 @@ a {
 }
 
 .text-muted {
-	color:#aaa;
+	color:#aaa !important;
 }
 /*#endregion*/
 /*#region << Colors >> */
@@ -3091,7 +3091,7 @@ pre, code {
 .erp-field.display .form-control,
 .erp-field.display .form-control-plaintext,
 .erp-field.display .select2-container {
-    border-bottom: 1px solid #eee;
+    /*border-bottom: 1px solid #eee;*/
 }
 
 .form-control::placeholder {
@@ -3258,8 +3258,7 @@ pre, code {
 
 
 .erp-field .field-description {
-    font-style: italic;
-    font-size: 0.95em;
+    font-size: 0.75em;
 }
 
 .erp-field .control-label abbr,
@@ -3511,14 +3510,15 @@ input[type=date].form-control, input[type=datetime-local].form-control {
     align-items: stretch;
 }
 
-    .erp-field.inline-edit .erp-html.form-control.disabled,
-    .erp-field.inline-edit .erp-multilinetext.form-control.disabled,
-    .erp-field.inline-edit .erp-data-csv.form-control.disabled,
-    .erp-field.inline-edit .erp-html .action .input-group-text,
-    .erp-field.inline-edit .erp-multilinetext.action .input-group-text,
-    .erp-field.inline-edit .erp-data-csv.action .input-group-text {
-        height: auto;
-    }
+	.erp-field.inline-edit .erp-html.form-control.disabled,
+	.erp-field.inline-edit .erp-multilinetext.form-control.disabled,
+	.erp-field.inline-edit .erp-data-csv.form-control.disabled,
+	.erp-field.inline-edit .erp-html .action .input-group-text,
+	.erp-field.inline-edit .erp-multilinetext.action .input-group-text,
+	.erp-field.inline-edit .erp-data-csv.action .input-group-text {
+		height: auto;
+		border-bottom: none;
+	}
 
 .erp-field.inline-edit .form-control:disabled, .erp-field.inline-edit .form-control[readonly],
 .erp-field .form-control:disabled, .erp-field .form-control.disabled, .erp-field .form-control[readonly] {
