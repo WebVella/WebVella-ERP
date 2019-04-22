@@ -38,7 +38,9 @@ $$$TABS$$$ FROM {2} {3}
 $$$TABS$$$ LEFT JOIN  {4} {5} ON {6}.{7} = {8}.{9}
 $$$TABS$$$ WHERE {10}.{11} = {12}.{13} )d  )::jsonb AS ""{0}"",";
 
-		const string FILTER_JOIN = @"LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
+		const string FILTER_JOIN = @"
+LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
+
 		#endregion
 
 		private class SelectInfoWrapper
@@ -803,7 +805,7 @@ $$$TABS$$$ WHERE {10}.{11} = {12}.{13} )d  )::jsonb AS ""{0}"",";
 					//when the relation is origin -> target entity
 					if (relation.OriginEntityId == fromEntity.Id)
 					{
-						relationJoinSql = string.Format(FILTER_JOIN,
+						relationJoinSql += string.Format(FILTER_JOIN,
 							$"{RECORD_COLLECTION_PREFIX}{relation.TargetEntityName}",
 							relationAlias,
 							relationAlias,
@@ -813,7 +815,7 @@ $$$TABS$$$ WHERE {10}.{11} = {12}.{13} )d  )::jsonb AS ""{0}"",";
 					}
 					else //when the relation is target -> origin, we have to query origin entity
 					{
-						relationJoinSql = string.Format(FILTER_JOIN,
+						relationJoinSql += string.Format(FILTER_JOIN,
 							   $"{RECORD_COLLECTION_PREFIX}{relation.OriginEntityName}",
 							   relationAlias,
 							   relationAlias,
@@ -830,7 +832,7 @@ $$$TABS$$$ WHERE {10}.{11} = {12}.{13} )d  )::jsonb AS ""{0}"",";
 						//when the relation is origin -> target entity
 						if (relation.OriginEntityId == fromEntity.Id)
 						{
-							relationJoinSql = string.Format(FILTER_JOIN,
+							relationJoinSql += string.Format(FILTER_JOIN,
 								$"{RECORD_COLLECTION_PREFIX}{relation.TargetEntityName}",
 								relationAlias,
 								relationAlias,
@@ -840,7 +842,7 @@ $$$TABS$$$ WHERE {10}.{11} = {12}.{13} )d  )::jsonb AS ""{0}"",";
 						}
 						else //when the relation is target -> origin, we have to query origin entity
 						{
-							relationJoinSql = string.Format(FILTER_JOIN,
+							relationJoinSql += string.Format(FILTER_JOIN,
 								 $"{RECORD_COLLECTION_PREFIX}{relation.OriginEntityName}",
 								relationAlias,
 								relationAlias,
@@ -863,7 +865,7 @@ $$$TABS$$$ WHERE {10}.{11} = {12}.{13} )d  )::jsonb AS ""{0}"",";
 						}
 						else
 						{
-							relationJoinSql = string.Format(FILTER_JOIN,
+							relationJoinSql += string.Format(FILTER_JOIN,
 								$"{RECORD_COLLECTION_PREFIX}{relation.TargetEntityName}",
 								relationAlias,
 								relationAlias,
@@ -886,12 +888,12 @@ $$$TABS$$$ WHERE {10}.{11} = {12}.{13} )d  )::jsonb AS ""{0}"",";
 						string targetJoinAlias = relation.Name + "_target";
 						string originJoinAlias = relationAlias;
 
-						relationJoinSql = string.Format(FILTER_JOIN,
+						relationJoinSql += string.Format(FILTER_JOIN,
 								 /*LEFT OUTER JOIN*/ relationTable, /* */ targetJoinAlias /*ON*/,
 								 targetJoinAlias, /*.*/ "target_id", /* =  */
 								 targetJoinTable, /*.*/ relation.TargetFieldName);
 
-						relationJoinSql = relationJoinSql + "\r\n" + string.Format(FILTER_JOIN,
+						relationJoinSql += relationJoinSql + "\r\n" + string.Format(FILTER_JOIN,
 								/*LEFT OUTER JOIN*/ originJoinTable, /* */ originJoinAlias /*ON*/,
 								targetJoinAlias, /*.*/ "origin_id", /* =  */
 								originJoinAlias, /*.*/ relation.OriginFieldName);
@@ -901,12 +903,12 @@ $$$TABS$$$ WHERE {10}.{11} = {12}.{13} )d  )::jsonb AS ""{0}"",";
 						string targetJoinAlias = relationAlias;
 						string originJoinAlias = relation.Name + "_origin";
 
-						relationJoinSql = string.Format(FILTER_JOIN,
+						relationJoinSql += string.Format(FILTER_JOIN,
 								/*LEFT OUTER JOIN*/ relationTable, /* */ originJoinAlias /*ON*/,
 								originJoinAlias, /*.*/ "origin_id", /* =  */
 								originJoinTable, /*.*/ relation.OriginFieldName);
 
-						relationJoinSql = relationJoinSql + "\r\n" + string.Format(FILTER_JOIN,
+						relationJoinSql += relationJoinSql + "\r\n" + string.Format(FILTER_JOIN,
 								  /*LEFT OUTER JOIN*/ targetJoinTable, /* */ targetJoinAlias /*ON*/,
 								originJoinAlias, /*.*/ "target_id", /* =  */
 								targetJoinAlias, /*.*/ relation.TargetFieldName);
