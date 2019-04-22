@@ -88,6 +88,8 @@ namespace WebVella.Erp.Web.Components
 
 			ViewBag.PageModel = pageModel;
 
+			ViewBag.DefaultAppName = String.IsNullOrWhiteSpace(ErpSettings.AppName) ? "WebVella" : ErpSettings.AppName;
+
 			return await Task.FromResult<IViewComponentResult>(View("Nav.Default"));
         }
     }

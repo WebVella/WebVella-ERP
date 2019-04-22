@@ -297,12 +297,12 @@ namespace WebVella.Erp.Web.TagHelpers
 						viewWrapperEl.InnerHtml.AppendHtml(viewFormControlEl);
 
 						var viewInputActionEl = new TagBuilder("span");
-						viewInputActionEl.AddCssClass("input-group-append action");
+						viewInputActionEl.AddCssClass("input-group-append");
 						viewInputActionEl.Attributes.Add("title", "edit");
 
 						var viewInputActionLinkEl = new TagBuilder("button");
 						viewInputActionLinkEl.Attributes.Add("type", "button");
-						viewInputActionLinkEl.AddCssClass("btn btn-white");
+						viewInputActionLinkEl.AddCssClass("btn btn-white action");
 
 						var viewInputActionIconEl = new TagBuilder("span");
 						viewInputActionIconEl.AddCssClass("fa fa-fw fa-pencil-alt");
