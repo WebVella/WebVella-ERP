@@ -893,7 +893,7 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 								 targetJoinAlias, /*.*/ "target_id", /* =  */
 								 targetJoinTable, /*.*/ relation.TargetFieldName);
 
-						relationJoinSql += relationJoinSql + "\r\n" + string.Format(FILTER_JOIN,
+						relationJoinSql += "\r\n" + string.Format(FILTER_JOIN,
 								/*LEFT OUTER JOIN*/ originJoinTable, /* */ originJoinAlias /*ON*/,
 								targetJoinAlias, /*.*/ "origin_id", /* =  */
 								originJoinAlias, /*.*/ relation.OriginFieldName);
@@ -908,7 +908,7 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 								originJoinAlias, /*.*/ "origin_id", /* =  */
 								originJoinTable, /*.*/ relation.OriginFieldName);
 
-						relationJoinSql += relationJoinSql + "\r\n" + string.Format(FILTER_JOIN,
+						relationJoinSql += "\r\n" + string.Format(FILTER_JOIN,
 								  /*LEFT OUTER JOIN*/ targetJoinTable, /* */ targetJoinAlias /*ON*/,
 								originJoinAlias, /*.*/ "target_id", /* =  */
 								targetJoinAlias, /*.*/ relation.TargetFieldName);
