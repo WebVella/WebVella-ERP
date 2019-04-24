@@ -3866,15 +3866,17 @@ erp-field.inline-edit .select2-container--default .select2-search--inline .selec
     min-height: unset;
 }
 
+.erp-field .erp-select span:empty {
+	display:inline-block;
+}
 
 /*.erp-field .select2{
 	width:100% !important;
 }*/
-
 .erp-field .select2-selection {
-    min-height: 31px;
-    position: relative;
-    z-index: 1;
+	min-height: 31px;
+	position: relative;
+	z-index: 1;
 }
 
 .erp-field .form-control .select2-selection {

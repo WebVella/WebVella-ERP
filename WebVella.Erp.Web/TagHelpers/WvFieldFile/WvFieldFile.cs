@@ -108,7 +108,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					var selectFileLink = new TagBuilder("button");
 					selectFileLink.Attributes.Add("type", $"button");
 					selectFileLink.AddCssClass("btn btn-white");
-					selectFileLink.Attributes.Add("onclick", $"document.getElementById('file-{FieldId}').click();");
+					selectFileLink.Attributes.Add("onclick", $"window.document.getElementById('file-{FieldId}').click();");
 					selectFileLink.InnerHtml.AppendHtml("browse");
 					appendEl.InnerHtml.AppendHtml(selectFileLink);
 
@@ -380,7 +380,7 @@ namespace WebVella.Erp.Web.TagHelpers
 						var selectFileLink = new TagBuilder("button");
 						selectFileLink.Attributes.Add("type", $"button");
 						selectFileLink.AddCssClass("btn btn-white");
-						selectFileLink.Attributes.Add("onclick", $"document.getElementById('file-{FieldId}').click();");
+						selectFileLink.Attributes.Add("onclick", $"window.document.getElementById('file-{FieldId}').click();");
 						selectFileLink.InnerHtml.AppendHtml("select");
 						editInputGroupAppendEl.InnerHtml.AppendHtml(selectFileLink);
 

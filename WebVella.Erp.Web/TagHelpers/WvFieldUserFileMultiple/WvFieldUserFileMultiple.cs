@@ -126,7 +126,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					var selectFileLink = new TagBuilder("button");
 					selectFileLink.Attributes.Add("type", $"button");
 					selectFileLink.AddCssClass("btn btn-white");
-					selectFileLink.Attributes.Add("onclick", $"document.getElementById('file-{FieldId}').click();");
+					selectFileLink.Attributes.Add("onclick", $"window.document.getElementById('file-{FieldId}').click();");
 					selectFileLink.InnerHtml.AppendHtml("browse");
 					appendEl.InnerHtml.AppendHtml(selectFileLink);
 					inputGroupEl.InnerHtml.AppendHtml(appendEl);
@@ -340,269 +340,269 @@ namespace WebVella.Erp.Web.TagHelpers
 			else if (Mode == FieldRenderMode.InlineEdit)
 			{
                 output.Content.AppendHtml("Not implemented yet");
-                //if (Access == FieldAccess.Full || Access == FieldAccess.FullAndCreate)
-                //{
-                //	#region << View Wrapper >>
-                //	{
-                //		var viewWrapperEl = new TagBuilder("div");
-                //		viewWrapperEl.AddCssClass("input-group view-wrapper");
-                //		viewWrapperEl.Attributes.Add("title", "double click to edit");
-                //		viewWrapperEl.Attributes.Add("id", $"view-{FieldId}");
+				//if (Access == FieldAccess.Full || Access == FieldAccess.FullAndCreate)
+				//{
+				//	#region << View Wrapper >>
+				//	{
+				//		var viewWrapperEl = new TagBuilder("div");
+				//		viewWrapperEl.AddCssClass("input-group view-wrapper");
+				//		viewWrapperEl.Attributes.Add("title", "double click to edit");
+				//		viewWrapperEl.Attributes.Add("id", $"view-{FieldId}");
 
-                //		var viewInputPrepend = new TagBuilder("span");
-                //		viewInputPrepend.AddCssClass($"input-group-prepend icon-addon {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")}");
-                //		viewInputPrepend.Attributes.Add("title", $"/fs{Value}");
-                //		var viewInputPrependText = new TagBuilder("span");
-                //		viewInputPrependText.AddCssClass("input-group-text");
-                //		var prependIcon = new TagBuilder("span");
-                //		prependIcon.AddCssClass($"fa fa-fw type-icon {PathTypeIcon}");
-                //		viewInputPrependText.InnerHtml.AppendHtml(prependIcon);
-                //		viewInputPrepend.InnerHtml.AppendHtml(viewInputPrependText);
-                //		viewWrapperEl.InnerHtml.AppendHtml(viewInputPrepend);
+				//		var viewInputPrepend = new TagBuilder("span");
+				//		viewInputPrepend.AddCssClass($"input-group-prepend icon-addon {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")}");
+				//		viewInputPrepend.Attributes.Add("title", $"/fs{Value}");
+				//		var viewInputPrependText = new TagBuilder("span");
+				//		viewInputPrependText.AddCssClass("input-group-text");
+				//		var prependIcon = new TagBuilder("span");
+				//		prependIcon.AddCssClass($"fa fa-fw type-icon {PathTypeIcon}");
+				//		viewInputPrependText.InnerHtml.AppendHtml(prependIcon);
+				//		viewInputPrepend.InnerHtml.AppendHtml(viewInputPrependText);
+				//		viewWrapperEl.InnerHtml.AppendHtml(viewInputPrepend);
 
-                //		var viewFormControlEl = new TagBuilder("div");
-                //		viewFormControlEl.AddCssClass("form-control erp-file");
+				//		var viewFormControlEl = new TagBuilder("div");
+				//		viewFormControlEl.AddCssClass("form-control erp-file");
 
-                //		var viewFormControlLinkEl = new TagBuilder("a");
-                //		viewFormControlLinkEl.Attributes.Add("href", $"/fs{Value}");
-                //		viewFormControlLinkEl.Attributes.Add("target", "_blank");
-                //		viewFormControlLinkEl.Attributes.Add("title", $"/fs{Value}");
-                //		viewFormControlLinkEl.InnerHtml.Append(FileName);
-                //		viewFormControlEl.InnerHtml.AppendHtml(viewFormControlLinkEl);
+				//		var viewFormControlLinkEl = new TagBuilder("a");
+				//		viewFormControlLinkEl.Attributes.Add("href", $"/fs{Value}");
+				//		viewFormControlLinkEl.Attributes.Add("target", "_blank");
+				//		viewFormControlLinkEl.Attributes.Add("title", $"/fs{Value}");
+				//		viewFormControlLinkEl.InnerHtml.Append(FileName);
+				//		viewFormControlEl.InnerHtml.AppendHtml(viewFormControlLinkEl);
 
-                //		viewWrapperEl.InnerHtml.AppendHtml(viewFormControlEl);
+				//		viewWrapperEl.InnerHtml.AppendHtml(viewFormControlEl);
 
-                //		var viewInputActionEl = new TagBuilder("span");
-                //		viewInputActionEl.AddCssClass("input-group-append action");
-                //		viewInputActionEl.Attributes.Add("title", "edit");
+				//		var viewInputActionEl = new TagBuilder("span");
+				//		viewInputActionEl.AddCssClass("input-group-append action");
+				//		viewInputActionEl.Attributes.Add("title", "edit");
 
-                //		var viewInputActionLinkEl = new TagBuilder("button");
-                //		viewInputActionLinkEl.Attributes.Add("type", "button");
-                //		viewInputActionLinkEl.AddCssClass("btn btn-white");
+				//		var viewInputActionLinkEl = new TagBuilder("button");
+				//		viewInputActionLinkEl.Attributes.Add("type", "button");
+				//		viewInputActionLinkEl.AddCssClass("btn btn-white");
 
-                //		var viewInputActionIconEl = new TagBuilder("span");
-                //		viewInputActionIconEl.AddCssClass("fa fa-fw fa-pencil-alt");
-                //		viewInputActionLinkEl.InnerHtml.AppendHtml(viewInputActionIconEl);
-                //		viewInputActionEl.InnerHtml.AppendHtml(viewInputActionLinkEl);
-                //		viewWrapperEl.InnerHtml.AppendHtml(viewInputActionEl);
+				//		var viewInputActionIconEl = new TagBuilder("span");
+				//		viewInputActionIconEl.AddCssClass("fa fa-fw fa-pencil-alt");
+				//		viewInputActionLinkEl.InnerHtml.AppendHtml(viewInputActionIconEl);
+				//		viewInputActionEl.InnerHtml.AppendHtml(viewInputActionLinkEl);
+				//		viewWrapperEl.InnerHtml.AppendHtml(viewInputActionEl);
 
-                //		output.Content.AppendHtml(viewWrapperEl);
-                //	}
-                //	#endregion
+				//		output.Content.AppendHtml(viewWrapperEl);
+				//	}
+				//	#endregion
 
-                //	#region << Edit Wrapper>>
-                //	{
-                //		var editWrapperEl = new TagBuilder("div");
-                //		editWrapperEl.Attributes.Add("id", $"edit-{FieldId}");
-                //		editWrapperEl.Attributes.Add("style", $"display:none;");
-                //		editWrapperEl.AddCssClass("edit-wrapper");
+				//	#region << Edit Wrapper>>
+				//	{
+				//		var editWrapperEl = new TagBuilder("div");
+				//		editWrapperEl.Attributes.Add("id", $"edit-{FieldId}");
+				//		editWrapperEl.Attributes.Add("style", $"display:none;");
+				//		editWrapperEl.AddCssClass("edit-wrapper");
 
-                //		var editInputGroupEl = new TagBuilder("div");
-                //		editInputGroupEl.AddCssClass("input-group");
+				//		var editInputGroupEl = new TagBuilder("div");
+				//		editInputGroupEl.AddCssClass("input-group");
 
-                //		var editWrapperPrependEl = new TagBuilder("span");
-                //		editWrapperPrependEl.AddCssClass($"input-group-prepend icon-addon {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")} {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
-                //		editWrapperPrependEl.Attributes.Add("title", $"/fs{Value}");
-                //		var editWrapperPrependText = new TagBuilder("span");
-                //		editWrapperPrependText.AddCssClass("input-group-text");
-                //		var editWrapperPrependIcon = new TagBuilder("span");
-                //		editWrapperPrependIcon.AddCssClass($"fa fa-fw type-icon {PathTypeIcon}");
-                //		editWrapperPrependText.InnerHtml.AppendHtml(editWrapperPrependIcon);
-                //		editWrapperPrependEl.InnerHtml.AppendHtml(editWrapperPrependText);
-                //		editInputGroupEl.InnerHtml.AppendHtml(editWrapperPrependEl);
-
-
-                //		var fakeInputEl = new TagBuilder("div");
-                //		var inputElCssClassList = new List<string>();
-                //		inputElCssClassList.Add("form-control erp-file with-progress ");
-
-                //		fakeInputEl.Attributes.Add("id", $"fake-{FieldId}");
-
-                //		if (ValidationErrors.Count > 0)
-                //		{
-                //			inputElCssClassList.Add("is-invalid");
-                //		}
-
-                //		fakeInputEl.Attributes.Add("class", String.Join(' ', inputElCssClassList));
-
-                //		var fakeInputFileLinkEl = new TagBuilder("a");
-                //		fakeInputFileLinkEl.Attributes.Add("href", $"/fs{Value}");
-                //		fakeInputFileLinkEl.Attributes.Add("target", "_blank");
-                //		fakeInputFileLinkEl.Attributes.Add("title", $"/fs{Value}");
-                //		fakeInputFileLinkEl.InnerHtml.Append(FileName);
-                //		fakeInputEl.InnerHtml.AppendHtml(fakeInputFileLinkEl);
-                //		var fakeInputProgress = new TagBuilder("div");
-                //		fakeInputProgress.AddCssClass("form-control-progress");
-                //		fakeInputEl.InnerHtml.AppendHtml(fakeInputProgress);
-                //		editInputGroupEl.InnerHtml.AppendHtml(fakeInputEl);
+				//		var editWrapperPrependEl = new TagBuilder("span");
+				//		editWrapperPrependEl.AddCssClass($"input-group-prepend icon-addon {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")} {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
+				//		editWrapperPrependEl.Attributes.Add("title", $"/fs{Value}");
+				//		var editWrapperPrependText = new TagBuilder("span");
+				//		editWrapperPrependText.AddCssClass("input-group-text");
+				//		var editWrapperPrependIcon = new TagBuilder("span");
+				//		editWrapperPrependIcon.AddCssClass($"fa fa-fw type-icon {PathTypeIcon}");
+				//		editWrapperPrependText.InnerHtml.AppendHtml(editWrapperPrependIcon);
+				//		editWrapperPrependEl.InnerHtml.AppendHtml(editWrapperPrependText);
+				//		editInputGroupEl.InnerHtml.AppendHtml(editWrapperPrependEl);
 
 
-                //		var editInputGroupAppendEl = new TagBuilder("span");
-                //		editInputGroupAppendEl.AddCssClass("input-group-append");
+				//		var fakeInputEl = new TagBuilder("div");
+				//		var inputElCssClassList = new List<string>();
+				//		inputElCssClassList.Add("form-control erp-file with-progress ");
 
-                //		if (!Required)
-                //		{
-                //			var appendDeleteLink = new TagBuilder("button");
-                //			appendDeleteLink.Attributes.Add("type", $"button");
-                //			appendDeleteLink.Attributes.Add("id", $"remove-{FieldId}");
-                //			appendDeleteLink.AddCssClass($"btn btn-white remove {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")}");
-                //			appendDeleteLink.Attributes.Add("title", "select as undefined");
-                //			var appendDeleteLinkIcon = new TagBuilder("span");
-                //			appendDeleteLinkIcon.AddCssClass("fa fa-fw fa-trash go-red");
-                //			appendDeleteLink.InnerHtml.AppendHtml(appendDeleteLinkIcon);
-                //			editInputGroupAppendEl.InnerHtml.AppendHtml(appendDeleteLink);
-                //		}
+				//		fakeInputEl.Attributes.Add("id", $"fake-{FieldId}");
 
-                //		var selectFileLink = new TagBuilder("button");
-                //		selectFileLink.Attributes.Add("type", $"button");
-                //		selectFileLink.AddCssClass("btn btn-white");
-                //		selectFileLink.Attributes.Add("onclick", $"document.getElementById('file-{FieldId}').click();");
-                //		selectFileLink.InnerHtml.AppendHtml("select");
-                //		editInputGroupAppendEl.InnerHtml.AppendHtml(selectFileLink);
+				//		if (ValidationErrors.Count > 0)
+				//		{
+				//			inputElCssClassList.Add("is-invalid");
+				//		}
+
+				//		fakeInputEl.Attributes.Add("class", String.Join(' ', inputElCssClassList));
+
+				//		var fakeInputFileLinkEl = new TagBuilder("a");
+				//		fakeInputFileLinkEl.Attributes.Add("href", $"/fs{Value}");
+				//		fakeInputFileLinkEl.Attributes.Add("target", "_blank");
+				//		fakeInputFileLinkEl.Attributes.Add("title", $"/fs{Value}");
+				//		fakeInputFileLinkEl.InnerHtml.Append(FileName);
+				//		fakeInputEl.InnerHtml.AppendHtml(fakeInputFileLinkEl);
+				//		var fakeInputProgress = new TagBuilder("div");
+				//		fakeInputProgress.AddCssClass("form-control-progress");
+				//		fakeInputEl.InnerHtml.AppendHtml(fakeInputProgress);
+				//		editInputGroupEl.InnerHtml.AppendHtml(fakeInputEl);
 
 
-                //		var editSaveBtnEl = new TagBuilder("button");
-                //		editSaveBtnEl.Attributes.Add("type", "submit");
-                //		editSaveBtnEl.AddCssClass("btn btn-white save");
-                //		editSaveBtnEl.Attributes.Add("title", "save");
+				//		var editInputGroupAppendEl = new TagBuilder("span");
+				//		editInputGroupAppendEl.AddCssClass("input-group-append");
 
-                //		var editSaveIconEl = new TagBuilder("span");
-                //		editSaveIconEl.AddCssClass("fa fa-fw fa-check go-green");
-                //		editSaveBtnEl.InnerHtml.AppendHtml(editSaveIconEl);
-                //		editInputGroupAppendEl.InnerHtml.AppendHtml(editSaveBtnEl);
+				//		if (!Required)
+				//		{
+				//			var appendDeleteLink = new TagBuilder("button");
+				//			appendDeleteLink.Attributes.Add("type", $"button");
+				//			appendDeleteLink.Attributes.Add("id", $"remove-{FieldId}");
+				//			appendDeleteLink.AddCssClass($"btn btn-white remove {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")}");
+				//			appendDeleteLink.Attributes.Add("title", "select as undefined");
+				//			var appendDeleteLinkIcon = new TagBuilder("span");
+				//			appendDeleteLinkIcon.AddCssClass("fa fa-fw fa-trash go-red");
+				//			appendDeleteLink.InnerHtml.AppendHtml(appendDeleteLinkIcon);
+				//			editInputGroupAppendEl.InnerHtml.AppendHtml(appendDeleteLink);
+				//		}
 
-                //		var editCancelBtnEl = new TagBuilder("button");
-                //		editCancelBtnEl.Attributes.Add("type", "submit");
-                //		editCancelBtnEl.AddCssClass("btn btn-white cancel");
-                //		editCancelBtnEl.Attributes.Add("title", "cancel");
+				//		var selectFileLink = new TagBuilder("button");
+				//		selectFileLink.Attributes.Add("type", $"button");
+				//		selectFileLink.AddCssClass("btn btn-white");
+				//		selectFileLink.Attributes.Add("onclick", $"window.document.getElementById('file-{FieldId}').click();");
+				//		selectFileLink.InnerHtml.AppendHtml("select");
+				//		editInputGroupAppendEl.InnerHtml.AppendHtml(selectFileLink);
 
-                //		var editCancelIconEl = new TagBuilder("span");
-                //		editCancelIconEl.AddCssClass("fa fa-fw fa-times go-gray");
-                //		editCancelBtnEl.InnerHtml.AppendHtml(editCancelIconEl);
-                //		editInputGroupAppendEl.InnerHtml.AppendHtml(editCancelBtnEl);
 
-                //		editInputGroupEl.InnerHtml.AppendHtml(editInputGroupAppendEl);
-                //		editWrapperEl.InnerHtml.AppendHtml(editInputGroupEl);
+				//		var editSaveBtnEl = new TagBuilder("button");
+				//		editSaveBtnEl.Attributes.Add("type", "submit");
+				//		editSaveBtnEl.AddCssClass("btn btn-white save");
+				//		editSaveBtnEl.Attributes.Add("title", "save");
 
-                //		output.Content.AppendHtml(editWrapperEl);
+				//		var editSaveIconEl = new TagBuilder("span");
+				//		editSaveIconEl.AddCssClass("fa fa-fw fa-check go-green");
+				//		editSaveBtnEl.InnerHtml.AppendHtml(editSaveIconEl);
+				//		editInputGroupAppendEl.InnerHtml.AppendHtml(editSaveBtnEl);
 
-                //		var realHiddenFileInput = new TagBuilder("input");
-                //		realHiddenFileInput.Attributes.Add("id", $"file-{FieldId}");
-                //		realHiddenFileInput.Attributes.Add("type", $"file");
-                //		realHiddenFileInput.AddCssClass("d-none");
-                //		realHiddenFileInput.Attributes.Add("value", $"");
-                //		if (!String.IsNullOrWhiteSpace(Accept))
-                //		{
-                //			realHiddenFileInput.Attributes.Add("accept", $"{Accept}");
-                //		}
-                //		output.Content.AppendHtml(realHiddenFileInput);
+				//		var editCancelBtnEl = new TagBuilder("button");
+				//		editCancelBtnEl.Attributes.Add("type", "submit");
+				//		editCancelBtnEl.AddCssClass("btn btn-white cancel");
+				//		editCancelBtnEl.Attributes.Add("title", "cancel");
 
-                //		var realSubmitInput = new TagBuilder("input");
-                //		realSubmitInput.Attributes.Add("id", $"input-{FieldId}");
-                //		realSubmitInput.Attributes.Add("type", $"hidden");
-                //		realSubmitInput.Attributes.Add("value", $"{Value}");
-                //		realSubmitInput.Attributes.Add("data-newfilepath", $"{Value}");
-                //		realSubmitInput.Attributes.Add("data-filename", $"{FileName}");
-                //		realSubmitInput.Attributes.Add("data-newfilename", $"{FileName}");
-                //		output.Content.AppendHtml(realSubmitInput);
+				//		var editCancelIconEl = new TagBuilder("span");
+				//		editCancelIconEl.AddCssClass("fa fa-fw fa-times go-gray");
+				//		editCancelBtnEl.InnerHtml.AppendHtml(editCancelIconEl);
+				//		editInputGroupAppendEl.InnerHtml.AppendHtml(editCancelBtnEl);
 
-                //	}
-                //	#endregion
+				//		editInputGroupEl.InnerHtml.AppendHtml(editInputGroupAppendEl);
+				//		editWrapperEl.InnerHtml.AppendHtml(editInputGroupEl);
 
-                //	var jsCompressor = new JavaScriptCompressor();
+				//		output.Content.AppendHtml(editWrapperEl);
 
-                //	#region << Init Scripts >>
-                //	var tagHelperInitialized = false;
-                //	if (ViewContext.HttpContext.Items.ContainsKey(typeof(WvFieldFile) + "-inline-edit"))
-                //	{
-                //		var tagHelperContext = (WvTagHelperContext)ViewContext.HttpContext.Items[typeof(WvFieldFile) + "-inline-edit"];
-                //		tagHelperInitialized = tagHelperContext.Initialized;
-                //	}
-                //	if (!tagHelperInitialized)
-                //	{
-                //		var scriptContent = FileService.GetEmbeddedTextResource("inline-edit.js", "WebVella.Erp.Web.TagHelpers.WvFieldFile");
-                //		var scriptEl = new TagBuilder("script");
-                //		scriptEl.Attributes.Add("type", "text/javascript");
-                //		scriptEl.InnerHtml.AppendHtml(jsCompressor.Compress(scriptContent));
-                //		output.PostContent.AppendHtml(scriptEl);
+				//		var realHiddenFileInput = new TagBuilder("input");
+				//		realHiddenFileInput.Attributes.Add("id", $"file-{FieldId}");
+				//		realHiddenFileInput.Attributes.Add("type", $"file");
+				//		realHiddenFileInput.AddCssClass("d-none");
+				//		realHiddenFileInput.Attributes.Add("value", $"");
+				//		if (!String.IsNullOrWhiteSpace(Accept))
+				//		{
+				//			realHiddenFileInput.Attributes.Add("accept", $"{Accept}");
+				//		}
+				//		output.Content.AppendHtml(realHiddenFileInput);
 
-                //		ViewContext.HttpContext.Items[typeof(WvFieldFile) + "-inline-edit"] = new WvTagHelperContext()
-                //		{
-                //			Initialized = true
-                //		};
+				//		var realSubmitInput = new TagBuilder("input");
+				//		realSubmitInput.Attributes.Add("id", $"input-{FieldId}");
+				//		realSubmitInput.Attributes.Add("type", $"hidden");
+				//		realSubmitInput.Attributes.Add("value", $"{Value}");
+				//		realSubmitInput.Attributes.Add("data-newfilepath", $"{Value}");
+				//		realSubmitInput.Attributes.Add("data-filename", $"{FileName}");
+				//		realSubmitInput.Attributes.Add("data-newfilename", $"{FileName}");
+				//		output.Content.AppendHtml(realSubmitInput);
 
-                //	}
-                //	#endregion
+				//	}
+				//	#endregion
 
-                //	#region << Add Inline Init Script for this instance >>
-                //	var initScript = new TagBuilder("script");
-                //	initScript.Attributes.Add("type", "text/javascript");
-                //	var scriptTemplate = @"
-                //		$(function(){
-                //			FileInlineEditInit(""{{FieldId}}"",""{{Name}}"",""{{EntityName}}"",""{{RecordId}}"",{{ConfigJson}});
-                //		});";
-                //	scriptTemplate = scriptTemplate.Replace("{{FieldId}}", (FieldId ?? null).ToString());
-                //	scriptTemplate = scriptTemplate.Replace("{{Name}}", Name);
-                //	scriptTemplate = scriptTemplate.Replace("{{EntityName}}", EntityName);
-                //	scriptTemplate = scriptTemplate.Replace("{{RecordId}}", (RecordId ?? null).ToString());
+				//	var jsCompressor = new JavaScriptCompressor();
 
-                //	var fieldConfig = new WvFieldFileConfig()
-                //	{
-                //		ApiUrl = ApiUrl,
-                //		CanAddValues = Access == FieldAccess.FullAndCreate ? true : false,
-                //		Accept = Accept
-                //	};
+				//	#region << Init Scripts >>
+				//	var tagHelperInitialized = false;
+				//	if (ViewContext.HttpContext.Items.ContainsKey(typeof(WvFieldFile) + "-inline-edit"))
+				//	{
+				//		var tagHelperContext = (WvTagHelperContext)ViewContext.HttpContext.Items[typeof(WvFieldFile) + "-inline-edit"];
+				//		tagHelperInitialized = tagHelperContext.Initialized;
+				//	}
+				//	if (!tagHelperInitialized)
+				//	{
+				//		var scriptContent = FileService.GetEmbeddedTextResource("inline-edit.js", "WebVella.Erp.Web.TagHelpers.WvFieldFile");
+				//		var scriptEl = new TagBuilder("script");
+				//		scriptEl.Attributes.Add("type", "text/javascript");
+				//		scriptEl.InnerHtml.AppendHtml(jsCompressor.Compress(scriptContent));
+				//		output.PostContent.AppendHtml(scriptEl);
 
-                //	scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));
+				//		ViewContext.HttpContext.Items[typeof(WvFieldFile) + "-inline-edit"] = new WvTagHelperContext()
+				//		{
+				//			Initialized = true
+				//		};
 
-                //	initScript.InnerHtml.AppendHtml(jsCompressor.Compress(scriptTemplate));
+				//	}
+				//	#endregion
 
-                //	output.PostContent.AppendHtml(initScript);
-                //	#endregion
-                //}
-                //else if (Access == FieldAccess.ReadOnly)
-                //{
+				//	#region << Add Inline Init Script for this instance >>
+				//	var initScript = new TagBuilder("script");
+				//	initScript.Attributes.Add("type", "text/javascript");
+				//	var scriptTemplate = @"
+				//		$(function(){
+				//			FileInlineEditInit(""{{FieldId}}"",""{{Name}}"",""{{EntityName}}"",""{{RecordId}}"",{{ConfigJson}});
+				//		});";
+				//	scriptTemplate = scriptTemplate.Replace("{{FieldId}}", (FieldId ?? null).ToString());
+				//	scriptTemplate = scriptTemplate.Replace("{{Name}}", Name);
+				//	scriptTemplate = scriptTemplate.Replace("{{EntityName}}", EntityName);
+				//	scriptTemplate = scriptTemplate.Replace("{{RecordId}}", (RecordId ?? null).ToString());
 
-                //	var divEl = new TagBuilder("div");
-                //	divEl.AddCssClass("input-group");
+				//	var fieldConfig = new WvFieldFileConfig()
+				//	{
+				//		ApiUrl = ApiUrl,
+				//		CanAddValues = Access == FieldAccess.FullAndCreate ? true : false,
+				//		Accept = Accept
+				//	};
 
-                //	var prependEl = new TagBuilder("span");
-                //	prependEl.AddCssClass($"input-group-prepend icon-addon {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")} {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
-                //	prependEl.Attributes.Add("title", $"/fs{Value}");
-                //	var prependText = new TagBuilder("span");
-                //	prependText.AddCssClass("input-group-text");
-                //	var prependIcon = new TagBuilder("span");
-                //	prependIcon.AddCssClass($"fa fa-fw type-icon {PathTypeIcon}");
-                //	prependText.InnerHtml.AppendHtml(prependIcon);
-                //	prependEl.InnerHtml.AppendHtml(prependText);
-                //	divEl.InnerHtml.AppendHtml(prependEl);
+				//	scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));
 
-                //	var inputEl = new TagBuilder("div");
-                //	inputEl.AddCssClass("form-control erp-file disabled");
-                //	var inputElLink = new TagBuilder("a");
-                //	inputElLink.Attributes.Add("href", $"/fs{Value}");
-                //	inputElLink.Attributes.Add("target", "_blank");
-                //	inputElLink.Attributes.Add("title", $"/fs{Value}");
-                //	inputElLink.InnerHtml.Append(FileName);
-                //	inputEl.InnerHtml.AppendHtml(inputElLink);
-                //	divEl.InnerHtml.AppendHtml(inputEl);
+				//	initScript.InnerHtml.AppendHtml(jsCompressor.Compress(scriptTemplate));
 
-                //	var appendActionSpan = new TagBuilder("span");
-                //	appendActionSpan.AddCssClass("input-group-append");
-                //	appendActionSpan.AddCssClass("action");
+				//	output.PostContent.AppendHtml(initScript);
+				//	#endregion
+				//}
+				//else if (Access == FieldAccess.ReadOnly)
+				//{
 
-                //	var appendTextSpan = new TagBuilder("span");
-                //	appendTextSpan.AddCssClass("input-group-text");
+				//	var divEl = new TagBuilder("div");
+				//	divEl.AddCssClass("input-group");
 
-                //	var appendIconSpan = new TagBuilder("span");
-                //	appendIconSpan.AddCssClass("fa fa-fw fa-lock");
-                //	appendTextSpan.InnerHtml.AppendHtml(appendIconSpan);
-                //	appendActionSpan.InnerHtml.AppendHtml(appendTextSpan);
+				//	var prependEl = new TagBuilder("span");
+				//	prependEl.AddCssClass($"input-group-prepend icon-addon {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")} {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
+				//	prependEl.Attributes.Add("title", $"/fs{Value}");
+				//	var prependText = new TagBuilder("span");
+				//	prependText.AddCssClass("input-group-text");
+				//	var prependIcon = new TagBuilder("span");
+				//	prependIcon.AddCssClass($"fa fa-fw type-icon {PathTypeIcon}");
+				//	prependText.InnerHtml.AppendHtml(prependIcon);
+				//	prependEl.InnerHtml.AppendHtml(prependText);
+				//	divEl.InnerHtml.AppendHtml(prependEl);
 
-                //	divEl.InnerHtml.AppendHtml(appendActionSpan);
-                //	output.Content.AppendHtml(divEl);
-                //}
-            }
+				//	var inputEl = new TagBuilder("div");
+				//	inputEl.AddCssClass("form-control erp-file disabled");
+				//	var inputElLink = new TagBuilder("a");
+				//	inputElLink.Attributes.Add("href", $"/fs{Value}");
+				//	inputElLink.Attributes.Add("target", "_blank");
+				//	inputElLink.Attributes.Add("title", $"/fs{Value}");
+				//	inputElLink.InnerHtml.Append(FileName);
+				//	inputEl.InnerHtml.AppendHtml(inputElLink);
+				//	divEl.InnerHtml.AppendHtml(inputEl);
+
+				//	var appendActionSpan = new TagBuilder("span");
+				//	appendActionSpan.AddCssClass("input-group-append");
+				//	appendActionSpan.AddCssClass("action");
+
+				//	var appendTextSpan = new TagBuilder("span");
+				//	appendTextSpan.AddCssClass("input-group-text");
+
+				//	var appendIconSpan = new TagBuilder("span");
+				//	appendIconSpan.AddCssClass("fa fa-fw fa-lock");
+				//	appendTextSpan.InnerHtml.AppendHtml(appendIconSpan);
+				//	appendActionSpan.InnerHtml.AppendHtml(appendTextSpan);
+
+				//	divEl.InnerHtml.AppendHtml(appendActionSpan);
+				//	output.Content.AppendHtml(divEl);
+				//}
+			}
 			#endregion
 
 
