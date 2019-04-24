@@ -13,4 +13,13 @@ namespace WebVella.Erp.Web.Models
 		[JsonProperty(PropertyName = "parameters")]
 		public List<EqlParameter> Parameters { get; set; }
 	}
+
+	public class EqlDataSourceQuery
+	{
+		[JsonProperty(PropertyName = "name")]
+		public string Name { get; set; }
+
+		[JsonProperty(PropertyName = "parameters")]
+		public List<EqlParameter> Parameters { get; set; }
+	}
 }

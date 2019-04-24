@@ -58,7 +58,7 @@ namespace WebVella.Erp.Web.Controllers
 
         [Route("api/v3/en_US/eql")]
         [HttpPost]
-        public ActionResult DataSourceAction([FromBody]EqlQuery model)
+        public ActionResult EqlQueryAction([FromBody]EqlQuery model)
         {
             ResponseModel response = new ResponseModel();
             response.Success = true;
@@ -90,8 +90,68 @@ namespace WebVella.Erp.Web.Controllers
             return Json(response);
         }
 
+		[Route("api/v3/en_US/eql-ds")]
+		[HttpPost]
+		public ActionResult DataSourceQueryAction([FromBody]EqlDataSourceQuery model)
+		{
+			ResponseModel response = new ResponseModel();
+			response.Success = true;
 
-        [Route("api/v3.0/user/preferences/toggle-sidebar-size")]
+			if (model == null)
+				return NotFound();
+
+			try
+			{
+				DataSourceManager dsMan = new DataSourceManager();
+				var dataSources = dsMan.GetAll();
+				var ds = dataSources.SingleOrDefault(x => x.Name == model.Name);
+				if( ds == null )
+				{
+					response.Success = false;
+					response.Message =$"DataSource with name '{model.Name}' not found.";
+					return Json(response);
+				}
+
+				if( ds is DatabaseDataSource )
+				{
+					response.Object = dsMan.Execute(ds.Id, model.Parameters );
+				}
+				else if( ds is CodeDataSource )
+				{
+					Dictionary<string, object> arguments = new Dictionary<string, object>();
+					foreach( var par in model.Parameters )
+						arguments[par.ParameterName] = par.Value;
+
+					response.Object = ((CodeDataSource)ds).Execute(arguments);
+				}
+				else
+				{
+					response.Success = false;
+					response.Message = $"DataSource type is not supported.";
+					return Json(response);
+				}
+			}
+			catch (EqlException eqlEx)
+			{
+				response.Success = false;
+				foreach (var eqlError in eqlEx.Errors)
+				{
+					response.Errors.Add(new ErrorModel("eql", "", eqlError.Message));
+				}
+				return Json(response);
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Message = ex.Message;
+				return Json(response);
+			}
+
+			return Json(response);
+		}
+
+
+		[Route("api/v3.0/user/preferences/toggle-sidebar-size")]
         [HttpPost]
         public ActionResult ToggleSidebarSize()
         {
