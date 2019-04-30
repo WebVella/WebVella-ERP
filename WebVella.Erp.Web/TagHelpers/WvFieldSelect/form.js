@@ -42,6 +42,7 @@ function SelectFormInit(fieldId, fieldName, entityName, config) {
 		templateSelection: SelectFormFormat
 	};
 	if (config.ajax_datasource) {
+		var currentPage = 1;
 		selectInitObject.ajax = {
 			type: 'POST',
 			headers: {
@@ -63,10 +64,14 @@ function SelectFormInit(fieldId, fieldName, entityName, config) {
 						}
 					]
 				};
+				currentPage = params.page;
 				return JSON.stringify(query);
 			},
 			processResults: function (data) {
 				var results = [];
+				var hasMore = false;
+				var totalRecords = data.object.totalRecords;
+
 				_.forEach(data.object, function (record) {
 					results.push({
 						id: record[config.ajax_datasource.value],
@@ -74,7 +79,10 @@ function SelectFormInit(fieldId, fieldName, entityName, config) {
 					});
 				});
 				return {
-					results: results //id,text
+					results: results, //id,text
+					pagination: {
+						more: hasMore
+					}
 				};
 			}
 		};

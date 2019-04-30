@@ -268,6 +268,9 @@ namespace WebVella.Erp.Web.Models
 			ApiUrl = baseConfig.ApiUrl;
 		}
 
+		[JsonProperty(PropertyName = "ajax_datasource")]
+		public SelectOptionsAjaxDatasource AjaxDatasource { get; set; } = null;
+
 	}
 
 	public class WvFieldNumberConfig : WvFieldBaseConfig

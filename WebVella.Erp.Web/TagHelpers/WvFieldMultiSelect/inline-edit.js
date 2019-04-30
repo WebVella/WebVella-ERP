@@ -12,12 +12,54 @@ function MultiSelectInlineEditGenerateSelectors(fieldId, fieldName, entityName, 
 
 function MultiSelectInlineEditPreEnableCallback(fieldId, fieldName, entityName, recordId, config) {
 	var selectors = MultiSelectInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
-	$(selectors.inputEl).select2({
+
+	var selectInitObject = {
 		closeOnSelect: true,
 		language: "en",
 		minimumResultsForSearch: 10,
-        width: 'element'
-	});
+		width: 'element'
+	};
+
+	if (config.ajax_datasource) {
+		selectInitObject.ajax = {
+			type: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			url: '/api/v3/en_US/eql-ds',
+			data: function (params) {
+				var query = {
+					name: config.ajax_datasource.ds,
+					parameters: [
+						{
+							name: "term",
+							value: params.term || ""
+						},
+						{
+							name: "page",
+							value: params.page || 1
+						}
+					]
+				};
+				return JSON.stringify(query);
+			},
+			processResults: function (data) {
+				var results = [];
+				_.forEach(data.object, function (record) {
+					results.push({
+						id: record[config.ajax_datasource.value],
+						text: record[config.ajax_datasource.label]
+					});
+				});
+				return {
+					results: results //id,text
+				};
+			}
+		};
+	}
+
+	$(selectors.inputEl).select2(selectInitObject);
 	//Stops remove selection click opening the dropdown
 	$(selectors.inputEl).on("select2:unselect", function (evt) {
 		if (!evt.params.originalEvent) {

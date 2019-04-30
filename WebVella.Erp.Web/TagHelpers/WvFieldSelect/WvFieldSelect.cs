@@ -645,7 +645,8 @@ namespace WebVella.Erp.Web.TagHelpers
 					{
 						ApiUrl = ApiUrl,
 						CanAddValues = Access == FieldAccess.FullAndCreate ? true : false,
-						IsInvalid = ValidationErrors.Count > 0
+						IsInvalid = ValidationErrors.Count > 0,
+						AjaxDatasource = AjaxDatasource
 					};
 
 					scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));

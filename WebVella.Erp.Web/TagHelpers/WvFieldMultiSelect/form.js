@@ -22,12 +22,61 @@
 function MultiSelectFormInit(fieldId, fieldName, entityName, config) {
 	config = ProcessConfig(config);
 	var selectors = MultiSelectFormGenerateSelectors(fieldId, fieldName, config);
-	$(selectors.inputEl).select2({
+
+	var selectInitObject = {
 		closeOnSelect: true,
 		language: "en",
 		minimumResultsForSearch: 10,
 		width: 'element'
-	});
+	};
+
+	if (config.ajax_datasource) {
+		var currentPage = 1;
+		selectInitObject.ajax = {
+			type: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			url: '/api/v3/en_US/eql-ds',
+			data: function (params) {
+				var query = {
+					name: config.ajax_datasource.ds,
+					parameters: [
+						{
+							name: "term",
+							value: params.term || ""
+						},
+						{
+							name: "page",
+							value: params.page || 1
+						}
+					]
+				};
+				currentPage = params.page;
+				return JSON.stringify(query);
+			},
+			processResults: function (data) {
+				var results = [];
+				var hasMore = false;
+				var totalRecords = data.object.TotalCount;
+				_.forEach(data.object, function (record) {
+					results.push({
+						id: record[config.ajax_datasource.value],
+						text: record[config.ajax_datasource.label]
+					});
+				});
+				return {
+					results: results, //id,text
+					pagination: {
+						more: hasMore
+					}
+				};
+			}
+		};
+	}
+
+	$(selectors.inputEl).select2(selectInitObject);
 	//Stops remove selection click opening the dropdown
 	$(selectors.inputEl).on("select2:unselect", function (evt) {
 		if (!evt.params.originalEvent) {

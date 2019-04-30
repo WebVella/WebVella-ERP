@@ -40,8 +40,9 @@ namespace WebVella.Erp.Web.Components
                     LabelText = input.LabelText,
                     Mode = input.Mode,
                     Name = input.Name,
-                    Options = ""
-                };
+                    Options = "",
+					AjaxDatasource = null
+				};
             }
         }
 

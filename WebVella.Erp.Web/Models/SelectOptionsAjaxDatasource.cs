@@ -15,5 +15,8 @@ namespace WebVella.Erp.Web.Models
 
 		[JsonProperty(PropertyName = "label")]
 		public string Label { get; set; } = "label";
+
+		[JsonProperty(PropertyName = "page_size")]
+		public int PageSize { get; set; } = 10;
 	}
 }

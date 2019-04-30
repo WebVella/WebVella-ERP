@@ -29,7 +29,10 @@ namespace WebVella.Erp.Web.Components
             [JsonProperty(PropertyName = "show_icon")]
             public bool ShowIcon { get; set; } = false;
 
-            public static PcFieldMultiSelectOptions CopyFromBaseOptions(PcFieldBaseOptions input)
+			[JsonProperty(PropertyName = "ajax_datasource")]
+			public SelectOptionsAjaxDatasource AjaxDatasource { get; set; } = null;
+
+			public static PcFieldMultiSelectOptions CopyFromBaseOptions(PcFieldBaseOptions input)
             {
                 return new PcFieldMultiSelectOptions
                 {
@@ -38,8 +41,9 @@ namespace WebVella.Erp.Web.Components
                     LabelText = input.LabelText,
                     Mode = input.Mode,
                     Name = input.Name,
-                    Options = ""
-                };
+                    Options = "",
+					AjaxDatasource = null
+				};
             }
         }
 
@@ -139,7 +143,7 @@ namespace WebVella.Erp.Web.Components
                             model.Value = new List<string>();
                             stringProcessed = true;
                         }
-                        if (!stringProcessed && (((string)valueResult).StartsWith("{") || ((string)valueResult).StartsWith("[")))
+						if (!stringProcessed && (((string)valueResult).StartsWith("{") || ((string)valueResult).StartsWith("[")))
                         {
                             try
                             {
@@ -185,7 +189,21 @@ namespace WebVella.Erp.Web.Components
                             dataSourceOptions = new List<SelectOption>();
                             stringProcessed = true;
                         }
-                        if (!stringProcessed && (((string)optionsResult).StartsWith("{") || ((string)optionsResult).StartsWith("[")))
+						//AJAX Options
+						if (!stringProcessed && ((string)optionsResult).StartsWith("{"))
+						{
+							try
+							{
+								options.AjaxDatasource = JsonConvert.DeserializeObject<SelectOptionsAjaxDatasource>(optionsResult, new JsonSerializerSettings() { MissingMemberHandling = MissingMemberHandling.Error });
+								stringProcessed = true;
+								ViewBag.Options = options;
+							}
+							catch
+							{
+
+							}
+						}
+						if (!stringProcessed && (((string)optionsResult).StartsWith("{") || ((string)optionsResult).StartsWith("[")))
                         {
                             try
                             {

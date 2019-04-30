@@ -433,7 +433,7 @@ namespace WebVella.Erp.Api
 			RemoveFromCache();
 		}
 
-		public List<EntityRecord> Execute(Guid id, List<EqlParameter> parameters = null)
+		public EntityRecordList Execute(Guid id, List<EqlParameter> parameters = null)
 		{
 			var ds = Get(id);
 			if (ds == null)
@@ -452,7 +452,7 @@ namespace WebVella.Erp.Api
 				throw new NotImplementedException();
 		}
 
-		public List<EntityRecord> Execute(string eql, string parameters = null)
+		public EntityRecordList Execute(string eql, string parameters = null)
 		{
 			if (string.IsNullOrWhiteSpace(eql))
 				throw new ArgumentException(nameof(eql));

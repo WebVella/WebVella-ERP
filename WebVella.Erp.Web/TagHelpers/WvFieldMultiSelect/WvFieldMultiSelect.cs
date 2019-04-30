@@ -21,6 +21,9 @@ namespace WebVella.Erp.Web.TagHelpers
 		[HtmlAttributeName("options")]
 		public List<SelectOption> Options { get; set; } = new List<SelectOption>();
 
+		[HtmlAttributeName("ajax-datasource")]
+		public SelectOptionsAjaxDatasource AjaxDatasource { get; set; } = null;
+
 		public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
 			if (!isVisible)
@@ -208,7 +211,8 @@ namespace WebVella.Erp.Web.TagHelpers
 					var fieldConfig = new WvFieldMultiSelectConfig()
 					{
 						ApiUrl = ApiUrl,
-						CanAddValues = Access == FieldAccess.FullAndCreate ? true : false
+						CanAddValues = Access == FieldAccess.FullAndCreate ? true : false,
+						AjaxDatasource = AjaxDatasource
 					};
 
 					scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));
@@ -602,7 +606,8 @@ namespace WebVella.Erp.Web.TagHelpers
 					var fieldConfig = new WvFieldMultiSelectConfig()
 					{
 						ApiUrl = ApiUrl,
-						CanAddValues = Access == FieldAccess.FullAndCreate ? true : false
+						CanAddValues = Access == FieldAccess.FullAndCreate ? true : false,
+						AjaxDatasource = AjaxDatasource
 					};
 
 					scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));

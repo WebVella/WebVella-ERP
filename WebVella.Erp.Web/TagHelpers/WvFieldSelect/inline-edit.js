@@ -26,19 +26,61 @@ function SelectInlineEditFormat(icon) {
 function SelectInlineEditPreEnableCallback(fieldId, fieldName, entityName, recordId, config) {
 	config = ProcessConfig(config);
 	var selectors = SelectInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
-	$(selectors.inputEl).select2({
+
+	var selectInitObject = {
 		closeOnSelect: true,
 		language: "en",
 		minimumResultsForSearch: 10,
 		placeholder: 'not selected',
-		allowClear:!$(selectors.inputEl).prop('required'),
-        width: 'element',
+		allowClear: !$(selectors.inputEl).prop('required'),
+		width: 'element',
 		escapeMarkup: function (markup) {
 			return markup;
 		},
 		templateResult: SelectInlineEditFormat,
 		templateSelection: SelectInlineEditFormat
-	});
+	};
+
+	if (config.ajax_datasource) {
+		selectInitObject.ajax = {
+			type: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			url: '/api/v3/en_US/eql-ds',
+			data: function (params) {
+				var query = {
+					name: config.ajax_datasource.ds,
+					parameters: [
+						{
+							name: "term",
+							value: params.term || ""
+						},
+						{
+							name: "page",
+							value: params.page || 1
+						}
+					]
+				};
+				return JSON.stringify(query);
+			},
+			processResults: function (data) {
+				var results = [];
+				_.forEach(data.object, function (record) {
+					results.push({
+						id: record[config.ajax_datasource.value],
+						text: record[config.ajax_datasource.label]
+					});
+				});
+				return {
+					results: results //id,text
+				};
+			}
+		};
+	}
+
+	$(selectors.inputEl).select2(selectInitObject);
 	if (config.is_invalid) {
 		$(selectors.inputEl).closest(".input-group").find(".select2-selection").addClass("is-invalid");
 	}
