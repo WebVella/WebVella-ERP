@@ -28,7 +28,10 @@ namespace WebVella.Erp.Web.Components
             [JsonProperty(PropertyName = "show_icon")]
             public bool ShowIcon { get; set; } = false;
 
-            public static PcFieldSelectOptions CopyFromBaseOptions(PcFieldBaseOptions input)
+			[JsonProperty(PropertyName = "ajax_datasource")]
+			public SelectOptionsAjaxDatasource AjaxDatasource { get; set; } = null;
+
+			public static PcFieldSelectOptions CopyFromBaseOptions(PcFieldBaseOptions input)
             {
                 return new PcFieldSelectOptions
                 {
@@ -140,7 +143,8 @@ namespace WebVella.Erp.Web.Components
                     model.Value = context.DataModel.GetPropertyValueByDataSource(options.Value);
 
                     dynamic optionsResult = context.DataModel.GetPropertyValueByDataSource(options.Options);
-                    var dataSourceOptions = new List<SelectOption>();
+
+					var dataSourceOptions = new List<SelectOption>();
                     if (optionsResult == null) { }
                     if (optionsResult is List<SelectOption>)
                     {
@@ -154,6 +158,18 @@ namespace WebVella.Erp.Web.Components
                             dataSourceOptions = new List<SelectOption>();
                             stringProcessed = true;
                         }
+						//AJAX Options
+						if (!stringProcessed && ((string)optionsResult).StartsWith("{")) {
+							try
+							{
+								options.AjaxDatasource = JsonConvert.DeserializeObject<SelectOptionsAjaxDatasource>(optionsResult,new JsonSerializerSettings() { MissingMemberHandling = MissingMemberHandling.Error});
+								stringProcessed = true;
+								ViewBag.Options = options;
+							}
+							catch { 
+							
+							}
+						}
                         if (!stringProcessed && (((string)optionsResult).StartsWith("{") || ((string)optionsResult).StartsWith("[")))
                         {
                             try

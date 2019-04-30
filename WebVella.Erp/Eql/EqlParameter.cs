@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿using Newtonsoft.Json;
+using Npgsql;
 using NpgsqlTypes;
 using System;
 
@@ -6,8 +7,11 @@ namespace WebVella.Erp.Eql
 {
 	public class EqlParameter
 	{
+
+		[JsonProperty(PropertyName = "name")]
 		public string ParameterName { get; private set; }
 
+		[JsonProperty(PropertyName = "value")]
 		public object Value { get; internal set; }
 
 		public EqlParameter(string name, object value)

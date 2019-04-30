@@ -43,7 +43,7 @@ namespace WebVella.Erp.Web.TagHelpers
 			{
 				try
 				{
-					DataSourceVariable = JsonConvert.DeserializeObject<DataSourceVariable>((Value ?? "").ToString());
+					DataSourceVariable = JsonConvert.DeserializeObject<DataSourceVariable>((Value ?? "").ToString(),new JsonSerializerSettings() { MissingMemberHandling = MissingMemberHandling.Error});
 				}
 				catch
 				{

@@ -28,19 +28,60 @@ function SelectFormInit(fieldId, fieldName, entityName, config) {
 	config = ProcessConfig(config);
 	var selectors = SelectFormGenerateSelectors(fieldId, fieldName, config);
 
-	$(selectors.inputEl).select2({
+	var selectInitObject = {
 		language: "en",
 		minimumResultsForSearch: 10,
 		closeOnSelect: true,
 		placeholder: 'not selected',
-		allowClear:!$(selectors.inputEl).prop('required'),
-        width: 'element',
+		allowClear: !$(selectors.inputEl).prop('required'),
+		width: 'element',
 		escapeMarkup: function (markup) {
 			return markup;
 		},
 		templateResult: SelectFormFormat,
 		templateSelection: SelectFormFormat
-	}).on("select2:unselecting", function (e) {
+	};
+	if (config.ajax_datasource) {
+		selectInitObject.ajax = {
+			type: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			url: '/api/v3/en_US/eql-ds',
+			data: function (params) {
+				var query = {
+					name: config.ajax_datasource.ds,
+					parameters: [
+						{
+							name: "term",
+							value: params.term || ""
+						},
+						{
+							name: "page",
+							value: params.page || 1
+						}
+					]
+				};
+				return JSON.stringify(query);
+			},
+			processResults: function (data) {
+				var results = [];
+				_.forEach(data.object, function (record) {
+					results.push({
+						id: record[config.ajax_datasource.value],
+						text: record[config.ajax_datasource.label]
+					});
+				});
+				return {
+					results: results //id,text
+				};
+			}
+		};
+	}
+
+
+	$(selectors.inputEl).select2(selectInitObject).on("select2:unselecting", function (e) {
 		$(this).data('state', 'unselected');
 	}).on("select2:open", function (e) {
 		if ($(this).data('state') === 'unselected') {

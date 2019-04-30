@@ -367,6 +367,9 @@ namespace WebVella.Erp.Web.Models
 		[JsonProperty(PropertyName = "is_invalid")]
 		public bool IsInvalid { get; set; } = false;
 
+		[JsonProperty(PropertyName = "ajax_datasource")]
+		public SelectOptionsAjaxDatasource AjaxDatasource { get; set; } = null;
+
 	}
 
 	public class WvFieldTextConfig : WvFieldBaseConfig

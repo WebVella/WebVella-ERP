@@ -21,6 +21,9 @@ namespace WebVella.Erp.Web.TagHelpers
 		[HtmlAttributeName("options")]
 		public List<SelectOption> Options { get; set; } = new List<SelectOption>();
 
+		[HtmlAttributeName("ajax-datasource")]
+		public SelectOptionsAjaxDatasource AjaxDatasource { get; set; } = null;
+
 		public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
 			if (!isVisible)
@@ -222,7 +225,8 @@ namespace WebVella.Erp.Web.TagHelpers
 					{
 						ApiUrl = ApiUrl,
 						CanAddValues = Access == FieldAccess.FullAndCreate ? true : false,
-						IsInvalid = ValidationErrors.Count > 0
+						IsInvalid = ValidationErrors.Count > 0,
+						AjaxDatasource = AjaxDatasource
 					};
 
 					scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));

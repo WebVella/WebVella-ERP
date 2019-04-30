@@ -399,7 +399,7 @@ namespace WebVella.Erp.Web.Models
 				DataSourceVariable variable = null;
 				try
 				{
-					variable = JsonConvert.DeserializeObject<DataSourceVariable>(text);
+					variable = JsonConvert.DeserializeObject<DataSourceVariable>(text,new JsonSerializerSettings() { MissingMemberHandling = MissingMemberHandling.Error});
 				}
 				catch
 				{
