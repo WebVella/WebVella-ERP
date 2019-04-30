@@ -114,7 +114,8 @@ namespace WebVella.Erp.Web.Controllers
 
 				if( ds is DatabaseDataSource )
 				{
-					response.Object = (EntityRecordList)dsMan.Execute(ds.Id, model.Parameters );
+					var list = (EntityRecordList)dsMan.Execute(ds.Id, model.Parameters);
+					response.Object = new { list, total_count = list.TotalCount };
 				}
 				else if( ds is CodeDataSource )
 				{
