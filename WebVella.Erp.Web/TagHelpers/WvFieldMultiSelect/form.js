@@ -59,8 +59,12 @@ function MultiSelectFormInit(fieldId, fieldName, entityName, config) {
 			processResults: function (data) {
 				var results = [];
 				var hasMore = false;
-				var totalRecords = data.object.TotalCount;
-				_.forEach(data.object, function (record) {
+				var totalRecords = data.object.total_count;
+				var displayedCount = data.object.list.length + currentPage * config.ajax_datasource.page_size;
+				if (displayedCount < totalRecords) {
+					hasMore = true;
+				}
+				_.forEach(data.object.list, function (record) {
 					results.push({
 						id: record[config.ajax_datasource.value],
 						text: record[config.ajax_datasource.label]
