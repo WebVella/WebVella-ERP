@@ -42,6 +42,7 @@ function SelectInlineEditPreEnableCallback(fieldId, fieldName, entityName, recor
 	};
 
 	if (config.ajax_datasource) {
+		var currentPage = 1;
 		selectInitObject.ajax = {
 			type: 'POST',
 			headers: {
@@ -63,18 +64,28 @@ function SelectInlineEditPreEnableCallback(fieldId, fieldName, entityName, recor
 						}
 					]
 				};
+				currentPage = params.page;
 				return JSON.stringify(query);
 			},
 			processResults: function (data) {
 				var results = [];
-				_.forEach(data.object, function (record) {
+				var hasMore = false;
+				var totalRecords = data.object.total_count;
+				var displayedCount = data.object.list.length + currentPage * config.ajax_datasource.page_size;
+				if (displayedCount < totalRecords) {
+					hasMore = true;
+				}
+				_.forEach(data.object.list, function (record) {
 					results.push({
 						id: record[config.ajax_datasource.value],
 						text: record[config.ajax_datasource.label]
 					});
 				});
 				return {
-					results: results //id,text
+					results: results, //id,text
+					pagination: {
+						more: hasMore
+					}
 				};
 			}
 		};

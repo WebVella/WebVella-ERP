@@ -5,7 +5,7 @@ namespace WebVella.Erp.Api.Models
 {
 	public class EntityRecordList : List<EntityRecord>
 	{
-		[JsonProperty(PropertyName = "TotalCount")]
+		[JsonProperty(PropertyName = "total_count")]
 		public int TotalCount { get; set; } = 0;
 	}
 }
