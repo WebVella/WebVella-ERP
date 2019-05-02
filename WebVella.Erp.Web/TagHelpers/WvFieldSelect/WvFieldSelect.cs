@@ -31,6 +31,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				output.SuppressOutput();
 				return;
 			}
+
 			#region << Init >>
 			var initSuccess = InitField(context, output);
 
@@ -38,6 +39,9 @@ namespace WebVella.Erp.Web.TagHelpers
 			{
 				return;
 			}
+
+			if (Options.Count == 0 && AjaxDatasource != null && AjaxDatasource.InitOptions.Count > 0)
+				Options = AjaxDatasource.InitOptions;
 
 			#region << Init Prepend and Append >>
 			var content = await output.GetChildContentAsync();

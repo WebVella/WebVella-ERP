@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using WebVella.Erp.Api.Models;
 
 namespace WebVella.Erp.Web.Models
 {
@@ -18,5 +19,8 @@ namespace WebVella.Erp.Web.Models
 
 		[JsonProperty(PropertyName = "page_size")]
 		public int PageSize { get; set; } = 10;
+
+		[JsonProperty(PropertyName = "init_options")]
+		public List<SelectOption> InitOptions { get; set; } = new List<SelectOption>();
 	}
 }
