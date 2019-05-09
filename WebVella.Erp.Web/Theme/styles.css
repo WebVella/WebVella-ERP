@@ -3866,7 +3866,7 @@ erp-field.inline-edit .select2-container--default .select2-search--inline .selec
     min-height: unset;
 }
 
-.erp-field .erp-select span:empty {
+.erp-field .erp-select span.select2:empty {
 	display:inline-block;
 }
 
