@@ -351,7 +351,9 @@ namespace WebVella.Erp.Web.TagHelpers
 					var fieldConfig = new WvFieldHtmlConfig()
 					{
 						ApiUrl = ApiUrl,
-						CanAddValues = Access == FieldAccess.FullAndCreate ? true : false
+						CanAddValues = Access == FieldAccess.FullAndCreate ? true : false,
+						UploadMode = UploadMode,
+						ToolbarMode = ToolbarMode
 					};
 
 					scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));
