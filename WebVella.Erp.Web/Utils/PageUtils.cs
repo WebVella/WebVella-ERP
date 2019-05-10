@@ -146,6 +146,9 @@ namespace WebVella.Erp.Web.Utils
 		{
 			var returnHtml = "";
 
+			if(httpContext == null)
+				return "";
+
 			var descriptionList = new List<string>();
 			#region << Total Count >>
 			var totalCountHtml = totalCount + " records";
