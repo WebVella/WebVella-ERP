@@ -333,7 +333,7 @@ namespace WebVella.Erp.Api
 			if (!parName.StartsWith("@"))
 				parName = "@" + parName;
 
-			return new EqlParameter(parName, GetDataSourceParameterValue(dsParameter));
+			return new EqlParameter(parName, GetDataSourceParameterValue(dsParameter), dsParameter.Type );
 		}
 
 

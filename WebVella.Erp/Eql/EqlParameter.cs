@@ -14,7 +14,10 @@ namespace WebVella.Erp.Eql
 		[JsonProperty(PropertyName = "value")]
 		public object Value { get; internal set; }
 
-		public EqlParameter(string name, object value)
+		[JsonProperty(PropertyName = "type")]
+		public string Type { get; set; } = null;
+
+		public EqlParameter(string name, object value, string type = null)
 		{
 			if (string.IsNullOrWhiteSpace(name))
 				throw new ArgumentException(nameof(name));
@@ -25,6 +28,7 @@ namespace WebVella.Erp.Eql
 				ParameterName = name;
 
 			Value = value;
+			Type = type;
 		}
 
 		internal NpgsqlParameter ToNpgsqlParameter()
@@ -43,8 +47,39 @@ namespace WebVella.Erp.Eql
 			}
 			else
 			{
-				return new NpgsqlParameter(ParameterName, (object)Value ?? DBNull.Value);
+
+				if (Value != null)
+					return new NpgsqlParameter(ParameterName, Value);
+				else
+				{
+					var par = new NpgsqlParameter(ParameterName, ConvertToNpgsqlType(Type) );
+					par.Value = DBNull.Value;
+					return par;
+				}
 			}
+		}
+
+		private static NpgsqlDbType ConvertToNpgsqlType(string type)
+		{
+			if (type == "text")
+				return NpgsqlDbType.Text;
+
+			if (type == "bool" )
+				return NpgsqlDbType.Boolean;
+			
+			if (type == "date")
+				return NpgsqlDbType.TimestampTz;
+
+			if (type == "int")
+				return NpgsqlDbType.Integer;
+
+			if (type == "decimal")
+				return NpgsqlDbType.Numeric;
+
+			if (type == "guid")
+				return NpgsqlDbType.Uuid;
+
+			return NpgsqlDbType.Text;
 		}
 	}
 }
