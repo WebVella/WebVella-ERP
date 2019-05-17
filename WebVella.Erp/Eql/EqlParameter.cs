@@ -17,7 +17,11 @@ namespace WebVella.Erp.Eql
 		[JsonProperty(PropertyName = "type")]
 		public string Type { get; set; } = null;
 
-		public EqlParameter(string name, object value, string type = null)
+		public EqlParameter(string name, object value) : this(name,value,null)
+		{
+		}
+
+		public EqlParameter(string name, object value, string type )
 		{
 			if (string.IsNullOrWhiteSpace(name))
 				throw new ArgumentException(nameof(name));
