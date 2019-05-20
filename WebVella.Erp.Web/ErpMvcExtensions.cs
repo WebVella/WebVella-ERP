@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models.AutoMapper;
@@ -41,6 +42,12 @@ namespace WebVella.Erp.Web
 				var configurationBuilder = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile(configPath);
 				ErpSettings.Initialize(configurationBuilder.Build());
 
+				var defaultThreadCulture = CultureInfo.DefaultThreadCurrentCulture;
+				var defaultThreadUICulture = CultureInfo.DefaultThreadCurrentUICulture;
+
+				CultureInfo customCulture = new CultureInfo("en-US");
+				customCulture.NumberFormat.NumberDecimalSeparator = ".";
+
 				IErpService service = null;
 				try
 				{
@@ -58,7 +65,16 @@ namespace WebVella.Erp.Web
 					//this should be called after plugin init
 					AutoMapper.Mapper.Initialize(cfg);
 
-					service.InitializeSystemEntities();
+					//we used en-US based culture settings for initialization and patch execution
+					{
+						CultureInfo.DefaultThreadCurrentCulture = customCulture;
+						CultureInfo.DefaultThreadCurrentUICulture = customCulture;
+
+						service.InitializeSystemEntities();
+
+						CultureInfo.DefaultThreadCurrentCulture = defaultThreadCulture;
+						CultureInfo.DefaultThreadCurrentUICulture = defaultThreadUICulture;
+					}
 
 					CheckCreateHomePage();
 
@@ -66,18 +82,28 @@ namespace WebVella.Erp.Web
 
 					ErpAppContext.Init(app.ApplicationServices);
 
-					//this is called after automapper setup
-					service.InitializePlugins(app.ApplicationServices);
+					{
+						//switch culture for patch executions and initializations
+						CultureInfo.DefaultThreadCurrentCulture = customCulture;
+						CultureInfo.DefaultThreadCurrentUICulture = customCulture;
+
+						//this is called after automapper setup
+						service.InitializePlugins(app.ApplicationServices);
+
+						CultureInfo.DefaultThreadCurrentCulture = defaultThreadCulture;
+						CultureInfo.DefaultThreadCurrentUICulture = defaultThreadUICulture;
+					}
 
 				}
 				finally
 				{
 					DbContext.CloseContext();
+					CultureInfo.DefaultThreadCurrentCulture = defaultThreadCulture;
+					CultureInfo.DefaultThreadCurrentUICulture = defaultThreadUICulture;
 				}
 
 				if (service != null)
 					service.StartBackgroundJobProcess();
-
 
 				return app;
 			}
