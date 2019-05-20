@@ -3297,9 +3297,9 @@ pre, code {
     width:100%;
 }
 
-.erp-field textarea.erp-multilinetext,
-.erp-field textarea.erp-data-csv {
-    min-height: 60px;
+.erp-field.form textarea.erp-multilinetext,
+.erp-field.form textarea.erp-data-csv {
+	min-height: 60px;
 }
 
 .erp-field .input-group-prepend.erp-multilinetext > *,
@@ -3528,7 +3528,7 @@ input[type=date].form-control, input[type=datetime-local].form-control {
 .erp-field.inline-edit .form-control:disabled, .erp-field.inline-edit .form-control[readonly],
 .erp-field .form-control:disabled, .erp-field .form-control.disabled, .erp-field .form-control[readonly] {
     box-shadow: none;
-    border-color: #ced4da;
+    border-color: #eee;
 }
 
 .erp-field.inline-edit .form-control.erp-multilinetext[readonly],

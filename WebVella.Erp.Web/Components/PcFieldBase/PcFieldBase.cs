@@ -40,6 +40,9 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "connected_entity_id")]
 			public Guid? ConnectedEntityId { get; set; } = null;
 
+			[JsonProperty(PropertyName = "access_override_ds")]
+			public string AccessOverrideDs { get; set; } = "";
+
 			[JsonProperty(PropertyName = "class")]
 			public string Class { get; set; } = "";
 

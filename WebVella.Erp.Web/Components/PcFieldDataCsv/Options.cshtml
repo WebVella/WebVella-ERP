@@ -70,6 +70,13 @@
 			<wv-field-select name="connected_entity_id" value="@options.ConnectedEntityId" label-text="Connected Entity" options="@fieldModel.EntitySelectOptions"></wv-field-select>
 		</wv-column>
 		<wv-column span="4">
+			<wv-field-datasource name="access_override_ds" value="@options.AccessOverrideDs" label-text="Field value access override" page-id="erpRequest.Page.Id" description="should return [FieldAccess] enum. If provided will override the standard entity field role access "></wv-field-datasource>
+		</wv-column>
+		<wv-column span="4">
+		</wv-column>
+	</wv-row>
+	<wv-row>
+		<wv-column span="12">
 			<div class="go-bkg-gray-light border p-2">
 				<span class="go-blue"><i class="fa fa-info-circle"></i> Note: </span>The platform will try getting the advanced field properties by mapping the field name to the selected entity field name. If "<strong>label</strong>" or "<strong>options</strong>" are specified above, they will be applied with priority. If no entity is selected, the system will use the page's entity, if any is found!
 			</div>

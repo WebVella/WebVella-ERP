@@ -89,6 +89,11 @@ namespace WebVella.Erp.Web.Components
 					ViewBag.Mode = baseOptions.Mode;
 
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
+
+				var accessOverride = context.DataModel.GetPropertyValueByDataSource(options.AccessOverrideDs) as FieldAccess?;
+				if(accessOverride != null){
+					model.Access = accessOverride.Value;
+				}
 				#endregion
 
 
