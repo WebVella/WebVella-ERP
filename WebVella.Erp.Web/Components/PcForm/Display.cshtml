@@ -15,7 +15,7 @@
 }
 @if (options.ShowValidation)
 {
-<wv-validation show-errors="false" validation="@validation"></wv-validation>
+<wv-validation show-errors="true" validation="@validation"></wv-validation>
 }
 <wv-form method="@options.Method" id="@options.Id" name="@options.Name" label-mode="@options.LabelMode" 
 	mode="@options.Mode" action="@action" validation="@validation" class="@options.Class" is-visible="(bool)ViewBag.IsVisible">
