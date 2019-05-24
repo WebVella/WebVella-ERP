@@ -2405,10 +2405,6 @@ a {
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
 
-.btn + .btn {
-    margin-left: 5px;
-}
-
 /*.form-check-inline .form-check-input {
 	position: relative;
 	top: 2px;
@@ -3114,7 +3110,7 @@ pre, code {
 }
 
 .erp-field .input-group .form-control[readonly] {
-    border-left: 1px solid #ced4da;
+    border: 1px solid #ced4da;
 }
 
 .erp-field .col-form-label,

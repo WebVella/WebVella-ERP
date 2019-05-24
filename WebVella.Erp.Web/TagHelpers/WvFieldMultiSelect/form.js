@@ -19,6 +19,16 @@
 	return selectors;
 }
 
+function MultiSelectFormFormat(icon) {
+	var originalOption = icon.element;
+	var iconClass = $(originalOption).data('icon');
+	var color = $(originalOption).data('color');
+	if (!iconClass) {
+		return icon.text;
+	}
+	return '<i class="fa ' + iconClass + '" style="color:' + color + '"></i> ' + icon.text;
+}
+
 function MultiSelectFormInit(fieldId, fieldName, entityName, config) {
 	config = ProcessConfig(config);
 	var selectors = MultiSelectFormGenerateSelectors(fieldId, fieldName, config);
@@ -27,7 +37,12 @@ function MultiSelectFormInit(fieldId, fieldName, entityName, config) {
 		closeOnSelect: true,
 		language: "en",
 		minimumResultsForSearch: 10,
-		width: 'element'
+		width: 'element',
+		escapeMarkup: function (markup) {
+			return markup;
+		},
+		templateResult: MultiSelectFormFormat,
+		templateSelection: MultiSelectFormFormat
 	};
 
 	if (config.ajax_datasource) {

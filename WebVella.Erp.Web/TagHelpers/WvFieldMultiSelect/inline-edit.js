@@ -10,6 +10,19 @@ function MultiSelectInlineEditGenerateSelectors(fieldId, fieldName, entityName, 
 	return selectors;
 }
 
+function MultiSelectInlineEditFormat(icon) {
+	var originalOption = icon.element;
+	var iconClass = $(originalOption).data('icon');
+	var color = $(originalOption).data('color');
+	if (!color) {
+		color = "#999";
+	}
+	if (!iconClass) {
+		return icon.text;
+	}
+	return '<i class="fa ' + iconClass + '" style="color:' + color + '"></i> ' + icon.text;
+}
+
 function MultiSelectInlineEditPreEnableCallback(fieldId, fieldName, entityName, recordId, config) {
 	var selectors = MultiSelectInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
 
@@ -17,7 +30,12 @@ function MultiSelectInlineEditPreEnableCallback(fieldId, fieldName, entityName, 
 		closeOnSelect: true,
 		language: "en",
 		minimumResultsForSearch: 10,
-		width: 'element'
+		width: 'element',
+		escapeMarkup: function (markup) {
+			return markup;
+		},
+		templateResult: MultiSelectInlineEditFormat,
+		templateSelection: MultiSelectInlineEditFormat
 	};
 
 	if (config.ajax_datasource) {
