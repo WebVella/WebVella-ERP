@@ -9,7 +9,7 @@ using WebVella.Erp.Web.Services;
 
 namespace WebVella.Erp.Web.Components
 {
-	[PageComponent(Label = "Field Icon", Library = "WebVella", Description = "An icon selector field", Version = "0.0.1", IconClass = "fas fa-palette")]
+	[PageComponent(Label = "Field Icon", Library = "WebVella", Description = "An icon selector field", Version = "0.0.1", IconClass = "fab fa-font-awesome-alt")]
 	public class PcFieldIcon : PcFieldBase
 	{
 		protected ErpRequestContext ErpRequestContext { get; set; }
