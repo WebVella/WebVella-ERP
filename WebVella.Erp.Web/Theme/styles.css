@@ -4002,6 +4002,36 @@ erp-field.inline-edit .select2-container--default .select2-search--inline .selec
     font-size: 16px;
 }
 
+.erp-ta-icon-result {
+	display:flex;
+	align-items:center;
+}
+
+	.erp-ta-icon-result .icon-wrapper {
+		flex-grow: 0;
+		flex-shrink: 0;
+		width: 40px;
+	}
+
+		.erp-ta-icon-result .icon-wrapper .icon {
+			font-size: 24px;
+		}
+	.erp-ta-icon-result .meta {
+		flex-grow: 1;
+		flex-shrink: 1;
+	}
+		.erp-ta-icon-result .meta .title {
+			font-size: 14px;
+			line-height: 16px;
+		}
+
+		.erp-ta-icon-result .meta .entity {
+			font-size: 14px;
+			line-height: 16px;
+		}
+
+
+
 /*#endregion*/
 
 /*#region << Erp Filter >>*/

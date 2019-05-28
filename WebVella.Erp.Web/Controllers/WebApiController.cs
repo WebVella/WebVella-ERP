@@ -874,6 +874,52 @@ namespace WebVella.Erp.Web.Controllers
             }
         }
 
+
+		[Route("api/v3.0/p/core/select/font-awesome-icons")]
+		[HttpGet]
+		public ActionResult GetSelectCases([FromQuery]string search,[FromQuery]int page = 1)
+		{
+			var pageSize = 10;
+			var response = new ResponseModel();
+			response.Timestamp = DateTime.UtcNow;
+			try
+			{
+				var icons = RenderService.FontAwesomeIcons;
+				var iconTotal = icons.Count();
+				if(!String.IsNullOrWhiteSpace(search)){
+					var filteredIcons = icons.FindAll(x=> x.Class.Contains(search) || x.Name.Contains(search)).ToList();
+					iconTotal = filteredIcons.Count();
+					icons = filteredIcons.Skip((page-1)*pageSize).Take(pageSize).ToList();
+				}
+				else{
+					icons = icons.Skip((page-1)*pageSize).Take(pageSize).ToList();
+				}
+				var result = new EntityRecord();
+
+				result["results"] = icons;
+				result["pagination"] = new EntityRecord(); // more => true, false
+				var moreRecord = new EntityRecord();
+				moreRecord["more"] = false;
+
+				if(iconTotal > page*pageSize){
+					moreRecord["more"] = true;
+				}
+
+				result["pagination"] = moreRecord;
+
+
+				response.Object = result;
+				response.Success = true;
+				response.Message = "";
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Message = ex.Message;
+			}
+			return Json(response);
+		}
+
         //[AllowAnonymous]
         //[Route("api/v3.0/p/core/framework.css")]
         //[ResponseCache(NoStore = false, Duration = 30 * 24 * 3600)]

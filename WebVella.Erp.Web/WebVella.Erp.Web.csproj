@@ -15,8 +15,11 @@
    </ItemGroup>
 
    <ItemGroup>
+     <None Remove="Components\PcFieldIcon\service.js" />
      <None Remove="Components\PcFieldMultiFileUpload\service.js" />
      <None Remove="Components\PcFieldDataCsv\service.js" />
+     <None Remove="TagHelpers\WvFieldIcon\form.js" />
+     <None Remove="TagHelpers\WvFieldIcon\inline-edit.js" />
      <None Remove="TagHelpers\WvFieldDataCsv\display.js" />
      <None Remove="TagHelpers\WvFieldDataCsv\form.js" />
      <None Remove="TagHelpers\WvFieldDataCsv\inline-edit.js" />
@@ -29,6 +32,7 @@
 	<EmbeddedResource Include="Components\Nav\script.js" />
 	<EmbeddedResource Include="Components\PcBtnToolbar\service.js" />
 	<EmbeddedResource Include="Components\PcBtnGroup\service.js" />
+	<EmbeddedResource Include="Components\PcFieldIcon\service.js" />
 	<EmbeddedResource Include="Components\PcFieldMultiFileUpload\service.js" />
 	<EmbeddedResource Include="Components\PcFieldHidden\service.js" />
 	<EmbeddedResource Include="Components\PcFieldCheckboxList\service.js" />
@@ -75,6 +79,8 @@
 	<EmbeddedResource Include="Components\PcHtmlBlock\service.js" />
 	<EmbeddedResource Include="Components\PcRow\service.js" />
     <EmbeddedResource Include="TagHelpers\WvDrawer\drawer.js" />
+    <EmbeddedResource Include="TagHelpers\WvFieldIcon\form.js" />
+    <EmbeddedResource Include="TagHelpers\WvFieldIcon\inline-edit.js" />
     <EmbeddedResource Include="TagHelpers\WvFieldDataCsv\display.js" />
     <EmbeddedResource Include="TagHelpers\WvFieldDataCsv\form.js" />
     <EmbeddedResource Include="TagHelpers\WvFieldDataCsv\inline-edit.js" />
