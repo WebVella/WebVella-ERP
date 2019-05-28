@@ -3164,6 +3164,10 @@ pre, code {
     padding-bottom: 0.25rem;
 }
 
+.erp-field.label-horizontal .form-control-plaintext {
+	border-bottom:none;
+}
+
 .erp-field .erp-error-list {
     min-height: 31px;
     line-height: 31px;

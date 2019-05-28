@@ -249,6 +249,15 @@ namespace WebVella.Erp.Web.TagHelpers
                         }
                         Value = newListString;
                     }
+                    else if (Value is List<EntityRecord> || Value is EntityRecordList)
+                    {
+                        var newListString = new List<string>();
+                        foreach (var record in (List<EntityRecord>)Value)
+                        {
+                            newListString.Add(((Guid)record["id"]).ToString());
+                        }
+                        Value = newListString;
+                    }
                     else if (Value is string) {
                         var stringValue = Value.ToString();
   
