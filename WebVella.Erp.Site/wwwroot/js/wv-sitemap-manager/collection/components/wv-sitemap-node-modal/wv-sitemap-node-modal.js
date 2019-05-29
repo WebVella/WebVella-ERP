@@ -1,4 +1,44 @@
 import axios from 'axios';
+import _ from "lodash";
+function InitIconSelect() {
+    window.$("#modal-icon-class-select").select2({
+        ajax: {
+            url: '/api/v3.0/p/core/select/font-awesome-icons',
+            data: function (params) {
+                var query = {
+                    search: params.term,
+                    page: params.page || 1
+                };
+                return query;
+            },
+            dataType: 'json',
+            processResults: function (data) {
+                var results = [];
+                if (data.object.results) {
+                    _.forEach(data.object.results, function (rec) {
+                        results.push({ id: rec.class, text: rec.class, name: rec.name });
+                    });
+                }
+                data.object.results = results;
+                return data.object;
+            }
+        },
+        placeholder: 'not-selected',
+        allowClear: true,
+        closeOnSelect: true,
+        width: 'element',
+        escapeMarkup: function (markup) {
+            return markup;
+        },
+        templateResult: function (state) {
+            if (!state) {
+                return null;
+            }
+            var $state = window.$('<div class="erp-ta-icon-result"><div class="icon-wrapper"><i class="icon fa-fw ' + state.id + '"/></div><div class="meta"><div class="title">' + state.id + '</div><div class="entity go-gray">' + state.name + '</div></div>');
+            return $state;
+        }
+    });
+}
 export class WvSitemapNodeModal {
     constructor() {
         this.nodeObj = { areaId: null, node: null };
@@ -35,12 +75,18 @@ export class WvSitemapNodeModal {
             });
         }
     }
+    componentDidLoad() {
+        window.setTimeout(function () {
+            InitIconSelect();
+        }, 100);
+    }
     componentDidUnload() {
         var backdropId = "wv-sitemap-manager-area-modal-backdrop";
         var backdropDomEl = document.getElementById(backdropId);
         if (backdropDomEl) {
             backdropDomEl.remove();
         }
+        window.$('#modal-icon-class-select').select2('destroy');
     }
     LoadData() {
         let apiUrl = this.apiRoot + "sitemap/node/get-aux-info" + "?appId=" + this.appId;
@@ -197,7 +243,7 @@ export class WvSitemapNodeModal {
                                 h("div", { class: "col col-sm-6" },
                                     h("div", { class: "form-group erp-field" },
                                         h("label", { class: "control-label" }, "Icon Class"),
-                                        h("input", { class: "form-control", name: "icon_class", value: this.modalNodeObj["node"]["icon_class"], onInput: (event) => this.handleChange(event) }))),
+                                        h("select", { id: "modal-icon-class-select", class: "form-control", name: "icon_class", onChange: (event) => this.handleChange(event) }, this.modalNodeObj["node"]["icon_class"] ? (h("option", { value: this.modalNodeObj["node"]["icon_class"] }, this.modalNodeObj["node"]["icon_class"])) : null))),
                                 h("div", { class: "col col-sm-6" },
                                     h("div", { class: "form-group erp-field" },
                                         h("label", { class: "control-label" }, "Weight"),
@@ -243,7 +289,8 @@ export class WvSitemapNodeModal {
                                                 h("label", { class: "control-label" }, "list pages"),
                                                 h("select", { class: "form-control", multiple: true, name: "entity_list_pages", onChange: (event) => this.handleSelectChange(event) }, entityListPages.map(function (type) {
                                                     let nodeSelected = false;
-                                                    if (this.modalNodeObj["node"]["entity_list_pages"] && this.modalNodeObj["node"]["entity_list_pages"].length > 0 && this.modalNodeObj["node"]["entity_list_pages"].indexOf(type.page_id) > -1) {
+                                                    if (this.modalNodeObj["node"]["entity_list_pages"] && this.modalNodeObj["node"]["entity_list_pages"].length > 0
+                                                        && this.modalNodeObj["node"]["entity_list_pages"].indexOf(type.page_id) > -1) {
                                                         nodeSelected = true;
                                                     }
                                                     return (h("option", { value: type["page_id"], selected: nodeSelected }, type["page_name"]));
@@ -253,7 +300,8 @@ export class WvSitemapNodeModal {
                                                 h("label", { class: "control-label" }, "create pages"),
                                                 h("select", { class: "form-control", multiple: true, name: "entity_create_pages", onChange: (event) => this.handleSelectChange(event) }, entityCreatePages.map(function (type) {
                                                     let nodeSelected = false;
-                                                    if (this.modalNodeObj["node"]["entity_create_pages"] && this.modalNodeObj["node"]["entity_create_pages"].length > 0 && this.modalNodeObj["node"]["entity_create_pages"].indexOf(type.page_id) > -1) {
+                                                    if (this.modalNodeObj["node"]["entity_create_pages"] && this.modalNodeObj["node"]["entity_create_pages"].length > 0
+                                                        && this.modalNodeObj["node"]["entity_create_pages"].indexOf(type.page_id) > -1) {
                                                         nodeSelected = true;
                                                     }
                                                     return (h("option", { value: type["page_id"], selected: nodeSelected }, type["page_name"]));
@@ -263,7 +311,8 @@ export class WvSitemapNodeModal {
                                                 h("label", { class: "control-label" }, "details pages"),
                                                 h("select", { class: "form-control", multiple: true, name: "entity_details_pages", onChange: (event) => this.handleSelectChange(event) }, entityDetailsPages.map(function (type) {
                                                     let nodeSelected = false;
-                                                    if (this.modalNodeObj["node"]["entity_details_pages"] && this.modalNodeObj["node"]["entity_details_pages"].length > 0 && this.modalNodeObj["node"]["entity_details_pages"].indexOf(type.page_id) > -1) {
+                                                    if (this.modalNodeObj["node"]["entity_details_pages"] && this.modalNodeObj["node"]["entity_details_pages"].length > 0
+                                                        && this.modalNodeObj["node"]["entity_details_pages"].indexOf(type.page_id) > -1) {
                                                         nodeSelected = true;
                                                     }
                                                     return (h("option", { value: type["page_id"], selected: nodeSelected }, type["page_name"]));
@@ -273,7 +322,8 @@ export class WvSitemapNodeModal {
                                                 h("label", { class: "control-label" }, "manage pages"),
                                                 h("select", { class: "form-control", multiple: true, name: "entity_manage_pages", onChange: (event) => this.handleSelectChange(event) }, entityManagePages.map(function (type) {
                                                     let nodeSelected = false;
-                                                    if (this.modalNodeObj["node"]["entity_manage_pages"] && this.modalNodeObj["node"]["entity_manage_pages"].length > 0 && this.modalNodeObj["node"]["entity_manage_pages"].indexOf(type.page_id) > -1) {
+                                                    if (this.modalNodeObj["node"]["entity_manage_pages"] && this.modalNodeObj["node"]["entity_manage_pages"].length > 0
+                                                        && this.modalNodeObj["node"]["entity_manage_pages"].indexOf(type.page_id) > -1) {
                                                         nodeSelected = true;
                                                     }
                                                     return (h("option", { value: type["page_id"], selected: nodeSelected }, type["page_name"]));

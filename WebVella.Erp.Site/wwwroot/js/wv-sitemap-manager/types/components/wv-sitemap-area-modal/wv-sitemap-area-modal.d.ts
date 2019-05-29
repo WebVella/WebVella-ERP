@@ -7,6 +7,7 @@ export declare class WvSitemapAreaModal {
     wvSitemapManagerAreaSubmittedEvent: EventEmitter;
     modalArea: Object;
     componentWillLoad(): void;
+    componentDidLoad(): void;
     componentDidUnload(): void;
     closeModal(): void;
     handleSubmit(e: any): void;

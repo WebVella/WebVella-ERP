@@ -12,6 +12,7 @@ export declare class WvSitemapNodeModal {
     wvSitemapManagerNodeAuxDataUpdateEvent: EventEmitter;
     modalNodeObj: Object;
     componentWillLoad(): void;
+    componentDidLoad(): void;
     componentDidUnload(): void;
     LoadData(): void;
     closeModal(): void;
