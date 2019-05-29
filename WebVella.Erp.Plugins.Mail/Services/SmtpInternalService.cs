@@ -1,12 +1,15 @@
 ﻿using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using MimeKit;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Database;
 using WebVella.Erp.Eql;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Plugins.Mail.Api;
@@ -434,6 +437,18 @@ namespace WebVella.Erp.Plugins.Mail.Services
 					valEx.AddError("serviceId", "Smtp service with specified id does not exist");
 			}
 
+			List<string> attachments = new List<string>();
+			if (pageModel.HttpContext.Request.Form.ContainsKey("attachments"))
+			{
+				var ids = pageModel.HttpContext.Request.Form["attachments"].ToString().Split(",", StringSplitOptions.RemoveEmptyEntries).Select(x => new Guid(x));
+				foreach(var id in ids )
+				{
+					var fileRecord = new EqlCommand("SELECT name,path FROM user_file WHERE id = @id", new EqlParameter("id", id)).Execute().FirstOrDefault();
+					if (fileRecord != null)
+						attachments.Add((string)fileRecord["path"]);
+				}
+			}
+
 			//we set current record to store properties which don't exist in current entity 
 			EntityRecord currentRecord = pageModel.DataModel.GetProperty("Record") as EntityRecord;
 			currentRecord["recipient_email"] = recipientEmail;
@@ -446,7 +461,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 			try
 			{
 				EmailAddress recipient = new EmailAddress( recipientEmail );
-				smtpService.SendEmail(recipient, subject, string.Empty, content);
+				smtpService.SendEmail(recipient, subject, string.Empty, content, attachments: attachments );
 				pageModel.TempData.Put("ScreenMessage", new ScreenMessage() { Message = "Email was successfully sent", Type = ScreenMessageType.Success, Title = "Success" });
 				var returnUrl = pageModel.HttpContext.Request.Query["returnUrl"];
 				return new RedirectResult($"/mail/services/smtp/r/{smtpService.Id}/details?returnUrl={returnUrl}");
@@ -551,6 +566,40 @@ namespace WebVella.Erp.Plugins.Mail.Services
 				var bodyBuilder = new BodyBuilder();
 				bodyBuilder.HtmlBody = email.ContentHtml;
 				bodyBuilder.TextBody = email.ContentText;
+
+				if (email.Attachments != null && email.Attachments.Count > 0)
+				{
+					foreach (var att in email.Attachments )
+					{
+						var filepath = att;
+
+						if (!filepath.StartsWith("/"))
+							filepath = "/" + filepath;
+
+						filepath = filepath.ToLowerInvariant();
+
+						if (filepath.StartsWith("/fs"))
+							filepath = filepath.Substring(3);
+
+						DbFileRepository fsRepository = new DbFileRepository();
+						var file = fsRepository.Find(filepath);
+						var bytes = file.GetBytes();
+
+						var extension = Path.GetExtension(filepath).ToLowerInvariant();
+						new FileExtensionContentTypeProvider().Mappings.TryGetValue(extension, out string mimeType);
+
+						var attachment = new MimePart(mimeType)
+						{
+							Content = new MimeContent(new MemoryStream(bytes)),
+							ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+							ContentTransferEncoding = ContentEncoding.Base64,
+							FileName = Path.GetFileName(filepath)
+						};
+
+						bodyBuilder.Attachments.Add(attachment);
+					}
+				}
+
 				message.Body = bodyBuilder.ToMessageBody();
 
 				using (var client = new SmtpClient())

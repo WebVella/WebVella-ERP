@@ -53,5 +53,8 @@ namespace WebVella.Erp.Plugins.Mail.Api
 
 		[JsonProperty(PropertyName = "x_search")]
 		public string XSearch { get; internal set; }
+
+		[JsonProperty(PropertyName = "attachments")]
+		public List<string> Attachments { get; internal set; } = new List<string>();
 	}
 }

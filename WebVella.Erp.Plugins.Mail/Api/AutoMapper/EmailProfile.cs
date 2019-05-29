@@ -37,6 +37,11 @@ namespace WebVella.Erp.Web.Models.AutoMapper.Profiles
 			model.ScheduledOn = (DateTime?)rec["scheduled_on"];
 			model.RetriesCount = (int)((decimal)rec["retries_count"]);
 			model.XSearch = (string)rec["x_search"];
+			if (!string.IsNullOrWhiteSpace((string)rec["attachments"]))
+				model.Attachments = JsonConvert.DeserializeObject<List<string>>((string)rec["attachments"]);
+			else
+				model.Attachments = new List<string>();
+
 			return model;
 		}
 
@@ -62,6 +67,7 @@ namespace WebVella.Erp.Web.Models.AutoMapper.Profiles
 			rec["scheduled_on"] = model.ScheduledOn;
 			rec["retries_count"] = (decimal)model.RetriesCount;
 			rec["x_search"] = model.XSearch;
+			rec["attachments"] = JsonConvert.SerializeObject(model.Attachments ?? new List<string>());
 			return rec;
 		}
 	}

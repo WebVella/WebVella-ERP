@@ -3967,12 +3967,91 @@ namespace WebVella.Erp.Web.Controllers
             }
         }
 
+		[AcceptVerbs(new[] { "POST" }, Route = "/fs/upload-file-multiple/")]
+		[ResponseCache(NoStore = true, Duration = 0)]
+		public IActionResult UploadFileMultiple([FromForm] List<IFormFile> files)
+		{
 
-        #endregion
+			var resultRecords = new List<EntityRecord>();
+			var response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 
-        #region << Utils >>
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				connection.BeginTransaction();
 
-        public static Stream GenerateStreamFromString(string s)
+				try
+				{
+					foreach (var file in files)
+					{
+						var fileBuffer = ReadFully(file.OpenReadStream());
+						var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.ToString().Trim().ToLowerInvariant();
+						if (fileName.StartsWith("\"", StringComparison.InvariantCulture))
+							fileName = fileName.Substring(1);
+
+						if (fileName.EndsWith("\"", StringComparison.InvariantCulture))
+							fileName = fileName.Substring(0, fileName.Length - 1);
+
+						var recMan = new RecordManager();
+						DbFileRepository fsRepository = new DbFileRepository();
+						DbFile dbFile = fsRepository.CreateTempFile(fileName, fileBuffer);
+
+						var resultRec = new EntityRecord();
+
+						resultRec["id"] = dbFile.Id;
+						resultRec["path"] = dbFile.FilePath;
+
+						var mimeType = MimeMapping.MimeUtility.GetMimeMapping(dbFile.FilePath);
+						var fileExtension = Path.GetExtension(dbFile.FilePath);
+						if (mimeType.StartsWith("image"))
+						{
+							var dimensionsRecord = Helpers.GetImageDimension(fileBuffer);
+							resultRec["width"] = (decimal)dimensionsRecord["width"];
+							resultRec["height"] = (decimal)dimensionsRecord["height"];
+							resultRec["type"] = "image";
+						}
+						else if (mimeType.StartsWith("video"))
+						{
+							resultRec["type"] = "video";
+						}
+						else if (mimeType.StartsWith("audio"))
+						{
+							resultRec["type"] = "audio";
+						}
+						else if (fileExtension == ".doc" || fileExtension == ".docx" || fileExtension == ".odt" || fileExtension == ".rtf"
+						 || fileExtension == ".txt" || fileExtension == ".pdf" || fileExtension == ".html" || fileExtension == ".htm" || fileExtension == ".ppt"
+						  || fileExtension == ".pptx" || fileExtension == ".xls" || fileExtension == ".xlsx" || fileExtension == ".ods" || fileExtension == ".odp")
+						{
+							resultRec["type"] = "document";
+						}
+						else
+						{
+							resultRec["type"] = "other";
+						}
+
+						resultRecords.Add(resultRec);
+					}
+
+					connection.CommitTransaction();
+					response.Success = true;
+					response.Object = resultRecords;
+					return DoResponse(response);
+				}
+				catch (Exception ex)
+				{
+					connection.RollbackTransaction();
+					response.Success = false;
+					response.Message = ex.Message;
+					return DoResponse(response);
+				}
+			}
+		}
+
+
+		#endregion
+
+		#region << Utils >>
+
+		public static Stream GenerateStreamFromString(string s)
         {
             var stream = new MemoryStream();
             var writer = new StreamWriter(stream);

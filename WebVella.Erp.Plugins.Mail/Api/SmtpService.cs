@@ -7,6 +7,10 @@ using System.Collections.Generic;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Plugins.Mail.Services;
 using WebVella.Erp.Utilities;
+using HtmlAgilityPack;
+using System.IO;
+using WebVella.Erp.Database;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace WebVella.Erp.Plugins.Mail.Api
 {
@@ -60,7 +64,7 @@ namespace WebVella.Erp.Plugins.Mail.Api
 
 		internal SmtpService() { }
 
-		public void SendEmail( EmailAddress recipient, string subject, string textBody, string htmlBody)
+		public void SendEmail(EmailAddress recipient, string subject, string textBody, string htmlBody, List<string> attachments)
 		{
 			ValidationException ex = new ValidationException();
 
@@ -98,6 +102,40 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			var bodyBuilder = new BodyBuilder();
 			bodyBuilder.HtmlBody = htmlBody;
 			bodyBuilder.TextBody = textBody;
+
+			if (attachments != null && attachments.Count > 0)
+			{
+				foreach (var att in attachments)
+				{
+					var filepath = att;
+
+					if (!filepath.StartsWith("/"))
+						filepath = "/" + filepath;
+
+					filepath = filepath.ToLowerInvariant();
+
+					if (filepath.StartsWith("/fs"))
+						filepath = filepath.Substring(3);
+
+					DbFileRepository fsRepository = new DbFileRepository();
+					var file = fsRepository.Find(filepath);
+					var bytes = file.GetBytes();
+
+					var extension = Path.GetExtension(filepath).ToLowerInvariant();
+					new FileExtensionContentTypeProvider().Mappings.TryGetValue(extension, out string mimeType);
+
+					var attachment = new MimePart(mimeType)
+					{
+						Content = new MimeContent(new MemoryStream(bytes)),
+						ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+						ContentTransferEncoding = ContentEncoding.Base64,
+						FileName = Path.GetFileName(filepath)
+					};
+
+					bodyBuilder.Attachments.Add(attachment);
+				}
+			}
+
 			message.Body = bodyBuilder.ToMessageBody();
 
 			using (var client = new SmtpClient())
@@ -130,11 +168,32 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			email.ScheduledOn = null;
 			email.RetriesCount = 0;
 			email.ServiceId = Id;
+			if (attachments != null && attachments.Count > 0)
+			{
+				DbFileRepository fsRepository = new DbFileRepository();
+				foreach (var att in attachments)
+				{
+					var filepath = att;
 
+					if (!filepath.StartsWith("/"))
+						filepath = "/" + filepath;
+
+					filepath = filepath.ToLowerInvariant();
+
+					if (filepath.StartsWith("/fs"))
+						filepath = filepath.Substring(3);
+
+					var file = fsRepository.Find(filepath);
+					if (file == null)
+						throw new Exception($"Attachment file '{filepath}' not found.");
+
+					email.Attachments.Add(filepath);
+				}
+			}
 			new SmtpInternalService().SaveEmail(email);
 		}
 
-		public void SendEmail( List<EmailAddress> recipients, string subject, string textBody, string htmlBody)
+		public void SendEmail(List<EmailAddress> recipients, string subject, string textBody, string htmlBody, List<string> attachments)
 		{
 			ValidationException ex = new ValidationException();
 
@@ -185,6 +244,40 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			var bodyBuilder = new BodyBuilder();
 			bodyBuilder.HtmlBody = htmlBody;
 			bodyBuilder.TextBody = textBody;
+
+			if (attachments != null && attachments.Count > 0)
+			{
+				foreach (var att in attachments)
+				{
+					var filepath = att;
+
+					if (!filepath.StartsWith("/"))
+						filepath = "/" + filepath;
+
+					filepath = filepath.ToLowerInvariant();
+
+					if (filepath.StartsWith("/fs"))
+						filepath = filepath.Substring(3);
+
+					DbFileRepository fsRepository = new DbFileRepository();
+					var file = fsRepository.Find(filepath);
+					var bytes = file.GetBytes();
+
+					var extension = Path.GetExtension(filepath).ToLowerInvariant();
+					new FileExtensionContentTypeProvider().Mappings.TryGetValue(extension, out string mimeType);
+
+					var attachment = new MimePart(mimeType)
+					{
+						Content = new MimeContent(new MemoryStream(bytes)),
+						ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+						ContentTransferEncoding = ContentEncoding.Base64,
+						FileName = Path.GetFileName(filepath)
+					};
+
+					bodyBuilder.Attachments.Add(attachment);
+				}
+			}
+
 			message.Body = bodyBuilder.ToMessageBody();
 
 			using (var client = new SmtpClient())
@@ -217,11 +310,32 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			email.ScheduledOn = null;
 			email.RetriesCount = 0;
 			email.ServiceId = Id;
+			if (attachments != null && attachments.Count > 0)
+			{
+				DbFileRepository fsRepository = new DbFileRepository();
+				foreach (var att in attachments)
+				{
+					var filepath = att;
 
+					if (!filepath.StartsWith("/"))
+						filepath = "/" + filepath;
+
+					filepath = filepath.ToLowerInvariant();
+
+					if (filepath.StartsWith("/fs"))
+						filepath = filepath.Substring(3);
+
+					var file = fsRepository.Find(filepath);
+					if (file == null)
+						throw new Exception($"Attachment file '{filepath}' not found.");
+
+					email.Attachments.Add(filepath);
+				}
+			}
 			new SmtpInternalService().SaveEmail(email);
 		}
 
-		public void SendEmail( EmailAddress recipient, EmailAddress sender, string subject, string textBody, string htmlBody)
+		public void SendEmail(EmailAddress recipient, EmailAddress sender, string subject, string textBody, string htmlBody, List<string> attachments)
 		{
 			ValidationException ex = new ValidationException();
 
@@ -259,6 +373,40 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			var bodyBuilder = new BodyBuilder();
 			bodyBuilder.HtmlBody = htmlBody;
 			bodyBuilder.TextBody = textBody;
+
+			if (attachments != null && attachments.Count > 0)
+			{
+				foreach (var att in attachments)
+				{
+					var filepath = att;
+
+					if (!filepath.StartsWith("/"))
+						filepath = "/" + filepath;
+
+					filepath = filepath.ToLowerInvariant();
+
+					if (filepath.StartsWith("/fs"))
+						filepath = filepath.Substring(3);
+
+					DbFileRepository fsRepository = new DbFileRepository();
+					var file = fsRepository.Find(filepath);
+					var bytes = file.GetBytes();
+
+					var extension = Path.GetExtension(filepath).ToLowerInvariant();
+					new FileExtensionContentTypeProvider().Mappings.TryGetValue(extension, out string mimeType);
+
+					var attachment = new MimePart(mimeType)
+					{
+						Content = new MimeContent(new MemoryStream(bytes)),
+						ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+						ContentTransferEncoding = ContentEncoding.Base64,
+						FileName = Path.GetFileName(filepath)
+					};
+
+					bodyBuilder.Attachments.Add(attachment);
+				}
+			}
+
 			message.Body = bodyBuilder.ToMessageBody();
 
 			using (var client = new SmtpClient())
@@ -291,11 +439,32 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			email.ScheduledOn = null;
 			email.RetriesCount = 0;
 			email.ServiceId = Id;
+			if (attachments != null && attachments.Count > 0)
+			{
+				DbFileRepository fsRepository = new DbFileRepository();
+				foreach (var att in attachments)
+				{
+					var filepath = att;
 
+					if (!filepath.StartsWith("/"))
+						filepath = "/" + filepath;
+
+					filepath = filepath.ToLowerInvariant();
+
+					if (filepath.StartsWith("/fs"))
+						filepath = filepath.Substring(3);
+
+					var file = fsRepository.Find(filepath);
+					if (file == null)
+						throw new Exception($"Attachment file '{filepath}' not found.");
+
+					email.Attachments.Add(filepath);
+				}
+			}
 			new SmtpInternalService().SaveEmail(email);
 		}
 
-		public void SendEmail(List<EmailAddress> recipients, EmailAddress sender, string subject, string textBody, string htmlBody)
+		public void SendEmail(List<EmailAddress> recipients, EmailAddress sender, string subject, string textBody, string htmlBody, List<string> attachments)
 		{
 			ValidationException ex = new ValidationException();
 
@@ -346,6 +515,40 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			var bodyBuilder = new BodyBuilder();
 			bodyBuilder.HtmlBody = htmlBody;
 			bodyBuilder.TextBody = textBody;
+
+			if (attachments != null && attachments.Count > 0)
+			{
+				foreach (var att in attachments)
+				{
+					var filepath = att;
+
+					if (!filepath.StartsWith("/"))
+						filepath = "/" + filepath;
+
+					filepath = filepath.ToLowerInvariant();
+
+					if (filepath.StartsWith("/fs"))
+						filepath = filepath.Substring(3);
+
+					DbFileRepository fsRepository = new DbFileRepository();
+					var file = fsRepository.Find(filepath);
+					var bytes = file.GetBytes();
+
+					var extension = Path.GetExtension(filepath).ToLowerInvariant();
+					new FileExtensionContentTypeProvider().Mappings.TryGetValue(extension, out string mimeType);
+
+					var attachment = new MimePart(mimeType)
+					{
+						Content = new MimeContent(new MemoryStream(bytes)),
+						ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+						ContentTransferEncoding = ContentEncoding.Base64,
+						FileName = Path.GetFileName(filepath)
+					};
+
+					bodyBuilder.Attachments.Add(attachment);
+				}
+			}
+
 			message.Body = bodyBuilder.ToMessageBody();
 
 			using (var client = new SmtpClient())
@@ -378,11 +581,36 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			email.ScheduledOn = null;
 			email.RetriesCount = 0;
 			email.ServiceId = Id;
+			email.Attachments = new List<string>();
+			if (attachments != null && attachments.Count > 0)
+			{
+				DbFileRepository fsRepository = new DbFileRepository();
+				foreach (var att in attachments)
+				{
+					var filepath = att;
+
+					if (!filepath.StartsWith("/"))
+						filepath = "/" + filepath;
+
+					filepath = filepath.ToLowerInvariant();
+
+					if (filepath.StartsWith("/fs"))
+						filepath = filepath.Substring(3);
+
+					var file = fsRepository.Find(filepath);
+					if (file == null)
+						throw new Exception($"Attachment file '{filepath}' not found.");
+
+					email.Attachments.Add(filepath);
+				}
+			}
+
+			
 
 			new SmtpInternalService().SaveEmail(email);
 		}
 
-		public void QueueEmail(EmailAddress recipient, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal)
+		public void QueueEmail(EmailAddress recipient, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal, List<string> attachments = null)
 		{
 			ValidationException ex = new ValidationException();
 
@@ -417,10 +645,35 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			email.ScheduledOn = email.CreatedOn;
 			email.RetriesCount = 0;
 			email.ServiceId = Id;
+
+			email.Attachments = new List<string>();
+			if (attachments != null && attachments.Count > 0)
+			{
+				DbFileRepository fsRepository = new DbFileRepository();
+				foreach (var att in attachments)
+				{
+					var filepath = att;
+
+					if (!filepath.StartsWith("/"))
+						filepath = "/" + filepath;
+
+					filepath = filepath.ToLowerInvariant();
+
+					if (filepath.StartsWith("/fs"))
+						filepath = filepath.Substring(3);
+
+					var file = fsRepository.Find(filepath);
+					if (file == null)
+						throw new Exception($"Attachment file '{filepath}' not found.");
+
+					email.Attachments.Add(filepath);
+				}
+			}
+
 			new SmtpInternalService().SaveEmail(email);
 		}
 
-		public void QueueEmail(List<EmailAddress> recipients, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal)
+		public void QueueEmail(List<EmailAddress> recipients, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal, List<string> attachments = null)
 		{
 			ValidationException ex = new ValidationException();
 
@@ -465,10 +718,35 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			email.ScheduledOn = email.CreatedOn;
 			email.RetriesCount = 0;
 			email.ServiceId = Id;
+
+			email.Attachments = new List<string>();
+			if (attachments != null && attachments.Count > 0)
+			{
+				DbFileRepository fsRepository = new DbFileRepository();
+				foreach (var att in attachments)
+				{
+					var filepath = att;
+
+					if (!filepath.StartsWith("/"))
+						filepath = "/" + filepath;
+
+					filepath = filepath.ToLowerInvariant();
+
+					if (filepath.StartsWith("/fs"))
+						filepath = filepath.Substring(3);
+
+					var file = fsRepository.Find(filepath);
+					if (file == null)
+						throw new Exception($"Attachment file '{filepath}' not found.");
+
+					email.Attachments.Add(filepath);
+				}
+			}
+
 			new SmtpInternalService().SaveEmail(email);
 		}
 
-		public void QueueEmail(EmailAddress recipient, EmailAddress sender, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal)
+		public void QueueEmail(EmailAddress recipient, EmailAddress sender, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal, List<string> attachments = null )
 		{
 			ValidationException ex = new ValidationException();
 
@@ -503,10 +781,35 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			email.ScheduledOn = email.CreatedOn;
 			email.RetriesCount = 0;
 			email.ServiceId = Id;
+
+			email.Attachments = new List<string>();
+			if (attachments != null && attachments.Count > 0)
+			{
+				DbFileRepository fsRepository = new DbFileRepository();
+				foreach (var att in attachments)
+				{
+					var filepath = att;
+
+					if (!filepath.StartsWith("/"))
+						filepath = "/" + filepath;
+
+					filepath = filepath.ToLowerInvariant();
+
+					if (filepath.StartsWith("/fs"))
+						filepath = filepath.Substring(3);
+
+					var file = fsRepository.Find(filepath);
+					if (file == null)
+						throw new Exception($"Attachment file '{filepath}' not found.");
+
+					email.Attachments.Add(filepath);
+				}
+			}
+
 			new SmtpInternalService().SaveEmail(email);
 		}
 
-		public void QueueEmail(List<EmailAddress> recipients, EmailAddress sender, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal)
+		public void QueueEmail(List<EmailAddress> recipients, EmailAddress sender, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal, List<string> attachments = null)
 		{
 			ValidationException ex = new ValidationException();
 
@@ -551,6 +854,31 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			email.ScheduledOn = email.CreatedOn;
 			email.RetriesCount = 0;
 			email.ServiceId = Id;
+
+			email.Attachments = new List<string>();
+			if (attachments != null && attachments.Count > 0)
+			{
+				DbFileRepository fsRepository = new DbFileRepository();
+				foreach (var att in attachments)
+				{
+					var filepath = att;
+
+					if (!filepath.StartsWith("/"))
+						filepath = "/" + filepath;
+
+					filepath = filepath.ToLowerInvariant();
+
+					if (filepath.StartsWith("/fs"))
+						filepath = filepath.Substring(3);
+
+					var file = fsRepository.Find(filepath);
+					if (file == null)
+						throw new Exception($"Attachment file '{filepath}' not found.");
+
+					email.Attachments.Add(filepath);
+				}
+			}
+
 			new SmtpInternalService().SaveEmail(email);
 		}
 	}
