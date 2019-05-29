@@ -153,6 +153,8 @@ namespace WebVella.Erp.Web.TagHelpers
 						if (Value != null && ((List<string>)Value).Any(x => x == option.Value)) {
 							optionEl.Attributes.Add("selected", null);
 						}
+						optionEl.Attributes.Add("data-icon", option.IconClass);
+						optionEl.Attributes.Add("data-color", option.Color);
 						optionEl.InnerHtml.Append(option.Label);
 						selectEl.InnerHtml.AppendHtml(optionEl);
 					}
@@ -310,6 +312,8 @@ namespace WebVella.Erp.Web.TagHelpers
                         {
                             optionEl.Attributes.Add("selected", null);
                         }
+                        optionEl.Attributes.Add("data-icon", option.IconClass);
+                        optionEl.Attributes.Add("data-color", option.Color);
                         optionEl.InnerHtml.Append(option.Label);
                         selectEl.InnerHtml.AppendHtml(optionEl);
                     }
@@ -374,7 +378,17 @@ namespace WebVella.Erp.Web.TagHelpers
 							optionEl.AddCssClass("select2-selection__choice");
 							optionEl.Attributes.Add("title", option.Label);
 							optionEl.Attributes.Add("data-key", dataKey);
-							optionEl.InnerHtml.Append(option.Label);
+							if (String.IsNullOrWhiteSpace(option.IconClass)){
+								optionEl.InnerHtml.Append(option.Label);
+							}
+							else{
+								var color = "#999";
+								if (!String.IsNullOrWhiteSpace(option.Color))
+									color = option.Color;
+
+								optionEl.InnerHtml.AppendHtml($"<i class=\"{option.IconClass}\" style=\"color:{color}\"></i> {option.Label}");
+							}
+							
 						}
 						select2SelectionUlEl.InnerHtml.AppendHtml(optionEl);
 					}
@@ -403,7 +417,17 @@ namespace WebVella.Erp.Web.TagHelpers
 					}
 					else
 					{
-						valueLabels.Add(option.Label);
+						if (String.IsNullOrWhiteSpace(option.IconClass))
+						{
+							valueLabels.Add(option.Label);
+						}
+						else{
+							var color = "#999";
+							if (!String.IsNullOrWhiteSpace(option.Color))
+								color = option.Color;
+
+							valueLabels.Add($"<i class=\"{option.IconClass}\" style=\"color:{color}\"></i> {option.Label}");							
+						}
 					}
 				}
 
@@ -471,7 +495,16 @@ namespace WebVella.Erp.Web.TagHelpers
 								optionEl.AddCssClass("select2-selection__choice");
 								optionEl.Attributes.Add("title", option.Label);
 								optionEl.Attributes.Add("data-key", dataKey);
-								optionEl.InnerHtml.Append(option.Label);
+								if (String.IsNullOrWhiteSpace(option.IconClass)){
+									optionEl.InnerHtml.Append(option.Label);
+								}
+								else{
+									var color = "#999";
+									if (!String.IsNullOrWhiteSpace(option.Color))
+										color = option.Color;
+
+									optionEl.InnerHtml.AppendHtml($"<i class=\"{option.IconClass}\" style=\"color:{color}\"></i> {option.Label}");									
+								}
 							}
 							select2SelectionUlEl.InnerHtml.AppendHtml(optionEl);
 						}
@@ -545,6 +578,8 @@ namespace WebVella.Erp.Web.TagHelpers
 							{
 								optionEl.Attributes.Add("selected", null);
 							}
+							optionEl.Attributes.Add("data-icon", option.IconClass);
+							optionEl.Attributes.Add("data-color", option.Color);
 							optionEl.InnerHtml.Append(option.Label);
 							selectEl.InnerHtml.AppendHtml(optionEl);
 						}
@@ -675,7 +710,16 @@ namespace WebVella.Erp.Web.TagHelpers
 							optionEl.AddCssClass("select2-selection__choice");
 							optionEl.Attributes.Add("title", option.Label);
 							optionEl.Attributes.Add("data-key", dataKey);
-							optionEl.InnerHtml.Append(option.Label);
+							if (String.IsNullOrWhiteSpace(option.IconClass)){
+								optionEl.InnerHtml.Append(option.Label);
+							}
+							else{
+								var color = "#999";
+								if (!String.IsNullOrWhiteSpace(option.Color))
+									color = option.Color;
+
+								optionEl.InnerHtml.AppendHtml($"<i class=\"{option.IconClass}\" style=\"color:{color}\"></i> {option.Label}");									
+							}
 						}
 						select2SelectionUlEl.InnerHtml.AppendHtml(optionEl);
 					}

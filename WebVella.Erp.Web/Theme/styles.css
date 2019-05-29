@@ -2405,10 +2405,6 @@ a {
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
 
-.btn + .btn {
-    margin-left: 5px;
-}
-
 /*.form-check-inline .form-check-input {
 	position: relative;
 	top: 2px;
@@ -3114,7 +3110,7 @@ pre, code {
 }
 
 .erp-field .input-group .form-control[readonly] {
-    border-left: 1px solid #ced4da;
+    border: 1px solid #ced4da;
 }
 
 .erp-field .col-form-label,
@@ -3166,6 +3162,10 @@ pre, code {
 .erp-field .form-control-plaintext {
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
+}
+
+.erp-field.label-horizontal .form-control-plaintext {
+	border-bottom:none;
 }
 
 .erp-field .erp-error-list {
@@ -4001,6 +4001,36 @@ erp-field.inline-edit .select2-container--default .select2-search--inline .selec
 .erp-field .ace_editor {
     font-size: 16px;
 }
+
+.erp-ta-icon-result {
+	display:flex;
+	align-items:center;
+}
+
+	.erp-ta-icon-result .icon-wrapper {
+		flex-grow: 0;
+		flex-shrink: 0;
+		width: 40px;
+	}
+
+		.erp-ta-icon-result .icon-wrapper .icon {
+			font-size: 24px;
+		}
+	.erp-ta-icon-result .meta {
+		flex-grow: 1;
+		flex-shrink: 1;
+	}
+		.erp-ta-icon-result .meta .title {
+			font-size: 14px;
+			line-height: 16px;
+		}
+
+		.erp-ta-icon-result .meta .entity {
+			font-size: 14px;
+			line-height: 16px;
+		}
+
+
 
 /*#endregion*/
 

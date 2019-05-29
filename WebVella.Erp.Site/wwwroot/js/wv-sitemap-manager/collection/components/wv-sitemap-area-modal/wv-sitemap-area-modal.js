@@ -1,3 +1,43 @@
+import _ from "lodash";
+function InitIconSelect() {
+    window.$("#modal-area-icon-class-select").select2({
+        ajax: {
+            url: '/api/v3.0/p/core/select/font-awesome-icons',
+            data: function (params) {
+                var query = {
+                    search: params.term,
+                    page: params.page || 1
+                };
+                return query;
+            },
+            dataType: 'json',
+            processResults: function (data) {
+                var results = [];
+                if (data.object.results) {
+                    _.forEach(data.object.results, function (rec) {
+                        results.push({ id: rec.class, text: rec.class, name: rec.name });
+                    });
+                }
+                data.object.results = results;
+                return data.object;
+            }
+        },
+        placeholder: 'not-selected',
+        allowClear: true,
+        closeOnSelect: true,
+        width: 'element',
+        escapeMarkup: function (markup) {
+            return markup;
+        },
+        templateResult: function (state) {
+            if (!state) {
+                return null;
+            }
+            var $state = window.$('<div class="erp-ta-icon-result"><div class="icon-wrapper"><i class="icon fa-fw ' + state.id + '"/></div><div class="meta"><div class="title">' + state.id + '</div><div class="entity go-gray">' + state.name + '</div></div>');
+            return $state;
+        }
+    });
+}
 export class WvSitemapAreaModal {
     constructor() {
         this.area = null;
@@ -16,12 +56,18 @@ export class WvSitemapAreaModal {
             delete this.modalArea["nodes"];
         }
     }
+    componentDidLoad() {
+        window.setTimeout(function () {
+            InitIconSelect();
+        }, 100);
+    }
     componentDidUnload() {
         var backdropId = "wv-sitemap-manager-area-modal-backdrop";
         var backdropDomEl = document.getElementById(backdropId);
         if (backdropDomEl) {
             backdropDomEl.remove();
         }
+        window.$('#modal-area-icon-class-select').select2('destroy');
     }
     closeModal() {
         this.wvSitemapManagerAreaModalCloseEvent.emit();
@@ -87,7 +133,7 @@ export class WvSitemapAreaModal {
                                 h("div", { class: "col col-sm-6" },
                                     h("div", { class: "form-group erp-field" },
                                         h("label", { class: "control-label" }, "Icon Class"),
-                                        h("input", { class: "form-control", name: "icon_class", value: this.modalArea["icon_class"], onInput: (event) => this.handleChange(event) })))),
+                                        h("select", { id: "modal-area-icon-class-select", class: "form-control", name: "icon_class", onChange: (event) => this.handleChange(event) }, this.modalArea["icon_class"] ? (h("option", { value: this.modalArea["icon_class"] }, this.modalArea["icon_class"])) : null)))),
                             h("div", { class: "alert alert-info" }, "Label and Description translations, and access are currently not managable")),
                         h("div", { class: "modal-footer" },
                             h("button", { type: "submit", class: "btn btn-green btn-sm " + (this.area == null ? "" : "d-none") },

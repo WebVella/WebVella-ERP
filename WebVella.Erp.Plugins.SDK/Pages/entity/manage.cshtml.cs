@@ -133,7 +133,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			HeaderActions.AddRange(new List<string>() {
 
 				PageUtils.GetActionTemplate(PageUtilsActionType.SubmitForm, label: "Save Entity",formId:"ManageRecord"),
-				PageUtils.GetActionTemplate(PageUtilsActionType.Cancel, returnUrl: ReturnUrl)
+				PageUtils.GetActionTemplate(PageUtilsActionType.Cancel, returnUrl: ReturnUrl,btnClass:"btn btn-sm btn-outline-secondary ml-1")
 			});
 
 			HeaderToolbar.AddRange(AdminPageUtils.GetEntityAdminSubNav(ErpEntity, "details"));
