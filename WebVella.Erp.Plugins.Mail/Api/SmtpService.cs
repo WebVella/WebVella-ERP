@@ -136,6 +136,7 @@ namespace WebVella.Erp.Plugins.Mail.Api
 				}
 			}
 
+			SmtpInternalService.ProcessHtmlContent(bodyBuilder);
 			message.Body = bodyBuilder.ToMessageBody();
 
 			using (var client = new SmtpClient())
@@ -278,6 +279,7 @@ namespace WebVella.Erp.Plugins.Mail.Api
 				}
 			}
 
+			SmtpInternalService.ProcessHtmlContent(bodyBuilder);
 			message.Body = bodyBuilder.ToMessageBody();
 
 			using (var client = new SmtpClient())
@@ -406,7 +408,7 @@ namespace WebVella.Erp.Plugins.Mail.Api
 					bodyBuilder.Attachments.Add(attachment);
 				}
 			}
-
+			SmtpInternalService.ProcessHtmlContent(bodyBuilder);
 			message.Body = bodyBuilder.ToMessageBody();
 
 			using (var client = new SmtpClient())
@@ -548,7 +550,7 @@ namespace WebVella.Erp.Plugins.Mail.Api
 					bodyBuilder.Attachments.Add(attachment);
 				}
 			}
-
+			SmtpInternalService.ProcessHtmlContent(bodyBuilder);
 			message.Body = bodyBuilder.ToMessageBody();
 
 			using (var client = new SmtpClient())
