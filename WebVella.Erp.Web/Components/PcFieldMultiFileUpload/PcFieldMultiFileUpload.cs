@@ -11,7 +11,7 @@ using WebVella.Erp.Web.Services;
 
 namespace WebVella.Erp.Web.Components
 {
-	[PageComponent(Label = "Multi User File Upload Field", Library = "WebVella", Description = "Specialized field for multiple file upload to user files entity", Version = "0.0.1", IconClass = "far fa-file")]
+	[PageComponent(Label = "Multi File Upload Field", Library = "WebVella", Description = "Specialized field for multiple file upload to directly in the FS", Version = "0.0.1", IconClass = "far fa-file")]
 	public class PcFieldMultiFileUpload : PcFieldBase
 	{
 		protected ErpRequestContext ErpRequestContext { get; set; }

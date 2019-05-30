@@ -4044,6 +4044,9 @@ namespace WebVella.Erp.Web.Controllers
 						var resultRec = new EntityRecord();
 
 						resultRec["id"] = dbFile.Id;
+                        resultRec["created_on"] = DateTime.Now;
+                        resultRec["name"] = fileName;
+                        resultRec["size"] = Math.Round((decimal)(file.Length / 1024), 0);
 						resultRec["path"] = dbFile.FilePath;
 
 						var mimeType = MimeMapping.MimeUtility.GetMimeMapping(dbFile.FilePath);
