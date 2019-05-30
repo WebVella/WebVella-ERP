@@ -40,8 +40,14 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "connected_entity_id")]
 			public Guid? ConnectedEntityId { get; set; } = null;
 
+			[JsonProperty(PropertyName = "connected_record_id_ds")]
+			public string ConnectedRecordIdDs { get; set; } = null;
+
 			[JsonProperty(PropertyName = "access_override_ds")]
 			public string AccessOverrideDs { get; set; } = "";
+
+			[JsonProperty(PropertyName = "ajax_api_url_ds")]
+			public string AjaxApiUrlDs { get; set; } = null;
 
 			[JsonProperty(PropertyName = "class")]
 			public string Class { get; set; } = "";
@@ -502,6 +508,17 @@ namespace WebVella.Erp.Web.Components
 			{
 				model.RecordId = (Guid)recordId;
 			}
+			//Check for RecordId override
+			if(!String.IsNullOrWhiteSpace(options.ConnectedRecordIdDs)){
+				var dsRecordId = context.DataModel.GetPropertyValueByDataSource(options.ConnectedRecordIdDs) as Guid?;
+				if(dsRecordId == null && Guid.TryParse(options.ConnectedRecordIdDs, out Guid outGuid)){
+					model.RecordId = outGuid;
+				}
+				else{
+					model.RecordId = dsRecordId.Value;
+				}
+			}
+
 
 			var entity = context.DataModel.GetProperty("Entity");
 			if (entity != null && entity is Entity)
@@ -622,6 +639,18 @@ namespace WebVella.Erp.Web.Components
 						default:
 							return model;
 					}
+				}
+
+				//Override the entity settings
+				model.EntityName = mappedEntity.Name;
+				if (!String.IsNullOrWhiteSpace(model.EntityName) && model.RecordId != null)
+					model.ApiUrl = $"/api/v3/en_US/record/{model.EntityName}/{model.RecordId}/";
+			}
+
+			if(!String.IsNullOrWhiteSpace(options.AjaxApiUrlDs)){
+				var urlString = context.DataModel.GetPropertyValueByDataSource(options.AjaxApiUrlDs) as string;
+				if(!String.IsNullOrWhiteSpace(urlString)){
+					model.ApiUrl = String.Format(urlString,model.EntityName,model.RecordId);
 				}
 			}
 

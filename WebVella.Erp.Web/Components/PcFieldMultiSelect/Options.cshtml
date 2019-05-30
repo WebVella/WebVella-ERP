@@ -57,10 +57,16 @@
 			<wv-field-select name="connected_entity_id" value="@options.ConnectedEntityId" label-text="Connected Entity" options="@fieldModel.EntitySelectOptions"></wv-field-select>
 		</wv-column>
 		<wv-column span="4">
-			<wv-field-datasource name="access_override_ds" value="@options.AccessOverrideDs" label-text="Field value access override" page-id="erpRequest.Page.Id" description="should return [FieldAccess] enum. If provided will override the standard entity field role access "></wv-field-datasource>
+			<wv-field-datasource name="connected_record_id_ds" value="@options.ConnectedRecordIdDs" label-text="Override the record Id" page-id="erpRequest.Page.Id" description="should be a valid GUID "></wv-field-datasource>
 		</wv-column>
 		<wv-column span="4">
+			<wv-field-datasource name="access_override_ds" value="@options.AccessOverrideDs" label-text="Field value access override" page-id="erpRequest.Page.Id" description="should return [FieldAccess] enum. If provided will override the standard entity field role access "></wv-field-datasource>
 		</wv-column>
+	</wv-row>
+	<wv-row>
+		<wv-column span="4">
+			<wv-field-datasource name="ajax_api_url_ds" value="@options.AjaxApiUrlDs" label-text="Override the ajax API URL" page-id="erpRequest.Page.Id" description="should be a string. Formatted with {0} - entityName, {1} - recordId "></wv-field-datasource>
+		</wv-column>		
 	</wv-row>
 	<wv-row>
 		<wv-column span="12">
