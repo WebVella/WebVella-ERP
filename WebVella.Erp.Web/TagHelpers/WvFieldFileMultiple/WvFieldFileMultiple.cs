@@ -45,8 +45,8 @@ namespace WebVella.Erp.Web.TagHelpers
 				return Task.CompletedTask;
 			}
 
-            if (Value == "")
-                Value = null;
+			if (Value is string && Value == "")
+				Value = null;
 
 			if (Value != null && !(Value is List<EntityRecord>)) {
 				output.Content.AppendHtml("<div class='go-red'>'value' property should be 'List&lt;EntityRecord>'");

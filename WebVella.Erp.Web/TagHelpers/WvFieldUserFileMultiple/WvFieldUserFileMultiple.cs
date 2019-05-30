@@ -48,7 +48,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				return Task.CompletedTask;
 			}
 
-            if (Value == "")
+            if (Value is string && Value == "")
                 Value = null;
 
 			if (Value != null && !(Value is List<EntityRecord>)) {
