@@ -623,6 +623,11 @@ namespace WebVella.Erp.Web.Components
 							return model;
 					}
 				}
+
+				//Override the entity settings
+				model.EntityName = mappedEntity.Name;
+				if (!String.IsNullOrWhiteSpace(model.EntityName) && model.RecordId != null)
+					model.ApiUrl = $"/api/v3/en_US/record/{model.EntityName}/{model.RecordId}/";
 			}
 
 			switch (targetModel)
