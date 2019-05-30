@@ -517,56 +517,68 @@ namespace WebVella.Erp.Plugins.Mail.Services
 
 		public static void ProcessHtmlContent(BodyBuilder builder)
 		{
+			if (builder == null)
+				return;
+
 			if (string.IsNullOrWhiteSpace(builder.HtmlBody))
 				return;
 
-			var htmlDoc = new HtmlDocument();
-			htmlDoc.Load(new MemoryStream(Encoding.UTF8.GetBytes(builder.HtmlBody)));
-
-			foreach (HtmlNode node in htmlDoc.DocumentNode.SelectNodes("//img[@src]"))
+			try
 			{
-				var src = node.Attributes["src"].Value.Split('?', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+				var htmlDoc = new HtmlDocument();
+				htmlDoc.Load(new MemoryStream(Encoding.UTF8.GetBytes(builder.HtmlBody)));
 
-			
+				if (htmlDoc.DocumentNode == null)
+					return;
 
-				if (!string.IsNullOrWhiteSpace(src) && src.StartsWith("/fs"))
+				foreach (HtmlNode node in htmlDoc.DocumentNode.SelectNodes("//img[@src]"))
 				{
-					try
+					var src = node.Attributes["src"].Value.Split('?', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+
+
+					if (!string.IsNullOrWhiteSpace(src) && src.StartsWith("/fs"))
 					{
-						Uri uri = new Uri(src);
-						src = uri.AbsolutePath;
+						try
+						{
+							Uri uri = new Uri(src);
+							src = uri.AbsolutePath;
+						}
+						catch { }
+
+						if (src.StartsWith("/fs"))
+							src = src.Substring(3);
+
+						DbFileRepository fsRepository = new DbFileRepository();
+						var file = fsRepository.Find(src);
+						if (file == null)
+							continue;
+
+						var bytes = file.GetBytes();
+
+						var extension = Path.GetExtension(src).ToLowerInvariant();
+						new FileExtensionContentTypeProvider().Mappings.TryGetValue(extension, out string mimeType);
+
+						var imagePart = new MimePart(mimeType)
+						{
+							ContentId = MimeUtils.GenerateMessageId(),
+							Content = new MimeContent(new MemoryStream(bytes)),
+							ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+							ContentTransferEncoding = ContentEncoding.Base64,
+							FileName = Path.GetFileName(src)
+						};
+
+						builder.LinkedResources.Add(imagePart);
+						node.SetAttributeValue("src", $"cid:{imagePart.ContentId}");
 					}
-					catch { }
-
-					if (src.StartsWith("/fs"))
-						src = src.Substring(3);
-
-					DbFileRepository fsRepository = new DbFileRepository();
-					var file = fsRepository.Find(src);
-					if (file == null)
-						continue;
-
-					var bytes = file.GetBytes();
-
-					var extension = Path.GetExtension(src).ToLowerInvariant();
-					new FileExtensionContentTypeProvider().Mappings.TryGetValue(extension, out string mimeType);
-
-					var imagePart = new MimePart(mimeType)
-					{
-						ContentId = MimeUtils.GenerateMessageId(),
-						Content = new MimeContent(new MemoryStream(bytes)),
-						ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
-						ContentTransferEncoding = ContentEncoding.Base64,
-						FileName = Path.GetFileName(src)
-					};
-
-					builder.LinkedResources.Add(imagePart);
-					node.SetAttributeValue("src", $"cid:{imagePart.ContentId}");
 				}
+				builder.HtmlBody = htmlDoc.DocumentNode.OuterHtml;
+				if (string.IsNullOrWhiteSpace(builder.TextBody) && !string.IsNullOrWhiteSpace(builder.HtmlBody))
+					builder.TextBody = ConvertToPlainText(builder.HtmlBody);
 			}
-			builder.HtmlBody = htmlDoc.DocumentNode.OuterHtml;
-			if (string.IsNullOrWhiteSpace(builder.TextBody) && !string.IsNullOrWhiteSpace(builder.HtmlBody))
-				builder.TextBody = ConvertToPlainText(builder.HtmlBody);
+			catch
+			{
+				return;
+			}
 		}
 
 
