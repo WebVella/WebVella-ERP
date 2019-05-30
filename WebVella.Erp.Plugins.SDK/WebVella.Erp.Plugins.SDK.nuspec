@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>WebVella.Erp.Plugins.SDK</id>
-		<version>1.0.63</version>
+		<version>1.0.64</version>
 		<title>WebVella.Erp.Plugins.SDK</title>
 		<authors>WebVella</authors>
 		<owners>WebVella</owners>
@@ -16,8 +16,8 @@
 		<tags></tags>
 		<dependencies>
 			<group targetFramework=".NETCoreApp2.2">
-				<dependency id="WebVella.Erp" version="1.0.63" />
-				<dependency id="WebVella.Erp.Web" version="1.0.63" />
+				<dependency id="WebVella.Erp" version="1.0.64" />
+				<dependency id="WebVella.Erp.Web" version="1.0.66" />
 			</group>
 		</dependencies>
 	</metadata>
