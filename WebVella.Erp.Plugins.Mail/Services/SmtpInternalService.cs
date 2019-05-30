@@ -1,11 +1,14 @@
-﻿using MailKit.Net.Smtp;
+﻿using HtmlAgilityPack;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using MimeKit;
+using MimeKit.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Api.Models.AutoMapper;
@@ -509,6 +512,153 @@ namespace WebVella.Erp.Plugins.Mail.Services
 			
 		}
 
+
+		#region <--- content manipulation --->
+
+		public static void ProcessHtmlContent(BodyBuilder builder)
+		{
+			if (string.IsNullOrWhiteSpace(builder.HtmlBody))
+				return;
+
+			var htmlDoc = new HtmlDocument();
+			htmlDoc.Load(new MemoryStream(Encoding.UTF8.GetBytes(builder.HtmlBody)));
+
+			foreach (HtmlNode node in htmlDoc.DocumentNode.SelectNodes("//img[@src]"))
+			{
+				var src = node.Attributes["src"].Value.Split('?', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+
+			
+
+				if (!string.IsNullOrWhiteSpace(src) && src.StartsWith("/fs"))
+				{
+					try
+					{
+						Uri uri = new Uri(src);
+						src = uri.AbsolutePath;
+					}
+					catch { }
+
+					if (src.StartsWith("/fs"))
+						src = src.Substring(3);
+
+					DbFileRepository fsRepository = new DbFileRepository();
+					var file = fsRepository.Find(src);
+					if (file == null)
+						continue;
+
+					var bytes = file.GetBytes();
+
+					var extension = Path.GetExtension(src).ToLowerInvariant();
+					new FileExtensionContentTypeProvider().Mappings.TryGetValue(extension, out string mimeType);
+
+					var imagePart = new MimePart(mimeType)
+					{
+						ContentId = MimeUtils.GenerateMessageId(),
+						Content = new MimeContent(new MemoryStream(bytes)),
+						ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+						ContentTransferEncoding = ContentEncoding.Base64,
+						FileName = Path.GetFileName(src)
+					};
+
+					builder.LinkedResources.Add(imagePart);
+					node.SetAttributeValue("src", $"cid:{imagePart.ContentId}");
+				}
+			}
+			builder.HtmlBody = htmlDoc.DocumentNode.OuterHtml;
+			if (string.IsNullOrWhiteSpace(builder.TextBody) && !string.IsNullOrWhiteSpace(builder.HtmlBody))
+				builder.TextBody = ConvertToPlainText(builder.HtmlBody);
+		}
+
+
+		private static string ConvertToPlainText(string html)
+		{
+			try
+			{
+				if (string.IsNullOrWhiteSpace(html))
+					return string.Empty;
+
+				HtmlDocument doc = new HtmlDocument();
+				doc.LoadHtml(html);
+
+				StringWriter sw = new StringWriter();
+				ConvertTo(doc.DocumentNode, sw);
+				sw.Flush();
+				return sw.ToString();
+			}
+			catch
+			{
+				return string.Empty;
+			}
+		}
+
+		private static void ConvertContentTo(HtmlNode node, TextWriter outText)
+		{
+			foreach (HtmlNode subnode in node.ChildNodes)
+			{
+				ConvertTo(subnode, outText);
+			}
+		}
+
+		private static void ConvertTo(HtmlNode node, TextWriter outText)
+		{
+			string html;
+			switch (node.NodeType)
+			{
+				case HtmlNodeType.Comment:
+					// don't output comments
+					break;
+
+				case HtmlNodeType.Document:
+					ConvertContentTo(node, outText);
+					break;
+
+				case HtmlNodeType.Text:
+					// script and style must not be output
+					string parentName = node.ParentNode.Name;
+					if ((parentName == "script") || (parentName == "style"))
+						break;
+
+					// get text
+					html = ((HtmlTextNode)node).Text;
+
+					// is it in fact a special closing node output as text?
+					if (HtmlNode.IsOverlappedClosingElement(html))
+						break;
+
+					// check the text is meaningful and not a bunch of white spaces
+					if (html.Trim().Length > 0)
+					{
+						outText.Write(HtmlEntity.DeEntitize(html));
+					}
+					break;
+
+				case HtmlNodeType.Element:
+					switch (node.Name)
+					{
+						case "p":
+							// treat paragraphs as crlf
+							outText.Write("\r\n");
+							break;
+						case "br":
+							outText.Write("\r\n");
+							break;
+						case "a":
+							HtmlAttribute att = node.Attributes["href"];
+							outText.Write($"<{att.Value}>");
+							break;
+					}
+
+					if (node.HasChildNodes)
+					{
+						ConvertContentTo(node, outText);
+					}
+					break;
+			}
+		}
+
+		#endregion
+
+
 		internal Email GetEmail(Guid id)
 		{
 			var result = new EqlCommand("SELECT * FROM email WHERE id = @id", new EqlParameter("id", id)).Execute();
@@ -599,7 +749,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 						bodyBuilder.Attachments.Add(attachment);
 					}
 				}
-
+				ProcessHtmlContent(bodyBuilder);
 				message.Body = bodyBuilder.ToMessageBody();
 
 				using (var client = new SmtpClient())
