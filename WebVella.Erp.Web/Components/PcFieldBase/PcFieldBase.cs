@@ -540,6 +540,8 @@ namespace WebVella.Erp.Web.Components
 
 			if (mappedEntity != null)
 			{
+				//Override the entity settings
+				model.EntityName = mappedEntity.Name;	
 				var fieldName = options.Name;
 
 				if (fieldName.StartsWith("$"))
@@ -624,6 +626,17 @@ namespace WebVella.Erp.Web.Components
 						default:
 							break;
 					}
+
+					if (!String.IsNullOrWhiteSpace(model.EntityName) && model.RecordId != null)
+						model.ApiUrl = $"/api/v3/en_US/record/{model.EntityName}/{model.RecordId}/";
+
+					if(!String.IsNullOrWhiteSpace(options.AjaxApiUrlDs)){
+						var urlString = context.DataModel.GetPropertyValueByDataSource(options.AjaxApiUrlDs) as string;
+						if(!String.IsNullOrWhiteSpace(urlString)){
+							model.ApiUrl = String.Format(urlString,model.EntityName,model.RecordId);
+						}
+					}					
+					
 					switch (targetModel)
 					{
 						case "PcFieldSelectModel":
@@ -641,11 +654,13 @@ namespace WebVella.Erp.Web.Components
 					}
 				}
 
-				//Override the entity settings
-				model.EntityName = mappedEntity.Name;
-				if (!String.IsNullOrWhiteSpace(model.EntityName) && model.RecordId != null)
-					model.ApiUrl = $"/api/v3/en_US/record/{model.EntityName}/{model.RecordId}/";
+
+				
+
 			}
+
+			if (!String.IsNullOrWhiteSpace(model.EntityName) && model.RecordId != null)
+				model.ApiUrl = $"/api/v3/en_US/record/{model.EntityName}/{model.RecordId}/";
 
 			if(!String.IsNullOrWhiteSpace(options.AjaxApiUrlDs)){
 				var urlString = context.DataModel.GetPropertyValueByDataSource(options.AjaxApiUrlDs) as string;
