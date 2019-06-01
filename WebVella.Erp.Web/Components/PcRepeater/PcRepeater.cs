@@ -100,7 +100,7 @@ namespace WebVella.Erp.Web.Components
                     if (!isVisible && context.Mode == ComponentMode.Display)
                         return await Task.FromResult<IViewComponentResult>(Content(""));
 
-                    ViewBag.Records = context.DataModel.GetPropertyValueByDataSource(options.Records) as EntityRecordList ?? new EntityRecordList();
+                    ViewBag.Records = context.DataModel.GetPropertyValueByDataSource(options.Records) as List<EntityRecord> ?? new List<EntityRecord>();
                 }
 
                 switch (context.Mode)
