@@ -562,10 +562,15 @@ namespace WebVella.Erp.Web.Components
 
                     ViewBag.Records = context.DataModel.GetPropertyValueByDataSource(options.Records) as EntityRecordList ?? new EntityRecordList();
 
-					if (ViewBag.Records is EntityRecordList)
+					if (ViewBag.Records.Count > 0)
 					{
 						ViewBag.TotalCount = ((EntityRecordList)ViewBag.Records).TotalCount;
 					}
+					//Could be a simple List<EntityRecord> (if from relation)
+					if(ViewBag.Records.Count == 0){
+						ViewBag.Records = context.DataModel.GetPropertyValueByDataSource(options.Records) as List<EntityRecord> ?? new List<EntityRecord>();
+					}
+
 					string pageKey = options.Prefix + options.QueryStringPage;
 					if (HttpContext.Request.Query.ContainsKey(pageKey))
 					{
