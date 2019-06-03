@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>WebVella.Erp</id>
-		<version>1.0.64</version>
+		<version>1.0.65</version>
 		<title>WebVella.Erp</title>
 		<authors>WebVella</authors>
 		<owners>WebVella</owners>
@@ -14,25 +14,26 @@
 		<releaseNotes></releaseNotes>
 		<copyright>Copyright 2019</copyright>
 		<tags></tags>
+		<repository type="git" url="https://github.com/WebVella/WebVella-ERP" />
 		<dependencies>
 			<group targetFramework=".NETCoreApp2.2">
-				<dependency id="AutoMapper" version="8.0.0" />
-				<dependency id="System.Drawing.Common" version="4.5.1" />
-				<dependency id="CsvHelper" version="12.1.2" />
-				<dependency id="Irony.NetCore" version="1.0.11" />
-				<dependency id="Microsoft.AspNetCore.Authentication.Cookies" version="2.2.0" />
-				<dependency id="Microsoft.AspNetCore.Diagnostics" version="2.2.0" />
-				<dependency id="Microsoft.AspNetCore.Mvc" version="2.2.0" />
-				<dependency id="Microsoft.Extensions.Configuration.Json" version="2.2.0" />
-				<dependency id="Microsoft.Extensions.Logging" version="2.2.0" /> 
-				<dependency id="Microsoft.Extensions.Logging.Console" version="2.2.0" />
-				<dependency id="Microsoft.Extensions.Logging.Debug" version="2.2.0" />
-				<dependency id="Microsoft.NET.Sdk.Web" version="1.0.0-alpha-20161104-2-112" />
-				<dependency id="Microsoft.VisualStudio.Web.CodeGeneration.Design" version="2.2.1" />
-				<dependency id="MimeMapping" version="1.0.1.12" />
-				<dependency id="Newtonsoft.Json" version="12.0.1" />
-				<dependency id="Npgsql" version="4.0.4" />
-				<dependency id="Ical.Net" version="4.1.10" />
+				<dependency id="AutoMapper" version="8.0.0" exclude="Build,Analyzers" />
+				<dependency id="System.Drawing.Common" version="4.5.1" exclude="Build,Analyzers" />
+				<dependency id="CsvHelper" version="12.1.2" exclude="Build,Analyzers" />
+				<dependency id="Irony.NetCore" version="1.0.11" exclude="Build,Analyzers" />
+				<dependency id="Microsoft.AspNetCore.Authentication.Cookies" version="2.2.0" exclude="Build,Analyzers" />
+				<dependency id="Microsoft.AspNetCore.Diagnostics" version="2.2.0" exclude="Build,Analyzers" />
+				<dependency id="Microsoft.AspNetCore.Mvc" version="2.2.0" exclude="Build,Analyzers" />
+				<dependency id="Microsoft.Extensions.Configuration.Json" version="2.2.0"  exclude="Build,Analyzers"/>
+				<dependency id="Microsoft.Extensions.Logging" version="2.2.0" exclude="Build,Analyzers" /> 
+				<dependency id="Microsoft.Extensions.Logging.Console" version="2.2.0" exclude="Build,Analyzers"/>
+				<dependency id="Microsoft.Extensions.Logging.Debug" version="2.2.0"  exclude="Build,Analyzers"/>
+				<dependency id="Microsoft.NET.Sdk.Web" version="1.0.0-alpha-20161104-2-112" exclude="Build,Analyzers"/>
+				<dependency id="Microsoft.VisualStudio.Web.CodeGeneration.Design" version="2.2.1" exclude="Build,Analyzers"/>
+				<dependency id="MimeMapping" version="1.0.1.12" exclude="Build,Analyzers" />
+				<dependency id="Newtonsoft.Json" version="12.0.1" exclude="Build,Analyzers" />
+				<dependency id="Npgsql" version="4.0.4" exclude="Build,Analyzers"/>
+				<dependency id="Ical.Net" version="4.1.10" exclude="Build,Analyzers" />
 			</group>
 		</dependencies>
 	</metadata>

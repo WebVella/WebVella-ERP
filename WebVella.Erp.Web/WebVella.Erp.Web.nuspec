@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>WebVella.Erp.Web</id>
-		<version>1.0.67</version>
+		<version>1.0.68</version>
 		<title>WebVella.Erp.Web</title>
 		<authors>WebVella</authors>
 		<owners>WebVella</owners>
@@ -14,20 +14,21 @@
 		<releaseNotes></releaseNotes>
 		<copyright>Copyright 2019</copyright>
 		<tags></tags>
+		<repository type="git" url="https://github.com/WebVella/WebVella-ERP" />
 		<dependencies>
 			<group targetFramework=".NETCoreApp2.2">
-				<dependency id="WebVella.Erp" version="1.0.64" />
-				<dependency id="CS-Script.Core" version="1.0.6" />
-				<dependency id="Microsoft.AspNetCore.Mvc" version="2.2.0" />
-				<dependency id="HtmlAgilityPack" version="1.8.14" />
-				<dependency id="Microsoft.AspNetCore.StaticFiles" version="2.2.0" />
-				<dependency id="Microsoft.CodeAnalysis.Common" version="2.10.0" />
-				<dependency id="Microsoft.CodeAnalysis.CSharp" version="2.10.0" />
-				<dependency id="Microsoft.CodeAnalysis.CSharp.Workspaces" version="2.10.0" />
-				<dependency id="SixLabors.ImageSharp" version="1.0.0-beta0005" />
-				<dependency id="SixLabors.ImageSharp.Drawing" version="1.0.0-beta0005" />
-				<dependency id="Wangkanai.Detection.Device" version="2.0.0-beta8" />
-				<dependency id="YUICompressor.NET" version="3.0.0" />
+				<dependency id="WebVella.Erp" version="1.0.65"  exclude="Build,Analyzers" />
+				<dependency id="CS-Script.Core" version="1.0.6"  exclude="Build,Analyzers" />
+				<dependency id="Microsoft.AspNetCore.Mvc" version="2.2.0"  exclude="Build,Analyzers" />
+				<dependency id="HtmlAgilityPack" version="1.8.14"  exclude="Build,Analyzers" />
+				<dependency id="Microsoft.AspNetCore.StaticFiles" version="2.2.0"  exclude="Build,Analyzers" />
+				<dependency id="Microsoft.CodeAnalysis.Common" version="2.10.0"  exclude="Build,Analyzers" />
+				<dependency id="Microsoft.CodeAnalysis.CSharp" version="2.10.0"  exclude="Build,Analyzers" />
+				<dependency id="Microsoft.CodeAnalysis.CSharp.Workspaces" version="2.10.0"  exclude="Build,Analyzers" />
+				<dependency id="SixLabors.ImageSharp" version="1.0.0-beta0005"  exclude="Build,Analyzers" />
+				<dependency id="SixLabors.ImageSharp.Drawing" version="1.0.0-beta0005"  exclude="Build,Analyzers" />
+				<dependency id="Wangkanai.Detection.Device" version="2.0.0-beta8"  exclude="Build,Analyzers" />
+				<dependency id="YUICompressor.NET" version="3.0.0"  exclude="Build,Analyzers" />
 			</group>
 		</dependencies>
 		<!--<contentFiles>

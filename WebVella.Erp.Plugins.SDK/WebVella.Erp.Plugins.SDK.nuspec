@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>WebVella.Erp.Plugins.SDK</id>
-		<version>1.0.64</version>
+		<version>1.0.65</version>
 		<title>WebVella.Erp.Plugins.SDK</title>
 		<authors>WebVella</authors>
 		<owners>WebVella</owners>
@@ -14,10 +14,11 @@
 		<releaseNotes></releaseNotes>
 		<copyright>Copyright 2019</copyright>
 		<tags></tags>
+		<repository type="git" url="https://github.com/WebVella/WebVella-ERP" />
 		<dependencies>
 			<group targetFramework=".NETCoreApp2.2">
-				<dependency id="WebVella.Erp" version="1.0.64" />
-				<dependency id="WebVella.Erp.Web" version="1.0.66" />
+				<dependency id="WebVella.Erp" version="1.0.65" exclude="Build,Analyzers" />
+				<dependency id="WebVella.Erp.Web" version="1.0.68" exclude="Build,Analyzers" />
 			</group>
 		</dependencies>
 	</metadata>
