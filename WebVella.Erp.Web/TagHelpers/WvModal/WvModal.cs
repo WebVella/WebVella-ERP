@@ -49,7 +49,7 @@ namespace WebVella.Erp.Web.TagHelpers
 
 			output.TagName = "div";
 			output.AddCssClass("modal");
-			output.Attributes.Add("tabindex","-1");
+			//output.Attributes.Add("tabindex","-1");
 			output.Attributes.Add("role", "modal");
 
 			if (!String.IsNullOrWhiteSpace(Id))
