@@ -23,6 +23,32 @@ function SelectInlineEditFormat(icon) {
 	return '<i class="fa ' + iconClass + '" style="color:' + color + '"></i> ' + icon.text;
 }
 
+function SelectInlineEditMatchStartsWith(params, data) {
+	// If there are no search terms, return all of the data
+	if ($.trim(params.term) === '') {
+		return data;
+	}
+
+	// Do not display the item if there is no 'text' property
+	if (typeof data.text === 'undefined') {
+		return null;
+	}
+
+	// `params.term` should be the term that is used for searching
+	// `data.text` is the text that is displayed for the data object
+	if (data.text.startsWith(params.term)) {
+		var modifiedData = $.extend({}, data, true);
+//		modifiedData.text += ' (matched)';
+
+		// You can return modified objects from here
+		// This includes matching the `children` how you want in nested data sets
+		return modifiedData;
+	}
+
+	// Return `null` if the term should not be displayed
+	return null;
+}
+
 function SelectInlineEditPreEnableCallback(fieldId, fieldName, entityName, recordId, config) {
 	config = ProcessConfig(config);
 	var selectors = SelectInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
@@ -40,6 +66,10 @@ function SelectInlineEditPreEnableCallback(fieldId, fieldName, entityName, recor
 		templateResult: SelectInlineEditFormat,
 		templateSelection: SelectInlineEditFormat
 	};
+
+	if(config.select_match_type === 1){
+		selectInitObject.matcher = SelectInlineEditMatchStartsWith;
+	}
 
 	if (config.ajax_datasource) {
 		var currentPage = 1;
@@ -226,7 +256,7 @@ function SelectInlineEditInitErrorCallback(response, fieldId, fieldName, entityN
 	if (!errorMessage && response.errors && response.errors.length > 0) {
 		errorMessage = response.errors[0].message;
 	}
-		
+
 	$(selectors.editWrapper + " .input-group").after("<div class='invalid-feedback'>" + errorMessage + "</div>");
 	$(selectors.editWrapper + " .invalid-feedback").show();
 	$(selectors.editWrapper + " .save .fa").addClass("fa-check").removeClass("fa-spin fa-spinner");

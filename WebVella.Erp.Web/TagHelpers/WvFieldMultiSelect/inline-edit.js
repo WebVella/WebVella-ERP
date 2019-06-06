@@ -23,6 +23,33 @@ function MultiSelectInlineEditFormat(icon) {
 	return '<i class="fa ' + iconClass + '" style="color:' + color + '"></i> ' + icon.text;
 }
 
+
+function MultiSelectInlineEditMatchStartsWith(params, data) {
+	// If there are no search terms, return all of the data
+	if ($.trim(params.term) === '') {
+		return data;
+	}
+
+	// Do not display the item if there is no 'text' property
+	if (typeof data.text === 'undefined') {
+		return null;
+	}
+
+	// `params.term` should be the term that is used for searching
+	// `data.text` is the text that is displayed for the data object
+	if (data.text.startsWith(params.term)) {
+		var modifiedData = $.extend({}, data, true);
+//		modifiedData.text += ' (matched)';
+
+		// You can return modified objects from here
+		// This includes matching the `children` how you want in nested data sets
+		return modifiedData;
+	}
+
+	// Return `null` if the term should not be displayed
+	return null;
+}
+
 function MultiSelectInlineEditPreEnableCallback(fieldId, fieldName, entityName, recordId, config) {
 	var selectors = MultiSelectInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
 
@@ -37,6 +64,10 @@ function MultiSelectInlineEditPreEnableCallback(fieldId, fieldName, entityName, 
 		templateResult: MultiSelectInlineEditFormat,
 		templateSelection: MultiSelectInlineEditFormat
 	};
+
+	if(config.select_match_type === 1){
+		selectInitObject.matcher = MultiSelectInlineEditMatchStartsWith;
+	}
 
 	if (config.ajax_datasource) {
 		var currentPage = 1;
@@ -217,7 +248,7 @@ function MultiSelectInlineEditInitErrorCallback(response, fieldId, fieldName, en
 	if (!errorMessage && response.errors && response.errors.length > 0) {
 		errorMessage = response.errors[0].message;
 	}
-		
+
 	$(selectors.editWrapper + " .input-group").after("<div class='invalid-feedback'>" + errorMessage + "</div>");
 	$(selectors.editWrapper + " .invalid-feedback").show();
 	$(selectors.editWrapper + " .save .fa").addClass("fa-check").removeClass("fa-spin fa-spinner");

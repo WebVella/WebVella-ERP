@@ -11,7 +11,7 @@ using WebVella.Erp.Web.TagHelpers;
 namespace WebVella.Erp.Web.Models
 {
 	public class WvFieldBaseConfig
-    {
+	{
 		public WvFieldBaseConfig() {
 			CanAddValues = null;
 			ApiUrl = "";
@@ -271,6 +271,9 @@ namespace WebVella.Erp.Web.Models
 		[JsonProperty(PropertyName = "ajax_datasource")]
 		public SelectOptionsAjaxDatasource AjaxDatasource { get; set; } = null;
 
+		[JsonProperty(PropertyName = "select_match_type")]
+		public SelectMatchType SelectMatchType { get; set; } = SelectMatchType.Contains;
+
 	}
 
 	public class WvFieldNumberConfig : WvFieldBaseConfig
@@ -372,6 +375,9 @@ namespace WebVella.Erp.Web.Models
 
 		[JsonProperty(PropertyName = "ajax_datasource")]
 		public SelectOptionsAjaxDatasource AjaxDatasource { get; set; } = null;
+
+		[JsonProperty(PropertyName = "select_match_type")]
+		public SelectMatchType SelectMatchType { get; set; } = SelectMatchType.Contains;
 
 	}
 

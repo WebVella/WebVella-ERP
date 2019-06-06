@@ -8,6 +8,8 @@
 	var options = (PcFieldSelect.PcFieldSelectOptions)ViewBag.Options;
 	var fieldModel = (PcFieldSelect.PcFieldSelectModel)ViewBag.Model;
 	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
+
+	var matchTypeOptions = (List<SelectOption>)ViewBag.SelectMatchOptions;
 }
 
 <wv-row>
@@ -66,6 +68,9 @@
 		<wv-column span="4">
 			<wv-field-datasource name="ajax_api_url_ds" value="@options.AjaxApiUrlDs" label-text="Override the ajax API URL" page-id="erpRequest.Page.Id" description="should be a string. Formatted with {0} - entityName, {1} - recordId "></wv-field-datasource>
 		</wv-column>		
+		<wv-column span="4">
+			<wv-field-select name="select_match_type" value="@options.SelectMatchingType" label-text="Options match type" options="@matchTypeOptions"></wv-field-select>
+		</wv-column>	
 	</wv-row>
 	<wv-row>
 		<wv-column span="12">
