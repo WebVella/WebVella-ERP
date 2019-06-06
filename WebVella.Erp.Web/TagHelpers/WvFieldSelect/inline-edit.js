@@ -36,7 +36,7 @@ function SelectInlineEditMatchStartsWith(params, data) {
 
 	// `params.term` should be the term that is used for searching
 	// `data.text` is the text that is displayed for the data object
-	if (data.text.startsWith(params.term)) {
+	if (data.text.toLowerCase().startsWith(params.term.toLowerCase())) {
 		var modifiedData = $.extend({}, data, true);
 //		modifiedData.text += ' (matched)';
 
