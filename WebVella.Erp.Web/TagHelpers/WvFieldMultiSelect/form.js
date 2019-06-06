@@ -6,13 +6,13 @@
 	}
 	else {
 		selectors.inputEl = "#input-" + config.prefix + "-" + fieldId;
-    }
-    if (!config.prefix || config === "") {
-        selectors.dummyInputEl = "#dummy-" + fieldId;
-    }
-    else {
-        selectors.dummyInputEl = "#dummy-" + config.prefix + "-" + fieldId;
-    }
+	}
+	if (!config.prefix || config === "") {
+		selectors.dummyInputEl = "#dummy-" + fieldId;
+	}
+	else {
+		selectors.dummyInputEl = "#dummy-" + config.prefix + "-" + fieldId;
+	}
 	selectors.modalEl = "#add-option-modal-" + fieldId;
 	selectors.primaryBtnEl = "#add-option-modal-" + fieldId + " .btn-primary";
 	selectors.modalFormEl = "#add-option-form-" + fieldId;
@@ -29,6 +29,33 @@ function MultiSelectFormFormat(icon) {
 	return '<i class="fa ' + iconClass + '" style="color:' + color + '"></i> ' + icon.text;
 }
 
+function MultiSelectFormMatchStartsWith(params, data) {
+	// If there are no search terms, return all of the data
+	if ($.trim(params.term) === '') {
+		return data;
+	}
+
+	// Do not display the item if there is no 'text' property
+	if (typeof data.text === 'undefined') {
+		return null;
+	}
+
+	// `params.term` should be the term that is used for searching
+	// `data.text` is the text that is displayed for the data object
+	if (data.text.startsWith(params.term)) {
+		var modifiedData = $.extend({}, data, true);
+//		modifiedData.text += ' (matched)';
+
+		// You can return modified objects from here
+		// This includes matching the `children` how you want in nested data sets
+		return modifiedData;
+	}
+
+	// Return `null` if the term should not be displayed
+	return null;
+}
+
+
 function MultiSelectFormInit(fieldId, fieldName, entityName, config) {
 	config = ProcessConfig(config);
 	var selectors = MultiSelectFormGenerateSelectors(fieldId, fieldName, config);
@@ -44,6 +71,10 @@ function MultiSelectFormInit(fieldId, fieldName, entityName, config) {
 		templateResult: MultiSelectFormFormat,
 		templateSelection: MultiSelectFormFormat
 	};
+
+	if(config.select_match_type === 1){
+		selectInitObject.matcher = MultiSelectFormMatchStartsWith;
+	}
 
 	if (config.ajax_datasource) {
 		var currentPage = 1;
@@ -112,41 +143,41 @@ function MultiSelectFormInit(fieldId, fieldName, entityName, config) {
 	});
 
 	$(selectors.inputEl).on('change', function(event) {
-        var customEvent = new Event('WvFieldSelect_Change');
+		var customEvent = new Event('WvFieldSelect_Change');
 		var inputElement = document.getElementById('input-' + fieldId);
 		var selectedJson = $(selectors.inputEl).select2('data');
 		var selectedKeys = [];
 		for (var i= 0; i < selectedJson.length; i++) {
 			selectedKeys.push(selectedJson[i].id); //this is a single select
-        }
-        var fieldname = $(selectors.inputEl).attr("data-field-name");
-        if (selectedKeys.length === 0) {
-            var attrDummy = $(selectors.dummyInputEl).attr('name');
-            $(selectors.inputEl).removeAttr("name");
-            if (typeof attrDummy !== typeof undefined && attrDummy !== false) {
-                // Element has this attribute
-            }
-            else {
-                $(selectors.dummyInputEl).attr('name', fieldname);
-            }
-        }
-        else {
-            var attr = $(selectors.inputEl).attr('name');
-            $(selectors.dummyInputEl).removeAttr("name");
-            if (typeof attr !== typeof undefined && attr !== false) {
-                // Element has this attribute
-            }
-            else {
-                $(selectors.inputEl).attr('name', fieldname);
-            }
-        }
+		}
+		var fieldname = $(selectors.inputEl).attr("data-field-name");
+		if (selectedKeys.length === 0) {
+			var attrDummy = $(selectors.dummyInputEl).attr('name');
+			$(selectors.inputEl).removeAttr("name");
+			if (typeof attrDummy !== typeof undefined && attrDummy !== false) {
+				// Element has this attribute
+			}
+			else {
+				$(selectors.dummyInputEl).attr('name', fieldname);
+			}
+		}
+		else {
+			var attr = $(selectors.inputEl).attr('name');
+			$(selectors.dummyInputEl).removeAttr("name");
+			if (typeof attr !== typeof undefined && attr !== false) {
+				// Element has this attribute
+			}
+			else {
+				$(selectors.inputEl).attr('name', fieldname);
+			}
+		}
 
 		customEvent.payload = {
 			value: selectedKeys,
 			fieldId: fieldId,
 			fieldName:inputElement.name
 		};
-		document.dispatchEvent(customEvent);		
+		document.dispatchEvent(customEvent);
 	});
 
 

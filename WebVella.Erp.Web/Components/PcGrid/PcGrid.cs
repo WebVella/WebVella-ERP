@@ -28,16 +28,16 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "is_visible")]
 			public string IsVisible { get; set; } = "";
 
-            //[JsonProperty(PropertyName = "pager")]
-            //public string Pager { get; set; } = "1";
+			//[JsonProperty(PropertyName = "pager")]
+			//public string Pager { get; set; } = "1";
 
-            //[JsonProperty(PropertyName = "total_count")]
-            //public string TotalCount { get; set; } = "0";
+			//[JsonProperty(PropertyName = "total_count")]
+			//public string TotalCount { get; set; } = "0";
 
-            [JsonProperty(PropertyName = "page_size")]
-            public int? PageSize { get; set; } = 10;
+			[JsonProperty(PropertyName = "page_size")]
+			public int? PageSize { get; set; } = 10;
 
-            [JsonProperty(PropertyName = "records")]
+			[JsonProperty(PropertyName = "records")]
 			public string Records { get; set; } = "";
 
 			[JsonProperty(PropertyName = "striped")]
@@ -529,38 +529,38 @@ namespace WebVella.Erp.Web.Components
 				ViewBag.ComponentContext = context;
 
 
-                ViewBag.CssBreakpointOptions = ModelExtensions.GetEnumAsSelectOptions<CssBreakpoint>();
-                ViewBag.Page = 1;
+				ViewBag.CssBreakpointOptions = ModelExtensions.GetEnumAsSelectOptions<CssBreakpoint>();
+				ViewBag.Page = 1;
 				ViewBag.TotalCount = 0;
 
-                if(options.PageSize != null)
-                {
-                    ViewBag.PageSize = options.PageSize;
-                }
-                else
-                {
-                    ViewBag.PageSize = 0;
-                }
+				if(options.PageSize != null)
+				{
+					ViewBag.PageSize = options.PageSize;
+				}
+				else
+				{
+					ViewBag.PageSize = 0;
+				}
 				
 
 				if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
 				{
-                    var isVisible = true;
-                    var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
-                    if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
-                    {
-                        if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
-                        {
-                            isVisible = outBool;
-                        }
-                    }
-                    else if (isVisibleDS is Boolean)
-                    {
-                        isVisible = (bool)isVisibleDS;
-                    }
-                    ViewBag.IsVisible = isVisible;
+					var isVisible = true;
+					var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+					if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+					{
+						if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+						{
+							isVisible = outBool;
+						}
+					}
+					else if (isVisibleDS is Boolean)
+					{
+						isVisible = (bool)isVisibleDS;
+					}
+					ViewBag.IsVisible = isVisible;
 
-                    ViewBag.Records = context.DataModel.GetPropertyValueByDataSource(options.Records) as EntityRecordList ?? new EntityRecordList();
+					ViewBag.Records = context.DataModel.GetPropertyValueByDataSource(options.Records) as EntityRecordList ?? new EntityRecordList();
 
 					if (ViewBag.Records.Count > 0)
 					{

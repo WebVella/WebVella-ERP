@@ -7,7 +7,7 @@ using WebVella.Erp.Api.Models;
 
 namespace WebVella.Erp.Web.Models
 {
-    public class ListFilter
+	public class ListFilter
 	{
 		[JsonProperty(PropertyName = "queryType")]
 		public QueryType QueryType { get; set; }

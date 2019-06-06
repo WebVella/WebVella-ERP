@@ -24,6 +24,9 @@ namespace WebVella.Erp.Web.TagHelpers
 		[HtmlAttributeName("ajax-datasource")]
 		public SelectOptionsAjaxDatasource AjaxDatasource { get; set; } = null;
 
+		[HtmlAttributeName("select-match-type")]
+		public SelectMatchType SelectMatchType { get; set; } = SelectMatchType.Contains;
+
 		public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
 			if (!isVisible)
@@ -112,27 +115,27 @@ namespace WebVella.Erp.Web.TagHelpers
 						}
 						inputGroupEl.InnerHtml.AppendHtml(prependEl);
 					}
-                    //Hidden Control to be posted when no option is selected
-                    var dummyHiddenInput = new TagBuilder("input");
-                    dummyHiddenInput.Attributes.Add("type", "hidden");
-                    dummyHiddenInput.Attributes.Add("id", $"dummy-{FieldId}");
-                    if (Value == null || ((List<string>)Value).Count == 0)
-                    {
-                        dummyHiddenInput.Attributes.Add("name", $"{Name}");
-                    }
-                    dummyHiddenInput.Attributes.Add("value", "");
-                    inputGroupEl.InnerHtml.AppendHtml(dummyHiddenInput);
+					//Hidden Control to be posted when no option is selected
+					var dummyHiddenInput = new TagBuilder("input");
+					dummyHiddenInput.Attributes.Add("type", "hidden");
+					dummyHiddenInput.Attributes.Add("id", $"dummy-{FieldId}");
+					if (Value == null || ((List<string>)Value).Count == 0)
+					{
+						dummyHiddenInput.Attributes.Add("name", $"{Name}");
+					}
+					dummyHiddenInput.Attributes.Add("value", "");
+					inputGroupEl.InnerHtml.AppendHtml(dummyHiddenInput);
 
-                    //Control
-                    var selectEl = new TagBuilder("select");
+					//Control
+					var selectEl = new TagBuilder("select");
 					selectEl.Attributes.Add("id", $"input-{FieldId}");
-                    //Name will be attached and removed depending on if there is selected values or not, in order for the dummy to post
-                    if (Value != null && ((List<string>)Value).Count > 0)
-                    {
-                        selectEl.Attributes.Add("name", $"{Name}");
-                    }
-                    selectEl.Attributes.Add("data-field-name", $"{Name}");
-                    var inputElCssClassList = new List<string>();
+					//Name will be attached and removed depending on if there is selected values or not, in order for the dummy to post
+					if (Value != null && ((List<string>)Value).Count > 0)
+					{
+						selectEl.Attributes.Add("name", $"{Name}");
+					}
+					selectEl.Attributes.Add("data-field-name", $"{Name}");
+					var inputElCssClassList = new List<string>();
 					inputElCssClassList.Add("form-control erp-multiselect invisible");
 					if (ValidationErrors.Count > 0)
 					{
@@ -217,7 +220,8 @@ namespace WebVella.Erp.Web.TagHelpers
 					{
 						ApiUrl = ApiUrl,
 						CanAddValues = Access == FieldAccess.FullAndCreate ? true : false,
-						AjaxDatasource = AjaxDatasource
+						AjaxDatasource = AjaxDatasource,
+						SelectMatchType = SelectMatchType
 					};
 
 					scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));
@@ -259,81 +263,81 @@ namespace WebVella.Erp.Web.TagHelpers
 				}
 				else if (Access == FieldAccess.ReadOnly)
 				{
-                    //Have to render it as a normal select as readonly prop does not work with select 2. Also in order for the select not to work it should be disabled,
-                    //which will not pass the value, this the hidden input
+					//Have to render it as a normal select as readonly prop does not work with select 2. Also in order for the select not to work it should be disabled,
+					//which will not pass the value, this the hidden input
 
-                    var hiddenInput = new TagBuilder("input");
-                    hiddenInput.Attributes.Add("type", "hidden");
-                    hiddenInput.Attributes.Add("id", $"input-{FieldId}");
-                    hiddenInput.Attributes.Add("name", $"{Name}");
-                    hiddenInput.Attributes.Add("value", (Value ?? "").ToString());
-                    output.Content.AppendHtml(hiddenInput);
-
-
-                    var inputGroupEl = new TagBuilder("div");
-                    inputGroupEl.AddCssClass("input-group");
-                    //Prepend
-                    if (PrependHtml.Count > 0)
-                    {
-                        var prependEl = new TagBuilder("span");
-                        prependEl.AddCssClass($"input-group-prepend {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
-                        foreach (var htmlString in PrependHtml)
-                        {
-                            prependEl.InnerHtml.AppendHtml(htmlString);
-                        }
-                        inputGroupEl.InnerHtml.AppendHtml(prependEl);
-                    }
+					var hiddenInput = new TagBuilder("input");
+					hiddenInput.Attributes.Add("type", "hidden");
+					hiddenInput.Attributes.Add("id", $"input-{FieldId}");
+					hiddenInput.Attributes.Add("name", $"{Name}");
+					hiddenInput.Attributes.Add("value", (Value ?? "").ToString());
+					output.Content.AppendHtml(hiddenInput);
 
 
-                    //Control
-                    var selectEl = new TagBuilder("select");
-                    selectEl.Attributes.Add("id", $"select-{FieldId}");
-                    selectEl.Attributes.Add("readonly", null);
-                    selectEl.Attributes.Add("disabled", $"disabled");
-                    var inputElCssClassList = new List<string>();
-                    inputElCssClassList.Add("form-control erp-multiselect invisible");
-                    if (ValidationErrors.Count > 0)
-                    {
-                        inputElCssClassList.Add("is-invalid");
-                    }
-                    selectEl.Attributes.Add("class", String.Join(' ', inputElCssClassList));
-                    if (Required)
-                    {
-                        selectEl.Attributes.Add("required", null);
-                    }
+					var inputGroupEl = new TagBuilder("div");
+					inputGroupEl.AddCssClass("input-group");
+					//Prepend
+					if (PrependHtml.Count > 0)
+					{
+						var prependEl = new TagBuilder("span");
+						prependEl.AddCssClass($"input-group-prepend {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
+						foreach (var htmlString in PrependHtml)
+						{
+							prependEl.InnerHtml.AppendHtml(htmlString);
+						}
+						inputGroupEl.InnerHtml.AppendHtml(prependEl);
+					}
 
-                    selectEl.Attributes.Add("multiple", "multiple");
 
-                    foreach (var option in Options)
-                    {
-                        var optionEl = new TagBuilder("option");
-                        optionEl.Attributes.Add("value", option.Value);
-                        if (Value != null && ((List<string>)Value).Any(x => x == option.Value))
-                        {
-                            optionEl.Attributes.Add("selected", null);
-                        }
-                        optionEl.Attributes.Add("data-icon", option.IconClass);
-                        optionEl.Attributes.Add("data-color", option.Color);
-                        optionEl.InnerHtml.Append(option.Label);
-                        selectEl.InnerHtml.AppendHtml(optionEl);
-                    }
+					//Control
+					var selectEl = new TagBuilder("select");
+					selectEl.Attributes.Add("id", $"select-{FieldId}");
+					selectEl.Attributes.Add("readonly", null);
+					selectEl.Attributes.Add("disabled", $"disabled");
+					var inputElCssClassList = new List<string>();
+					inputElCssClassList.Add("form-control erp-multiselect invisible");
+					if (ValidationErrors.Count > 0)
+					{
+						inputElCssClassList.Add("is-invalid");
+					}
+					selectEl.Attributes.Add("class", String.Join(' ', inputElCssClassList));
+					if (Required)
+					{
+						selectEl.Attributes.Add("required", null);
+					}
 
-                    inputGroupEl.InnerHtml.AppendHtml(selectEl);
-                    //Append
-                    if (AppendHtml.Count > 0)
-                    {
-                        var appendEl = new TagBuilder("span");
-                        appendEl.AddCssClass($"input-group-append {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
+					selectEl.Attributes.Add("multiple", "multiple");
 
-                        foreach (var htmlString in AppendHtml)
-                        {
-                            appendEl.InnerHtml.AppendHtml(htmlString);
-                        }
-                        inputGroupEl.InnerHtml.AppendHtml(appendEl);
-                    }
+					foreach (var option in Options)
+					{
+						var optionEl = new TagBuilder("option");
+						optionEl.Attributes.Add("value", option.Value);
+						if (Value != null && ((List<string>)Value).Any(x => x == option.Value))
+						{
+							optionEl.Attributes.Add("selected", null);
+						}
+						optionEl.Attributes.Add("data-icon", option.IconClass);
+						optionEl.Attributes.Add("data-color", option.Color);
+						optionEl.InnerHtml.Append(option.Label);
+						selectEl.InnerHtml.AppendHtml(optionEl);
+					}
 
-                    output.Content.AppendHtml(inputGroupEl);
-                }
+					inputGroupEl.InnerHtml.AppendHtml(selectEl);
+					//Append
+					if (AppendHtml.Count > 0)
+					{
+						var appendEl = new TagBuilder("span");
+						appendEl.AddCssClass($"input-group-append {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
+
+						foreach (var htmlString in AppendHtml)
+						{
+							appendEl.InnerHtml.AppendHtml(htmlString);
+						}
+						inputGroupEl.InnerHtml.AppendHtml(appendEl);
+					}
+
+					output.Content.AppendHtml(inputGroupEl);
+				}
 			}
 			else if (Mode == FieldRenderMode.Display)
 			{
@@ -645,7 +649,8 @@ namespace WebVella.Erp.Web.TagHelpers
 					{
 						ApiUrl = ApiUrl,
 						CanAddValues = Access == FieldAccess.FullAndCreate ? true : false,
-						AjaxDatasource = AjaxDatasource
+						AjaxDatasource = AjaxDatasource,
+						SelectMatchType = SelectMatchType
 					};
 
 					scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));
