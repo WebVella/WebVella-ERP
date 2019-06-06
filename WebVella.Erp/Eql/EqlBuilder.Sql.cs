@@ -26,13 +26,13 @@ namespace WebVella.Erp.Eql
 		const string FROM = @"FROM {0}";
 
 		const string OTM_RELATION_TEMPLATE =
-@"$$$TABS$$$(SELECT  COALESCE( array_to_json( array_agg( row_to_json(d) )), '[]') FROM ( 
-$$$TABS$$$ SELECT {1} 
+@"$$$TABS$$$(SELECT  COALESCE( array_to_json( array_agg( row_to_json(d) )), '[]') FROM (
+$$$TABS$$$ SELECT {1}
 $$$TABS$$$ FROM {2} {3}
 $$$TABS$$$ WHERE {3}.{4} = {5}.{6} ) d )::jsonb AS ""{0}"",";
 
 		const string MTM_RELATION_TEMPLATE =
-@"$$$TABS$$$(SELECT  COALESCE(  array_to_json(array_agg( row_to_json(d))), '[]') FROM ( 
+@"$$$TABS$$$(SELECT  COALESCE(  array_to_json(array_agg( row_to_json(d))), '[]') FROM (
 $$$TABS$$$ SELECT {1}
 $$$TABS$$$ FROM {2} {3}
 $$$TABS$$$ LEFT JOIN  {4} {5} ON {6}.{7} = {8}.{9}
@@ -300,7 +300,7 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 			//append total count column
 			if (depth == 1)
 				AppendToStringBuilder(sb, depth, true, " COUNT(*) OVER() AS ___total_count___,");
-			
+
 			bool trimed = false;
 			if (rootInfo.Children.Count == 0)
 			{
@@ -495,7 +495,7 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 						sb.Remove(sb.Length - 3, 3);
 				}
 
-				
+
 				if(!sb.ToString().EndsWith("\r\n"))
 					AppendToStringBuilder(sb, depth, true, "");
 
@@ -567,6 +567,10 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 				case EqlNodeType.Keyword:
 					if (((EqlKeywordNode)operandNode).Keyword == "null")
 						operandString = $"NULL";
+					else if (((EqlKeywordNode)operandNode).Keyword == "true")
+						operandString = $"TRUE";
+					else if (((EqlKeywordNode)operandNode).Keyword == "false")
+						operandString = $"FALSE";
 					else
 						throw new EqlException($"WHERE CLAUSE: Unknown term '{((EqlKeywordNode)operandNode).Keyword}' used as keyword.");
 					break;
@@ -630,7 +634,7 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 						return $" ( {secondOperandString} IS NULL ) ";
 					if (secondOperandString == "NULL") //keyword NULL
 						return $" ( {firstOperandString} IS NULL ) ";
-					
+
 					if (firstOperandString.StartsWith("@")) //parameter
 					{
 						string paramName = firstOperandString;
@@ -735,7 +739,7 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 							//coalesce(string_agg(tag.name, ' '))
 							if (singleWord)
 							{
-								param.Value = param.Value + ":*"; //search for all lexemes starting with this word 
+								param.Value = param.Value + ":*"; //search for all lexemes starting with this word
 								return $" to_tsvector( 'simple', {firstOperandString} ) @@ to_tsquery( 'simple', {paramName} ) ";
 							}
 							else
@@ -758,7 +762,7 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 
 							if (singleWord)
 							{
-								text = text + ":*"; //search for all lexemes starting with this word 
+								text = text + ":*"; //search for all lexemes starting with this word
 								return $" to_tsvector( 'simple', {firstOperandString} ) @@ to_tsquery( 'simple', '{text}') ";
 							}
 							else

@@ -17,6 +17,8 @@ namespace WebVella.Erp.Eql
 			var COMMA = ToTerm(",");
 			var DOT = ToTerm(".");
 			var NULL = ToTerm("NULL");
+			var TRUE = ToTerm("TRUE");
+			var FALSE = ToTerm("FALSE");
 			var SELECT = ToTerm("SELECT");
 			var FROM = ToTerm("FROM");
 			var WHERE = ToTerm("WHERE");
@@ -52,14 +54,13 @@ namespace WebVella.Erp.Eql
 			var pageClauseOpt = new NonTerminal("page_clause_optional");
 			var pageSizeClauseOpt = new NonTerminal("pagesize_clause_optional");
 			var term = new NonTerminal("term");
-			var nullTerm = new NonTerminal("null");
 			var tuple = new NonTerminal("tuple");
 			var binExpr = new NonTerminal("binary_expression");
 			var binOp = new NonTerminal("binary_operator");
 			var stmtRoot = new NonTerminal("root");
 
 
-			//BNF root 
+			//BNF root
 			this.Root = stmtRoot;
 			stmtRoot.Rule = selectStmt;
 
@@ -76,7 +77,7 @@ namespace WebVella.Erp.Eql
 			orderMember.Rule = identifier + orderDirOpt | argument + orderDirOpt;
 			orderDirOpt.Rule = Empty | ASC | DESC | argument;
 
-			//select statement  
+			//select statement
 			selectStmt.Rule = SELECT + columnItemList + fromClause + whereClauseOpt + orderClauseOpt + pageClauseOpt + pageSizeClauseOpt;
 			selList.Rule = columnItemList;
 
@@ -95,7 +96,7 @@ namespace WebVella.Erp.Eql
 			//expression
 			exprList.Rule = MakePlusRule(exprList, COMMA, expression);
 			expression.Rule = term | binExpr;
-			term.Rule = expressionIdentifier | argument | tuple | NUMBER | STRING | NULL;
+			term.Rule = expressionIdentifier | argument | tuple | NUMBER | STRING | NULL | TRUE | FALSE;
 			expressionIdentifier.Rule = identifier | columnRelation + DOT + identifier;
 			tuple.Rule = "(" + exprList + ")";
 			binExpr.Rule = expression + binOp + expression;

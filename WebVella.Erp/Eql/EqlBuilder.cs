@@ -83,7 +83,7 @@ namespace WebVella.Erp.Eql
 		{
 			if (string.IsNullOrWhiteSpace(source))
 				throw new EqlException("Source is empty.");
-			
+
 			if (errors == null)
 				errors = new List<EqlError>();
 
@@ -388,6 +388,10 @@ namespace WebVella.Erp.Eql
 						return new EqlTextValueNode { Text = parseTreeNode.ChildNodes[0].Token.ValueString };
 					case "null":
 						return new EqlKeywordNode { Keyword = "null" };
+					case "true":
+						return new EqlKeywordNode { Keyword = "true" };
+					case "false":
+						return new EqlKeywordNode { Keyword = "false" };
 					case "expression_list":
 						return BuildBinaryExpressionNode(parseTreeNode.ChildNodes[0].ChildNodes[0]);
 					default:
