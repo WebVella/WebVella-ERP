@@ -1,7 +1,11 @@
 import axios from 'axios';
 import _ from "lodash";
-function InitIconSelect() {
-    window.$("#modal-icon-class-select").select2({
+function InitIconSelect(scope) {
+    let selectId = "#modal-icon-class-select";
+    window.$(selectId).on('select2:select', function (event) {
+        scope.modalNodeObj["node"]["icon_class"] = event.target.value;
+    });
+    window.$(selectId).select2({
         ajax: {
             url: '/api/v3.0/p/core/select/font-awesome-icons',
             data: function (params) {
@@ -76,8 +80,9 @@ export class WvSitemapNodeModal {
         }
     }
     componentDidLoad() {
+        let scope = this;
         window.setTimeout(function () {
-            InitIconSelect();
+            InitIconSelect(scope);
         }, 100);
     }
     componentDidUnload() {
@@ -243,7 +248,7 @@ export class WvSitemapNodeModal {
                                 h("div", { class: "col col-sm-6" },
                                     h("div", { class: "form-group erp-field" },
                                         h("label", { class: "control-label" }, "Icon Class"),
-                                        h("select", { id: "modal-icon-class-select", class: "form-control", name: "icon_class", onChange: (event) => this.handleSelectChange(event) }, this.modalNodeObj["node"]["icon_class"] ? (h("option", { value: this.modalNodeObj["node"]["icon_class"] }, this.modalNodeObj["node"]["icon_class"])) : null))),
+                                        h("select", { id: "modal-icon-class-select", class: "form-control", name: "icon_class", onChange: (event) => this.handleChange(event) }, this.modalNodeObj["node"]["icon_class"] ? (h("option", { value: this.modalNodeObj["node"]["icon_class"] }, this.modalNodeObj["node"]["icon_class"])) : null))),
                                 h("div", { class: "col col-sm-6" },
                                     h("div", { class: "form-group erp-field" },
                                         h("label", { class: "control-label" }, "Weight"),

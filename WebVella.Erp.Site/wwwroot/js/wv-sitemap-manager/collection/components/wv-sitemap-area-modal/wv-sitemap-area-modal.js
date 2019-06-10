@@ -1,6 +1,10 @@
 import _ from "lodash";
-function InitIconSelect() {
-    window.$("#modal-area-icon-class-select").select2({
+function InitIconSelect(scope) {
+    let selectId = "#modal-area-icon-class-select";
+    window.$(selectId).on('select2:select', function (event) {
+        scope.modalArea["icon_class"] = event.target.value;
+    });
+    window.$(selectId).select2({
         ajax: {
             url: '/api/v3.0/p/core/select/font-awesome-icons',
             data: function (params) {
@@ -57,8 +61,9 @@ export class WvSitemapAreaModal {
         }
     }
     componentDidLoad() {
+        let scope = this;
         window.setTimeout(function () {
-            InitIconSelect();
+            InitIconSelect(scope);
         }, 100);
     }
     componentDidUnload() {
