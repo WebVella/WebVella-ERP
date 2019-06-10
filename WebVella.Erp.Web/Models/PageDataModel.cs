@@ -118,7 +118,7 @@ namespace WebVella.Erp.Web.Models
 
 					Properties.Add("ParentRecord", new MPW(MPT.EntityRecord, null));
 				}
-		
+
 				//this is the case with no entity page
 				else
 				{
@@ -515,13 +515,13 @@ namespace WebVella.Erp.Web.Models
 						return currentPropDict[testName].Value;
 				}
 
-                if (!currentPropDict.ContainsKey(pName))
-                {
-                    if(!currentPropertyNamePath.EndsWith("]"))
-                        throw new PropertyDoesNotExistException($"Property name '{currentPropertyNamePath}' not found.");
-                    else
-                        throw new PropertyDoesNotExistException($"Property name is found, but list index is out of bounds.");
-                }
+				if (!currentPropDict.ContainsKey(pName))
+				{
+					if(!currentPropertyNamePath.EndsWith("]"))
+						throw new PropertyDoesNotExistException($"Property name '{currentPropertyNamePath}' not found.");
+					else
+						throw new PropertyDoesNotExistException($"Property name is found, but list index is out of bounds.");
+				}
 
 				mpw = currentPropDict[pName];
 				if (mpw != null && mpw.Type == MPT.DataSource)
@@ -531,11 +531,20 @@ namespace WebVella.Erp.Web.Models
 					{
 						var result = ExecDataSource(dsw);
 						if (result is List<EntityRecord> || result is EntityRecordList)
+						{
 							mpw = new MPW(MPT.ListEntityRecords, result);
-						else if (result is EntityRecord )
+							currentPropDict[pName] = mpw;
+						}
+						else if (result is EntityRecord)
+						{
 							mpw = new MPW(MPT.EntityRecord, result);
+							currentPropDict[pName] = mpw;
+						}
 						else
+						{
 							mpw = new MPW(MPT.Object, result);
+							currentPropDict[pName] = mpw;
+						}
 					}
 				}
 				currentPropDict = mpw.Properties;
@@ -764,7 +773,7 @@ namespace WebVella.Erp.Web.Models
 						foreach (var propName in record.Properties.Keys)
 						{
 							var propValue = record[propName];
-							//the case when set record from page post 
+							//the case when set record from page post
 							if (propName.StartsWith("$") && propName.Contains(".") && propValue is List<Guid>)
 							{
 								string[] split = propName.Split('.');
