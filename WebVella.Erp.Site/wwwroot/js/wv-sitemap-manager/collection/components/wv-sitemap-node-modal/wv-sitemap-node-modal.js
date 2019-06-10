@@ -243,7 +243,7 @@ export class WvSitemapNodeModal {
                                 h("div", { class: "col col-sm-6" },
                                     h("div", { class: "form-group erp-field" },
                                         h("label", { class: "control-label" }, "Icon Class"),
-                                        h("select", { id: "modal-icon-class-select", class: "form-control", name: "icon_class", onChange: (event) => this.handleChange(event) }, this.modalNodeObj["node"]["icon_class"] ? (h("option", { value: this.modalNodeObj["node"]["icon_class"] }, this.modalNodeObj["node"]["icon_class"])) : null))),
+                                        h("select", { id: "modal-icon-class-select", class: "form-control", name: "icon_class", onChange: (event) => this.handleSelectChange(event) }, this.modalNodeObj["node"]["icon_class"] ? (h("option", { value: this.modalNodeObj["node"]["icon_class"] }, this.modalNodeObj["node"]["icon_class"])) : null))),
                                 h("div", { class: "col col-sm-6" },
                                     h("div", { class: "form-group erp-field" },
                                         h("label", { class: "control-label" }, "Weight"),
