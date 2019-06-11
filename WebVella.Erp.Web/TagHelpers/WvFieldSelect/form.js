@@ -54,11 +54,16 @@ function SelectFormInit(fieldId, fieldName, entityName, config) {
 	config = ProcessConfig(config);
 	var selectors = SelectFormGenerateSelectors(fieldId, fieldName, config);
 
+	var placeholder = 'not selected';
+	if(config.placeholder){
+		placeholder = config.placeholder;
+	}
+
 	var selectInitObject = {
 		language: "en",
 		minimumResultsForSearch: 10,
 		closeOnSelect: true,
-		placeholder: 'not selected',
+		placeholder: placeholder,
 		allowClear: !$(selectors.inputEl).prop('required'),
 		width: 'element',
 		escapeMarkup: function (markup) {

@@ -53,11 +53,16 @@ function SelectInlineEditPreEnableCallback(fieldId, fieldName, entityName, recor
 	config = ProcessConfig(config);
 	var selectors = SelectInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
 
+	var placeholder = 'not selected';
+	if(config.placeholder){
+		placeholder = config.placeholder;
+	}
+
 	var selectInitObject = {
 		closeOnSelect: true,
 		language: "en",
 		minimumResultsForSearch: 10,
-		placeholder: 'not selected',
+		placeholder: placeholder,
 		allowClear: !$(selectors.inputEl).prop('required'),
 		width: 'element',
 		escapeMarkup: function (markup) {

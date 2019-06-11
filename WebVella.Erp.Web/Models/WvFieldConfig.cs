@@ -274,6 +274,9 @@ namespace WebVella.Erp.Web.Models
 		[JsonProperty(PropertyName = "select_match_type")]
 		public SelectMatchType SelectMatchType { get; set; } = SelectMatchType.Contains;
 
+		[JsonProperty(PropertyName = "placeholder")]
+		public string Placeholder { get; set; } = "";
+
 	}
 
 	public class WvFieldNumberConfig : WvFieldBaseConfig
@@ -378,6 +381,9 @@ namespace WebVella.Erp.Web.Models
 
 		[JsonProperty(PropertyName = "select_match_type")]
 		public SelectMatchType SelectMatchType { get; set; } = SelectMatchType.Contains;
+
+		[JsonProperty(PropertyName = "placeholder")]
+		public string Placeholder { get; set; } = "";
 
 	}
 

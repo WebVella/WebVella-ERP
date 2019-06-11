@@ -53,7 +53,13 @@ function MultiSelectInlineEditMatchStartsWith(params, data) {
 function MultiSelectInlineEditPreEnableCallback(fieldId, fieldName, entityName, recordId, config) {
 	var selectors = MultiSelectInlineEditGenerateSelectors(fieldId, fieldName, entityName, recordId, config);
 
+	var placeholder = 'not selected';
+	if(config.placeholder){
+		placeholder = config.placeholder;
+	}
+
 	var selectInitObject = {
+		placeholder:placeholder,
 		closeOnSelect: true,
 		language: "en",
 		minimumResultsForSearch: 10,

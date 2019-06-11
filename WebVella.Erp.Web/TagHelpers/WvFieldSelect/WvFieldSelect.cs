@@ -234,7 +234,8 @@ namespace WebVella.Erp.Web.TagHelpers
 						CanAddValues = Access == FieldAccess.FullAndCreate ? true : false,
 						IsInvalid = ValidationErrors.Count > 0,
 						AjaxDatasource = AjaxDatasource,
-						SelectMatchType = SelectMatchType
+						SelectMatchType = SelectMatchType,
+						Placeholder = Placeholder
 					};
 
 					scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));
@@ -655,7 +656,8 @@ namespace WebVella.Erp.Web.TagHelpers
 						CanAddValues = Access == FieldAccess.FullAndCreate ? true : false,
 						IsInvalid = ValidationErrors.Count > 0,
 						AjaxDatasource = AjaxDatasource,
-						SelectMatchType = SelectMatchType
+						SelectMatchType = SelectMatchType,
+						Placeholder = Placeholder
 					};
 
 					scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));

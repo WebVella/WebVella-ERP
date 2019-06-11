@@ -60,7 +60,13 @@ function MultiSelectFormInit(fieldId, fieldName, entityName, config) {
 	config = ProcessConfig(config);
 	var selectors = MultiSelectFormGenerateSelectors(fieldId, fieldName, config);
 
+	var placeholder = 'not selected';
+	if(config.placeholder){
+		placeholder = config.placeholder;
+	}
+
 	var selectInitObject = {
+		placeholder:placeholder,
 		closeOnSelect: true,
 		language: "en",
 		minimumResultsForSearch: 10,

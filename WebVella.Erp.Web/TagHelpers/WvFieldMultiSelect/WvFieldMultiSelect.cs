@@ -221,7 +221,8 @@ namespace WebVella.Erp.Web.TagHelpers
 						ApiUrl = ApiUrl,
 						CanAddValues = Access == FieldAccess.FullAndCreate ? true : false,
 						AjaxDatasource = AjaxDatasource,
-						SelectMatchType = SelectMatchType
+						SelectMatchType = SelectMatchType,
+						Placeholder = Placeholder
 					};
 
 					scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));
@@ -650,7 +651,8 @@ namespace WebVella.Erp.Web.TagHelpers
 						ApiUrl = ApiUrl,
 						CanAddValues = Access == FieldAccess.FullAndCreate ? true : false,
 						AjaxDatasource = AjaxDatasource,
-						SelectMatchType = SelectMatchType
+						SelectMatchType = SelectMatchType,
+						Placeholder = Placeholder
 					};
 
 					scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));
