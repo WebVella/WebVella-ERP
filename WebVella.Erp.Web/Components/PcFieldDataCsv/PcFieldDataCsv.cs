@@ -13,7 +13,7 @@ namespace WebVella.Erp.Web.Components
 {
 	[PageComponent(Label = "Field Data Csv", Library = "WebVella", Description = "field for submitting CSV data", Version = "0.0.1", IconClass = "fas fa-table")]
 	public class PcFieldDataCsv : PcFieldBase
-    {
+	{
 		protected ErpRequestContext ErpRequestContext { get; set; }
 
 		public PcFieldDataCsv([FromServices]ErpRequestContext coreReqCtx)
@@ -22,44 +22,44 @@ namespace WebVella.Erp.Web.Components
 		}
 
 		public class PcFieldDataCsvOptions : PcFieldBaseOptions
-        {
-            [JsonProperty(PropertyName = "height")]
-            public string Height { get; set; } = "";
+		{
+			[JsonProperty(PropertyName = "height")]
+			public string Height { get; set; } = "";
 
-            [JsonProperty(PropertyName = "delimiter_value_ds")]
-            public string DelimiterValueDs { get; set; } = "comma";
+			[JsonProperty(PropertyName = "delimiter_value_ds")]
+			public string DelimiterValueDs { get; set; } = "comma";
 
-            [JsonProperty(PropertyName = "delimiter_field_name")]
-            public string DelimiterFieldName { get; set; } = "";
+			[JsonProperty(PropertyName = "delimiter_field_name")]
+			public string DelimiterFieldName { get; set; } = "";
 
-            [JsonProperty(PropertyName = "has_header_value_ds")]
-            public string HasHeaderValueDs { get; set; } = "true";
+			[JsonProperty(PropertyName = "has_header_value_ds")]
+			public string HasHeaderValueDs { get; set; } = "true";
 
-            [JsonProperty(PropertyName = "has_header_field_name")]
-            public string HasHeaderFieldName { get; set; } = "";
+			[JsonProperty(PropertyName = "has_header_field_name")]
+			public string HasHeaderFieldName { get; set; } = "";
 
-            [JsonProperty(PropertyName = "lang_ds")]
-            public string LangDs { get; set; } = "en";
+			[JsonProperty(PropertyName = "lang_ds")]
+			public string LangDs { get; set; } = "en";
 
-            public static PcFieldDataCsvOptions CopyFromBaseOptions(PcFieldBaseOptions input)
-            {
-                return new PcFieldDataCsvOptions
-                {
-                    IsVisible = input.IsVisible,
-                    LabelMode = input.LabelMode,
-                    LabelText = input.LabelText,
-                    Mode = input.Mode,
-                    Name = input.Name,
-                    Height = "",
-                    DelimiterValueDs = "",
-                    HasHeaderValueDs = "",
-                    DelimiterFieldName = "",
-                    HasHeaderFieldName = "",
-                    LangDs = "en",
-                };
-            }
+			public static PcFieldDataCsvOptions CopyFromBaseOptions(PcFieldBaseOptions input)
+			{
+				return new PcFieldDataCsvOptions
+				{
+					IsVisible = input.IsVisible,
+					LabelMode = input.LabelMode,
+					LabelText = input.LabelText,
+					Mode = input.Mode,
+					Name = input.Name,
+					Height = "",
+					DelimiterValueDs = "",
+					HasHeaderValueDs = "",
+					DelimiterFieldName = "",
+					HasHeaderFieldName = "",
+					LangDs = "en",
+				};
+			}
 
-        }
+		}
 
 		public async Task<IViewComponentResult> InvokeAsync(PageComponentContext context)
 		{
@@ -87,88 +87,102 @@ namespace WebVella.Erp.Web.Components
 					return await Task.FromResult<IViewComponentResult>(Content("Error: The page Id is required to be set as query param 'pid', when requesting this component"));
 				}
 
-                var baseOptions = InitPcFieldBaseOptions(context);
-                var options = PcFieldDataCsvOptions.CopyFromBaseOptions(baseOptions);
-                if (context.Options != null)
+				var baseOptions = InitPcFieldBaseOptions(context);
+				var options = PcFieldDataCsvOptions.CopyFromBaseOptions(baseOptions);
+				if (context.Options != null)
 				{
 					options = JsonConvert.DeserializeObject<PcFieldDataCsvOptions>(context.Options.ToString());
 				}
 
-                var modelFieldLabel = "";
-                var model = (PcFieldBaseModel)InitPcFieldBaseModel(context, options, label: out modelFieldLabel);
-                if (String.IsNullOrWhiteSpace(options.LabelText))
-                {
-                    options.LabelText = modelFieldLabel;
-                }
+				var modelFieldLabel = "";
+				var model = (PcFieldBaseModel)InitPcFieldBaseModel(context, options, label: out modelFieldLabel);
+				if (String.IsNullOrWhiteSpace(options.LabelText))
+				{
+					options.LabelText = modelFieldLabel;
+				}
 
-                ViewBag.LabelMode = options.LabelMode;
-                ViewBag.Mode = options.Mode;
+				ViewBag.LabelMode = options.LabelMode;
+				ViewBag.Mode = options.Mode;
 
-                if (options.LabelMode == LabelRenderMode.Undefined && baseOptions.LabelMode != LabelRenderMode.Undefined)
-                    ViewBag.LabelMode = baseOptions.LabelMode;
+				if (options.LabelMode == LabelRenderMode.Undefined && baseOptions.LabelMode != LabelRenderMode.Undefined)
+					ViewBag.LabelMode = baseOptions.LabelMode;
 
-                if (options.Mode == FieldRenderMode.Undefined && baseOptions.Mode != FieldRenderMode.Undefined)
-                    ViewBag.Mode = baseOptions.Mode;
+				if (options.Mode == FieldRenderMode.Undefined && baseOptions.Mode != FieldRenderMode.Undefined)
+					ViewBag.Mode = baseOptions.Mode;
 
-                var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
+				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
 
 				var accessOverride = context.DataModel.GetPropertyValueByDataSource(options.AccessOverrideDs) as FieldAccess?;
 				if(accessOverride != null){
 					model.Access = accessOverride.Value;
 				}
+				var requiredOverride = context.DataModel.GetPropertyValueByDataSource(options.RequiredOverrideDs) as bool?;
+				if(requiredOverride != null){
+					model.Required = requiredOverride.Value;
+				}
+				else{
+					if(!String.IsNullOrWhiteSpace(options.RequiredOverrideDs)){
+						if(options.RequiredOverrideDs.ToLowerInvariant() == "true"){
+							model.Required = true;
+						}
+						else if(options.RequiredOverrideDs.ToLowerInvariant() == "false"){
+							model.Required = false;
+						}
+					}
+				}
 				#endregion
 
 				ViewBag.Options = options;
-                ViewBag.Model = model;
-                ViewBag.Node = context.Node;
+				ViewBag.Model = model;
+				ViewBag.Node = context.Node;
 				ViewBag.ComponentMeta = componentMeta;
 				ViewBag.RequestContext = ErpRequestContext;
 				ViewBag.AppContext = ErpAppContext.Current;
 				ViewBag.ComponentContext = context;
 				ViewBag.GeneralHelpSection = HelpJsApiGeneralSection;
 
-                if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
-                {
-                    var isVisible = true;
-                    var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
-                    if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
-                    {
-                        if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
-                        {
-                            isVisible = outBool;
-                        }
-                    }
-                    else if (isVisibleDS is Boolean)
-                    {
-                        isVisible = (bool)isVisibleDS;
-                    }
-                    ViewBag.IsVisible = isVisible;
+				if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
+				{
+					var isVisible = true;
+					var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+					if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+					{
+						if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+						{
+							isVisible = outBool;
+						}
+					}
+					else if (isVisibleDS is Boolean)
+					{
+						isVisible = (bool)isVisibleDS;
+					}
+					ViewBag.IsVisible = isVisible;
 
-                    model.Value = context.DataModel.GetPropertyValueByDataSource(options.Value);
+					model.Value = context.DataModel.GetPropertyValueByDataSource(options.Value);
 
-                    var delimiter = context.DataModel.GetPropertyValueByDataSource(options.DelimiterValueDs) as string;
-                    var lang = context.DataModel.GetPropertyValueByDataSource(options.LangDs) as string;
-                    var hasHeader = context.DataModel.GetPropertyValueByDataSource(options.HasHeaderValueDs) as bool?;
+					var delimiter = context.DataModel.GetPropertyValueByDataSource(options.DelimiterValueDs) as string;
+					var lang = context.DataModel.GetPropertyValueByDataSource(options.LangDs) as string;
+					var hasHeader = context.DataModel.GetPropertyValueByDataSource(options.HasHeaderValueDs) as bool?;
 
-                    ViewBag.Delimiter = ErpDataCsvDelimiterType.COMMA;
-                    if (!String.IsNullOrWhiteSpace(delimiter) && delimiter == "tab") {
-                        ViewBag.Delimiter = ErpDataCsvDelimiterType.TAB;
-                    }
-                    ViewBag.Lang = "en";
-                    if (!String.IsNullOrWhiteSpace(lang))
-                    {
-                        ViewBag.Lang = lang;
-                    }
-                    ViewBag.HasHeader = true;
-                    if (hasHeader != null)
-                    {
-                        ViewBag.HasHeader = hasHeader;
-                    }
-                }
+					ViewBag.Delimiter = ErpDataCsvDelimiterType.COMMA;
+					if (!String.IsNullOrWhiteSpace(delimiter) && delimiter == "tab") {
+						ViewBag.Delimiter = ErpDataCsvDelimiterType.TAB;
+					}
+					ViewBag.Lang = "en";
+					if (!String.IsNullOrWhiteSpace(lang))
+					{
+						ViewBag.Lang = lang;
+					}
+					ViewBag.HasHeader = true;
+					if (hasHeader != null)
+					{
+						ViewBag.HasHeader = hasHeader;
+					}
+				}
 
-                
+				
 
-                switch (context.Mode)
+				switch (context.Mode)
 				{
 					case ComponentMode.Display:
 						return await Task.FromResult<IViewComponentResult>(View("Display"));

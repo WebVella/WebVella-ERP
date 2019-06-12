@@ -46,6 +46,9 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "access_override_ds")]
 			public string AccessOverrideDs { get; set; } = "";
 
+			[JsonProperty(PropertyName = "required_override_ds")]
+			public string RequiredOverrideDs { get; set; } = ""; // Bool? -> null - apply as in meta, true, false
+
 			[JsonProperty(PropertyName = "ajax_api_url_ds")]
 			public string AjaxApiUrlDs { get; set; } = null;
 

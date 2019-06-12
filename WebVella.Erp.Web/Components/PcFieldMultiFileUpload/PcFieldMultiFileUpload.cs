@@ -29,7 +29,7 @@ namespace WebVella.Erp.Web.Components
 			public static PcFieldMultiFileUploadOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldMultiFileUploadOptions
-                {
+				{
 					IsVisible = input.IsVisible,
 					LabelMode = input.LabelMode,
 					LabelText = input.LabelText,
@@ -95,6 +95,20 @@ namespace WebVella.Erp.Web.Components
 				if(accessOverride != null){
 					model.Access = accessOverride.Value;
 				}
+				var requiredOverride = context.DataModel.GetPropertyValueByDataSource(options.RequiredOverrideDs) as bool?;
+				if(requiredOverride != null){
+					model.Required = requiredOverride.Value;
+				}
+				else{
+					if(!String.IsNullOrWhiteSpace(options.RequiredOverrideDs)){
+						if(options.RequiredOverrideDs.ToLowerInvariant() == "true"){
+							model.Required = true;
+						}
+						else if(options.RequiredOverrideDs.ToLowerInvariant() == "false"){
+							model.Required = false;
+						}
+					}
+				}
 				#endregion
 
 
@@ -105,27 +119,27 @@ namespace WebVella.Erp.Web.Components
 				ViewBag.RequestContext = ErpRequestContext;
 				ViewBag.AppContext = ErpAppContext.Current;
 
-                if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
-                {
-                    var isVisible = true;
-                    var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
-                    if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
-                    {
-                        if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
-                        {
-                            isVisible = outBool;
-                        }
-                    }
-                    else if (isVisibleDS is Boolean)
-                    {
-                        isVisible = (bool)isVisibleDS;
-                    }
-                    ViewBag.IsVisible = isVisible;
+				if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
+				{
+					var isVisible = true;
+					var isVisibleDS = context.DataModel.GetPropertyValueByDataSource(options.IsVisible);
+					if (isVisibleDS is string && !String.IsNullOrWhiteSpace(isVisibleDS.ToString()))
+					{
+						if (Boolean.TryParse(isVisibleDS.ToString(), out bool outBool))
+						{
+							isVisible = outBool;
+						}
+					}
+					else if (isVisibleDS is Boolean)
+					{
+						isVisible = (bool)isVisibleDS;
+					}
+					ViewBag.IsVisible = isVisible;
 
-                    model.Value = context.DataModel.GetPropertyValueByDataSource(options.Value);
-                }
+					model.Value = context.DataModel.GetPropertyValueByDataSource(options.Value);
+				}
 
-                switch (context.Mode)
+				switch (context.Mode)
 				{
 					case ComponentMode.Display:
 						return await Task.FromResult<IViewComponentResult>(View("Display"));
