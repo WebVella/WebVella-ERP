@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -686,12 +687,29 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 					if (firstOperandField != null)
 					{
 						if (firstOperandField.GetFieldType() == FieldType.MultiSelectField)
-							return $" ( {firstOperandString}  @>  {secondOperandString} ) ";
+						{
+							var result =  $" ( {firstOperandString}  @>  {secondOperandString} ) ";
+							string paramName = secondOperandString;
+							var param = Parameters.SingleOrDefault(x => x.ParameterName == paramName);
+							if (param != null && param.Value != null )
+							{
+								//if parameter is not array or enumerable, we create new parameter 
+								//with array type
+								if (!typeof(IEnumerable).IsAssignableFrom(param.Value.GetType()) || param.Value.GetType() == typeof(string))
+								{
+									string newParamName = $"{secondOperandString}_converted_to_array";
+									var newParamValue = new List<string> { param.Value.ToString() };
+									Parameters.Add(new EqlParameter(newParamName, newParamValue));
+									result = $" ( {firstOperandString}  @>  {newParamName} ) ";
+								}
+							}
+							return result;
+						}
 						else
 						{
 							string paramName = secondOperandString;
 							var param = Parameters.SingleOrDefault(x => x.ParameterName == paramName);
-							if (param == null) 	throw new EqlException($"WHERE: Parameter '{paramName}' not found.");
+							if (param == null) throw new EqlException($"WHERE: Parameter '{paramName}' not found.");
 							//param.Value = "%" + param.Value + "%";
 
 							return $" ( {firstOperandString}  ILIKE  CONCAT ( '%' , {secondOperandString} , '%' ) )";
