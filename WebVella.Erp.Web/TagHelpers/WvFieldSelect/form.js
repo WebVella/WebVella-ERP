@@ -21,7 +21,7 @@ function SelectFormFormat(icon) {
 	if (!iconClass) {
 		return icon.text;
 	}
-	return '<i class="fa ' + iconClass + '" style="color:' + color + '"></i> ' + icon.text;
+	return '<i class="fa fa-fw ' + iconClass + '" style="color:' + color + '"></i> ' + icon.text;
 }
 
 function SelectFormMatchStartsWith(params, data) {

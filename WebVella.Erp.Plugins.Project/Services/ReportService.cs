@@ -78,6 +78,10 @@ namespace WebVella.Erp.Plugins.Project.Services
 				{
 					if (accountId != null )
 					{
+						if(project["account_id"] == null){
+							throw new Exception("There is a project without an account");
+						}
+
 						if ((Guid)project["account_id"] == accountId)
 						{
 							task["project"] = project;

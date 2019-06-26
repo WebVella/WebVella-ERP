@@ -84,8 +84,8 @@ namespace WebVella.Erp.Site
 			app.UseAuthentication();
 
 			app
-            .UseErpPlugin<SdkPlugin>()
-            .UseErp()
+			.UseErpPlugin<SdkPlugin>()
+			.UseErp()
 			.UseErpMiddleware();
 
 			//env.EnvironmentName = EnvironmentName.Production;

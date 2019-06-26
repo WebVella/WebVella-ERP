@@ -6160,7 +6160,7 @@ function SubmitReplyForm(scope) {
     let requestUrl = siteRoot + "/api/v3.0/p/project/pc-timelog-list/create";
     let requestBody = new Object();
     requestBody["minutes"] = scope.minutes;
-    requestBody["loggedOn"] = scope.loggedOn;
+    requestBody["loggedOn"] = hooks(scope.loggedOn).local().format('YYYY-MM-DDTHH:mm:ss');
     requestBody["body"] = scope.taskBody;
     requestBody["isBillable"] = scope.isBillable;
     requestBody["relatedRecords"] = storeState.relatedRecords;
@@ -6261,6 +6261,7 @@ class WvAddNew {
         this.taskBody = ev.target.value;
     }
     loggedOnChange(ev) {
+        debugger;
         this.loggedOn = ev.target.value;
     }
     billableChange(event) {

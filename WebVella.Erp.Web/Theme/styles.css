@@ -5273,7 +5273,7 @@ wv-pb-node-container {
 		position: relative;
 		margin: 0;
 		min-height: 50px;
-		min-width: 120px;
+		min-width: 30px;
 		display: block;
 		/*z-index:1;*/
 	}
