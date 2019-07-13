@@ -12,9 +12,9 @@ namespace WebVella.Erp.Web.Components
 
 	[RenderHookAttachment("head-bottom", 10)]
 	public class HeadBottomIncludes : ViewComponent
-    {
-        public async Task<IViewComponentResult> InvokeAsync(BaseErpPageModel pageModel)
-        {
+	{
+		public async Task<IViewComponentResult> InvokeAsync(BaseErpPageModel pageModel)
+		{
 			ViewBag.ScriptTags = new List<ScriptTagInclude>();
 			ViewBag.LinkTags = new List<LinkTagInclude>();
 
@@ -209,15 +209,50 @@ namespace WebVella.Erp.Web.Components
 				}
 				#endregion
 
+
 				#region << wv-lazyload >>
 				{
-					//Always add
-					scriptTagsToInclude.Add(new ScriptTagInclude()
-					{
-						Src = "/js/wv-lazyload/wv-lazyload.js?cb=" + cacheKey
-					});
+					////Always add
+					//scriptTagsToInclude.Add(new ScriptTagInclude()
+					//{
+					//	Src = "/js/stencil/wv-lazyload.esm.js",
+					//	Type = "module"
+					//});
+					//scriptTagsToInclude.Add(new ScriptTagInclude()
+					//{
+					//	Src = "/js/stencil/wv-lazyload.js",
+					//	IsNomodule = true
+					//});
+
+					//scriptTagsToInclude.Add(new ScriptTagInclude()
+					//{
+					//	Src = "/js/stencil/wv-lazyload.js"
+					//});
+
 				}
 				#endregion
+
+
+				var stencilComponents = new List<string>(){"wv-lazyload", "wv-timelog-list", "wv-pb-manager", 
+					"wv-sitemap-manager", "wv-datasource-manage","wv-post-list", "wv-feed-list", "wv-recurrence-template"};
+
+
+				foreach (var componentName in stencilComponents)
+				{
+					scriptTagsToInclude.Add(new ScriptTagInclude()
+					{
+						Src = $"/js/stenciljs/{componentName}.esm.js",
+						Type = "module"
+					});
+
+					scriptTagsToInclude.Add(new ScriptTagInclude()
+					{
+						Src = $"/js/stenciljs/{componentName}.js",
+						IsNomodule = true
+					});
+				}
+
+
 
 				//<<<< Your includes up
 
@@ -228,6 +263,6 @@ namespace WebVella.Erp.Web.Components
 			#endregion
 
 			return await Task.FromResult<IViewComponentResult>(View("Default"));
-        }
-    }
+		}
+	}
 }

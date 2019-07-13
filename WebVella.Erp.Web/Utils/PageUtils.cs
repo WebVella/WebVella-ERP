@@ -2119,8 +2119,17 @@ namespace WebVella.Erp.Web.Utils
 			if (!string.IsNullOrWhiteSpace(scriptTag.InlineContent))
 			{
 				#region << type >>
+				if(!scriptTag.IsNomodule)
 				{
 					var attribute = $"type=\"{scriptTag.Type}\"";
+					resultStringList.Add(attribute);
+				}
+				#endregion
+
+				#region << nomodule >>
+				if(scriptTag.IsNomodule)
+				{
+					var attribute = $"nomodule";
 					resultStringList.Add(attribute);
 				}
 				#endregion
@@ -2143,11 +2152,21 @@ namespace WebVella.Erp.Web.Utils
 				#endregion
 
 				#region << type >>
+				if(!scriptTag.IsNomodule)
 				{
 					var attribute = $"type=\"{scriptTag.Type}\"";
 					resultStringList.Add(attribute);
 				}
 				#endregion
+
+				#region << nomodule >>
+				if(scriptTag.IsNomodule)
+				{
+					var attribute = $"nomodule";
+					resultStringList.Add(attribute);
+				}
+				#endregion
+
 				return "<script " + String.Join(" ", resultStringList).Trim() + " ></script>";
 			}
 		}

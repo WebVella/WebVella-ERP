@@ -1,2 +1,0 @@
-// WvLazyload: Host Data, ES Module/es2017 Target
-export const COMPONENTS = [["wv-lazyload","kb0wk2n8",0,[["componentName",1,0,"component-name",2],["entityId",1,0,"entity-id",2],["error",16],["isLoading",16],["nodeId",1,0,"node-id",2],["nodeOptions",1,0,"node-options",2],["pageId",1,0,"page-id",2],["recordId",1,0,"record-id",2],["siteRootUrl",1,0,"site-root-url",2],["viewHtml",16]]]]

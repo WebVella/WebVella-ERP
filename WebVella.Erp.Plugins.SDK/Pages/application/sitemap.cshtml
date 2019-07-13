@@ -16,6 +16,9 @@
 
 </wv-page-header>
 
+@*<script type="module" src="/js/stencil/wv-sitemap-manager.esm.js"></script>
+<script nomodule src="/js/stencil/wv-sitemap-manager.js"></script>*@
+
 <wv-sitemap-manager app-id="@Model.App.Id" api-root='@(Model.ApiUrlRoot)/api/v3.0/p/sdk/' init-data='@Model.ComponentInitData'></wv-sitemap-manager>
 
 <style>

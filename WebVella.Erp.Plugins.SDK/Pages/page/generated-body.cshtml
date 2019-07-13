@@ -27,5 +27,14 @@
 
 </wv-page-header>
 
-<wv-pb-manager record-id="@Model.SimulationRecordId" page-id="@Model.ErpPage.Id" site-root-url="@Model.ApiUrlRoot" library-json='@Model.LibraryJson' page-nodes-json='@Model.PageNodeListJson'></wv-pb-manager>
+@*<script type="module" src="/js/stencil/wv-pb-manager.esm.js"></script>
+<script nomodule src="/js/stencil/wv-pb-manager.js"></script>*@
+
+<script>
+	var PbManagerLibraryJson = @Html.Raw(Model.LibraryJson)
+	var PbManagerPageNodesJson = @Html.Raw(Model.PageNodeListJson)
+
+</script>
+
+<wv-pb-manager record-id="@Model.SimulationRecordId" page-id="@Model.ErpPage.Id" site-root-url="@Model.ApiUrlRoot" ></wv-pb-manager>
 

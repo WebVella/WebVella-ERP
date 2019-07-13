@@ -1,2 +1,0 @@
-// WvRecurrenceTemplate: Host Data, ES Module/es2017 Target
-export const COMPONENTS = [["wv-recurrence-template","jyoaqyrf",0,[["changeTypeOptions",1,0,"change-type-options",2],["changeTypeSelectOptions",16],["endTypeOptions",1,0,"end-type-options",2],["endTypeSelectOptions",16],["hiddenValue",16],["initialType",16],["periodTypeOptions",1,0,"period-type-options",2],["periodTypeSelectOptions",16],["recurrence",16],["recurrenceTemplate",1,0,"recurrence-template",2],["templateDefault",1,0,"template-default",2],["typeOptions",1,0,"type-options",2],["typeSelectOptions",16]]]]

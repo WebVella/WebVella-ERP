@@ -88,8 +88,6 @@ namespace WebVella.Erp.Plugins.Project.Components
 
 					var projectTimelogs = new TimeLogService().GetTimelogsForPeriod(projectId,userId,startDate,endDate);
 
-					var logs = projectTimelogs.FindAll(x=> (Guid)x["id"] == new Guid("c121c75f-c7bb-4a30-84e0-b6a5768fb28f") || (Guid)x["id"] == new Guid("a0b60e16-c13d-4214-ab4f-64f28f0db503")).ToList();
-
 					var users = new UserService().GetAll();
 
 					#region << Generate Grid Columns >>

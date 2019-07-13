@@ -29,6 +29,10 @@ namespace WebVella.Erp.Web.Models
 		[JsonProperty("type")]
 		public string Type { get; set; } = "text/javascript";
 
+		//Adds nomodule attribute
+		[JsonProperty("is_nomodule")]
+		public bool IsNomodule { get; set; } = false;
+
 		[JsonProperty("crossorigin")]
 		public CrossOriginType CrossOrigin { get; set; } = CrossOriginType.None;
 

@@ -1,2 +1,0 @@
-// WvFeedList: Host Data, ES Module/es5 Target
-export var COMPONENTS = [["wv-feed","skuw1s53",0,[["record",1],["reloadPostIndex",16],["store",4,0,0,0,"store"]]],["wv-feed-list","skuw1s53",0,[["isDebug",1,0,"is-debug",2],["records",1,0,1,2],["reloadPostIndex",16],["store",4,0,0,0,"store"]]]]

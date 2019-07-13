@@ -1,1 +1,0 @@
-// WvSitemapManager: CommonJS Main

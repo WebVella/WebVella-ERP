@@ -21,9 +21,10 @@
 	}
 }
 
-<script src="/js/wv-post-list/wv-post-list.js"></script>
+@*<script type="module" src="/js/stencil/wv-post-list.esm.js"></script>
+<script nomodule src="/js/stencil/wv-post-list.js"></script>*@
 
   <wv-post-list related-record-id="@ViewBag.RelatedRecordId" related-records='@ViewBag.RelatedRecordsJson'
-    site-root-url="@ViewBag.SiteRootUrl"
-    posts='@ViewBag.RecordsJson'
-    current-user='@ViewBag.CurrentUserJson'></wv-post-list>
+	site-root-url="@ViewBag.SiteRootUrl"
+	posts='@ViewBag.RecordsJson'
+	current-user='@ViewBag.CurrentUserJson'></wv-post-list>

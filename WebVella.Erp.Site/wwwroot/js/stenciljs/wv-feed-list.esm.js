@@ -1,0 +1,1 @@
+import{p as e,b as r}from"./p-d097830d.js";e().then(e=>r([["p-fkvorg7z",[[0,"wv-feed-list",{records:[1],isDebug:[1,"is-debug"],reloadPostIndex:[32]}],[0,"wv-feed",{record:[16],reloadPostIndex:[32]}]]]],{resourcesUrl:e}));

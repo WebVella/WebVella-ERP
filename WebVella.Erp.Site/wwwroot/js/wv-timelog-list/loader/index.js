@@ -1,1 +1,0 @@
-export * from '../esm/es5/wv-timelog-list.define.js';

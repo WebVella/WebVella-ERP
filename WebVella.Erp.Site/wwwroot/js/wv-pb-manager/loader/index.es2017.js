@@ -1,1 +1,0 @@
-export * from '../esm/es2017/wv-pb-manager.define.js';

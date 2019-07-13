@@ -157,7 +157,6 @@ namespace WebVella.Erp.Plugins.Project.Controllers
 			return Json(response);
 		}
 
-
 		[Route("api/v3.0/p/project/pc-timelog-list/create")]
 		[HttpPost]
 		public ActionResult CreateTimelog([FromBody]EntityRecord record)
@@ -207,10 +206,7 @@ namespace WebVella.Erp.Plugins.Project.Controllers
 			var loggedOn = new DateTime();
 			if (record.Properties.ContainsKey("loggedOn") && record["loggedOn"] != null)
 			{
-				if (DateTime.TryParse(record["loggedOn"].ToString(), out DateTime outDateTime))
-				{
-					loggedOn = outDateTime;
-				}
+				loggedOn = (DateTime)record["loggedOn"];
 			}
 
 			#endregion

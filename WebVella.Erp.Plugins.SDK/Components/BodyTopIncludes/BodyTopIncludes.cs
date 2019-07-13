@@ -12,9 +12,9 @@ namespace WebVella.Erp.Plugins.SDK.Components
 
 	[RenderHookAttachment("body-top", 10)]
 	public class BodyTopIncludes : ViewComponent
-    {
-        public async Task<IViewComponentResult> InvokeAsync(BaseErpPageModel pageModel)
-        {
+	{
+		public async Task<IViewComponentResult> InvokeAsync(BaseErpPageModel pageModel)
+		{
 			ViewBag.ScriptTags = new List<ScriptTagInclude>();
 			if (pageModel.AppName == "sdk") {
 				#region === <script> ===
@@ -27,20 +27,41 @@ namespace WebVella.Erp.Plugins.SDK.Components
 					#region << wv-pb-manager >>
 					{
 						//Always add
-						scriptTagsToInclude.Add(new ScriptTagInclude()
-						{
-							Src = "/js/wv-pb-manager/wv-pb-manager.js"
-						});
+						//scriptTagsToInclude.Add(new ScriptTagInclude()
+						//{
+						//	Src = "/js/wv-pb-manager/wv-pb-manager.esm.js",
+						//	Type = "module"
+						//});
+						//scriptTagsToInclude.Add(new ScriptTagInclude()
+						//{
+						//	Src = "/js/wv-pb-manager/wv-pb-manager.js",
+						//	IsNomodule = true
+						//});
+						//scriptTagsToInclude.Add(new ScriptTagInclude()
+						//{
+						//	Src = "/js/wv-pb-manager/wv-pb-manager.js"
+						//});
 					}
 					#endregion
 
 					#region << wv-sitemap-manager >>
 					{
 						//Always add
-						scriptTagsToInclude.Add(new ScriptTagInclude()
-						{
-							Src = "/js/wv-sitemap-manager/wv-sitemap-manager.js"
-						});
+						//scriptTagsToInclude.Add(new ScriptTagInclude()
+						//{
+						//	Src = "/js/wv-sitemap-manager/wv-sitemap-manager.esm.js",
+						//	Type = "module"
+						//});
+						//scriptTagsToInclude.Add(new ScriptTagInclude()
+						//{
+						//	Src = "/js/wv-sitemap-manager/wv-sitemap-manager.js",
+						//	IsNomodule = true
+						//});
+
+						//scriptTagsToInclude.Add(new ScriptTagInclude()
+						//{
+						//	Src = "/js/wv-sitemap-manager/wv-sitemap-manager.js"
+						//});
 					}
 					#endregion
 
@@ -54,6 +75,6 @@ namespace WebVella.Erp.Plugins.SDK.Components
 			}
 
 			return await Task.FromResult<IViewComponentResult>(View("Sdk_Default"));
-        }
-    }
+		}
+	}
 }
