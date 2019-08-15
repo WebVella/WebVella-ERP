@@ -43,7 +43,7 @@
 <wv-row>
 	<wv-column span="4">
 		<wv-field-datasource name="options" value="@options.Options" label-text="Options" page-id="erpRequest.Page.Id"
-			description="CSV and JsonArray of '{label(string),value(string)}' are also available. For Ajax Options from Datasource use: {ds:'data source name', value:'field name (id is default)', label:'field name (label is default)'}"></wv-field-datasource>
+			description="CSV and JsonArray of '{label(string),value(string)}' are also available. For Ajax Options from Datasource use: {ds:'data source name', value:'field name (id is default)', label:'field name (label is default)'}  (Json serialized 'SelectOptionsAjaxDatasource' object type)"></wv-field-datasource>
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-text name="class" label-text="Css class" value="@options.Class"></wv-field-text>
@@ -70,7 +70,7 @@
 			<wv-field-datasource name="required_override_ds" value="@options.RequiredOverrideDs" label-text="Required override" page-id="erpRequest.Page.Id" description="empty or null - read entity meta"></wv-field-datasource>
 		</wv-column>
 		<wv-column span="4">
-			<wv-field-datasource name="ajax_api_url_ds" value="@options.AjaxApiUrlDs" label-text="Override the ajax API URL" page-id="erpRequest.Page.Id" description="should be a string. Formatted with {0} - entityName, {1} - recordId "></wv-field-datasource>
+			<wv-field-datasource name="ajax_api_url_ds" value="@options.AjaxApiUrlDs" label-text="Override the ajax API URL inline edit" page-id="erpRequest.Page.Id" description="should be a string. Formatted with {0} - entityName, {1} - recordId "></wv-field-datasource>
 		</wv-column>	
 		<wv-column span="4">
 			<wv-field-select name="select_match_type" value="@options.SelectMatchingType" label-text="Options match type" options="@matchTypeOptions"></wv-field-select>
