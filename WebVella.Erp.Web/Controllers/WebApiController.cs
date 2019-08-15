@@ -92,13 +92,45 @@ namespace WebVella.Erp.Web.Controllers
 
 		[Route("api/v3/en_US/eql-ds")]
 		[HttpPost]
-		public ActionResult DataSourceQueryAction([FromBody]EqlDataSourceQuery model)
+		public ActionResult DataSourceQueryAction([FromBody]JObject submitObj)
 		{
 			ResponseModel response = new ResponseModel();
 			response.Success = true;
 
-			if (model == null)
+
+			if (submitObj == null)
 				return NotFound();
+
+			EqlDataSourceQuery model = new EqlDataSourceQuery();
+
+			#region << Init SubmitObj >>
+				foreach (var prop in submitObj.Properties())
+				{
+					switch (prop.Name.ToLower())
+					{
+						case "name":
+							if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
+								model.Name = prop.Value.ToString();
+							else
+							{
+								throw new Exception("DataSource Name is required");
+							}
+							break;
+						case "parameters":
+							var jParams = (JArray)prop.Value;
+							model.Parameters = new List<EqlParameter>();
+							foreach (JObject jParam in jParams)
+							{
+								var name = jParam["name"].ToString();
+								var value = jParam["value"].ToString();
+								var eqlParam = new EqlParameter(name,value);
+								model.Parameters.Add(eqlParam);
+							}
+							break;
+					}
+				}
+				#endregion
+
 
 			try
 			{
