@@ -6,8 +6,10 @@
 	var applicationMenu = (List<MenuItem>)ViewBag.ApplicationMenu;
 
 }
+<div class="app-sitemap">
 @foreach (var menuItem in applicationMenu)
 {
 	@*@Html.Partial("NavMenu", menuItem)*@
-    <partial name="NavMenu" for="@menuItem"/>
+	<partial name="NavMenu" for="@menuItem"/>
 }
+</div>

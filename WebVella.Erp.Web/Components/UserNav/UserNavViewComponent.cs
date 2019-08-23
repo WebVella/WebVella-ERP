@@ -8,7 +8,7 @@ namespace WebVella.Erp.Web.Components
 {
 
 	public class UserNavViewComponent : ViewComponent
-    {
+	{
 		protected ErpRequestContext ErpRequestContext { get; set; }
 
 		public UserNavViewComponent([FromServices]ErpRequestContext coreReqCtx)
@@ -16,8 +16,8 @@ namespace WebVella.Erp.Web.Components
 			ErpRequestContext = coreReqCtx;
 		}
 
-        public async Task<IViewComponentResult> InvokeAsync( )
-        {
+		public async Task<IViewComponentResult> InvokeAsync( )
+		{
 			var pageContext = ErpRequestContext.PageContext;
 			ViewBag.CurrentUser = AuthService.GetUser(UserClaimsPrincipal);
 			ViewBag.PageId = null;
@@ -26,6 +26,6 @@ namespace WebVella.Erp.Web.Components
 			}
 
 			return await Task.FromResult<IViewComponentResult>(View("UserNav.Default"));
-        }
-    }
+		}
+	}
 }
