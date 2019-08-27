@@ -57,12 +57,12 @@ namespace WebVella.Erp.Web.TagHelpers
 					var inputGroupEl = new TagBuilder("div");
 					inputGroupEl.AddCssClass("input-group");
 					var prependEl = new TagBuilder("span");
-					prependEl.AddCssClass($"input-group-prepend icon-addon {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")} {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
+					prependEl.AddCssClass($"input-group-prepend icon-addon {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
 					prependEl.Attributes.Add("title", $"/fs{Value}");
 					var prependText = new TagBuilder("span");
 					prependText.AddCssClass("input-group-text");
 					var prependIcon = new TagBuilder("span");
-					prependIcon.AddCssClass($"fa fa-fw type-icon {PathTypeIcon}");
+					prependIcon.AddCssClass($"fa fa-fw type-icon {PathTypeIcon} {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")}");
 					prependText.InnerHtml.AppendHtml(prependIcon);
 					prependEl.InnerHtml.AppendHtml(prependText);
 					inputGroupEl.InnerHtml.AppendHtml(prependEl);
@@ -190,12 +190,12 @@ namespace WebVella.Erp.Web.TagHelpers
 						var inputGroupEl = new TagBuilder("div");
 						inputGroupEl.AddCssClass("input-group");
 						var prependEl = new TagBuilder("span");
-						prependEl.AddCssClass($"input-group-prepend icon-addon {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")} {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
+						prependEl.AddCssClass($"input-group-prepend icon-addon {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
 						prependEl.Attributes.Add("title", $"/fs{Value}");
 						var prependText = new TagBuilder("span");
 						prependText.AddCssClass("input-group-text");
 						var prependIcon = new TagBuilder("span");
-						prependIcon.AddCssClass($"fa fa-fw type-icon {PathTypeIcon}");
+						prependIcon.AddCssClass($"fa fa-fw type-icon {PathTypeIcon} {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")}");
 						prependText.InnerHtml.AppendHtml(prependIcon);
 						prependEl.InnerHtml.AppendHtml(prependText);
 						inputGroupEl.InnerHtml.AppendHtml(prependEl);
@@ -274,12 +274,12 @@ namespace WebVella.Erp.Web.TagHelpers
 						viewWrapperEl.Attributes.Add("id", $"view-{FieldId}");
 
 						var viewInputPrepend = new TagBuilder("span");
-						viewInputPrepend.AddCssClass($"input-group-prepend icon-addon {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")}");
+						viewInputPrepend.AddCssClass($"input-group-prepend icon-addon");
 						viewInputPrepend.Attributes.Add("title", $"/fs{Value}");
 						var viewInputPrependText = new TagBuilder("span");
 						viewInputPrependText.AddCssClass("input-group-text");
 						var prependIcon = new TagBuilder("span");
-						prependIcon.AddCssClass($"fa fa-fw type-icon {PathTypeIcon}");
+						prependIcon.AddCssClass($"fa fa-fw type-icon {PathTypeIcon} {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")}");
 						viewInputPrependText.InnerHtml.AppendHtml(prependIcon);
 						viewInputPrepend.InnerHtml.AppendHtml(viewInputPrependText);
 						viewWrapperEl.InnerHtml.AppendHtml(viewInputPrepend);
@@ -325,12 +325,12 @@ namespace WebVella.Erp.Web.TagHelpers
 						editInputGroupEl.AddCssClass("input-group");
 
 						var editWrapperPrependEl = new TagBuilder("span");
-						editWrapperPrependEl.AddCssClass($"input-group-prepend icon-addon {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")} {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
+						editWrapperPrependEl.AddCssClass($"input-group-prepend icon-addon {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
 						editWrapperPrependEl.Attributes.Add("title", $"/fs{Value}");
 						var editWrapperPrependText = new TagBuilder("span");
 						editWrapperPrependText.AddCssClass("input-group-text");
 						var editWrapperPrependIcon = new TagBuilder("span");
-						editWrapperPrependIcon.AddCssClass($"fa fa-fw type-icon {PathTypeIcon}");
+						editWrapperPrependIcon.AddCssClass($"fa fa-fw type-icon {PathTypeIcon} {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")}");
 						editWrapperPrependText.InnerHtml.AppendHtml(editWrapperPrependIcon);
 						editWrapperPrependEl.InnerHtml.AppendHtml(editWrapperPrependText);
 						editInputGroupEl.InnerHtml.AppendHtml(editWrapperPrependEl);
@@ -491,12 +491,12 @@ namespace WebVella.Erp.Web.TagHelpers
 					divEl.AddCssClass("input-group");
 
 					var prependEl = new TagBuilder("span");
-					prependEl.AddCssClass($"input-group-prepend icon-addon {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")} {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
+					prependEl.AddCssClass($"input-group-prepend icon-addon {(ValidationErrors.Count > 0 ? "is-invalid" : "")}");
 					prependEl.Attributes.Add("title", $"/fs{Value}");
 					var prependText = new TagBuilder("span");
 					prependText.AddCssClass("input-group-text");
 					var prependIcon = new TagBuilder("span");
-					prependIcon.AddCssClass($"fa fa-fw type-icon {PathTypeIcon}");
+					prependIcon.AddCssClass($"fa fa-fw type-icon {PathTypeIcon} {(String.IsNullOrWhiteSpace(Value) ? "d-none" : "")}");
 					prependText.InnerHtml.AppendHtml(prependIcon);
 					prependEl.InnerHtml.AppendHtml(prependText);
 					divEl.InnerHtml.AppendHtml(prependEl);
