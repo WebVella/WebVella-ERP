@@ -245,7 +245,7 @@ namespace WebVella.Erp.Web.Models
 						return new NotFoundResult();
 
 					if (ErpRequestContext.SitemapArea != null && area.Id == ErpRequestContext.SitemapArea.Id)
-                        areaMenuItem.Class = "current";
+						areaMenuItem.Class = "current";
 
 					//Process the an unusual case when the area has a node type URL which has a link to an app Page or a site page.
 					//Then there is no SitemapArea in the ErpRequest as the URL does not has the information about one but still it needs to be 
@@ -272,13 +272,13 @@ namespace WebVella.Erp.Web.Models
 			var sitePages = pageSrv.GetSitePages();
 			foreach (var sitePage in sitePages)
 			{
-                if (sitePage.Weight < 1000)
-                {
-                    SiteMenu.Add(new MenuItem()
-                    {
-                        Content = $"<a class=\"dropdown-item\" href=\"/s/{sitePage.Name}\">{sitePage.Label}</a>"
-                    });
-                }
+				if (sitePage.Weight < 1000)
+				{
+					SiteMenu.Add(new MenuItem()
+					{
+						Content = $"<a class=\"dropdown-item\" href=\"/s/{sitePage.Name}\">{sitePage.Label}</a>"
+					});
+				}
 			}
 
 
@@ -315,39 +315,39 @@ namespace WebVella.Erp.Web.Models
 			return true;
 		}
 
-		//protected void ValidateRecordSubmission(EntityRecord postObject, Entity entity, ValidationException validation)
-		//{
-		//	if (entity == null || postObject == null || postObject.Properties.Count == 0 || validation == null)
-		//		return;
+		protected void ValidateRecordSubmission(EntityRecord postObject, Entity entity, ValidationException validation)
+		{
+			if (entity == null || postObject == null || postObject.Properties.Count == 0 || validation == null)
+				return;
 
-		//	foreach (var property in postObject.Properties)
-		//	{
-		//		//TODO relations validation
-		//		if (property.Key.StartsWith("$"))
-		//			continue;
+			foreach (var property in postObject.Properties)
+			{
+				//TODO relations validation
+				if (property.Key.StartsWith("$"))
+					continue;
 
-		//		Field fieldMeta = entity.Fields.FirstOrDefault(x => x.Name == property.Key);
-		//		if (fieldMeta != null)
-		//		{
-		//			switch (fieldMeta.GetFieldType())
-		//			{
-		//				case FieldType.AutoNumberField:
-		//					if (property.Value != null && !String.IsNullOrWhiteSpace(property.Value.ToString()))
-		//					{
-		//						validation.Errors.Add(new ValidationError(property.Key, "Autonumber field value should be null or empty string"));
-		//					}
-		//					break;
-		//				default:
-		//					if (fieldMeta.Required &&
-		//						(property.Value == null || String.IsNullOrWhiteSpace(property.Value.ToString())))
-		//					{
-		//						validation.Errors.Add(new ValidationError(property.Key, "Required"));
-		//					}
-		//					break;
-		//			}
-		//		}
-		//	}
-		//}
+				Field fieldMeta = entity.Fields.FirstOrDefault(x => x.Name == property.Key);
+				if (fieldMeta != null)
+				{
+					switch (fieldMeta.GetFieldType())
+					{
+						case FieldType.AutoNumberField:
+							if (property.Value != null && !String.IsNullOrWhiteSpace(property.Value.ToString()))
+							{
+								validation.Errors.Add(new ValidationError(property.Key, "Autonumber field value should be null or empty string"));
+							}
+							break;
+						default:
+							if (fieldMeta.Required &&
+								(property.Value == null || String.IsNullOrWhiteSpace(property.Value.ToString())))
+							{
+								validation.Errors.Add(new ValidationError(property.Key, "Required"));
+							}
+							break;
+					}
+				}
+			}
+		}
 
 		public object TryGetDataSourceProperty(string propertyName)
 		{
@@ -431,13 +431,13 @@ namespace WebVella.Erp.Web.Models
 					ViewData["BodyClass"] = bodyClass + classAddon;
 				}
 			}
-            ViewData["AppName"] = ErpSettings.AppName;
-            ViewData["SystemMasterBodyStyle"] = "";
-            if (!String.IsNullOrWhiteSpace(ErpSettings.SystemMasterBackgroundImageUrl)) {
-                ViewData["SystemMasterBodyStyle"] = "background-image: url('" + ErpSettings.SystemMasterBackgroundImageUrl + "');background-position: top center;background-repeat: repeat;min-height: 100vh; ";
-            }
-            #endregion
-        }
+			ViewData["AppName"] = ErpSettings.AppName;
+			ViewData["SystemMasterBodyStyle"] = "";
+			if (!String.IsNullOrWhiteSpace(ErpSettings.SystemMasterBackgroundImageUrl)) {
+				ViewData["SystemMasterBodyStyle"] = "background-image: url('" + ErpSettings.SystemMasterBackgroundImageUrl + "');background-position: top center;background-repeat: repeat;min-height: 100vh; ";
+			}
+			#endregion
+		}
 
 	}
 }
