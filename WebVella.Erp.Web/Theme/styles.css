@@ -2916,6 +2916,11 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 	font-size: 12px;
 }
 
+.app-sitemap {
+	display:flex;
+	flex-flow:row;
+}
+
 /*#endregion*/
 
 /*#region << UI Elements*/
