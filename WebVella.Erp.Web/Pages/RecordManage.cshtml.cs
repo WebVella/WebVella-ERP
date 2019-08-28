@@ -98,7 +98,12 @@ namespace WebVella.Erp.Web.Pages.Application
 				}
 				//record submission validates required fields and auto number - these fields are validated in recordmanager
 				ValidateRecordSubmission(PostObject, ErpRequestContext.Entity, Validation);
-				Validation.CheckAndThrow();
+				if (Validation.Errors.Any())
+				{
+					BeforeRender();
+					return Page();
+				}
+
 				var updateResponse = new RecordManager().UpdateRecord(ErpRequestContext.Entity.MapTo<Entity>(), PostObject);
 				if (!updateResponse.Success)
 				{
