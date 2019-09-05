@@ -77,7 +77,7 @@ function InitHtmlFieldCKEditor(fieldId, fieldConfig) { //modes are -> none, one-
 				{ name: 'pasting', items: ['PasteText', 'PasteFromWord'] },
 				{ name: 'paragraph', items: ['BulletedList', 'NumberedList', 'Blockquote'] },
 				{ name: 'insert', items: ['Image', 'Table', 'SpecialChar'] },
-				{ name: 'tools', items: ['Sourcedialog', 'Maximize'] },
+				{ name: 'tools', items: ['Sourcedialog'] }
 			]
 			break;
 	}
