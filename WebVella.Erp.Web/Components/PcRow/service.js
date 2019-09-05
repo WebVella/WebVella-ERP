@@ -23,7 +23,7 @@
 					var visibleColumnsCount = document.querySelector('#modal-component-options .modal-body input[name="visible_columns"]');
 					visibleColumnsCount.setAttribute("data-old-value",visibleColumnsCount.value);
 					visibleColumnsCount.addEventListener("blur", ColumnCountChange);
-				},500);
+				},1);
 			}
 		});
 	});

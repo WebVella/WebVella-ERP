@@ -12,9 +12,9 @@ namespace WebVella.Erp.Web.Components
 
 	[RenderHookAttachment("head-top", 10)]
 	public class HeadTopIncludes : ViewComponent
-    {
-        public async Task<IViewComponentResult> InvokeAsync(BaseErpPageModel pageModel)
-        {
+	{
+		public async Task<IViewComponentResult> InvokeAsync(BaseErpPageModel pageModel)
+		{
 			ViewBag.MetaTags = new List<MetaTagInclude>();
 			ViewBag.LinkTags = new List<LinkTagInclude>();
 			ViewBag.ScriptTags = new List<ScriptTagInclude>();
@@ -149,7 +149,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						linkTagsToInclude.Add(new LinkTagInclude()
 						{
-							Href = "/js/font-awesome-5.4.1/css/all.min.css?cb=" + cacheKey
+							Href = "/css/font-awesome-5.10.2/css/all.min.css?cb=" + cacheKey
 						});
 					}
 				}
@@ -203,6 +203,6 @@ namespace WebVella.Erp.Web.Components
 			#endregion
 
 			return await Task.FromResult<IViewComponentResult>(View("Default"));
-        }
-    }
+		}
+	}
 }
