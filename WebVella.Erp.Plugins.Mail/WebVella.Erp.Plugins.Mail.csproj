@@ -12,6 +12,7 @@
 		<PackageIconUrl>https://webvella.com/favicon.ico</PackageIconUrl>
 		<RepositoryUrl>https://github.com/WebVella/WebVella-ERP.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
 	<ItemGroup>
