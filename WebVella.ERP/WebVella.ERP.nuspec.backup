@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<package >
+	<metadata>
+		<id>WebVella.Erp</id>
+		<version>1.0.80</version>
+		<title>WebVella.Erp</title>
+		<authors>WebVella</authors>
+		<owners>WebVella</owners>
+		<projectUrl>http://webvella.com/</projectUrl>
+		<iconUrl>http://webvella.com/favicon.ico</iconUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<license type="expression">Apache-2.0</license>
+		<description>	The core library of the open-source and free platform WebVella ERP.	It allows a quick and painless creation of business web applications.	</description>
+		<releaseNotes></releaseNotes>
+		<copyright>Copyright 2019</copyright>
+		<tags></tags>
+		<repository type="git" url="https://github.com/WebVella/WebVella-ERP" />
+		<dependencies>
+			<group targetFramework=".NETCoreApp3.0">
+				<dependency id="AutoMapper" version="7.0.1" exclude="Build,Analyzers" />
+				<dependency id="CsvHelper" version="12.1.2" exclude="Build,Analyzers" />
+				<dependency id="Ical.Net" version="4.1.11" exclude="Build,Analyzers" />
+				<dependency id="Irony.NetCore" version="1.1.11" exclude="Build,Analyzers" />
+				<dependency id="Microsoft.AspNetCore.Http.Abstractions" version="2.2.0" exclude="Build,Analyzers" />
+				<dependency id="Microsoft.Extensions.Caching.Abstractions" version="3.0.0" exclude="Build,Analyzers" />
+				<dependency id="Microsoft.Extensions.Caching.Memory" version="3.0.0" exclude="Build,Analyzers" />
+				<dependency id="Microsoft.Extensions.Configuration.Json" version="3.0.0" exclude="Build,Analyzers" />
+				<dependency id="Microsoft.Extensions.Logging" version="3.0.0" exclude="Build,Analyzers" />
+				<dependency id="Microsoft.Extensions.Logging.Console" version="3.0.0" exclude="Build,Analyzers" />
+				<dependency id="Microsoft.Extensions.Logging.Debug" version="3.0.0" exclude="Build,Analyzers" />
+				<dependency id="Microsoft.VisualStudio.Web.CodeGeneration.Design" version="3.0.0" exclude="Build,Analyzers" />
+				<dependency id="MimeMapping" version="1.0.1.17" exclude="Build,Analyzers" />
+				<dependency id="Newtonsoft.Json" version="12.0.3-beta1" exclude="Build,Analyzers" />
+				<dependency id="Npgsql" version="4.1.0" exclude="Build,Analyzers" />
+				<dependency id="System.Drawing.Common" version="4.6.0" exclude="Build,Analyzers" />
+			</group>
+		</dependencies>
+	</metadata>
+	<files>
+		<file src="bin\Release\netcoreapp3.0\WebVella.Erp.dll" target="lib\netcoreapp2.2\WebVella.Erp.dll" />
+	</files>
+</package>

@@ -45,10 +45,13 @@ namespace WebVella.Erp.Site.Next
 					options.Conventions.AuthorizeFolder("/");
 					options.Conventions.AllowAnonymousToPage("/login");
 				})
-				.AddJsonOptions(options =>
+				.AddNewtonsoftJson(options =>
 				{
 					options.SerializerSettings.Converters.Add(new ErpDateTimeJsonConverter());
 				});
+
+			services.AddControllersWithViews();
+			services.AddRazorPages();
 
 			//adds global datetime converter for json.net
 			JsonConvert.DefaultSettings = () => new JsonSerializerSettings
@@ -77,8 +80,6 @@ namespace WebVella.Erp.Site.Next
 			{
 				DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(CultureInfo.GetCultureInfo("en-US"))
 			});
-
-			app.UseAuthentication();
 
 			app
 			.UseErpPlugin<NextPlugin>()
@@ -115,7 +116,15 @@ namespace WebVella.Erp.Site.Next
 				}
 			});
 
-			app.UseMvc(routes => { routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}"); });
+			app.UseRouting();
+			app.UseAuthentication();
+			app.UseAuthorization(); 
+
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapRazorPages();
+				endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+			});
 		}
 	}
 }

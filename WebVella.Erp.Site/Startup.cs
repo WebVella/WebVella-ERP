@@ -1,19 +1,18 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using System.Globalization;
-using Microsoft.Net.Http.Headers;
-using Microsoft.AspNetCore.ResponseCompression;
-using System.IO.Compression;
-using WebVella.Erp.Web;
 using Microsoft.AspNetCore.Http;
-using WebVella.Erp.Web.Middleware;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO.Compression;
 using WebVella.Erp.Plugins.SDK;
+using WebVella.Erp.Web;
+using WebVella.Erp.Web.Middleware;
 
 namespace WebVella.Erp.Site
 {
@@ -34,7 +33,7 @@ namespace WebVella.Erp.Site
 			services.AddCors(options =>
 			{
 				options.AddPolicy("AllowNodeJsLocalhost",
-					builder => builder.WithOrigins("http://localhost:3333","http://localhost:3000", "http://localhost").AllowAnyMethod().AllowCredentials());
+					builder => builder.WithOrigins("http://localhost:3333", "http://localhost:3000", "http://localhost").AllowAnyMethod().AllowCredentials());
 			});
 
 			services.AddDetectionCore().AddDevice();
@@ -46,10 +45,13 @@ namespace WebVella.Erp.Site
 					options.Conventions.AuthorizeFolder("/");
 					options.Conventions.AllowAnonymousToPage("/login");
 				})
-				.AddJsonOptions(options =>
+				.AddNewtonsoftJson(options =>
 			   {
 				   options.SerializerSettings.Converters.Add(new ErpDateTimeJsonConverter());
 			   });
+
+			services.AddControllersWithViews();
+			services.AddRazorPages();
 
 			//adds global datetime converter for json.net
 			JsonConvert.DefaultSettings = () => new JsonSerializerSettings
@@ -57,7 +59,6 @@ namespace WebVella.Erp.Site
 				Converters = new List<JsonConverter> { new ErpDateTimeJsonConverter() }
 			};
 
-			services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info { Title = "Erp API", Version = "v1" }); });
 
 			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 					.AddCookie(options =>
@@ -81,7 +82,6 @@ namespace WebVella.Erp.Site
 				DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(CultureInfo.GetCultureInfo("en-US"))
 			});
 
-			app.UseAuthentication();
 
 			app
 			.UseErpPlugin<SdkPlugin>()
@@ -118,11 +118,15 @@ namespace WebVella.Erp.Site
 				}
 			});
 
-			app.UseMvc(routes => { routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}"); });
+			app.UseRouting();
+			app.UseAuthentication();
+			app.UseAuthorization();
 
-			app.UseSwagger();
-
-			app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Erp API V1"); });
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapRazorPages();
+				endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+			});
 		}
 	}
 }

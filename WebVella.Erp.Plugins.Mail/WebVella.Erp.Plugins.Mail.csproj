@@ -1,12 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-     <TargetFramework>netcoreapp2.2</TargetFramework>
+     <TargetFramework>netcoreapp3.0</TargetFramework>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+		<Version>1.0.80</Version>
+		<Authors>WebVella</Authors>
+		<Description>The Mail Plugin for the open-source and free platform WebVella ERP. It provides API, services and management for sending emails through SMTP services.</Description>
+		<Copyright>Copyright 2019</Copyright>
+		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+		<PackageProjectUrl>https://webvella.com</PackageProjectUrl>
+		<PackageIconUrl>https://webvella.com/favicon.ico</PackageIconUrl>
+		<RepositoryUrl>https://github.com/WebVella/WebVella-ERP.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+	
   <ItemGroup>
-    <PackageReference Include="MailKit" Version="2.1.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+    <PackageReference Include="MailKit" Version="2.3.1.6" />
   </ItemGroup>
 
   <ItemGroup>

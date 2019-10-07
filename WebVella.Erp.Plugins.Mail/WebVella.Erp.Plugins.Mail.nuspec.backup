@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>WebVella.Erp.Plugins.Mail</id>
-		<version>1.0.12</version>
+		<version>1.0.80</version>
 		<title>WebVella.Erp.Plugins.Mail</title>
 		<authors>WebVella</authors>
 		<owners>WebVella</owners>
@@ -16,15 +16,15 @@
 		<tags></tags>
 		<repository type="git" url="https://github.com/WebVella/WebVella-ERP" />
 		<dependencies>
-			<group targetFramework=".NETCoreApp2.2">
-				<dependency id="WebVella.Erp" version="1.0.65"  exclude="Build,Analyzers" />
-				<dependency id="WebVella.Erp.Web" version="1.0.68"  exclude="Build,Analyzers" />
-				<dependency id="MailKit" version="2.1.3"  exclude="Build,Analyzers" />
+			<group targetFramework=".NETCoreApp3.0">
+				<dependency id="WebVella.Erp" version="1.0.80"  exclude="Build,Analyzers" />
+				<dependency id="WebVella.Erp.Web" version="1.0.80"  exclude="Build,Analyzers" />
+				<dependency id="MailKit" version="2.3.1.6"  exclude="Build,Analyzers" />
 			</group>
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="bin\Release\netcoreapp2.2\WebVella.Erp.Plugins.Mail.dll" target="lib\netcoreapp2.2\WebVella.Erp.Plugins.Mail.dll" />
+		<file src="bin\Release\netcoreapp3.0\WebVella.Erp.Plugins.Mail.dll" target="lib\netcoreapp2.2\WebVella.Erp.Plugins.Mail.dll" />
 		<!--<file src="bin\Release\netcoreapp2.2\WebVella.Erp.Plugins.Mail.Views.dll" target="lib\netcoreapp2.2\WebVella.Erp.Plugins.Mail.Views.dll" />-->
 	</files>
 </package>

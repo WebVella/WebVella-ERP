@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-	<TargetFramework>netcoreapp2.2</TargetFramework>
-	<Version>1.0.45</Version>
+	<TargetFramework>netcoreapp3.0</TargetFramework>
+	<Version>1.0.80</Version>
 	<PackageId>WebVella.Erp.Plugins.SDK</PackageId>
 	<Authors>WebVella</Authors>
 	<Product />
@@ -13,7 +13,14 @@
 	<Company>WebVella</Company>
 	<Copyright>Copyright 2019</Copyright>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+	<RepositoryUrl>https://github.com/WebVella/WebVella-ERP.git</RepositoryUrl>
+	<RepositoryType>git</RepositoryType>
   </PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
   <ItemGroup>
     <None Remove="Components\WvSdkPageSitemap\form.js" />
@@ -24,8 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="2.10.0" />
+    <!--<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.3.1" />-->
   </ItemGroup>
 
   <ItemGroup>

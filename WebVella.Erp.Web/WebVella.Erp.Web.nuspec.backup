@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>WebVella.Erp.Web</id>
-		<version>1.0.78</version>
+		<version>1.0.80</version>
 		<title>WebVella.Erp.Web</title>
 		<authors>WebVella</authors>
 		<owners>WebVella</owners>
@@ -16,17 +16,17 @@
 		<tags></tags>
 		<repository type="git" url="https://github.com/WebVella/WebVella-ERP" />
 		<dependencies>
-			<group targetFramework=".NETCoreApp2.2">
-				<dependency id="WebVella.Erp" version="1.0.77"  exclude="Build,Analyzers" />
-				<dependency id="CS-Script.Core" version="1.0.6"  exclude="Build,Analyzers" />
-				<dependency id="Microsoft.AspNetCore.Mvc" version="2.2.0"  exclude="Build,Analyzers" />
-				<dependency id="HtmlAgilityPack" version="1.8.14"  exclude="Build,Analyzers" />
+			<group targetFramework=".NETCoreApp3.0">
+				<dependency id="WebVella.Erp" version="1.0.80"  exclude="Build,Analyzers" />
+				<dependency id="CS-Script.Core" version="1.1.2-pre"  exclude="Build,Analyzers" />
+				<dependency id="HtmlAgilityPack" version="1.11.12"  exclude="Build,Analyzers" />
+				<dependency id="Microsoft.AspNetCore.Mvc.ViewFeatures" version="2.2.0"  exclude="Build,Analyzers" />
 				<dependency id="Microsoft.AspNetCore.StaticFiles" version="2.2.0"  exclude="Build,Analyzers" />
-				<dependency id="Microsoft.CodeAnalysis.Common" version="2.10.0"  exclude="Build,Analyzers" />
-				<dependency id="Microsoft.CodeAnalysis.CSharp" version="2.10.0"  exclude="Build,Analyzers" />
-				<dependency id="Microsoft.CodeAnalysis.CSharp.Workspaces" version="2.10.0"  exclude="Build,Analyzers" />
-				<dependency id="SixLabors.ImageSharp" version="1.0.0-beta0005"  exclude="Build,Analyzers" />
-				<dependency id="SixLabors.ImageSharp.Drawing" version="1.0.0-beta0005"  exclude="Build,Analyzers" />
+				<dependency id="Microsoft.CodeAnalysis.Common" version="3.3.0"  exclude="Build,Analyzers" />
+				<dependency id="Microsoft.CodeAnalysis.CSharp" version="3.3.0"  exclude="Build,Analyzers" />
+				<dependency id="Microsoft.CodeAnalysis.CSharp.Workspaces" version="3.3.0"  exclude="Build,Analyzers" />
+				<dependency id="SixLabors.ImageSharp" version="1.0.0-beta0007"  exclude="Build,Analyzers" />
+				<dependency id="SixLabors.ImageSharp.Drawing" version="1.0.0-beta0007"  exclude="Build,Analyzers" />
 				<dependency id="Wangkanai.Detection.Device" version="2.0.0-beta8"  exclude="Build,Analyzers" />
 				<dependency id="YUICompressor.NET" version="3.0.0"  exclude="Build,Analyzers" />
 			</group>
@@ -40,8 +40,8 @@
 		</contentFiles>-->
 	</metadata>
 	<files>
-		<file src="bin\Release\netcoreapp2.2\WebVella.Erp.Web.dll" target="lib\netcoreapp2.2\WebVella.Erp.Web.dll" />
-		<file src="bin\Release\netcoreapp2.2\WebVella.Erp.Web.Views.dll" target="lib\netcoreapp2.2\WebVella.Erp.Web.Views.dll" />
+		<file src="bin\Release\netcoreapp3.0\WebVella.Erp.Web.dll" target="lib\netcoreapp2.2\WebVella.Erp.Web.dll" />
+		<file src="bin\Release\netcoreapp3.0\WebVella.Erp.Web.Views.dll" target="lib\netcoreapp2.2\WebVella.Erp.Web.Views.dll" />
 		<file src="WebVella.Erp.Web.targets" target="build/WebVella.Erp.Web.targets" />
 		<file src="..\WebVella.Erp.Site\libman.json" target="contentFiles\libman.json" />
 		<file src="..\WebVella.Erp.Site\wwwroot\assets\**" target="contentFiles\wwwroot\assets" />

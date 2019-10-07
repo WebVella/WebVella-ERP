@@ -1,13 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
-  </ItemGroup>
-
+	
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+	
   <ItemGroup>
     <ProjectReference Include="..\WebVella.Erp.Web\WebVella.Erp.Web.csproj" />
     <ProjectReference Include="..\WebVella.ERP\WebVella.Erp.csproj" />

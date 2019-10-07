@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>WebVella.Erp.Plugins.SDK</id>
-		<version>1.0.77</version>
+		<version>1.0.80</version>
 		<title>WebVella.Erp.Plugins.SDK</title>
 		<authors>WebVella</authors>
 		<owners>WebVella</owners>
@@ -16,14 +16,14 @@
 		<tags></tags>
 		<repository type="git" url="https://github.com/WebVella/WebVella-ERP" />
 		<dependencies>
-			<group targetFramework=".NETCoreApp2.2">
-				<dependency id="WebVella.Erp" version="1.0.77" exclude="Build,Analyzers" />
-				<dependency id="WebVella.Erp.Web" version="1.0.77" exclude="Build,Analyzers" />
+			<group targetFramework=".NETCoreApp3.0">
+				<dependency id="WebVella.Erp" version="1.0.80" exclude="Build,Analyzers" />
+				<dependency id="WebVella.Erp.Web" version="1.0.80" exclude="Build,Analyzers" />
 			</group>
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="bin\Release\netcoreapp2.2\WebVella.Erp.Plugins.SDK.dll" target="lib\netcoreapp2.2\WebVella.Erp.Plugins.SDK.dll" />
-		<file src="bin\Release\netcoreapp2.2\WebVella.Erp.Plugins.SDK.Views.dll" target="lib\netcoreapp2.2\WebVella.Erp.Plugins.SDK.Views.dll" />
+		<file src="bin\Release\netcoreapp3.0\WebVella.Erp.Plugins.SDK.dll" target="lib\netcoreapp2.2\WebVella.Erp.Plugins.SDK.dll" />
+		<file src="bin\Release\netcoreapp3.0\WebVella.Erp.Plugins.SDK.Views.dll" target="lib\netcoreapp2.2\WebVella.Erp.Plugins.SDK.Views.dll" />
 	</files>
 </package>

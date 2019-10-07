@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-   <TargetFramework>netcoreapp2.2</TargetFramework>
+   <TargetFramework>netcoreapp3.0</TargetFramework>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <AssemblyName>WebVella.Erp.Site</AssemblyName>
     <OutputType>Exe</OutputType>
@@ -12,9 +12,11 @@
 	<UserSecretsId>3d84b9b1-534b-473b-b0d8-f6b47f33297b</UserSecretsId>
 	<RazorCompileOnBuild>false</RazorCompileOnBuild>
     <RazorCompileOnPublish>false</RazorCompileOnPublish>	
-	<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+	<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>	
+	<GeneratePackageOnBuild>false</GeneratePackageOnBuild>	
+	<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
-
+	
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile></DocumentationFile>
   </PropertyGroup>
@@ -37,25 +39,19 @@
   </ItemGroup>
 
 
-  <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.8.14" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="2.10.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.1" />
-    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="1.0.172" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0005" />
-    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0005" />
-    <PackageReference Include="AutoMapper" Version="8.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
-    <PackageReference Include="SwashBuckle.AspNetCore.MicrosoftExtensions" Version="0.5.0" />
-    <PackageReference Include="System.Linq" Version="4.3.0" />
-    <PackageReference Include="System.Threading" Version="4.3.0" />
-    <PackageReference Include="MimeMapping" Version="1.0.1.12" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="morelinq" Version="3.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
-	<PackageReference Include="Microsoft.AspNetCore.All" />
-	<PackageReference Include="Wangkanai.Detection.Device" Version="2.0.0-beta8" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0" />
+		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.0.76" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0007" />
+		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0007" />
+		<PackageReference Include="System.Linq" Version="4.3.0" />
+		<PackageReference Include="System.Threading" Version="4.3.0" />
+		<PackageReference Include="MimeMapping" Version="1.0.1.17" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3-beta1" />
+		<PackageReference Include="morelinq" Version="3.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
+		<PackageReference Include="Wangkanai.Detection.Device" Version="2.0.0-beta8" />
+	</ItemGroup>
 
 
   <ItemGroup>

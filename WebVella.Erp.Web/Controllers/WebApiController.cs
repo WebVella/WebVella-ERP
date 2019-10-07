@@ -3191,7 +3191,7 @@ namespace WebVella.Erp.Web.Controllers
 									Size = new SixLabors.Primitives.Size(size.Width, size.Height)
 								};
 								image.Mutate(x => x.Resize(resizeOptions).BackgroundColor(Rgba32.White));
-								image.Save(outStream, ImageFormats.Jpeg);
+								image.SaveAsJpeg(outStream);
 								outStream.Seek(0, SeekOrigin.Begin);
 								return File(outStream, mimeType);
 							}

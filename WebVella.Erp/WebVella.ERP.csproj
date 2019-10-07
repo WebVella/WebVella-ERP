@@ -1,20 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>WebVella.Erp</AssemblyName>
     <OutputType>Library</OutputType>
     <PackageId>WebVella.Erp</PackageId>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Description>The core library of the open-source and free platform WebVella ERP.	It allows a quick and painless creation of business web applications.</Description>
-    <Version>1.0.46</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>The core library of the open-source and free platform WebVella ERP. It allows a quick and painless creation of business web applications.	</Description>
+    <Version>1.0.80</Version>
     <Authors>WebVella</Authors>
     <Company>WebVella</Company>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Copyright>Copyright 2019</Copyright>
     <PackageProjectUrl>https://webvella.com</PackageProjectUrl>
     <PackageIconUrl>https://webvella.com/favicon.ico</PackageIconUrl>
+    <RepositoryUrl>https://github.com/WebVella/WebVella-ERP.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,24 +31,30 @@
     <EmbeddedResource Include="Fts\BulStem\Rules\stem_rules_context_3_utf8.txt" />
   </ItemGroup>
 
+	<!--<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>-->
+	
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="8.0.0" />
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="CsvHelper" Version="12.1.2" />
-    <PackageReference Include="Ical.Net" Version="4.1.10" />
-    <PackageReference Include="Irony.NetCore" Version="1.0.11" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.2.0" />
-    <PackageReference Include="Microsoft.NET.Sdk.Web" Version="1.0.0-alpha-20161104-2-112" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.1" />
-    <PackageReference Include="MimeMapping" Version="1.0.1.12" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="Npgsql" Version="4.0.4" />
-    <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
+    <PackageReference Include="Ical.Net" Version="4.1.11" />
+    <PackageReference Include="Irony.NetCore" Version="1.1.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.3.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.3.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.3.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.3.1" />
+    <PackageReference Include="MimeMapping" Version="1.0.1.17" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3-beta1" />
+    <PackageReference Include="Npgsql" Version="4.1.0" />
+    <PackageReference Include="System.Drawing.Common" Version="4.6.0" />
   </ItemGroup>
 
   <ItemGroup>
