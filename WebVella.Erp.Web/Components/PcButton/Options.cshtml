@@ -1,5 +1,7 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Api.Models;
 @using WebVella.Erp.Web;
@@ -14,18 +16,18 @@
 
 <wv-row>
 	<wv-column span="4">
-		<wv-field-select name="type" label-text="Type" value="@((int)options.Type)" options="typeOptions" required="true"></wv-field-select>
+		<wv-field-select name="type" label-text="Type" value="@((int)options.Type)" options="typeOptions.ToWvSelectOption()" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-datasource name="text" label-text="Button text" value="@options.Text" page-id="erpRequest.Page.Id"></wv-field-datasource>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-select name="color" label-text="Color" value="@((int)options.Color)" options="colorOptions" required="true"></wv-field-select>
+		<wv-field-select name="color" label-text="Color" value="@((int)options.Color)" options="colorOptions.ToWvSelectOption()" required="true"></wv-field-select>
 	</wv-column>
 </wv-row>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-select name="size" label-text="Size" value="@((int)options.Size)" options="cssSizeOptions" required="true"></wv-field-select>
+		<wv-field-select name="size" label-text="Size" value="@((int)options.Size)" options="cssSizeOptions.ToWvSelectOption()" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-datasource name="class" label-text="Css class" value="@options.Class" page-id="erpRequest.Page.Id"></wv-field-datasource>

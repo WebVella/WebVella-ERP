@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
+using WebVella.TagHelpers.Models;
+using WebVella.TagHelpers.TagHelpers;
 using Yahoo.Yui.Compressor;
 
 namespace WebVella.Erp.Web.TagHelpers
@@ -62,7 +64,7 @@ namespace WebVella.Erp.Web.TagHelpers
             #endregion
 
             #region << Render >>
-            if (Mode == FieldRenderMode.Form)
+            if (Mode == WvFieldRenderMode.Form)
             {
                 //>> Tab
                 var tabEl = new TagBuilder("div");
@@ -141,7 +143,7 @@ namespace WebVella.Erp.Web.TagHelpers
                 inputEl.Attributes.Add("id", $"textarea-{FieldId}");
                 inputEl.Attributes.Add("name", Name);
 
-                if (Access == FieldAccess.Full || Access == FieldAccess.FullAndCreate)
+                if (Access == WvFieldAccess.Full || Access == WvFieldAccess.FullAndCreate)
                 {
                     if (Required)
                     {
@@ -152,7 +154,7 @@ namespace WebVella.Erp.Web.TagHelpers
                         inputEl.Attributes.Add("placeholder", Placeholder);
                     }
                 }
-                else if (Access == FieldAccess.ReadOnly)
+                else if (Access == WvFieldAccess.ReadOnly)
                 {
                     inputEl.Attributes.Add("readonly", null);
                 }
@@ -370,7 +372,7 @@ namespace WebVella.Erp.Web.TagHelpers
                 var fieldConfig = new WvFieldTextareaConfig()
                 {
                     ApiUrl = ApiUrl,
-                    CanAddValues = Access == FieldAccess.FullAndCreate ? true : false
+                    CanAddValues = Access == WvFieldAccess.FullAndCreate ? true : false
                 };
 
                 scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));
@@ -382,7 +384,7 @@ namespace WebVella.Erp.Web.TagHelpers
 
 
             }
-            else if (Mode == FieldRenderMode.Display || (Mode == FieldRenderMode.InlineEdit && Access == FieldAccess.ReadOnly))
+            else if (Mode == WvFieldRenderMode.Display || (Mode == WvFieldRenderMode.InlineEdit && Access == WvFieldAccess.ReadOnly))
             {
 
                 //>> Tab
@@ -520,12 +522,12 @@ namespace WebVella.Erp.Web.TagHelpers
                         //>> table
                         var tableEl = new TagBuilder("table");
                         tableEl.AddCssClass("table table-bordered table-hover table-sm");
-                        var columns = new List<GridColumn>();
+                        var columns = new List<WvGridColumnMeta>();
                         var sample = (IDictionary<string, object>)records[0];
                         var index = 1;
                         foreach (var prop in sample.Keys)
                         {
-                            columns.Add(new GridColumn()
+                            columns.Add(new WvGridColumnMeta()
                             {
                                 Label = HasHeaderValue ? prop : "Field" + index
                             });
@@ -667,7 +669,7 @@ namespace WebVella.Erp.Web.TagHelpers
                 var fieldConfig = new WvFieldTextareaConfig()
                 {
                     ApiUrl = ApiUrl,
-                    CanAddValues = Access == FieldAccess.FullAndCreate ? true : false
+                    CanAddValues = Access == WvFieldAccess.FullAndCreate ? true : false
                 };
 
                 scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));
@@ -678,7 +680,7 @@ namespace WebVella.Erp.Web.TagHelpers
                 #endregion
 
             }
-            else if (Mode == FieldRenderMode.Simple)
+            else if (Mode == WvFieldRenderMode.Simple)
             {
                 #region << Double scroll >>
                 //>> Ds
@@ -723,12 +725,12 @@ namespace WebVella.Erp.Web.TagHelpers
                         //>> table
                         var tableEl = new TagBuilder("table");
                         tableEl.AddCssClass("table table-bordered table-hover table-sm");
-                        var columns = new List<GridColumn>();
+                        var columns = new List<WvGridColumnMeta>();
                         var sample = (IDictionary<string, object>)records[0];
                         var index = 1;
                         foreach (var prop in sample.Keys)
                         {
-                            columns.Add(new GridColumn()
+                            columns.Add(new WvGridColumnMeta()
                             {
                                 Label = HasHeaderValue ? prop : "Field" + index
                             });
@@ -853,7 +855,7 @@ namespace WebVella.Erp.Web.TagHelpers
                 var fieldConfig = new WvFieldTextareaConfig()
                 {
                     ApiUrl = ApiUrl,
-                    CanAddValues = Access == FieldAccess.FullAndCreate ? true : false
+                    CanAddValues = Access == WvFieldAccess.FullAndCreate ? true : false
                 };
 
                 scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));
@@ -863,7 +865,7 @@ namespace WebVella.Erp.Web.TagHelpers
                 output.PostContent.AppendHtml(initScript);
                 #endregion
             }
-            else if (Mode == FieldRenderMode.InlineEdit)
+            else if (Mode == WvFieldRenderMode.InlineEdit)
             {
 
                 //>> Tab
@@ -903,7 +905,7 @@ namespace WebVella.Erp.Web.TagHelpers
                 tabHeaderUlEl.InnerHtml.AppendHtml(tabHeaderUlLiPreviewEl);
 
                 //>> Tab > Header > Ul > LiEdit
-                if (Access == FieldAccess.Full || Access == FieldAccess.FullAndCreate)
+                if (Access == WvFieldAccess.Full || Access == WvFieldAccess.FullAndCreate)
                 {
                     var tabHeaderUlLiEditEl = new TagBuilder("li");
                     tabHeaderUlLiEditEl.AddCssClass("nav-item");
@@ -1016,12 +1018,12 @@ namespace WebVella.Erp.Web.TagHelpers
                         //>> table
                         var tableEl = new TagBuilder("table");
                         tableEl.AddCssClass("table table-bordered table-hover table-sm");
-                        var columns = new List<GridColumn>();
+                        var columns = new List<WvGridColumnMeta>();
                         var sample = (IDictionary<string, object>)records[0];
                         var index = 1;
                         foreach (var prop in sample.Keys)
                         {
-                            columns.Add(new GridColumn()
+                            columns.Add(new WvGridColumnMeta()
                             {
                                 Label = HasHeaderValue ? prop : "Field" + index
                             });
@@ -1125,7 +1127,7 @@ namespace WebVella.Erp.Web.TagHelpers
                 output.Content.AppendHtml(tabEl);
 
 
-                if (Access == FieldAccess.Full || Access == FieldAccess.FullAndCreate)
+                if (Access == WvFieldAccess.Full || Access == WvFieldAccess.FullAndCreate)
                 {
                     //>> modal 
                     var modalEl = new TagBuilder("div");
@@ -1362,13 +1364,12 @@ namespace WebVella.Erp.Web.TagHelpers
                 scriptTemplate = scriptTemplate.Replace("{{Name}}", Name);
                 scriptTemplate = scriptTemplate.Replace("{{DelimiterFieldName}}", DelimiterFieldName);
                 scriptTemplate = scriptTemplate.Replace("{{HasHeaderFieldName}}", HasHeaderFieldName);
-                scriptTemplate = scriptTemplate.Replace("{{EntityName}}", EntityName);
-                scriptTemplate = scriptTemplate.Replace("{{RecordId}}", (RecordId ?? null).ToString());
+
 
                 var fieldConfig = new WvFieldTextareaConfig()
                 {
                     ApiUrl = ApiUrl,
-                    CanAddValues = Access == FieldAccess.FullAndCreate ? true : false
+                    CanAddValues = Access == WvFieldAccess.FullAndCreate ? true : false
                 };
 
                 scriptTemplate = scriptTemplate.Replace("{{ConfigJson}}", JsonConvert.SerializeObject(fieldConfig));

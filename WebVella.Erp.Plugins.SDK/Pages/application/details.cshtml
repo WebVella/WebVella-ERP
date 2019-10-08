@@ -1,5 +1,6 @@
 ﻿@page "/sdk/objects/application/r/{RecordId}/{PageName?}"
 @using System.Web;
+@using WebVella.Erp.Web.Utils;
 @model WebVella.Erp.Plugins.SDK.Pages.Application.DetailsModel
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
@@ -21,7 +22,7 @@
 	</wv-page-header-toolbar>
 </wv-page-header>
 
-<wv-validation validation="Model.Validation" show-errors="false"></wv-validation>
+<wv-validation errors="@Model.Validation.ToErrorList()" message="@Model.Validation.Message"></wv-validation>
 
 <wv-form label-mode="Stacked" mode="Display" id="RecordDetails">
 	<wv-section class="mt-4">
@@ -56,7 +57,7 @@
 		</wv-row>
 		<wv-row>
 			<wv-column>
-				<wv-field-multiselect label-text="Access" value="@Model.Access" name="Access" options="Model.RoleOptions"></wv-field-multiselect>
+				<wv-field-multiselect label-text="Access" value="@Model.Access" name="Access" options="Model.RoleOptions.ToWvSelectOption()"></wv-field-multiselect>
 			</wv-column>
 		</wv-row>
 	</wv-section>

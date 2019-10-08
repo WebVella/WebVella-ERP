@@ -1,24 +1,27 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Api.Models;
 @using WebVella.Erp.Web.Models;
 @using WebVella.Erp.Plugins.Project.Components;
 @using WebVella.Erp.Plugins.Project.Model;
+@using WebVella.TagHelpers.Models;
 @{
 	var options = (PcProjectWidgetTasksQueue.PcProjectWidgetTasksQueueOptions)ViewBag.Options;
 	var records = (List<EntityRecord>)ViewBag.Records;
-	var gridColumn = new List<GridColumn>() {
-		new GridColumn(){
+	var gridColumn = new List<WvGridColumnMeta>() {
+		new WvGridColumnMeta(){
 			Name = "name",
 			Width = "",
 			Label = "name"
 		},
-		new GridColumn(){
+		new WvGridColumnMeta(){
 			Name = "user",
 			Width = "200px",
 			Label = "user"
 		},
-		new GridColumn(){
+		new WvGridColumnMeta(){
 			Name = "date",
 			Width = "120px",
 			Label = "date"

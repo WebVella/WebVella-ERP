@@ -1,12 +1,14 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Api.Models;
 @using WebVella.Erp.Web.Models;
 @using WebVella.Erp.Plugins.Project.Components;
-
+@using WebVella.TagHelpers.Models;
 @{
 	var options = (PcProjectWidgetTasksChart.PcProjectWidgetTasksChartOptions)ViewBag.Options;
-	var datasets = (List<ErpChartDataset>)ViewBag.Datasets;
+	var datasets = (List<WvChartDataset>)ViewBag.Datasets;
 	var overdueTasks = (int)ViewBag.OverdueTasks;
 	var dueToday = (int)ViewBag.DueTodayTasks;
 	var notDueTasks = (int)ViewBag.NotDueTasks;

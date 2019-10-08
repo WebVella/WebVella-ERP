@@ -1,6 +1,7 @@
 ﻿@page "/sdk/objects/application/c/{PageName?}"
 
 @model WebVella.Erp.Plugins.SDK.Pages.Application.CreateModel
+@using WebVella.Erp.Web.Utils;
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Create New Application";
@@ -17,9 +18,9 @@
 	</wv-page-header-actions>
 </wv-page-header>
 
-<wv-validation validation="Model.Validation" show-errors="false"></wv-validation>
+<wv-validation errors="@Model.Validation.ToErrorList()" message="@Model.Validation.Message"></wv-validation>
 
-<wv-form name="CreateRecord" validation="Model.Validation" label-mode="Stacked" mode="Form">
+<wv-form name="CreateRecord" validation-errors="Model.Validation.ToErrorList()" label-mode="Stacked" mode="Form">
 	<wv-section class="mt-4">
 		<wv-row>
 			<wv-column span="6">
@@ -52,7 +53,7 @@
 		</wv-row>
 		<wv-row>
 			<wv-column>
-				<wv-field-multiselect label-text="Access" value="@Model.Access" name="Access" options="Model.RoleOptions"></wv-field-multiselect>
+				<wv-field-multiselect label-text="Access" value="@Model.Access" name="Access" options="Model.RoleOptions.ToWvSelectOption()"></wv-field-multiselect>
 			</wv-column>
 		</wv-row>
 	</wv-section>

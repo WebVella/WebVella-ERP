@@ -1,10 +1,12 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Web.Models;
 @using WebVella.Erp.Web;
-@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Api.Models;
+@using WebVella.TagHelpers.Models;
 @{
 	var options = (PcGrid.PcGridOptions)ViewBag.Options;
 	var node = (PageBodyNode)ViewBag.Node;
@@ -14,7 +16,7 @@
 	var totalCount = (int)ViewBag.TotalCount;
 	var pageSize = (int)ViewBag.PageSize;
 	var records = (List<EntityRecord>)ViewBag.Records;
-	var columns = (List<GridColumn>)ViewBag.Columns;
+	var columns = (List<WvGridColumnMeta>)ViewBag.Columns;
 }
 
 <wv-grid striped="@options.Striped" small="@options.Small" bordered="@options.Bordered" borderless="@options.Borderless"
@@ -31,8 +33,8 @@
 				var containerId = (options.GetType().GetProperty($"Container{i}Id").GetValue(options, null) ?? "").ToString();
 				var columnNoWrap = (bool)(options.GetType().GetProperty($"Container{i}NoWrap").GetValue(options, null) ?? false);
 				var columnClass = (string)(options.GetType().GetProperty($"Container{i}Class").GetValue(options, null) ?? false);
-				var verticalAlign = (VerticalAlignmentType)(options.GetType().GetProperty($"Container{i}VerticalAlign").GetValue(options, null) ?? false);
-				var horizontalAlign = (HorizontalAlignmentType)(options.GetType().GetProperty($"Container{i}HorizontalAlign").GetValue(options, null) ?? false);
+				var verticalAlign = (WvVerticalAlignmentType)(options.GetType().GetProperty($"Container{i}VerticalAlign").GetValue(options, null) ?? false);
+				var horizontalAlign = (WvHorizontalAlignmentType)(options.GetType().GetProperty($"Container{i}HorizontalAlign").GetValue(options, null) ?? false);
 				var columnChildNodes = node.Nodes.FindAll(x => x.ContainerId == containerId);
 				var columnWidth = options.HasThead ? "" : columns[i - 1].Width;
 				<wv-grid-column width="@columnWidth" text-nowrap="@columnNoWrap" class="@columnClass" horizontal-align="@horizontalAlign" vertical-align="@verticalAlign">

@@ -1,5 +1,7 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Web.Models;
 @using WebVella.Erp.Api.Models;
@@ -19,7 +21,7 @@
 <h4 class="mt-2 mb-0">Label</h4>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-select name="label_mode" value="@((int)options.LabelMode)" label-text="Label mode" options="@fieldModel.LabelRenderModeOptions" required="true"></wv-field-select>
+		<wv-field-select name="label_mode" value="@((int)options.LabelMode)" label-text="Label mode" options="@fieldModel.LabelRenderModeOptions.ToWvSelectOption()" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-text name="label_text" value="@options.LabelText" label-text="Label text"></wv-field-text>
@@ -28,7 +30,7 @@
 <h4 class="mt-4 mb-0">Field</h4>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-select name="mode" value="@((int)options.Mode)" label-text="Mode" options="@fieldModel.FieldRenderModeOptions" required="true"></wv-field-select>
+		<wv-field-select name="mode" value="@((int)options.Mode)" label-text="Mode" options="@fieldModel.FieldRenderModeOptions.ToWvSelectOption()" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-datasource name="value" value="@options.Value" label-text="Value" page-id="erpRequest.Page.Id"></wv-field-datasource>
@@ -47,7 +49,7 @@
 <wv-section is-collapsable="true" is-collapsed="true" title="advanced options" class="mt-3">
 	<wv-row>
 		<wv-column span="4">
-			<wv-field-select name="connected_entity_id" value="@options.ConnectedEntityId" label-text="Connected Entity" options="@fieldModel.EntitySelectOptions"></wv-field-select>
+			<wv-field-select name="connected_entity_id" value="@options.ConnectedEntityId" label-text="Connected Entity" options="@fieldModel.EntitySelectOptions.ToWvSelectOption()"></wv-field-select>
 		</wv-column>
 		<wv-column span="4">
 			<wv-field-datasource name="access_override_ds" value="@options.AccessOverrideDs" label-text="Field value access override" page-id="erpRequest.Page.Id" description="should return [FieldAccess] enum. If provided will override the standard entity field role access "></wv-field-datasource>

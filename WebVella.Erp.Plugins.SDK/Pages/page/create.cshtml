@@ -1,6 +1,7 @@
 ﻿@page "/sdk/objects/page/c/{PageName?}"
 
 @model WebVella.Erp.Plugins.SDK.Pages.Page.CreateModel
+@using WebVella.Erp.Web.Utils;
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Create New Page";
@@ -17,9 +18,9 @@
 
 	</wv-page-header>
 
-<wv-validation validation="Model.Validation" show-errors="false"></wv-validation>
+<wv-validation errors="@Model.Validation.ToErrorList()" message="@Model.Validation.Message"></wv-validation>
 
-<wv-form name="CreateRecord" validation="Model.Validation" label-mode="Stacked" mode="Form">
+<wv-form name="CreateRecord" validation-errors="Model.Validation.ToErrorList()" label-mode="Stacked" mode="Form">
 	<wv-section class="mt-4" title="General" is-card="true">
 		<wv-row>
 			<wv-column span="4">

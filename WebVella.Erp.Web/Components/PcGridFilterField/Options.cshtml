@@ -1,5 +1,7 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web;
 @using WebVella.Erp.Web.Models;
 @using WebVella.Erp.Web.Components;
@@ -34,15 +36,15 @@
 </wv-row>
 <wv-row>
 	<wv-column span="6">
-		<wv-field-select name="field_type" label-text="Field Type" options="fieldTypeOptions" value="@options.FieldType" required="true"></wv-field-select>
+		<wv-field-select name="field_type" label-text="Field Type" options="fieldTypeOptions.ToWvSelectOption()" value="@options.FieldType" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="6">
-		<wv-field-select name="query_type" label-text="Default Query Type" options="filterTypeOptions" value="@options.QueryType" required="true"></wv-field-select>
+		<wv-field-select name="query_type" label-text="Default Query Type" options="filterTypeOptions.ToWvSelectOption()" value="@options.QueryType" required="true"></wv-field-select>
 	</wv-column>
 </wv-row>
 <wv-row>
 	<wv-column span="12">
-		<wv-field-multiselect name="query_options" label-text="Query options" options="filterTypeOptions" value="@selectedQueryOptionsConverted"></wv-field-multiselect>
+		<wv-field-multiselect name="query_options" label-text="Query options" options="filterTypeOptions.ToWvSelectOption()" value="@selectedQueryOptionsConverted"></wv-field-multiselect>
 	</wv-column>
 	<wv-column span="6">
 

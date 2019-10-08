@@ -1,6 +1,7 @@
 ﻿@page "/sdk/objects/entity/r/{ParentRecordId}/rl/relations/c/{PageName?}"
 
 @model WebVella.Erp.Plugins.SDK.Pages.ErpEntity.RelationCreateModel
+@using WebVella.Erp.Web.Utils;
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Entity relation details";
@@ -25,13 +26,13 @@
 
 </wv-page-header>
 
-<wv-validation validation="Model.Validation" show-errors="false"></wv-validation>
+<wv-validation errors="@Model.Validation.ToErrorList()" message="@Model.Validation.Message"></wv-validation>
 
-<wv-form label-mode="Stacked" mode="Form" name="CreateRecord" validation="Model.Validation" id="CreateRecord">
+<wv-form label-mode="Stacked" mode="Form" name="CreateRecord" validation-errors="Model.Validation.ToErrorList()" id="CreateRecord">
 	<wv-section class="mt-4">
 		<wv-row>
 			<wv-column span="6">
-				<wv-field-select label-text="Type" value="@Model.Type" options="@Model.TypeOptions" name="Type"></wv-field-select>
+				<wv-field-select label-text="Type" value="@Model.Type" options="@Model.TypeOptions.ToWvSelectOption()" name="Type"></wv-field-select>
 			</wv-column>
 			<wv-column span="6">
 				<wv-field-guid label-text="Id (Guid)" value="@Model.Id" name="Id" placeholder="leave empty to autogenerate"></wv-field-guid>
@@ -55,10 +56,10 @@
 		</wv-row>*@
 		<wv-row>
 			<wv-column span="6">
-				<wv-field-select label-text="Origin" value="@Model.Origin" options="@Model.OriginOptions" name="Origin"></wv-field-select>
+				<wv-field-select label-text="Origin" value="@Model.Origin" options="@Model.OriginOptions.ToWvSelectOption()" name="Origin"></wv-field-select>
 			</wv-column>
 			<wv-column span="6">
-				<wv-field-select label-text="Target" value="@Model.Target" options="@Model.TargetOptions" name="Target"></wv-field-select>
+				<wv-field-select label-text="Target" value="@Model.Target" options="@Model.TargetOptions.ToWvSelectOption()" name="Target"></wv-field-select>
 			</wv-column>
 		</wv-row>
 	</wv-section>

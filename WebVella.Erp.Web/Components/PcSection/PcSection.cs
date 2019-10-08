@@ -10,6 +10,7 @@ using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Web.Components
 {
@@ -53,10 +54,10 @@ namespace WebVella.Erp.Web.Components
             public bool IsCollapsed { get; set; } = false;
 
 			[JsonProperty(PropertyName = "label_mode")]
-			public LabelRenderMode LabelMode { get; set; } = LabelRenderMode.Undefined; //To be inherited
+			public WvLabelRenderMode LabelMode { get; set; } = WvLabelRenderMode.Undefined; //To be inherited
 
 			[JsonProperty(PropertyName = "field_mode")]
-			public FieldRenderMode FieldMode { get; set; } = FieldRenderMode.Undefined; //To be inherited
+			public WvFieldRenderMode FieldMode { get; set; } = WvFieldRenderMode.Undefined; //To be inherited
 		}
 
 		public async Task<IViewComponentResult> InvokeAsync(PageComponentContext context)
@@ -67,7 +68,7 @@ namespace WebVella.Erp.Web.Components
 				#region << Init >>
 				if (context.Node == null)
 				{
-					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query param 'nid', when requesting this component"));
+					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query parameter 'nid', when requesting this component"));
 				}
 
 				var pageFromModel = context.DataModel.GetProperty("Page");
@@ -82,7 +83,7 @@ namespace WebVella.Erp.Web.Components
 
 				if (currentPage == null)
 				{
-					return await Task.FromResult<IViewComponentResult>(Content("Error: The page Id is required to be set as query param 'pid', when requesting this component"));
+					return await Task.FromResult<IViewComponentResult>(Content("Error: The page Id is required to be set as query parameter 'pid', when requesting this component"));
 				}
 
 				var options = new PcSectionOptions();
@@ -92,28 +93,28 @@ namespace WebVella.Erp.Web.Components
 				}
 
 				//Check if it is defined in form group
-				if (options.LabelMode == LabelRenderMode.Undefined)
+				if (options.LabelMode == WvLabelRenderMode.Undefined)
 				{
-					if (context.Items.ContainsKey(typeof(LabelRenderMode)))
+					if (context.Items.ContainsKey(typeof(WvLabelRenderMode)))
 					{
-						options.LabelMode = (LabelRenderMode)context.Items[typeof(LabelRenderMode)];
+						options.LabelMode = (WvLabelRenderMode)context.Items[typeof(WvLabelRenderMode)];
 					}
 					else
 					{
-						options.LabelMode = LabelRenderMode.Stacked;
+						options.LabelMode = WvLabelRenderMode.Stacked;
 					}
 				}
 
 				//Check if it is defined in form group
-				if (options.FieldMode == FieldRenderMode.Undefined)
+				if (options.FieldMode == WvFieldRenderMode.Undefined)
 				{
-					if (context.Items.ContainsKey(typeof(FieldRenderMode)))
+					if (context.Items.ContainsKey(typeof(WvFieldRenderMode)))
 					{
-						options.FieldMode = (FieldRenderMode)context.Items[typeof(FieldRenderMode)];
+						options.FieldMode = (WvFieldRenderMode)context.Items[typeof(WvFieldRenderMode)];
 					}
 					else
 					{
-						options.FieldMode = FieldRenderMode.Form;
+						options.FieldMode = WvFieldRenderMode.Form;
 					}
 				}
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
@@ -235,8 +236,8 @@ namespace WebVella.Erp.Web.Components
 
                 }
 
-				context.Items[typeof(LabelRenderMode)] = options.LabelMode;
-				context.Items[typeof(FieldRenderMode)] = options.FieldMode;
+				context.Items[typeof(WvLabelRenderMode)] = options.LabelMode;
+				context.Items[typeof(WvFieldRenderMode)] = options.FieldMode;
 
 				switch (context.Mode)
 				{
@@ -245,8 +246,8 @@ namespace WebVella.Erp.Web.Components
 					case ComponentMode.Design:
 						return await Task.FromResult<IViewComponentResult>(View("Design"));
 					case ComponentMode.Options:
-						ViewBag.LabelRenderModeOptions = ModelExtensions.GetEnumAsSelectOptions<LabelRenderMode>();
-						ViewBag.FieldRenderModeOptions = ModelExtensions.GetEnumAsSelectOptions<FieldRenderMode>();
+						ViewBag.LabelRenderModeOptions = ModelExtensions.GetEnumAsSelectOptions<WvLabelRenderMode>();
+						ViewBag.FieldRenderModeOptions = ModelExtensions.GetEnumAsSelectOptions<WvFieldRenderMode>();
 						return await Task.FromResult<IViewComponentResult>(View("Options"));
 					case ComponentMode.Help:
 						return await Task.FromResult<IViewComponentResult>(View("Help"));

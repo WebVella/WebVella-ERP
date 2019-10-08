@@ -10,6 +10,7 @@ using WebVella.Erp.Plugins.Project.Services;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Plugins.Project.Components
 {
@@ -38,7 +39,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 				#region << Init >>
 				if (context.Node == null)
 				{
-					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query param 'nid', when requesting this component"));
+					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query parameter 'nid', when requesting this component"));
 				}
 
 				var pageFromModel = context.DataModel.GetProperty("Page");
@@ -141,8 +142,8 @@ namespace WebVella.Erp.Plugins.Project.Components
 						nonBilledPercantage = 100 - billedPercentage;
 					}
 					var theme = new Theme();
-					var chartDatasets = new List<ErpChartDataset>() {
-						new ErpChartDataset(){
+					var chartDatasets = new List<WvChartDataset>() {
+						new WvChartDataset(){
 							Data = new List<decimal>(){ billedPercentage, nonBilledPercantage },
 							BackgroundColor = new List<string>{ theme.GreenColor, theme.LightBlueColor},
 							BorderColor = new List<string>{ theme.GreenColor, theme.LightBlueColor}

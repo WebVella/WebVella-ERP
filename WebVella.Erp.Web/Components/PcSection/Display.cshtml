@@ -1,8 +1,9 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Web.Models;
-@using WebVella.Erp.Web.Utils;
 @{
 	var options = (PcSection.PcSectionOptions)ViewBag.Options;
 	var node = (PageBodyNode)ViewBag.Node;

@@ -8,6 +8,7 @@ using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Web.Components
 {
@@ -30,10 +31,10 @@ namespace WebVella.Erp.Web.Components
 			public bool ShowIcon { get; set; } = false;
 
 			[JsonProperty(PropertyName = "ajax_datasource")]
-			public SelectOptionsAjaxDatasource AjaxDatasource { get; set; } = null;
+			public WvSelectOptionsAjaxDatasource AjaxDatasource { get; set; } = null;
 
 			[JsonProperty(PropertyName = "select_match_type")]
-			public SelectMatchType SelectMatchingType { get; set; } = SelectMatchType.Contains;
+			public WvSelectMatchType SelectMatchingType { get; set; } = WvSelectMatchType.Contains;
 
 			public static PcFieldSelectOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
@@ -46,7 +47,7 @@ namespace WebVella.Erp.Web.Components
 					Name = input.Name,
 					Options = "",
 					AjaxDatasource = null,
-					SelectMatchingType = SelectMatchType.Contains
+					SelectMatchingType = WvSelectMatchType.Contains
 				};
 			}
 		}
@@ -110,16 +111,16 @@ namespace WebVella.Erp.Web.Components
 				ViewBag.LabelMode = options.LabelMode;
 				ViewBag.Mode = options.Mode;
 
-				if (options.LabelMode == LabelRenderMode.Undefined && baseOptions.LabelMode != LabelRenderMode.Undefined)
+				if (options.LabelMode == WvLabelRenderMode.Undefined && baseOptions.LabelMode != WvLabelRenderMode.Undefined)
 					ViewBag.LabelMode = baseOptions.LabelMode;
 
-				if (options.Mode == FieldRenderMode.Undefined && baseOptions.Mode != FieldRenderMode.Undefined)
+				if (options.Mode == WvFieldRenderMode.Undefined && baseOptions.Mode != WvFieldRenderMode.Undefined)
 					ViewBag.Mode = baseOptions.Mode;
 
 
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
 
-				var accessOverride = context.DataModel.GetPropertyValueByDataSource(options.AccessOverrideDs) as FieldAccess?;
+				var accessOverride = context.DataModel.GetPropertyValueByDataSource(options.AccessOverrideDs) as WvFieldAccess?;
 				if(accessOverride != null){
 					model.Access = accessOverride.Value;
 				}
@@ -187,7 +188,7 @@ namespace WebVella.Erp.Web.Components
 						if (!stringProcessed && ((string)optionsResult).StartsWith("{")) {
 							try
 							{
-								options.AjaxDatasource = JsonConvert.DeserializeObject<SelectOptionsAjaxDatasource>(optionsResult,new JsonSerializerSettings() { MissingMemberHandling = MissingMemberHandling.Error});
+								options.AjaxDatasource = JsonConvert.DeserializeObject<WvSelectOptionsAjaxDatasource>(optionsResult,new JsonSerializerSettings() { MissingMemberHandling = MissingMemberHandling.Error});
 								stringProcessed = true;
 								ViewBag.Options = options;
 							}
@@ -229,7 +230,7 @@ namespace WebVella.Erp.Web.Components
 
 				}
 
-				ViewBag.SelectMatchOptions = ModelExtensions.GetEnumAsSelectOptions<SelectMatchType>();
+				ViewBag.SelectMatchOptions = ModelExtensions.GetEnumAsSelectOptions<WvSelectMatchType>();
 
 				switch (context.Mode)
 				{

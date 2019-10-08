@@ -2,6 +2,7 @@
 
 
 @model WebVella.Erp.Plugins.SDK.Pages.ErpEntity.RelationDetailsModel
+@using WebVella.Erp.Web.Utils;
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Entity relation details";
@@ -26,13 +27,13 @@
 
 	</wv-page-header>
 
-<wv-validation validation="Model.Validation" show-errors="false"></wv-validation>
+<wv-validation errors="@Model.Validation.ToErrorList()" message="@Model.Validation.Message"></wv-validation>
 
 <wv-form label-mode="Stacked" mode="Display">
 	<wv-section class="mt-4">
 		<wv-row>
 			<wv-column span="6">
-				<wv-field-select label-text="Type" value="@Model.Relation.RelationType" options="@Model.TypeOptions" name="Type" ></wv-field-select>
+				<wv-field-select label-text="Type" value="@Model.Relation.RelationType" options="@Model.TypeOptions.ToWvSelectOption()" name="Type" ></wv-field-select>
 			</wv-column>
 			<wv-column span="6">
 				<wv-field-guid label-text="Id" value="@Model.Relation.Id"></wv-field-guid>

@@ -1,15 +1,18 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Web.Models;
+@using WebVella.TagHelpers.Models;
 @{
 	var options = (PcChart.PcChartOptions)ViewBag.Options;
 	var node = (PageBodyNode)ViewBag.Node;
-	var datasets = (List<ErpChartDataset>)ViewBag.DataSets;
+	var datasets = (List<WvChartDataset>)ViewBag.DataSets;
 	var labels = (List<string>)ViewBag.Labels;
 	var showLegend = (bool)ViewBag.ShowLegend;
 	var height = (string)ViewBag.Height;
 	var width = (string)ViewBag.Width;
-	var type = (ErpChartType)ViewBag.Type;
+	var type = (WvChartType)ViewBag.Type;
 }
 <wv-chart type="@type" datasets="@datasets" height="@height" width="@width" show-legend="@showLegend" labels="@labels" is-visible="(bool)ViewBag.IsVisible"></wv-chart>

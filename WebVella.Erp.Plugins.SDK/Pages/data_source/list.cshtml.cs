@@ -9,6 +9,7 @@ using WebVella.Erp.Api.Models;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Utils;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 {
@@ -16,7 +17,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 	{
 		public ListModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
 
-		public List<GridColumn> Columns { get; set; } = new List<GridColumn>();
+		public List<WvGridColumnMeta> Columns { get; set; } = new List<WvGridColumnMeta>();
 
 		public List<EntityRecord> Records { get; set; } = new List<EntityRecord>();
 
@@ -154,40 +155,40 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 			#endregion
 
 			#region << Create Columns >>
-			Columns = new List<GridColumn>() {
-				new GridColumn(){
+			Columns = new List<WvGridColumnMeta>() {
+				new WvGridColumnMeta(){
 					Label = "",
 					Name = "action",
 					Width="1%"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "Icon",
 					Name = "icon",
 					Width="1%"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "Name",
 					Name = "name",
 					Width="220px",
 					Sortable = true
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "Type",
 					Name = "type",
 					Width="120px",
 					Sortable = true
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "target",
 					Name = "Target",
 					Sortable = true
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "Returned Model",
 					Name = "model",
 					Width="220px"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "Params",
 					Name = "param_count",
 					Width="40px"

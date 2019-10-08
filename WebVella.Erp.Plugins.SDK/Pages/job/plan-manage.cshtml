@@ -1,6 +1,7 @@
 ﻿@page "/sdk/server/job/m/{RecordId}/plan"
 
 @model WebVella.Erp.Plugins.SDK.Pages.Job.PlanManageModel
+@using WebVella.Erp.Web.Utils;
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Manage Plan";
@@ -14,9 +15,9 @@
 
 </wv-page-header>
 
-<wv-validation validation="Model.Validation" show-errors="false"></wv-validation>
+<wv-validation errors="@Model.Validation.ToErrorList()" message="@Model.Validation.Message"></wv-validation>
 
-<wv-form name="ManageRecord" validation="Model.Validation" label-mode="Stacked" mode="Form" autocomplete="false">
+<wv-form name="ManageRecord" validation-errors="Model.Validation.ToErrorList()" label-mode="Stacked" mode="Form" autocomplete="false">
 	<wv-section class="mt-4">
 		<wv-row>
 			<wv-column span="6">
@@ -44,7 +45,7 @@
 		</wv-row>
 		<wv-row>
 			<wv-column span="6">
-				<wv-field-select label-text="Type" value="@Model.Type" name="Type" options="Model.SchedulePlanTypeOptions"></wv-field-select>
+				<wv-field-select label-text="Type" value="@Model.Type" name="Type" options="Model.SchedulePlanTypeOptions.ToWvSelectOption()"></wv-field-select>
 			</wv-column>
 			<wv-column span="6">
 				<wv-field-datetime access="ReadOnly" label-text="Next Trigger" value="@Model.NextTriggerTime" name="NextTriggerTime"></wv-field-datetime>
@@ -59,7 +60,7 @@
 		</wv-row>
 		<wv-row>
 			<wv-column span="12">
-				<wv-field-checkbox-list options="@Model.WeekOptions" label-text="Schedule days" value="@Model.ScheduledDays" name="ScheduledDays"></wv-field-checkbox-list>
+				<wv-field-checkbox-list options="@Model.WeekOptions.ToWvSelectOption()" label-text="Schedule days" value="@Model.ScheduledDays" name="ScheduledDays"></wv-field-checkbox-list>
 			</wv-column>
 		</wv-row>
 		<wv-row>

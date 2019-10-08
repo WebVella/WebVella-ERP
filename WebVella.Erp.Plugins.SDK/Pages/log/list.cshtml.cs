@@ -5,6 +5,7 @@ using WebVella.Erp.Api.Models;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Utils;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Plugins.SDK.Pages.Log
 {
@@ -12,7 +13,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Log
 	{
 		public ListModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
 
-		public List<GridColumn> Columns { get; set; } = new List<GridColumn>();
+		public List<WvGridColumnMeta> Columns { get; set; } = new List<WvGridColumnMeta>();
 
 		public EntityRecordList Records { get; set; } = new EntityRecordList();
 
@@ -44,30 +45,30 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Log
 
 			#region << Create Columns >>
 
-			Columns = new List<GridColumn>() {
-				new GridColumn(){
+			Columns = new List<WvGridColumnMeta>() {
+				new WvGridColumnMeta(){
 					Name = "action",
 					Width="1%"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "date",
 					Name = "Date",
 					Width="150px"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "type",
 					Name = "Type",
 					Width="40px"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "source",
 					Name = "Source"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "message",
 					Name = "Message"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "status",
 					Name = "Status",
 					Width= "40px"

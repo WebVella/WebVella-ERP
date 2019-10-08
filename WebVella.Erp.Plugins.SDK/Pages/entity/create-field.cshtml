@@ -1,6 +1,7 @@
 ﻿@page "/sdk/objects/entity/r/{RecordId}/rl/fields/c/{PageName?}"
 
 @model WebVella.Erp.Plugins.SDK.Pages.ErpEntity.CreateFieldModel
+@using WebVella.Erp.Web.Utils;
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Create Field";
@@ -30,9 +31,9 @@
 	</wv-column>
 </wv-row>
 
-<wv-validation validation="Model.Validation" show-errors="true"></wv-validation>
+<wv-validation errors="@Model.Validation.ToErrorList()" message="@Model.Validation.Message"></wv-validation>
 
-<wv-form label-mode="Stacked" mode="Form" name="CreateRecord" validation="Model.Validation" id="CreateRecord">
+<wv-form label-mode="Stacked" mode="Form" name="CreateRecord" validation-errors="Model.Validation.ToErrorList()" id="CreateRecord">
 	<wv-section title="General">
 		<wv-row>
 			<wv-column span="6">
@@ -119,7 +120,7 @@
 				</wv-row>
 				<wv-row>
 					<wv-column span="6">
-						<wv-field-select options="Model.CurrencyOptions" name="CurrencyCode" value="Model.CurrencyCode" label-text="Currency" required="true"></wv-field-select>
+						<wv-field-select options="Model.CurrencyOptions.ToWvSelectOption()" name="CurrencyCode" value="Model.CurrencyCode" label-text="Currency" required="true"></wv-field-select>
 					</wv-column>
 				</wv-row>
 				break;
@@ -327,7 +328,7 @@
 		</wv-row>
 		<wv-row>
 			<wv-column span="12">
-				<wv-field-checkbox-grid name="FieldPermissions" label-text="Field Permissions" columns="Model.PermissionOptions" rows="Model.RoleOptions" value="@Model.FieldPermissions" text-true="granted" text-false="not granted"></wv-field-checkbox-grid>
+				<wv-field-checkbox-grid name="FieldPermissions" label-text="Field Permissions" columns="Model.PermissionOptions.ToWvSelectOption()" rows="Model.RoleOptions.ToWvSelectOption()" value="@Model.FieldPermissions" text-true="granted" text-false="not granted"></wv-field-checkbox-grid>
 			</wv-column>
 		</wv-row>
 	</wv-section>

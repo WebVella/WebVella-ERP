@@ -1,5 +1,7 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Api.Models;
 @using WebVella.Erp.Web;
@@ -60,7 +62,7 @@
 		<wv-field-checkbox name="hover" value="@options.Hover" label-text="Hover" text-true="is hover"></wv-field-checkbox>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-select name="responsive_breakpoint" value="@options.ResponsiveBreakpoint" label-text="ResponsiveBreakpoint" options="@cssBreakpoints" required="true"></wv-field-select>
+		<wv-field-select name="responsive_breakpoint" value="@options.ResponsiveBreakpoint" label-text="ResponsiveBreakpoint" options="@cssBreakpoints.ToWvSelectOption()" required="true"></wv-field-select>
 	</wv-column>
 </wv-row>
 <wv-row>
@@ -122,10 +124,10 @@
 				var horizontalAlign = (options.GetType().GetProperty($"Container{i}HorizontalAlign").GetValue(options, null) ?? false);
 			}
 			<wv-column span="4">
-				<wv-field-select name="@($"container{i}_vertical_align")" value="@verticalAlign" label-text="@($"Column {i} Vertical Align")" options="@verticalAlignmentOptions" required="true"></wv-field-select>
+				<wv-field-select name="@($"container{i}_vertical_align")" value="@verticalAlign" label-text="@($"Column {i} Vertical Align")" options="@verticalAlignmentOptions.ToWvSelectOption()" required="true"></wv-field-select>
 			</wv-column>
 			<wv-column span="4">
-				<wv-field-select name="@($"container{i}_horizontal_align")" value="@horizontalAlign" label-text="@($"Column {i} Horizontal Align")" options="@horizontalAlignmentOptions" required="true"></wv-field-select>
+				<wv-field-select name="@($"container{i}_horizontal_align")" value="@horizontalAlign" label-text="@($"Column {i} Horizontal Align")" options="@horizontalAlignmentOptions.ToWvSelectOption()" required="true"></wv-field-select>
 			</wv-column>
 		</wv-row>
     </wv-section>

@@ -9,6 +9,7 @@ using WebVella.Erp.Api;
 using WebVella.Erp.Utilities;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
+using WebVella.TagHelpers.Models;
 using Yahoo.Yui.Compressor;
 
 namespace WebVella.Erp.Web.TagHelpers

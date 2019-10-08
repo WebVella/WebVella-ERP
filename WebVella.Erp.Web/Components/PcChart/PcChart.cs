@@ -8,6 +8,7 @@ using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Web.Components
 {
@@ -36,7 +37,7 @@ namespace WebVella.Erp.Web.Components
 			public bool ShowLegend { get; set; } = false;
 
 			[JsonProperty(PropertyName = "type")]
-			public ErpChartType Type { get; set; } = ErpChartType.Line;
+			public WvChartType Type { get; set; } = WvChartType.Line;
 
 			[JsonProperty(PropertyName = "height")]
 			public string Height { get; set; } = null;
@@ -53,7 +54,7 @@ namespace WebVella.Erp.Web.Components
 				#region << Init >>
 				if (context.Node == null)
 				{
-					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query param 'nid', when requesting this component"));
+					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query parameter 'nid', when requesting this component"));
 				}
 
 				var pageFromModel = context.DataModel.GetProperty("Page");
@@ -112,7 +113,7 @@ namespace WebVella.Erp.Web.Components
                     theme.BlueLightColor, theme.LightBlueLightColor,theme.CyanLightColor,theme.GreenLightColor,theme.IndigoLightColor,theme.LightGreenLightColor,theme.LimeLightColor,theme.YellowLightColor,
                     theme.AmberLightColor,theme.DeepOrangeLightColor};
 
-                    List<ErpChartDataset> dataSets = context.DataModel.GetPropertyValueByDataSource(options.Datasets) as List<ErpChartDataset> ?? new List<ErpChartDataset>();
+                    List<WvChartDataset> dataSets = context.DataModel.GetPropertyValueByDataSource(options.Datasets) as List<WvChartDataset> ?? new List<WvChartDataset>();
 
                     if (dataSets == null || dataSets.Count == 0)
                     {
@@ -139,9 +140,9 @@ namespace WebVella.Erp.Web.Components
 
                         if (decimalList != null && decimalList.Count > 0)
                         {
-                            var dataSet = new ErpChartDataset();
+                            var dataSet = new WvChartDataset();
                             dataSet.Data = decimalList;
-                            if (options.Type == ErpChartType.Area || options.Type == ErpChartType.Line)
+                            if (options.Type == WvChartType.Area || options.Type == WvChartType.Line)
                             {
                                 dataSet.BorderColor = colorOptionsList[0];
                                 dataSet.BackgroundColor = bkgColorOptionsList[0];
@@ -154,7 +155,7 @@ namespace WebVella.Erp.Web.Components
                                 foreach (var value in decimalList)
                                 {
                                     ((List<string>)dataSet.BorderColor).Add(colorOptionsList[index]);
-                                    if (options.Type == ErpChartType.Bar || options.Type == ErpChartType.HorizontalBar)
+                                    if (options.Type == WvChartType.Bar || options.Type == WvChartType.HorizontalBar)
                                         ((List<string>)dataSet.BackgroundColor).Add(bkgColorOptionsList[index]);
                                     else
                                         ((List<string>)dataSet.BackgroundColor).Add(colorOptionsList[index]);
@@ -176,10 +177,10 @@ namespace WebVella.Erp.Web.Components
                     ViewBag.ShowLegend = options.ShowLegend;
                     ViewBag.Height = options.Height;
                     ViewBag.Width = options.Width;
-                    ViewBag.Type = (ErpChartType)options.Type;
+                    ViewBag.Type = (WvChartType)options.Type;
                 }
 
-                var chartTypeOptions = ModelExtensions.GetEnumAsSelectOptions<ErpChartType>();
+                var chartTypeOptions = ModelExtensions.GetEnumAsSelectOptions<WvChartType>();
                 chartTypeOptions.First(x => x.Value == "4").Label = "area";
                 ViewBag.ChartTypeOptions = chartTypeOptions;
 

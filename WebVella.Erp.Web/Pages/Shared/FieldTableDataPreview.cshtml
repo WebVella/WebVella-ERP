@@ -1,17 +1,18 @@
 ﻿@using WebVella.Erp.Web.Models;
+@using WebVella.TagHelpers.Models;
 @{
     var record = (EntityRecord)Model;
     var rows = (List<dynamic>)record["data"];
     var hasHeader = (bool)record["hasHeader"];
     var lang = (string)record["lang"];
-    var columns = new List<GridColumn>();
+    var columns = new List<WvGridColumnMeta>();
     if (rows.Count > 0)
     {
         var sample = (IDictionary<string, object>)rows[0];
         var index = 1;
         foreach (var prop in sample.Keys)
         {
-            columns.Add(new GridColumn()
+            columns.Add(new WvGridColumnMeta()
             {
                 Label = hasHeader ? prop : "Field" + index,
                 Name = "Field" + index

@@ -43,7 +43,7 @@ namespace WebVella.Erp.Web.Components
 			public FilterType QueryType { get; set; } = FilterType.CONTAINS;  //will be overrided with Url Query name: q_fieldName_t
 
 			[JsonProperty(PropertyName = "query_options")]
-			public List<FilterType> QueryOptions { get; set; } = new List<FilterType>(); //if not set will be inited with default set
+			public List<FilterType> QueryOptions { get; set; } = new List<FilterType>(); //if not set will be initialized with default set
 
 			[JsonProperty(PropertyName = "prefix")]
 			public string Prefix { get; set; } = "";
@@ -57,7 +57,7 @@ namespace WebVella.Erp.Web.Components
 				#region << Init >>
 				if (context.Node == null)
 				{
-					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query param 'nid', when requesting this component"));
+					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query parameter 'nid', when requesting this component"));
 				}
 
 				var pageFromModel = context.DataModel.GetProperty("Page");

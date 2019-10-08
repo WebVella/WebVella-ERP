@@ -13,6 +13,7 @@ using WebVella.Erp.Api.Models;
 using System.Linq;
 using System.Globalization;
 using HtmlAgilityPack;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Web.TagHelpers
 {

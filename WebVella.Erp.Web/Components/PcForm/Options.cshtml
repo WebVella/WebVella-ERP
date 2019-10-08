@@ -1,5 +1,7 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Web;
 @using WebVella.Erp.Api.Models;
@@ -29,13 +31,13 @@
 </wv-row>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-select name="method" value="@options.Method" label-text="Method" options="@methodOptions" required="true"></wv-field-select>
+		<wv-field-select name="method" value="@options.Method" label-text="Method" options="@methodOptions.ToWvSelectOption()" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-select name="label_mode" value="@options.LabelMode" label-text="Label mode" options="@labelRenderModeOptions" required="true"></wv-field-select>
+		<wv-field-select name="label_mode" value="@options.LabelMode" label-text="Label mode" options="@labelRenderModeOptions.ToWvSelectOption()" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-select name="mode" value="@options.Mode" label-text="Mode" options="@fieldRenderModeOptions" required="true"></wv-field-select>
+		<wv-field-select name="mode" value="@options.Mode" label-text="Mode" options="@fieldRenderModeOptions.ToWvSelectOption()" required="true"></wv-field-select>
 	</wv-column>
 </wv-row>
 <wv-row>

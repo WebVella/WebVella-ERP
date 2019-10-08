@@ -1,5 +1,7 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Api.Models;
 @using WebVella.Erp.Web;
@@ -43,9 +45,9 @@
 </wv-row>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-select name="label_mode" label-text="Label mode" value="@options.LabelMode" options="labelRenderModeOptions" description="can be inherited by any inserted fields" required="true"></wv-field-select>
+		<wv-field-select name="label_mode" label-text="Label mode" value="@options.LabelMode" options="labelRenderModeOptions.ToWvSelectOption()" description="can be inherited by any inserted fields" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-select name="field_mode" label-text="Field mode" value="@options.FieldMode" options="fieldRenderMode" description="can be inherited by any inserted fields" required="true"></wv-field-select>
+		<wv-field-select name="field_mode" label-text="Field mode" value="@options.FieldMode" options="fieldRenderMode.ToWvSelectOption()" description="can be inherited by any inserted fields" required="true"></wv-field-select>
 	</wv-column>
 </wv-row>

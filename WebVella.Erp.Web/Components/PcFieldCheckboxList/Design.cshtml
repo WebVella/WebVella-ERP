@@ -1,20 +1,25 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Web.Models;
+@using WebVella.TagHelpers.Models;
 @{
 	var options = (PcFieldCheckboxList.PcFieldCheckboxListOptions)ViewBag.Options;
 	var node = (PageBodyNode)ViewBag.Node;
 	var fieldModel = (PcFieldCheckboxList.PcFieldCheckboxListModel)ViewBag.Model;
-	var labelMode = (LabelRenderMode)ViewBag.LabelMode;
-	var mode = (FieldRenderMode)ViewBag.Mode;
+	var labelMode = (WvLabelRenderMode)ViewBag.LabelMode;
+	var mode = (WvFieldRenderMode)ViewBag.Mode;
+	if(String.IsNullOrWhiteSpace(fieldModel.ApiUrl))
+		fieldModel.ApiUrl = $"/api/v3/en_US/record/{fieldModel.EntityName}/{fieldModel.RecordId}";
 }
 <div class="p-1">
 	<wv-field-checkbox-list label-mode="@labelMode" label-text="@options.LabelText" label-warning-text="@fieldModel.LabelWarningText"
 				   label-error-text="@fieldModel.LabelErrorText" label-help-text="@fieldModel.LabelHelpText" field-id="@fieldModel.FieldId"
 				   name="@options.Name" class="@options.Class" value="@fieldModel.Value" mode="@mode" access="@fieldModel.Access"
-				   init-errors="@fieldModel.InitErrors" validation-errors="@fieldModel.ValidationErrors" record-id="@fieldModel.RecordId"
-				   entity-name="@fieldModel.EntityName" api-url="@fieldModel.ApiUrl" access-denied-message="@fieldModel.AccessDeniedMessage"
+				   init-errors="@fieldModel.InitErrors" validation-errors="@fieldModel.ValidationErrors.ToKeyValuePair()" 
+				   api-url="@fieldModel.ApiUrl" access-denied-message="@fieldModel.AccessDeniedMessage"
 				   empty-value-message="@fieldModel.EmptyValueMessage" required="@fieldModel.Required" placeholder="@fieldModel.Placeholder"
-				   description="@fieldModel.Description" locale="@fieldModel.Locale" options="@fieldModel.Options"></wv-field-checkbox-list>
+				   description="@fieldModel.Description" locale="@fieldModel.Locale" options="@fieldModel.Options.ToWvSelectOption()"></wv-field-checkbox-list>
 </div>

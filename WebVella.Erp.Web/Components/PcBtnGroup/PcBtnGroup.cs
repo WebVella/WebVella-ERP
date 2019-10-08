@@ -8,6 +8,7 @@ using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Web.Components
 {
@@ -27,7 +28,7 @@ namespace WebVella.Erp.Web.Components
 			public string IsVisible { get; set; } = "";
 
 			[JsonProperty(PropertyName = "size")]
-			public CssSize Size { get; set; } = CssSize.Inherit;
+			public WvCssSize Size { get; set; } = WvCssSize.Inherit;
 
 			[JsonProperty(PropertyName = "is_vertical")]
 			public bool IsVertical { get; set; } = false;
@@ -48,7 +49,7 @@ namespace WebVella.Erp.Web.Components
 				#region << Init >>
 				if (context.Node == null)
 				{
-					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query param 'nid', when requesting this component"));
+					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query parameter 'nid', when requesting this component"));
 				}
 
 				var pageFromModel = context.DataModel.GetProperty("Page");
@@ -63,7 +64,7 @@ namespace WebVella.Erp.Web.Components
 
 				if (currentPage == null)
 				{
-					return await Task.FromResult<IViewComponentResult>(Content("Error: The page Id is required to be set as query param 'pid', when requesting this component"));
+					return await Task.FromResult<IViewComponentResult>(Content("Error: The page Id is required to be set as query parameter 'pid', when requesting this component"));
 				}
 
 				var instanceOptions = new PcBtnGroupOptions();
@@ -102,7 +103,7 @@ namespace WebVella.Erp.Web.Components
                     ViewBag.IsVisible = isVisible;
                 }
 
-                ViewBag.CssSize = ModelExtensions.GetEnumAsSelectOptions<CssSize>();
+                ViewBag.CssSize = ModelExtensions.GetEnumAsSelectOptions<WvCssSize>();
 
                 switch (context.Mode)
 				{

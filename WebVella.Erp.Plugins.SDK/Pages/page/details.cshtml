@@ -1,6 +1,8 @@
 ﻿@page "/sdk/objects/page/r/{RecordId}/{PageName?}"
 @using System.Web;
+@using WebVella.TagHelpers.Models;
 @model WebVella.Erp.Plugins.SDK.Pages.Page.DetailsModel
+@using WebVella.Erp.Web.Utils;
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Page details";
@@ -71,7 +73,7 @@
 			<wv-column span="6">
 				@if (Model.Access.Count > 0)
 				{
-					<wv-field-multiselect label-text="Access (inherited from application)" value="@Model.Access" name="Access" options="Model.RoleOptions"></wv-field-multiselect>
+					<wv-field-multiselect label-text="Access (inherited from application)" value="@Model.Access" name="Access" options="Model.RoleOptions.ToWvSelectOption()"></wv-field-multiselect>
 				}
 				else
 				{
@@ -86,7 +88,7 @@
 		</wv-row>
 	</wv-section>
 	<wv-section class="mt-4" title="Sitemap" is-card="true">
-		@await Component.InvokeAsync("WvSdkPageSitemap", new { pageId = Model.RecordId, mode = FieldRenderMode.Display})
+		@await Component.InvokeAsync("WvSdkPageSitemap", new { pageId = Model.RecordId, mode = WvFieldRenderMode.Display})
 	</wv-section>
 </wv-form>
 

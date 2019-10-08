@@ -1,8 +1,11 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Web.Models;
 @using WebVella.Erp.Api.Models;
+@using WebVella.TagHelpers.Models;
 @{
 	var options = (PcGrid.PcGridOptions)ViewBag.Options;
 	var node = (PageBodyNode)ViewBag.Node;
@@ -10,7 +13,7 @@
 	var totalCount = (int)ViewBag.TotalCount;
 	var pageSize = (int)ViewBag.PageSize;
 	var records = (List<EntityRecord>)ViewBag.Records;
-	var columns = (List<GridColumn>)ViewBag.Columns;
+	var columns = (List<WvGridColumnMeta>)ViewBag.Columns;
 }
 <div class="p-1">
 	<wv-grid striped="@options.Striped" small="@options.Small" bordered="@options.Bordered" borderless="@options.Borderless"

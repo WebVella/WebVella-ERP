@@ -10,6 +10,7 @@ using WebVella.Erp.Plugins.Project.Services;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Plugins.Project.Components
 {
@@ -91,16 +92,16 @@ namespace WebVella.Erp.Plugins.Project.Components
 					var users = new UserService().GetAll();
 
 					#region << Generate Grid Columns >>
-					var gridColumns = new List<GridColumn>() { new GridColumn() };
+					var gridColumns = new List<WvGridColumnMeta>() { new WvGridColumnMeta() };
 					foreach (var date in last7Days)
 					{
-						gridColumns.Add(new GridColumn() {
+						gridColumns.Add(new WvGridColumnMeta() {
 							Label = date.ToString("dd MMM"),
 							Width = "10%",
 							Class= "text-right"
 						});
 					}
-					gridColumns.Add(new GridColumn()
+					gridColumns.Add(new WvGridColumnMeta()
 					{
 						Label = "Total",
 						Width = "10%",

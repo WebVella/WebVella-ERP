@@ -8,6 +8,7 @@ using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Web.Components
 {
@@ -30,10 +31,10 @@ namespace WebVella.Erp.Web.Components
 			public string Title { get; set; } = "";
 
 			[JsonProperty(PropertyName = "position")]
-			public ModalPosition Position { get; set; } = ModalPosition.Top;
+			public WvModalPosition Position { get; set; } = WvModalPosition.Top;
 
 			[JsonProperty(PropertyName = "size")]
-			public ModalSize Size { get; set; } = ModalSize.Normal;
+			public WvModalSize Size { get; set; } = WvModalSize.Normal;
 
 			[JsonProperty(PropertyName = "backdrop")]
 			public string Backdrop { get; set; } = "true";
@@ -48,7 +49,7 @@ namespace WebVella.Erp.Web.Components
 				#region << Init >>
 				if (context.Node == null)
 				{
-					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query param 'nid', when requesting this component"));
+					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query parameter 'nid', when requesting this component"));
 				}
 
 				var pageFromModel = context.DataModel.GetProperty("Page");
@@ -63,7 +64,7 @@ namespace WebVella.Erp.Web.Components
 
 				if (currentPage == null)
 				{
-					return await Task.FromResult<IViewComponentResult>(Content("Error: The page Id is required to be set as query param 'pid', when requesting this component"));
+					return await Task.FromResult<IViewComponentResult>(Content("Error: The page Id is required to be set as query parameter 'pid', when requesting this component"));
 				}
 
 				var instanceOptions = new PcModalOptions();
@@ -109,8 +110,8 @@ namespace WebVella.Erp.Web.Components
 					case ComponentMode.Design:
 						return await Task.FromResult<IViewComponentResult>(View("Design"));
 					case ComponentMode.Options:
-						ViewBag.PositionOptions = ModelExtensions.GetEnumAsSelectOptions<ModalPosition>();
-						ViewBag.SizeOptions = ModelExtensions.GetEnumAsSelectOptions<ModalSize>();
+						ViewBag.PositionOptions = ModelExtensions.GetEnumAsSelectOptions<WvModalPosition>();
+						ViewBag.SizeOptions = ModelExtensions.GetEnumAsSelectOptions<WvModalSize>();
 						return await Task.FromResult<IViewComponentResult>(View("Options"));
 					case ComponentMode.Help:
 						return await Task.FromResult<IViewComponentResult>(View("Help"));

@@ -11,6 +11,7 @@ using WebVella.Erp.Web;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 {
@@ -133,7 +134,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			return Page();
 		}
 
-		public FieldAccess GetFieldAccess(Field entityField)
+		public WvFieldAccess GetFieldAccess(Field entityField)
 		{
 			var canRead = false;
 			var canUpdate = false;
@@ -157,15 +158,15 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 				}
 			}
 			else
-				return FieldAccess.Full;
+				return WvFieldAccess.Full;
 
 
 			if (canUpdate)
-				return FieldAccess.Full;
+				return WvFieldAccess.Full;
 			else if (canRead)
-				return FieldAccess.ReadOnly;
+				return WvFieldAccess.ReadOnly;
 			else
-				return FieldAccess.Forbidden;
+				return WvFieldAccess.Forbidden;
 		}
 
 	}

@@ -1,19 +1,24 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Web.Models;
+@using WebVella.TagHelpers.Models;
 @{
 	var options = (PcFieldCode.PcFieldCodeOptions)ViewBag.Options;
 	var node = (PageBodyNode)ViewBag.Node;
 	var fieldModel = (PcFieldCode.PcFieldBaseModel)ViewBag.Model;
-	var labelMode = (LabelRenderMode)ViewBag.LabelMode;
-	var mode = (FieldRenderMode)ViewBag.Mode;
+	var labelMode = (WvLabelRenderMode)ViewBag.LabelMode;
+	var mode = (WvFieldRenderMode)ViewBag.Mode;
+	if(String.IsNullOrWhiteSpace(fieldModel.ApiUrl))
+		fieldModel.ApiUrl = $"/api/v3/en_US/record/{fieldModel.EntityName}/{fieldModel.RecordId}";
 }
 <wv-field-code label-mode="@labelMode" label-text="@options.LabelText" label-warning-text="@fieldModel.LabelWarningText"
 				label-error-text="@fieldModel.LabelErrorText" label-help-text="@fieldModel.LabelHelpText" field-id="@fieldModel.FieldId"
 				name="@options.Name" class="@options.Class" value="@fieldModel.Value" mode="@mode" access="@fieldModel.Access"
-				init-errors="@fieldModel.InitErrors" validation-errors="@fieldModel.ValidationErrors" record-id="@fieldModel.RecordId"
-				entity-name="@fieldModel.EntityName" api-url="@fieldModel.ApiUrl" access-denied-message="@fieldModel.AccessDeniedMessage"
+				init-errors="@fieldModel.InitErrors" validation-errors="@fieldModel.ValidationErrors.ToKeyValuePair()" 
+				api-url="@fieldModel.ApiUrl" access-denied-message="@fieldModel.AccessDeniedMessage"
 				empty-value-message="@fieldModel.EmptyValueMessage" required="@fieldModel.Required" placeholder="@fieldModel.Placeholder"
 				description="@fieldModel.Description" locale="@fieldModel.Locale" height="@options.Height"
 				language="@options.Language" theme="@options.Theme" is-visible="(bool)ViewBag.IsVisible"></wv-field-code>
