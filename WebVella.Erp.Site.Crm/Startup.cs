@@ -65,7 +65,7 @@ namespace WebVella.Erp.Site.Crm
 					.AddCookie(options =>
 					{
 						options.Cookie.HttpOnly = true;
-						options.Cookie.Name = "erp_auth";
+						options.Cookie.Name = "erp_auth_crm";
 						options.LoginPath = new PathString("/login");
 						options.LogoutPath = new PathString("/logout");
 						options.AccessDeniedPath = new PathString("/error?access_denied");
@@ -82,13 +82,6 @@ namespace WebVella.Erp.Site.Crm
 			{
 				DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(CultureInfo.GetCultureInfo("en-US"))
 			});
-
-			app
-			.UseErpPlugin<NextPlugin>()
-			.UseErpPlugin<SdkPlugin>()
-			.UseErpPlugin<CrmPlugin>()
-			.UseErp()
-			.UseErpMiddleware();
 
 			//env.EnvironmentName = EnvironmentName.Production;
 			// Add the following to the request pipeline only in development environment.
@@ -123,6 +116,13 @@ namespace WebVella.Erp.Site.Crm
 			app.UseRouting();
 			app.UseAuthentication();
 			app.UseAuthorization();
+
+			app
+			.UseErpPlugin<NextPlugin>()
+			.UseErpPlugin<SdkPlugin>()
+			.UseErpPlugin<CrmPlugin>()
+			.UseErp()
+			.UseErpMiddleware();
 
 			app.UseEndpoints(endpoints =>
 			{

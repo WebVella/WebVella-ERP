@@ -39,7 +39,7 @@ namespace WebVella.Erp.Site.Sdk
 
 			services.AddDetectionCore().AddDevice();
 
-			
+
 			services.AddMvc()
 
 				.AddRazorPagesOptions(options =>
@@ -65,7 +65,7 @@ namespace WebVella.Erp.Site.Sdk
 					.AddCookie(options =>
 					{
 						options.Cookie.HttpOnly = true;
-						options.Cookie.Name = "erp_auth";
+						options.Cookie.Name = "erp_auth_sdk";
 						options.LoginPath = new PathString("/login");
 						options.LogoutPath = new PathString("/logout");
 						options.AccessDeniedPath = new PathString("/error?access_denied");
@@ -82,12 +82,6 @@ namespace WebVella.Erp.Site.Sdk
 			{
 				DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(CultureInfo.GetCultureInfo("en-US"))
 			});
-
-			app
-			.UseErpPlugin<NextPlugin>()
-			.UseErpPlugin<SdkPlugin>()
-			.UseErp()
-			.UseErpMiddleware();
 
 			//env.EnvironmentName = EnvironmentName.Production;
 			// Add the following to the request pipeline only in development environment.
@@ -122,6 +116,12 @@ namespace WebVella.Erp.Site.Sdk
 			app.UseRouting();
 			app.UseAuthentication();
 			app.UseAuthorization();
+
+			app
+			.UseErpPlugin<NextPlugin>()
+			.UseErpPlugin<SdkPlugin>()
+			.UseErp()
+			.UseErpMiddleware();
 
 			app.UseEndpoints(endpoints =>
 			{
