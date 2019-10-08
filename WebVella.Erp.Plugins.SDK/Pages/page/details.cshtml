@@ -12,30 +12,16 @@
 	}
 }
 
-<script>
-	function DeletePage() {
-		if (confirm("Are you sure you want to delete the page?") == true) {
-			ErpEvent.DISPATCH("WebVella.Erp.Web.Components.PcForm", { htmlId: "DeletePageForm", action: "submit", payload: null });
-		}
-	}
-
-	function ClonePage() {
-		if (confirm("Are you sure you want to clone this page?") == true) {
-			ErpEvent.DISPATCH("WebVella.Erp.Web.Components.PcForm", { htmlId: "ClonePageForm", action: "submit", payload: null });
-		}
-	}
-</script>
-
 <wv-page-header color="#dc3545" area-label="Pages" title="@Model.ErpPage.Label" subtitle="Details"
 	icon-class="@pageIconClass" return-url="@Model.ReturnUrl">
 
 <wv-page-header-actions>
-	<button type='button' onclick='DeletePage()' class='btn btn-white btn-sm'><i class='fa fa-trash-alt go-red'></i> Delete Page</button>
+	<wv-button type='Submit' form="DeletePageForm" onclick='return confirm("Are you sure you want to delete the page?")' class='btn btn-white btn-sm'><i class='fa fa-trash-alt go-red'></i> Delete Page</wv-button>
 	@if (!String.IsNullOrWhiteSpace(Model.PagePublicUrl))
 	{
 	<a href='@Model.PagePublicUrl' target="_blank" class='btn btn-white btn-sm'><i class='fas fa-external-link-alt'></i> Visit Page</a>
 	}
-	<button type='button' onclick='ClonePage()' class='btn btn-white btn-sm'><i class='fa fa-file go-gray'></i> Clone Page</button>
+	<wv-button type='Submit' form="ClonePageForm" onclick="return confirm('Are you sure you want to clone this page?')" class='btn btn-white btn-sm'><i class='fa fa-file go-gray'></i> Clone Page</wv-button>
 	<a href='/sdk/objects/page/m/@(Model.ErpPage != null ? Model.ErpPage.Id : Guid.Empty)/manage?returnUrl=@Html.Raw(HttpUtility.UrlEncode(Model.CurrentUrl))' class='btn btn-white btn-sm'><i class='fa fa-cog go-orange'></i> Manage Details</a>
 </wv-page-header-actions>
 

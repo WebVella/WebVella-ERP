@@ -11,14 +11,14 @@
 <wv-page-header color="#dc3545" area-label="Users" title="New User"
 				icon-class="fa fa-plus" return-url="@Model.ReturnUrl">
 	<wv-page-header-actions>
-		<wv-button type="Button" size="Small" onclick="ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcForm','submit')" color="Green" icon-class="fa fa-plus go-white" text="Create User"></wv-button>
+		<wv-button type="Submit" form="CreateRecord" size="Small" color="Green" icon-class="fa fa-plus go-white" text="Create User"></wv-button>
 		<wv-button type="LinkAsButton" size="Small" href="@Model.ReturnUrl" text="Cancel" color="White"></wv-button>
 	</wv-page-header-actions>
 </wv-page-header>
 
 <wv-validation errors="@Model.Validation.ToErrorList()" message="@Model.Validation.Message"></wv-validation>
 
-<wv-form name="CreateRecord" validation-errors="Model.Validation.ToErrorList()" label-mode="Stacked" mode="Form" autocomplete="false">
+<wv-form id="CreateRecord" name="CreateRecord" validation-errors="Model.Validation.ToErrorList()" label-mode="Stacked" mode="Form" autocomplete="false">
 	<wv-section class="mt-4">
 		<wv-row>
 			<wv-column span="6">

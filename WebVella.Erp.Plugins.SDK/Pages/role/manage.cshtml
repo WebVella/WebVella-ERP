@@ -10,7 +10,7 @@
 <wv-page-header color="#dc3545" area-label="Roles" title="Manage Role"
 				icon-class="fa fa-key" return-url="@Model.ReturnUrl">
 	<wv-page-header-actions>
-		<wv-button type="Button" size="Small" onclick="ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcForm','submit')" color="Primary" icon-class="fa fa-save go-white" text="Save Role"></wv-button>
+		<wv-button type="Submit" form="ManageRecord" size="Small" color="Primary" icon-class="fa fa-save go-white" text="Save Role"></wv-button>
 		<wv-button type="LinkAsButton" size="Small" href="@Model.ReturnUrl" text="Cancel" color="White"></wv-button>
 	</wv-page-header-actions>
 
@@ -18,7 +18,7 @@
 
 <wv-validation errors="@Model.Validation.ToErrorList()" message="@Model.Validation.Message"></wv-validation>
 
-<wv-form name="ManageRecord" validation-errors="Model.Validation.ToErrorList()" label-mode="Stacked" mode="Form" autocomplete="false">
+<wv-form id="ManageRecord" name="ManageRecord" validation-errors="Model.Validation.ToErrorList()" label-mode="Stacked" mode="Form" autocomplete="false">
 	<wv-section class="mt-4">
 		<wv-row>
 			<wv-column span="6">

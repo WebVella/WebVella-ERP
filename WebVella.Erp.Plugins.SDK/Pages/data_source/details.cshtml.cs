@@ -85,7 +85,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 				if(existingPageDataSources.Count > 0 )
 					HeaderActions.Add($"<button type='button' class='btn btn-white btn-sm disabled' tooltip='There are existing page data sources related'><i class='fa fa-lock'></i> Delete Locked</button>");
 				else
-					HeaderActions.Add($"<button type='button' onclick='DeleteDataSource(e)' class='btn btn-white btn-sm'><i class='fa fa-trash-alt go-red'></i> Delete</button>");
+					HeaderActions.Add($"<button type='submit' form='DeleteDataSourceForm' onclick='return confirm(\"Are you sure?\")' class='btn btn-white btn-sm'><i class='fa fa-trash-alt go-red'></i> Delete</button>");
 
 				HeaderActions.Add($"<a href='/sdk/objects/data_source/m/{RecordId}/manage?ReturnUrl={returnUrlEncoded}' class='btn btn-white btn-sm'><i class='fa fa-cog go-orange'></i> Manage</a>");
 				

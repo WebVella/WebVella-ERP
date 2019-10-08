@@ -12,7 +12,7 @@
 	icon-class="fa fa-plus" return-url="@Model.ReturnUrl">
 
 <wv-page-header-actions>
-	<button type='button' onclick='ErpEvent.DISPATCH("WebVella.Erp.Web.Components.PcForm","submit")' class='btn btn-green btn-sm'><span class='fa fa-save go-white'></span> Create Page</button>
+	<wv-button type='Submit' form="CreateRecord" class='btn btn-green btn-sm'><span class='fa fa-save go-white'></span> Create Page</wv-button>
 	<a href='@Html.Raw(Model.ReturnUrl)' class='btn btn-white btn-sm'>Cancel</a>
 </wv-page-header-actions>
 
@@ -20,7 +20,7 @@
 
 <wv-validation errors="@Model.Validation.ToErrorList()" message="@Model.Validation.Message"></wv-validation>
 
-<wv-form name="CreateRecord" validation-errors="Model.Validation.ToErrorList()" label-mode="Stacked" mode="Form">
+<wv-form id="CreateRecord" name="CreateRecord" validation-errors="Model.Validation.ToErrorList()" label-mode="Stacked" mode="Form">
 	<wv-section class="mt-4" title="General" is-card="true">
 		<wv-row>
 			<wv-column span="4">
