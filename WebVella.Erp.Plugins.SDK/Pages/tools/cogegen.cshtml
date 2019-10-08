@@ -1,6 +1,7 @@
 ﻿@page "/sdk/objects/codegen/a/codegen"
 @model WebVella.Erp.Plugins.SDK.Pages.Tools.CodeGenModel
-
+@using WebVella.Erp.Web.Utils;
+@using WebVella.Erp.Web.Utils;
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Code generation";
@@ -13,9 +14,9 @@
 
 <p class="alert alert-info ng-scope">This screen generates c# code based on the comparison between two databases. The code than can be used to generate an update script to apply changes in a plugin version automatically. In this way, if you manually create a new field for an entity from the interface, upon comparison, the system will generate the needed code for creating the field automatically.</p>
 
-<wv-validation validation="Model.Validation" show-errors="true"></wv-validation>
+<wv-validation errors="@Model.Validation.ToErrorList()" message="@Model.Validation.Message"></wv-validation>
 
-<wv-form name="CompareMetaForm" validation="Model.Validation" label-mode="Stacked" mode="Form" autocomplete="true">
+<wv-form name="CompareMetaForm" validation-errors="Model.Validation.ToErrorList()" label-mode="Stacked" mode="Form" autocomplete="true">
 	<wv-section class="mt-4">
 		<wv-row no-gutters="true">
 			<wv-column span="11">
@@ -51,7 +52,7 @@
 				</div>
 				<wv-row>
 					<wv-column>
-						<wv-field-multiselect label-mode="Hidden" value="@Model.IncludeRecordsEntityIdList" options="@Model.EntitySelectOptions" name="IncludeRecordsEntityIdList"></wv-field-multiselect>
+						<wv-field-multiselect label-mode="Hidden" value="@Model.IncludeRecordsEntityIdList" options="@Model.EntitySelectOptions.ToWvSelectOption()" name="IncludeRecordsEntityIdList"></wv-field-multiselect>
 					</wv-column>
 				</wv-row>
 			</wv-column>

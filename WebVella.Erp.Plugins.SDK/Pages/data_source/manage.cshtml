@@ -1,6 +1,7 @@
 ﻿@page "/sdk/objects/data_source/m/{RecordId}/manage"
 
 @model WebVella.Erp.Plugins.SDK.Pages.ErpDataSource.ManageModel
+@using WebVella.Erp.Web.Utils;
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Manage Data source";
@@ -27,7 +28,8 @@
 	</wv-column>
 </wv-row>
 
-<wv-validation validation="Model.Validation" show-errors="true"></wv-validation>
+<wv-validation errors="@Model.Validation.ToErrorList()" message="@Model.Validation.Message"></wv-validation>
+
 <wv-form label-mode="Stacked" mode="Form" name="UpdateRecord" id="UpdateRecord">
 	<wv-section>
 		<wv-row>

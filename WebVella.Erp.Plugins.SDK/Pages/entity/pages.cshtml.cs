@@ -11,6 +11,7 @@ using WebVella.Erp.Web;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 {
@@ -20,7 +21,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 		public Entity ErpEntity { get; set; }
 
-		public List<GridColumn> Columns { get; set; } = new List<GridColumn>();
+		public List<WvGridColumnMeta> Columns { get; set; } = new List<WvGridColumnMeta>();
 
 		public List<EntityRecord> Records { get; set; } = new List<EntityRecord>();
 
@@ -176,46 +177,46 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 			#region << Create Columns >>
 
-			Columns = new List<GridColumn>() {
-				new GridColumn(){
+			Columns = new List<WvGridColumnMeta>() {
+				new WvGridColumnMeta(){
 					Name = "action",
 					Width="1%"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "Label",
 					Name = "label",
 					Sortable = true,
 					Searchable = true
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "Name",
 					Name = "name",
 					Sortable = true,
 					Searchable = true
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "App",
 					Name = "app",
 					Width="140px"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "Entity",
 					Name = "entity",
 					Width="140px"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "Type",
 					Name = "type",
 					Sortable = true,
 					Width="120px"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "system",
 					Name = "system",
 					Sortable = true,
 					Width="80px"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "Customized",
 					Name = "customized",
 					Sortable = true,

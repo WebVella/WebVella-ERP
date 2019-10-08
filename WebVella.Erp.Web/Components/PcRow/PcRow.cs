@@ -8,6 +8,7 @@ using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Web.Components
 {
@@ -25,10 +26,10 @@ namespace WebVella.Erp.Web.Components
 		{
 
 			[JsonProperty(PropertyName = "flex_vertical_alignment")]
-			public FlexVerticalAlignmentType FlexVerticalAlignment { get; set; } = FlexVerticalAlignmentType.None;
+			public WvFlexVerticalAlignmentType FlexVerticalAlignment { get; set; } = WvFlexVerticalAlignmentType.None;
 
 			[JsonProperty(PropertyName = "flex_horizontal_alignment")]
-			public FlexHorizontalAlignmentType FlexHorizontalAlignment { get; set; } = FlexHorizontalAlignmentType.None;
+			public WvFlexHorizontalAlignmentType FlexHorizontalAlignment { get; set; } = WvFlexHorizontalAlignmentType.None;
 
 			[JsonProperty(PropertyName = "no_gutters")]
 			public bool NoGutters { get; set; } = false;
@@ -74,7 +75,7 @@ namespace WebVella.Erp.Web.Components
 			public int? Container1OffsetXl { get; set; } = null; // 0 or null will render no device specific span
 
 			[JsonProperty(PropertyName = "container1_flex_self_align")]
-			public FlexSelfAlignType Container1FlexSelftAlign { get; set; } = FlexSelfAlignType.None;
+			public WvFlexSelfAlignType Container1FlexSelftAlign { get; set; } = WvFlexSelfAlignType.None;
 
 			[JsonProperty(PropertyName = "container1_flex_order")]
 			public int? Container1FlexOrder { get; set; } = null; // will not render the class
@@ -115,7 +116,7 @@ namespace WebVella.Erp.Web.Components
 			public int? Container2OffsetXl { get; set; } = null; // 0 or null will render no device specific span
 
 			[JsonProperty(PropertyName = "container2_flex_self_align")]
-			public FlexSelfAlignType Container2FlexSelftAlign { get; set; } = FlexSelfAlignType.None;
+			public WvFlexSelfAlignType Container2FlexSelftAlign { get; set; } = WvFlexSelfAlignType.None;
 
 			[JsonProperty(PropertyName = "container2_flex_order")]
 			public int? Container2FlexOrder { get; set; } = null; // will not render the class
@@ -156,7 +157,7 @@ namespace WebVella.Erp.Web.Components
 			public int? Container3OffsetXl { get; set; } = null; // 0 or null will render no device specific span
 
 			[JsonProperty(PropertyName = "container3_flex_self_align")]
-			public FlexSelfAlignType Container3FlexSelftAlign { get; set; } = FlexSelfAlignType.None;
+			public WvFlexSelfAlignType Container3FlexSelftAlign { get; set; } = WvFlexSelfAlignType.None;
 
 			[JsonProperty(PropertyName = "container3_flex_order")]
 			public int? Container3FlexOrder { get; set; } = null; // will not render the class
@@ -197,7 +198,7 @@ namespace WebVella.Erp.Web.Components
 			public int? Container4OffsetXl { get; set; } = null; // 0 or null will render no device specific span
 
 			[JsonProperty(PropertyName = "container4_flex_self_align")]
-			public FlexSelfAlignType Container4FlexSelftAlign { get; set; } = FlexSelfAlignType.None;
+			public WvFlexSelfAlignType Container4FlexSelftAlign { get; set; } = WvFlexSelfAlignType.None;
 
 			[JsonProperty(PropertyName = "container4_flex_order")]
 			public int? Container4FlexOrder { get; set; } = null; // will not render the class
@@ -238,7 +239,7 @@ namespace WebVella.Erp.Web.Components
 			public int? Container5OffsetXl { get; set; } = null; // 0 or null will render no device specific span
 
 			[JsonProperty(PropertyName = "container5_flex_self_align")]
-			public FlexSelfAlignType Container5FlexSelftAlign { get; set; } = FlexSelfAlignType.None;
+			public WvFlexSelfAlignType Container5FlexSelftAlign { get; set; } = WvFlexSelfAlignType.None;
 
 			[JsonProperty(PropertyName = "container5_flex_order")]
 			public int? Container5FlexOrder { get; set; } = null; // will not render the class
@@ -279,7 +280,7 @@ namespace WebVella.Erp.Web.Components
 			public int? Container6OffsetXl { get; set; } = null; // 0 or null will render no device specific span
 
 			[JsonProperty(PropertyName = "container6_flex_self_align")]
-			public FlexSelfAlignType Container6FlexSelftAlign { get; set; } = FlexSelfAlignType.None;
+			public WvFlexSelfAlignType Container6FlexSelftAlign { get; set; } = WvFlexSelfAlignType.None;
 
 			[JsonProperty(PropertyName = "container6_flex_order")]
 			public int? Container6FlexOrder { get; set; } = null; // will not render the class
@@ -320,7 +321,7 @@ namespace WebVella.Erp.Web.Components
 			public int? Container7OffsetXl { get; set; } = null; // 0 or null will render no device specific span
 
 			[JsonProperty(PropertyName = "container7_flex_self_align")]
-			public FlexSelfAlignType Container7FlexSelftAlign { get; set; } = FlexSelfAlignType.None;
+			public WvFlexSelfAlignType Container7FlexSelftAlign { get; set; } = WvFlexSelfAlignType.None;
 
 			[JsonProperty(PropertyName = "container7_flex_order")]
 			public int? Container7FlexOrder { get; set; } = null; // will not render the class
@@ -361,7 +362,7 @@ namespace WebVella.Erp.Web.Components
 			public int? Container8OffsetXl { get; set; } = null; // 0 or null will render no device specific span
 
 			[JsonProperty(PropertyName = "container8_flex_self_align")]
-			public FlexSelfAlignType Container8FlexSelftAlign { get; set; } = FlexSelfAlignType.None;
+			public WvFlexSelfAlignType Container8FlexSelftAlign { get; set; } = WvFlexSelfAlignType.None;
 
 			[JsonProperty(PropertyName = "container8_flex_order")]
 			public int? Container8FlexOrder { get; set; } = null; // will not render the class
@@ -402,7 +403,7 @@ namespace WebVella.Erp.Web.Components
 			public int? Container9OffsetXl { get; set; } = null; // 0 or null will render no device specific span
 
 			[JsonProperty(PropertyName = "container9_flex_self_align")]
-			public FlexSelfAlignType Container9FlexSelftAlign { get; set; } = FlexSelfAlignType.None;
+			public WvFlexSelfAlignType Container9FlexSelftAlign { get; set; } = WvFlexSelfAlignType.None;
 
 			[JsonProperty(PropertyName = "container9_flex_order")]
 			public int? Container9FlexOrder { get; set; } = null; // will not render the class
@@ -443,7 +444,7 @@ namespace WebVella.Erp.Web.Components
 			public int? Container10OffsetXl { get; set; } = null; // 0 or null will render no device specific span
 
 			[JsonProperty(PropertyName = "container10_flex_self_align")]
-			public FlexSelfAlignType Container10FlexSelftAlign { get; set; } = FlexSelfAlignType.None;
+			public WvFlexSelfAlignType Container10FlexSelftAlign { get; set; } = WvFlexSelfAlignType.None;
 
 			[JsonProperty(PropertyName = "container10_flex_order")]
 			public int? Container10FlexOrder { get; set; } = null; // will not render the class
@@ -484,7 +485,7 @@ namespace WebVella.Erp.Web.Components
 			public int? Container11OffsetXl { get; set; } = null; // 0 or null will render no device specific span
 
 			[JsonProperty(PropertyName = "container11_flex_self_align")]
-			public FlexSelfAlignType Container11FlexSelftAlign { get; set; } = FlexSelfAlignType.None;
+			public WvFlexSelfAlignType Container11FlexSelftAlign { get; set; } = WvFlexSelfAlignType.None;
 
 			[JsonProperty(PropertyName = "container11_flex_order")]
 			public int? Container11FlexOrder { get; set; } = null; // will not render the class
@@ -525,7 +526,7 @@ namespace WebVella.Erp.Web.Components
 			public int? Container12OffsetXl { get; set; } = null; // 0 or null will render no device specific span
 
 			[JsonProperty(PropertyName = "container12_flex_self_align")]
-			public FlexSelfAlignType Container12FlexSelftAlign { get; set; } = FlexSelfAlignType.None;
+			public WvFlexSelfAlignType Container12FlexSelftAlign { get; set; } = WvFlexSelfAlignType.None;
 
 			[JsonProperty(PropertyName = "container12_flex_order")]
 			public int? Container12FlexOrder { get; set; } = null; // will not render the class
@@ -551,7 +552,7 @@ namespace WebVella.Erp.Web.Components
 				#region << Init >>
 				if (context.Node == null)
 				{
-					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query param 'nid', when requesting this component"));
+					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query parameter 'nid', when requesting this component"));
 				}
 
 				var pageFromModel = context.DataModel.GetProperty("Page");
@@ -582,10 +583,10 @@ namespace WebVella.Erp.Web.Components
 				ViewBag.Options = optionsObject;
 				ViewBag.ComponentContext = context;
 
-				ViewBag.FlexSelfAlignTypeOptions = ModelExtensions.GetEnumAsSelectOptions<FlexSelfAlignType>(); 
-				ViewBag.FlexVerticalAlignmentOptions = ModelExtensions.GetEnumAsSelectOptions<FlexVerticalAlignmentType>(); 
+				ViewBag.WvFlexSelfAlignTypeOptions = ModelExtensions.GetEnumAsSelectOptions<WvFlexSelfAlignType>(); 
+				ViewBag.FlexVerticalAlignmentOptions = ModelExtensions.GetEnumAsSelectOptions<WvFlexVerticalAlignmentType>(); 
 
-				ViewBag.FlexHorizontalAlignmentOptions = ModelExtensions.GetEnumAsSelectOptions<FlexHorizontalAlignmentType>(); 
+				ViewBag.FlexHorizontalAlignmentOptions = ModelExtensions.GetEnumAsSelectOptions<WvFlexHorizontalAlignmentType>(); 
 
 				switch (context.Mode)
 				{

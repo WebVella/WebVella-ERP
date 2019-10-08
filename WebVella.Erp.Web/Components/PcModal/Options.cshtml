@@ -1,5 +1,7 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Api.Models;
 @using WebVella.Erp.Web;
@@ -23,9 +25,9 @@
 </wv-row>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-select name="size" label-text="Size" value="@options.Size" options="sizeOptions" required="true"></wv-field-select>
+		<wv-field-select name="size" label-text="Size" value="@options.Size" options="sizeOptions.ToWvSelectOption()" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-select name="position" label-text="Position" value="@options.Position" options="positionOptions" required="true"></wv-field-select>
+		<wv-field-select name="position" label-text="Position" value="@options.Position" options="positionOptions.ToWvSelectOption()" required="true"></wv-field-select>
 	</wv-column>
 </wv-row>

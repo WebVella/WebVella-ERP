@@ -1,9 +1,12 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web;
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Api.Models;
 @using WebVella.Erp.Web.Models;
+@using WebVella.TagHelpers.Models;
 @{
 	var options = (PcRow.PcRowOptions)ViewBag.Options;
 	var flexSelfAlignTypeOptions = (List<SelectOption>)ViewBag.FlexSelfAlignTypeOptions;
@@ -24,10 +27,10 @@
 </wv-row>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-select name="flex_vertical_alignment" value="@((int)options.FlexVerticalAlignment)" label-text="Flex Vertical Alignment" options="flexVerticalAlignmentOptions" required="true"></wv-field-select>
+		<wv-field-select name="flex_vertical_alignment" value="@((int)options.FlexVerticalAlignment)" label-text="Flex Vertical Alignment" options="flexVerticalAlignmentOptions.ToWvSelectOption()" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-select name="flex_horizontal_alignment" value="@((int)options.FlexHorizontalAlignment)" label-text="Flex Horizontal Alignment" options="flexHorizontalAlignmentOptions" required="true"></wv-field-select>
+		<wv-field-select name="flex_horizontal_alignment" value="@((int)options.FlexHorizontalAlignment)" label-text="Flex Horizontal Alignment" options="flexHorizontalAlignmentOptions.ToWvSelectOption()" required="true"></wv-field-select>
 	</wv-column>
 </wv-row>
 
@@ -46,7 +49,7 @@
 	var containerOffsetMd = (int?)options.GetType().GetProperty($"Container{i}OffsetMd").GetValue(options, null);
 	var containerOffsetLg = (int?)options.GetType().GetProperty($"Container{i}OffsetLg").GetValue(options, null);
 	var containerOffsetXl = (int?)options.GetType().GetProperty($"Container{i}OffsetXl").GetValue(options, null);
-	var containerFlexSelftAlign = options.GetType().GetProperty($"Container{i}FlexSelftAlign").GetValue(options, null) ?? FlexSelfAlignType.None;
+	var containerFlexSelftAlign = options.GetType().GetProperty($"Container{i}FlexSelftAlign").GetValue(options, null) ?? WvFlexSelfAlignType.None;
 	var containerFlexOrder = (int?)options.GetType().GetProperty($"Container{i}FlexOrder").GetValue(options, null);
 
 	<wv-section id="@containerId" title="@($"Column {i}")" class="mt-3 @(options.VisibleColumns > (i-1) ? "" : "d-none")" title-tag="h5" is-collapsable="true">
@@ -99,7 +102,7 @@
 
 		<wv-row>
 			<wv-column span="4">
-				<wv-field-select name="@($"container{i}_flex_self_align")" value="@containerFlexSelftAlign" label-text="Flex Self Alignment" options="flexSelfAlignTypeOptions" required="true"></wv-field-select>
+				<wv-field-select name="@($"container{i}_flex_self_align")" value="@containerFlexSelftAlign" label-text="Flex Self Alignment" options="flexSelfAlignTypeOptions.ToWvSelectOption()" required="true"></wv-field-select>
 			</wv-column>
 			<wv-column span="4">
 				<wv-field-number name="@($"container{i}_flex_order")" min="1" max="12" value="@containerFlexOrder" label-text="Flex Order"></wv-field-number>

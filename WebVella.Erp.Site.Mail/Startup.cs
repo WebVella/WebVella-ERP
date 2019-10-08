@@ -15,6 +15,7 @@ using WebVella.Erp.Plugins.Next;
 using WebVella.Erp.Plugins.SDK;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Middleware;
+using WebVella.TagHelpers;
 
 namespace WebVella.Erp.Site.Mail
 {
@@ -27,6 +28,7 @@ namespace WebVella.Erp.Site.Mail
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddWebVellaTagHelpers();
 			services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
 			services.AddResponseCompression(options => { options.Providers.Add<GzipCompressionProvider>(); });
 			services.AddRouting(options => { options.LowercaseUrls = true; });

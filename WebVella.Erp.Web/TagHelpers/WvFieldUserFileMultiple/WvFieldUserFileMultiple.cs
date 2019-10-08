@@ -10,6 +10,8 @@ using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
+using WebVella.TagHelpers.Models;
+using WebVella.TagHelpers.TagHelpers;
 using Yahoo.Yui.Compressor;
 
 namespace WebVella.Erp.Web.TagHelpers
@@ -91,9 +93,9 @@ namespace WebVella.Erp.Web.TagHelpers
 			#endregion
 
 			#region << Render >>
-			if (Mode == FieldRenderMode.Form)
+			if (Mode == WvFieldRenderMode.Form)
 			{
-				if (Access == FieldAccess.Full || Access == FieldAccess.FullAndCreate)
+				if (Access == WvFieldAccess.Full || Access == WvFieldAccess.FullAndCreate)
 				{
 
 					#region << Hidden input for posting >>
@@ -245,7 +247,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					var fieldConfig = new WvFieldFileConfig()
 					{
 						ApiUrl = ApiUrl,
-						CanAddValues = Access == FieldAccess.FullAndCreate ? true : false,
+						CanAddValues = Access == WvFieldAccess.FullAndCreate ? true : false,
 						Accept = Accept
 					};
 
@@ -257,7 +259,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					#endregion
 
 				}
-				else if (Access == FieldAccess.ReadOnly)
+				else if (Access == WvFieldAccess.ReadOnly)
 				{
 					//if (!String.IsNullOrWhiteSpace(Value))
 					//{
@@ -303,7 +305,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					//}
 				}
 			}
-			else if (Mode == FieldRenderMode.Display)
+			else if (Mode == WvFieldRenderMode.Display)
 			{
                 output.Content.AppendHtml("Not implemented yet");
                 //if (!String.IsNullOrWhiteSpace(Value))
@@ -326,7 +328,7 @@ namespace WebVella.Erp.Web.TagHelpers
                 //	output.Content.AppendHtml(EmptyValEl);
                 //}
             }
-			else if (Mode == FieldRenderMode.Simple)
+			else if (Mode == WvFieldRenderMode.Simple)
 			{
                 output.Content.AppendHtml("Not implemented yet");
                 //output.SuppressOutput();
@@ -337,7 +339,7 @@ namespace WebVella.Erp.Web.TagHelpers
                 //output.Content.AppendHtml(linkEl);
                 //return Task.CompletedTask;
             }
-			else if (Mode == FieldRenderMode.InlineEdit)
+			else if (Mode == WvFieldRenderMode.InlineEdit)
 			{
                 output.Content.AppendHtml("Not implemented yet");
 				//if (Access == FieldAccess.Full || Access == FieldAccess.FullAndCreate)

@@ -9,6 +9,7 @@ using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Web.Components
 {
@@ -40,10 +41,10 @@ namespace WebVella.Erp.Web.Components
             public string HookKey { get; set; } = "";
 
             [JsonProperty(PropertyName = "label_mode")]
-            public LabelRenderMode LabelMode { get; set; } = LabelRenderMode.Stacked; //To be inherited
+            public WvLabelRenderMode LabelMode { get; set; } = WvLabelRenderMode.Stacked; //To be inherited
 
             [JsonProperty(PropertyName = "mode")]
-            public FieldRenderMode Mode { get; set; } = FieldRenderMode.Form; //To be inherited
+            public WvFieldRenderMode Mode { get; set; } = WvFieldRenderMode.Form; //To be inherited
 
             [JsonProperty(PropertyName = "class")]
             public string Class { get; set; } = "";
@@ -61,7 +62,7 @@ namespace WebVella.Erp.Web.Components
                 #region << Init >>
                 if (context.Node == null)
                 {
-                    return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query param 'nid', when requesting this component"));
+                    return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query parameter 'nid', when requesting this component"));
                 }
 
                 var pageFromModel = context.DataModel.GetProperty("Page");
@@ -82,10 +83,10 @@ namespace WebVella.Erp.Web.Components
                 if (context.Options != null)
                 {
                     instanceOptions = JsonConvert.DeserializeObject<PcFormOptions>(context.Options.ToString());
-                    if (instanceOptions.LabelMode == LabelRenderMode.Undefined)
-                        instanceOptions.LabelMode = LabelRenderMode.Stacked;
-                    if (instanceOptions.Mode == FieldRenderMode.Undefined)
-                        instanceOptions.Mode = FieldRenderMode.Form;
+                    if (instanceOptions.LabelMode == WvLabelRenderMode.Undefined)
+                        instanceOptions.LabelMode = WvLabelRenderMode.Stacked;
+                    if (instanceOptions.Mode == WvFieldRenderMode.Undefined)
+                        instanceOptions.Mode = WvFieldRenderMode.Form;
                 }
 
                 if (String.IsNullOrWhiteSpace(instanceOptions.Id))
@@ -106,12 +107,12 @@ namespace WebVella.Erp.Web.Components
                 ViewBag.ComponentContext = context;
                 ViewBag.GeneralHelpSection = HelpJsApiGeneralSection;
 
-                ViewBag.LabelRenderModeOptions = ModelExtensions.GetEnumAsSelectOptions<LabelRenderMode>();
+                ViewBag.LabelRenderModeOptions = ModelExtensions.GetEnumAsSelectOptions<WvLabelRenderMode>();
 
-                ViewBag.FieldRenderModeOptions = ModelExtensions.GetEnumAsSelectOptions<FieldRenderMode>();
+                ViewBag.FieldRenderModeOptions = ModelExtensions.GetEnumAsSelectOptions<WvFieldRenderMode>();
 
-                context.Items[typeof(LabelRenderMode)] = instanceOptions.LabelMode;
-                context.Items[typeof(FieldRenderMode)] = instanceOptions.Mode;
+                context.Items[typeof(WvLabelRenderMode)] = instanceOptions.LabelMode;
+                context.Items[typeof(WvFieldRenderMode)] = instanceOptions.Mode;
 
                 ViewBag.MethodOptions = new List<SelectOption>() {
                     new SelectOption("get","get"),

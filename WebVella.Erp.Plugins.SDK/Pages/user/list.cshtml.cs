@@ -10,6 +10,7 @@ using WebVella.Erp.Web;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Plugins.SDK.Pages.User
 {
@@ -17,7 +18,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.User
 	{
 		public ListModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
 
-		public List<GridColumn> Columns { get; set; } = new List<GridColumn>();
+		public List<WvGridColumnMeta> Columns { get; set; } = new List<WvGridColumnMeta>();
 
 		public EntityRecordList Records { get; set; } = new EntityRecordList();
 
@@ -51,23 +52,23 @@ namespace WebVella.Erp.Plugins.SDK.Pages.User
 
 			#region << Create Columns >>
 
-			Columns = new List<GridColumn>() {
-				new GridColumn(){
+			Columns = new List<WvGridColumnMeta>() {
+				new WvGridColumnMeta(){
 					Name = "action",
 					Width="1%"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "email",
 					Name = "email",
 					Sortable = true,
 					Width = "120px"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "username",
 					Name = "username",
 					Sortable = true
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "role",
 					Name = "role",
 					Sortable = false

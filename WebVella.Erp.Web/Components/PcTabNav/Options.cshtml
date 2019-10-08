@@ -1,5 +1,7 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web;
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Api.Models;
@@ -19,7 +21,7 @@
 		<wv-field-number min="1" max="7" name="visible_tabs" value="@options.VisibleTabs" label-text="Visible Tabs"></wv-field-number>
 	</wv-column>
 	<wv-column span="6">
-		<wv-field-select name="render_type" value="@options.RenderType" label-text="Render Type" options="renderTypeOptions" required="true"></wv-field-select>
+		<wv-field-select name="render_type" value="@options.RenderType" label-text="Render Type" options="renderTypeOptions.ToWvSelectOption()" required="true"></wv-field-select>
 	</wv-column>
 </wv-row>
 <wv-row>

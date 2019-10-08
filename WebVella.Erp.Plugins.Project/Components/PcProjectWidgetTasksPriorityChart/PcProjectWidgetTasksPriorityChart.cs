@@ -12,6 +12,7 @@ using WebVella.Erp.Plugins.Project.Services;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Plugins.Project.Components
 {
@@ -109,8 +110,8 @@ namespace WebVella.Erp.Plugins.Project.Components
 
 
 					var theme = new Theme();
-					var chartDatasets = new List<ErpChartDataset>() {
-						new ErpChartDataset(){
+					var chartDatasets = new List<WvChartDataset>() {
+						new WvChartDataset(){
 							Data = new List<decimal>(){ highPriority, normalPriority, lowPriority },
 							BackgroundColor = new List<string>{ theme.RedColor, theme.LightBlueColor, theme.GreenColor},
 							BorderColor = new List<string>{ theme.RedColor, theme.LightBlueColor, theme.GreenColor }

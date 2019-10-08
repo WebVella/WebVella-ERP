@@ -8,7 +8,7 @@ using WebVella.Erp.Plugins.SDK.Utils;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Utils;
-
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Plugins.SDK.Pages.Job
 {
@@ -16,7 +16,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Job
 	{
 		public ListModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
 
-		public List<GridColumn> Columns { get; set; } = new List<GridColumn>();
+		public List<WvGridColumnMeta> Columns { get; set; } = new List<WvGridColumnMeta>();
 
 		public List<Erp.Jobs.Job> Records { get; set; } = new List<Erp.Jobs.Job>();
 
@@ -55,36 +55,36 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Job
 
 			#region << Create Columns >>
 
-			Columns = new List<GridColumn>() {
-				new GridColumn(){
+			Columns = new List<WvGridColumnMeta>() {
+				new WvGridColumnMeta(){
 					Name = "action",
 					Width="1%"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "created on",
 					Name = "created_on",
 					Width="150px"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "started on",
 					Name = "started_on",
 					Width="150px"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "finished on",
 					Name = "finished_on",
 					Width="150px"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "type name",
 					Name = "type_name",
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "complete class name",
 					Name = "complete_class_name",
 					Width="400px"
 				},
-				new GridColumn(){
+				new WvGridColumnMeta(){
 					Label = "status",
 					Name = "status",
 					Width="100px"

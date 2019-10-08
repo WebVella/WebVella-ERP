@@ -1,6 +1,7 @@
 ﻿@page "/sdk/objects/data_source/c/create"
 
 @model WebVella.Erp.Plugins.SDK.Pages.ErpDataSource.CreateModel
+@using WebVella.Erp.Web.Utils;
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Data source create";
@@ -29,7 +30,8 @@
 	</wv-column>
 </wv-row>
 
-<wv-validation validation="Model.Validation" show-errors="true"></wv-validation>
+<wv-validation errors="@Model.Validation.ToErrorList()" message="@Model.Validation.Message"></wv-validation>
+
 <wv-form label-mode="Stacked" mode="Form" name="CreateRecord" id="CreateRecord">
 	<wv-section>
 		<wv-row>

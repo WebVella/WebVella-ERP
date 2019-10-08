@@ -2,9 +2,10 @@
 @using WebVella.Erp.Api.Models;
 @using WebVella.Erp.Web.Models;
 @using WebVella.Erp.Plugins.SDK.Model;
+@using WebVella.TagHelpers.Models;
 @{
 	var pageSelectionTree = (PageSelectionTree)ViewBag.PageSelectionTree;
-	var mode = (FieldRenderMode)ViewBag.RenderMode;
+	var mode = (WvFieldRenderMode)ViewBag.RenderMode;
 	var erpPage = (ErpPage)ViewBag.ErpPage;
 
 	var applicationOptions = (List<SelectOption>)ViewBag.ApplicationOptions;
@@ -31,7 +32,7 @@
 	<wv-row>
 		<wv-column span="4">
 		<wv-field-select options="pageSelectionTree.AllTypes" label-text="Type" value="@erpPage.Type" field-id="ViewBag.TypeOptionsFieldId"
-						 name="Type" required="true" mode="@FieldRenderMode.Form" access="ReadOnly"></wv-field-select>
+						 name="Type" required="true" mode="@WvFieldRenderMode.Form" access="ReadOnly"></wv-field-select>
 		</wv-column>
 	</wv-row>
 }

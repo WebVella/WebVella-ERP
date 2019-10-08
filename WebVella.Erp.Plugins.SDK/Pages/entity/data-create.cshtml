@@ -1,6 +1,7 @@
 ﻿@page "/sdk/objects/entity/r/{ParentRecordId}/rl/data/c/"
 
 @model WebVella.Erp.Plugins.SDK.Pages.ErpEntity.DataCreateModel
+@using WebVella.Erp.Web.Utils;
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Create new entity record";
@@ -23,9 +24,9 @@
 	</wv-page-header-toolbar>
 </wv-page-header>
 
-<wv-validation validation="Model.Validation" show-errors="false"></wv-validation>
+<wv-validation errors="@Model.Validation.ToErrorList()" message="@Model.Validation.Message"></wv-validation>
 
-<wv-form label-mode="Stacked" mode="Form" name="CreateRecord" validation="Model.Validation" id="CreateRecord">
+<wv-form label-mode="Stacked" mode="Form" name="CreateRecord" validation-errors="Model.Validation.ToErrorList()" id="CreateRecord">
 	<wv-section class="mt-4">
 		@foreach (var field in Model.Fields)
 		{
@@ -281,7 +282,7 @@
 												 required="@field.Required"
 												 access="@(Model.GetFieldAccess(field))"
 												 default-value="@(((SelectField)field).DefaultValue)"
-												 options="@(((SelectField)field).Options)"></wv-field-select>
+												 options="@(((SelectField)field).Options).ToWvSelectOption()"></wv-field-select>
 							}
 							break;
 
@@ -296,7 +297,7 @@
 													  required="@field.Required"
 													  access="@(Model.GetFieldAccess(field))"
 													  default-value="@(((MultiSelectField)field).DefaultValue)"
-													  options="@(((MultiSelectField)field).Options)"></wv-field-multiselect>
+													  options="@(((MultiSelectField)field).Options).ToWvSelectOption()"></wv-field-multiselect>
 							}
 							break;
 					}

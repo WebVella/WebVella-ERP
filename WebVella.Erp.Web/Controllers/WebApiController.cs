@@ -678,10 +678,10 @@ namespace WebVella.Erp.Web.Controllers
 					return NotFound();
 
 				//if (nid == null)
-				//	return BadRequest("The node Id is required to be set as query param 'nid', when requesting this component");
+				//	return BadRequest("The node Id is required to be set as query parameter 'nid', when requesting this component");
 
 				if (pid == null)
-					return BadRequest("The page Id is required to be set as query param 'pid', when requesting this component");
+					return BadRequest("The page Id is required to be set as query parameter 'pid', when requesting this component");
 
 				var type = FileService.GetType(fullComponentName);
 				if (type == null)
@@ -907,50 +907,50 @@ namespace WebVella.Erp.Web.Controllers
 		}
 
 
-		[Route("api/v3.0/p/core/select/font-awesome-icons")]
-		[HttpGet]
-		public ActionResult GetSelectCases([FromQuery]string search,[FromQuery]int page = 1)
-		{
-			var pageSize = 10;
-			var response = new ResponseModel();
-			response.Timestamp = DateTime.UtcNow;
-			try
-			{
-				var icons = RenderService.FontAwesomeIcons;
-				var iconTotal = icons.Count();
-				if(!String.IsNullOrWhiteSpace(search)){
-					var filteredIcons = icons.FindAll(x=> x.Class.Contains(search) || x.Name.Contains(search)).ToList();
-					iconTotal = filteredIcons.Count();
-					icons = filteredIcons.Skip((page-1)*pageSize).Take(pageSize).ToList();
-				}
-				else{
-					icons = icons.Skip((page-1)*pageSize).Take(pageSize).ToList();
-				}
-				var result = new EntityRecord();
+		//[Route("api/v3.0/p/core/select/font-awesome-icons")]
+		//[HttpGet]
+		//public ActionResult GetSelectCases([FromQuery]string search,[FromQuery]int page = 1)
+		//{
+		//	var pageSize = 10;
+		//	var response = new ResponseModel();
+		//	response.Timestamp = DateTime.UtcNow;
+		//	try
+		//	{
+		//		var icons = RenderService.FontAwesomeIcons;
+		//		var iconTotal = icons.Count();
+		//		if(!String.IsNullOrWhiteSpace(search)){
+		//			var filteredIcons = icons.FindAll(x=> x.Class.Contains(search) || x.Name.Contains(search)).ToList();
+		//			iconTotal = filteredIcons.Count();
+		//			icons = filteredIcons.Skip((page-1)*pageSize).Take(pageSize).ToList();
+		//		}
+		//		else{
+		//			icons = icons.Skip((page-1)*pageSize).Take(pageSize).ToList();
+		//		}
+		//		var result = new EntityRecord();
 
-				result["results"] = icons;
-				result["pagination"] = new EntityRecord(); // more => true, false
-				var moreRecord = new EntityRecord();
-				moreRecord["more"] = false;
+		//		result["results"] = icons;
+		//		result["pagination"] = new EntityRecord(); // more => true, false
+		//		var moreRecord = new EntityRecord();
+		//		moreRecord["more"] = false;
 
-				if(iconTotal > page*pageSize){
-					moreRecord["more"] = true;
-				}
+		//		if(iconTotal > page*pageSize){
+		//			moreRecord["more"] = true;
+		//		}
 
-				result["pagination"] = moreRecord;
+		//		result["pagination"] = moreRecord;
 
 
-				response.Object = result;
-				response.Success = true;
-				response.Message = "";
-			}
-			catch (Exception ex)
-			{
-				response.Success = false;
-				response.Message = ex.Message;
-			}
-			return Json(response);
-		}
+		//		response.Object = result;
+		//		response.Success = true;
+		//		response.Message = "";
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		response.Success = false;
+		//		response.Message = ex.Message;
+		//	}
+		//	return Json(response);
+		//}
 
 		//[AllowAnonymous]
 		//[Route("api/v3.0/p/core/framework.css")]

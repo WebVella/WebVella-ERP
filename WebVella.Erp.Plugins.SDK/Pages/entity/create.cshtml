@@ -1,6 +1,7 @@
 ﻿@page "/sdk/objects/entity/c"
 
 @model WebVella.Erp.Plugins.SDK.Pages.ErpEntity.CreateModel
+@using WebVella.Erp.Web.Utils;
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Create Entity";
@@ -16,9 +17,9 @@
 	</wv-page-header-actions>
 </wv-page-header>
 
-<wv-validation validation="Model.Validation" show-errors="false"></wv-validation>
+<wv-validation errors="@Model.Validation.ToErrorList()" message="@Model.Validation.Message"></wv-validation>
 
-<wv-form label-mode="Stacked" mode="Form" name="CreateRecord" validation="Model.Validation" id="CreateRecord">
+<wv-form label-mode="Stacked" mode="Form" name="CreateRecord" validation-errors="Model.Validation.ToErrorList()" id="CreateRecord">
 	<wv-section class="mt-4">
 		<wv-row>
 			<wv-column span="6">
@@ -51,7 +52,7 @@
 		</wv-row>
 		<wv-row>
 			<wv-column span="12">
-				<wv-field-checkbox-grid name="RecordPermissions" label-text="Record Permissions" columns="Model.PermissionOptions" rows="Model.RoleOptions" value="@Model.RecordPermissions" text-true="granted" text-false="not granted"></wv-field-checkbox-grid>
+				<wv-field-checkbox-grid name="RecordPermissions" label-text="Record Permissions" columns="Model.PermissionOptions.ToWvSelectOption()" rows="Model.RoleOptions.ToWvSelectOption()" value="@Model.RecordPermissions" text-true="granted" text-false="not granted"></wv-field-checkbox-grid>
 			</wv-column>
 		</wv-row>
 	</wv-section>

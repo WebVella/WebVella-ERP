@@ -1,5 +1,7 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web;
 @using WebVella.Erp.Web.Models;
 @using WebVella.Erp.Exceptions;
@@ -8,5 +10,5 @@
 	var options = (PcValidation.PcValidationOptions)ViewBag.Options;
 	var node = (PageBodyNode)ViewBag.Node;
 	var validation = (ValidationException)ViewBag.Validation;
-}
-<wv-validation show-errors="true" validation="@validation" is-visible="(bool)ViewBag.IsVisible"></wv-validation>
+
+<wv-validation errors="@validation.ToErrorList()" message="@validation.Message"></wv-validation>}

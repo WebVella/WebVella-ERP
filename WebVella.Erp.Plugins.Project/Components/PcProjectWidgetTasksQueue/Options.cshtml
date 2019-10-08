@@ -1,5 +1,7 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web;
 @using WebVella.Erp.Api.Models;
 @using WebVella.Erp.Plugins.Project.Components;
@@ -16,7 +18,7 @@
 		<wv-field-datasource name="user_id" value="@options.UserId" label-text="User Id" page-id="erpRequest.Page.Id"></wv-field-datasource>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-select name="type" value="@options.Type" label-text="Type" options="typeSelectOptions" required="true"></wv-field-select>
+		<wv-field-select name="type" value="@options.Type" label-text="Type" options="typeSelectOptions.ToWvSelectOption()" required="true"></wv-field-select>
 	</wv-column>
 </wv-row>
 

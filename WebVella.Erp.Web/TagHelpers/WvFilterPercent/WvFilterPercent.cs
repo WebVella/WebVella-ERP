@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 using System.Threading.Tasks;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
+using WebVella.TagHelpers.Models;
 using Yahoo.Yui.Compressor;
 
 namespace WebVella.Erp.Web.TagHelpers

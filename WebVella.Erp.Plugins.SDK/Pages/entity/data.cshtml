@@ -1,6 +1,7 @@
 ﻿@page "/sdk/objects/entity/r/{ParentRecordId}/rl/data/l"
 @using WebVella.Erp.Api.Models;
 @model WebVella.Erp.Plugins.SDK.Pages.ErpEntity.EntityDataModel
+@using WebVella.Erp.Web.Utils;
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Entity data";
@@ -26,7 +27,7 @@
 
 </wv-page-header>
 
-<wv-validation validation="Model.Validation" show-errors="false"></wv-validation>
+<wv-validation errors="@Model.Validation.ToErrorList()" message="@Model.Validation.Message"></wv-validation>
 
 <wv-grid bordered="true" hover="true" columns="Model.Columns" page="Model.Pager" total-count="Model.TotalCount" page-size="Model.PagerSize" small="true">
 	@foreach (var record in Model.Records)
@@ -35,7 +36,7 @@
 		<wv-grid-row>
 
 			<wv-grid-column text-nowrap="true">
-				<wv-form label-mode="Stacked" mode="Form" name="DeleteRecord" validation="Model.Validation" id="DeleteRecord" action="/sdk/objects/entity/r/@Model.ErpEntity.Id/rl/data/l/?recordId=@recordId" method="Post">
+				<wv-form label-mode="Stacked" mode="Form" name="DeleteRecord" validation-errors="Model.Validation.ToErrorList()" id="DeleteRecord" action="/sdk/objects/entity/r/@Model.ErpEntity.Id/rl/data/l/?recordId=@recordId" method="Post">
 					@if (@Model.UpdateAccess)
 					{
 						<wv-button type="LinkAsButton" href="/sdk/objects/entity/r/@Model.ErpEntity.Id/rl/data/m/@record["id"]?returnUrl=@Model.ReturnUrlEncoded" icon-class="icon fa fa-pencil-alt fa-fw"></wv-button>
@@ -322,7 +323,7 @@
 												 placeholder="@field.PlaceholderText"
 												 required="@field.Required"
 												 default-value="@(((SelectField)field).DefaultValue)"
-												 options="@(((SelectField)field).Options)"></wv-field-select>
+												 options="@(((SelectField)field).Options).ToWvSelectOption()"></wv-field-select>
 							}
 							break;
 
@@ -338,7 +339,7 @@
 													  placeholder="@field.PlaceholderText"
 													  required="@field.Required"
 													  default-value="@(((MultiSelectField)field).DefaultValue)"
-													  options="@(((MultiSelectField)field).Options)"></wv-field-multiselect>
+													  options="@(((MultiSelectField)field).Options).ToWvSelectOption()"></wv-field-multiselect>
 							}
 							break;
 

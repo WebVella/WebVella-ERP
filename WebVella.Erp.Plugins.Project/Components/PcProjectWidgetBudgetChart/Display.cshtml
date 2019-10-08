@@ -1,12 +1,14 @@
 ﻿@addTagHelper *, WebVella.Erp.Plugins.Core
 @addTagHelper *, WebVella.Erp.Web
+@addTagHelper *, WebVella.TagHelpers
+@using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Api.Models;
 @using WebVella.Erp.Web.Models;
 @using WebVella.Erp.Plugins.Project.Components;
-
+@using WebVella.TagHelpers.Models;
 @{
 	var options = (PcProjectWidgetBudgetChart.PcProjectWidgetBudgetChartOptions)ViewBag.Options;
-	var datasets = (List<ErpChartDataset>)ViewBag.Datasets;
+	var datasets = (List<WvChartDataset>)ViewBag.Datasets;
 	var budgetResult = (EntityRecord)ViewBag.BudgetResult;
 	var billableHoursInt = Math.Round((decimal)budgetResult["billed_hours"],1);
 	var nonbillableHoursInt = Math.Round((decimal)budgetResult["nonbilled_hours"],1);

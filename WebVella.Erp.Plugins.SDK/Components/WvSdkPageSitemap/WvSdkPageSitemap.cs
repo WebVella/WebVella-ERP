@@ -11,12 +11,12 @@ using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
 using Yahoo.Yui.Compressor;
-
+using WebVella.TagHelpers.Models;
 namespace WebVella.Erp.Plugins.SDK.Components
 {
 	public class WvSdkPageSitemap : ViewComponent
 	{
-		public async Task<IViewComponentResult> InvokeAsync(Guid? pageId = null, FieldRenderMode mode = FieldRenderMode.Form,
+		public async Task<IViewComponentResult> InvokeAsync(Guid? pageId = null, WvFieldRenderMode mode = WvFieldRenderMode.Form,
 			PageType? presetType = null, Guid? presetAppId = null, Guid? presetEntityId = null)
 		{
 			//var typeOptions = new List<SelectFieldOption>();
@@ -159,7 +159,7 @@ namespace WebVella.Erp.Plugins.SDK.Components
 
 			ViewBag.EmbededJs = "";
 			#region << Generate js script >>
-			if (mode == FieldRenderMode.Form)
+			if (mode == WvFieldRenderMode.Form)
 			{
 				var jsCompressor = new JavaScriptCompressor();
 
@@ -239,7 +239,7 @@ namespace WebVella.Erp.Plugins.SDK.Components
 			ViewBag.NodeOptions = nodeOptions;
 			ViewBag.EntityOptions = entityOptions;
 
-			if (mode == FieldRenderMode.Form)
+			if (mode == WvFieldRenderMode.Form)
 			{
 				return await Task.FromResult<IViewComponentResult>(View("Form"));
 			}

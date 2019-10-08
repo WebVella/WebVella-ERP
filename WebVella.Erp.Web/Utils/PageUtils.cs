@@ -288,14 +288,14 @@ namespace WebVella.Erp.Web.Utils
 						var btnClassRender = !String.IsNullOrWhiteSpace(btnClass) ? btnClass : "btn btn-blue btn-sm";
 						var iconClassRender = !String.IsNullOrWhiteSpace(iconClass) ? iconClass : "fa fa-save go-white";
 						var labelRender = !String.IsNullOrWhiteSpace(label) ? label : "Save";
-						return $"<button type='button' onclick='ErpEvent.DISPATCH(\"WebVella.Erp.Web.Components.PcForm\",{{htmlId:\"{formId}\",action:\"submit\",payload:null}})' class='{btnClassRender}' title='{titleText}'><span class='{iconClassRender}'></span> {labelRender}</button>";
+						return $"<button type='submit' form='{formId}' class='{btnClassRender}' title='{titleText}'><span class='{iconClassRender}'></span> {labelRender}</button>";
 					}
 				case PageUtilsActionType.ConfirmAndSubmitForm:
 					{
 						var btnClassRender = !String.IsNullOrWhiteSpace(btnClass) ? btnClass : "btn btn-blue btn-sm";
 						var iconClassRender = !String.IsNullOrWhiteSpace(iconClass) ? iconClass : "fa fa-save go-white";
 						var labelRender = !String.IsNullOrWhiteSpace(label) ? label : "Save";
-						return $"<button type='button' onclick='if(confirm(\"Are you sure?\")) {{ ErpEvent.DISPATCH(\"WebVella.Erp.Web.Components.PcForm\",{{htmlId:\"{formId}\",action:\"submit\",payload:null}})}}' class='{btnClassRender}' title='{titleText}'><span class='{iconClassRender}'></span> {labelRender}</button>";
+						return $"<button type='submit' form='{formId}' onclick='if(confirm(\"Are you sure?\")) {{ }}' class='{btnClassRender}' title='{titleText}'><span class='{iconClassRender}'></span> {labelRender}</button>";
 					}
 				case PageUtilsActionType.Disabled:
 					{

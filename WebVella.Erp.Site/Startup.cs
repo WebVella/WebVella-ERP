@@ -13,6 +13,7 @@ using System.IO.Compression;
 using WebVella.Erp.Plugins.SDK;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Middleware;
+using WebVella.TagHelpers;
 
 namespace WebVella.Erp.Site
 {
@@ -25,6 +26,7 @@ namespace WebVella.Erp.Site
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddWebVellaTagHelpers();
 			services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
 			services.AddResponseCompression(options => { options.Providers.Add<GzipCompressionProvider>(); });
 			services.AddRouting(options => { options.LowercaseUrls = true; });
@@ -102,16 +104,16 @@ namespace WebVella.Erp.Site
 
 			app.UseCors("AllowNodeJsLocalhost"); //Enable CORS -> should be before static files to enable for it too
 
-			app.UseStaticFiles(new StaticFileOptions
-			{
-				OnPrepareResponse = ctx =>
-				{
-					const int durationInSeconds = 60 * 60 * 24 * 30; //30 days caching of these resources
-					ctx.Context.Response.Headers[HeaderNames.CacheControl] =
-						"public,max-age=" + durationInSeconds;
-				}
-			});
-
+			//app.UseStaticFiles(new StaticFileOptions
+			//{
+			//	OnPrepareResponse = ctx =>
+			//	{
+			//		const int durationInSeconds = 60 * 60 * 24 * 30; //30 days caching of these resources
+			//		ctx.Context.Response.Headers[HeaderNames.CacheControl] =
+			//			"public,max-age=" + durationInSeconds;
+			//	}
+			//});
+			app.UseStaticFiles();
 			app.UseRouting();
 			app.UseAuthentication();
 			app.UseAuthorization();

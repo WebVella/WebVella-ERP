@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using WebVella.Erp.Api.Models;
+using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Models;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Web.Utils
 {
@@ -65,5 +68,51 @@ namespace WebVella.Erp.Web.Utils
 			}
 			return selectOptions;
 		}
+	
+		public static List<KeyValuePair<string, string>> ToErrorList(this ValidationException validation, List<string> includeFields = null, List<string> excludeFields = null)
+		{
+			if(validation == null)
+				return null;
+
+			var result = new List<KeyValuePair<string, string>>();
+			if(includeFields == null)
+				includeFields = new List<string>();
+
+			if(excludeFields == null)
+				excludeFields = new List<string>();
+
+			foreach (var valError in validation.Errors)
+			{
+				var isIncluded = false;
+				
+				if(includeFields.Count == 0)
+					isIncluded = true;
+				else if(includeFields.Contains(valError.PropertyName))
+					isIncluded = true;
+				if (excludeFields.Contains(valError.PropertyName))
+					isIncluded = false;
+
+				if (isIncluded)
+					result.Add(new KeyValuePair<string, string>(valError.PropertyName, valError.Message));
+			}
+
+			return result;
+		}		
+
+		public static List<KeyValuePair<string, string>> ToKeyValuePair(this List<ValidationError> errors)
+		{
+			if(errors == null)
+				return null;
+
+			return errors.Select(x=> new KeyValuePair<string, string>(x.PropertyName,x.Message)).ToList();
+		}	
+
+		public static List<WvSelectOption> ToWvSelectOption(this List<SelectOption> originOptions)
+		{
+			if(originOptions == null)
+				return null;
+
+			return originOptions.Select(x=> new WvSelectOption{Color = x.Color,IconClass = x.IconClass,Label = x.Label, Value = x.Value}).ToList();
+		}	
 	}
 }

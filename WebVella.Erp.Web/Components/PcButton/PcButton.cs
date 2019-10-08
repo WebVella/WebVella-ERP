@@ -8,10 +8,11 @@ using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Web.Components
 {
-	[PageComponent(Label = "Button", Library = "WebVella", Description = "Renderes a button", Version = "0.0.1", IconClass = "far fa-caret-square-right", IsInline = true)]
+	[PageComponent(Label = "Button", Library = "WebVella", Description = "Renders a button", Version = "0.0.1", IconClass = "far fa-caret-square-right", IsInline = true)]
 	public class PcButton : PageComponent
 	{
 		protected ErpRequestContext ErpRequestContext { get; set; }
@@ -27,7 +28,7 @@ namespace WebVella.Erp.Web.Components
 			public string IsVisible { get; set; } = "";
 
 			[JsonProperty(PropertyName = "type")]
-			public ButtonType Type { get; set; } = ButtonType.Button;
+			public WvButtonType Type { get; set; } = WvButtonType.Button;
 
 			[JsonProperty(PropertyName = "is_outline")]
 			public bool isOutline { get; set; } = false;
@@ -42,10 +43,10 @@ namespace WebVella.Erp.Web.Components
 			public bool isDisabled { get; set; } = false;
 
 			[JsonProperty(PropertyName = "color")]
-			public ErpColor Color { get; set; } = ErpColor.White;
+			public WvColor Color { get; set; } = WvColor.White;
 
 			[JsonProperty(PropertyName = "size")]
-			public CssSize Size { get; set; } = CssSize.Inherit;
+			public WvCssSize Size { get; set; } = WvCssSize.Inherit;
 
 			[JsonProperty(PropertyName = "class")]
 			public string Class { get; set; } = "";
@@ -84,7 +85,7 @@ namespace WebVella.Erp.Web.Components
 				#region << Init >>
 				if (context.Node == null)
 				{
-					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query param 'nid', when requesting this component"));
+					return await Task.FromResult<IViewComponentResult>(Content("Error: The node Id is required to be set as query parameter 'nid', when requesting this component"));
 				}
 
 				var pageFromModel = context.DataModel.GetProperty("Page");
@@ -99,7 +100,7 @@ namespace WebVella.Erp.Web.Components
 
 				if (currentPage == null)
 				{
-					return await Task.FromResult<IViewComponentResult>(Content("Error: The page Id is required to be set as query param 'pid', when requesting this component"));
+					return await Task.FromResult<IViewComponentResult>(Content("Error: The page Id is required to be set as query parameter 'pid', when requesting this component"));
 				}
 
 				var options = new PcButtonOptions();
@@ -143,11 +144,11 @@ namespace WebVella.Erp.Web.Components
 
                 }
                 #region << Select options >>
-                ViewBag.CssSize = ModelExtensions.GetEnumAsSelectOptions<CssSize>();
+                ViewBag.CssSize = ModelExtensions.GetEnumAsSelectOptions<WvCssSize>();
 
-                ViewBag.ColorOptions = ModelExtensions.GetEnumAsSelectOptions<ErpColor>().OrderBy(x => x.Label).ToList();
+                ViewBag.ColorOptions = ModelExtensions.GetEnumAsSelectOptions<WvColor>().OrderBy(x => x.Label).ToList();
 
-                ViewBag.TypeOptions = ModelExtensions.GetEnumAsSelectOptions<ButtonType>();
+                ViewBag.TypeOptions = ModelExtensions.GetEnumAsSelectOptions<WvButtonType>();
 
                 #endregion
                 switch (context.Mode)
