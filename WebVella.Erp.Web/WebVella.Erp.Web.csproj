@@ -108,7 +108,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\WebVella-TagHelpers\WebVella.TagHelpers\WebVella.TagHelpers.csproj" />
 		<ProjectReference Include="..\WebVella.ERP\WebVella.Erp.csproj" />
 	</ItemGroup>
 
@@ -125,6 +124,7 @@
 		<PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0007" />
 		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0007" />
 		<PackageReference Include="Wangkanai.Detection.Device" Version="2.0.0-beta8" />
+		<PackageReference Include="WebVella.TagHelpers" Version="1.0.21" />
 		<PackageReference Include="YUICompressor.NET" Version="3.0.0" />
 	</ItemGroup>
 
