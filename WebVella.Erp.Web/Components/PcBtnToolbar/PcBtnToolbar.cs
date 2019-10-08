@@ -103,7 +103,7 @@ namespace WebVella.Erp.Web.Components
 
                 }
 
-                ViewBag.CssSize = ModelExtensions.GetEnumAsSelectOptions<WvCssSize>();
+                ViewBag.CssSize = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvCssSize>();
 
                 switch (context.Mode)
 				{

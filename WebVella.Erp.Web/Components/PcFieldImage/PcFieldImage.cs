@@ -165,7 +165,7 @@ namespace WebVella.Erp.Web.Components
 					model.Value = context.DataModel.GetPropertyValueByDataSource(options.Value);
 				}
 
-				ViewBag.ResizeActionsOptions = ModelExtensions.GetEnumAsSelectOptions<ImageResizeMode>();
+				ViewBag.ResizeActionsOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<ImageResizeMode>();
 
 				switch (context.Mode)
 				{

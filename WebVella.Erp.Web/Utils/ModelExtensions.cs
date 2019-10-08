@@ -26,12 +26,12 @@ namespace WebVella.Erp.Web.Utils
 					if (val == e.ToInt32(CultureInfo.InvariantCulture))
 					{
 						var memInfo = type.GetMember(type.GetEnumName(val));
-						var soAttributes = memInfo[0].GetCustomAttributes(typeof(SelectOptionAttribute), false);
+						var soAttributes = memInfo[0].GetCustomAttributes(typeof(Api.Models.SelectOptionAttribute), false);
 						if (soAttributes.Length > 0)
 						{
 							// we're only getting the first description we find
 							// others will be ignored
-							label = ((SelectOptionAttribute)soAttributes[0]).Label;
+							label = ((Api.Models.SelectOptionAttribute)soAttributes[0]).Label;
 						}
 
 						break;
@@ -114,5 +114,19 @@ namespace WebVella.Erp.Web.Utils
 
 			return originOptions.Select(x=> new WvSelectOption{Color = x.Color,IconClass = x.IconClass,Label = x.Label, Value = x.Value}).ToList();
 		}	
+
+		public static WvSelectOptionsAjaxDatasource ToWvSelectOptionsAjaxDatasource(this SelectOptionsAjaxDatasource origin){
+			if(origin == null)
+				return null;
+
+			var result = new WvSelectOptionsAjaxDatasource{
+				DatasourceName = origin.DatasourceName,
+				InitOptions = origin.InitOptions.ToWvSelectOption(),
+				Label = origin.Label,
+				PageSize = origin.PageSize,
+				Value = origin.Value
+			};
+			return result;
+		}
 	}
 }

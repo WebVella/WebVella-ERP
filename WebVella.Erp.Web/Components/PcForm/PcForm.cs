@@ -107,9 +107,9 @@ namespace WebVella.Erp.Web.Components
                 ViewBag.ComponentContext = context;
                 ViewBag.GeneralHelpSection = HelpJsApiGeneralSection;
 
-                ViewBag.LabelRenderModeOptions = ModelExtensions.GetEnumAsSelectOptions<WvLabelRenderMode>();
+                ViewBag.LabelRenderModeOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvLabelRenderMode>();
 
-                ViewBag.FieldRenderModeOptions = ModelExtensions.GetEnumAsSelectOptions<WvFieldRenderMode>();
+                ViewBag.FieldRenderModeOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvFieldRenderMode>();
 
                 context.Items[typeof(WvLabelRenderMode)] = instanceOptions.LabelMode;
                 context.Items[typeof(WvFieldRenderMode)] = instanceOptions.Mode;

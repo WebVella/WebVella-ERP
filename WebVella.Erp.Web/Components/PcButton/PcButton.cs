@@ -144,11 +144,11 @@ namespace WebVella.Erp.Web.Components
 
                 }
                 #region << Select options >>
-                ViewBag.CssSize = ModelExtensions.GetEnumAsSelectOptions<WvCssSize>();
+                ViewBag.CssSize = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvCssSize>();
 
-                ViewBag.ColorOptions = ModelExtensions.GetEnumAsSelectOptions<WvColor>().OrderBy(x => x.Label).ToList();
+                ViewBag.ColorOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvColor>().OrderBy(x => x.Label).ToList();
 
-                ViewBag.TypeOptions = ModelExtensions.GetEnumAsSelectOptions<WvButtonType>();
+                ViewBag.TypeOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvButtonType>();
 
                 #endregion
                 switch (context.Mode)

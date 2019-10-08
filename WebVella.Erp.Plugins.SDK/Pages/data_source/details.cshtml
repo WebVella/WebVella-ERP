@@ -24,7 +24,7 @@
 }
 
 <script>
-	function DeleteDataSource() {
+	function DeleteDataSource(e) {
 		if (confirm("Are you sure you want to delete the data source?") == true) {
 			ErpEvent.DISPATCH("WebVella.Erp.Web.Components.PcForm", { htmlId: "DeleteDataSourceForm", action: "submit", payload: null });
 		}

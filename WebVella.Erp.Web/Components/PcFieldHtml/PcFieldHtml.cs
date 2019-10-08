@@ -146,8 +146,8 @@ namespace WebVella.Erp.Web.Components
 					ViewBag.IsVisible = isVisible;
 				}
 
-				ViewBag.UploadModeOptions = ModelExtensions.GetEnumAsSelectOptions<HtmlUploadMode>();
-				ViewBag.ToolbarModeOptions = ModelExtensions.GetEnumAsSelectOptions<HtmlToolbarMode>();
+				ViewBag.UploadModeOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<HtmlUploadMode>();
+				ViewBag.ToolbarModeOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<HtmlToolbarMode>();
 
 				switch (context.Mode)
 				{

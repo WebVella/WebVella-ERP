@@ -32,7 +32,7 @@ namespace WebVella.Erp.Web.Components
 			public bool ShowIcon { get; set; } = false;
 
 			[JsonProperty(PropertyName = "ajax_datasource")]
-			public WvSelectOptionsAjaxDatasource AjaxDatasource { get; set; } = null;
+			public SelectOptionsAjaxDatasource AjaxDatasource { get; set; } = null;
 
 			[JsonProperty(PropertyName = "select_match_type")]
 			public WvSelectMatchType SelectMatchingType { get; set; } = WvSelectMatchType.Contains;
@@ -219,7 +219,7 @@ namespace WebVella.Erp.Web.Components
 						{
 							try
 							{
-								options.AjaxDatasource = JsonConvert.DeserializeObject<WvSelectOptionsAjaxDatasource>(optionsResult, new JsonSerializerSettings() { MissingMemberHandling = MissingMemberHandling.Error });
+								options.AjaxDatasource = JsonConvert.DeserializeObject<SelectOptionsAjaxDatasource>(optionsResult, new JsonSerializerSettings() { MissingMemberHandling = MissingMemberHandling.Error });
 								stringProcessed = true;
 								ViewBag.Options = options;
 							}
@@ -262,7 +262,7 @@ namespace WebVella.Erp.Web.Components
 					#endregion
 				}
 
-				ViewBag.SelectMatchOptions = ModelExtensions.GetEnumAsSelectOptions<WvSelectMatchType>();
+				ViewBag.SelectMatchOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvSelectMatchType>();
 
 				switch (context.Mode)
 				{

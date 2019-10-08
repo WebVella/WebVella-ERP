@@ -180,7 +180,7 @@ namespace WebVella.Erp.Web.Components
                     ViewBag.Type = (WvChartType)options.Type;
                 }
 
-                var chartTypeOptions = ModelExtensions.GetEnumAsSelectOptions<WvChartType>();
+                var chartTypeOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvChartType>();
                 chartTypeOptions.First(x => x.Value == "4").Label = "area";
                 ViewBag.ChartTypeOptions = chartTypeOptions;
 

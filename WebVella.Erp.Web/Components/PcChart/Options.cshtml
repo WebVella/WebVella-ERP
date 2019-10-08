@@ -5,12 +5,13 @@
 @using WebVella.Erp.Api.Models;
 @using WebVella.Erp.Web;
 @using WebVella.Erp.Web.Models;
+@using WebVella.TagHelpers.Models;
 @using WebVella.Erp.Web.Components;
 @{
 	var options = (PcChart.PcChartOptions)ViewBag.Options;
 	var node = (PageBodyNode)ViewBag.Node;
 	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
-	var typeOptions = (List<SelectOption>)ViewBag.ChartTypeOptions;
+	var typeOptions = (List<WvSelectOption>)ViewBag.ChartTypeOptions;
 }
 
 <wv-row>
@@ -29,7 +30,7 @@
 			description="Supported data types: List&lt;string> or CSV"></wv-field-datasource>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-select name="type" value="@options.Type" label-text="Chart type" options="typeOptions.ToWvSelectOption()" required="true"></wv-field-select>
+		<wv-field-select name="type" value="@options.Type" label-text="Chart type" options="typeOptions" required="true"></wv-field-select>
 	</wv-column>
 </wv-row>
 <wv-row>

@@ -4039,6 +4039,11 @@ erp-field.inline-edit .select2-container--default .select2-search--inline .selec
 
 /*#endregion*/
 
+/*#region <<wv-field-datasource>> */
+.wv-field-datasource .input-group .select2 .select2-selection {
+	border:none !important;
+}
+/*#endregion*/
 /*#region << Erp Filter >>*/
 .erp-filter .erp-filter-rule {
 	background: #e9ecef;

@@ -22,7 +22,7 @@
 					 api-url="@fieldModel.ApiUrl" access-denied-message="@fieldModel.AccessDeniedMessage"
 					 empty-value-message="@fieldModel.EmptyValueMessage" required="@fieldModel.Required" placeholder="@fieldModel.Placeholder"
 					 description="@fieldModel.Description" locale="@fieldModel.Locale" options="@fieldModel.Options.ToWvSelectOption()" 
-					 ajax-datasource="@options.AjaxDatasource" select-match-type="@options.SelectMatchingType">
+					 ajax-datasource="@options.AjaxDatasource.ToWvSelectOptionsAjaxDatasource()" select-match-type="@options.SelectMatchingType">
 	@if (options.ShowIcon)
 	{
 		<wv-field-prepend><span class='input-group-text'><i class='fa fa-fw fa-indent'></i></span></wv-field-prepend>

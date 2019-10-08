@@ -5,12 +5,13 @@
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Web.Models;
 @using WebVella.Erp.Api.Models;
+@using WebVella.TagHelpers.Models;
 @using WebVella.Erp.Web;
 @{
 	var options = (PcFieldImage.PcFieldImageOptions)ViewBag.Options;
 	var fieldModel = (PcFieldImage.PcFieldBaseModel)ViewBag.Model;
 	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
-	var resizeActionsOptions = (List<SelectOption>)ViewBag.ResizeActionsOptions;
+	var resizeActionsOptions = (List<WvSelectOption>)ViewBag.ResizeActionsOptions;
 }
 
 <wv-row>
@@ -21,7 +22,7 @@
 <h4 class="mt-2 mb-0">Label</h4>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-select name="label_mode" value="@((int)options.LabelMode)" label-text="Label mode" options="@fieldModel.LabelRenderModeOptions.ToWvSelectOption()" required="true"></wv-field-select>		
+		<wv-field-select name="label_mode" value="@((int)options.LabelMode)" label-text="Label mode" options="@fieldModel.LabelRenderModeOptions" required="true"></wv-field-select>		
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-text name="label_text" value="@options.LabelText" label-text="Label text"></wv-field-text>
@@ -30,7 +31,7 @@
 <h4 class="mt-4 mb-0">Field</h4>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-select name="mode" value="@((int)options.Mode)" label-text="Mode" options="@fieldModel.FieldRenderModeOptions.ToWvSelectOption()" required="true"></wv-field-select>
+		<wv-field-select name="mode" value="@((int)options.Mode)" label-text="Mode" options="@fieldModel.FieldRenderModeOptions" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-datasource name="value" value="@options.Value" label-text="Value" page-id="erpRequest.Page.Id"></wv-field-datasource>
@@ -47,7 +48,7 @@
 		<wv-field-text name="accept" value="@options.Accept" label-text="Accept"></wv-field-text>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-select name="resize_action" value="@options.ResizeAction" label-text="Resize Action" options="resizeActionsOptions.ToWvSelectOption()" required="true"></wv-field-select>
+		<wv-field-select name="resize_action" value="@options.ResizeAction" label-text="Resize Action" options="resizeActionsOptions" required="true"></wv-field-select>
 	</wv-column>
 </wv-row>
 <wv-row>

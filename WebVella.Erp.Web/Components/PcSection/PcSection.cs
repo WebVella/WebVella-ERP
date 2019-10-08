@@ -246,8 +246,8 @@ namespace WebVella.Erp.Web.Components
 					case ComponentMode.Design:
 						return await Task.FromResult<IViewComponentResult>(View("Design"));
 					case ComponentMode.Options:
-						ViewBag.LabelRenderModeOptions = ModelExtensions.GetEnumAsSelectOptions<WvLabelRenderMode>();
-						ViewBag.FieldRenderModeOptions = ModelExtensions.GetEnumAsSelectOptions<WvFieldRenderMode>();
+						ViewBag.LabelRenderModeOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvLabelRenderMode>();
+						ViewBag.FieldRenderModeOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvFieldRenderMode>();
 						return await Task.FromResult<IViewComponentResult>(View("Options"));
 					case ComponentMode.Help:
 						return await Task.FromResult<IViewComponentResult>(View("Help"));

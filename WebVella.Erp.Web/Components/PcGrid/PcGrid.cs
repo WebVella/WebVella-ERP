@@ -530,7 +530,7 @@ namespace WebVella.Erp.Web.Components
 				ViewBag.ComponentContext = context;
 
 
-				ViewBag.CssBreakpointOptions = ModelExtensions.GetEnumAsSelectOptions<WvCssBreakpoint>();
+				ViewBag.CssBreakpointOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvCssBreakpoint>();
 				ViewBag.Page = 1;
 				ViewBag.TotalCount = 0;
 
@@ -593,8 +593,8 @@ namespace WebVella.Erp.Web.Components
 					}
 				}
 				else {
-					ViewBag.VerticalAlignmentOptions = ModelExtensions.GetEnumAsSelectOptions<WvVerticalAlignmentType>();
-					ViewBag.HorizontalAlignmentOptions = ModelExtensions.GetEnumAsSelectOptions<WvHorizontalAlignmentType>();
+					ViewBag.VerticalAlignmentOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvVerticalAlignmentType>();
+					ViewBag.HorizontalAlignmentOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvHorizontalAlignmentType>();
 				}
 				var columns = new List<WvGridColumnMeta>();
 

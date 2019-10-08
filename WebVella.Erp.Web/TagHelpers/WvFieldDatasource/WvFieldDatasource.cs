@@ -159,7 +159,7 @@ namespace WebVella.Erp.Web.TagHelpers
 					divEl.AddCssClass("html");
 				}
 				var select2ContainerEl = new TagBuilder("span");
-				select2ContainerEl.AddCssClass("select2 select2-container select2-container--default d-block disabled");
+				select2ContainerEl.AddCssClass("select2 select2-container select2-container--bootstrap4 d-block disabled");
 
 				var select2SelectionEl = new TagBuilder("span");
 				select2SelectionEl.AddCssClass("selection");

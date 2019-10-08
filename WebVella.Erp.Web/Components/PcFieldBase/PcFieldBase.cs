@@ -145,9 +145,9 @@ namespace WebVella.Erp.Web.Components
 
 			public CultureInfo Culture { get; set; } = new CultureInfo("en-US");
 
-			public List<SelectOption> LabelRenderModeOptions { get; set; } = new List<SelectOption>();
+			public List<WvSelectOption> LabelRenderModeOptions { get; set; } = new List<WvSelectOption>();
 
-			public List<SelectOption> FieldRenderModeOptions { get; set; } = new List<SelectOption>();
+			public List<WvSelectOption> FieldRenderModeOptions { get; set; } = new List<WvSelectOption>();
 
 			public List<SelectOption> EntitySelectOptions { get; set; } = new List<SelectOption>();
 
@@ -500,9 +500,9 @@ namespace WebVella.Erp.Web.Components
 				model.ValidationErrors = ((ValidationException)context.Items[typeof(ValidationException)]).Errors;
 			}
 
-			model.LabelRenderModeOptions = ModelExtensions.GetEnumAsSelectOptions<WvLabelRenderMode>();
+			model.LabelRenderModeOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvLabelRenderMode>();
 
-			model.FieldRenderModeOptions = ModelExtensions.GetEnumAsSelectOptions<WvFieldRenderMode>();
+			model.FieldRenderModeOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvFieldRenderMode>();
 
 			if (context.Mode == ComponentMode.Options)
 				model.EntitySelectOptions = new MetaService().GetEntitiesAsSelectOptions();

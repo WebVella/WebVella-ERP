@@ -5,13 +5,14 @@
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Web.Models;
 @using WebVella.Erp.Api.Models;
+@using WebVella.TagHelpers.Models;
 @using WebVella.Erp.Web;
 @{
 	var options = (PcFieldHtml.PcFieldHtmlOptions)ViewBag.Options;
 	var fieldModel = (PcFieldHtml.PcFieldBaseModel)ViewBag.Model;
 	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
-	var uploadModeOptions = (List<SelectOption>)ViewBag.UploadModeOptions;
-	var toolbarModeOptions = (List<SelectOption>)ViewBag.ToolbarModeOptions;
+	var uploadModeOptions = (List<WvSelectOption>)ViewBag.UploadModeOptions;
+	var toolbarModeOptions = (List<WvSelectOption>)ViewBag.ToolbarModeOptions;
 }
 
 <wv-row>
@@ -22,7 +23,7 @@
 <h4 class="mt-2 mb-0">Label</h4>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-select name="label_mode" value="@((int)options.LabelMode)" label-text="Label mode" options="@fieldModel.LabelRenderModeOptions.ToWvSelectOption()" required="true"></wv-field-select>		
+		<wv-field-select name="label_mode" value="@((int)options.LabelMode)" label-text="Label mode" options="@fieldModel.LabelRenderModeOptions" required="true"></wv-field-select>		
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-text name="label_text" value="@options.LabelText" label-text="Label text"></wv-field-text>
@@ -31,7 +32,7 @@
 <h4 class="mt-4 mb-0">Field</h4>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-select name="mode" value="@((int)options.Mode)" label-text="Mode" options="@fieldModel.FieldRenderModeOptions.ToWvSelectOption()" required="true"></wv-field-select>
+		<wv-field-select name="mode" value="@((int)options.Mode)" label-text="Mode" options="@fieldModel.FieldRenderModeOptions" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-datasource name="value" value="@options.Value" label-text="Value" page-id="erpRequest.Page.Id"></wv-field-datasource>
@@ -45,10 +46,10 @@
 		<wv-field-text name="class" label-text="Css class" value="@options.Class"></wv-field-text>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-select name="upload_mode" value="@((int)options.UploadMode)" label-text="Upload mode" options="@uploadModeOptions.ToWvSelectOption()" required="true"></wv-field-select>
+		<wv-field-select name="upload_mode" value="@((int)options.UploadMode)" label-text="Upload mode" options="@uploadModeOptions" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-select name="toolbar_mode" value="@((int)options.ToolbarMode)" label-text="Toolbar mode" options="@toolbarModeOptions.ToWvSelectOption()" required="true"></wv-field-select>
+		<wv-field-select name="toolbar_mode" value="@((int)options.ToolbarMode)" label-text="Toolbar mode" options="@toolbarModeOptions" required="true"></wv-field-select>
 	</wv-column>
 </wv-row>
 

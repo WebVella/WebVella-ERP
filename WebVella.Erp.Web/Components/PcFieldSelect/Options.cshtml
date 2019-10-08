@@ -5,13 +5,14 @@
 @using WebVella.Erp.Web;
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Web.Models;
+@using WebVella.TagHelpers.Models;
 @using WebVella.Erp.Api.Models;
 @{
 	var options = (PcFieldSelect.PcFieldSelectOptions)ViewBag.Options;
 	var fieldModel = (PcFieldSelect.PcFieldSelectModel)ViewBag.Model;
 	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
 
-	var matchTypeOptions = (List<SelectOption>)ViewBag.SelectMatchOptions;
+	var matchTypeOptions = (List<WvSelectOption>)ViewBag.SelectMatchOptions;
 }
 
 <wv-row>
@@ -22,7 +23,7 @@
 <h4 class="mt-2 mb-0">Label</h4>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-select name="label_mode" value="@((int)options.LabelMode)" label-text="Label mode" options="@fieldModel.LabelRenderModeOptions.ToWvSelectOption()" required="true"></wv-field-select>
+		<wv-field-select name="label_mode" value="@((int)options.LabelMode)" label-text="Label mode" options="@fieldModel.LabelRenderModeOptions" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-text name="label_text" value="@options.LabelText" label-text="Label text"></wv-field-text>
@@ -32,7 +33,7 @@
 <h4 class="mt-4 mb-0">Field</h4>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-select name="mode" value="@((int)options.Mode)" label-text="Mode" options="@fieldModel.FieldRenderModeOptions.ToWvSelectOption()" required="true"></wv-field-select>
+		<wv-field-select name="mode" value="@((int)options.Mode)" label-text="Mode" options="@fieldModel.FieldRenderModeOptions" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-datasource name="value" value="@options.Value" label-text="Value" page-id="erpRequest.Page.Id"></wv-field-datasource>
@@ -74,7 +75,7 @@
 			<wv-field-datasource name="ajax_api_url_ds" value="@options.AjaxApiUrlDs" label-text="Override the ajax API URL inline edit" page-id="erpRequest.Page.Id" description="should be a string. Formatted with {0} - entityName, {1} - recordId "></wv-field-datasource>
 		</wv-column>		
 		<wv-column span="4">
-			<wv-field-select name="select_match_type" value="@options.SelectMatchingType" label-text="Options match type" options="@matchTypeOptions.ToWvSelectOption()"></wv-field-select>
+			<wv-field-select name="select_match_type" value="@options.SelectMatchingType" label-text="Options match type" options="@matchTypeOptions"></wv-field-select>
 		</wv-column>	
 	</wv-row>
 	<wv-row>

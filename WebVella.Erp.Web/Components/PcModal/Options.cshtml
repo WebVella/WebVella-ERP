@@ -4,12 +4,13 @@
 @using WebVella.Erp.Web.Utils;
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Api.Models;
+@using WebVella.TagHelpers.Models;
 @using WebVella.Erp.Web;
 @{
 	var options = (PcModal.PcModalOptions)ViewBag.Options;
 	var erpRequest = (ErpRequestContext)ViewBag.RequestContext;
-	var positionOptions = (List<SelectOption>)ViewBag.PositionOptions;
-	var sizeOptions = (List<SelectOption>)ViewBag.SizeOptions;
+	var positionOptions = (List<WvSelectOption>)ViewBag.PositionOptions;
+	var sizeOptions = (List<WvSelectOption>)ViewBag.SizeOptions;
 }
 
 <wv-row>
@@ -25,9 +26,9 @@
 </wv-row>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-select name="size" label-text="Size" value="@options.Size" options="sizeOptions.ToWvSelectOption()" required="true"></wv-field-select>
+		<wv-field-select name="size" label-text="Size" value="@options.Size" options="sizeOptions" required="true"></wv-field-select>
 	</wv-column>
 	<wv-column span="4">
-		<wv-field-select name="position" label-text="Position" value="@options.Position" options="positionOptions.ToWvSelectOption()" required="true"></wv-field-select>
+		<wv-field-select name="position" label-text="Position" value="@options.Position" options="positionOptions" required="true"></wv-field-select>
 	</wv-column>
 </wv-row>
