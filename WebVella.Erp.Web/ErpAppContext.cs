@@ -50,7 +50,7 @@ namespace WebVella.Erp.Web
 
 		private ErpAppContext(IServiceProvider serviceProvider)
 		{
-			IHostingEnvironment env = serviceProvider.GetService<IHostingEnvironment>();
+			IWebHostEnvironment env = serviceProvider.GetService<IWebHostEnvironment>();
 			string configPath = "config.json";
 			Configuration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile(configPath).Build();
 

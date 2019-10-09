@@ -35,7 +35,7 @@ namespace WebVella.Erp.Web
 			using (var secCtx = SecurityContext.OpenSystemScope())
 			{
 				IConfiguration configuration = app.ApplicationServices.GetService<IConfiguration>();
-				IHostingEnvironment env = app.ApplicationServices.GetService<IHostingEnvironment>();
+				IWebHostEnvironment env = app.ApplicationServices.GetService<IWebHostEnvironment>();
 
 				string configPath = "config.json";
 				if (!string.IsNullOrWhiteSpace(configFolder))

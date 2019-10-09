@@ -373,7 +373,7 @@ namespace WebVella.Erp.Web.Services
 			//if(!page.IsRazorBody)
 			//	throw new ValidationException("Page body is not in razor format.");
 
-			var env = ErpAppContext.Current.ServiceProvider.GetService<IHostingEnvironment>();
+			var env = ErpAppContext.Current.ServiceProvider.GetService<IWebHostEnvironment>();
 			var erpViewsFolderPath = Path.Combine(env.ContentRootPath, "Pages", "WV", "Pages");
 			if (!Directory.Exists(erpViewsFolderPath))
 				throw new ValidationException("Content folder is not found on file system.");
@@ -420,7 +420,7 @@ namespace WebVella.Erp.Web.Services
 		/// <param name="content"></param>
 		private void SavePageBodyContentOnFileSystem(Guid pageId, string content)
 		{
-			var env = ErpAppContext.Current.ServiceProvider.GetService<IHostingEnvironment>();
+			var env = ErpAppContext.Current.ServiceProvider.GetService<IWebHostEnvironment>();
 			var erpViewsFolderPath = Path.Combine(env.ContentRootPath, "Pages", "WV", "Pages");
 			if (!Directory.Exists(erpViewsFolderPath))
 				Directory.CreateDirectory(erpViewsFolderPath);
@@ -448,7 +448,7 @@ namespace WebVella.Erp.Web.Services
 		/// <param name="content"></param>
 		private void DeletePageBodyContentOnFileSystem(Guid pageId)
 		{
-			var env = ErpAppContext.Current.ServiceProvider.GetService<IHostingEnvironment>();
+			var env = ErpAppContext.Current.ServiceProvider.GetService<IWebHostEnvironment>();
 			var erpViewsFolderPath = Path.Combine(env.ContentRootPath, "Pages", "WV", "Pages");
 			var filepath = Path.Combine(erpViewsFolderPath, $"{pageId}.cshtml");
 			if (File.Exists(filepath))
