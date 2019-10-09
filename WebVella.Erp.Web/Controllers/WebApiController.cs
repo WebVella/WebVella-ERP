@@ -3089,7 +3089,7 @@ namespace WebVella.Erp.Web.Controllers
 				{
 					//Hardcoded image for development
 					WebClient wc = new WebClient();
-					byte[] bytes = wc.DownloadData($"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/assets/missing-image.png");
+					byte[] bytes = wc.DownloadData($"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/webvella-erp-web/assets/missing-image.png");
 
 					return File(bytes, "image/png");
 				}

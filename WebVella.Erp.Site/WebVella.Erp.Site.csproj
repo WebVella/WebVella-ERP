@@ -23,6 +23,10 @@
 
   <ItemGroup>
     <Compile Remove="wwwroot\**\*;node_modules;bower_components" />
+    <Compile Remove="wwwroot\js\**" />
+    <Content Remove="wwwroot\js\**" />
+    <EmbeddedResource Remove="wwwroot\js\**" />
+    <None Remove="wwwroot\js\**" />
     <None Remove="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Update="wwwroot\**\*">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -54,11 +58,9 @@
 	</ItemGroup>
 
 
-  <ItemGroup>
-    <Folder Include="wwwroot\js\wv-recurrence-template\" />
-    <Folder Include="wwwroot\js\wv-timelog-list\" />
-    <Folder Include="wwwroot\js\wv-post-list\" />
-  </ItemGroup>
+	<ItemGroup>
+	  <Folder Include="wwwroot\" />
+	</ItemGroup>
 
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

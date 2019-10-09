@@ -27,6 +27,7 @@ namespace WebVella.Erp.Web
 			services.AddTransient<AuthService>();
 			services.AddScoped<ErpRequestContext>();
 			services.Configure<RazorViewEngineOptions>(options => { options.ViewLocationExpanders.Add(new ErpViewLocationExpander()); });
+			services.ConfigureOptions(typeof(WebConfigurationOptions));
 			return services;
 		}
 

@@ -171,7 +171,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 						foreach (var userGroup in timelogsGroupByCreator)
 						{
 							var user = users.First(x => (Guid)x["id"] == userGroup.Key);
-							var imagePath = "/assets/avatar.png";
+							var imagePath = "/webvella-erp-web/assets/avatar.png";
 							if (user["image"] != null && (string)user["image"] != "")
 								imagePath = "/fs" + (string)user["image"];
 

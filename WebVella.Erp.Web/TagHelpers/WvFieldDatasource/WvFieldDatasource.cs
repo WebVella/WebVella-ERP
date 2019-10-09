@@ -582,7 +582,7 @@ public class SampleCodeVariable : ICodeVariable
 				{
 					var scriptEl = new TagBuilder("script");
 					scriptEl.Attributes.Add("type", "text/javascript");
-					scriptEl.Attributes.Add("src", "/lib/ace/ace.js");
+					scriptEl.Attributes.Add("src", "/webvella-erp-web/lib/ace/ace.js");
 					output.Content.AppendHtml(scriptEl);
 
 					ViewContext.HttpContext.Items[typeof(WvFieldDatasource) + fileName] = new WvTagHelperContext()
@@ -607,7 +607,7 @@ public class SampleCodeVariable : ICodeVariable
 				{
 					var scriptEl = new TagBuilder("script");
 					scriptEl.Attributes.Add("type", "text/javascript");
-					scriptEl.Attributes.Add("src", "/lib/bootstrap-3-typeahead/bootstrap3-typeahead.min.js");
+					scriptEl.Attributes.Add("src", "/webvella-erp-web/lib/bootstrap-3-typeahead/bootstrap3-typeahead.min.js");
 					output.Content.AppendHtml(scriptEl);
 
 					ViewContext.HttpContext.Items[typeof(WvFieldDatasource) + fileName] = new WvTagHelperContext()
