@@ -14,6 +14,7 @@ using WebVella.Erp.Jobs;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Models.AutoMapper;
 using WebVella.Erp.Web.Services;
+using WebVella.TagHelpers;
 
 namespace WebVella.Erp.Web
 {
@@ -21,6 +22,7 @@ namespace WebVella.Erp.Web
 	{
 		public static IServiceCollection AddErp(this IServiceCollection services)
 		{
+			services.AddWebVellaTagHelpers();
 			services.AddSingleton<IErpService, ErpService>();
 			services.AddTransient<AuthService>();
 			services.AddScoped<ErpRequestContext>();

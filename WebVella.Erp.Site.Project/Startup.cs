@@ -15,20 +15,14 @@ using WebVella.Erp.Plugins.Project;
 using WebVella.Erp.Plugins.SDK;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Middleware;
-using WebVella.TagHelpers;
 
 namespace WebVella.Erp.Site.Project
 {
 	public class Startup
 	{
-		public Startup()
-		{
-		}
-
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddWebVellaTagHelpers();
 			services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
 			services.AddResponseCompression(options => { options.Providers.Add<GzipCompressionProvider>(); });
 			services.AddRouting(options => { options.LowercaseUrls = true; });
@@ -37,7 +31,7 @@ namespace WebVella.Erp.Site.Project
 			services.AddCors(options =>
 			{
 				options.AddPolicy("AllowNodeJsLocalhost",
-					builder => builder.WithOrigins("http://localhost:3333","http://localhost:3000", "http://localhost", "http://localhost:2202").AllowAnyMethod().AllowCredentials());
+					builder => builder.WithOrigins("http://localhost:3333", "http://localhost:3000", "http://localhost", "http://localhost:2202").AllowAnyMethod().AllowCredentials());
 			});
 
 			services.AddDetectionCore().AddDevice();
