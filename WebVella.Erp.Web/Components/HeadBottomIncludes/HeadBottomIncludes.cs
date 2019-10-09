@@ -55,17 +55,17 @@ namespace WebVella.Erp.Web.Components
 
 				//Your includes below >>>>
 
-				#region << jquery >>
-				{
-					if (!includedScriptTags.Any(x => x.Src.Contains("/jquery")))
-					{
-						scriptTagsToInclude.Add(new ScriptTagInclude()
-						{
-							Src = "/lib/jquery/jquery.min.js?cb=" + cacheKey
-						});
-					}
-				}
-				#endregion
+				//#region << jquery >>
+				//{
+				//	if (!includedScriptTags.Any(x => x.Src.Contains("/jquery")))
+				//	{
+				//		scriptTagsToInclude.Add(new ScriptTagInclude()
+				//		{
+				//			Src = "/lib/jquery/jquery.min.js?cb=" + cacheKey
+				//		});
+				//	}
+				//}
+				//#endregion
 
 				#region << site.js >>
 				{
@@ -77,89 +77,89 @@ namespace WebVella.Erp.Web.Components
 				}
 				#endregion
 
-				#region << bootstrap >>
-				{
-					if (!includedScriptTags.Any(x => x.Src.Contains("/bootstrap")))
-					{
-						scriptTagsToInclude.Add(new ScriptTagInclude()
-						{
-							Src = "/lib/twitter-bootstrap/js/bootstrap.bundle.min.js?cb=" + cacheKey
-						});
-					}
-				}
-				#endregion
+				//#region << bootstrap >>
+				//{
+				//	if (!includedScriptTags.Any(x => x.Src.Contains("/bootstrap")))
+				//	{
+				//		scriptTagsToInclude.Add(new ScriptTagInclude()
+				//		{
+				//			Src = "/lib/twitter-bootstrap/js/bootstrap.bundle.min.js?cb=" + cacheKey
+				//		});
+				//	}
+				//}
+				//#endregion
 
-				#region << uri.js >>
-				{
-					if (!includedScriptTags.Any(x => x.Src.Contains("/uri")))
-					{
-						scriptTagsToInclude.Add(new ScriptTagInclude()
-						{
-							Src = "/lib/URI.js/URI.min.js?cb=" + cacheKey
-						});
-					}
-				}
-				#endregion
+				//#region << uri.js >>
+				//{
+				//	if (!includedScriptTags.Any(x => x.Src.Contains("/uri")))
+				//	{
+				//		scriptTagsToInclude.Add(new ScriptTagInclude()
+				//		{
+				//			Src = "/lib/URI.js/URI.min.js?cb=" + cacheKey
+				//		});
+				//	}
+				//}
+				//#endregion
 
-				#region << moment >>
-				{
-					if (!includedScriptTags.Any(x => x.Src.Contains("/moment")))
-					{
-						scriptTagsToInclude.Add(new ScriptTagInclude()
-						{
-							Src = "/lib/moment.js/moment.min.js?cb=" + cacheKey
-						});
-					}
-				}
-				#endregion
+				//#region << moment >>
+				//{
+				//	if (!includedScriptTags.Any(x => x.Src.Contains("/moment")))
+				//	{
+				//		scriptTagsToInclude.Add(new ScriptTagInclude()
+				//		{
+				//			Src = "/lib/moment.js/moment.min.js?cb=" + cacheKey
+				//		});
+				//	}
+				//}
+				//#endregion
 
-				#region << ckeditor >>
-				{
-					if (!includedScriptTags.Any(x => x.Src.Contains("/ckeditor")))
-					{
-						scriptTagsToInclude.Add(new ScriptTagInclude()
-						{
-							Src = "/lib/ckeditor/ckeditor.js?cb=" + cacheKey
-						});
-					}
-				}
-				#endregion
+				//#region << ckeditor >>
+				//{
+				//	if (!includedScriptTags.Any(x => x.Src.Contains("/ckeditor")))
+				//	{
+				//		scriptTagsToInclude.Add(new ScriptTagInclude()
+				//		{
+				//			Src = "/lib/ckeditor/ckeditor.js?cb=" + cacheKey
+				//		});
+				//	}
+				//}
+				//#endregion
 
-				#region << lodash >>
-				{
-					if (!includedScriptTags.Any(x => x.Src.Contains("/lodash")))
-					{
-						scriptTagsToInclude.Add(new ScriptTagInclude()
-						{
-							Src = "/lib/lodash.js/lodash.min.js?cb=" + cacheKey
-						});
-					}
-				}
-				#endregion
+				//#region << lodash >>
+				//{
+				//	if (!includedScriptTags.Any(x => x.Src.Contains("/lodash")))
+				//	{
+				//		scriptTagsToInclude.Add(new ScriptTagInclude()
+				//		{
+				//			Src = "/lib/lodash.js/lodash.min.js?cb=" + cacheKey
+				//		});
+				//	}
+				//}
+				//#endregion
 
-				#region << flatpickr >>
-				{
-					if (!includedScriptTags.Any(x => x.Src.Contains("/flatpickr")))
-					{
-						scriptTagsToInclude.Add(new ScriptTagInclude()
-						{
-							Src = "/lib/flatpickr/flatpickr.min.js?cb=" + cacheKey
-						});
-					}
-				}
-				#endregion
+				//#region << flatpickr >>
+				//{
+				//	if (!includedScriptTags.Any(x => x.Src.Contains("/flatpickr")))
+				//	{
+				//		scriptTagsToInclude.Add(new ScriptTagInclude()
+				//		{
+				//			Src = "/lib/flatpickr/flatpickr.min.js?cb=" + cacheKey
+				//		});
+				//	}
+				//}
+				//#endregion
 
-				#region << select2 >>
-				{
-					if (!includedScriptTags.Any(x => x.Src.Contains("/select2")))
-					{
-						scriptTagsToInclude.Add(new ScriptTagInclude()
-						{
-							Src = "/lib/select2/js/select2.min.js?cb=" + cacheKey
-						});
-					}
-				}
-				#endregion
+				//#region << select2 >>
+				//{
+				//	if (!includedScriptTags.Any(x => x.Src.Contains("/select2")))
+				//	{
+				//		scriptTagsToInclude.Add(new ScriptTagInclude()
+				//		{
+				//			Src = "/lib/select2/js/select2.min.js?cb=" + cacheKey
+				//		});
+				//	}
+				//}
+				//#endregion
 
 				#region << js-cookie >>
 				{
@@ -173,41 +173,41 @@ namespace WebVella.Erp.Web.Components
 				}
 				#endregion
 
-				#region << decimal >>
-				{
-					if (!includedScriptTags.Any(x => x.Src.Contains("/decimal")))
-					{
-						scriptTagsToInclude.Add(new ScriptTagInclude()
-						{
-							Src = "/lib/decimal.js/decimal.min.js?cb=" + cacheKey
-						});
-					}
-				}
-				#endregion
+				//#region << decimal >>
+				//{
+				//	if (!includedScriptTags.Any(x => x.Src.Contains("/decimal")))
+				//	{
+				//		scriptTagsToInclude.Add(new ScriptTagInclude()
+				//		{
+				//			Src = "/lib/decimal.js/decimal.min.js?cb=" + cacheKey
+				//		});
+				//	}
+				//}
+				//#endregion
 
-				#region << toastr >>
-				{
-					if (!includedScriptTags.Any(x => x.Src.Contains("/toastr")))
-					{
-						scriptTagsToInclude.Add(new ScriptTagInclude()
-						{
-							Src = "/lib/toastr.js/toastr.min.js?cb=" + cacheKey
-						});
-					}
-				}
-				#endregion
+				//#region << toastr >>
+				//{
+				//	if (!includedScriptTags.Any(x => x.Src.Contains("/toastr")))
+				//	{
+				//		scriptTagsToInclude.Add(new ScriptTagInclude()
+				//		{
+				//			Src = "/lib/toastr.js/toastr.min.js?cb=" + cacheKey
+				//		});
+				//	}
+				//}
+				//#endregion
 
-				#region << colorpicker >>
-				{
-					if (!includedScriptTags.Any(x => x.Src.Contains("/colorpicker")))
-					{
-						scriptTagsToInclude.Add(new ScriptTagInclude()
-						{
-							Src = "/lib/spectrum/spectrum.min.js?cb=" + cacheKey
-						});
-					}
-				}
-				#endregion
+				//#region << colorpicker >>
+				//{
+				//	if (!includedScriptTags.Any(x => x.Src.Contains("/colorpicker")))
+				//	{
+				//		scriptTagsToInclude.Add(new ScriptTagInclude()
+				//		{
+				//			Src = "/lib/spectrum/spectrum.min.js?cb=" + cacheKey
+				//		});
+				//	}
+				//}
+				//#endregion
 
 
 				#region << wv-lazyload >>
