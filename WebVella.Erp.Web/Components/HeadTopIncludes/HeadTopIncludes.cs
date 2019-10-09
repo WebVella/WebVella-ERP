@@ -107,77 +107,77 @@ namespace WebVella.Erp.Web.Components
 				//}
 				//#endregion
 
-				#region << bootstrap.css >>
-				{
-					if (!includedLinkTags.Any(x => x.Href.Contains("/bootstrap.css")))
-					{
-						linkTagsToInclude.Add(new LinkTagInclude()
-						{
-							Href = "/lib/twitter-bootstrap/css/bootstrap.css?cb=" + cacheKey
-						});
-					}
-				}
-				#endregion
+				//#region << bootstrap.css >>
+				//{
+				//	if (!includedLinkTags.Any(x => x.Href.Contains("/bootstrap.css")))
+				//	{
+				//		linkTagsToInclude.Add(new LinkTagInclude()
+				//		{
+				//			Href = "/lib/twitter-bootstrap/css/bootstrap.css?cb=" + cacheKey
+				//		});
+				//	}
+				//}
+				//#endregion
 
-				#region << flatpickr >>
-				{
-					if (!includedLinkTags.Any(x => x.Href.Contains("/flatpickr")))
-					{
-						linkTagsToInclude.Add(new LinkTagInclude()
-						{
-							Href = "/lib/flatpickr/flatpickr.min.css?cb=" + cacheKey
-						});
-					}
-				}
-				#endregion
+				//#region << flatpickr >>
+				//{
+				//	if (!includedLinkTags.Any(x => x.Href.Contains("/flatpickr")))
+				//	{
+				//		linkTagsToInclude.Add(new LinkTagInclude()
+				//		{
+				//			Href = "/lib/flatpickr/flatpickr.min.css?cb=" + cacheKey
+				//		});
+				//	}
+				//}
+				//#endregion
 
-				#region << select2 >>
-				{
-					if (!includedLinkTags.Any(x => x.Href.Contains("/select2")))
-					{
-						linkTagsToInclude.Add(new LinkTagInclude()
-						{
-							Href = "/lib/select2/css/select2.min.css?cb=" + cacheKey
-						});
-					}
-				}
-				#endregion
+				//#region << select2 >>
+				//{
+				//	if (!includedLinkTags.Any(x => x.Href.Contains("/select2")))
+				//	{
+				//		linkTagsToInclude.Add(new LinkTagInclude()
+				//		{
+				//			Href = "/lib/select2/css/select2.min.css?cb=" + cacheKey
+				//		});
+				//	}
+				//}
+				//#endregion
 
-				#region << font-awesome >>
-				{
-					if (!includedLinkTags.Any(x => x.Href.Contains("/font-awesome")))
-					{
-						linkTagsToInclude.Add(new LinkTagInclude()
-						{
-							Href = "/css/font-awesome-5.10.2/css/all.min.css?cb=" + cacheKey
-						});
-					}
-				}
-				#endregion
+				//#region << font-awesome >>
+				//{
+				//	if (!includedLinkTags.Any(x => x.Href.Contains("/font-awesome")))
+				//	{
+				//		linkTagsToInclude.Add(new LinkTagInclude()
+				//		{
+				//			Href = "/css/font-awesome-5.10.2/css/all.min.css?cb=" + cacheKey
+				//		});
+				//	}
+				//}
+				//#endregion
 
-				#region << toastr >>
-				{
-					if (!includedLinkTags.Any(x => x.Href.Contains("/toastr")))
-					{
-						linkTagsToInclude.Add(new LinkTagInclude()
-						{
-							Href = "/lib/toastr.js/toastr.min.css?cb=" + cacheKey
-						});
-					}
-				}
-				#endregion
+				//#region << toastr >>
+				//{
+				//	if (!includedLinkTags.Any(x => x.Href.Contains("/toastr")))
+				//	{
+				//		linkTagsToInclude.Add(new LinkTagInclude()
+				//		{
+				//			Href = "/lib/toastr.js/toastr.min.css?cb=" + cacheKey
+				//		});
+				//	}
+				//}
+				//#endregion
 
-				#region << colorpicker >>
-				{
-					if (!includedLinkTags.Any(x => x.Href.Contains("/colorpicker")))
-					{
-						linkTagsToInclude.Add(new LinkTagInclude()
-						{
-							Href = "/lib/spectrum/spectrum.min.css?cb=" + cacheKey
-						});
-					}
-				}
-				#endregion
+				//#region << colorpicker >>
+				//{
+				//	if (!includedLinkTags.Any(x => x.Href.Contains("/colorpicker")))
+				//	{
+				//		linkTagsToInclude.Add(new LinkTagInclude()
+				//		{
+				//			Href = "/lib/spectrum/spectrum.min.css?cb=" + cacheKey
+				//		});
+				//	}
+				//}
+				//#endregion
 
 				//<<<< Your includes up
 
