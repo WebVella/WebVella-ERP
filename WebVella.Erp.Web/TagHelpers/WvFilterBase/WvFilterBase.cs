@@ -214,7 +214,7 @@ namespace WebVella.Erp.Web.TagHelpers
 
 			#region << Render >>
 			output.TagName = "div";
-			output.AddCssClass("erp-field form-group erp-filter");
+			output.AddCssClass("wv-field form-group erp-filter");
 			output.Attributes.Add("id", $"erp-filter-{FilterId}");
 			output.Attributes.Add("data-name", $"{Name}");
 			output.Attributes.Add("data-prefix", $"{Prefix}");

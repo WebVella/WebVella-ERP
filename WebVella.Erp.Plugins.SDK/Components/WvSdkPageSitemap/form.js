@@ -16,6 +16,14 @@
 
 	var WvAdminSitemapSelectors = WvAdminSitemap();
 
+	var selectInitObject = {
+		theme: 'bootstrap4',
+		language: "en",
+		minimumResultsForSearch: 10,
+		closeOnSelect: true,
+		width: 'element'
+	};
+
 	function WvAdminSitemapGetCurrentApp() {
 		var selectedAppOptions = $(WvAdminSitemapSelectors["appSelect"]).select2('data');
 		if (selectedAppOptions && selectedAppOptions.length > 0) {
@@ -44,11 +52,12 @@
 	function WvAdminSitemapHideSelect(propertyName) {
 		var WvAdminSitemapSelectors = WvAdminSitemap();
 		var selector = WvAdminSitemapSelectors[propertyName];
-		var $fieldEl = $(selector).closest(".erp-field");
+		var $fieldEl = $(selector).closest(".wv-field");
 		var currentlyVisible = !$($fieldEl).hasClass("d-none");
 		if (currentlyVisible) {
 			$(selector).children('option').remove();
-			$(selector).select2().val(null).trigger("change");
+			//$(selector).select2(selectInitObject).val(null).trigger("change");
+			$(selector).val(null).trigger("change");
 			$($fieldEl).addClass("d-none");
 		}
 	}
@@ -56,8 +65,7 @@
 	function WvAdminSitemapShowSelect(propertyName, resetValue, hasEmptyOption) {
 		var WvAdminSitemapSelectors = WvAdminSitemap();
 		var selector = WvAdminSitemapSelectors[propertyName];
-		var $select2El = $(selector).select2();
-		var $fieldEl = $(selector).closest(".erp-field");
+		var $fieldEl = $(selector).closest(".wv-field");
 		var currentlyVisible = !$($fieldEl).hasClass("d-none");
 		var currentlyHasEmptyOption = $($fieldEl).find("option[value='']").length > 0;
 
@@ -65,7 +73,6 @@
 		if (!hasEmptyOption && currentlyHasEmptyOption) {
 			$(selector).find("option[value='']").remove().trigger("change");
 		}
-
 		//Return if no other changes needed. Adding or removing empty option is a change
 		if (currentlyVisible && !resetValue) {
 			//Just prepend empty option if needed
@@ -76,7 +83,8 @@
 		}
 		//Reset
 		$(selector).children('option').remove();
-		$(selector).select2().val(null).trigger("change");
+		//$(selector).select2(selectInitObject).val(null).trigger("change");
+		$(selector).val(null).trigger("change");
 
 		//Add empty option
 		if (hasEmptyOption && !currentlyHasEmptyOption) {
@@ -149,10 +157,12 @@
 
 		if ($(selector).children('option').length > 0) {
 			var firstOptionVal = $(selector).find("option:first").val();
-			$(selector).select2().val(firstOptionVal).trigger("change");
+			//$(selector).select2(selectInitObject).val(firstOptionVal).trigger("change");
+			$(selector).val(firstOptionVal).trigger("change");
 		}
 		else {
-			$(selector).select2().trigger("change");
+			//$(selector).select2(selectInitObject).trigger("change");
+			$(selector).trigger("change");
 		}
 
 		$($fieldEl).removeClass("d-none");
