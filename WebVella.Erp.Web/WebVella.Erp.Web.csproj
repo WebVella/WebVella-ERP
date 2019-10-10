@@ -119,14 +119,14 @@
 
 	<ItemGroup>
 		<PackageReference Include="CS-Script.Core" Version="1.2.2" />
-		<PackageReference Include="HtmlAgilityPack" Version="1.11.15" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.16" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
 		<PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0007" />
 		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0007" />
 		<PackageReference Include="Wangkanai.Detection.Device" Version="2.0.0-beta8" />
-		<PackageReference Include="WebVella.TagHelpers" Version="1.0.22" />
+		<PackageReference Include="WebVella.TagHelpers" Version="1.0.24" />
 		<PackageReference Include="YUICompressor.NET" Version="3.0.0" />
 		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.0.0" />
 	</ItemGroup>
