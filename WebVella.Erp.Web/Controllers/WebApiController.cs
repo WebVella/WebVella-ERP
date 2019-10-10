@@ -3079,9 +3079,10 @@ namespace WebVella.Erp.Web.Controllers
 			if (string.IsNullOrWhiteSpace(filepath))
 				filepath = $"/{root}";
 			else if (!filepath.StartsWith("/"))
+			{
 				filepath = "/" + filepath;
-
-			filepath = $"/{root}{filepath}";
+				filepath = $"/{root}{filepath}";
+			}
 
 			filepath = filepath.ToLowerInvariant();
 
