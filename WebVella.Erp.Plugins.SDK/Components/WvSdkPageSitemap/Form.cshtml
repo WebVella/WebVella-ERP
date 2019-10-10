@@ -70,7 +70,7 @@ else
 		<wv-column span="4">
 			@if (erpPage.NodeId != null)
 			{
-				<div class="form-group erp-field display">
+				<div class="form-group wv-field display">
 					<div class="form-control-plaintext" style="margin-top:11px;">
 						<wv-button color="White" type="Button" id="detach-btn" size="Small" text="Detach from Node" icon-class="fa fa-times go-red"></wv-button>
 						<div class="d-none" id="detach-btn-message"><i class="fas fa-exclamation-triangle go-orange"></i> submit to apply the change</div>
@@ -79,7 +79,7 @@ else
 			}
 			else if (erpPage.AppId != null)
 			{
-				<div class="form-group erp-field display">
+				<div class="form-group wv-field display">
 					<label class="control-label label-stacked">&nbsp;</label>
 					<div class="form-control-plaintext">
 						<a href="@($"/sdk/objects/application/r/{erpPage.AppId.Value}/sitemap")" target="_blank"><i class="fas fa-external-link-alt"></i> manage application sitemap</a>

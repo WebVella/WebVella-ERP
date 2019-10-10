@@ -278,7 +278,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				#region << Type >>
 				{
 					var fieldGroupEl = new TagBuilder("div");
-					fieldGroupEl.AddCssClass("form-group erp-field");
+					fieldGroupEl.AddCssClass("form-group wv-field");
 					var fieldLabel = new TagBuilder("label");
 					fieldLabel.AddCssClass("control-label label-stacked");
 					fieldLabel.InnerHtml.AppendHtml("Type");
@@ -363,7 +363,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				#region << Datasource >>
 				{
 					var fieldGroupEl = new TagBuilder("div");
-					fieldGroupEl.AddCssClass("form-group erp-field");
+					fieldGroupEl.AddCssClass("form-group wv-field");
 					if (DataSourceVariable != null && DataSourceVariable.Type != DataSourceVariableType.DATASOURCE)
 					{
 						fieldGroupEl.AddCssClass("d-none");
@@ -395,7 +395,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				#region << Code >>
 				{
 					var fieldGroupEl = new TagBuilder("div");
-					fieldGroupEl.AddCssClass("form-group erp-field");
+					fieldGroupEl.AddCssClass("form-group wv-field");
 					if (DataSourceVariable == null || DataSourceVariable.Type != DataSourceVariableType.CODE)
 					{
 						fieldGroupEl.AddCssClass("d-none");
@@ -459,7 +459,7 @@ public class SampleCodeVariable : ICodeVariable
 				#region << HTML >>
 				{
 					var fieldGroupEl = new TagBuilder("div");
-					fieldGroupEl.AddCssClass("form-group erp-field");
+					fieldGroupEl.AddCssClass("form-group wv-field");
 					if (DataSourceVariable == null || DataSourceVariable.Type != DataSourceVariableType.HTML)
 					{
 						fieldGroupEl.AddCssClass("d-none");
@@ -505,7 +505,7 @@ public class SampleCodeVariable : ICodeVariable
 				#region << Default >>
 				{
 					var fieldGroupEl = new TagBuilder("div");
-					fieldGroupEl.AddCssClass("form-group erp-field");
+					fieldGroupEl.AddCssClass("form-group wv-field");
 					fieldGroupEl.Attributes.Add("id", $"modal-{FieldId}-default-group");
 					var fieldLabel = new TagBuilder("label");
 					fieldLabel.AddCssClass("control-label label-stacked");
