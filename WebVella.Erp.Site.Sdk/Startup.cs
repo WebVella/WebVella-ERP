@@ -100,15 +100,7 @@ namespace WebVella.Erp.Site.Sdk
 
 			app.UseCors("AllowNodeJsLocalhost"); //Enable CORS -> should be before static files to enable for it too
 
-			app.UseStaticFiles(new StaticFileOptions
-			{
-				OnPrepareResponse = ctx =>
-				{
-					const int durationInSeconds = 60 * 60 * 24 * 30; //30 days caching of these resources
-					ctx.Context.Response.Headers[HeaderNames.CacheControl] =
-						"public,max-age=" + durationInSeconds;
-				}
-			});
+			app.UseStaticFiles();
 
 			app.UseRouting();
 			app.UseAuthentication();

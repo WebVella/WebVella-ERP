@@ -13,7 +13,6 @@ namespace WebVella.Erp.Site.Crm
 		public static IWebHost BuildWebHost(string[] args) =>
 		   WebHost.CreateDefaultBuilder(args)
 			   .UseStartup<Startup>()
-			   .UseWebRoot(@"..\WebVella.Erp.Site\wwwroot")
 			   .Build();
 	}
 }

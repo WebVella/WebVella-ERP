@@ -860,6 +860,13 @@ namespace WebVella.Erp.Api
 
 					return response;
 				}
+				catch(ValidationException)
+				{
+					if (isTransactionActive)
+						connection.RollbackTransaction();
+
+					throw;
+				}
 				catch (Exception e)
 				{
 					if (isTransactionActive)
@@ -1527,6 +1534,13 @@ namespace WebVella.Erp.Api
 						connection.CommitTransaction();
 
 					return response;
+				}
+				catch (ValidationException)
+				{
+					if (isTransactionActive)
+						connection.RollbackTransaction();
+
+					throw;
 				}
 				catch (Exception e)
 				{

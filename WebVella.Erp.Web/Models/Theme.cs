@@ -21,13 +21,13 @@ namespace WebVella.Erp.Web.Models
 		public string Description { get; set; } = "this is the default theme of the application";
 
 		[JsonProperty("brand_logo")]
-		public string BrandLogo { get; set; } = "/assets/logo.png";
+		public string BrandLogo { get; set; } = "/webvella-erp-web/assets/logo.png";
 
 		[JsonProperty("brand_logo_text")]
-		public string BrandLogoText { get; set; } = "/assets/logo-text.png";
+		public string BrandLogoText { get; set; } = "/webvella-erp-web/assets/logo-text.png";
 
 		[JsonProperty("brand_favicon")]
-		public string BrandFavIcon { get; set; } = "/assets/favicon.png";
+		public string BrandFavIcon { get; set; } = "/webvella-erp-web/assets/favicon.png";
 
 		[JsonProperty("brand_color")]
 		public string BrandColor { get; set; } = "#fff";
@@ -60,7 +60,7 @@ namespace WebVella.Erp.Web.Models
 		public string BodyFontFamily { get; set; } = "Roboto";
 
 		[JsonProperty("body_font_url")]
-		public string BodyFontUrl { get; set; } = "/css/Roboto/Roboto-Regular.ttf";
+		public string BodyFontUrl { get; set; } = "/webvella-erp-web/css/Roboto/Roboto-Regular.ttf";
 
 		[JsonProperty("body_font_size")]
 		public string BodyFontSize { get; set; } = "14px";

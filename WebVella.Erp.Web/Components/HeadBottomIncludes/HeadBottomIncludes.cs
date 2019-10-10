@@ -61,7 +61,7 @@ namespace WebVella.Erp.Web.Components
 				//	{
 				//		scriptTagsToInclude.Add(new ScriptTagInclude()
 				//		{
-				//			Src = "/lib/jquery/jquery.min.js?cb=" + cacheKey
+				//			Src = "/webvella-erp-web/lib/jquery/jquery.min.js?cb=" + cacheKey
 				//		});
 				//	}
 				//}
@@ -72,7 +72,7 @@ namespace WebVella.Erp.Web.Components
 					//Always include
 					scriptTagsToInclude.Add(new ScriptTagInclude()
 					{
-						Src = "/js/site.js?cb=" + cacheKey
+						Src = "/webvella-erp-web/js/site.js?cb=" + cacheKey
 					});
 				}
 				#endregion
@@ -83,7 +83,7 @@ namespace WebVella.Erp.Web.Components
 				//	{
 				//		scriptTagsToInclude.Add(new ScriptTagInclude()
 				//		{
-				//			Src = "/lib/twitter-bootstrap/js/bootstrap.bundle.min.js?cb=" + cacheKey
+				//			Src = "/webvella-erp-web/lib/twitter-bootstrap/js/bootstrap.bundle.min.js?cb=" + cacheKey
 				//		});
 				//	}
 				//}
@@ -95,7 +95,7 @@ namespace WebVella.Erp.Web.Components
 				//	{
 				//		scriptTagsToInclude.Add(new ScriptTagInclude()
 				//		{
-				//			Src = "/lib/URI.js/URI.min.js?cb=" + cacheKey
+				//			Src = "/webvella-erp-web/lib/URI.js/URI.min.js?cb=" + cacheKey
 				//		});
 				//	}
 				//}
@@ -107,7 +107,7 @@ namespace WebVella.Erp.Web.Components
 				//	{
 				//		scriptTagsToInclude.Add(new ScriptTagInclude()
 				//		{
-				//			Src = "/lib/moment.js/moment.min.js?cb=" + cacheKey
+				//			Src = "/webvella-erp-web/lib/moment.js/moment.min.js?cb=" + cacheKey
 				//		});
 				//	}
 				//}
@@ -119,7 +119,7 @@ namespace WebVella.Erp.Web.Components
 				//	{
 				//		scriptTagsToInclude.Add(new ScriptTagInclude()
 				//		{
-				//			Src = "/lib/ckeditor/ckeditor.js?cb=" + cacheKey
+				//			Src = "/webvella-erp-web/lib/ckeditor/ckeditor.js?cb=" + cacheKey
 				//		});
 				//	}
 				//}
@@ -131,7 +131,7 @@ namespace WebVella.Erp.Web.Components
 				//	{
 				//		scriptTagsToInclude.Add(new ScriptTagInclude()
 				//		{
-				//			Src = "/lib/lodash.js/lodash.min.js?cb=" + cacheKey
+				//			Src = "/webvella-erp-web/lib/lodash.js/lodash.min.js?cb=" + cacheKey
 				//		});
 				//	}
 				//}
@@ -143,7 +143,7 @@ namespace WebVella.Erp.Web.Components
 				//	{
 				//		scriptTagsToInclude.Add(new ScriptTagInclude()
 				//		{
-				//			Src = "/lib/flatpickr/flatpickr.min.js?cb=" + cacheKey
+				//			Src = "/webvella-erp-web/lib/flatpickr/flatpickr.min.js?cb=" + cacheKey
 				//		});
 				//	}
 				//}
@@ -155,7 +155,7 @@ namespace WebVella.Erp.Web.Components
 				//	{
 				//		scriptTagsToInclude.Add(new ScriptTagInclude()
 				//		{
-				//			Src = "/lib/select2/js/select2.min.js?cb=" + cacheKey
+				//			Src = "/webvella-erp-web/lib/select2/js/select2.min.js?cb=" + cacheKey
 				//		});
 				//	}
 				//}
@@ -167,7 +167,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						scriptTagsToInclude.Add(new ScriptTagInclude()
 						{
-							Src = "/lib/js-cookie/js.cookie.min.js?cb=" + cacheKey
+							Src = "/webvella-erp-web/lib/js-cookie/js.cookie.min.js?cb=" + cacheKey
 						});
 					}
 				}
@@ -179,7 +179,7 @@ namespace WebVella.Erp.Web.Components
 				//	{
 				//		scriptTagsToInclude.Add(new ScriptTagInclude()
 				//		{
-				//			Src = "/lib/decimal.js/decimal.min.js?cb=" + cacheKey
+				//			Src = "/webvella-erp-web/lib/decimal.js/decimal.min.js?cb=" + cacheKey
 				//		});
 				//	}
 				//}
@@ -191,7 +191,7 @@ namespace WebVella.Erp.Web.Components
 				//	{
 				//		scriptTagsToInclude.Add(new ScriptTagInclude()
 				//		{
-				//			Src = "/lib/toastr.js/toastr.min.js?cb=" + cacheKey
+				//			Src = "/webvella-erp-web/lib/toastr.js/toastr.min.js?cb=" + cacheKey
 				//		});
 				//	}
 				//}
@@ -203,7 +203,7 @@ namespace WebVella.Erp.Web.Components
 				//	{
 				//		scriptTagsToInclude.Add(new ScriptTagInclude()
 				//		{
-				//			Src = "/lib/spectrum/spectrum.min.js?cb=" + cacheKey
+				//			Src = "/webvella-erp-web/lib/spectrum/spectrum.min.js?cb=" + cacheKey
 				//		});
 				//	}
 				//}
@@ -241,13 +241,13 @@ namespace WebVella.Erp.Web.Components
 				{
 					scriptTagsToInclude.Add(new ScriptTagInclude()
 					{
-						Src = $"/js/stenciljs/{componentName}.esm.js",
+						Src = $"/webvella-erp-web/js/stenciljs/{componentName}.esm.js",
 						Type = "module"
 					});
 
 					scriptTagsToInclude.Add(new ScriptTagInclude()
 					{
-						Src = $"/js/stenciljs/{componentName}.js",
+						Src = $"/webvella-erp-web/js/stenciljs/{componentName}.js",
 						IsNomodule = true
 					});
 				}
