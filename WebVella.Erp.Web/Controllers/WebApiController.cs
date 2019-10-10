@@ -3067,27 +3067,31 @@ namespace WebVella.Erp.Web.Controllers
 		#region << Files >>
 
 		[HttpGet]
-		[Route("/fs/{root}/{*filepath}")]
-		public IActionResult Download([FromRoute] string root, [FromRoute] string filepath)
+		[Route("/fs/{fileName}")]
+		[Route("/fs/{root}/{fileName}")]
+		[Route("/fs/{root}/{root2}/{fileName}")]
+		[Route("/fs/{root}/{root2}/{root3}/{fileName}")]
+		[Route("/fs/{root}/{root2}/{root3}/{root4}/{fileName}")]
+		public IActionResult Download([FromRoute] string root,[FromRoute] string root2,[FromRoute] string root3,[FromRoute] string root4, [FromRoute] string fileName)
 		{
 			//we added ROOT routing parameter as workaround for conflict with razorpages routing and wildcard controller routing
 			//in particular we have problem with ApplicationNodePage where routing pattern is  "/{AppName}/{AreaName}/{NodeName}/a/{PageName?}"
 
-			if ( string.IsNullOrWhiteSpace(root))
+			if ( string.IsNullOrWhiteSpace(fileName))
 				return DoPageNotFoundResponse();
 
-			if (string.IsNullOrWhiteSpace(filepath))
-				filepath = $"/{root}";
-			else if (!filepath.StartsWith("/"))
-			{
-				filepath = "/" + filepath;
-				filepath = $"/{root}{filepath}";
-			}
+			var filePathArray = new List<string>();
+			if(root != null) filePathArray.Add(root);
+			if(root2 != null) filePathArray.Add(root2);
+			if(root3 != null) filePathArray.Add(root3);
+			if(root4 != null) filePathArray.Add(root4);
 
-			filepath = filepath.ToLowerInvariant();
+			var filePath = "/" + String.Join("/",filePathArray) + "/" + fileName;
+
+			filePath = filePath.ToLowerInvariant();
 
 			DbFileRepository fsRepository = new DbFileRepository();
-			var file = fsRepository.Find(filepath);
+			var file = fsRepository.Find(filePath);
 
 			if (file == null)
 			{
@@ -3121,7 +3125,7 @@ namespace WebVella.Erp.Web.Controllers
 			const int durationInSeconds = 60 * 60 * 24 * 30; //30 days caching of these resources
 			HttpContext.Response.Headers[HeaderNames.CacheControl] = "public,max-age=" + durationInSeconds;
 
-			var extension = Path.GetExtension(filepath).ToLowerInvariant();
+			var extension = Path.GetExtension(filePath).ToLowerInvariant();
 			new FileExtensionContentTypeProvider().Mappings.TryGetValue(extension, out string mimeType);
 
 
