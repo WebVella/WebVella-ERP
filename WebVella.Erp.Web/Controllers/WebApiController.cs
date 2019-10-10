@@ -3067,15 +3067,21 @@ namespace WebVella.Erp.Web.Controllers
 		#region << Files >>
 
 		[HttpGet]
-		[Route("/fs/{*filepath}")]
-		public IActionResult Download([FromRoute] string filepath)
+		[Route("/fs/{root}/{*filepath}")]
+		public IActionResult Download([FromRoute] string root, [FromRoute] string filepath)
 		{
-			//TODO  authorize
-			if (string.IsNullOrWhiteSpace(filepath))
+			//we added ROOT routing parameter as workaround for conflict with razorpages routing and wildcard controller routing
+			//in particular we have problem with ApplicationNodePage where routing pattern is  "/{AppName}/{AreaName}/{NodeName}/a/{PageName?}"
+
+			if ( string.IsNullOrWhiteSpace(root))
 				return DoPageNotFoundResponse();
 
-			if (!filepath.StartsWith("/"))
+			if (string.IsNullOrWhiteSpace(filepath))
+				filepath = $"/{root}";
+			else if (!filepath.StartsWith("/"))
 				filepath = "/" + filepath;
+
+			filepath = $"/{root}{filepath}";
 
 			filepath = filepath.ToLowerInvariant();
 
