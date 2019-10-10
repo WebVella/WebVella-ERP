@@ -18,6 +18,9 @@
 
 @*<script type="module" src="/js/stencil/wv-sitemap-manager.esm.js"></script>
 <script nomodule src="/js/stencil/wv-sitemap-manager.js"></script>*@
+<link href="/webvella-taghelpers/lib/select2/css/select2.min.css" type="text/css" rel="stylesheet" />
+<link href="/webvella-taghelpers/lib/select2-bootstrap-theme/select2-bootstrap4.css" type="text/css" rel="stylesheet" />
+<script src="/webvella-taghelpers/lib/select2/js/select2.min.js" type="text/javascript"></script>
 
 <wv-sitemap-manager app-id="@Model.App.Id" api-root='@(Model.ApiUrlRoot)/api/v3.0/p/sdk/' init-data='@Model.ComponentInitData'></wv-sitemap-manager>
 

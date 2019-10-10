@@ -241,13 +241,13 @@ namespace WebVella.Erp.Web.Components
 				{
 					scriptTagsToInclude.Add(new ScriptTagInclude()
 					{
-						Src = $"/webvella-erp-web/js/stenciljs/{componentName}.esm.js",
+						Src = $"/webvella-erp-web/js/{componentName}/{componentName}.esm.js",
 						Type = "module"
 					});
 
 					scriptTagsToInclude.Add(new ScriptTagInclude()
 					{
-						Src = $"/webvella-erp-web/js/stenciljs/{componentName}.js",
+						Src = $"/webvella-erp-web/js/{componentName}/{componentName}.js",
 						IsNomodule = true
 					});
 				}
