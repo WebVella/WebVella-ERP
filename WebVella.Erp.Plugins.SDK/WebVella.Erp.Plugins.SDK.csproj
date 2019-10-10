@@ -12,7 +12,7 @@
 	<Description>The SDK Plugin for the open-source and free platform WebVella ERP. It helps to create, manage and delete main ERP objects, entities, relations and data.</Description>
 	<Company>WebVella</Company>
 	<Copyright>Copyright 2019</Copyright>
-	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<RepositoryUrl>https://github.com/WebVella/WebVella-ERP.git</RepositoryUrl>
 	<RepositoryType>git</RepositoryType>
