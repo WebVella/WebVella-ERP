@@ -355,6 +355,7 @@ namespace WebVella.Erp.Web.TagHelpers
 						fieldFormControl.InnerHtml.AppendHtml(formCheckEl);
 					}
 					#endregion
+
 					fieldGroupEl.InnerHtml.AppendHtml(fieldFormControl);
 					editModalBody.InnerHtml.AppendHtml(fieldGroupEl);
 				}
@@ -568,6 +569,49 @@ public class SampleCodeVariable : ICodeVariable
 			#endregion
 
 			var jsCompressor = new JavaScriptCompressor();
+
+			#region << Init Select2 >>
+			{
+				var wvLibraryInitialized = false;
+				var libraryItemsKey = "WebVella-" + "select2";
+				if (ViewContext.HttpContext.Items.ContainsKey(libraryItemsKey))
+				{
+					var tagHelperContext = (WvTagHelperContext)ViewContext.HttpContext.Items[libraryItemsKey];
+					wvLibraryInitialized = tagHelperContext.Initialized;
+				}
+
+				if (!wvLibraryInitialized)
+				{
+					{
+						var libCssEl = new TagBuilder("link");
+						libCssEl.Attributes.Add("href", "/webvella-taghelpers/lib/select2/css/select2.min.css");
+						libCssEl.Attributes.Add("type", "text/css");
+						libCssEl.Attributes.Add("rel", "stylesheet");
+						output.PostContent.AppendHtml(libCssEl);
+						output.PostContent.AppendHtml("\r\n\t");
+					}
+					{
+						var libCssEl = new TagBuilder("link");
+						libCssEl.Attributes.Add("href", "/webvella-taghelpers/lib/select2-bootstrap-theme/select2-bootstrap4.css");
+						libCssEl.Attributes.Add("type", "text/css");
+						libCssEl.Attributes.Add("rel", "stylesheet");
+						output.PostContent.AppendHtml(libCssEl);
+						output.PostContent.AppendHtml("\r\n\t");
+					}
+
+					var libJsEl = new TagBuilder("script");
+					libJsEl.Attributes.Add("type", "text/javascript");
+					libJsEl.Attributes.Add("src", "/webvella-taghelpers/lib/select2/js/select2.min.js");
+					output.PostContent.AppendHtml(libJsEl);
+					output.PostContent.AppendHtml("\r\n\t");
+
+					ViewContext.HttpContext.Items[libraryItemsKey] = new WvTagHelperContext()
+					{
+						Initialized = true
+					};
+				}
+			}
+			#endregion
 
 			#region << Add Ace lib >>
 			{
