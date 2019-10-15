@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using WebVella.Erp.Api;
 using WebVella.Erp.Diagnostics;
@@ -11,7 +9,6 @@ using WebVella.Erp.Web.Models;
 
 namespace WebVella.Erp.Web.Pages.Application
 {
-	[Authorize]
 	public class RecordDetailsPageModel : BaseErpPageModel
 	{
 		public RecordDetailsPageModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
@@ -22,7 +19,7 @@ namespace WebVella.Erp.Web.Pages.Application
 			try
 			{
 				var initResult = Init();
-				if (initResult != null)	return initResult;
+				if (initResult != null) return initResult;
 				if (ErpRequestContext.Page == null) return NotFound();
 				if (!RecordsExists()) return NotFound();
 				if (PageName != ErpRequestContext.Page.Name)

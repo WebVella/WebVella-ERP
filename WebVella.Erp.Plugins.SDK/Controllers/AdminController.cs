@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Plugins.SDK.Model;
@@ -18,9 +13,9 @@ using WebVella.Erp.Web.Utils;
 
 namespace WebVella.Erp.Plugins.SDK.Controllers
 {
-	[Authorize]
-    public class AdminController : Controller
-    {
+	[Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+	public class AdminController : Controller
+	{
 		private const char RELATION_SEPARATOR = '.';
 		private const char RELATION_NAME_RESULT_SEPARATOR = '$';
 
@@ -51,7 +46,7 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 			return Json(dsList);
 		}
 
-		
+
 		#endregion
 
 		#region << Sitemap Area >>
@@ -64,7 +59,8 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 			response.Message = "Success";
 			response.Success = true;
 
-			if (area == null) {
+			if (area == null)
+			{
 				response.Message = "Wrong object model submitted. Could not restore!";
 				response.Success = false;
 				return Json(response);
@@ -76,7 +72,8 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 				return Json(response);
 			}
 
-			if (area.Id == Guid.Empty) {
+			if (area.Id == Guid.Empty)
+			{
 				area.Id = Guid.NewGuid();
 			}
 
@@ -87,7 +84,8 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 				appSrv.CreateArea(area.Id, appId ?? Guid.Empty, area.Name, area.Label, area.LabelTranslations, area.Description, area.DescriptionTranslations,
 					area.IconClass, area.Color, area.Weight, area.ShowGroupNames, area.Access);
 			}
-			catch (Exception ex) {
+			catch (Exception ex)
+			{
 				response.Message = ex.Message;
 				response.Success = false;
 				return Json(response);
@@ -204,7 +202,7 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 		[Authorize(Roles = "administrator")]
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v3.0/p/sdk/sitemap/node")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult CreateSitemapNode([FromBody]SitemapNodeSubmit node, [FromQuery]Guid? appId = null,[FromQuery]Guid? areaId = null)
+		public IActionResult CreateSitemapNode([FromBody]SitemapNodeSubmit node, [FromQuery]Guid? appId = null, [FromQuery]Guid? areaId = null)
 		{
 			var response = new ResponseModel();
 			response.Message = "Success";
@@ -238,19 +236,21 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 			var pageSrv = new PageService();
 			try
 			{
-				appSrv.CreateAreaNode(node.Id, areaId ?? Guid.Empty, node.Name, node.Label, node.LabelTranslations, 
-					node.IconClass,node.Url,(int)node.Type,node.EntityId,node.Weight,node.Access,node.EntityListPages,node.EntityCreatePages,node.EntityDetailsPages,node.EntityManagePages);
-				if (node.Pages == null) {
+				appSrv.CreateAreaNode(node.Id, areaId ?? Guid.Empty, node.Name, node.Label, node.LabelTranslations,
+					node.IconClass, node.Url, (int)node.Type, node.EntityId, node.Weight, node.Access, node.EntityListPages, node.EntityCreatePages, node.EntityDetailsPages, node.EntityManagePages);
+				if (node.Pages == null)
+				{
 					node.Pages = new List<Guid>();
 				}
 				foreach (var pageId in node.Pages)
 				{
 					var page = pageSrv.GetPage(pageId);
-					if (page == null) {
+					if (page == null)
+					{
 						throw new Exception("Page not found");
 					}
 					pageSrv.UpdatePage(page.Id, page.Name, page.Label, page.LabelTranslations, page.IconClass, page.System, page.Weight,
-						page.Type, page.AppId, page.EntityId, node.Id, areaId, page.IsRazorBody, page.RazorBody,page.Layout);
+						page.Type, page.AppId, page.EntityId, node.Id, areaId, page.IsRazorBody, page.RazorBody, page.Layout);
 				}
 			}
 			catch (Exception ex)
@@ -272,12 +272,12 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 		[Authorize(Roles = "administrator")]
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v3.0/p/sdk/sitemap/node/{nodeId}")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult UpdateSitemapNode([FromBody]SitemapNodeSubmit node, [FromQuery]Guid? appId = null,[FromQuery]Guid? areaId = null)
+		public IActionResult UpdateSitemapNode([FromBody]SitemapNodeSubmit node, [FromQuery]Guid? appId = null, [FromQuery]Guid? areaId = null)
 		{
 			var response = new ResponseModel();
 			response.Message = "Success";
 			response.Success = true;
-            
+
 			if (node == null)
 			{
 				response.Message = "Wrong object model submitted. Could not restore!";
@@ -290,14 +290,14 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 				response.Success = false;
 				return Json(response);
 			}
-			
+
 			if (areaId == null)
 			{
 				response.Message = "Area Id needs to be submitted as 'areaId' query string";
 				response.Success = false;
 				return Json(response);
 			}
-			
+
 			if (node.Id == null || node.Id == Guid.Empty)
 			{
 				response.Message = "Node Id needs to be submitted";
@@ -310,7 +310,7 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 			try
 			{
 				appSrv.UpdateAreaNode(node.Id, areaId ?? Guid.Empty, node.Name, node.Label, node.LabelTranslations,
-					node.IconClass,node.Url, (int)node.Type,node.EntityId, node.Weight, node.Access, node.EntityListPages,node.EntityCreatePages,node.EntityDetailsPages,node.EntityManagePages);
+					node.IconClass, node.Url, (int)node.Type, node.EntityId, node.Weight, node.Access, node.EntityListPages, node.EntityCreatePages, node.EntityDetailsPages, node.EntityManagePages);
 
 				var allAppPages = pageSrv.GetAppControlledPages(appId ?? Guid.Empty);
 
@@ -336,7 +336,8 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 						pageSrv.UpdatePage(page.Id, page.Name, page.Label, page.LabelTranslations, page.IconClass, page.System, page.Weight,
 							page.Type, page.AppId, page.EntityId, node.Id, areaId, page.IsRazorBody, page.RazorBody, page.Layout);
 					}
-					else if (page.NodeId == node.Id) {
+					else if (page.NodeId == node.Id)
+					{
 						currentAttachedPagesHashSet.Remove(page.Id);
 					}
 				}
@@ -350,7 +351,7 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 						throw new Exception("Page not found");
 					}
 					pageSrv.UpdatePage(page.Id, page.Name, page.Label, page.LabelTranslations, page.IconClass, page.System, page.Weight,
-						page.Type, page.AppId, page.EntityId, null, null,page.IsRazorBody, page.RazorBody, page.Layout);
+						page.Type, page.AppId, page.EntityId, null, null, page.IsRazorBody, page.RazorBody, page.Layout);
 				}
 
 			}
@@ -437,12 +438,13 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 				var responseObject = new EntityRecord();
 				var entitiesSelectOptions = new List<SelectOption>();
 				var appPageRecords = new List<EntityRecord>();
-                var allEntityPageRecords = new List<EntityRecord>();
-                var typesSelectOptions = new List<SelectOption>();
+				var allEntityPageRecords = new List<EntityRecord>();
+				var typesSelectOptions = new List<SelectOption>();
 				var entities = new EntityManager().ReadEntities().Object;
 				foreach (var entity in entities)
 				{
-					var selectOption = new SelectOption() { 
+					var selectOption = new SelectOption()
+					{
 						Value = entity.Id.ToString(),
 						Label = entity.Name
 					};
@@ -466,38 +468,38 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 				}
 				responseObject["node_types"] = typesSelectOptions.OrderBy(x => x.Label).ToList();
 
-                var pageService = new PageService();
-                //Get App pages
-                var appPages = pageService.GetAppControlledPages(appId.Value);
-				var allAppPagesWithoutNodes = appPages.FindAll(x=> x.NodeId == null && x.Type == PageType.Application).OrderBy(x => x.Name).ToList();
+				var pageService = new PageService();
+				//Get App pages
+				var appPages = pageService.GetAppControlledPages(appId.Value);
+				var allAppPagesWithoutNodes = appPages.FindAll(x => x.NodeId == null && x.Type == PageType.Application).OrderBy(x => x.Name).ToList();
 				foreach (var page in allAppPagesWithoutNodes)
 				{
 					var selectOption = new EntityRecord();
 					selectOption["page_id"] = page.Id.ToString();
 					selectOption["page_name"] = page.Name;
-                    selectOption["node_id"] = page.NodeId != null ? (page.NodeId ?? Guid.Empty).ToString() : "";
+					selectOption["node_id"] = page.NodeId != null ? (page.NodeId ?? Guid.Empty).ToString() : "";
 					appPageRecords.Add(selectOption);
 				}
 				responseObject["app_pages"] = appPageRecords.OrderBy(x => (string)x["page_name"]).ToList();
 
-                //Get EntityPages
-                var allEntityPages = pageService.GetAll();
-                foreach (var page in allEntityPages)
-                {
-                    if (page.EntityId != null && page.AppId == appId.Value)
-                    {
-                        var selectOption = new EntityRecord();
-                        selectOption["page_id"] = page.Id.ToString();
-                        selectOption["page_name"] = page.Name;
-                        selectOption["entity_id"] = page.EntityId;
-                        selectOption["type"] = ((int)page.Type).ToString();
-                        selectOption["node_id"] = page.NodeId != null ? (page.NodeId ?? Guid.Empty).ToString() : "";
-                        allEntityPageRecords.Add(selectOption);
-                    }
-                }
-                responseObject["all_entity_pages"] = allEntityPageRecords.OrderBy(x => (string)x["page_name"]).ToList();
+				//Get EntityPages
+				var allEntityPages = pageService.GetAll();
+				foreach (var page in allEntityPages)
+				{
+					if (page.EntityId != null && page.AppId == appId.Value)
+					{
+						var selectOption = new EntityRecord();
+						selectOption["page_id"] = page.Id.ToString();
+						selectOption["page_name"] = page.Name;
+						selectOption["entity_id"] = page.EntityId;
+						selectOption["type"] = ((int)page.Type).ToString();
+						selectOption["node_id"] = page.NodeId != null ? (page.NodeId ?? Guid.Empty).ToString() : "";
+						allEntityPageRecords.Add(selectOption);
+					}
+				}
+				responseObject["all_entity_pages"] = allEntityPageRecords.OrderBy(x => (string)x["page_name"]).ToList();
 
-                response.Object = responseObject;
+				response.Object = responseObject;
 			}
 			catch (Exception ex)
 			{

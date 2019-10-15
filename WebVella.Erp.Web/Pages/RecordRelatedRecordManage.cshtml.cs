@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +14,6 @@ using WebVella.Erp.Web.Services;
 
 namespace WebVella.Erp.Web.Pages.Application
 {
-	[Authorize]
 	public class RecordRelatedRecordManagePageModel : BaseErpPageModel
 	{
 		public RecordRelatedRecordManagePageModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
@@ -59,7 +57,7 @@ namespace WebVella.Erp.Web.Pages.Application
 			{
 				if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
 				var initResult = Init();
-				if (initResult != null) return initResult; 
+				if (initResult != null) return initResult;
 				if (ErpRequestContext.Page == null) return NotFound();
 				if (!RecordsExists()) return NotFound();
 				if (PageName != ErpRequestContext.Page.Name)

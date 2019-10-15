@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebVella.Erp.Site.Pages
 {
+	[AllowAnonymous]
     public class ErrorModel : PageModel
     {
         public IActionResult OnGet()

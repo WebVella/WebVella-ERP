@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using WebVella.Erp.Diagnostics;
 using WebVella.Erp.Hooks;
@@ -8,7 +7,6 @@ using WebVella.Erp.Web.Models;
 
 namespace WebVella.Erp.Web.Pages.Application
 {
-	[Authorize]
 	public class SitePageModel : BaseErpPageModel
 	{
 		public SitePageModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
@@ -18,7 +16,7 @@ namespace WebVella.Erp.Web.Pages.Application
 			try
 			{
 				var initResult = Init();
-				if (initResult != null)	return initResult;
+				if (initResult != null) return initResult;
 
 				if (ErpRequestContext.Page == null) return NotFound();
 

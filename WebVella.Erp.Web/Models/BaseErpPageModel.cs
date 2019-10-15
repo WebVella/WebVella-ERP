@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using WebVella.Erp.Api.Models;
@@ -12,6 +13,7 @@ using WebVella.Erp.Web.Utils;
 
 namespace WebVella.Erp.Web.Models
 {
+	[Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
 	public class BaseErpPageModel : PageModel
 	{
 		private ErpUser currentUser = null;
@@ -241,7 +243,7 @@ namespace WebVella.Erp.Web.Models
 						};
 					}
 
-					if( ErpRequestContext.SitemapArea == null && ErpRequestContext.Page != null && ErpRequestContext.Page.Type != PageType.Application)
+					if (ErpRequestContext.SitemapArea == null && ErpRequestContext.Page != null && ErpRequestContext.Page.Type != PageType.Application)
 						return new NotFoundResult();
 
 					if (ErpRequestContext.SitemapArea != null && area.Id == ErpRequestContext.SitemapArea.Id)
@@ -250,12 +252,14 @@ namespace WebVella.Erp.Web.Models
 					//Process the an unusual case when the area has a node type URL which has a link to an app Page or a site page.
 					//Then there is no SitemapArea in the ErpRequest as the URL does not has the information about one but still it needs to be 
 					//marked as current
-					if (ErpRequestContext.SitemapArea == null) {
+					if (ErpRequestContext.SitemapArea == null)
+					{
 						var urlNodes = area.Nodes.FindAll(x => x.Type == SitemapNodeType.Url);
 						var path = HttpContext.Request.Path;
 						foreach (var urlNode in urlNodes)
 						{
-							if (path == urlNode.Url) {
+							if (path == urlNode.Url)
+							{
 								areaMenuItem.Class = "current";
 							}
 						}
@@ -288,10 +292,10 @@ namespace WebVella.Erp.Web.Models
 			DataModel = new PageDataModel(this);
 
 			List<Guid> currentUserRoles = new List<Guid>();
-			if (CurrentUser != null )
+			if (CurrentUser != null)
 				currentUserRoles.AddRange(CurrentUser.Roles.Select(x => x.Id));
 
-			if( ErpRequestContext.App != null )
+			if (ErpRequestContext.App != null)
 			{
 				if (ErpRequestContext.App.Access == null || ErpRequestContext.App.Access.Count == 0)
 					new LocalRedirectResult("/error?401");
@@ -390,7 +394,8 @@ namespace WebVella.Erp.Web.Models
 			return pageModel;
 		}
 
-		public void AddUserMenu(MenuItem menu) {
+		public void AddUserMenu(MenuItem menu)
+		{
 			UserMenu.Add(menu);
 			UserMenu = UserMenu.OrderBy(x => x.SortOrder).ToList();
 		}
@@ -400,7 +405,8 @@ namespace WebVella.Erp.Web.Models
 
 			#region << Set BodyClass >>
 			ViewData["BodyBorderColor"] = "#555";
-			if (ErpRequestContext.App != null && !String.IsNullOrWhiteSpace(ErpRequestContext.App.Color)) {
+			if (ErpRequestContext.App != null && !String.IsNullOrWhiteSpace(ErpRequestContext.App.Color))
+			{
 				ViewData["BodyBorderColor"] = ErpRequestContext.App.Color;
 			}
 			if (ToolbarMenu.Count > 0)
@@ -433,7 +439,8 @@ namespace WebVella.Erp.Web.Models
 			}
 			ViewData["AppName"] = ErpSettings.AppName;
 			ViewData["SystemMasterBodyStyle"] = "";
-			if (!String.IsNullOrWhiteSpace(ErpSettings.SystemMasterBackgroundImageUrl)) {
+			if (!String.IsNullOrWhiteSpace(ErpSettings.SystemMasterBackgroundImageUrl))
+			{
 				ViewData["SystemMasterBodyStyle"] = "background-image: url('" + ErpSettings.SystemMasterBackgroundImageUrl + "');background-position: top center;background-repeat: repeat;min-height: 100vh; ";
 			}
 			#endregion

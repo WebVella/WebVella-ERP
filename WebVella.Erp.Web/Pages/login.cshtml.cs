@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Hooks;
@@ -10,7 +9,8 @@ using WebVella.Erp.Web.Services;
 
 namespace WebVella.Erp.Web.Pages
 {
-    public class LoginModel : BaseErpPageModel
+	[AllowAnonymous]
+	public class LoginModel : BaseErpPageModel
 	{
 		[BindProperty]
 		public string Username { get; set; }
@@ -18,17 +18,17 @@ namespace WebVella.Erp.Web.Pages
 		[BindProperty]
 		public string Password { get; set; }
 
-		[BindProperty (Name = "returnUrl")]
+		[BindProperty(Name = "returnUrl")]
 		public new string ReturnUrl { get; set; }
 
 		[BindProperty]
 		public string Error { get; set; }
 
-        public string BrandLogo { get; set; }
+		public string BrandLogo { get; set; }
 
-        public LoginModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
+		public LoginModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
 
-		public IActionResult OnGet( [FromServices]AuthService authService)
+		public IActionResult OnGet([FromServices]AuthService authService)
 		{
 			var initResult = Init();
 			if (initResult != null) return initResult;
@@ -39,27 +39,27 @@ namespace WebVella.Erp.Web.Pages
 				if (result != null) return result;
 			}
 
-            if (CurrentUser != null)
-            {
-                if (!string.IsNullOrWhiteSpace(ReturnUrl))
-                    return new LocalRedirectResult(ReturnUrl);
-                else
-                    return new LocalRedirectResult("/");
-            }
+			if (CurrentUser != null)
+			{
+				if (!string.IsNullOrWhiteSpace(ReturnUrl))
+					return new LocalRedirectResult(ReturnUrl);
+				else
+					return new LocalRedirectResult("/");
+			}
 
-            var appContext = ErpAppContext.Current;
-            var currentApp = ErpRequestContext.App;
-            var theme = appContext.Theme;
-            BrandLogo = theme.BrandLogo;
-            if (!String.IsNullOrWhiteSpace(ErpSettings.NavLogoUrl))
-            {
-                BrandLogo = ErpSettings.NavLogoUrl;
-            }
-            BeforeRender();
-            return Page();
-        }
+			var appContext = ErpAppContext.Current;
+			var currentApp = ErpRequestContext.App;
+			var theme = appContext.Theme;
+			BrandLogo = theme.BrandLogo;
+			if (!String.IsNullOrWhiteSpace(ErpSettings.NavLogoUrl))
+			{
+				BrandLogo = ErpSettings.NavLogoUrl;
+			}
+			BeforeRender();
+			return Page();
+		}
 
-		public IActionResult OnPost([FromServices]AuthService authService )
+		public IActionResult OnPost([FromServices]AuthService authService)
 		{
 			if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
 
@@ -74,10 +74,10 @@ namespace WebVella.Erp.Web.Pages
 			}
 
 			var hookInstances = HookManager.GetHookedInstances<ILoginPageHook>(HookKey);
-			foreach (ILoginPageHook inst in hookInstances )
+			foreach (ILoginPageHook inst in hookInstances)
 			{
 				var result = inst.OnPostPreLogin(this);
-				if (result != null)	return result;
+				if (result != null) return result;
 			}
 
 			ErpUser user = authService.Authenticate(Username, Password);
@@ -91,8 +91,8 @@ namespace WebVella.Erp.Web.Pages
 			if (user == null)
 			{
 				Error = "Invalid username or password";
-                BeforeRender();
-                return Page();
+				BeforeRender();
+				return Page();
 			}
 
 			if (!string.IsNullOrWhiteSpace(ReturnUrl))
