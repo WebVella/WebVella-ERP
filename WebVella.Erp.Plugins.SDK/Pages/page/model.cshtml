@@ -103,7 +103,7 @@
 		</wv-form>
 	</wv-modal-body>
 	<wv-modal-footer>
-		<button type="button" class="btn btn-link btn-sm go-red" style="position: absolute;left: 10px;" onclick="deleteDataSource(e)"><i class="fa fa-trash"></i> remove</button>
+		<button type="button" class="btn btn-link btn-sm go-red" style="position: absolute;left: 10px;" onclick="deleteDataSource()"><i class="fa fa-trash"></i> remove</button>
 		<button type="button" class="btn btn-primary btn-sm" onclick="submitManageForm()">Save DataSource</button>
 		<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
 	</wv-modal-footer>
@@ -135,14 +135,10 @@
 		$('form[name="ManageDataSource"]').submit();
 	}
 
-	function deleteDataSource(e) {
+	function deleteDataSource() {
 		var confirm = window.confirm("Are you sure");
 		if (confirm) {
 			$('form[name="DeleteDataSource"]').submit();
-		}
-		else{
-			e.preventDefault();
-			e.stopPropagation();
 		}
 	}
 
