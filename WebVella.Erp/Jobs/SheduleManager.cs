@@ -182,8 +182,15 @@ namespace WebVella.Erp.Jobs
 
 						if (startNewJob)
 						{
-							Job job = JobManager.Current.CreateJob(schedulePlan.JobType.Id, schedulePlan.JobAttributes, schedulePlanId: schedulePlan.Id);
-							schedulePlan.LastStartedJobId = job.Id;
+							try
+							{
+								Job job = JobManager.Current.CreateJob(schedulePlan.JobType.Id, schedulePlan.JobAttributes, schedulePlanId: schedulePlan.Id);
+								schedulePlan.LastStartedJobId = job.Id;
+							}
+							catch(Exception scex)
+							{
+								throw new Exception($"Schedule plan '{schedulePlan.Name}' failed to create job.", scex);
+							}
 						}
 						UpdateSchedulePlanShort(schedulePlan);
 					}
