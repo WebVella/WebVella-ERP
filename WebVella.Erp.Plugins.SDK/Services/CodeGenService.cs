@@ -5279,10 +5279,10 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			var fieldOptions = currentField.Options.ToList();
 			if (fieldOptions.Count > 0)
 			{
-				response += "new List<MultiSelectFieldOption>\n\t{\n";
+				response += "new List<SelectOption>\n\t{\n";
 				for (int i = 0; i < fieldOptions.Count; i++)
 				{
-					response += $"\t\tnew MultiSelectFieldOption() {{ Label = \"{fieldOptions[i].Label}\", Value = \"{fieldOptions[i].Value}\" , IconClass = \"{fieldOptions[i].IconClass}\", Color = \"{fieldOptions[i].Color}\"}}";
+					response += $"\t\tnew SelectOption() {{ Label = \"{fieldOptions[i].Label}\", Value = \"{fieldOptions[i].Value}\" , IconClass = \"{fieldOptions[i].IconClass}\", Color = \"{fieldOptions[i].Color}\"}}";
 					if (i < fieldOptions.Count - 1)
 					{
 						response += ",\n";
@@ -5312,7 +5312,7 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 			response +=
 			"\t{\n" +
-				$"\t\tvar response = entMan.UpdateField(new Guid(\"{entityId}\"), multiSelectField, false);\n" +
+				$"\t\tvar response = entMan.UpdateField(new Guid(\"{entityId}\"), multiSelectField);\n" +
 				"\t\tif (!response.Success)\n" +
 					$"\t\t\tthrow new Exception(\"System error 10060. Entity: {entityName} Field: {currentField.Name} Message:\" + response.Message);\n" +
 			"\t}\n" +

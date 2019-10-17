@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,6 @@ using WebVella.Erp.Web.Services;
 
 namespace WebVella.Erp.Web.Pages.Application
 {
-	[Authorize]
 	public class RecordManagePageModel : BaseErpPageModel
 	{
 		public RecordManagePageModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }

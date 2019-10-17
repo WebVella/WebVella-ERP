@@ -1,27 +1,19 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using WebVella.Erp.Diagnostics;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Hooks;
 using WebVella.Erp.Web.Hooks;
 using WebVella.Erp.Web.Models;
-using WebVella.Erp.Web.Services;
-using WebVella.Erp.Web.Utils;
 
 namespace WebVella.Erp.Web.Pages
 {
-	[Authorize]
 	public class HomePageModel : BaseErpPageModel
 	{
 		public HomePageModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
 
 		public IActionResult OnGet()
-        {
+		{
 			try
 			{
 				var initResult = Init();

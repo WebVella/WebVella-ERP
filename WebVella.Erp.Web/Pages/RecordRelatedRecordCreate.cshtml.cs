@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
@@ -17,7 +16,6 @@ using WebVella.Erp.Web.Services;
 
 namespace WebVella.Erp.Web.Pages.Application
 {
-	[Authorize]
 	public class RecordRelatedRecordCreatePageModel : BaseErpPageModel
 	{
 		public RecordRelatedRecordCreatePageModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
@@ -64,7 +62,7 @@ namespace WebVella.Erp.Web.Pages.Application
 				if (ErpRequestContext.Page == null) return NotFound();
 
 				//Standard Page functionality
-				var PostObject = (EntityRecord)new PageService().ConvertFormPostToEntityRecord(PageContext.HttpContext, entity: ErpRequestContext.Entity, recordId: RecordId );
+				var PostObject = (EntityRecord)new PageService().ConvertFormPostToEntityRecord(PageContext.HttpContext, entity: ErpRequestContext.Entity, recordId: RecordId);
 
 				if (!PostObject.Properties.ContainsKey("id"))
 					PostObject["id"] = Guid.NewGuid();
