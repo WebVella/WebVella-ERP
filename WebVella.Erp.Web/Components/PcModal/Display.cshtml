@@ -12,7 +12,7 @@
 	var footerNodes = node.Nodes.FindAll(x => x.ContainerId == "footer");
 }
 
-<wv-modal title="@ViewBag.ProcessedTitle" id="wv-@(node.Id)" size="@options.Size" position="@options.Position" backdrop="@options.Backdrop" is-visible="(bool)ViewBag.IsVisible">
+<wv-modal title="@ViewBag.ProcessedTitle" id="@options.Id" size="@options.Size" position="@options.Position" backdrop="@options.Backdrop" is-visible="(bool)ViewBag.IsVisible">
 	<wv-modal-body>
 		@foreach (var childNode in bodyNodes)
 		{
