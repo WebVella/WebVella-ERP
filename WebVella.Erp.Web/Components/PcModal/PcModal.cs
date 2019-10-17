@@ -27,6 +27,9 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "is_visible")]
 			public string IsVisible { get; set; } = "";
 
+            [JsonProperty(PropertyName = "id")]
+            public string Id { get; set; } = "";
+
 			[JsonProperty(PropertyName = "title")]
 			public string Title { get; set; } = "";
 
@@ -75,6 +78,9 @@ namespace WebVella.Erp.Web.Components
 
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
 				#endregion
+
+				if(String.IsNullOrWhiteSpace(instanceOptions.Id))
+					instanceOptions.Id = "wv-" + context.Node.Id;
 
 				ViewBag.Options = instanceOptions;
 				ViewBag.Node = context.Node;
