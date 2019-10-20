@@ -24,7 +24,7 @@ namespace WebVella.Erp.Plugins.SDK.Services
 
 
 		public MetaChangeResponseModel EvaluateMetaChanges(string connectionString, List<string> entityRecordsToCompare,
-					bool includeEntityMeta, bool includeEntityRelations, bool includeRoles, bool includeApplications)
+					bool includeEntityMeta, bool includeEntityRelations, bool includeRoles, bool includeApplications, List<string> NNRelationsRecordsToCompare)
 		{
 			ValidationException valEx = new ValidationException();
 
@@ -495,7 +495,7 @@ namespace WebVella.Erp.Plugins.SDK.Services
 					}
 				}
 
-			
+
 
 				#endregion
 
@@ -858,6 +858,69 @@ namespace WebVella.Erp.Plugins.SDK.Services
 
 				}
 			}
+
+			if (NNRelationsRecordsToCompare != null && NNRelationsRecordsToCompare.Count > 0)
+			{
+
+				foreach (var id in NNRelationsRecordsToCompare)
+				{
+					if (id == null)
+						continue;
+
+					//compare only if relation exists in both databases
+					Guid relationId = new Guid(id);
+					var relation = new EntityRelationManager().Read(relationId).Object;
+					if(relation == null)
+						throw new Exception("Relation not found");
+
+					List<DatabaseNNRelationRecord> recordsToCreate = new List<DatabaseNNRelationRecord>();
+					List<DatabaseNNRelationRecord> recordsToDelete = new List<DatabaseNNRelationRecord>();
+
+					var oldRelationRecords = ReadOldNNRelationRecords(relation);
+					var currentRelationRecords = ReadCurrentNNRelationRecords(relation);
+
+					//Create all records = existing in current but not in old
+					foreach (var relRecord in currentRelationRecords)
+					{
+						if(!oldRelationRecords.Any(x=> x.OriginId == relRecord.OriginId && x.TargetId == relRecord.TargetId)){
+							recordsToCreate.Add(relRecord);
+						}
+					}
+
+					//Delete all records = existing in old but not in current
+					foreach (var relRecord in oldRelationRecords)
+					{
+						if(!currentRelationRecords.Any(x=> x.OriginId == relRecord.OriginId && x.TargetId == relRecord.TargetId)){
+							recordsToDelete.Add(relRecord);
+						}
+					}
+
+
+					foreach (var rec in recordsToCreate)
+					{
+						changeRow = new MetaChangeModel();
+						changeRow.Element = "relation record";
+						changeRow.Type = "created";
+						changeRow.Name = $"{relation.Name}";
+						changeRow.ChangeList = new List<string>{$"{rec.OriginId} <> {rec.TargetId}"};
+						response.Changes.Add(changeRow);
+						response.Code += CreateNNRelationRecordCode(relation, rec.OriginId, rec.TargetId);
+					}
+
+					foreach (var rec in recordsToDelete)
+					{
+						changeRow = new MetaChangeModel();
+						changeRow.Element = "relation record";
+						changeRow.Type = "deleted";
+						changeRow.Name = $"{relation.Name}";
+						changeRow.ChangeList = new List<string>{$"{rec.OriginId} <> {rec.TargetId}"};
+						response.Changes.Add(changeRow);
+						response.Code += DeleteNNRelationRecordCode(relation, rec.OriginId, rec.TargetId);
+					}
+				}
+
+			}
+
 			return response;
 		}
 
@@ -1172,6 +1235,46 @@ namespace WebVella.Erp.Plugins.SDK.Services
 					List<PageDataSource> result = new List<PageDataSource>();
 					foreach (DataRow row in dt.Rows)
 						result.Add(row.MapTo<PageDataSource>());
+
+					return result;
+				}
+				finally
+				{
+					con.Close();
+				}
+			}
+		}
+
+		private List<DatabaseNNRelationRecord> ReadCurrentNNRelationRecords(EntityRelation relation)
+		{
+			using (DbConnection con = DbContext.Current.CreateConnection())
+			{
+				var command = con.CreateCommand($"SELECT * FROM public.rel_{relation.Name}");
+				DataTable dt = new DataTable();
+				new NpgsqlDataAdapter(command).Fill(dt);
+
+				List<DatabaseNNRelationRecord> result = new List<DatabaseNNRelationRecord>();
+				foreach (DataRow row in dt.Rows)
+					result.Add(row.MapTo<DatabaseNNRelationRecord>());
+
+				return result;
+			}
+		}
+
+		private List<DatabaseNNRelationRecord> ReadOldNNRelationRecords(EntityRelation relation)
+		{
+			using (NpgsqlConnection con = new NpgsqlConnection(OldDbConnectionString))
+			{
+				try
+				{
+					con.Open();
+					var command = new NpgsqlCommand($"SELECT * FROM public.rel_{relation.Name}", con);
+					DataTable dt = new DataTable();
+					new NpgsqlDataAdapter(command).Fill(dt);
+
+					List<DatabaseNNRelationRecord> result = new List<DatabaseNNRelationRecord>();
+					foreach (DataRow row in dt.Rows)
+						result.Add(row.MapTo<DatabaseNNRelationRecord>());
 
 					return result;
 				}
@@ -7732,24 +7835,24 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 			foreach (Guid roleId in node.Access)
 				response += $"\taccess.Add( new Guid(\"{roleId.ToString()}\") );\n";
 
-                response += $"\tvar entityListPages = new List<Guid>();\n";
-			    foreach (Guid pageId in node.EntityListPages)
-				    response += $"\tentityListPages.Add( new Guid(\"{pageId.ToString()}\") );\n";
+			response += $"\tvar entityListPages = new List<Guid>();\n";
+			foreach (Guid pageId in node.EntityListPages)
+				response += $"\tentityListPages.Add( new Guid(\"{pageId.ToString()}\") );\n";
 
-                response += $"\tvar entityCreatePages = new List<Guid>();\n";
-                foreach (Guid pageId in node.EntityCreatePages)
-                    response += $"\tentityCreatePages.Add( new Guid(\"{pageId.ToString()}\") );\n";
+			response += $"\tvar entityCreatePages = new List<Guid>();\n";
+			foreach (Guid pageId in node.EntityCreatePages)
+				response += $"\tentityCreatePages.Add( new Guid(\"{pageId.ToString()}\") );\n";
 
-                response += $"\tvar entityDetailsPages = new List<Guid>();\n";
-                foreach (Guid pageId in node.EntityDetailsPages)
-                    response += $"\tentityDetailsPages.Add( new Guid(\"{pageId.ToString()}\") );\n";
+			response += $"\tvar entityDetailsPages = new List<Guid>();\n";
+			foreach (Guid pageId in node.EntityDetailsPages)
+				response += $"\tentityDetailsPages.Add( new Guid(\"{pageId.ToString()}\") );\n";
 
-                response += $"\tvar entityManagePages = new List<Guid>();\n";
-                foreach (Guid pageId in node.EntityManagePages)
-                    response += $"\tentityManagePages.Add( new Guid(\"{pageId.ToString()}\") );\n";
+			response += $"\tvar entityManagePages = new List<Guid>();\n";
+			foreach (Guid pageId in node.EntityManagePages)
+				response += $"\tentityManagePages.Add( new Guid(\"{pageId.ToString()}\") );\n";
 
 
-            response += $"\tvar labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();\n";
+			response += $"\tvar labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();\n";
 			foreach (var res in node.LabelTranslations ?? new List<TranslationResource>())
 				response += $"\tlabelTranslations.Add( new WebVella.Erp.Web.Models.TranslationResource{{ Locale=\"{res.Locale}\", Key= \"{res.Key}\", Value= @\"{res.Value.EscapeMultiline()}\"  }} );\n";
 
@@ -7828,112 +7931,112 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 				response.ChangeList.Add($"<span class='go-green label-block'>sitemap node access</span>  access role list changed</span>");
 			}
 
-            if (currentNode.EntityListPages.Count > 0 && oldNode.EntityListPages.Count > 0)
-            {
-                bool pageChanged = currentNode.EntityListPages.Count != oldNode.EntityListPages.Count;
-                if (!pageChanged)
-                {
-                    foreach (Guid id in currentNode.EntityListPages)
-                    {
-                        if (!oldNode.EntityListPages.Any(x => x == id))
-                        {
-                            pageChanged = true;
-                            break;
-                        }
-                    }
-                }
-                if (pageChanged)
-                {
-                    response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity list array changed</span>");
-                    response.HasUpdate = true;
-                }
-            }
-            else if (!(currentNode.EntityListPages.Count == 0 && oldNode.EntityListPages.Count == 0))
-            {
-                response.HasUpdate = true;
-                response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity list array changed</span>");
-            }
+			if (currentNode.EntityListPages.Count > 0 && oldNode.EntityListPages.Count > 0)
+			{
+				bool pageChanged = currentNode.EntityListPages.Count != oldNode.EntityListPages.Count;
+				if (!pageChanged)
+				{
+					foreach (Guid id in currentNode.EntityListPages)
+					{
+						if (!oldNode.EntityListPages.Any(x => x == id))
+						{
+							pageChanged = true;
+							break;
+						}
+					}
+				}
+				if (pageChanged)
+				{
+					response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity list array changed</span>");
+					response.HasUpdate = true;
+				}
+			}
+			else if (!(currentNode.EntityListPages.Count == 0 && oldNode.EntityListPages.Count == 0))
+			{
+				response.HasUpdate = true;
+				response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity list array changed</span>");
+			}
 
-            if (currentNode.EntityCreatePages.Count > 0 && oldNode.EntityCreatePages.Count > 0)
-            {
-                bool pageChanged = currentNode.EntityCreatePages.Count != oldNode.EntityCreatePages.Count;
-                if (!pageChanged)
-                {
-                    foreach (Guid id in currentNode.EntityCreatePages)
-                    {
-                        if (!oldNode.EntityCreatePages.Any(x => x == id))
-                        {
-                            pageChanged = true;
-                            break;
-                        }
-                    }
-                }
-                if (pageChanged)
-                {
-                    response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity create array changed</span>");
-                    response.HasUpdate = true;
-                }
-            }
-            else if (!(currentNode.EntityCreatePages.Count == 0 && oldNode.EntityCreatePages.Count == 0))
-            {
-                response.HasUpdate = true;
-                response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity create array changed</span>");
-            }
+			if (currentNode.EntityCreatePages.Count > 0 && oldNode.EntityCreatePages.Count > 0)
+			{
+				bool pageChanged = currentNode.EntityCreatePages.Count != oldNode.EntityCreatePages.Count;
+				if (!pageChanged)
+				{
+					foreach (Guid id in currentNode.EntityCreatePages)
+					{
+						if (!oldNode.EntityCreatePages.Any(x => x == id))
+						{
+							pageChanged = true;
+							break;
+						}
+					}
+				}
+				if (pageChanged)
+				{
+					response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity create array changed</span>");
+					response.HasUpdate = true;
+				}
+			}
+			else if (!(currentNode.EntityCreatePages.Count == 0 && oldNode.EntityCreatePages.Count == 0))
+			{
+				response.HasUpdate = true;
+				response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity create array changed</span>");
+			}
 
 
-            if (currentNode.EntityDetailsPages.Count > 0 && oldNode.EntityDetailsPages.Count > 0)
-            {
-                bool pageChanged = currentNode.EntityDetailsPages.Count != oldNode.EntityDetailsPages.Count;
-                if (!pageChanged)
-                {
-                    foreach (Guid id in currentNode.EntityDetailsPages)
-                    {
-                        if (!oldNode.EntityDetailsPages.Any(x => x == id))
-                        {
-                            pageChanged = true;
-                            break;
-                        }
-                    }
-                }
-                if (pageChanged)
-                {
-                    response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity details array changed</span>");
-                    response.HasUpdate = true;
-                }
-            }
-            else if (!(currentNode.EntityDetailsPages.Count == 0 && oldNode.EntityDetailsPages.Count == 0))
-            {
-                response.HasUpdate = true;
-                response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity details array changed</span>");
-            }
+			if (currentNode.EntityDetailsPages.Count > 0 && oldNode.EntityDetailsPages.Count > 0)
+			{
+				bool pageChanged = currentNode.EntityDetailsPages.Count != oldNode.EntityDetailsPages.Count;
+				if (!pageChanged)
+				{
+					foreach (Guid id in currentNode.EntityDetailsPages)
+					{
+						if (!oldNode.EntityDetailsPages.Any(x => x == id))
+						{
+							pageChanged = true;
+							break;
+						}
+					}
+				}
+				if (pageChanged)
+				{
+					response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity details array changed</span>");
+					response.HasUpdate = true;
+				}
+			}
+			else if (!(currentNode.EntityDetailsPages.Count == 0 && oldNode.EntityDetailsPages.Count == 0))
+			{
+				response.HasUpdate = true;
+				response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity details array changed</span>");
+			}
 
-            if (currentNode.EntityManagePages.Count > 0 && oldNode.EntityManagePages.Count > 0)
-            {
-                bool pageChanged = currentNode.EntityManagePages.Count != oldNode.EntityManagePages.Count;
-                if (!pageChanged)
-                {
-                    foreach (Guid id in currentNode.EntityManagePages)
-                    {
-                        if (!oldNode.EntityManagePages.Any(x => x == id))
-                        {
-                            pageChanged = true;
-                            break;
-                        }
-                    }
-                }
-                if (pageChanged)
-                {
-                    response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity manage array changed</span>");
-                    response.HasUpdate = true;
-                }
-            }
-            else if (!(currentNode.EntityManagePages.Count == 0 && oldNode.EntityManagePages.Count == 0))
-            {
-                response.HasUpdate = true;
-                response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity manage array changed</span>");
-            }
+			if (currentNode.EntityManagePages.Count > 0 && oldNode.EntityManagePages.Count > 0)
+			{
+				bool pageChanged = currentNode.EntityManagePages.Count != oldNode.EntityManagePages.Count;
+				if (!pageChanged)
+				{
+					foreach (Guid id in currentNode.EntityManagePages)
+					{
+						if (!oldNode.EntityManagePages.Any(x => x == id))
+						{
+							pageChanged = true;
+							break;
+						}
+					}
+				}
+				if (pageChanged)
+				{
+					response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity manage array changed</span>");
+					response.HasUpdate = true;
+				}
+			}
+			else if (!(currentNode.EntityManagePages.Count == 0 && oldNode.EntityManagePages.Count == 0))
+			{
+				response.HasUpdate = true;
+				response.ChangeList.Add($"<span class='go-green label-block'>sitemap node pages</span>  entity manage array changed</span>");
+			}
 
-            if (currentNode.LabelTranslations != null && oldNode.LabelTranslations != null)
+			if (currentNode.LabelTranslations != null && oldNode.LabelTranslations != null)
 			{
 				bool translationChanged = currentNode.LabelTranslations.Count != oldNode.LabelTranslations.Count;
 				if (!translationChanged)
@@ -7976,23 +8079,23 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 				foreach (Guid roleId in currentNode.Access)
 					response.Code += $"\taccess.Add( new Guid(\"{roleId.ToString()}\") );\n";
 
-                response.Code += $"\tvar entityListPages = new List<Guid>();\n";
-                foreach (Guid pageId in currentNode.EntityListPages)
-                    response.Code += $"\tentityListPages.Add( new Guid(\"{pageId.ToString()}\") );\n";
+				response.Code += $"\tvar entityListPages = new List<Guid>();\n";
+				foreach (Guid pageId in currentNode.EntityListPages)
+					response.Code += $"\tentityListPages.Add( new Guid(\"{pageId.ToString()}\") );\n";
 
-                response.Code += $"\tvar entityCreatePages = new List<Guid>();\n";
-                foreach (Guid pageId in currentNode.EntityCreatePages)
-                    response.Code += $"\tentityCreatePages.Add( new Guid(\"{pageId.ToString()}\") );\n";
+				response.Code += $"\tvar entityCreatePages = new List<Guid>();\n";
+				foreach (Guid pageId in currentNode.EntityCreatePages)
+					response.Code += $"\tentityCreatePages.Add( new Guid(\"{pageId.ToString()}\") );\n";
 
-                response.Code += $"\tvar entityDetailsPages = new List<Guid>();\n";
-                foreach (Guid pageId in currentNode.EntityDetailsPages)
-                    response.Code += $"\tentityDetailsPages.Add( new Guid(\"{pageId.ToString()}\") );\n";
+				response.Code += $"\tvar entityDetailsPages = new List<Guid>();\n";
+				foreach (Guid pageId in currentNode.EntityDetailsPages)
+					response.Code += $"\tentityDetailsPages.Add( new Guid(\"{pageId.ToString()}\") );\n";
 
-                response.Code += $"\tvar entityManagePages = new List<Guid>();\n";
-                foreach (Guid pageId in currentNode.EntityManagePages)
-                    response.Code += $"\tentityManagePages.Add( new Guid(\"{pageId.ToString()}\") );\n";
+				response.Code += $"\tvar entityManagePages = new List<Guid>();\n";
+				foreach (Guid pageId in currentNode.EntityManagePages)
+					response.Code += $"\tentityManagePages.Add( new Guid(\"{pageId.ToString()}\") );\n";
 
-                response.Code += $"\tvar labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();\n";
+				response.Code += $"\tvar labelTranslations = new List<WebVella.Erp.Web.Models.TranslationResource>();\n";
 				foreach (var res in currentNode.LabelTranslations ?? new List<TranslationResource>())
 					response.Code += $"\tlabelTranslations.Add( new WebVella.Erp.Web.Models.TranslationResource{{ Locale=\"{res.Locale}\", Key= \"{res.Key}\", Value= @\"{res.Value.EscapeMultiline()}\"  }} );\n";
 
@@ -8734,6 +8837,34 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 				$"\tvar id = new Guid(\"{rec["id"]}\");\n" +
 				$"\tvar result = recMan.DeleteRecord(\"{currentEntity.Name}\", id);\n" +
 				$"\tif( !result ) throw new Exception(\"Failed delete record {rec["id"]}\");\n" +
+			"}\n" +
+			"#endregion\n\n";
+
+			return response;
+		}
+		#endregion
+
+		#region << Relation Records >>
+
+		private string CreateNNRelationRecordCode(EntityRelation relation, Guid originId, Guid targetId)
+		{
+
+			var response = $"#region << ***Create NN relation record*** Relation: {relation.Label} >>\n" +
+			"{\n" +
+				$"\tvar result = recMan.CreateRelationManyToManyRecord(new Guid(\"{relation.Id}\"), new Guid(\"{originId}\"), new Guid(\"{targetId}\"));\n" +
+				$"\tif( !result.Success ) throw new Exception(result.Message);\n" +
+			"}\n" +
+			"#endregion\n\n";
+
+			return response;
+		}
+
+		private string DeleteNNRelationRecordCode(EntityRelation relation, Guid originId, Guid targetId)
+		{
+			var response = $"#region << ***Delete NN relation record*** Relation: {relation.Label} >>\n" +
+			"{\n" +
+				$"\tvar result = recMan.RemoveRelationManyToManyRecord(new Guid(\"{relation.Id}\"), new Guid(\"{originId}\"), new Guid(\"{targetId}\"));\n" +
+				$"\tif( !result.Success ) throw new Exception(result.Message);\n" +
 			"}\n" +
 			"#endregion\n\n";
 

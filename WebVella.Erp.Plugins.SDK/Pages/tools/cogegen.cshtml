@@ -27,7 +27,7 @@
 			</wv-column>
 		</wv-row>
 		<wv-row>
-			<wv-column span="5">
+			<wv-column span="4">
 				<div class="mb-0 mt-2 form-group wv-field form">
 					<label class="control-label label-stacked">Check for META changes in:</label>
 				</div>
@@ -46,15 +46,17 @@
 					</wv-column>
 				</wv-row>
 			</wv-column>
-			<wv-column span="6">
+			<wv-column span="4">
 				<div class="mb-0 mt-2 form-group wv-field form">
 					<label class="control-label label-stacked">Check for RECORD changes in:</label>
 				</div>
-				<wv-row>
-					<wv-column>
-						<wv-field-multiselect label-mode="Hidden" value="@Model.IncludeRecordsEntityIdList" options="@Model.EntitySelectOptions.ToWvSelectOption()" name="IncludeRecordsEntityIdList"></wv-field-multiselect>
-					</wv-column>
-				</wv-row>
+				<wv-field-multiselect label-mode="Hidden" value="@Model.IncludeRecordsEntityIdList" options="@Model.EntitySelectOptions.ToWvSelectOption()" name="IncludeRecordsEntityIdList"></wv-field-multiselect>
+			</wv-column>
+			<wv-column span="4">
+				<div class="mb-0 mt-2 form-group wv-field form">
+					<label class="control-label label-stacked">Check for NN Relation record changes in:</label>
+				</div>
+				<wv-field-multiselect label-mode="Hidden" value="@Model.IncludeNNRelationIdList" options="@Model.NNRelationsSelectOptions.ToWvSelectOption()" name="IncludeNNRelationIdList"></wv-field-multiselect>
 			</wv-column>
 		</wv-row>
 	</wv-section>

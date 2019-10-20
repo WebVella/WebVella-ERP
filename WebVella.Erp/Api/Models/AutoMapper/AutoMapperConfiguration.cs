@@ -47,6 +47,7 @@ namespace WebVella.Erp.Api.Models.AutoMapper
                 cfg.CreateMap<EntityRecord, ErpRole>().ConvertUsing(new ErpRoleConverter());
 				cfg.AddProfile(new ErrorModelProfile());
 				cfg.AddProfile(new SearchResultProfile());
+				cfg.AddProfile(new DatabaseNNRelationRecordProfile());
 
 
 			}
