@@ -5,6 +5,8 @@ using WebVella.Erp.Api;
 using System;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Web.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 namespace WebVella.Erp.Web.Middleware
 {
@@ -24,7 +26,16 @@ namespace WebVella.Erp.Web.Middleware
 
 			ErpUser user = AuthService.GetUser(context.User);
 			if (user != null)
+			{
 				secCtx = SecurityContext.OpenScope(user);
+			}
+			else
+			{
+				if (context.User.Identity.IsAuthenticated)
+				{
+					await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+				}
+			}
 
 			await next(context);
 			await Task.Run(() =>
