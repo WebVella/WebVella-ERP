@@ -295,8 +295,17 @@ namespace WebVella.Erp.Database
             if (value == null)
                 return field.GetDefaultValue();
 
-            if (value is JToken)
-                value = ((JToken)value).ToObject<object>();
+			if (value is JToken)
+			{
+				//we convert JToken to string for specified types, because when date formated string 
+				//is saved in JToken value, it get converted to DateTime. It may happen with other specific texts also.
+				if( field is EmailField || field is FileField || field is ImageField ||
+					field is HtmlField || field is MultiLineTextField || field is PasswordField ||
+					field is PhoneField || field is SelectField || field is TextField || field is UrlField )
+					value = ((JToken)value).ToObject<string>();
+				else
+					value = ((JToken)value).ToObject<object>();
+			}
 
             if (field is AutoNumberField)
             {
