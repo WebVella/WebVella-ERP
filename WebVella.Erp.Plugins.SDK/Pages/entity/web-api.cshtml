@@ -85,7 +85,7 @@
 								<pre class="rounded go-bkg-gray-dark go-white p-3"></pre>
 							</wv-modal-body>
 							<wv-modal-footer>
-								<button type="button" class="btn btn-white btn-sm" onclick="ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcModal',{htmlId:'entity-read-get-modal',action:'close',payload:null})">Close</button>
+								<button type="button" class="btn btn-white btn-sm" onclick="$('#entity-read-get-modal').modal('hide')">Close</button>
 							</wv-modal-footer>
 						</wv-modal>
 					</div>
@@ -573,7 +573,7 @@ public class EqlQuery
 	}
 	function setResponseJson(btnId,modalId, response) {
 		$("#" + modalId).find("pre").html(JSON.stringify(response, null, 2));
-		ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcModal',{htmlId:modalId,action:'open',payload:null});
+		$("#" + modalId).modal("show");
 		unspinBtn(btnId);
 	}
 

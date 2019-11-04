@@ -69,13 +69,13 @@ namespace WebVella.Erp.Diagnostics
 		public void Create(LogType type, string source, Exception ex, HttpRequest request = null, LogNotificationStatus notificationStatus = LogNotificationStatus.NotNotified)
 		{
 			string details = MakeDetailsJson("", ex, request);
-			Create(LogType.Error, source, ex?.Message, details, notificationStatus);
+			Create(type, source, ex?.Message, details, notificationStatus);
 		}
 
 		public void Create(LogType type, string source, string message, Exception ex, HttpRequest request = null, LogNotificationStatus notificationStatus = LogNotificationStatus.NotNotified)
 		{
 			string details = MakeDetailsJson("", ex, request);
-			Create(LogType.Error, source, message, details, notificationStatus);
+			Create(type, source, message, details, notificationStatus);
 		}
 
 		public static string MakeDetailsJson(string details, Exception ex = null, HttpRequest request = null)

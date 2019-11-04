@@ -25,15 +25,15 @@
 	{
 		<wv-grid-row>
 			<wv-grid-column>
-				@*<wv-button type="Button" onclick="ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcModal', {htmlId:'wv-@(record["id"])',action:'show'})" color="White" size="Small" icon-class="fa fa-eye fa-fw"></wv-button>
-				<wv-modal size="ExtraLarge" title="System Log Details" id="wv-@(record["id"])">
+				<wv-button type="Button" onclick="$('#wv-@record.Id').modal('show')" color="White" size="Small" icon-class="fa fa-eye fa-fw"></wv-button>
+				<wv-modal size="ExtraLarge" title="System Log Details" id="wv-@record.Id">
 					<wv-modal-body>
 						<wv-field-code height="300px" label-mode="Hidden" name="json" value="@(JsonConvert.SerializeObject(record, Formatting.Indented))" language="json"></wv-field-code>
 					</wv-modal-body>
 					<wv-modal-footer>
-						<wv-button type="Button" onclick="ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcModal', {htmlId:'wv-@(record["id"])',action:'hide'})" color="White" size="Small" text="Close"></wv-button>
+						<wv-button type="Button" onclick="$('#wv-@record.Id').modal('hide')" color="White" size="Small" text="Close"></wv-button>
 					</wv-modal-footer>
-				</wv-modal>*@
+				</wv-modal>
 			</wv-grid-column>
 			<wv-grid-column>
 				<wv-field-datetime label-mode="Hidden" mode="Simple" value="@(record.CreatedOn.ConvertToAppDate())"></wv-field-datetime>
