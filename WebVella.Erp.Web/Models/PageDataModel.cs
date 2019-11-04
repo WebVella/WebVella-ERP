@@ -14,6 +14,8 @@ namespace WebVella.Erp.Web.Models
 {
 	public class PageDataModel
 	{
+		internal bool SafeCodeDataSource { get; set; } = false;
+
 		DataSourceManager dsMan = new DataSourceManager();
 		RecordManager recMan = new RecordManager();
 		EntityRelationManager relMan = new EntityRelationManager();
@@ -28,7 +30,6 @@ namespace WebVella.Erp.Web.Models
 			if (erpPageModel.ErpRequestContext != null && erpPageModel.ErpRequestContext.Page != null)
 				InitDataSources(erpPageModel.ErpRequestContext.Page);
 		}
-
 
 		private void InitContextRelatedData(BaseErpPageModel erpPageModel)
 		{
@@ -399,7 +400,7 @@ namespace WebVella.Erp.Web.Models
 				DataSourceVariable variable = null;
 				try
 				{
-					variable = JsonConvert.DeserializeObject<DataSourceVariable>(text,new JsonSerializerSettings() { MissingMemberHandling = MissingMemberHandling.Error});
+					variable = JsonConvert.DeserializeObject<DataSourceVariable>(text, new JsonSerializerSettings() { MissingMemberHandling = MissingMemberHandling.Error });
 				}
 				catch
 				{
@@ -517,7 +518,7 @@ namespace WebVella.Erp.Web.Models
 
 				if (!currentPropDict.ContainsKey(pName))
 				{
-					if(!currentPropertyNamePath.EndsWith("]"))
+					if (!currentPropertyNamePath.EndsWith("]"))
 						throw new PropertyDoesNotExistException($"Property name '{currentPropertyNamePath}' not found.");
 					else
 						throw new PropertyDoesNotExistException($"Property name is found, but list index is out of bounds.");
@@ -605,7 +606,10 @@ namespace WebVella.Erp.Web.Models
 
 				arguments["PageModel"] = this;
 				var codeDS = (CodeDataSource)dsWrapper.DataSource;
-				return codeDS.Execute(arguments);
+				if (SafeCodeDataSource)
+					try { return codeDS.Execute(arguments); } catch { return null; }
+				else
+					return codeDS.Execute(arguments);
 			}
 			else if (dsWrapper.DataSource.Type == DataSourceType.DATABASE)
 			{
@@ -660,7 +664,7 @@ namespace WebVella.Erp.Web.Models
 
 		private string CheckProcessDefaultValue(string value)
 		{
-			if(!string.IsNullOrEmpty(value))
+			if (!string.IsNullOrEmpty(value))
 			{
 				switch (value.ToLowerInvariant())
 				{
@@ -778,7 +782,7 @@ namespace WebVella.Erp.Web.Models
 							{
 								string[] split = propName.Split('.');
 								List<EntityRecord> records = new List<EntityRecord>();
-								foreach(Guid id in (List<Guid>)propValue)
+								foreach (Guid id in (List<Guid>)propValue)
 								{
 									EntityRecord rec = new EntityRecord();
 									rec["id"] = id;

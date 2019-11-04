@@ -817,6 +817,7 @@ namespace WebVella.Erp.Web.Controllers
 						var pcContextDesign = new PageComponentContext(pagebodyNode, pageModel, ComponentMode.Design, options);
 						return ViewComponent(type, new { context = pcContextDesign });
 					case "options":
+						pageModel.SafeCodeDataSource = true;
 						var pcContextOptions = new PageComponentContext(pagebodyNode, pageModel, ComponentMode.Options, options);
 						return ViewComponent(type, new { context = pcContextOptions });
 					case "help":
