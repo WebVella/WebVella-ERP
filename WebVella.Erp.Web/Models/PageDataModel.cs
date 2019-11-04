@@ -428,7 +428,14 @@ namespace WebVella.Erp.Web.Models
 						result = GetProperty(variable.String);
 						break;
 					case DataSourceVariableType.CODE:
-						result = CodeEvalService.Evaluate(variable.String, erpPageModel);
+						if (SafeCodeDataSource)
+						{
+							try { result = CodeEvalService.Evaluate(variable.String, erpPageModel); } catch { result = null; }
+						}
+						else
+						{
+							result = CodeEvalService.Evaluate(variable.String, erpPageModel);
+						}
 						break;
 					case DataSourceVariableType.HTML:
 						result = variable.String;
