@@ -14,7 +14,7 @@ namespace WebVella.Erp.Web.Models
 {
 	public class PageDataModel
 	{
-		internal bool SafeCodeDataSource { get; set; } = false;
+		internal bool SafeCodeDataVariable { get; set; } = false;
 
 		DataSourceManager dsMan = new DataSourceManager();
 		RecordManager recMan = new RecordManager();
@@ -428,7 +428,7 @@ namespace WebVella.Erp.Web.Models
 						result = GetProperty(variable.String);
 						break;
 					case DataSourceVariableType.CODE:
-						if (SafeCodeDataSource)
+						if (SafeCodeDataVariable)
 						{
 							try { result = CodeEvalService.Evaluate(variable.String, erpPageModel); } catch { result = null; }
 						}
@@ -613,7 +613,7 @@ namespace WebVella.Erp.Web.Models
 
 				arguments["PageModel"] = this;
 				var codeDS = (CodeDataSource)dsWrapper.DataSource;
-				if (SafeCodeDataSource)
+				if (SafeCodeDataVariable)
 					try { return codeDS.Execute(arguments); } catch { return null; }
 				else
 					return codeDS.Execute(arguments);
