@@ -5,7 +5,7 @@
 		<RootNamespace>WebVella.Erp.Web</RootNamespace>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-		<Version>1.0.96</Version>
+		<Version>1.0.97</Version>
 		<Authors>WebVella</Authors>
 		<Product>WebVella.Erp.Web</Product>
 		<Description>The web components library for the open-source and free platform WebVella ERP. It allows a quick and painless creation of business web applications.</Description>
@@ -126,7 +126,7 @@
 		<PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0007" />
 		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0007" />
 		<PackageReference Include="Wangkanai.Detection.Device" Version="2.0.0-beta8" />
-		<PackageReference Include="WebVella.TagHelpers" Version="1.0.41" />
+		<PackageReference Include="WebVella.TagHelpers" Version="1.0.42" />
 		<PackageReference Include="YUICompressor.NET" Version="3.0.0" />
 		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.0.0" />
 	</ItemGroup>
