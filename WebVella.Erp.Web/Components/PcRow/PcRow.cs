@@ -583,7 +583,7 @@ namespace WebVella.Erp.Web.Components
 				ViewBag.Options = optionsObject;
 				ViewBag.ComponentContext = context;
 
-				ViewBag.WvFlexSelfAlignTypeOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvFlexSelfAlignType>(); 
+				ViewBag.FlexSelfAlignTypeOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvFlexSelfAlignType>(); 
 				ViewBag.FlexVerticalAlignmentOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvFlexVerticalAlignmentType>(); 
 
 				ViewBag.FlexHorizontalAlignmentOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvFlexHorizontalAlignmentType>(); 
