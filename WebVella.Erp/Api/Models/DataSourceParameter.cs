@@ -13,5 +13,8 @@ namespace WebVella.Erp.Api.Models
 
 		[JsonProperty(PropertyName = "value")]
 		public string Value { get; set; }
+
+		[JsonProperty(PropertyName = "ignore_parse_errors")]
+		public bool IgnoreParseErrors { get; set; } = false;
 	}
 }
