@@ -45,6 +45,12 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "icon_prop_name")]
 			public string IconPropName { get; set; } = "icon";
 
+			[JsonProperty(PropertyName = "timestamp_prop_name")]
+			public string TimestampPropName { get; set; } = "timestamp";
+
+			[JsonProperty(PropertyName = "author_prop_name")]
+			public string AuthorPropName { get; set; } = "author";
+
 			public static PcFieldMultiFileUploadOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldMultiFileUploadOptions
@@ -60,7 +66,9 @@ namespace WebVella.Erp.Web.Components
 					PathPropName = "path",
 					SizePropName = "size",
 					NamePropName = "name",
-					IconPropName = "icon"
+					IconPropName = "icon",
+					TimestampPropName = "timestamp",
+					AuthorPropName = "author"
 				};
 			}
 		}
