@@ -20,4 +20,7 @@
 				init-errors="@fieldModel.InitErrors" validation-errors="@fieldModel.ValidationErrors.ToKeyValuePair()" 
 				api-url="@fieldModel.ApiUrl" access-denied-message="@fieldModel.AccessDeniedMessage"
 				empty-value-message="@fieldModel.EmptyValueMessage" required="@fieldModel.Required" placeholder="@fieldModel.Placeholder"
-				description="@fieldModel.Description" locale="@fieldModel.Locale" accept="@options.Accept" is-visible="(bool)ViewBag.IsVisible"></wv-field-file-multiple>
+				description="@fieldModel.Description" locale="@fieldModel.Locale" accept="@options.Accept" is-visible="(bool)ViewBag.IsVisible"
+				get-handler-prefix="@options.GetHandlerPrefix" file-upload-api="@options.FileUploadApi"
+				path-prop-name="@options.PathPropName" size-prop-name="@options.SizePropName" 
+				name-prop-name="@options.NamePropName" icon-prop-name="@options.IconPropName"></wv-field-file-multiple>
