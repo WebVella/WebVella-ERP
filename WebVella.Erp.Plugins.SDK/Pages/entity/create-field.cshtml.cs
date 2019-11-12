@@ -123,7 +123,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 		public List<string> HeaderToolbar { get; private set; } = new List<string>();
 
-		public void InitPage()
+		public void InitPage(bool isGet = true)
 		{
 			var entMan = new EntityManager();
 			ErpEntity = entMan.ReadEntity(ParentRecordId ?? Guid.Empty).Object;
@@ -131,9 +131,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			var allCards = AdminPageUtils.GetFieldCards();
 
 			if (FieldTypeId > 19 || FieldTypeId < 1)
-			{
-				FieldTypeId = 18;
-			}
+				throw new Exception("unsupported field type");
 
 			FieldCard = allCards.First(x => (string)x["type"] == FieldTypeId.ToString());
 
@@ -142,45 +140,49 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 				Type = result;
 			}
 
-			#region << Field Type init >>
-			switch (Type)
-			{
-				case FieldType.AutoNumberField:
-					DisplayFormat = "{0}";
-					break;
-				case FieldType.CurrencyField:
-					CurrencyOptions = Helpers.GetAllCurrency().MapTo<SelectOption>();
-					break;
-				case FieldType.DateTimeField:
-					Format = "yyyy-MMM-dd HH:mm";
-					break;
-				default:
-					break;
-			}
-
-			#endregion
-
-			#region << Init RecordPermissions >>
-			var valueGrid = new List<KeyStringList>();
-			PermissionOptions = new List<SelectOption>() {
-							new SelectOption("read","read"),
-							new SelectOption("update","update")
-						};
-
-			var roles = AdminPageUtils.GetUserRoles(); //Special order is applied
-
-			foreach (var role in roles)
-			{
-				RoleOptions.Add(new SelectOption(role.Id.ToString(), role.Name));
-				var keyValuesObj = new KeyStringList()
+			if(isGet){
+				#region << Field Type init >>
+				switch (Type)
 				{
-					Key = role.Id.ToString(),
-					Values = new List<string>()
-				};
+					case FieldType.AutoNumberField:
+						DisplayFormat = "{0}";
+						break;
+					case FieldType.CurrencyField:
+						CurrencyOptions = Helpers.GetAllCurrency().MapTo<SelectOption>();
+						break;
+					case FieldType.DateTimeField:
+						Format = "yyyy-MMM-dd HH:mm";
+						break;
+					default:
+						break;
+				}
 
+				#endregion
+
+				#region << Init RecordPermissions >>
+				var valueGrid = new List<KeyStringList>();
+				PermissionOptions = new List<SelectOption>() {
+								new SelectOption("read","read"),
+								new SelectOption("update","update")
+							};
+
+				var roles = AdminPageUtils.GetUserRoles(); //Special order is applied
+
+				foreach (var role in roles)
+				{
+					RoleOptions.Add(new SelectOption(role.Id.ToString(), role.Name));
+					var keyValuesObj = new KeyStringList()
+					{
+						Key = role.Id.ToString(),
+						Values = new List<string>()
+					};
+
+				}
+
+				#endregion
 			}
 
-			#endregion
+
 
 			#region << Actions >>
 			HeaderActions.AddRange(new List<string>() {
@@ -226,7 +228,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			if (initResult != null)
 				return initResult;
 
-			InitPage();
+			InitPage(false);
 
 			if (ErpEntity == null)
 			{
