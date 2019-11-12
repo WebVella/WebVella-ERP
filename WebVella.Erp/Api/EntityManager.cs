@@ -859,6 +859,7 @@ namespace WebVella.Erp.Api
 			}
 			catch (Exception e)
 			{
+				Debug.WriteLine($"Error while creating field (before clear cache): {field.Name} for entity '{entityId}'");
 				Cache.ClearEntities();
 
 				response.Success = false;
@@ -873,6 +874,7 @@ namespace WebVella.Erp.Api
 				return response;
 			}
 
+			Debug.WriteLine($"Creating field success (before clear cache): {field.Name} for entity '{entityId}'");
 			Cache.ClearEntities();
 
 			response.Object = field;
