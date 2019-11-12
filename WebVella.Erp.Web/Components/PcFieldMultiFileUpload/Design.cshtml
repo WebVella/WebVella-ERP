@@ -21,5 +21,9 @@
 				   init-errors="@fieldModel.InitErrors" validation-errors="@fieldModel.ValidationErrors.ToKeyValuePair()" 
 				   api-url="@fieldModel.ApiUrl" access-denied-message="@fieldModel.AccessDeniedMessage"
 				   empty-value-message="@fieldModel.EmptyValueMessage" required="@fieldModel.Required" placeholder="@fieldModel.Placeholder"
-				   description="@fieldModel.Description" locale="@fieldModel.Locale" accept="@options.Accept"></wv-field-file-multiple>
+				   description="@fieldModel.Description" locale="@fieldModel.Locale" accept="@options.Accept"
+				   get-handler-prefix="@options.GetHandlerPrefix" file-upload-api="@options.FileUploadApi"
+				   path-prop-name="@options.PathPropName" size-prop-name="@options.SizePropName" 
+				   name-prop-name="@options.NamePropName" icon-prop-name="@options.IconPropName"
+				   timestamp-prop-name="@options.TimestampPropName" author-prop-name="@options.AuthorPropName"></wv-field-file-multiple>
 </div>

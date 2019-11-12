@@ -371,11 +371,11 @@ namespace WebVella.Erp.Web.Components
 
 			Entity mappedEntity = null;
 			var entity = context.DataModel.GetProperty("Entity");
-			if (options.ConnectedEntityId != null)
+			if (baseOptions.ConnectedEntityId != null)
 			{
-				mappedEntity = new EntityManager().ReadEntity(options.ConnectedEntityId.Value).Object;
+				mappedEntity = new EntityManager().ReadEntity(baseOptions.ConnectedEntityId.Value).Object;
 			}
-			else if (options.ConnectedEntityId == null && entity is Entity)
+			else if (baseOptions.ConnectedEntityId == null && entity is Entity)
 			{
 				mappedEntity = (Entity)entity;
 			}

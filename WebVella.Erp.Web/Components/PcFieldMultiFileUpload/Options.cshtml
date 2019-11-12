@@ -47,6 +47,42 @@
 	</wv-column>
 </wv-row>
 
+<wv-row>
+	<wv-column span="4">
+		<wv-field-text name="get_handler_prefix" value="@options.GetHandlerPrefix" label-text="Get handler prefix"></wv-field-text>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="file_upload_api" label-text="File Upload POST API Url" value="@options.FileUploadApi"></wv-field-text>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="path_prop_name" value="@options.PathPropName" label-text="Accept"></wv-field-text>
+	</wv-column>
+</wv-row>
+
+<div class="alert alert-info p-2">When the Value is a List&lt;object> then the following need to be specified, if present:</div>
+<wv-row>
+	<wv-column span="4">
+		<wv-field-text name="path_prop_name" value="@options.PathPropName" label-text="Path prop name"></wv-field-text>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="size_prop_name" value="@options.SizePropName" label-text="Size prop name"></wv-field-text>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="name_prop_name" value="@options.NamePropName" label-text="Name prop name"></wv-field-text>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="4">
+		<wv-field-text name="icon_prop_name" value="@options.IconPropName" label-text="Icon prop name"></wv-field-text>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="timestamp_prop_name" value="@options.TimestampPropName" label-text="Timestamp prop name"></wv-field-text>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="author_prop_name" value="@options.AuthorPropName" label-text="Author prop name"></wv-field-text>
+	</wv-column>
+</wv-row>
+
 <wv-section is-collapsable="true" is-collapsed="true" title="advanced options" class="mt-3">
 	<wv-row>
 		<wv-column span="4">

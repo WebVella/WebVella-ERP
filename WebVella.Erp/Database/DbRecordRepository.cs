@@ -235,6 +235,10 @@ namespace WebVella.Erp.Database
 
         public void UpdateRecordField(string entityName, Field field)
         {
+			//don't update default value for auto number field
+			if (field.GetFieldType() == FieldType.AutoNumberField)
+				return;
+
             string tableName = RECORD_COLLECTION_PREFIX + entityName;
 
 			bool overrideNulls = field.Required && field.GetDefaultValue() != null;

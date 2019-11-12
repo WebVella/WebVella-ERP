@@ -335,12 +335,12 @@ namespace WebVella.Erp.Web.Models
 				{
 					switch (fieldMeta.GetFieldType())
 					{
-						case FieldType.AutoNumberField:
-							if (property.Value != null && !String.IsNullOrWhiteSpace(property.Value.ToString()))
-							{
-								validation.Errors.Add(new ValidationError(property.Key, "Autonumber field value should be null or empty string"));
-							}
-							break;
+						//case FieldType.AutoNumberField:
+						//	if (property.Value != null && !String.IsNullOrWhiteSpace(property.Value.ToString()))
+						//	{
+						//		validation.Errors.Add(new ValidationError(property.Key, "Autonumber field value should be null or empty string"));
+						//	}
+						//	break;
 						default:
 							if (fieldMeta.Required &&
 								(property.Value == null || String.IsNullOrWhiteSpace(property.Value.ToString())))
