@@ -75,10 +75,11 @@ namespace WebVella.Erp.Web.Components
 
 				var modelFieldLabel = "";
 				var model = (PcFieldBaseModel)InitPcFieldBaseModel(context, options, label: out modelFieldLabel);
-				if (String.IsNullOrWhiteSpace(options.LabelText))
+				if (String.IsNullOrWhiteSpace(options.LabelText) && context.Mode != ComponentMode.Options)
 				{
 					options.LabelText = modelFieldLabel;
 				}
+
 
 				ViewBag.LabelMode = options.LabelMode;
 				ViewBag.Mode = options.Mode;

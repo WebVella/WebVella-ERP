@@ -75,10 +75,11 @@ namespace WebVella.Erp.Web.Components
 				}
 				var modelFieldLabel = "";
 				var model = (PcFieldRadioListModel)InitPcFieldBaseModel(context, options, label: out modelFieldLabel, targetModel: "PcFieldRadioListModel");
-				if (String.IsNullOrWhiteSpace(options.LabelText))
+				if (String.IsNullOrWhiteSpace(options.LabelText) && context.Mode != ComponentMode.Options)
 				{
 					options.LabelText = modelFieldLabel;
 				}
+
 				//PcFieldRadioListModel model = PcFieldRadioListModel.CopyFromBaseModel(baseModel);
 
 				//Implementing Inherit label mode
