@@ -53,7 +53,7 @@ namespace WebVella.Erp.Web.Components
 			public string ReturnUrl { get; set; } = "";
 
 			[JsonProperty(PropertyName = "show_page_switch")]
-			public bool ShowPageSwitch { get; set; } = true;
+			public bool ShowPageSwitch { get; set; } = false;
 
             [JsonProperty(PropertyName = "fix_on_scroll")]
             public bool FixOnScroll { get; set; } = false;
