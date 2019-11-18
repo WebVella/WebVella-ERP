@@ -400,7 +400,7 @@ namespace WebVella.Erp.Api
                     storageRelation.Id = Guid.NewGuid();
 
                 var success = DbContext.Current.RelationRepository.Create(storageRelation);
-				Cache.ClearRelations();
+				Cache.Clear();
                 if (success)
                 {
                     response.Success = true;
@@ -417,7 +417,7 @@ namespace WebVella.Erp.Api
             }
             catch (Exception e)
             {
-				Cache.ClearRelations();
+				Cache.Clear();
                 response.Success = false;
                 response.Object = relation;
                 response.Timestamp = DateTime.UtcNow;
@@ -460,7 +460,7 @@ namespace WebVella.Erp.Api
                 var storageRelation = relation.MapTo<DbEntityRelation>();
 				storageRelation.Name = storageRelation.Name.Trim();
 				var success = DbContext.Current.RelationRepository.Update(storageRelation);
-				Cache.ClearRelations();
+				Cache.Clear();
                 if (success)
                 {
                     response.Success = true;
@@ -477,7 +477,7 @@ namespace WebVella.Erp.Api
             }
             catch (Exception e)
             {
-                Cache.ClearRelations();
+                Cache.Clear();
 				response.Success = false;
                 response.Object = relation;
                 response.Timestamp = DateTime.UtcNow;
@@ -512,7 +512,7 @@ namespace WebVella.Erp.Api
 			{
 
                 var storageRelation = DbContext.Current.RelationRepository.Read(relationId);
-				Cache.ClearRelations();
+				Cache.Clear();
                 if (storageRelation != null)
                 {
 					DbContext.Current.RelationRepository.Delete(relationId);
@@ -529,7 +529,7 @@ namespace WebVella.Erp.Api
             }
             catch (Exception e)
             {
-				Cache.ClearRelations();
+				Cache.Clear();
 				
 				if (ErpSettings.DevelopmentMode)
 					response.Message = string.Format("Relation ID: {0}, /r/nMessage:{1}/r/nStackTrace:{2}", relationId, e.Message, e.StackTrace);
