@@ -107,7 +107,7 @@ namespace WebVella.Erp.Site.Sdk
 			app.UseAuthorization();
 
 			app
-			.UseErpPlugin<NextPlugin>()
+			//.UseErpPlugin<NextPlugin>()
 			.UseErpPlugin<SdkPlugin>()
 			.UseErp()
 			.UseErpMiddleware();
