@@ -103,22 +103,31 @@ namespace WebVella.Erp.Api
 
 		public static void Clear()
 		{
-			RemoveObjectFromCache(KEY_RELATIONS);
-			RemoveObjectFromCache(KEY_ENTITIES);
-			RemoveObjectFromCache(KEY_RELATIONS_HASH);
-			RemoveObjectFromCache(KEY_ENTITIES_HASH);
+			lock (EntityManager.lockObj)
+			{
+				RemoveObjectFromCache(KEY_RELATIONS);
+				RemoveObjectFromCache(KEY_ENTITIES);
+				RemoveObjectFromCache(KEY_RELATIONS_HASH);
+				RemoveObjectFromCache(KEY_ENTITIES_HASH);
+			}
 		}
 
 		public static void ClearEntities()
 		{
-			RemoveObjectFromCache(KEY_ENTITIES);
-			RemoveObjectFromCache(KEY_ENTITIES_HASH);
+			lock (EntityManager.lockObj)
+			{
+				RemoveObjectFromCache(KEY_ENTITIES);
+				RemoveObjectFromCache(KEY_ENTITIES_HASH);
+			}
 		}
 
 		public static void ClearRelations()
 		{
-			RemoveObjectFromCache(KEY_RELATIONS);
-			RemoveObjectFromCache(KEY_RELATIONS_HASH);
+			lock (EntityManager.lockObj)
+			{
+				RemoveObjectFromCache(KEY_RELATIONS);
+				RemoveObjectFromCache(KEY_RELATIONS_HASH);
+			}
 		}
 		
 	}

@@ -18,6 +18,8 @@ namespace WebVella.Erp.Api
 {
 	public class EntityManager
 	{
+		internal static object lockObj = new object();
+
 		public EntityManager()
 		{
 		}
@@ -630,43 +632,46 @@ namespace WebVella.Erp.Api
 
 			try
 			{
-				List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
-				entities = storageEntityList.MapTo<Entity>();
-
-				List<EntityRelation> relationList = new EntityRelationManager().Read(storageEntityList).Object;
-
-
-				//EntityRelationManager relationManager = new EntityRelationManager(Storage);
-				//EntityRelationListResponse relationListResponse = relationManager.Read();
-				//if (relationListResponse.Object != null)
-				//	relationList = relationListResponse.Object;
-
-
-				//TODO RUMEN - the unique key for finding fields, lists, views should be not only fieldId for example, but the fieldId+entityId combination. 
-				//The problem occurs when there are two fields in two different entities with the same id.Same applies for view and list.
-				List<Field> fields = new List<Field>();
-
-				foreach (var entity in entities)
-					fields.AddRange(entity.Fields);
-
-				foreach (var entity in entities)
+				lock (lockObj)
 				{
-					#region Process Fields
+					List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
+					entities = storageEntityList.MapTo<Entity>();
 
-					foreach (var field in entity.Fields)
+					List<EntityRelation> relationList = new EntityRelationManager().Read(storageEntityList).Object;
+
+
+					//EntityRelationManager relationManager = new EntityRelationManager(Storage);
+					//EntityRelationListResponse relationListResponse = relationManager.Read();
+					//if (relationListResponse.Object != null)
+					//	relationList = relationListResponse.Object;
+
+
+					//TODO RUMEN - the unique key for finding fields, lists, views should be not only fieldId for example, but the fieldId+entityId combination. 
+					//The problem occurs when there are two fields in two different entities with the same id.Same applies for view and list.
+					List<Field> fields = new List<Field>();
+
+					foreach (var entity in entities)
+						fields.AddRange(entity.Fields);
+
+					foreach (var entity in entities)
 					{
-						field.EntityName = entity.Name;
+						#region Process Fields
+
+						foreach (var field in entity.Fields)
+						{
+							field.EntityName = entity.Name;
+						}
+
+						#endregion
+
+						//compute hash code
+						entity.Hash = CryptoUtility.ComputeOddMD5Hash(JsonConvert.SerializeObject(entity));
 					}
 
-					#endregion
-
-					//compute hash code
-					entity.Hash = CryptoUtility.ComputeOddMD5Hash(JsonConvert.SerializeObject(entity));
+					Cache.AddEntities(entities);
+					response.Object = entities;
+					response.Hash = Cache.GetEntitiesHash();
 				}
-
-				Cache.AddEntities(entities);
-				response.Object = entities;
-				response.Hash = Cache.GetEntitiesHash();
 			}
 			catch (Exception e)
 			{
