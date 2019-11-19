@@ -439,7 +439,7 @@ namespace WebVella.Erp.Api
 				return response;
 			}
 
-			Cache.ClearEntities();
+			Cache.Clear();
 
 			var createdEntityResponse = ReadEntity(entity.Id);
 			response.Object = createdEntityResponse.Object;
@@ -517,7 +517,7 @@ namespace WebVella.Erp.Api
 
 				if (!result)
 				{
-					Cache.ClearEntities();
+					Cache.Clear();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The entity was not updated! An internal error occurred!";
@@ -527,7 +527,7 @@ namespace WebVella.Erp.Api
 			}
 			catch (Exception e)
 			{
-				Cache.ClearEntities();
+				Cache.Clear();
 				response.Success = false;
 				response.Object = entity;
 				response.Timestamp = DateTime.UtcNow;
@@ -538,7 +538,7 @@ namespace WebVella.Erp.Api
 				return response;
 			}
 
-			Cache.ClearEntities();
+			Cache.Clear();
 
 			var updatedEntityResponse = ReadEntity(entity.Id);
 			response.Object = updatedEntityResponse.Object;
@@ -592,7 +592,7 @@ namespace WebVella.Erp.Api
 			}
 			catch (Exception e)
 			{
-				Cache.ClearEntities();
+				Cache.Clear();
 
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
@@ -605,7 +605,7 @@ namespace WebVella.Erp.Api
 				return response;
 			}
 
-			Cache.ClearEntities();
+			Cache.Clear();
 
 			response.Timestamp = DateTime.UtcNow;
 			return response;
@@ -852,6 +852,7 @@ namespace WebVella.Erp.Api
 					catch
 					{
 						con.RollbackTransaction();
+						Cache.Clear();
 						throw;
 					}
 				}
@@ -860,7 +861,7 @@ namespace WebVella.Erp.Api
 			catch (Exception e)
 			{
 				Debug.WriteLine($"Error while creating field (before clear cache): {field.Name} for entity '{entityId}'");
-				Cache.ClearEntities();
+				Cache.Clear();
 
 				response.Success = false;
 				response.Object = field;
@@ -875,7 +876,7 @@ namespace WebVella.Erp.Api
 			}
 
 			Debug.WriteLine($"Creating field success (before clear cache): {field.Name} for entity '{entityId}'");
-			Cache.ClearEntities();
+			Cache.Clear();
 
 			response.Object = field;
 			response.Timestamp = DateTime.UtcNow;
@@ -1169,7 +1170,7 @@ namespace WebVella.Erp.Api
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
-					Cache.ClearEntities();
+					Cache.Clear();
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The field was not updated! An internal error occurred!";
@@ -1179,7 +1180,7 @@ namespace WebVella.Erp.Api
 			}
 			catch (Exception e)
 			{
-				Cache.ClearEntities();
+				Cache.Clear();
 				response.Success = false;
 				response.Object = field;
 				response.Timestamp = DateTime.UtcNow;
@@ -1192,7 +1193,7 @@ namespace WebVella.Erp.Api
 				return response;
 			}
 
-			Cache.ClearEntities();
+			Cache.Clear();
 
 			response.Object = field;
 			response.Timestamp = DateTime.UtcNow;
@@ -1318,7 +1319,7 @@ namespace WebVella.Erp.Api
 			}
 			catch (Exception e)
 			{
-				Cache.ClearEntities();
+				Cache.Clear();
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 				
@@ -1330,7 +1331,7 @@ namespace WebVella.Erp.Api
 				return response;
 			}
 
-			Cache.ClearEntities();
+			Cache.Clear();
 
 			response.Timestamp = DateTime.UtcNow;
 			return response;

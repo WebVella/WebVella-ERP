@@ -130,6 +130,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 		{
 			if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
 
+			var initResult = Init();
+			if (initResult != null)
+				return initResult;
+
 			InitPage();
 
 			if (ErpEntity == null || Field == null)

@@ -86,7 +86,7 @@ namespace WebVella.Erp.Web.Components
 				}
 				var modelFieldLabel = "";
 				var model = (PcFieldMultiSelectModel)InitPcFieldBaseModel(context, options, label: out modelFieldLabel, targetModel: "PcFieldMultiSelectModel");
-				if (String.IsNullOrWhiteSpace(options.LabelText))
+				if (String.IsNullOrWhiteSpace(options.LabelText) && context.Mode != ComponentMode.Options)
 				{
 					options.LabelText = modelFieldLabel;
 				}

@@ -75,10 +75,11 @@ namespace WebVella.Erp.Web.Components
 				}
 				var modelFieldLabel = "";
 				var model = (PcFieldCheckboxListModel)InitPcFieldBaseModel(context, options, label: out modelFieldLabel, targetModel: "PcFieldCheckboxListModel");
-				if (String.IsNullOrWhiteSpace(options.LabelText))
+				if (String.IsNullOrWhiteSpace(options.LabelText) && context.Mode != ComponentMode.Options)
 				{
 					options.LabelText = modelFieldLabel;
 				}
+
 				//PcFieldCheckboxListModel model = PcFieldCheckboxListModel.CopyFromBaseModel(baseModel);
 
 				//Implementing Inherit label mode
