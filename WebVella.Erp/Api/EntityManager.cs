@@ -18,6 +18,8 @@ namespace WebVella.Erp.Api
 {
 	public class EntityManager
 	{
+		internal static object lockObj = new object();
+
 		public EntityManager()
 		{
 		}
@@ -623,7 +625,6 @@ namespace WebVella.Erp.Api
 			var entities = Cache.GetEntities();
 			if (entities != null)
 			{
-				Debug.WriteLine("Entities loaded from cache");
 				response.Object = entities;
 				response.Hash = Cache.GetEntitiesHash();
 				return response;
@@ -631,44 +632,46 @@ namespace WebVella.Erp.Api
 
 			try
 			{
-				Debug.WriteLine("Entities loaded from database");
-				List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
-				entities = storageEntityList.MapTo<Entity>();
-
-				List<EntityRelation> relationList = new EntityRelationManager().Read(storageEntityList).Object;
-
-
-				//EntityRelationManager relationManager = new EntityRelationManager(Storage);
-				//EntityRelationListResponse relationListResponse = relationManager.Read();
-				//if (relationListResponse.Object != null)
-				//	relationList = relationListResponse.Object;
-
-
-				//TODO RUMEN - the unique key for finding fields, lists, views should be not only fieldId for example, but the fieldId+entityId combination. 
-				//The problem occurs when there are two fields in two different entities with the same id.Same applies for view and list.
-				List<Field> fields = new List<Field>();
-
-				foreach (var entity in entities)
-					fields.AddRange(entity.Fields);
-
-				foreach (var entity in entities)
+				lock (lockObj)
 				{
-					#region Process Fields
+					List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
+					entities = storageEntityList.MapTo<Entity>();
 
-					foreach (var field in entity.Fields)
+					List<EntityRelation> relationList = new EntityRelationManager().Read(storageEntityList).Object;
+
+
+					//EntityRelationManager relationManager = new EntityRelationManager(Storage);
+					//EntityRelationListResponse relationListResponse = relationManager.Read();
+					//if (relationListResponse.Object != null)
+					//	relationList = relationListResponse.Object;
+
+
+					//TODO RUMEN - the unique key for finding fields, lists, views should be not only fieldId for example, but the fieldId+entityId combination. 
+					//The problem occurs when there are two fields in two different entities with the same id.Same applies for view and list.
+					List<Field> fields = new List<Field>();
+
+					foreach (var entity in entities)
+						fields.AddRange(entity.Fields);
+
+					foreach (var entity in entities)
 					{
-						field.EntityName = entity.Name;
+						#region Process Fields
+
+						foreach (var field in entity.Fields)
+						{
+							field.EntityName = entity.Name;
+						}
+
+						#endregion
+
+						//compute hash code
+						entity.Hash = CryptoUtility.ComputeOddMD5Hash(JsonConvert.SerializeObject(entity));
 					}
 
-					#endregion
-
-					//compute hash code
-					entity.Hash = CryptoUtility.ComputeOddMD5Hash(JsonConvert.SerializeObject(entity));
+					Cache.AddEntities(entities);
+					response.Object = entities;
+					response.Hash = Cache.GetEntitiesHash();
 				}
-
-				Cache.AddEntities(entities);
-				response.Object = entities;
-				response.Hash = Cache.GetEntitiesHash();
 			}
 			catch (Exception e)
 			{
@@ -774,7 +777,6 @@ namespace WebVella.Erp.Api
 
 		public FieldResponse CreateField(Guid entityId, InputField inputField, bool transactional = true)
 		{
-			Debug.WriteLine($"Create field started: {inputField.Name} for entity '{entityId}'");
 			FieldResponse response = new FieldResponse
 			{
 				Success = true,
@@ -792,13 +794,13 @@ namespace WebVella.Erp.Api
 			}
 
 			Field field = null;
-			Debug.WriteLine($"Try block started: {inputField.Name} for entity '{entityId}'");
+
 			try
 			{
 				var entityResponse = ReadEntity(entityId);
+
 				if (!entityResponse.Success)
 				{
-					Debug.WriteLine($"Entity read failed: {inputField.Name} for entity '{entityId}'");
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = entityResponse.Message;
@@ -806,14 +808,13 @@ namespace WebVella.Erp.Api
 				}
 				else if (entityResponse.Object == null)
 				{
-					Debug.WriteLine($"Entity read not found: {inputField.Name} for entity '{entityId}'");
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "Entity with such Id does not exist!";
 					return response;
 				}
 				Entity entity = entityResponse.Object;
-				Debug.WriteLine($"Entity read success: {inputField.Name} for entity '{entityId}'");
+
 				if (inputField.Id == null || inputField.Id == Guid.Empty)
 					inputField.Id = Guid.NewGuid();
 
@@ -823,41 +824,38 @@ namespace WebVella.Erp.Api
 
 				if (response.Errors.Count > 0)
 				{
-					Debug.WriteLine($"Field validation failed: {inputField.Name} for entity '{entityId}'");
 					response.Object = field;
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "The field was not created. Validation error occurred!";
 					return response;
 				}
-				Debug.WriteLine($"Field validation success: {inputField.Name} for entity '{entityId}'");
+
 				entity.Fields.Add(field);
 
 				DbEntity editedEntity = entity.MapTo<DbEntity>();
-				Debug.WriteLine($"Entity mapped: {inputField.Name} for entity '{entityId}'");
+
 				using (DbConnection con = DbContext.Current.CreateConnection())
 				{
 					con.BeginTransaction();
-					Debug.WriteLine($"Transaction started: {inputField.Name} for entity '{entityId}'");
+
 					try
 					{
 						bool result = DbContext.Current.EntityRepository.Update(editedEntity);
 						if (!result)
 						{
-							Debug.WriteLine($"Entity meta update failed: {inputField.Name} for entity '{entityId}'");
 							response.Timestamp = DateTime.UtcNow;
 							response.Success = false;
 							response.Message = "The field was not created! An internal error occurred!";
 							return response;
 						}
-						Debug.WriteLine($"Entity meta update success: {inputField.Name} for entity '{entityId}'");
+
 						DbContext.Current.RecordRepository.CreateRecordField(entity.Name, field);
-						Debug.WriteLine($"Create field success: {inputField.Name} for entity '{entityId}'");
+
 						con.CommitTransaction();
 					}
 					catch
 					{
-						Debug.WriteLine($"Create field failed: {inputField.Name} for entity '{entityId}'");
 						con.RollbackTransaction();
 						Cache.Clear();
 						throw;

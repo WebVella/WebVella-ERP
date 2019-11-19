@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using WebVella.Erp.Api.Models;
@@ -104,33 +103,31 @@ namespace WebVella.Erp.Api
 
 		public static void Clear()
 		{
-			Debug.WriteLine($"Clear Cache");
-			try{
-			RemoveObjectFromCache(KEY_RELATIONS);
-			RemoveObjectFromCache(KEY_ENTITIES);
-			RemoveObjectFromCache(KEY_RELATIONS_HASH);
-			RemoveObjectFromCache(KEY_ENTITIES_HASH);
+			lock (EntityManager.lockObj)
+			{
+				RemoveObjectFromCache(KEY_RELATIONS);
+				RemoveObjectFromCache(KEY_ENTITIES);
+				RemoveObjectFromCache(KEY_RELATIONS_HASH);
+				RemoveObjectFromCache(KEY_ENTITIES_HASH);
 			}
-			catch(Exception ex){
-				Debug.WriteLine($"Exception on clear Cache: " + ex.Message);				
-				throw ex;
-			}
-			if(cache.Get(KEY_ENTITIES) == null)
-				Debug.WriteLine($"Cache cleared");
-			else
-				Debug.WriteLine($"Cache not cleared");
 		}
 
 		public static void ClearEntities()
 		{
-			RemoveObjectFromCache(KEY_ENTITIES);
-			RemoveObjectFromCache(KEY_ENTITIES_HASH);
+			lock (EntityManager.lockObj)
+			{
+				RemoveObjectFromCache(KEY_ENTITIES);
+				RemoveObjectFromCache(KEY_ENTITIES_HASH);
+			}
 		}
 
 		public static void ClearRelations()
 		{
-			RemoveObjectFromCache(KEY_RELATIONS);
-			RemoveObjectFromCache(KEY_RELATIONS_HASH);
+			lock (EntityManager.lockObj)
+			{
+				RemoveObjectFromCache(KEY_RELATIONS);
+				RemoveObjectFromCache(KEY_RELATIONS_HASH);
+			}
 		}
 		
 	}
