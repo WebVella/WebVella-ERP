@@ -113,7 +113,7 @@ namespace WebVella.Erp.Notifications
 			sqlConnection.Notification += (o, e) =>
 			{
 				string json;
-				if (Encoding.UTF8.TryParseBase64(e.AdditionalInformation, out json))
+				if (Encoding.UTF8.TryParseBase64(e.Payload, out json))
 				{
 					var notification = JsonConvert.DeserializeObject<Notification>(json, settings);
 					HandleNotification(notification);
