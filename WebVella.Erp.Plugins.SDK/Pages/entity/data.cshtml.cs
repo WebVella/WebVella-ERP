@@ -258,7 +258,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			if (!Guid.TryParse(PageContext.HttpContext.Request.Query["recordId"], out Guid recordId))
 				return NotFound();
 
-			ErpEntity = new EntityManager().ReadEntity(RecordId ?? Guid.Empty).Object;
+			ErpEntity = new EntityManager().ReadEntity(ParentRecordId ?? Guid.Empty).Object;
 
 			if (ErpEntity == null)
 				return NotFound();
@@ -273,7 +273,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 					exception.Errors = response.Errors.MapTo<ValidationError>();
 					throw exception;
 				}
-				return Redirect(ReturnUrl);
+				return Redirect($"/sdk/objects/entity/r/{ParentRecordId}/rl/data/l");
 			}
 			catch (ValidationException ex)
 			{
