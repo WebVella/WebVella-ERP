@@ -1,6 +1,7 @@
 ﻿@page "/sdk/objects/page/r/{RecordId}/generated-body"
 
 @model WebVella.Erp.Plugins.SDK.Pages.Page.GeneratedBodyModel
+@using System.Web.Mvc;
 @{
 	Layout = "~/Pages/_AppMaster.cshtml";
 	ViewData["Title"] = "Page Customized Body";
@@ -31,8 +32,8 @@
 <script nomodule src="/js/stencil/wv-pb-manager.js"></script>*@
 
 <script>
-	var PbManagerLibraryJson = @Html.Raw(Model.LibraryJson)
-	var PbManagerPageNodesJson = @Html.Raw(Model.PageNodeListJson)
+	var PbManagerLibraryJson = @Html.WvJsonRaw(Model.LibraryJson)
+	var PbManagerPageNodesJson = @Html.WvJsonRaw(Model.PageNodeListJson)
 
 </script>
 
