@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace System.Web.Mvc
+namespace WebVella.Erp.Web
 {
 	public static class WvTaghelperExtension
 	{
