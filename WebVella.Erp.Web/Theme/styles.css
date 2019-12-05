@@ -2982,14 +2982,37 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 	overflow: hidden;
 }
 
-	.app-card .app-image-wrapper {
-		overflow: hidden;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: --white_color;
+	.app-card .card-body {
+		position:relative;
 	}
+
+	.app-card .card-footer {
+		padding:0.25rem;
+		background:#fff;
+	}
+
+		.app-card .card-footer .nav {
+			margin:-0.25rem;
+		}
+
+		.app-card .card-footer .nav-link {
+			padding: 0.25rem;
+			margin-right: 0.25rem;
+			color: #777;
+		}
+
+		.app-card .card-footer .nav-link:hover{
+			color: #333;
+		}
+
+		.app-card .app-image-wrapper {
+			overflow: hidden;
+			height: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: --white_color;
+		}
 
 		.app-card .app-image-wrapper .app-icon {
 			font-size: 36px;

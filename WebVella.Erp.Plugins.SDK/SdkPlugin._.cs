@@ -106,6 +106,20 @@ namespace WebVella.Erp.Plugins.SDK
 							}
 						}
 
+						if (currentPluginSettings.Version < 20191205)
+						{
+							try
+							{
+								currentPluginSettings.Version = 20191205;
+								Patch20191205(entMan, relMan, recMan);
+							}
+							catch (Exception ex)
+							{
+								var exception = ex;
+								throw ex;
+							}
+						}
+
 						#endregion
 
 
