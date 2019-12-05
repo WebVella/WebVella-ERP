@@ -22,7 +22,8 @@ namespace WebVella.Erp.Web.Models
 	{
 		DATASOURCE = 0,
 		CODE = 1,
-		HTML = 2
+		HTML = 2,
+		SNIPPET = 3
 	}
 
 }

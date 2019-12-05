@@ -440,6 +440,44 @@ namespace WebVella.Erp.Web.Models
 					case DataSourceVariableType.HTML:
 						result = variable.String;
 						break;
+					case DataSourceVariableType.SNIPPET:
+						if (SafeCodeDataVariable)
+						{
+							var snippet = SnippetService.GetSnippet(variable.String);
+							if (snippet == null)
+								result = $"Snippet '{variable.String}' is not found.";
+							else
+							{
+								if (snippet.Name.ToLowerInvariant().EndsWith(".cs"))
+								{
+									string csCode = snippet.GetText();
+									try { result = CodeEvalService.Evaluate(csCode, erpPageModel); } catch { result = null; }
+								}
+								else
+								{
+									result = snippet.GetText();
+								}
+							}
+						}
+						else
+						{
+							var snippet = SnippetService.GetSnippet(variable.String);
+							if (snippet == null)
+								result = $"Snippet '{variable.String}' is not found.";
+							else
+							{
+								if (snippet.Name.ToLowerInvariant().EndsWith(".cs"))
+								{
+									string csCode = snippet.GetText();
+									result = CodeEvalService.Evaluate(variable.String, erpPageModel);
+								}
+								else
+								{
+									result = snippet.GetText();
+								}
+							}
+						}
+						break;
 					default:
 						throw new NotSupportedException(variable.Type.ToString());
 				}

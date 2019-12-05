@@ -4154,5 +4154,55 @@ namespace WebVella.Erp.Web.Controllers
 			return stream;
 		}
 		#endregion
+
+		#region <== Snippets ===>
+
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v3/en_US/snippets")]
+		public IActionResult GetSnippetNames(string search = "", int page = 1, int pageSize = 30)
+		{
+			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+
+			try
+			{
+				var snippets = SnippetService.Snippets.Keys.OrderBy(x => x).ToList();
+				if (string.IsNullOrWhiteSpace(search) )
+					response.Object = snippets.Skip(page - 1).Take(pageSize);
+				else
+					response.Object = snippets.Where(x=>x.ToLowerInvariant().Contains(search.ToLowerInvariant())).Skip(page - 1).Take(pageSize);
+			}
+			catch (Exception e)
+			{
+				new LogService().Create(Diagnostics.LogType.Error, "GetSnippetNames", e);
+				response.Success = false;
+				response.Message = e.Message + e.StackTrace;
+			}
+
+			return DoResponse(response);
+		}
+
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v3/en_US/snippet/{name}")]
+		public IActionResult GetSnippetText(string name )
+		{
+			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+
+			try
+			{
+				var snippet = SnippetService.GetSnippet(name);
+				if (snippet == null)
+					throw new Exception($"Snippet '{name}' is not found.");
+				else
+					response.Object = snippet.GetText();
+			}
+			catch (Exception e)
+			{
+				new LogService().Create(Diagnostics.LogType.Error, "GetSnippetNames", e);
+				response.Success = false;
+				response.Message = e.Message + e.StackTrace;
+			}
+
+			return DoResponse(response);
+		}
+
+		#endregion
 	}
 }
