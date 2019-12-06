@@ -35,11 +35,6 @@
 		<EmbeddedResource Include="Snippets\**\*.html" />
 	</ItemGroup>
 
-  <ItemGroup><!--<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.3.1" />-->
-  
-    <EmbeddedResource Remove="Snippets\Rumen.cs" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\WebVella.Erp.Web\WebVella.Erp.Web.csproj" />
     <ProjectReference Include="..\WebVella.ERP\WebVella.Erp.csproj" />
