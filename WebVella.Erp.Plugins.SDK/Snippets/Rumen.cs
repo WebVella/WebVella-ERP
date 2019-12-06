@@ -4,7 +4,7 @@ using System.Text;
 using WebVella.Erp.Web.Models;
 
 
-public class EmptySampleClassSnippet : ICodeVariable
+public class Rumen : ICodeVariable
 {
 	public object Evaluate(BaseErpPageModel pageModel)
 	{

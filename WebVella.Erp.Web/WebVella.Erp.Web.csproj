@@ -40,6 +40,7 @@
 		<None Remove="Components\PcFieldIcon\service.js" />
 		<None Remove="Components\PcFieldMultiFileUpload\service.js" />
 		<None Remove="Components\PcFieldDataCsv\service.js" />
+		<None Remove="Snippets\boz.html" />
 		<None Remove="TagHelpers\WvFieldDataCsv\display.js" />
 		<None Remove="TagHelpers\WvFieldDataCsv\form.js" />
 		<None Remove="TagHelpers\WvFieldDataCsv\inline-edit.js" />

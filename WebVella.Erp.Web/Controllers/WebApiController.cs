@@ -104,32 +104,32 @@ namespace WebVella.Erp.Web.Controllers
 			EqlDataSourceQuery model = new EqlDataSourceQuery();
 
 			#region << Init SubmitObj >>
-				foreach (var prop in submitObj.Properties())
+			foreach (var prop in submitObj.Properties())
+			{
+				switch (prop.Name.ToLower())
 				{
-					switch (prop.Name.ToLower())
-					{
-						case "name":
-							if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
-								model.Name = prop.Value.ToString();
-							else
-							{
-								throw new Exception("DataSource Name is required");
-							}
-							break;
-						case "parameters":
-							var jParams = (JArray)prop.Value;
-							model.Parameters = new List<EqlParameter>();
-							foreach (JObject jParam in jParams)
-							{
-								var name = jParam["name"].ToString();
-								var value = jParam["value"].ToString();
-								var eqlParam = new EqlParameter(name,value);
-								model.Parameters.Add(eqlParam);
-							}
-							break;
-					}
+					case "name":
+						if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
+							model.Name = prop.Value.ToString();
+						else
+						{
+							throw new Exception("DataSource Name is required");
+						}
+						break;
+					case "parameters":
+						var jParams = (JArray)prop.Value;
+						model.Parameters = new List<EqlParameter>();
+						foreach (JObject jParam in jParams)
+						{
+							var name = jParam["name"].ToString();
+							var value = jParam["value"].ToString();
+							var eqlParam = new EqlParameter(name, value);
+							model.Parameters.Add(eqlParam);
+						}
+						break;
 				}
-				#endregion
+			}
+			#endregion
 
 
 			try
@@ -137,22 +137,22 @@ namespace WebVella.Erp.Web.Controllers
 				DataSourceManager dsMan = new DataSourceManager();
 				var dataSources = dsMan.GetAll();
 				var ds = dataSources.SingleOrDefault(x => x.Name == model.Name);
-				if( ds == null )
+				if (ds == null)
 				{
 					response.Success = false;
-					response.Message =$"DataSource with name '{model.Name}' not found.";
+					response.Message = $"DataSource with name '{model.Name}' not found.";
 					return Json(response);
 				}
 
-				if( ds is DatabaseDataSource )
+				if (ds is DatabaseDataSource)
 				{
 					var list = (EntityRecordList)dsMan.Execute(ds.Id, model.Parameters);
 					response.Object = new { list, total_count = list.TotalCount };
 				}
-				else if( ds is CodeDataSource )
+				else if (ds is CodeDataSource)
 				{
 					Dictionary<string, object> arguments = new Dictionary<string, object>();
-					foreach( var par in model.Parameters )
+					foreach (var par in model.Parameters)
 						arguments[par.ParameterName] = par.Value;
 
 					response.Object = ((CodeDataSource)ds).Execute(arguments);
@@ -1200,7 +1200,8 @@ namespace WebVella.Erp.Web.Controllers
 						if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
 						{
 							var hasHeaderString = prop.Value.ToString();
-							if (hasHeaderString.ToLowerInvariant() == "false") {
+							if (hasHeaderString.ToLowerInvariant() == "false")
+							{
 								hasHeader = false;
 							}
 						}
@@ -3073,21 +3074,21 @@ namespace WebVella.Erp.Web.Controllers
 		[Route("/fs/{root}/{root2}/{fileName}")]
 		[Route("/fs/{root}/{root2}/{root3}/{fileName}")]
 		[Route("/fs/{root}/{root2}/{root3}/{root4}/{fileName}")]
-		public IActionResult Download([FromRoute] string root,[FromRoute] string root2,[FromRoute] string root3,[FromRoute] string root4, [FromRoute] string fileName)
+		public IActionResult Download([FromRoute] string root, [FromRoute] string root2, [FromRoute] string root3, [FromRoute] string root4, [FromRoute] string fileName)
 		{
 			//we added ROOT routing parameter as workaround for conflict with razorpages routing and wildcard controller routing
 			//in particular we have problem with ApplicationNodePage where routing pattern is  "/{AppName}/{AreaName}/{NodeName}/a/{PageName?}"
 
-			if ( string.IsNullOrWhiteSpace(fileName))
+			if (string.IsNullOrWhiteSpace(fileName))
 				return DoPageNotFoundResponse();
 
 			var filePathArray = new List<string>();
-			if(root != null) filePathArray.Add(root);
-			if(root2 != null) filePathArray.Add(root2);
-			if(root3 != null) filePathArray.Add(root3);
-			if(root4 != null) filePathArray.Add(root4);
+			if (root != null) filePathArray.Add(root);
+			if (root2 != null) filePathArray.Add(root2);
+			if (root3 != null) filePathArray.Add(root3);
+			if (root4 != null) filePathArray.Add(root4);
 
-			var filePath = "/" + String.Join("/",filePathArray) + "/" + fileName;
+			var filePath = "/" + String.Join("/", filePathArray) + "/" + fileName;
 
 			filePath = filePath.ToLowerInvariant();
 
@@ -4160,28 +4161,16 @@ namespace WebVella.Erp.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v3/en_US/snippets")]
 		public IActionResult GetSnippetNames(string search = "", int page = 1, int pageSize = 30)
 		{
-			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
-
-			try
-			{
-				var snippets = SnippetService.Snippets.Keys.OrderBy(x => x).ToList();
-				if (string.IsNullOrWhiteSpace(search) )
-					response.Object = snippets.Skip(page - 1).Take(pageSize);
-				else
-					response.Object = snippets.Where(x=>x.ToLowerInvariant().Contains(search.ToLowerInvariant())).Skip(page - 1).Take(pageSize);
-			}
-			catch (Exception e)
-			{
-				new LogService().Create(Diagnostics.LogType.Error, "GetSnippetNames", e);
-				response.Success = false;
-				response.Message = e.Message + e.StackTrace;
-			}
-
-			return DoResponse(response);
+			var response = new TypeaheadResponse();
+			var snippets = SnippetService.Snippets.Keys.OrderBy(x => x).ToList();
+			if (string.IsNullOrWhiteSpace(search))
+				return new JsonResult(snippets.Skip(page - 1).Take(pageSize).ToList());
+			else
+				return new JsonResult(snippets.Where(x => x.ToLowerInvariant().Contains(search.ToLowerInvariant())).Skip(page - 1).Take(pageSize).ToList());
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v3/en_US/snippet/{name}")]
-		public IActionResult GetSnippetText(string name )
+		public IActionResult GetSnippetText(string name)
 		{
 			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 

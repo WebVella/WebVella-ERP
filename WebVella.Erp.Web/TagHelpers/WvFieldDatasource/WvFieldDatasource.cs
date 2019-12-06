@@ -154,6 +154,10 @@ namespace WebVella.Erp.Web.TagHelpers
 				{
 					divEl.AddCssClass("code");
 				}
+				else if (DataSourceVariable != null && DataSourceVariable.Type == DataSourceVariableType.SNIPPET)
+				{
+					divEl.AddCssClass("snippet");
+				}
 				else
 				{
 					divEl.AddCssClass("html");
@@ -171,7 +175,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				select2SelectionUlEl.AddCssClass("select2-selection__rendered");
 				var optionEl = new TagBuilder("li");
 				optionEl.AddCssClass("select2-selection__choice");
-				if (DataSourceVariable != null && DataSourceVariable.Type == DataSourceVariableType.DATASOURCE)
+				if (DataSourceVariable != null && (DataSourceVariable.Type == DataSourceVariableType.DATASOURCE || DataSourceVariable.Type == DataSourceVariableType.SNIPPET))
 				{
 					optionEl.Attributes.Add("title", DataSourceVariable.String);
 				}
@@ -192,6 +196,14 @@ namespace WebVella.Erp.Web.TagHelpers
 					optionEl.InnerHtml.AppendHtml(optionIcon);
 					var textSpan = new TagBuilder("span");
 					textSpan.InnerHtml.AppendHtml("c# code");
+					optionEl.InnerHtml.AppendHtml(textSpan);
+				}
+				else if (DataSourceVariable != null && DataSourceVariable.Type == DataSourceVariableType.SNIPPET)
+				{
+					optionIcon.AddCssClass("fa fa-fw fa-cog mr-1");
+					optionEl.InnerHtml.AppendHtml(optionIcon);
+					var textSpan = new TagBuilder("span");
+					textSpan.InnerHtml.AppendHtml(DataSourceVariable.String);
 					optionEl.InnerHtml.AppendHtml(textSpan);
 				}
 				else
@@ -356,6 +368,29 @@ namespace WebVella.Erp.Web.TagHelpers
 					}
 					#endregion
 
+					#region << Snippet chkb >>
+					{
+						var formCheckEl = new TagBuilder("div");
+						formCheckEl.AddCssClass("form-check form-check-inline");
+						var formCheckInput = new TagBuilder("input");
+						formCheckInput.AddCssClass("form-check-input ds-type-radio");
+						formCheckInput.Attributes.Add("type", "radio");
+						formCheckInput.Attributes.Add("id", $"modal-{FieldId}-checkbox-snippet");
+						formCheckInput.Attributes.Add("value", "3");
+						if (DataSourceVariable != null && DataSourceVariable.Type == DataSourceVariableType.SNIPPET)
+						{
+							formCheckInput.Attributes.Add("checked", "checked");
+						}
+						formCheckEl.InnerHtml.AppendHtml(formCheckInput);
+						var formCheckLabel = new TagBuilder("label");
+						formCheckLabel.AddCssClass("form-check-label");
+						formCheckLabel.Attributes.Add("for", $"modal-{FieldId}-checkbox-snippet");
+						formCheckLabel.InnerHtml.AppendHtml("resource");
+						formCheckEl.InnerHtml.AppendHtml(formCheckLabel);
+						fieldFormControl.InnerHtml.AppendHtml(formCheckEl);
+					}
+					#endregion
+
 					fieldGroupEl.InnerHtml.AppendHtml(fieldFormControl);
 					editModalBody.InnerHtml.AppendHtml(fieldGroupEl);
 				}
@@ -501,6 +536,76 @@ public class SampleCodeVariable : ICodeVariable
 					editModalBody.InnerHtml.AppendHtml(fieldGroupEl);
 
 				}
+				#endregion
+
+				#region << File Snippet >>
+				var snippetWrapEl = new TagBuilder("div");
+				if (DataSourceVariable == null || DataSourceVariable.Type != DataSourceVariableType.SNIPPET)
+				{
+					snippetWrapEl.AddCssClass("d-none");
+				}
+				snippetWrapEl.Attributes.Add("id", $"modal-{FieldId}-snippet-group");
+
+				{
+					var fieldGroupEl = new TagBuilder("div");
+					fieldGroupEl.AddCssClass("form-group wv-field");
+
+					var fieldLabel = new TagBuilder("label");
+					fieldLabel.AddCssClass("control-label label-stacked");
+					fieldLabel.InnerHtml.AppendHtml("Embedded Resource Name");
+					fieldGroupEl.InnerHtml.AppendHtml(fieldLabel);
+
+					var inputEl = new TagBuilder("input");
+					inputEl.AddCssClass("form-control erp-text");
+					inputEl.Attributes.Add("type", "text");
+					if (DataSourceVariable != null && DataSourceVariable.Type == DataSourceVariableType.SNIPPET)
+					{
+						inputEl.Attributes.Add("value", DataSourceVariable.String);
+					}
+					else
+					{
+						inputEl.Attributes.Add("value", "");
+					}
+					fieldGroupEl.InnerHtml.AppendHtml(inputEl);
+					snippetWrapEl.InnerHtml.AppendHtml(fieldGroupEl);
+				}
+				{
+					var fieldGroupEl = new TagBuilder("div");
+					fieldGroupEl.AddCssClass("form-group wv-field");
+
+					var fieldLabel = new TagBuilder("label");
+					fieldLabel.AddCssClass("control-label label-stacked");
+					fieldLabel.InnerHtml.AppendHtml("Resource Content");
+					fieldGroupEl.InnerHtml.AppendHtml(fieldLabel);
+
+					var editorWrapperEl = new TagBuilder("div");
+					var wrapperCssClassList = new List<string>();
+					wrapperCssClassList.Add("form-control-plaintext erp-code");
+					if (ValidationErrors.Count > 0)
+					{
+						wrapperCssClassList.Add("is-invalid");
+					}
+					editorWrapperEl.Attributes.Add("class", String.Join(' ', wrapperCssClassList));
+					var editorWrapper = new TagBuilder("div");
+					editorWrapper.Attributes.Add("id", $"modal-{FieldId}-snippet-editor");
+					editorWrapper.Attributes.Add("style", $"min-height:250px");
+					editorWrapperEl.InnerHtml.AppendHtml(editorWrapper);
+					fieldGroupEl.InnerHtml.AppendHtml(editorWrapperEl);
+
+					var inputEl = new TagBuilder("input");
+					inputEl.Attributes.Add("type", "hidden");
+					inputEl.Attributes.Add("id", $"modal-{FieldId}-snippet-input");
+					if (DataSourceVariable != null && 
+						DataSourceVariable.Type == DataSourceVariableType.HTML && !String.IsNullOrWhiteSpace(DataSourceVariable.String))
+					{
+						var snippet = SnippetService.GetSnippet(DataSourceVariable.String);
+						inputEl.Attributes.Add("value", snippet.GetText());
+					}
+					fieldGroupEl.InnerHtml.AppendHtml(inputEl);
+					snippetWrapEl.InnerHtml.AppendHtml(fieldGroupEl);
+				}
+
+				editModalBody.InnerHtml.AppendHtml(snippetWrapEl);
 				#endregion
 
 				#region << Default >>
@@ -677,8 +782,8 @@ public class SampleCodeVariable : ICodeVariable
 					var scriptContent = FileService.GetEmbeddedTextResource("form.js", "WebVella.Erp.Web.TagHelpers.WvFieldDatasource");
 					var scriptEl = new TagBuilder("script");
 					scriptEl.Attributes.Add("type", "text/javascript");
-					//scriptEl.InnerHtml.AppendHtml(jsCompressor.Compress(scriptContent));
-					scriptEl.InnerHtml.AppendHtml(scriptContent);
+					scriptEl.InnerHtml.AppendHtml(jsCompressor.Compress(scriptContent));
+					//scriptEl.InnerHtml.AppendHtml(scriptContent);
 					output.Content.AppendHtml(scriptEl);
 
 					ViewContext.HttpContext.Items[typeof(WvFieldDatasource) + "-form"] = new WvTagHelperContext()

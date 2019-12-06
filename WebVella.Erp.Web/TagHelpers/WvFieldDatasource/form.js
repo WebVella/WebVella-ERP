@@ -17,11 +17,14 @@
 	selectors.dataSourceFormGroup = "#modal-" + fieldId + "-datasource-group";
 	selectors.codeFormGroup = "#modal-" + fieldId + "-code-group";
 	selectors.htmlFormGroup = "#modal-" + fieldId + "-html-group";
+	selectors.snippetFormGroup = "#modal-" + fieldId + "-snippet-group";
 	selectors.defaultFormGroup = "#modal-" + fieldId + "-default-group";
 	selectors.codeValueInput = "#modal-" + fieldId + "-code-input";
 	selectors.codeValueEditor = "#modal-" + fieldId + "-code-editor";
 	selectors.htmlValueInput = "#modal-" + fieldId + "-html-input";
 	selectors.htmlValueEditor = "#modal-" + fieldId + "-html-editor";
+	selectors.snippetValueInput = "#modal-" + fieldId + "-snippet-input";
+	selectors.snippetValueTA = "#modal-" + fieldId + "-snippet-ta";
 
 
 	selectors.pasteSimpleCodeLink = selectors.modal + " .simple-code";
@@ -72,6 +75,21 @@ function destroyEditor(fieldId) {
 	editorHtml.destroy();
 }
 
+function GetSnippetTaResults(query, process) {
+	return $.get("/api/v3/en_US/snippets", { search: query }, function (data) {
+		return process(data);
+	});
+}
+
+
+function GetSnippetTaTemplate(item){
+	return item;
+}
+
+function GetSnippetTaSelected(item){
+	console.log(item);
+}
+
 function DataSourceFormEditInit(fieldId, propertyNameLibrary) {
 	var selectors = DataSourceFormEditGenerateSelectors(fieldId);
 
@@ -81,17 +99,38 @@ function DataSourceFormEditInit(fieldId, propertyNameLibrary) {
 		//initEditor(fieldId);
 	}
 
+	if (intTypeVal === "3" || intTypeVal === 3) {
+		$(selectors.defaultFormGroup).addClass("d-none");
+		//initEditor(fieldId);
+	}
+
 
 	var typeaheadEl = $(selectors.dataSourceFormGroup + " input.form-control");
 	if (typeaheadEl) {
 		typeaheadEl.typeahead({ source: propertyNameLibrary, items: 'all', fitToElement: true });
 	}
 
+	var snippetTaOptions = {
+		minLength:1,
+		source:GetSnippetTaResults,
+		selectOnBlur:false,
+		autoSelect:false,
+		displayText:GetSnippetTaTemplate,
+		fitToElement:true,
+		afterSelect:GetSnippetTaSelected
+	};
+
+	var typeaheadSnippetEl = $(selectors.snippetFormGroup + " input.form-control");
+
+	if (typeaheadSnippetEl) {
+		typeaheadSnippetEl.typeahead(snippetTaOptions);
+	}
+
 
 	$(selectors.submitBtn).click(function () {
 		//If code is selected submit first to check it, if not, submit;
 		var typeVal = $(selectors.modalTypeRadio + ":checked").val();
-		if (typeVal === 0 || typeVal === "0" || typeVal === 2 || typeVal === "2") {
+		if (typeVal === 0 || typeVal === "0" || typeVal === 2 || typeVal === "2" || typeVal === 3 || typeVal === "3") {
 			submitOption(fieldId);
 		}
 		else {
@@ -173,6 +212,7 @@ function DataSourceFormEditInit(fieldId, propertyNameLibrary) {
 			$(selectors.dataSourceFormGroup).removeClass("d-none");
 			$(selectors.defaultFormGroup).removeClass("d-none");
 			$(selectors.testBtn).addClass("d-none");
+			$(selectors.snippetFormGroup).addClass("d-none");
 			//destroyEditor(fieldId);
 		}
 		else if (typeVal === 1 || typeVal === "1") {
@@ -181,6 +221,16 @@ function DataSourceFormEditInit(fieldId, propertyNameLibrary) {
 			$(selectors.codeFormGroup).removeClass("d-none");
 			$(selectors.defaultFormGroup).removeClass("d-none");
 			$(selectors.testBtn).removeClass("d-none");
+			$(selectors.snippetFormGroup).addClass("d-none");
+			//initEditor(fieldId);
+		}
+		else if (typeVal === 3 || typeVal === "3") {
+			$(selectors.dataSourceFormGroup).addClass("d-none");
+			$(selectors.htmlFormGroup).addClass("d-none");
+			$(selectors.codeFormGroup).addClass("d-none");
+			$(selectors.defaultFormGroup).addClass("d-none");
+			$(selectors.testBtn).addClass("d-none");
+			$(selectors.snippetFormGroup).removeClass("d-none");
 			//initEditor(fieldId);
 		}
 		else {
@@ -189,6 +239,7 @@ function DataSourceFormEditInit(fieldId, propertyNameLibrary) {
 			$(selectors.defaultFormGroup).addClass("d-none");
 			$(selectors.htmlFormGroup).removeClass("d-none");
 			$(selectors.testBtn).addClass("d-none");
+			$(selectors.snippetFormGroup).addClass("d-none");
 			//initEditor(fieldId);
 		}
 	});
@@ -350,26 +401,32 @@ function submitOption(fieldId) {
 	if (typeVal === 0 || typeVal === "0") {
 		var inputVal = $(selectors.dataSourceFormGroup).find("input.form-control").val();
 		optionObj.string = inputVal;
-		$(selectors.dataSourceInput).removeClass("code").removeClass("html").addClass("datasource");
+		$(selectors.dataSourceInput).removeClass("code").removeClass("html").addClass("datasource").removeClass("snippet");
 		$(selectors.dataSourceInput).find(".select2-selection__choice").attr("title", inputVal);
 		$(selectors.dataSourceInput).find(".select2-selection__choice").find("span").html(inputVal);
-		$(selectors.dataSourceInput).find(".select2-selection__choice").find(".fa").removeClass("fa-code").addClass("fa-link");
+		$(selectors.dataSourceInput).find(".select2-selection__choice").find(".fa").removeClass("fa-code").addClass("fa-link").removeClass("fa-cog");
 	}
 	else if (typeVal === 1 || typeVal === "1") {
 		var editor = ace.edit(selectors.codeValueEditor.replace("#", ""));
 		optionObj.string = editor.getValue();
 		//optionObj.string = $(selectors.codeValueInput).val();
-		$(selectors.dataSourceInput).removeClass("datasource").removeClass("html").addClass("code");
+		$(selectors.dataSourceInput).removeClass("datasource").removeClass("html").addClass("code").removeClass("snippet");
 		$(selectors.dataSourceInput).find(".select2-selection__choice").find("span").html("c# code");
-		$(selectors.dataSourceInput).find(".select2-selection__choice").find(".fa").removeClass("fa-link").addClass("fa-code");
+		$(selectors.dataSourceInput).find(".select2-selection__choice").find(".fa").removeClass("fa-link").addClass("fa-code").removeClass("fa-cog");
+	}
+	else if (typeVal === 3 || typeVal === "3") {
+		optionObj.string = $(selectors.snippetFormGroup).find("input.form-control").val();
+		$(selectors.dataSourceInput).removeClass("datasource").removeClass("html").removeClass("code").addClass("snippet");
+		$(selectors.dataSourceInput).find(".select2-selection__choice").find("span").html(optionObj.string);
+		$(selectors.dataSourceInput).find(".select2-selection__choice").find(".fa").removeClass("fa-link").removeClass("fa-code").addClass("fa-cog");
 	}
 	else {
 		var editorHtml = ace.edit(selectors.htmlValueEditor.replace("#", ""));
 		optionObj.string = editorHtml.getValue();
 		//optionObj.string = $(selectors.codeValueInput).val();
-		$(selectors.dataSourceInput).removeClass("datasource").removeClass("code").addClass("html");
+		$(selectors.dataSourceInput).removeClass("datasource").removeClass("code").addClass("html").removeClass("snippet");
 		$(selectors.dataSourceInput).find(".select2-selection__choice").find("span").html("html");
-		$(selectors.dataSourceInput).find(".select2-selection__choice").find(".fa").removeClass("fa-link").addClass("fa-code");
+		$(selectors.dataSourceInput).find(".select2-selection__choice").find(".fa").removeClass("fa-link").addClass("fa-code").removeClass("fa-cog");
 	}
 	$(selectors.formControlInput).val(JSON.stringify(optionObj));
 	$(selectors.formControlInput).closest(".input-group").addClass("d-none");

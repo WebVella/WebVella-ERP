@@ -469,7 +469,7 @@ namespace WebVella.Erp.Web.Models
 								if (snippet.Name.ToLowerInvariant().EndsWith(".cs"))
 								{
 									string csCode = snippet.GetText();
-									result = CodeEvalService.Evaluate(variable.String, erpPageModel);
+									result = CodeEvalService.Evaluate(csCode, erpPageModel);
 								}
 								else
 								{

@@ -29,9 +29,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Components\WvSdkPageSitemap\form.js" />
   </ItemGroup>
+	<!--This group specify that all cs and html files from Snippets folder will be embedded-->
+	<ItemGroup>
+		<EmbeddedResource Include="Snippets\**\*.cs" />
+		<EmbeddedResource Include="Snippets\**\*.html" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <!--<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.3.1" />-->
+  <ItemGroup><!--<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.3.1" />-->
+  
+    <EmbeddedResource Remove="Snippets\Rumen.cs" />
   </ItemGroup>
 
   <ItemGroup>
