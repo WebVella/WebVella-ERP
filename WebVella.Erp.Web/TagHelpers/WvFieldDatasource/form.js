@@ -24,8 +24,7 @@
 	selectors.htmlValueInput = "#modal-" + fieldId + "-html-input";
 	selectors.htmlValueEditor = "#modal-" + fieldId + "-html-editor";
 	selectors.snippetValueInput = "#modal-" + fieldId + "-snippet-input";
-	selectors.snippetValueTA = "#modal-" + fieldId + "-snippet-ta";
-
+	selectors.snippetValueEditor = "#modal-" + fieldId + "-snippet-editor";
 
 	selectors.pasteSimpleCodeLink = selectors.modal + " .simple-code";
 	selectors.pasteDataSourceCodeLink = selectors.modal + " .datasource-code";
@@ -62,7 +61,20 @@ function initEditor(fieldId) {
 		var value = editorHtml.getValue();
 		$(selectors.htmlValueInput).val(value);
 	});
-
+	//Init Snippet Editor
+	var editorSnippet = ace.edit(selectors.snippetValueEditor.replace("#", ""));
+	editorSnippet.setTheme("ace/theme/cobalt");
+	editorSnippet.setReadOnly(true);
+	editorSnippet.session.setMode("ace/mode/html");
+	editorSnippet.renderer.setOptions({
+		showPrintMargin: false,
+		maxLines: 30
+	});
+	editorSnippet.session.setValue($(selectors.snippetValueInput).val());
+	editorSnippet.session.on('change', function () {
+		var value = editorSnippet.getValue();
+		$(selectors.snippetValueInput).val(value);
+	});
 }
 
 function destroyEditor(fieldId) {
@@ -86,8 +98,20 @@ function GetSnippetTaTemplate(item){
 	return item;
 }
 
-function GetSnippetTaSelected(item){
-	console.log(item);
+function GetSnippetTaSelected(item,fieldId){
+	var selectors = DataSourceFormEditGenerateSelectors(fieldId);
+	$.get("/api/v3/en_US/snippet/" + item, function (data) {
+		var editorSnippet = ace.edit(selectors.snippetValueEditor.replace("#", ""));
+		$(selectors.snippetValueInput).val(data.object);
+		if(item.endsWith(".cs")){
+			editorSnippet.session.setMode("ace/mode/csharp");
+		}
+		else{
+			editorSnippet.session.setMode("ace/mode/html");
+		}
+		editorSnippet.session.setValue(data.object);
+	});
+	
 }
 
 function DataSourceFormEditInit(fieldId, propertyNameLibrary) {
@@ -117,7 +141,7 @@ function DataSourceFormEditInit(fieldId, propertyNameLibrary) {
 		autoSelect:false,
 		displayText:GetSnippetTaTemplate,
 		fitToElement:true,
-		afterSelect:GetSnippetTaSelected
+		afterSelect:function(item){GetSnippetTaSelected(item,fieldId);}
 	};
 
 	var typeaheadSnippetEl = $(selectors.snippetFormGroup + " input.form-control");

@@ -596,7 +596,7 @@ public class SampleCodeVariable : ICodeVariable
 					inputEl.Attributes.Add("type", "hidden");
 					inputEl.Attributes.Add("id", $"modal-{FieldId}-snippet-input");
 					if (DataSourceVariable != null && 
-						DataSourceVariable.Type == DataSourceVariableType.HTML && !String.IsNullOrWhiteSpace(DataSourceVariable.String))
+						DataSourceVariable.Type == DataSourceVariableType.SNIPPET && !String.IsNullOrWhiteSpace(DataSourceVariable.String))
 					{
 						var snippet = SnippetService.GetSnippet(DataSourceVariable.String);
 						inputEl.Attributes.Add("value", snippet.GetText());
@@ -782,8 +782,8 @@ public class SampleCodeVariable : ICodeVariable
 					var scriptContent = FileService.GetEmbeddedTextResource("form.js", "WebVella.Erp.Web.TagHelpers.WvFieldDatasource");
 					var scriptEl = new TagBuilder("script");
 					scriptEl.Attributes.Add("type", "text/javascript");
-					scriptEl.InnerHtml.AppendHtml(jsCompressor.Compress(scriptContent));
-					//scriptEl.InnerHtml.AppendHtml(scriptContent);
+					//scriptEl.InnerHtml.AppendHtml(jsCompressor.Compress(scriptContent));
+					scriptEl.InnerHtml.AppendHtml(scriptContent);
 					output.Content.AppendHtml(scriptEl);
 
 					ViewContext.HttpContext.Items[typeof(WvFieldDatasource) + "-form"] = new WvTagHelperContext()
