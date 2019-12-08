@@ -100,7 +100,7 @@ function GetSnippetTaTemplate(item){
 
 function GetSnippetTaSelected(item,fieldId){
 	var selectors = DataSourceFormEditGenerateSelectors(fieldId);
-	$.get("/api/v3/en_US/snippet/" + item, function (data) {
+	$.get("/api/v3/en_US/snippet?name=" + item, function (data) {
 		var editorSnippet = ace.edit(selectors.snippetValueEditor.replace("#", ""));
 		$(selectors.snippetValueInput).val(data.object);
 		if(item.endsWith(".cs")){
