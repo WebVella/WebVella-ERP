@@ -51,7 +51,7 @@ namespace WebVella.Erp.Site.Sdk
 
 			services.AddControllersWithViews();
 			services.AddRazorPages().AddRazorRuntimeCompilation();
-
+			services.AddServerSideBlazor();
 			//adds global datetime converter for json.net
 			JsonConvert.DefaultSettings = () => new JsonSerializerSettings
 			{
@@ -114,6 +114,7 @@ namespace WebVella.Erp.Site.Sdk
 
 			app.UseEndpoints(endpoints =>
 			{
+				endpoints.MapBlazorHub(); 
 				endpoints.MapRazorPages();
 				endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
 			});
