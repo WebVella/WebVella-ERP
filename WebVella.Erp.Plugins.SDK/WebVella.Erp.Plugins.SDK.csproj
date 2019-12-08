@@ -23,11 +23,11 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <None Remove="Components\WvSdkPageSitemap\form.js" />
+	<None Remove="Components\WvSdkPageSitemap\form.js" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Components\WvSdkPageSitemap\form.js" />
+	<EmbeddedResource Include="Components\WvSdkPageSitemap\form.js" />
   </ItemGroup>
 	<!--This group specify that all cs and html files from Snippets folder will be embedded-->
 	<ItemGroup>
@@ -37,15 +37,15 @@
 
   <ItemGroup><!--<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.3.1" />-->
   
-    <EmbeddedResource Remove="Snippets\Rumen.cs" />
+	<EmbeddedResource Remove="Snippets\Rumen.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WebVella.Erp.Web\WebVella.Erp.Web.csproj" />
-    <ProjectReference Include="..\WebVella.ERP\WebVella.Erp.csproj" />
+	<ProjectReference Include="..\WebVella.Erp.Web\WebVella.Erp.Web.csproj" />
+	<ProjectReference Include="..\WebVella.ERP\WebVella.Erp.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Hooks\" />
+	<Folder Include="Hooks\" />
   </ItemGroup>
 </Project>

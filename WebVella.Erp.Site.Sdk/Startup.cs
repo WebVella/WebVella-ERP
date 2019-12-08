@@ -50,7 +50,7 @@ namespace WebVella.Erp.Site.Sdk
 				});
 
 			services.AddControllersWithViews();
-			services.AddRazorPages();
+			services.AddRazorPages().AddRazorRuntimeCompilation();
 
 			//adds global datetime converter for json.net
 			JsonConvert.DefaultSettings = () => new JsonSerializerSettings
