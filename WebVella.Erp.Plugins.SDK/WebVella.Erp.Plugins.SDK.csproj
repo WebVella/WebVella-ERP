@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	<TargetFramework>netcoreapp3.1</TargetFramework>
-	<Version>1.0.98</Version>
+	<Version>1.0.99</Version>
 	<PackageId>WebVella.Erp.Plugins.SDK</PackageId>
 	<Authors>WebVella</Authors>
 	<Product />
@@ -35,11 +35,6 @@
 		<EmbeddedResource Include="Snippets\**\*.html" />
 	</ItemGroup>
 
-  <ItemGroup><!--<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.3.1" />-->
-  
-	<EmbeddedResource Remove="Snippets\Rumen.cs" />
-  </ItemGroup>
-
   <ItemGroup>
 	<ProjectReference Include="..\WebVella.Erp.Web\WebVella.Erp.Web.csproj" />
 	<ProjectReference Include="..\WebVella.ERP\WebVella.Erp.csproj" />
@@ -47,5 +42,6 @@
 
   <ItemGroup>
 	<Folder Include="Hooks\" />
+	<Folder Include="Snippets\" />
   </ItemGroup>
 </Project>
