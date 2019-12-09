@@ -7,6 +7,7 @@ using WebVella.Erp.Api.Models;
 using WebVella.Erp.Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace WebVella.Erp.Web.Middleware
 {
@@ -21,6 +22,10 @@ namespace WebVella.Erp.Web.Middleware
 
 		public async Task Invoke(HttpContext context)
 		{
+			var syncIOFeature = context.Features.Get<IHttpBodyControlFeature>();
+			if (syncIOFeature != null)
+				syncIOFeature.AllowSynchronousIO = true;
+
 			IDisposable dbCtx = DbContext.CreateContext(ErpSettings.ConnectionString);
 			IDisposable secCtx = null;
 
