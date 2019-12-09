@@ -3,10 +3,12 @@
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
+@addTagHelper *, WebVella.TagHelpers
+
 @using WebVella.Erp.Web.Components;
 @using WebVella.Erp.Web.Models;
 @using WebVella.Erp.Web.Pages;
-
+@using WebVella.TagHelpers.Components;
 
 @{
 	var options = (PcApplications.PcApplicationsOptions)ViewBag.Options;
@@ -75,8 +77,8 @@
 		</div>
 	}
 </div>
-<component type="typeof(HelloWorld)" render-mode="ServerPrerendered" />
-<HelloWorld></HelloWorld>
+@*<component type="typeof(HelloBoz)" render-mode="ServerPrerendered" param-Name="@("Boz")"/>
+
 <script src="_framework/blazor.server.js" autostart="false"></script>
 	<script>
 		(function start() {
@@ -90,4 +92,4 @@
   window.handleTickerChanged = () => {
 	console.log("log");
   };
-</script>
+</script>*@
