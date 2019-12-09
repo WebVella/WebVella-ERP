@@ -30,13 +30,22 @@ namespace WebVella.Erp.Web.Components
 				#region << core plugin >>
 				{
 					//Always include
-					linkTagsToInclude.Add(new LinkTagInclude()
+					if(pageModel != null && pageModel.ErpAppContext != null && !String.IsNullOrEmpty(pageModel.ErpAppContext.StylesHash))
 					{
-						Href = "/api/v3.0/p/core/styles.css?cb=" + cacheKey,
-						CacheBreaker = pageModel.ErpAppContext.StylesHash,
-						CrossOrigin = CrossOriginType.Anonymous,
-						Integrity = $"sha256-{pageModel.ErpAppContext.StylesHash}"
-					});
+						linkTagsToInclude.Add(new LinkTagInclude()
+						{
+							Href = "/api/v3.0/p/core/styles.css?cb=" + cacheKey,
+							CacheBreaker = pageModel.ErpAppContext.StylesHash,
+							CrossOrigin = CrossOriginType.Anonymous,
+							Integrity = $"sha256-{pageModel.ErpAppContext.StylesHash}"
+						});
+					}
+					else{
+						linkTagsToInclude.Add(new LinkTagInclude()
+						{
+							Href = "/api/v3.0/p/core/styles.css?cb=" + cacheKey
+						});	
+					}
 				}
 				#endregion
 

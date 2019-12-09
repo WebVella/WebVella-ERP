@@ -4169,8 +4169,8 @@ namespace WebVella.Erp.Web.Controllers
 				return new JsonResult(snippets.Where(x => x.ToLowerInvariant().Contains(search.ToLowerInvariant())).Skip(page - 1).Take(pageSize).ToList());
 		}
 
-		[AcceptVerbs(new[] { "GET" }, Route = "api/v3/en_US/snippet/{name}")]
-		public IActionResult GetSnippetText(string name)
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v3/en_US/snippet")]
+		public IActionResult GetSnippetText([FromQuery]string name)
 		{
 			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 

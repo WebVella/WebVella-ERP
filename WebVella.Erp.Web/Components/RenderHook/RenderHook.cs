@@ -23,6 +23,8 @@ namespace WebVella.Erp.Web.Components
 		/// <returns></returns>
 		public async Task<IViewComponentResult> InvokeAsync(string placeholder, BaseErpPageModel pageModel, dynamic model = null)
 		{
+			if(pageModel == null)
+				return await Task.FromResult<IViewComponentResult>(Content(""));
 			if (componentsDict == null)
 				componentsDict = Init();
 

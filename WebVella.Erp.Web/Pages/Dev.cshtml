@@ -1,0 +1,24 @@
+﻿@page "/dev"
+@model WebVella.Erp.Web.Pages.Dev.DevModel
+
+@{
+	Layout = "_SystemMaster";
+}
+
+
+<component type="typeof(HelloWorld)" render-mode="ServerPrerendered" />
+
+<script src="_framework/blazor.server.js" autostart="false"></script>
+	<script>
+		(function start() {
+			Blazor.start({
+				logLevel: 1, // LogLevel.Debug
+				configureSignalR: builder => builder.configureLogging("debug") // LogLevel.Debug
+			});
+		})()
+	</script>
+<script>
+  window.handleTickerChanged = () => {
+	console.log("log");
+  };
+</script>

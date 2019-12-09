@@ -129,6 +129,7 @@
 		<PackageReference Include="CS-Script.Core" Version="1.2.2" />
 		<PackageReference Include="HtmlAgilityPack" Version="1.11.17" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
 		<PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0007" />

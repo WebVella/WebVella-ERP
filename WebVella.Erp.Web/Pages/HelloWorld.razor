@@ -1,0 +1,32 @@
+﻿@using System.Net.Http
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Web;
+@inject IJSRuntime JSRuntime;
+<h3>HelloWorld 12</h3>
+
+Hello @Name
+
+<button @onclick="Toggle">Toggle</button>
+
+
+
+@code {
+    public string Name { get; set; } = "Jon";
+
+    private async Task Toggle()
+    {
+
+        JSRuntime.InvokeVoidAsync("handleTickerChanged");
+        if (Name == "Jon")
+        {
+            Name = "Susan";
+        }
+        else
+        {
+            Name = "Jon";
+        }
+    }
+}
