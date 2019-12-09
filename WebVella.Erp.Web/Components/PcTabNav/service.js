@@ -1,5 +1,4 @@
 ﻿"use strict";
-(function(window, $) {
 
 	function ColumnCountChange(e) {
 		var oldValue = e.target.getAttribute("data-old-value");
@@ -16,7 +15,6 @@
 	/// Your code goes below
 	///////////////////////////////////////////////////////////////////////////////////
 
-	$(function () {
 		document.addEventListener("WvPbManager_Design_Loaded", function (event) {
 			if (event && event.payload && event.payload.component_name === "WebVella.Erp.Web.Components.PcTabNav"){
 				window.setTimeout(function () {
@@ -33,18 +31,15 @@
 				},200);
 			}
 		});
-	});
 
-	//$(function () {
+
 	//	document.addEventListener("WvPbManager_Design_Unloaded", function (event) {
 	//		if (event && event.payload && event.payload.component_name === "WebVella.Erp.Web.Components.PcTabNav"){
 	//			console.log("WebVella.Erp.Web.Components.PcBlock Design unloaded");
 	//		}
 	//	});
-	//});
 
 
-	$(function () {
 		document.addEventListener("WvPbManager_Options_Loaded", function (event) {
 			if (event && event.payload && event.payload.component_name === "WebVella.Erp.Web.Components.PcTabNav"){
 				window.setTimeout(function () {
@@ -54,19 +49,15 @@
 				},500);
 			}
 		});
-	});
 
-	$(function () {
 		document.addEventListener("WvPbManager_Options_Unloaded", function (event) {
 			if (event && event.payload && event.payload.component_name === "WebVella.Erp.Web.Components.PcTabNav"){
 				var visibleColumnsCount = document.querySelector('#modal-component-options .modal-body input[name="visible_columns"]');
 				visibleColumnsCount.removeEventListener("blur", ColumnCountChange);
 			}
 		});
-	});
+
 
 
 	//////////////////////////////////////////////////////////////////////////////////
 	/// You code is above
-	
-})(window, jQuery);
