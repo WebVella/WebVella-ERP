@@ -1,0 +1,59 @@
+﻿@page "/sdk/objects/entity/m/{RecordId}/clone/{PageName?}"
+
+@model WebVella.Erp.Plugins.SDK.Pages.ErpEntity.CloneModel
+@using WebVella.Erp.Web.Utils;
+@{
+	Layout = "~/Pages/_AppMaster.cshtml";
+	ViewData["Title"] = $"Clone Entity - '{Model.ExistingEntity.Name}'";
+}
+
+<wv-page-header color="#dc3545" area-label="Entities" title=@ViewData["Title"]
+				icon-class="fa fa-plus" return-url="@Model.ReturnUrl">
+	<wv-page-header-actions>
+		@foreach (var action in Model.HeaderActions)
+		{
+			@Html.Raw(action)
+		}
+	</wv-page-header-actions>
+</wv-page-header>
+
+<wv-validation errors="@Model.Validation.ToErrorList()" message="@Model.Validation.Message"></wv-validation>
+
+<wv-form label-mode="Stacked" mode="Form" name="CloneEntity" validation-errors="Model.Validation.ToErrorList()" id="CloneEntity">
+	<wv-section class="mt-4">
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="Name" value="@Model.Name" name="Name" required="true"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-guid label-text="Id (Guid)" value="@Model.Id" name="Id" placeholder="leave empty to autogenerate"></wv-field-guid>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-checkbox label-text="System" text-true="system entity" text-false="not a system entity" value="@Model.System" name="System"></wv-field-checkbox>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-text label-text="Label" value="@Model.Label" name="Label" required="true"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-text label-text="Label Plural" value="@Model.LabelPlural" name="LabelPlural" required="true"></wv-field-text>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="6">
+				<wv-field-color label-text="Color" value="@Model.Color" name="Color"></wv-field-color>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-icon label-text="IconName" value="@Model.IconName" name="IconName"></wv-field-icon>
+			</wv-column>
+		</wv-row>
+		<wv-row>
+			<wv-column span="12">
+				<wv-field-checkbox-grid name="RecordPermissions" label-text="Record Permissions" columns="Model.PermissionOptions.ToWvSelectOption()" rows="Model.RoleOptions.ToWvSelectOption()" value="@Model.RecordPermissions" text-true="granted" text-false="not granted"></wv-field-checkbox-grid>
+			</wv-column>
+		</wv-row>
+	</wv-section>
+</wv-form>

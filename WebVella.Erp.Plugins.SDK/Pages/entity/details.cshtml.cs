@@ -105,8 +105,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			{
 				HeaderActions.Add(PageUtils.GetActionTemplate(PageUtilsActionType.ConfirmAndSubmitForm, label: "Delete Entity", formId: "DeleteRecord", btnClass: "btn btn-white btn-sm", iconClass:"fa fa-trash-alt go-red"));
 			};
-
 			HeaderActions.Add($"<a href='/sdk/objects/entity/m/{(ErpEntity != null ? ErpEntity.Id : Guid.Empty)}/manage?returnUrl={HttpUtility.UrlEncode(CurrentUrl)}' class='btn btn-white btn-sm'><i class='fa fa-cog go-orange'></i> Manage</a>");
+			HeaderActions.Add($"<a href='/sdk/objects/entity/m/{(ErpEntity != null ? ErpEntity.Id : Guid.Empty)}/clone' class='btn btn-white btn-sm'><i class='fa fa-file go-gray'></i> Clone</a>");
 
 			HeaderToolbar.AddRange( AdminPageUtils.GetEntityAdminSubNav(ErpEntity, "details"));
 

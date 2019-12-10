@@ -4,13 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Text.RegularExpressions;
-using System.Threading;
-using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Api.Models.AutoMapper;
 using WebVella.Erp.Database;
-using WebVella.Erp.Storage;
 using WebVella.Erp.Utilities;
 using WebVella.Erp.Utilities.Dynamic;
 
@@ -432,8 +428,8 @@ namespace WebVella.Erp.Api
 				response.Success = false;
 				response.Object = entity;
 				response.Timestamp = DateTime.UtcNow;
-			
-				if( ErpSettings.DevelopmentMode )
+
+				if (ErpSettings.DevelopmentMode)
 					response.Message = e.Message + e.StackTrace;
 				else
 					response.Message = "The entity was not created. An internal error occurred!";
@@ -677,7 +673,7 @@ namespace WebVella.Erp.Api
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-				
+
 				if (ErpSettings.DevelopmentMode)
 					response.Message = e.Message + e.StackTrace;
 				else
@@ -717,7 +713,7 @@ namespace WebVella.Erp.Api
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-				
+
 				if (ErpSettings.DevelopmentMode)
 					response.Message = e.Message + e.StackTrace;
 				else
@@ -757,7 +753,7 @@ namespace WebVella.Erp.Api
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-				
+
 				if (ErpSettings.DevelopmentMode)
 					response.Message = e.Message + e.StackTrace;
 				else
@@ -767,6 +763,63 @@ namespace WebVella.Erp.Api
 			}
 
 			response.Timestamp = DateTime.Now;
+
+			return response;
+		}
+
+		public EntityResponse CloneEntity(Guid entityToCloneId, InputEntity inputEntity )
+		{
+			Guid entityId = Guid.NewGuid();
+			if (inputEntity.Id == null || inputEntity.Id == Guid.Empty)
+				inputEntity.Id = entityId;
+
+			EntityResponse response = new EntityResponse { Success = true, Message = "The entity was successfully cloned!", };
+			using (DbConnection connection = DbContext.Current.CreateConnection())
+			{
+				try
+				{
+					connection.BeginTransaction();
+
+					var entityToClone = ReadEntity(entityToCloneId).Object;
+					EntityResponse createResponse = CreateEntity(inputEntity);
+					if(!createResponse.Success)
+					{
+
+					}
+
+					var entity = createResponse.Object;
+
+					foreach(var field in entityToClone.Fields)
+					{
+						var inputField = field.MapTo<InputField>();
+						inputField.Id = Guid.NewGuid();
+						CreateField(entity.Id, inputField, true);
+					}
+
+					//TODO clone relations
+
+					connection.CommitTransaction();
+				}
+				catch (Exception e)
+				{
+					connection.RollbackTransaction();
+
+					response.Success = false;
+					response.Object = inputEntity.MapTo<Entity>();
+					response.Timestamp = DateTime.UtcNow;
+
+					if (ErpSettings.DevelopmentMode)
+						response.Message = e.Message + e.StackTrace;
+					else
+						response.Message = "The entity was not created. An internal error occurred!";
+
+					return response;
+				}
+			}
+
+			var createdEntityResponse = ReadEntity(inputEntity.Id.Value);
+			response.Object = createdEntityResponse.Object;
+			response.Timestamp = DateTime.UtcNow;
 
 			return response;
 		}
@@ -1327,7 +1380,7 @@ namespace WebVella.Erp.Api
 				Cache.Clear();
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-				
+
 				if (ErpSettings.DevelopmentMode)
 					response.Message = e.Message + e.StackTrace;
 				else
@@ -1379,7 +1432,7 @@ namespace WebVella.Erp.Api
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-				
+
 				if (ErpSettings.DevelopmentMode)
 					response.Message = e.Message + e.StackTrace;
 				else
@@ -1433,7 +1486,7 @@ namespace WebVella.Erp.Api
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-				
+
 				if (ErpSettings.DevelopmentMode)
 					response.Message = e.Message + e.StackTrace;
 				else
@@ -1491,7 +1544,7 @@ namespace WebVella.Erp.Api
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-				
+
 				if (ErpSettings.DevelopmentMode)
 					response.Message = e.Message + e.StackTrace;
 				else
