@@ -7,6 +7,7 @@ using System.Net;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Api.Models.AutoMapper;
 using WebVella.Erp.Database;
+using WebVella.Erp.Exceptions;
 using WebVella.Erp.Utilities;
 using WebVella.Erp.Utilities.Dynamic;
 
@@ -782,23 +783,46 @@ namespace WebVella.Erp.Api
 
 					var entityToClone = ReadEntity(entityToCloneId).Object;
 					EntityResponse createResponse = CreateEntity(inputEntity);
-					if(!createResponse.Success)
+					if (!createResponse.Success)
 					{
-
+						connection.RollbackTransaction();
+						return createResponse;
 					}
 
 					var entity = createResponse.Object;
 
 					foreach(var field in entityToClone.Fields)
 					{
+						if (field.Name == "id")
+							continue;
+
 						var inputField = field.MapTo<InputField>();
 						inputField.Id = Guid.NewGuid();
-						CreateField(entity.Id, inputField, true);
+						var fieldResponse = CreateField(entity.Id, inputField, true);
+						if (!fieldResponse.Success)
+						{
+							connection.RollbackTransaction();
+							response.Errors = fieldResponse.Errors;
+							response.Success = false;
+							response.Object = inputEntity.MapTo<Entity>();
+							response.Timestamp = DateTime.UtcNow;
+							response.Message = fieldResponse.Message;
+							return response;
+						}
 					}
 
-					//TODO clone relations
-
 					connection.CommitTransaction();
+				}
+				catch(ValidationException valEx)
+				{
+					connection.RollbackTransaction();
+
+					response.Success = false;
+					response.Object = inputEntity.MapTo<Entity>();
+					response.Timestamp = DateTime.UtcNow;
+					response.Message = valEx.Message;
+					response.Errors = valEx.Errors.MapTo<ErrorModel>();
+					return response;
 				}
 				catch (Exception e)
 				{

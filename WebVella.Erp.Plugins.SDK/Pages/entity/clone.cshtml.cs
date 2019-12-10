@@ -69,6 +69,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 			var roles = AdminPageUtils.GetUserRoles(); //Special order is applied
 
+			ExistingEntity = new EntityManager().ReadEntity(RecordId ?? Guid.Empty).Object;
+			if (ExistingEntity == null)
+				throw new Exception("Entity not found.");
+
 
 			foreach (var role in roles)
 			{
@@ -107,10 +111,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 			EntityManager entMan = new EntityManager();
 
-			ExistingEntity = entMan.ReadEntity(RecordId ?? Guid.Empty).Object;
-			if (ExistingEntity == null)
-				throw new Exception("Entity not found.");
-
+			
 			Label = ExistingEntity.Label;
 			LabelPlural = ExistingEntity.LabelPlural;
 			Color = ExistingEntity.Color;
