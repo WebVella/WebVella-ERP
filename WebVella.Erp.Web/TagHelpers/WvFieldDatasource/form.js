@@ -65,7 +65,13 @@ function initEditor(fieldId) {
 	var editorSnippet = ace.edit(selectors.snippetValueEditor.replace("#", ""));
 	editorSnippet.setTheme("ace/theme/cobalt");
 	editorSnippet.setReadOnly(true);
-	editorSnippet.session.setMode("ace/mode/html");
+	var resourceName = $(selectors.snippetValueInput).val();
+	if(resourceName && resourceName.endsWith(".cs")){
+		editorSnippet.session.setMode("ace/mode/csharp");
+	}
+	else{
+		editorSnippet.session.setMode("ace/mode/html");
+	}
 	editorSnippet.renderer.setOptions({
 		showPrintMargin: false,
 		maxLines: 30
