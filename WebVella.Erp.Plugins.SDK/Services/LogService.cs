@@ -20,7 +20,7 @@ namespace WebVella.Erp.Plugins.SDK.Services
 			var logTable = ExecuteQuerySqlCommand(logSql);
 			var logRows = logTable.Rows;
 			DateTime logTreshold = DateTime.UtcNow.AddDays(-30);
-			if (logRows.Count > 1000 && (DateTime)logRows[0]["created_on"] > logTreshold)
+			if (logRows.Count > 1000 && (DateTime)logRows[0]["created_on"] < logTreshold)
 			{
 				var logsToDelete = logRows.OfType<DataRow>().OrderByDescending(r => r["created_on"]).Select(r => (Guid)r["id"]).Skip(1000).ToList();
 				foreach (var logId in logsToDelete)
