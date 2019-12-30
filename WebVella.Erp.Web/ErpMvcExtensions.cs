@@ -66,7 +66,7 @@ namespace WebVella.Erp.Web
 					service.SetAutoMapperConfiguration();
 
 					//this should be called after plugin init
-					AutoMapper.Mapper.Initialize(cfg);
+					ErpAutoMapper.Initialize(cfg);
 
 					//we used en-US based culture settings for initialization and patch execution
 					{
