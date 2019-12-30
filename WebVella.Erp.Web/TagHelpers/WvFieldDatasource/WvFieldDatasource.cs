@@ -689,7 +689,7 @@ public class SampleCodeVariable : ICodeVariable
 				{
 					{
 						var libCssEl = new TagBuilder("link");
-						libCssEl.Attributes.Add("href", "/webvella-taghelpers/lib/select2/css/select2.min.css");
+						libCssEl.Attributes.Add("href", "/_content/WebVella.TagHelpers/lib/select2/css/select2.min.css");
 						libCssEl.Attributes.Add("type", "text/css");
 						libCssEl.Attributes.Add("rel", "stylesheet");
 						output.PostContent.AppendHtml(libCssEl);
@@ -697,7 +697,7 @@ public class SampleCodeVariable : ICodeVariable
 					}
 					{
 						var libCssEl = new TagBuilder("link");
-						libCssEl.Attributes.Add("href", "/webvella-taghelpers/lib/select2-bootstrap-theme/select2-bootstrap4.css");
+						libCssEl.Attributes.Add("href", "/_content/WebVella.TagHelpers/lib/select2-bootstrap-theme/select2-bootstrap4.css");
 						libCssEl.Attributes.Add("type", "text/css");
 						libCssEl.Attributes.Add("rel", "stylesheet");
 						output.PostContent.AppendHtml(libCssEl);
@@ -706,7 +706,7 @@ public class SampleCodeVariable : ICodeVariable
 
 					var libJsEl = new TagBuilder("script");
 					libJsEl.Attributes.Add("type", "text/javascript");
-					libJsEl.Attributes.Add("src", "/webvella-taghelpers/lib/select2/js/select2.min.js");
+					libJsEl.Attributes.Add("src", "/_content/WebVella.TagHelpers/lib/select2/js/select2.min.js");
 					output.PostContent.AppendHtml(libJsEl);
 					output.PostContent.AppendHtml("\r\n\t");
 
@@ -731,7 +731,7 @@ public class SampleCodeVariable : ICodeVariable
 				{
 					var scriptEl = new TagBuilder("script");
 					scriptEl.Attributes.Add("type", "text/javascript");
-					scriptEl.Attributes.Add("src", "/webvella-taghelpers/lib/ace/ace.js");
+					scriptEl.Attributes.Add("src", "/_content/WebVella.TagHelpers/lib/ace/ace.js");
 					output.Content.AppendHtml(scriptEl);
 
 					ViewContext.HttpContext.Items[typeof(WvFieldDatasource) + fileName] = new WvTagHelperContext()
@@ -756,7 +756,7 @@ public class SampleCodeVariable : ICodeVariable
 				{
 					var scriptEl = new TagBuilder("script");
 					scriptEl.Attributes.Add("type", "text/javascript");
-					scriptEl.Attributes.Add("src", "/webvella-taghelpers/lib/bootstrap-3-typeahead/bootstrap3-typeahead.min.js");
+					scriptEl.Attributes.Add("src", "/_content/WebVella.TagHelpers/lib/bootstrap-3-typeahead/bootstrap3-typeahead.min.js");
 					output.Content.AppendHtml(scriptEl);
 
 					ViewContext.HttpContext.Items[typeof(WvFieldDatasource) + fileName] = new WvTagHelperContext()

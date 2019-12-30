@@ -22,7 +22,6 @@ namespace WebVella.Erp.Web
 	{
 		public static IServiceCollection AddErp(this IServiceCollection services)
 		{
-			services.AddWebVellaTagHelpers();
 			services.AddSingleton<IErpService, ErpService>();
 			services.AddTransient<AuthService>();
 			services.AddScoped<ErpRequestContext>();
