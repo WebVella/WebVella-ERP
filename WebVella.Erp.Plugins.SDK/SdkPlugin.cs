@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using WebVella.Erp.Api;
+using WebVella.Erp.Jobs;
 using WebVella.Erp.Plugins.SDK.Jobs;
 
 namespace WebVella.Erp.Plugins.SDK
@@ -24,12 +25,13 @@ namespace WebVella.Erp.Plugins.SDK
 		{
 			List<Type> jobTypes = new List<Type>();
 			jobTypes.Add(typeof(SampleJob));
+			jobTypes.Add(typeof(ClearJobAndErrorLogsJob));
 			return jobTypes;
 		}
 
 		public void SetSchedulePlans() {
 			DateTime utcNow = DateTime.UtcNow;
-		
+
 			#region << Sample Job Plan >>
 			//{
 			//	Guid checkBotSchedulePlanId = new Guid("AC3D460F-77BD-44B6-A7C5-B52A37A0C846");
@@ -67,8 +69,41 @@ namespace WebVella.Erp.Plugins.SDK
 			//}
 			#endregion
 
+			#region << Clear job and error logs Job Plan>>
+			{
+				Guid logsSchedulePlanId = new Guid("8CC1DF20-0967-4635-B44A-45FD90819105");
+				SchedulePlan logsSchedulePlan = ScheduleManager.Current.GetSchedulePlan(logsSchedulePlanId);
+
+				if (logsSchedulePlan == null)
+				{
+					logsSchedulePlan = new SchedulePlan();
+					logsSchedulePlan.Id = logsSchedulePlanId;
+					logsSchedulePlan.Name = "Clear job and error logs.";
+					logsSchedulePlan.Type = SchedulePlanType.Daily;
+					logsSchedulePlan.StartDate = new DateTime(utcNow.Year, utcNow.Month, utcNow.Day, 0, 0, 2, DateTimeKind.Utc);
+					logsSchedulePlan.EndDate = null;
+					logsSchedulePlan.ScheduledDays = new SchedulePlanDaysOfWeek()
+					{
+						ScheduledOnMonday = true,
+						ScheduledOnTuesday = true,
+						ScheduledOnWednesday = true,
+						ScheduledOnThursday = true,
+						ScheduledOnFriday = true,
+						ScheduledOnSaturday = true,
+						ScheduledOnSunday = true
+					};
+					logsSchedulePlan.IntervalInMinutes = 1440;
+					logsSchedulePlan.StartTimespan = 0;
+					logsSchedulePlan.EndTimespan = 1440;
+					logsSchedulePlan.JobTypeId = new Guid("99D9A8BB-31E6-4436-B0C2-20BD6AA23786");
+					logsSchedulePlan.JobAttributes = null;
+					logsSchedulePlan.Enabled = true;
+					logsSchedulePlan.LastModifiedBy = null;
+
+					ScheduleManager.Current.CreateSchedulePlan(logsSchedulePlan);
+				}
+			}
+			#endregion
 		}
-
-
 	}
 }
