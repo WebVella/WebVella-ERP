@@ -64,111 +64,15 @@ namespace WebVella.Erp.Web.Components
 
 				//Your includes below >>>>
 
-				//#region << jquery >>
-				//{
-				//	if (!includedScriptTags.Any(x => x.Src.Contains("/jquery")))
-				//	{
-				//		scriptTagsToInclude.Add(new ScriptTagInclude()
-				//		{
-				//			Src = "/webvella-erp-web/lib/jquery/jquery.min.js?cb=" + cacheKey
-				//		});
-				//	}
-				//}
-				//#endregion
-
 				#region << site.js >>
 				{
 					//Always include
 					scriptTagsToInclude.Add(new ScriptTagInclude()
 					{
-						Src = "/webvella-erp-web/js/site.js?cb=" + cacheKey
+						Src = "/_content/WebVella.Erp.Web/js/site.js?cb=" + cacheKey
 					});
 				}
 				#endregion
-
-				//#region << bootstrap >>
-				//{
-				//	if (!includedScriptTags.Any(x => x.Src.Contains("/bootstrap")))
-				//	{
-				//		scriptTagsToInclude.Add(new ScriptTagInclude()
-				//		{
-				//			Src = "/webvella-erp-web/lib/twitter-bootstrap/js/bootstrap.bundle.min.js?cb=" + cacheKey
-				//		});
-				//	}
-				//}
-				//#endregion
-
-				//#region << uri.js >>
-				//{
-				//	if (!includedScriptTags.Any(x => x.Src.Contains("/uri")))
-				//	{
-				//		scriptTagsToInclude.Add(new ScriptTagInclude()
-				//		{
-				//			Src = "/webvella-erp-web/lib/URI.js/URI.min.js?cb=" + cacheKey
-				//		});
-				//	}
-				//}
-				//#endregion
-
-				//#region << moment >>
-				//{
-				//	if (!includedScriptTags.Any(x => x.Src.Contains("/moment")))
-				//	{
-				//		scriptTagsToInclude.Add(new ScriptTagInclude()
-				//		{
-				//			Src = "/webvella-erp-web/lib/moment.js/moment.min.js?cb=" + cacheKey
-				//		});
-				//	}
-				//}
-				//#endregion
-
-				//#region << ckeditor >>
-				//{
-				//	if (!includedScriptTags.Any(x => x.Src.Contains("/ckeditor")))
-				//	{
-				//		scriptTagsToInclude.Add(new ScriptTagInclude()
-				//		{
-				//			Src = "/webvella-erp-web/lib/ckeditor/ckeditor.js?cb=" + cacheKey
-				//		});
-				//	}
-				//}
-				//#endregion
-
-				//#region << lodash >>
-				//{
-				//	if (!includedScriptTags.Any(x => x.Src.Contains("/lodash")))
-				//	{
-				//		scriptTagsToInclude.Add(new ScriptTagInclude()
-				//		{
-				//			Src = "/webvella-erp-web/lib/lodash.js/lodash.min.js?cb=" + cacheKey
-				//		});
-				//	}
-				//}
-				//#endregion
-
-				//#region << flatpickr >>
-				//{
-				//	if (!includedScriptTags.Any(x => x.Src.Contains("/flatpickr")))
-				//	{
-				//		scriptTagsToInclude.Add(new ScriptTagInclude()
-				//		{
-				//			Src = "/webvella-erp-web/lib/flatpickr/flatpickr.min.js?cb=" + cacheKey
-				//		});
-				//	}
-				//}
-				//#endregion
-
-				//#region << select2 >>
-				//{
-				//	if (!includedScriptTags.Any(x => x.Src.Contains("/select2")))
-				//	{
-				//		scriptTagsToInclude.Add(new ScriptTagInclude()
-				//		{
-				//			Src = "/webvella-erp-web/lib/select2/js/select2.min.js?cb=" + cacheKey
-				//		});
-				//	}
-				//}
-				//#endregion
 
 				#region << js-cookie >>
 				{
@@ -176,87 +80,29 @@ namespace WebVella.Erp.Web.Components
 					{
 						scriptTagsToInclude.Add(new ScriptTagInclude()
 						{
-							Src = "/webvella-erp-web/lib/js-cookie/js.cookie.min.js?cb=" + cacheKey
+							Src = "/_content/WebVella.Erp.Web/lib/js-cookie/js.cookie.min.js?cb=" + cacheKey
 						});
 					}
 				}
 				#endregion
 
-				//#region << decimal >>
-				//{
-				//	if (!includedScriptTags.Any(x => x.Src.Contains("/decimal")))
-				//	{
-				//		scriptTagsToInclude.Add(new ScriptTagInclude()
-				//		{
-				//			Src = "/webvella-erp-web/lib/decimal.js/decimal.min.js?cb=" + cacheKey
-				//		});
-				//	}
-				//}
-				//#endregion
 
-				//#region << toastr >>
-				//{
-				//	if (!includedScriptTags.Any(x => x.Src.Contains("/toastr")))
-				//	{
-				//		scriptTagsToInclude.Add(new ScriptTagInclude()
-				//		{
-				//			Src = "/webvella-erp-web/lib/toastr.js/toastr.min.js?cb=" + cacheKey
-				//		});
-				//	}
-				//}
-				//#endregion
+				//var stencilComponents = new List<string>(){"wv-lazyload", "wv-timelog-list", "wv-pb-manager", 
+				//	"wv-sitemap-manager", "wv-datasource-manage","wv-post-list", "wv-feed-list", "wv-recurrence-template"};
 
-				//#region << colorpicker >>
-				//{
-				//	if (!includedScriptTags.Any(x => x.Src.Contains("/colorpicker")))
-				//	{
-				//		scriptTagsToInclude.Add(new ScriptTagInclude()
-				//		{
-				//			Src = "/webvella-erp-web/lib/spectrum/spectrum.min.js?cb=" + cacheKey
-				//		});
-				//	}
-				//}
-				//#endregion
-
-
-				#region << wv-lazyload >>
-				{
-					////Always add
-					//scriptTagsToInclude.Add(new ScriptTagInclude()
-					//{
-					//	Src = "/js/stencil/wv-lazyload.esm.js",
-					//	Type = "module"
-					//});
-					//scriptTagsToInclude.Add(new ScriptTagInclude()
-					//{
-					//	Src = "/js/stencil/wv-lazyload.js",
-					//	IsNomodule = true
-					//});
-
-					//scriptTagsToInclude.Add(new ScriptTagInclude()
-					//{
-					//	Src = "/js/stencil/wv-lazyload.js"
-					//});
-
-				}
-				#endregion
-
-
-				var stencilComponents = new List<string>(){"wv-lazyload", "wv-timelog-list", "wv-pb-manager", 
-					"wv-sitemap-manager", "wv-datasource-manage","wv-post-list", "wv-feed-list", "wv-recurrence-template"};
-
+				var stencilComponents = new List<string>(){"wv-lazyload"};
 
 				foreach (var componentName in stencilComponents)
 				{
 					scriptTagsToInclude.Add(new ScriptTagInclude()
 					{
-						Src = $"/webvella-erp-web/js/{componentName}/{componentName}.esm.js",
+						Src = $"/_content/WebVella.Erp.Web/js/{componentName}/{componentName}.esm.js",
 						Type = "module"
 					});
 
 					scriptTagsToInclude.Add(new ScriptTagInclude()
 					{
-						Src = $"/webvella-erp-web/js/{componentName}/{componentName}.js",
+						Src = $"/_content/WebVella.Erp.Web/js/{componentName}/{componentName}.js",
 						IsNomodule = true
 					});
 				}

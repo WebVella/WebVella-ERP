@@ -24,47 +24,7 @@ namespace WebVella.Erp.Plugins.SDK.Components
 
 					//Your includes below >>>>
 
-					#region << wv-pb-manager >>
-					{
-						//Always add
-						//scriptTagsToInclude.Add(new ScriptTagInclude()
-						//{
-						//	Src = "/js/wv-pb-manager/wv-pb-manager.esm.js",
-						//	Type = "module"
-						//});
-						//scriptTagsToInclude.Add(new ScriptTagInclude()
-						//{
-						//	Src = "/js/wv-pb-manager/wv-pb-manager.js",
-						//	IsNomodule = true
-						//});
-						//scriptTagsToInclude.Add(new ScriptTagInclude()
-						//{
-						//	Src = "/js/wv-pb-manager/wv-pb-manager.js"
-						//});
-					}
-					#endregion
-
-					#region << wv-sitemap-manager >>
-					{
-						//Always add
-						//scriptTagsToInclude.Add(new ScriptTagInclude()
-						//{
-						//	Src = "/js/wv-sitemap-manager/wv-sitemap-manager.esm.js",
-						//	Type = "module"
-						//});
-						//scriptTagsToInclude.Add(new ScriptTagInclude()
-						//{
-						//	Src = "/js/wv-sitemap-manager/wv-sitemap-manager.js",
-						//	IsNomodule = true
-						//});
-
-						//scriptTagsToInclude.Add(new ScriptTagInclude()
-						//{
-						//	Src = "/js/wv-sitemap-manager/wv-sitemap-manager.js"
-						//});
-					}
-					#endregion
-
+	
 					//<<<< Your includes up
 
 					includedScriptTags.AddRange(scriptTagsToInclude);

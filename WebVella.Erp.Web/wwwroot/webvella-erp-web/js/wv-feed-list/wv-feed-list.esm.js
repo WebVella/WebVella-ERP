@@ -1,1 +1,0 @@
-import{p as e,b as s}from"./p-2ca3c8cf.js";e().then(e=>s([["p-y81guis9",[[0,"wv-feed-list",{records:[1],isDebug:[1,"is-debug"],reloadPostIndex:[32]}],[0,"wv-feed",{record:[16],reloadPostIndex:[32]}]]]],e));

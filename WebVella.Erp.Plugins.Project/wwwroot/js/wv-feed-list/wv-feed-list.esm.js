@@ -1,0 +1,1 @@
+import{p as e,b as d}from"./p-8e75cc10.js";e().then(e=>d([["p-lzwqwltl",[[0,"wv-feed-list",{records:[1],isDebug:[1,"is-debug"],reloadPostIndex:[32]}],[0,"wv-feed",{record:[16],reloadPostIndex:[32]}]]]],e));

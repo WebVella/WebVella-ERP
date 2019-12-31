@@ -86,7 +86,7 @@ namespace WebVella.Erp.Web.Components
 					{
 						linkTagsToInclude.Add(new LinkTagInclude()
 						{
-							Href = $"/webvella-erp-web/assets/favicon.png",
+							Href = $"/_content/WebVella.Erp.Web/assets/favicon.png",
 							Rel = RelType.Icon,
 							Type = "image/png"
 						});
@@ -113,7 +113,7 @@ namespace WebVella.Erp.Web.Components
 				//	{
 				//		linkTagsToInclude.Add(new LinkTagInclude()
 				//		{
-				//			Href = "/webvella-erp-web/lib/twitter-bootstrap/css/bootstrap.css?cb=" + cacheKey
+				//			Href = "/_content/WebVella.Erp.Web/lib/twitter-bootstrap/css/bootstrap.css?cb=" + cacheKey
 				//		});
 				//	}
 				//}
@@ -125,7 +125,7 @@ namespace WebVella.Erp.Web.Components
 				//	{
 				//		linkTagsToInclude.Add(new LinkTagInclude()
 				//		{
-				//			Href = "/webvella-erp-web/lib/flatpickr/flatpickr.min.css?cb=" + cacheKey
+				//			Href = "/_content/WebVella.Erp.Web/lib/flatpickr/flatpickr.min.css?cb=" + cacheKey
 				//		});
 				//	}
 				//}
@@ -137,7 +137,7 @@ namespace WebVella.Erp.Web.Components
 				//	{
 				//		linkTagsToInclude.Add(new LinkTagInclude()
 				//		{
-				//			Href = "/webvella-erp-web/lib/select2/css/select2.min.css?cb=" + cacheKey
+				//			Href = "/_content/WebVella.Erp.Web/lib/select2/css/select2.min.css?cb=" + cacheKey
 				//		});
 				//	}
 				//}
@@ -149,7 +149,7 @@ namespace WebVella.Erp.Web.Components
 				//	{
 				//		linkTagsToInclude.Add(new LinkTagInclude()
 				//		{
-				//			Href = "/webvella-erp-web/css/font-awesome-5.10.2/css/all.min.css?cb=" + cacheKey
+				//			Href = "/_content/WebVella.Erp.Web/css/font-awesome-5.10.2/css/all.min.css?cb=" + cacheKey
 				//		});
 				//	}
 				//}
@@ -161,7 +161,7 @@ namespace WebVella.Erp.Web.Components
 				//	{
 				//		linkTagsToInclude.Add(new LinkTagInclude()
 				//		{
-				//			Href = "/webvella-erp-web/lib/toastr.js/toastr.min.css?cb=" + cacheKey
+				//			Href = "/_content/WebVella.Erp.Web/lib/toastr.js/toastr.min.css?cb=" + cacheKey
 				//		});
 				//	}
 				//}
@@ -173,7 +173,7 @@ namespace WebVella.Erp.Web.Components
 				//	{
 				//		linkTagsToInclude.Add(new LinkTagInclude()
 				//		{
-				//			Href = "/webvella-erp-web/lib/spectrum/spectrum.min.css?cb=" + cacheKey
+				//			Href = "/_content/WebVella.Erp.Web/lib/spectrum/spectrum.min.css?cb=" + cacheKey
 				//		});
 				//	}
 				//}
