@@ -126,7 +126,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 						{
 							var statRecord = userDict[key];
 							var row = new EntityRecord();
-							var imagePath = "/webvella-erp-web/assets/avatar.png";
+							var imagePath = "/_content/WebVella.Erp.Web/assets/avatar.png";
 
 							row["user"] = $"<img src=\"{imagePath}\" class=\"rounded-circle\" width=\"24\"> No owner";
 							row["overdue"] = statRecord["overdue"];
@@ -139,7 +139,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 							var user = users.First(x => (Guid)x["id"] == key);
 							var statRecord = userDict[key];
 							var row = new EntityRecord();
-							var imagePath = "/webvella-erp-web/assets/avatar.png";
+							var imagePath = "/_content/WebVella.Erp.Web/assets/avatar.png";
 							if (user["image"] != null && (string)user["image"] != "")
 								imagePath = "/fs" + (string)user["image"];
 

@@ -96,7 +96,7 @@ namespace WebVella.Erp.Plugins.Project.Components
 
 					foreach (var task in taskQueue)
 					{
-						var imagePath = "/webvella-erp-web/assets/avatar.png";
+						var imagePath = "/_content/WebVella.Erp.Web/assets/avatar.png";
 						var user = new EntityRecord();
 						user["username"] = "No Owner";
 						if (task["owner_id"] != null)
