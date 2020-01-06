@@ -37,6 +37,9 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "select_match_type")]
 			public WvSelectMatchType SelectMatchingType { get; set; } = WvSelectMatchType.Contains;
 
+			[JsonProperty(PropertyName = "placeholder")]
+			public string Placeholder { get; set; } = "";
+
 			public static PcFieldMultiSelectOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldMultiSelectOptions

@@ -45,14 +45,19 @@
 </wv-row>
 <wv-row>
 	<wv-column span="4">
-		<wv-field-datasource name="options" value="@options.Options" label-text="Options" page-id="erpRequest.Page.Id"
-			description="CSV and JsonArray of '{label(string),value(string)}' are also available. For Ajax Options from Datasource use: {ds:'data source name', value:'field name (id is default)', label:'field name (label is default)'}  (Json serialized 'SelectOptionsAjaxDatasource' object type)"></wv-field-datasource>
-	</wv-column>
-	<wv-column span="4">
 		<wv-field-text name="class" label-text="Css class" value="@options.Class"></wv-field-text>
 	</wv-column>
 	<wv-column span="4">
 		<wv-field-checkbox name="show_icon" value="@options.ShowIcon" label-text="Show Icon" text-true="icon will be displayed"></wv-field-checkbox>
+	</wv-column>
+	<wv-column span="4">
+		<wv-field-text name="placeholder" value="@options.Placeholder" label-text="Placeholder"></wv-field-text>
+	</wv-column>
+</wv-row>
+<wv-row>
+	<wv-column span="12">
+		<wv-field-datasource name="options" value="@options.Options" label-text="Options" page-id="erpRequest.Page.Id"
+			description="CSV and JsonArray of '{label(string),value(string)}' are also available. For Ajax Options from Datasource use: {ds:'data source name', value:'field name (id is default)', label:'field name (label is default)'}  (Json serialized 'SelectOptionsAjaxDatasource' object type)"></wv-field-datasource>
 	</wv-column>
 </wv-row>
 
