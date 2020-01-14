@@ -5,7 +5,7 @@
 		<RootNamespace>WebVella.Erp.Web</RootNamespace>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-		<Version>1.0.131</Version>
+		<Version>1.0.132</Version>
 		<Authors>WebVella</Authors>
 		<Product>WebVella.Erp.Web</Product>
 		<Description>The web components library for the open-source and free platform WebVella ERP. It allows a quick and painless creation of business web applications.</Description>
@@ -41,9 +41,6 @@
 		<None Remove="Components\PcFieldMultiFileUpload\service.js" />
 		<None Remove="Components\PcFieldDataCsv\service.js" />
 		<None Remove="Snippets\boz.html" />
-		<None Remove="TagHelpers\WvFieldDataCsv\display.js" />
-		<None Remove="TagHelpers\WvFieldDataCsv\form.js" />
-		<None Remove="TagHelpers\WvFieldDataCsv\inline-edit.js" />
 		<None Remove="TagHelpers\WvFieldDatasource\form.js" />
 		<None Remove="TagHelpers\WvFieldUserFileMultiple\form.js" />
 		<None Remove="TagHelpers\WvFieldUserFileMultiple\inline-edit.js" />
@@ -102,9 +99,6 @@
 		<EmbeddedResource Include="Components\PcHtmlBlock\service.js" />
 		<EmbeddedResource Include="Components\PcRow\service.js" />
 		<EmbeddedResource Include="TagHelpers\WvDrawer\drawer.js" />
-		<EmbeddedResource Include="TagHelpers\WvFieldDataCsv\display.js" />
-		<EmbeddedResource Include="TagHelpers\WvFieldDataCsv\form.js" />
-		<EmbeddedResource Include="TagHelpers\WvFieldDataCsv\inline-edit.js" />
 		<EmbeddedResource Include="TagHelpers\WvFieldDatasource\form.js" />
 		<EmbeddedResource Include="TagHelpers\WvFieldUserFileMultiple\form.js" />
 		<EmbeddedResource Include="TagHelpers\WvFieldUserFileMultiple\inline-edit.js" />
@@ -135,7 +129,7 @@
 		<PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0007" />
 		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0007" />
 		<PackageReference Include="Wangkanai.Detection.Device" Version="2.0.0" />
-		<PackageReference Include="WebVella.TagHelpers" Version="1.0.75" />
+		<PackageReference Include="WebVella.TagHelpers" Version="1.0.81" />
 		<PackageReference Include="YUICompressor.NET" Version="3.0.0" />
 		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.0" />
 	</ItemGroup>

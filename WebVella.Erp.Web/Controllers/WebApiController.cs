@@ -1189,6 +1189,7 @@ namespace WebVella.Erp.Web.Controllers
 		public IActionResult FieldTableDataPreview([FromRoute] string lang, [FromBody]JObject submitObj)
 		{
 			var hasHeader = true;
+			var hasHeaderColumn = false;
 			string csvData = "";
 			string delimiterName = "";
 			#region << Init SubmitObj >>
@@ -1203,6 +1204,16 @@ namespace WebVella.Erp.Web.Controllers
 							if (hasHeaderString.ToLowerInvariant() == "false")
 							{
 								hasHeader = false;
+							}
+						}
+						break;
+					case "hasheadercolumn":
+						if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
+						{
+							var hasHeaderColumnString = prop.Value.ToString();
+							if (hasHeaderColumnString.ToLowerInvariant() == "true")
+							{
+								hasHeaderColumn = true;
 							}
 						}
 						break;
@@ -1224,7 +1235,7 @@ namespace WebVella.Erp.Web.Controllers
 			var records = new List<dynamic>();
 			try
 			{
-				records = new RenderService().GetCsvData(csvData, hasHeader, delimiterName);
+				records = WebVella.TagHelpers.Utilities.WvHelpers.GetCsvData(csvData, hasHeader, delimiterName);
 			}
 			catch (CsvHelperException ex)
 			{
@@ -1254,6 +1265,7 @@ namespace WebVella.Erp.Web.Controllers
 
 			var result = new EntityRecord();
 			result["hasHeader"] = hasHeader;
+			result["hasHeaderColumn"] = hasHeaderColumn;
 			result["data"] = records;
 			result["lang"] = lang;
 			return PartialView("FieldTableDataPreview", result);
