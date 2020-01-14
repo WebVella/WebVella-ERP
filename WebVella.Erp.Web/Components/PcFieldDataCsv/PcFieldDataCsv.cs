@@ -191,7 +191,7 @@ namespace WebVella.Erp.Web.Components
 						ViewBag.HasHeader = hasHeader;
 					}
 					ViewBag.HasHeaderColumn = false;
-					if (hasHeader != null)
+					if (hasHeaderColumn != null)
 					{
 						ViewBag.HasHeaderColumn = hasHeaderColumn;
 					}

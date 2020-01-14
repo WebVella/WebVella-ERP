@@ -13,8 +13,8 @@
 	var mode = (WvFieldRenderMode)ViewBag.Mode;
 
 	var delimiter = (WvCsvDelimiterType)ViewBag.Delimiter;
-	var hasHeader = (bool)ViewBag.HasHeader;
-	var hasHeaderColumn = (bool)ViewBag.HasHeaderColumn;
+	var hasHeader = (bool?)ViewBag.HasHeader;
+	var hasHeaderColumn = (bool?)ViewBag.HasHeaderColumn;
 	if (String.IsNullOrWhiteSpace(fieldModel.ApiUrl))
 		fieldModel.ApiUrl = $"/api/v3/en_US/record/{fieldModel.EntityName}/{fieldModel.RecordId}";
 }
