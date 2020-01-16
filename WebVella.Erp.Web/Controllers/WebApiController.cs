@@ -282,7 +282,7 @@ namespace WebVella.Erp.Web.Controllers
 							{
 								uncollapsedNodeIds = JsonConvert.DeserializeObject<List<Guid>>((string)componentData["uncollapsed_node_ids"]);
 							}
-							catch (Exception ex)
+							catch
 							{
 								throw new Exception("WebVella.Erp.Web.Components.PcSection component data object in user preferences not in the correct format. uncollapsed_node_ids should be List<Guid>");
 							}
@@ -1240,6 +1240,7 @@ namespace WebVella.Erp.Web.Controllers
 			catch (CsvHelperException ex)
 			{
 				//ex.Data.Values has more info...
+				
 				if (lang == "bg")
 				{
 					return Content("<div class='alert alert-danger p-2'>Грешен формат на данните. Опитайте с друг разделител.</div>");
@@ -1249,7 +1250,7 @@ namespace WebVella.Erp.Web.Controllers
 					return Content("<div class='alert alert-danger p-2'>Error in parsing data. Check another delimiter</div>");
 				}
 			}
-			catch (Exception ex)
+			catch
 			{
 				if (lang == "bg")
 				{

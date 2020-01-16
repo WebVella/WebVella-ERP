@@ -284,8 +284,6 @@ namespace WebVella.Erp.Api
 						}
 					}
 
-					SetRecordServiceInformation(record, true, ignoreSecurity);
-
 					bool hooksExists = RecordHookManager.ContainsAnyHooksForEntity(entity.Name);
 
 					if (record.Properties.Any(p => p.Key.StartsWith("$")) || hooksExists)
@@ -976,8 +974,6 @@ namespace WebVella.Erp.Api
 							return response;
 						}
 					}
-
-					SetRecordServiceInformation(record, false, ignoreSecurity);
 
 					//fixes issue with ID coming from webapi request 
 					Guid recordId = Guid.Empty;
@@ -2060,126 +2056,7 @@ namespace WebVella.Erp.Api
 
 			return relations;
 		}
-		/*
-		private void ProcessQueryObject(Entity entity, QueryObject obj)
-		{
-			if (obj == null)
-				return;
-
-			if (obj.QueryType != QueryType.AND && obj.QueryType != QueryType.OR &&
-				obj.QueryType != QueryType.RELATED && obj.QueryType != QueryType.NOTRELATED)
-			{
-				var field = entity.Fields.SingleOrDefault(x => x.Name == obj.FieldName);
-				if (!(obj.QueryType == QueryType.RELATED || obj.QueryType == QueryType.NOTRELATED))
-				{
-					if (field == null)
-						throw new Exception(string.Format("There is not entity field '{0}' you try to query by.", obj.FieldName));
-				}
-
-				if (field is NumberField || field is AutoNumberField)
-				{
-					if (obj.FieldValue != null)
-						obj.FieldValue = Convert.ToDecimal(obj.FieldValue);
-				}
-				else if (field is GuidField)
-				{
-					if (obj.FieldValue != null && obj.FieldValue is string)
-					{
-						var stringGuid = obj.FieldValue as string;
-						if (!string.IsNullOrWhiteSpace(stringGuid))
-							obj.FieldValue = new Guid(stringGuid);
-						else
-							obj.FieldValue = null;
-					}
-				}
-				else if (field is CheckboxField)
-				{
-					if (obj.FieldValue != null && obj.FieldValue is string)
-						obj.FieldValue = bool.Parse(obj.FieldValue as string);
-				}
-				else if (field is PasswordField && obj.FieldValue != null)
-					obj.FieldValue = PasswordUtil.GetMd5Hash(obj.FieldValue as string);
-			}
-
-			if (obj.QueryType == QueryType.RELATED || obj.QueryType == QueryType.NOTRELATED)
-			{
-				var relation = relationRepository.Read(obj.FieldName);
-				if (relation == null)
-					throw new Exception(string.Format("There is not relation with name '{0}' used in your query.", obj.FieldName));
-
-				if (relation.RelationType != EntityRelationType.ManyToMany)
-					throw new Exception(string.Format("Only many to many relations can used in Related and NotRelated query operators.", obj.FieldName));
-
-				var direction = obj.FieldValue as string ?? "origin-target";
-				if (relation.OriginEntityId == relation.TargetEntityId)
-				{
-					if (direction == "target-origin")
-						obj.FieldName = $"#{obj.FieldName}_origins";
-					else
-						obj.FieldName = $"#{obj.FieldName}_targets";
-
-				}
-				else
-				{
-					if (entity.Id == relation.OriginEntityId)
-						obj.FieldName = $"#{obj.FieldName}_targets";
-					else
-						obj.FieldName = $"#{obj.FieldName}_origins";
-				}
-			}
-
-			if (obj.QueryType == QueryType.AND || obj.QueryType == QueryType.OR)
-			{
-				if (obj.SubQueries != null && obj.SubQueries.Count > 0)
-					foreach (var subObj in obj.SubQueries)
-					{
-						ProcessQueryObject(entity, subObj);
-					}
-			}
-		}*/
-
-		private void SetRecordServiceInformation(EntityRecord record, bool newRecord = true, bool ignoreSecurity = false)
-		{
-
-			//this method is obsolete
-			return;
-
-			if (record == null)
-				return;
-
-			if (newRecord)
-			{
-
-				record["created_on"] = DateTime.UtcNow;
-				record["last_modified_on"] = DateTime.UtcNow;
-				if (SecurityContext.CurrentUser != null)
-				{
-					record["created_by"] = SecurityContext.CurrentUser.Id;
-					record["last_modified_by"] = SecurityContext.CurrentUser.Id;
-				}
-				else
-				{
-					//if ignore security is set then do not overwrite already set values
-					//needed to set first user
-					if (!ignoreSecurity)
-					{
-						record["created_by"] = null;
-						record["last_modified_by"] = null;
-					}
-				}
-			}
-			else
-			{
-				record["last_modified_on"] = DateTime.UtcNow;
-
-				if (SecurityContext.CurrentUser != null)
-					record["last_modified_by"] = SecurityContext.CurrentUser.Id;
-				else
-					record["last_modified_by"] = null;
-
-			}
-		}
-
+		
 		private void SetRecordRequiredFieldsDefaultData(Entity entity, List<KeyValuePair<string, object>> recordData)
 		{
 			if (recordData == null)
