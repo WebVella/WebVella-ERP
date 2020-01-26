@@ -3917,6 +3917,8 @@ border-bottom-style:dashed;
 	position: relative;
 	top: 12px;
 	left: 9px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .pc-page-header.no-icon .meta-label .text {
