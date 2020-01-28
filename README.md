@@ -13,6 +13,9 @@ Related repositories
 
 [WebVella-ERP-Seed](https://github.com/WebVella/WebVella-ERP-Seed)
 
+[WebVella-TagHelpers](https://github.com/WebVella/TagHelpers)
+
+
 ### Third party libraries
 * see [LIBRARIES](https://github.com/WebVella/WebVella-ERP/blob/master/LIBRARIES.md) files
 

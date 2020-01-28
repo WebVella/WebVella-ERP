@@ -39,6 +39,12 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "has_header_field_name")]
 			public string HasHeaderFieldName { get; set; } = "";
 
+			[JsonProperty(PropertyName = "has_header_column_value_ds")]
+			public string HasHeaderColumnValueDs { get; set; } = "false";
+
+			[JsonProperty(PropertyName = "has_header_column_field_name")]
+			public string HasHeaderColumnFieldName { get; set; } = "";
+
 			[JsonProperty(PropertyName = "lang_ds")]
 			public string LangDs { get; set; } = "en";
 
@@ -54,8 +60,10 @@ namespace WebVella.Erp.Web.Components
 					Height = "",
 					DelimiterValueDs = "",
 					HasHeaderValueDs = "",
+					HasHeaderColumnValueDs = "",
 					DelimiterFieldName = "",
 					HasHeaderFieldName = "",
+					HasHeaderColumnFieldName = "",
 					LangDs = "en",
 				};
 			}
@@ -165,10 +173,12 @@ namespace WebVella.Erp.Web.Components
 					var delimiter = context.DataModel.GetPropertyValueByDataSource(options.DelimiterValueDs) as string;
 					var lang = context.DataModel.GetPropertyValueByDataSource(options.LangDs) as string;
 					var hasHeader = context.DataModel.GetPropertyValueByDataSource(options.HasHeaderValueDs) as bool?;
+					var hasHeaderColumn = context.DataModel.GetPropertyValueByDataSource(options.HasHeaderColumnValueDs) as bool?;
 
-					ViewBag.Delimiter = ErpDataCsvDelimiterType.COMMA;
+
+					ViewBag.Delimiter = WvCsvDelimiterType.COMMA;
 					if (!String.IsNullOrWhiteSpace(delimiter) && delimiter == "tab") {
-						ViewBag.Delimiter = ErpDataCsvDelimiterType.TAB;
+						ViewBag.Delimiter = WvCsvDelimiterType.TAB;
 					}
 					ViewBag.Lang = "en";
 					if (!String.IsNullOrWhiteSpace(lang))
@@ -179,6 +189,11 @@ namespace WebVella.Erp.Web.Components
 					if (hasHeader != null)
 					{
 						ViewBag.HasHeader = hasHeader;
+					}
+					ViewBag.HasHeaderColumn = false;
+					if (hasHeaderColumn != null)
+					{
+						ViewBag.HasHeaderColumn = hasHeaderColumn;
 					}
 				}
 

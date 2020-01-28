@@ -136,7 +136,7 @@ namespace WebVella.Erp.Web.Components
                                     {
                                         collapsedNodeIds = JsonConvert.DeserializeObject<List<Guid>>((string)componentData["collapsed_node_ids"]);
                                     }
-                                    catch (Exception ex)
+                                    catch
                                     {
                                         throw new Exception("WebVella.Erp.Web.Components.PcSection component data object in user preferences not in the correct format. collapsed_node_ids should be List<Guid>");
                                     }
@@ -162,7 +162,7 @@ namespace WebVella.Erp.Web.Components
                                     {
                                         uncollapsedNodeIds = JsonConvert.DeserializeObject<List<Guid>>((string)componentData["uncollapsed_node_ids"]);
                                     }
-                                    catch (Exception ex)
+                                    catch
                                     {
                                         throw new Exception("WebVella.Erp.Web.Components.PcSection component data object in user preferences not in the correct format. uncollapsed_node_ids should be List<Guid>");
                                     }

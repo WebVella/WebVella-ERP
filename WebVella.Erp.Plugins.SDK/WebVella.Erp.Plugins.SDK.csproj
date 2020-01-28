@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	<TargetFramework>netcoreapp3.1</TargetFramework>
-	<Version>1.0.99</Version>
+	<Version>1.0.103</Version>
 	<PackageId>WebVella.Erp.Plugins.SDK</PackageId>
 	<Authors>WebVella</Authors>
 	<Product />

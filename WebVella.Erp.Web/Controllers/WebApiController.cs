@@ -282,7 +282,7 @@ namespace WebVella.Erp.Web.Controllers
 							{
 								uncollapsedNodeIds = JsonConvert.DeserializeObject<List<Guid>>((string)componentData["uncollapsed_node_ids"]);
 							}
-							catch (Exception ex)
+							catch
 							{
 								throw new Exception("WebVella.Erp.Web.Components.PcSection component data object in user preferences not in the correct format. uncollapsed_node_ids should be List<Guid>");
 							}
@@ -1189,6 +1189,7 @@ namespace WebVella.Erp.Web.Controllers
 		public IActionResult FieldTableDataPreview([FromRoute] string lang, [FromBody]JObject submitObj)
 		{
 			var hasHeader = true;
+			var hasHeaderColumn = false;
 			string csvData = "";
 			string delimiterName = "";
 			#region << Init SubmitObj >>
@@ -1203,6 +1204,16 @@ namespace WebVella.Erp.Web.Controllers
 							if (hasHeaderString.ToLowerInvariant() == "false")
 							{
 								hasHeader = false;
+							}
+						}
+						break;
+					case "hasheadercolumn":
+						if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
+						{
+							var hasHeaderColumnString = prop.Value.ToString();
+							if (hasHeaderColumnString.ToLowerInvariant() == "true")
+							{
+								hasHeaderColumn = true;
 							}
 						}
 						break;
@@ -1224,11 +1235,12 @@ namespace WebVella.Erp.Web.Controllers
 			var records = new List<dynamic>();
 			try
 			{
-				records = new RenderService().GetCsvData(csvData, hasHeader, delimiterName);
+				records = WebVella.TagHelpers.Utilities.WvHelpers.GetCsvData(csvData, hasHeader, delimiterName);
 			}
 			catch (CsvHelperException ex)
 			{
 				//ex.Data.Values has more info...
+				
 				if (lang == "bg")
 				{
 					return Content("<div class='alert alert-danger p-2'>Грешен формат на данните. Опитайте с друг разделител.</div>");
@@ -1238,7 +1250,7 @@ namespace WebVella.Erp.Web.Controllers
 					return Content("<div class='alert alert-danger p-2'>Error in parsing data. Check another delimiter</div>");
 				}
 			}
-			catch (Exception ex)
+			catch
 			{
 				if (lang == "bg")
 				{
@@ -1254,6 +1266,7 @@ namespace WebVella.Erp.Web.Controllers
 
 			var result = new EntityRecord();
 			result["hasHeader"] = hasHeader;
+			result["hasHeaderColumn"] = hasHeaderColumn;
 			result["data"] = records;
 			result["lang"] = lang;
 			return PartialView("FieldTableDataPreview", result);
@@ -3102,7 +3115,7 @@ namespace WebVella.Erp.Web.Controllers
 				{
 					//Hardcoded image for development
 					WebClient wc = new WebClient();
-					byte[] bytes = wc.DownloadData($"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/webvella-erp-web/assets/missing-image.png");
+					byte[] bytes = wc.DownloadData($"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/_content/WebVella.Erp.Web/assets/missing-image.png");
 
 					return File(bytes, "image/png");
 				}

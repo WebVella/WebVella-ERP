@@ -15,11 +15,11 @@
 		pageIconClass = Model.ErpPage.IconClass;
 	}
 }
-<link href="/webvella-erp-web/lib/jstree/themes/default/style.min.css" rel="stylesheet" type="text/css">
-<script src="/webvella-erp-web/lib/jstree/jstree.min.js" type="text/javascript"></script>
+<link href="/_content/WebVella.Erp.Plugins.SDK/lib/jstree/themes/default/style.min.css" rel="stylesheet" type="text/css">
+<script src="/_content/WebVella.Erp.Plugins.SDK/lib/jstree/jstree.min.js" type="text/javascript"></script>
 
-@*<script type="module" src="/js/stencil/wv-datasource-manage.esm.js"></script>
-<script nomodule src="/js/stencil/wv-datasource-manage.js"></script>*@
+<script type="module" src="/_content/WebVella.Erp.Plugins.SDK/js/wv-datasource-manage/wv-datasource-manage.esm.js"></script>
+<script nomodule src="/_content/WebVella.Erp.Plugins.SDK/js/wv-datasource-manage/wv-datasource-manage.js"></script>
 
 
 <wv-page-header color="#dc3545" area-label="Pages" title="@Model.ErpPage.Label" subtitle="Model"
@@ -103,7 +103,7 @@
 		</wv-form>
 	</wv-modal-body>
 	<wv-modal-footer>
-		<button type="button" class="btn btn-link btn-sm go-red" style="position: absolute;left: 10px;" onclick="deleteDataSource()"><i class="fa fa-trash"></i> remove</button>
+		<button type="button" class="btn btn-link btn-sm go-red" id="remove-datasource" style="position: absolute;left: 10px;" onclick="deleteDataSource()"><i class="fa fa-trash"></i> remove</button>
 		<button type="button" class="btn btn-primary btn-sm" onclick="submitManageForm()">Save DataSource</button>
 		<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
 	</wv-modal-footer>
@@ -211,24 +211,28 @@
 			$('#model-tree-value').val(data.node.a_attr["datasource-string"]);
 		});
 
-		$('#manage-datasource').click(function () {
+		$('#manage-datasource').click(function (e) {
+			e.preventDefault();
 			$('wv-datasource-manage').attr("show", true);
 			$('#modal-manage-datasource').modal('show');
 		});
 
 
-		$('#add-datasource').click(function () {
+		$('#add-datasource').click(function (e) {
+			e.preventDefault();
 			$('wv-datasource-manage').attr("datasource-id", null);
 			$('wv-datasource-manage').attr("page-datasource-id", null);
 			$('#delete-page-datasource-id-value').val(null);
 			$('wv-datasource-manage').attr("page-datasource-name", null);
 			$('wv-datasource-manage').attr("page-datasource-params", "[]");
 			$('wv-datasource-manage').attr("show", true);
+			$('#remove-datasource').addClass("d-none");
 			$('#modal-manage-datasource').modal('show');
 		});
 
 		$('#modal-manage-datasource').on('hidden.bs.modal', function (e) {
 			$('wv-datasource-manage').attr("show", false);
+			$('#remove-datasource').removeClass("d-none");
 			FixModalInModalClose();
 		})
 

@@ -13,13 +13,19 @@
 	var mode = (WvFieldRenderMode)ViewBag.Mode;
 	if(String.IsNullOrWhiteSpace(fieldModel.ApiUrl))
 		fieldModel.ApiUrl = $"/api/v3/en_US/record/{fieldModel.EntityName}/{fieldModel.RecordId}";
+
+	var placeholder = "";
+	if(!String.IsNullOrWhiteSpace(options.Placeholder))
+		placeholder = options.Placeholder;
+	else if(!String.IsNullOrWhiteSpace(fieldModel.Placeholder))
+		placeholder = fieldModel.Placeholder;
 }
 <wv-field-multiselect label-mode="@labelMode" label-text="@options.LabelText" label-warning-text="@fieldModel.LabelWarningText"
 					  label-error-text="@fieldModel.LabelErrorText" label-help-text="@fieldModel.LabelHelpText" field-id="@fieldModel.FieldId"
 					  name="@options.Name" class="@options.Class" value="@fieldModel.Value" mode="@mode" access="@fieldModel.Access"
 					  init-errors="@fieldModel.InitErrors" validation-errors="@fieldModel.ValidationErrors.ToKeyValuePair()" 
 					  api-url="@fieldModel.ApiUrl" access-denied-message="@fieldModel.AccessDeniedMessage"
-					  empty-value-message="@fieldModel.EmptyValueMessage" required="@fieldModel.Required" placeholder="@fieldModel.Placeholder"
+					  empty-value-message="@fieldModel.EmptyValueMessage" required="@fieldModel.Required" placeholder="@placeholder"
 					  description="@fieldModel.Description" locale="@fieldModel.Locale" options="@fieldModel.Options.ToWvSelectOption()" 
 					  is-visible="(bool)ViewBag.IsVisible"  ajax-datasource="@options.AjaxDatasource.ToWvSelectOptionsAjaxDatasource()" select-match-type="@options.SelectMatchingType">
 	@if (options.ShowIcon)
