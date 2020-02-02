@@ -25,7 +25,7 @@ namespace WebVella.Erp.Plugins.SDK.Services
 				var logsToDelete = logRows.OfType<DataRow>().OrderByDescending(r => r["created_on"]).Select(r => (Guid)r["id"]).Skip(1000).ToList();
 				foreach (var logId in logsToDelete)
 				{
-					string deleteSql = $"DELETE FROM syste_log WHERE id = @id";
+					string deleteSql = $"DELETE FROM system_log WHERE id = @id";
 					List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
 					parameters.Add(new NpgsqlParameter("id", logId) { NpgsqlDbType = NpgsqlDbType.Uuid });
 					ExecuteNonQuerySqlCommand(deleteSql, parameters);
@@ -42,7 +42,7 @@ namespace WebVella.Erp.Plugins.SDK.Services
 				var jobsToDelete = jobRows.OfType<DataRow>().OrderByDescending(r => r["created_on"]).Select(r => (Guid)r["id"]).Skip(1000).ToList();
 				foreach (var jobId in jobsToDelete)
 				{
-					string deleteSql = $"DELETE FROM job WHERE id = @id";
+					string deleteSql = $"DELETE FROM jobs WHERE id = @id";
 					List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
 					parameters.Add(new NpgsqlParameter("id", jobId) { NpgsqlDbType = NpgsqlDbType.Uuid });
 					ExecuteNonQuerySqlCommand(deleteSql, parameters);
