@@ -5,8 +5,11 @@
 	Layout = "_SystemMaster";
 }
 
+<div>before</div>
 
 <component type="typeof(HelloWorld)" render-mode="ServerPrerendered" />
+
+<div>after</div>
 
 <script src="_framework/blazor.server.js" autostart="false"></script>
 	<script>
@@ -18,7 +21,7 @@
 		})()
 	</script>
 <script>
-  window.handleTickerChanged = () => {
-	console.log("log");
+  window.handleTickerChanged = (count) => {
+	console.log("log " + count);
   };
 </script>
