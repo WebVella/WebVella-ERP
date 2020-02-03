@@ -5,7 +5,7 @@
 		<RootNamespace>WebVella.Erp.Web</RootNamespace>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-		<Version>1.0.137</Version>
+		<Version>1.0.138</Version>
 		<Authors>WebVella</Authors>
 		<Product>WebVella.Erp.Web</Product>
 		<Description>The web components library for the open-source and free platform WebVella ERP. It allows a quick and painless creation of business web applications.</Description>
