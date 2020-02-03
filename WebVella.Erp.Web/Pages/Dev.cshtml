@@ -12,14 +12,32 @@
 <div>after</div>
 
 <script src="_framework/blazor.server.js" autostart="false"></script>
-	<script>
+<script>
 		(function start() {
 			Blazor.start({
 				logLevel: 1, // LogLevel.Debug
-				configureSignalR: builder => builder.configureLogging("debug") // LogLevel.Debug
+				configureSignalR: builder => builder.configureLogging("debug"), // LogLevel.Debug
+				reconnectionOptions: {
+                maxRetries: 99999999,
+                retryIntervalMilliseconds: 1000,
+            }
 			});
+
 		})()
-	</script>
+</script>
+<script>
+function customDisplay() {
+return {
+show: () => { console.log('blazor show'); },
+hide: () => { console.log('blazor hide'); },
+failed: () => { console.log('blazor failed'); },
+rejected: () => { console.log('blazor rejected'); window.location.reload();}
+};
+}
+
+Blazor.defaultReconnectionHandler._reconnectionDisplay = customDisplay();
+
+</script>
 <script>
   window.handleTickerChanged = (count) => {
 	console.log("log " + count);
