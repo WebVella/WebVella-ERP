@@ -102,15 +102,15 @@ namespace WebVella.Erp.Site.Sdk
 
 			app.UseStaticFiles(new StaticFileOptions
 			{
-				ServeUnknownFileTypes = false,
+				ServeUnknownFileTypes = true,
 				OnPrepareResponse = ctx =>
 				{
 					const int durationInSeconds = 60 * 60 * 24 * 30 * 12;
 					ctx.Context.Response.Headers[HeaderNames.CacheControl] = "public,max-age=" + durationInSeconds;
 					ctx.Context.Response.Headers[HeaderNames.Expires] = new[] { DateTime.UtcNow.AddYears(1).ToString("R") }; // Format RFC1123
-					}
+				}
 			});
-
+			app.UseStaticFiles(); //Workaround for blazor to work - https://github.com/dotnet/aspnetcore/issues/9588
 			app.UseRouting();
 			app.UseAuthentication();
 			app.UseAuthorization();

@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using WebVella.Erp.Api.Models;
@@ -99,7 +100,7 @@ namespace WebVella.Erp.Api
                 //fileStream.Flush();
                 TextReader reader = new StreamReader(fileStream);
 
-                CsvReader csvReader = new CsvReader(reader);
+                CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
                 csvReader.Configuration.HasHeaderRecord = true;
                 //csvReader.Configuration.IsHeaderCaseSensitive = false;
 
@@ -387,14 +388,14 @@ namespace WebVella.Erp.Api
                 byte[] fileBytes = file.GetBytes();
                 MemoryStream fileStream = new MemoryStream(fileBytes);
                 TextReader reader = new StreamReader(fileStream);
-                csvReader = new CsvReader(reader);
+                csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
             }
             //CASE: 2 If fileTempPath == "" -> get the csv from the clipboard
             else
             {
                 csvContent = clipboard;
                 usingClipboard = true;
-                csvReader = new CsvReader(new StringReader(csvContent));
+                csvReader = new CsvReader(new StringReader(csvContent), CultureInfo.InvariantCulture);
             }
 
             csvReader.Configuration.HasHeaderRecord = true;
