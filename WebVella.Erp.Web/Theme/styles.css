@@ -91,7 +91,7 @@ a {
 }
 
 .text-muted {
-	color:#aaa !important;
+	color: #aaa !important;
 }
 /*#endregion*/
 /*#region << Colors >> */
@@ -2501,7 +2501,7 @@ dropdown-item.active {
 
 .tabs .card-header,
 .pills .card-header {
-	font-size:1rem;
+	font-size: 1rem;
 }
 
 
@@ -2789,7 +2789,7 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 		#nav .dropdown-item,
 		.dropdown-menu-sm .dropdown-item {
 			font-size: 14px;
-			padding-left: 0.75rem;
+			padding-left: 0;
 			padding-right: 0.75rem;
 			line-height: 28px;
 			overflow: hidden;
@@ -2800,7 +2800,7 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 
 			#nav .dropdown-item.dropdown,
 			.dropdown-menu-sm .dropdown-item.dropdown {
-				padding:0 !important;
+				padding: 0 !important;
 			}
 
 			#nav .dropdown-item:hover,
@@ -2812,26 +2812,27 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 			}
 
 			#nav .dropdown-item.dropdown a,
-			.dropdown-menu-sm .dropdown-item.dropdown a{
-				padding:0.25rem 0.75rem;
-				display:block;
-				color:#212529;
-				position:relative;
+			.dropdown-menu-sm .dropdown-item.dropdown a {
+				padding: 0.25rem 0.75rem 0.25rem 0;
+				display: block;
+				color: #212529;
+				position: relative;
 			}
 
-			#nav .dropdown-item.dropdown a:hover,
-			.dropdown-menu-sm .dropdown-item.dropdown a:hover{
-				text-decoration:none;
-			}
+				#nav .dropdown-item.dropdown a:hover,
+				.dropdown-menu-sm .dropdown-item.dropdown a:hover {
+					text-decoration: none;
+				}
 
-			#nav .dropdown-item.dropdown a:after,
-			.dropdown-menu-sm .dropdown-item.dropdown a:after{
-				position:absolute;
-				right:0.75rem;
-				top:50%;
-				margin-top:-4px;
-				color:#aaa;
-			}
+				#nav .dropdown-item.dropdown a:after,
+				.dropdown-menu-sm .dropdown-item.dropdown a:after {
+					position: absolute;
+					right: 2px;
+					top: 50%;
+					font-size: 15px;
+					margin-top: -5px;
+					color: #555;
+				}
 
 			#nav .dropdown-item .icon,
 			.dropdown-menu-sm .dropdown-item .icon {
@@ -2944,8 +2945,8 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 }
 
 .app-sitemap {
-	display:flex;
-	flex-flow:row;
+	display: flex;
+	flex-flow: row;
 }
 
 /*#endregion*/
@@ -3010,16 +3011,16 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 }
 
 	.app-card .card-body {
-		position:relative;
+		position: relative;
 	}
 
 	.app-card .card-footer {
-		padding:0.25rem;
-		background:#fff;
+		padding: 0.25rem;
+		background: #fff;
 	}
 
 		.app-card .card-footer .nav {
-			margin:-0.25rem;
+			margin: -0.25rem;
 		}
 
 		.app-card .card-footer .nav-link {
@@ -3028,18 +3029,18 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 			color: #777;
 		}
 
-		.app-card .card-footer .nav-link:hover{
-			color: #333;
-		}
+			.app-card .card-footer .nav-link:hover {
+				color: #333;
+			}
 
-		.app-card .app-image-wrapper {
-			overflow: hidden;
-			height: 100%;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			color: --white_color;
-		}
+	.app-card .app-image-wrapper {
+		overflow: hidden;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: --white_color;
+	}
 
 		.app-card .app-image-wrapper .app-icon {
 			font-size: 36px;
@@ -3131,7 +3132,7 @@ pre, code {
 
 /*#region <<wv-field-datasource>> */
 .wv-field-datasource .input-group .select2 .select2-selection {
-	border:none !important;
+	border: none !important;
 }
 /*#endregion*/
 /*#region << Erp Filter >>*/
@@ -3944,8 +3945,8 @@ border-bottom-style:dashed;
 	position: relative;
 	top: 12px;
 	left: 9px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .pc-page-header.no-icon .meta-label .text {
@@ -4818,13 +4819,13 @@ wv-pb-manager .wv-pb-node > div > .row {
 	box-shadow: 1px 1px 10px rgba(0,0,0,0.5);
 }
 
-#toast-container > div a {
-	text-decoration:underline;
-}
-
-	.toast.toast-success {
-		background: --green_color;
+	#toast-container > div a {
+		text-decoration: underline;
 	}
+
+.toast.toast-success {
+	background: --green_color;
+}
 
 .toast.toast-info {
 	background: --light_blue_color;
