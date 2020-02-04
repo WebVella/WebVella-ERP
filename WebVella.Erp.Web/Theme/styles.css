@@ -2798,12 +2798,39 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 			vertical-align: top;
 		}
 
+			#nav .dropdown-item.dropdown,
+			.dropdown-menu-sm .dropdown-item.dropdown {
+				padding:0 !important;
+			}
+
 			#nav .dropdown-item:hover,
 			#nav .dropdown-item:active,
 			.dropdown-menu-sm .dropdown-item:hover,
 			.dropdown-menu-sm .dropdown-item:active {
 				background-color: #f5f5f5 !important;
 				color: #333;
+			}
+
+			#nav .dropdown-item.dropdown a,
+			.dropdown-menu-sm .dropdown-item.dropdown a{
+				padding:0.25rem 0.75rem;
+				display:block;
+				color:#212529;
+				position:relative;
+			}
+
+			#nav .dropdown-item.dropdown a:hover,
+			.dropdown-menu-sm .dropdown-item.dropdown a:hover{
+				text-decoration:none;
+			}
+
+			#nav .dropdown-item.dropdown a:after,
+			.dropdown-menu-sm .dropdown-item.dropdown a:after{
+				position:absolute;
+				right:0.75rem;
+				top:50%;
+				margin-top:-4px;
+				color:#aaa;
 			}
 
 			#nav .dropdown-item .icon,

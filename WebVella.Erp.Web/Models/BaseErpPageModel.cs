@@ -220,15 +220,25 @@ namespace WebVella.Erp.Web.Models
 						areaLink += $"</a>";
 						areaMenuItem = new MenuItem()
 						{
+							Id = area.Id,
 							Content = areaLink
 						};
 
 						foreach (var node in area.Nodes)
 						{
-							var nodeLink = $"<a class=\"dropdown-item\" href=\"{node.Url}\" title=\"{node.Label}\"><span class=\"{node.IconClass} icon fa-fw\"></span> {node.Label}</a>";
+							var nodeLink = "";
+							if(!String.IsNullOrWhiteSpace(node.Url)){
+								nodeLink = $"<a class=\"dropdown-item\" href=\"{node.Url}\" title=\"{node.Label}\"><span class=\"{node.IconClass} icon fa-fw\"></span> {node.Label}</a>";
+							}
+							else{
+								nodeLink = $"<a class=\"dropdown-item\" href=\"#\" onclick=\"return false\" title=\"{node.Label}\"><span class=\"{node.IconClass} icon fa-fw\"></span> {node.Label}</a>";
+							}
 							areaMenuItem.Nodes.Add(new MenuItem()
 							{
-								Content = nodeLink
+								Content = nodeLink,
+								Id = node.Id,
+								ParentId = node.ParentId,
+								SortOrder = node.Weight
 							});
 						}
 					}
@@ -239,7 +249,10 @@ namespace WebVella.Erp.Web.Models
 						areaLink += $"</a>";
 						areaMenuItem = new MenuItem()
 						{
-							Content = areaLink
+							Content = areaLink,
+							Id = area.Nodes[0].Id,
+							ParentId = area.Nodes[0].ParentId,
+							SortOrder = area.Nodes[0].Weight
 						};
 					}
 

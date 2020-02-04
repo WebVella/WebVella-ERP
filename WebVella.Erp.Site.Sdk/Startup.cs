@@ -43,6 +43,7 @@ namespace WebVella.Erp.Site.Sdk
 				{
 					options.Conventions.AuthorizeFolder("/");
 					options.Conventions.AllowAnonymousToPage("/login");
+					options.Conventions.AllowAnonymousToPage("/dev");
 				})
 				.AddNewtonsoftJson(options =>
 				{
