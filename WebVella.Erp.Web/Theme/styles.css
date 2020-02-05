@@ -2789,7 +2789,7 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 		#nav .dropdown-item,
 		.dropdown-menu-sm .dropdown-item {
 			font-size: 14px;
-			padding-left: 0;
+			padding-left: 0.25rem;
 			padding-right: 0.75rem;
 			line-height: 28px;
 			overflow: hidden;

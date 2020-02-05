@@ -228,10 +228,10 @@ namespace WebVella.Erp.Web.Models
 						{
 							var nodeLink = "";
 							if(!String.IsNullOrWhiteSpace(node.Url)){
-								nodeLink = $"<a class=\"dropdown-item\" href=\"{node.Url}\" title=\"{node.Label}\"><span class=\"{node.IconClass} icon fa-fw\"></span> {node.Label}</a>";
+								nodeLink = $"<a class=\"dropdown-item\" href=\"{node.Url}\" title=\"{node.Label}\"><span class=\"{node.IconClass} icon fa-fw\"></span>{node.Label}</a>";
 							}
 							else{
-								nodeLink = $"<a class=\"dropdown-item\" href=\"#\" onclick=\"return false\" title=\"{node.Label}\"><span class=\"{node.IconClass} icon fa-fw\"></span> {node.Label}</a>";
+								nodeLink = $"<a class=\"dropdown-item\" href=\"#\" onclick=\"return false\" title=\"{node.Label}\"><span class=\"{node.IconClass} icon fa-fw\"></span>{node.Label}</a>";
 							}
 							areaMenuItem.Nodes.Add(new MenuItem()
 							{
