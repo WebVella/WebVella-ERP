@@ -256,7 +256,7 @@ namespace WebVella.Erp.Web.Controllers
 							{
 								collapsedNodeIds = JsonConvert.DeserializeObject<List<Guid>>((string)componentData["collapsed_node_ids"]);
 							}
-							catch (Exception ex)
+							catch
 							{
 								throw new Exception("WebVella.Erp.Web.Components.PcSection component data object in user preferences not in the correct format. collapsed_node_ids should be List<Guid>");
 							}
@@ -1237,19 +1237,19 @@ namespace WebVella.Erp.Web.Controllers
 			{
 				records = WebVella.TagHelpers.Utilities.WvHelpers.GetCsvData(csvData, hasHeader, delimiterName);
 			}
-			catch (CsvHelperException ex)
-			{
-				//ex.Data.Values has more info...
+			//catch (CsvHelperException ex)
+			//{
+			//	//ex.Data.Values has more info...
 				
-				if (lang == "bg")
-				{
-					return Content("<div class='alert alert-danger p-2'>Грешен формат на данните. Опитайте с друг разделител.</div>");
-				}
-				else
-				{
-					return Content("<div class='alert alert-danger p-2'>Error in parsing data. Check another delimiter</div>");
-				}
-			}
+			//	if (lang == "bg")
+			//	{
+			//		return Content("<div class='alert alert-danger p-2'>Грешен формат на данните. Опитайте с друг разделител.</div>");
+			//	}
+			//	else
+			//	{
+			//		return Content("<div class='alert alert-danger p-2'>Error in parsing data. Check another delimiter</div>");
+			//	}
+			//}
 			catch
 			{
 				if (lang == "bg")
