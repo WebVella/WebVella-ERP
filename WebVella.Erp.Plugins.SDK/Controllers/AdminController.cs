@@ -237,7 +237,8 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 			try
 			{
 				appSrv.CreateAreaNode(node.Id, areaId ?? Guid.Empty, node.Name, node.Label, node.LabelTranslations,
-					node.IconClass, node.Url, (int)node.Type, node.EntityId, node.Weight, node.Access, node.EntityListPages, node.EntityCreatePages, node.EntityDetailsPages, node.EntityManagePages);
+					node.IconClass, node.Url, (int)node.Type, node.EntityId, node.Weight, node.Access, node.EntityListPages, 
+					node.EntityCreatePages, node.EntityDetailsPages, node.EntityManagePages,null,node.ParentId);
 				if (node.Pages == null)
 				{
 					node.Pages = new List<Guid>();
@@ -310,7 +311,9 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 			try
 			{
 				appSrv.UpdateAreaNode(node.Id, areaId ?? Guid.Empty, node.Name, node.Label, node.LabelTranslations,
-					node.IconClass, node.Url, (int)node.Type, node.EntityId, node.Weight, node.Access, node.EntityListPages, node.EntityCreatePages, node.EntityDetailsPages, node.EntityManagePages);
+					node.IconClass, node.Url, (int)node.Type, node.EntityId, node.Weight, node.Access, 
+					node.EntityListPages, node.EntityCreatePages, node.EntityDetailsPages, node.EntityManagePages,
+					null,node.ParentId);
 
 				var allAppPages = pageSrv.GetAppControlledPages(appId ?? Guid.Empty);
 

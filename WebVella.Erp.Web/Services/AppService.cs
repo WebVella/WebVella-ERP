@@ -491,7 +491,7 @@ namespace WebVella.Erp.Web.Services
 		public void CreateAreaNode(Guid id, Guid areaId, string name, string label, List<TranslationResource> labelTranslations,
 			string iconClass, string url, int type, Guid? entityId, int weight,
 			List<Guid> accessRoles, List<Guid> entityListPages = null, List<Guid> entityCreatePages = null, 
-            List<Guid> entityDetailsPages = null, List<Guid> entityManagePages = null, NpgsqlTransaction transaction = null)
+            List<Guid> entityDetailsPages = null, List<Guid> entityManagePages = null, NpgsqlTransaction transaction = null, Guid? parentId = null)
 		{
             if (entityListPages == null)
                 entityListPages = new List<Guid>();
@@ -512,7 +512,7 @@ namespace WebVella.Erp.Web.Services
 				lblTr = JsonConvert.SerializeObject(labelTranslations);
 
 			new SitemapAreaNodeRepository(connectionString).Insert(id, areaId, name, label, lblTr, iconClass, url, type,
-						entityId, weight, accessRoles, entityListPages, entityCreatePages, entityDetailsPages, entityManagePages, transaction);
+						entityId, weight, accessRoles, entityListPages, entityCreatePages, entityDetailsPages, entityManagePages, transaction,parentId);
 
 			Guid? appId = new SitemapAreaRepository(connectionString).GetAppIdByAreaId(areaId, transaction);
 			ClearAppCache(appId.Value);
@@ -536,7 +536,7 @@ namespace WebVella.Erp.Web.Services
 		public void UpdateAreaNode(Guid id, Guid areaId, string name, string label, List<TranslationResource> labelTranslations,
 			string iconClass, string url, int type, Guid? entityId, int weight,
 			List<Guid> accessRoles, List<Guid> entityListPages = null, List<Guid> entityCreatePages = null,
-            List<Guid> entityDetailsPages = null, List<Guid> entityManagePages = null, NpgsqlTransaction transaction = null)
+            List<Guid> entityDetailsPages = null, List<Guid> entityManagePages = null, NpgsqlTransaction transaction = null, Guid? parentId = null)
 		{
             if (entityListPages == null)
                 entityListPages = new List<Guid>();
@@ -558,7 +558,7 @@ namespace WebVella.Erp.Web.Services
 				lblTr = JsonConvert.SerializeObject(labelTranslations);
 
 			new SitemapAreaNodeRepository(connectionString).Update(id, areaId, name, label, lblTr, iconClass, url, type,
-						entityId, weight, accessRoles, entityListPages, entityCreatePages, entityDetailsPages, entityManagePages, transaction);
+						entityId, weight, accessRoles, entityListPages, entityCreatePages, entityDetailsPages, entityManagePages, transaction,parentId);
 
 			Guid? appId = new SitemapAreaRepository(connectionString).GetAppIdByAreaId(areaId, transaction);
 			ClearAppCache(appId.Value);

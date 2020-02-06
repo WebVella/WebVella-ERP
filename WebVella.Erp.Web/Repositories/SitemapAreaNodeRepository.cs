@@ -94,13 +94,14 @@ namespace WebVella.Erp.Web.Repositories
 		public void Insert(Guid id, Guid areaId, string name, string label, string labelTranslations,
 			string iconClass, string url, int type, Guid? entityId, int weight,
 			List<Guid> accessRoles, List<Guid> entityListPages = null, List<Guid> entityCreatePages = null,
-            List<Guid> entityDetailsPages = null, List<Guid> entityManagePages = null, NpgsqlTransaction transaction = null)
+            List<Guid> entityDetailsPages = null, List<Guid> entityManagePages = null, NpgsqlTransaction transaction = null, Guid? parentId = null)
 		{
 			NpgsqlCommand command = new NpgsqlCommand(
-                    "INSERT INTO public.app_sitemap_area_node (id,area_id,name,label,label_translations,weight,type,icon_class,url,entity_id,access_roles,entity_list_pages,entity_create_pages,entity_details_pages,entity_manage_pages)" +
-                    "VALUES(@id,@area_id,@name,@label,@label_translations,@weight,@type,@icon_class,@url,@entity_id,@access_roles,@entity_list_pages,@entity_create_pages,@entity_details_pages,@entity_manage_pages)");
+                    "INSERT INTO public.app_sitemap_area_node (id,parent_id,area_id,name,label,label_translations,weight,type,icon_class,url,entity_id,access_roles,entity_list_pages,entity_create_pages,entity_details_pages,entity_manage_pages)" +
+                    "VALUES(@id,@parentId,@area_id,@name,@label,@label_translations,@weight,@type,@icon_class,@url,@entity_id,@access_roles,@entity_list_pages,@entity_create_pages,@entity_details_pages,@entity_manage_pages)");
 
 			command.Parameters.Add(new NpgsqlParameter("@id", id));
+			command.Parameters.Add(new NpgsqlParameter("@parentId", (object)parentId ?? DBNull.Value));
 			command.Parameters.Add(new NpgsqlParameter("@area_id", areaId));
 			command.Parameters.Add(new NpgsqlParameter("@name", name));
 			command.Parameters.Add(new NpgsqlParameter("@label", (object)label ?? DBNull.Value));
@@ -161,17 +162,18 @@ namespace WebVella.Erp.Web.Repositories
 		public void Update(Guid id, Guid areaId, string name, string label, string labelTranslations,
 			string iconClass, string url, int type, Guid? entityId, int weight,
 			List<Guid> accessRoles, List<Guid> entityListPages = null, List<Guid> entityCreatePages = null,
-            List<Guid> entityDetailsPages = null, List<Guid> entityManagePages = null, NpgsqlTransaction transaction = null)
+            List<Guid> entityDetailsPages = null, List<Guid> entityManagePages = null, NpgsqlTransaction transaction = null, Guid? parentId = null)
 		{
 			NpgsqlCommand command = new NpgsqlCommand(
 					"UPDATE public.app_sitemap_area_node SET " +
-					"area_id = @area_id, name = @name, label = @label, label_translations = @label_translations, " +
+					"parent_id = @parent_id, area_id = @area_id, name = @name, label = @label, label_translations = @label_translations, " +
 					"weight = @weight, type = @type, icon_class = @icon_class, url = @url, entity_id = @entity_id, " +
                     "access_roles = @access_roles, entity_list_pages = @entity_list_pages, entity_create_pages = @entity_create_pages, " +
                     "entity_details_pages = @entity_details_pages, entity_manage_pages = @entity_manage_pages " +
 					"WHERE id = @id");
 
 			command.Parameters.Add(new NpgsqlParameter("@id", id));
+			command.Parameters.Add(new NpgsqlParameter("@parent_id", (object)parentId ?? DBNull.Value));
 			command.Parameters.Add(new NpgsqlParameter("@area_id", areaId));
 			command.Parameters.Add(new NpgsqlParameter("@name", name));
 			command.Parameters.Add(new NpgsqlParameter("@label", (object)label ?? DBNull.Value));

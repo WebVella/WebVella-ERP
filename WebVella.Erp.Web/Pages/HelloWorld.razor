@@ -1,32 +1,66 @@
 ﻿@using System.Net.Http
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.JSInterop
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Web;
+@using System.Security.Claims;
+@using System.Threading.Tasks;
+@using Microsoft.AspNetCore.Components.Authorization;
+@using WebVella.Erp.Api.Models;
+
 @inject IJSRuntime JSRuntime;
-<h3>HelloWorld 12</h3>
 
-Hello @Name
-
-<button @onclick="Toggle">Toggle</button>
-
+@if (!Rendered)
+{
+	<div class="go-red">Loading</div>
+}
+else if(User == null){
+	<div class="go-orange">Not logged</div>
+}
+else
+{
+	<h3>HelloWorld @Dates.Count @User.Email</h3>
+	<wv-button></wv-button>
+	<button @onclick="AddDate">Add Date</button>
+	@foreach (var date in Dates)
+	{
+		<div>@date</div>
+	}
+}
 
 
 @code {
-    public string Name { get; set; } = "Jon";
+	[Parameter]
+	public ErpUser User { get; set; }
 
-    private async Task Toggle()
-    {
+	protected bool Rendered = false;
 
-        JSRuntime.InvokeVoidAsync("handleTickerChanged");
-        if (Name == "Jon")
-        {
-            Name = "Susan";
-        }
-        else
-        {
-            Name = "Jon";
-        }
-    }
+	public List<string> Dates { get; set; } = new List<string>();
+
+	protected override async Task OnInitializedAsync()
+	{
+		for (int i = 0; i < 1150; i++)
+		{
+			Dates.Add(DateTime.Now.ToString());
+		}
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			Rendered = true;
+			StateHasChanged();
+		}
+	}
+
+
+	private async Task AddDate()
+	{
+
+		JSRuntime.InvokeVoidAsync("handleTickerChanged", Dates.Count);
+		Dates.Insert(0, DateTime.Now.ToString());
+	}
 }

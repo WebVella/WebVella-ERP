@@ -18,10 +18,10 @@
 				<span class="fa fa-cog icon"></span>
 			</a>
 		</div>
-		<div class="dropdown-menu  dropdown-menu-right">
+		<div class="dropdown-menu  dropdown-menu-right level-0">
 			@if (erpUser != null && erpUser.IsAdmin && ViewBag.PageId != null)
 			{
-				<a class="dropdown-item" href="@pageEditUrl" target="_blank">Manage Page</a>
+				<a class="dropdown-item" href="@pageEditUrl" target="_blank"><span class="fas fa-file icon fa-fw"></span>Manage Page</a>
 			}
 		</div>
 	</div>
@@ -54,7 +54,7 @@
 			}
 		</a>
 	</div>
-	<div class="dropdown-menu  dropdown-menu-right">
+	<div class="dropdown-menu  dropdown-menu-right level-0">
 		<a class="dropdown-item" href="/logout">Logout</a>
 	</div>
 </div>*@

@@ -7823,6 +7823,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 			var response = $"#region << ***Create sitemap node*** Sitemap node name: {node.Name} >>\n" +
 			"{\n" +
 				$"\tvar id = new Guid(\"{node.Id.ToString()}\");\n" +
+				$"\tvar parentId = new Guid(\"{node.ParentId.ToString()}\");\n" +
 				$"\tvar areaId = new Guid(\"{areaId.ToString()}\");\n" +
 				(node.EntityId.HasValue ? $"\tGuid? entityId = new Guid(\"{node.EntityId}\");\n" : $"\tGuid? entityId = null;\n") +
 				$"\tvar name = \"{node.Name}\";\n" +
@@ -7856,7 +7857,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 			foreach (var res in node.LabelTranslations ?? new List<TranslationResource>())
 				response += $"\tlabelTranslations.Add( new WebVella.Erp.Web.Models.TranslationResource{{ Locale=\"{res.Locale}\", Key= \"{res.Key}\", Value= @\"{res.Value.EscapeMultiline()}\"  }} );\n";
 
-			response += "\n\tnew WebVella.Erp.Web.Services.AppService().CreateAreaNode(id,areaId,name,label,labelTranslations,iconClass,url,type,entityId,weight,access,entityListPages,entityCreatePages,entityDetailsPages,entityManagePages,WebVella.Erp.Database.DbContext.Current.Transaction);\n" +
+			response += "\n\tnew WebVella.Erp.Web.Services.AppService().CreateAreaNode(id,areaId,name,label,labelTranslations,iconClass,url,type,entityId,weight,access,entityListPages,entityCreatePages,entityDetailsPages,entityManagePages,WebVella.Erp.Database.DbContext.Current.Transaction,parentId);\n" +
 			"}\n" +
 			"#endregion\n\n";
 
@@ -7873,6 +7874,12 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 			{
 				response.HasUpdate = true;
 				response.ChangeList.Add($"<span class='go-green label-block'>sitemap node name</span>  from <span class='go-red'>{oldNode.Name}</span> to <span class='go-red'>{currentNode.Name}</span>");
+			}
+
+			if (currentNode.ParentId != oldNode.ParentId)
+			{
+				response.HasUpdate = true;
+				response.ChangeList.Add($"<span class='go-green label-block'>sitemap node parent</span>  from <span class='go-red'>{oldNode.ParentId}</span> to <span class='go-red'>{currentNode.ParentId}</span>");
 			}
 
 			if (currentNode.Label != oldNode.Label)
@@ -8067,6 +8074,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 				response.Code += $"#region << ***Update sitemap node*** Sitemap node name: {currentNode.Name} >>\n" +
 			"{\n" +
 				$"\tvar id = new Guid(\"{currentNode.Id.ToString()}\");\n" +
+				$"\tvar parentId = new Guid(\"{currentNode.ParentId.ToString()}\");\n" +
 				$"\tvar areaId = new Guid(\"{areaId.ToString()}\");\n" +
 				(currentNode.EntityId.HasValue ? $"\tGuid? entityId = new Guid(\"{currentNode.EntityId}\");\n" : $"\tGuid? entityId = null;\n") +
 				$"\tvar name = \"{currentNode.Name}\";\n" +
@@ -8099,7 +8107,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 				foreach (var res in currentNode.LabelTranslations ?? new List<TranslationResource>())
 					response.Code += $"\tlabelTranslations.Add( new WebVella.Erp.Web.Models.TranslationResource{{ Locale=\"{res.Locale}\", Key= \"{res.Key}\", Value= @\"{res.Value.EscapeMultiline()}\"  }} );\n";
 
-				response.Code += "\n\tnew WebVella.Erp.Web.Services.AppService().UpdateAreaNode(id,areaId,name,label,labelTranslations,iconClass,url,type,entityId,weight,access,entityListPages,entityCreatePages,entityDetailsPages,entityManagePages,WebVella.Erp.Database.DbContext.Current.Transaction);\n" +
+				response.Code += "\n\tnew WebVella.Erp.Web.Services.AppService().UpdateAreaNode(id,areaId,name,label,labelTranslations,iconClass,url,type,entityId,weight,access,entityListPages,entityCreatePages,entityDetailsPages,entityManagePages,WebVella.Erp.Database.DbContext.Current.Transaction,parentId);\n" +
 				"}\n" +
 				"#endregion\n\n";
 			}

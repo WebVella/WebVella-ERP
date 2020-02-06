@@ -1,0 +1,36 @@
+﻿@using WebVella.Erp.Web.Models;
+@{
+    var navItem = (MenuItem)Model;
+
+}
+
+
+@if(navItem.Nodes.Count > 0){
+	navItem.Content = navItem.Content.Replace("dropdown-item","dropdown-toggle").Replace("<a","<a data-toggle='dropdown' ");
+	<div class="dropdown-item dropdown dropright" style="overflow:unset">
+		@if (navItem.IsHtml)
+		{
+			@Html.Raw(navItem.Content)
+		}
+		else
+		{
+			@navItem.Content
+		}
+		<div class="dropdown-menu level-n">
+			@foreach (var childMenu in navItem.Nodes)
+			{
+				<partial name="NavItem" for="@childMenu"/>
+			}		
+		</div>
+	</div>
+}
+else{
+	@if (navItem.IsHtml)
+	{
+		@Html.Raw(navItem.Content)
+	}
+	else
+	{
+		@navItem.Content
+	}
+}
