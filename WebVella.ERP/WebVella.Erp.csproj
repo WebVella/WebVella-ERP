@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AssemblyName>WebVella.Erp</AssemblyName>
+    <AssemblyName>WebVella.Erp</AssemblyName> 
     <OutputType>Library</OutputType>
     <PackageId>WebVella.Erp</PackageId>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
