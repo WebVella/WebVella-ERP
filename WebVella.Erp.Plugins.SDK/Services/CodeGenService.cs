@@ -7823,7 +7823,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 			var response = $"#region << ***Create sitemap node*** Sitemap node name: {node.Name} >>\n" +
 			"{\n" +
 				$"\tvar id = new Guid(\"{node.Id.ToString()}\");\n" +
-				$"\tvar parentId = new Guid(\"{node.ParentId.ToString()}\");\n" +
+				(node.ParentId.HasValue ? $"\tvar parentId = new Guid(\"{node.ParentId.ToString()}\");\n" : $"\tGuid? parentId = null;\n")	 +
 				$"\tvar areaId = new Guid(\"{areaId.ToString()}\");\n" +
 				(node.EntityId.HasValue ? $"\tGuid? entityId = new Guid(\"{node.EntityId}\");\n" : $"\tGuid? entityId = null;\n") +
 				$"\tvar name = \"{node.Name}\";\n" +
@@ -8074,7 +8074,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 				response.Code += $"#region << ***Update sitemap node*** Sitemap node name: {currentNode.Name} >>\n" +
 			"{\n" +
 				$"\tvar id = new Guid(\"{currentNode.Id.ToString()}\");\n" +
-				$"\tvar parentId = new Guid(\"{currentNode.ParentId.ToString()}\");\n" +
+				(currentNode.ParentId.HasValue ? $"\tvar parentId = new Guid(\"{currentNode.ParentId.ToString()}\");\n" : $"\tGuid? parentId = null;\n")	 +
 				$"\tvar areaId = new Guid(\"{areaId.ToString()}\");\n" +
 				(currentNode.EntityId.HasValue ? $"\tGuid? entityId = new Guid(\"{currentNode.EntityId}\");\n" : $"\tGuid? entityId = null;\n") +
 				$"\tvar name = \"{currentNode.Name}\";\n" +
