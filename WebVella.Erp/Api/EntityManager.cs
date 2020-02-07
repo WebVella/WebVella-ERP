@@ -51,6 +51,10 @@ namespace WebVella.Erp.Api
 
 			if (!string.IsNullOrWhiteSpace(entity.Name))
 			{
+				//Postgres column name width limit
+				if(entity.Name.Length > 63)
+					errorList.Add(new ErrorModel("name", entity.Name, "Entity name length exceeded. Should be up to 63 chars!"));
+
 				Entity verifiedEntity = ReadEntity(entity.Name).Object;
 
 				if (verifiedEntity != null && verifiedEntity.Id != entity.Id)
@@ -104,6 +108,10 @@ namespace WebVella.Erp.Api
 				{
 					primaryFieldCount++;
 				}
+
+				//Postgres column name width limit
+				if(field.Name.Length > 63)
+					errorList.Add(new ErrorModel("name", field.Name, "Field name length exceeded. Should be up to 63 chars!"));
 			}
 
 			if (primaryFieldCount < 1)
