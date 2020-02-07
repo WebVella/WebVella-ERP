@@ -446,7 +446,7 @@ namespace WebVella.Erp.Web.Services
 		{
 			var key = ErpSettings.CacheKey;
 			if (String.IsNullOrWhiteSpace(key))
-				key = DateTime.Now.ToString("yyyyMMddHHmmss");
+				key = DateTime.Now.ToString("yyyyMMdd");
 
 			return key;
 		}
