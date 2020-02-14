@@ -286,6 +286,31 @@ namespace WebVella.Erp.Web.Controllers
 				return BadRequest();
 			}
 
+			//Post process records according to requiredments {id,text}
+			var processedRecords = new List<EntityRecord>();
+			foreach (var record in records)
+			{
+				var procRec = new EntityRecord();
+				if(record.Properties.ContainsKey("id")){
+					procRec["id"] = record["id"].ToString();
+				}
+				else{
+					procRec["id"] = "no-id-" + Guid.NewGuid();
+				}
+				if(record.Properties.ContainsKey("text")){
+					procRec["text"] = record["text"].ToString();
+				}
+				else if(record.Properties.ContainsKey("label")){
+					procRec["text"] = record["label"].ToString();
+				}
+				else if(record.Properties.ContainsKey("name")){
+					procRec["text"] = record["name"].ToString();
+				}
+				else{
+					procRec["text"] = procRec["id"].ToString();
+				}
+				processedRecords.Add(procRec);
+			}
 			var moreRecord = new EntityRecord();
 			moreRecord["more"] = false;
 			if (records.Count > 0)
@@ -294,7 +319,7 @@ namespace WebVella.Erp.Web.Controllers
 				{
 					moreRecord["more"] = true;
 				}
-				result["results"] = records;
+				result["results"] = processedRecords;
 			}
 
 			result["pagination"] = moreRecord;
