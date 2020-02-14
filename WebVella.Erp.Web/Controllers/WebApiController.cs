@@ -183,6 +183,124 @@ namespace WebVella.Erp.Web.Controllers
 			return Json(response);
 		}
 
+		[Route("api/v3/en_US/eql-ds-select2")]
+		[HttpPost]
+		public ActionResult DataSourceQueryActionForSelect2([FromBody]JObject submitObj)
+		{
+			if (submitObj == null)
+				return NotFound();
+
+			var result = new EntityRecord();
+			result["results"] = new List<EntityRecord>();
+			result["pagination"] = new EntityRecord();
+
+			EqlDataSourceQuery model = new EqlDataSourceQuery();
+
+			#region << Init SubmitObj >>
+			foreach (var prop in submitObj.Properties())
+			{
+				switch (prop.Name.ToLower())
+				{
+					case "name":
+						if (!string.IsNullOrWhiteSpace(prop.Value.ToString()))
+							model.Name = prop.Value.ToString();
+						else
+						{
+							throw new Exception("DataSource Name is required");
+						}
+						break;
+					case "parameters":
+						var jParams = (JArray)prop.Value;
+						model.Parameters = new List<EqlParameter>();
+						foreach (JObject jParam in jParams)
+						{
+							var name = jParam["name"].ToString();
+							var value = jParam["value"].ToString();
+							var eqlParam = new EqlParameter(name, value);
+							model.Parameters.Add(eqlParam);
+						}
+						break;
+				}
+			}
+			#endregion
+			var page = 1;
+			if (model.Parameters.Count > 0)
+			{
+				var pageParam = model.Parameters.FirstOrDefault(x => x.ParameterName == "page");
+				if (pageParam != null)
+				{
+					if (int.TryParse(pageParam.Value?.ToString(), out int outInt))
+					{
+						page = outInt;
+					}
+				}
+			}
+			var records = new List<EntityRecord>();
+			int? total = 0;
+			try
+			{
+				DataSourceManager dsMan = new DataSourceManager();
+				var dataSources = dsMan.GetAll();
+				var ds = dataSources.SingleOrDefault(x => x.Name == model.Name);
+				if (ds == null)
+				{
+					return BadRequest();
+				}
+
+				if (ds is DatabaseDataSource)
+				{
+					var list = (EntityRecordList)dsMan.Execute(ds.Id, model.Parameters);
+					records = (List<EntityRecord>)list;
+					total = list.TotalCount;
+				}
+				else if (ds is CodeDataSource)
+				{
+					Dictionary<string, object> arguments = new Dictionary<string, object>();
+					foreach (var par in model.Parameters)
+						arguments[par.ParameterName] = par.Value;
+
+					var dsResult = ((CodeDataSource)ds).Execute(arguments);
+					if (dsResult is EntityRecordList)
+					{
+
+						records = (List<EntityRecord>)((EntityRecordList)dsResult);
+						total = ((EntityRecordList)dsResult).TotalCount;
+					}
+					else if (dsResult is List<EntityRecord>)
+					{
+						records = (List<EntityRecord>)dsResult;
+						total = null;
+					}
+					else
+					{
+						return Json(dsResult);
+					}
+				}
+				else
+				{
+					return BadRequest();
+				}
+			}
+			catch
+			{
+				return BadRequest();
+			}
+
+			var moreRecord = new EntityRecord();
+			moreRecord["more"] = false;
+			if (records.Count > 0)
+			{
+				if (total > page * 10)
+				{
+					moreRecord["more"] = true;
+				}
+				result["results"] = records;
+			}
+
+			result["pagination"] = moreRecord;
+			return Json(result);
+		}
+
 
 		[Route("api/v3.0/user/preferences/toggle-sidebar-size")]
 		[HttpPost]
@@ -1240,7 +1358,7 @@ namespace WebVella.Erp.Web.Controllers
 			//catch (CsvHelperException ex)
 			//{
 			//	//ex.Data.Values has more info...
-				
+
 			//	if (lang == "bg")
 			//	{
 			//		return Content("<div class='alert alert-danger p-2'>Грешен формат на данните. Опитайте с друг разделител.</div>");
