@@ -13,7 +13,7 @@
 		var initedObj = initElements();
 		var clickedLink = event.target;
 		var clickedLinkWrapper = $(clickedLink).closest(".menu-nav-wrapper");
-		var clickedLinkDropdown = $(clickedLinkWrapper).find(".dropdown-menu");
+		var clickedLinkDropdown = $(clickedLinkWrapper).find(".dropdown-menu.level-0");
 
 		if ($(clickedLinkDropdown).hasClass( "d-block" )) {
 			//menu should be closed

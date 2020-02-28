@@ -7,12 +7,12 @@ using WebVella.Erp.Web.Models;
 
 namespace WebVella.Erp.Web.Pages.Dev
 {
-	public class DevModel
+	public class DevModel : BaseErpPageModel
 	{
 
 		public void OnGet()
 		{
-	
+			
 		}
 
 	}

@@ -122,6 +122,7 @@ namespace WebVella.Erp.Web.Utils
 			var result = new WvSelectOptionsAjaxDatasource{
 				DatasourceName = origin.DatasourceName,
 				InitOptions = origin.InitOptions.ToWvSelectOption(),
+				UseSelectApi = origin.UseSelectApi,
 				Label = origin.Label,
 				PageSize = origin.PageSize,
 				Value = origin.Value

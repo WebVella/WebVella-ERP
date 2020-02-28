@@ -10,5 +10,5 @@
 	var options = (PcValidation.PcValidationOptions)ViewBag.Options;
 	var node = (PageBodyNode)ViewBag.Node;
 	var validation = (ValidationException)ViewBag.Validation;
-
-<wv-validation errors="@validation.ToErrorList()" message="@validation.Message"></wv-validation>}
+}
+<wv-validation errors="@validation.ToErrorList()" message="@validation.Message"></wv-validation>

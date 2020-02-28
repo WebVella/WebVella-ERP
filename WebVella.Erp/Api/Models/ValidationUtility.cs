@@ -9,8 +9,12 @@ namespace WebVella.Erp.Api.Models
 		private const string NAME_VALIDATION_PATTERN = @"^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$";
 		private const string VIEW_NAME_VALIDATION_PATTERN = @"^[a-z~](?!.*__)[a-z0-9_~]*[a-z0-9~]$";
 
-		public static List<ErrorModel> ValidateName(string name, int minLen = 2, int maxLen = 200, string key = "name")
+		public static List<ErrorModel> ValidateName(string name, int minLen = 2, int maxLen = 63, string key = "name")
 		{
+			//Apply postgres name validation
+			if(maxLen > 63)
+				throw new Exception("Name length cannot be more then 63 symbols");
+
 			if (!string.IsNullOrEmpty(name))
 				name = name.Trim();
 

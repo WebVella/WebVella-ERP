@@ -11,6 +11,9 @@ namespace WebVella.Erp.Web.Models
 		[JsonProperty(PropertyName = "ds")]
 		public string DatasourceName { get; set; } = "";
 
+		[JsonProperty(PropertyName = "use_select_api")]
+		public bool UseSelectApi { get; set; } = false;
+
 		[JsonProperty(PropertyName = "value")]
 		public string Value { get; set; } = "id";
 

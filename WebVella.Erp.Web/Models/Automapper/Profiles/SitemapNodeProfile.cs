@@ -26,6 +26,7 @@ namespace WebVella.Erp.Web.Models.AutoMapper.Profiles
 
 			SitemapNode model = new SitemapNode();
 			model.Id = new Guid(data["id"].ToString());
+			model.ParentId = (data["parent_id"] != null && data["parent_id"].Value<string>() != null) ? new Guid(data["parent_id"].Value<string>()) : (Guid?)null;
 			model.Name = (string)data["name"];
 			model.Label = (string)data["label"];
 			model.Url = (string)data["url"];
@@ -87,6 +88,7 @@ namespace WebVella.Erp.Web.Models.AutoMapper.Profiles
 
 			SitemapNode model = new SitemapNode();
 			model.Id = new Guid(data["id"].ToString());
+			model.ParentId = data["parent_id"] != DBNull.Value ? new Guid(data["parent_id"].ToString()) : (Guid?)null;
 			model.Name = (string)data["name"];
 			model.Label = (string)data["label"];
 			model.Url = (string)data["url"];

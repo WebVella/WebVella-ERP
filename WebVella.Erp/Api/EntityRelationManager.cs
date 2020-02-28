@@ -24,7 +24,10 @@ namespace WebVella.Erp.Api
         private List<ErrorModel> ValidateRelation(EntityRelation relation, ValidationType validationType)
         {
             List<ErrorModel> errors = new List<ErrorModel>();
-			var entMan = new EntityManager();
+			   var entMan = new EntityManager();
+				//Postgres column name width limit
+				if(relation.Name.Length > 63)
+					errors.Add(new ErrorModel("name", relation.Name, "Relation name length exceeded. Should be up to 63 chars!"));
             if (validationType == ValidationType.Update)
             {
                 //we cannot update relation with missing Id (Guid.Empty means id is missing)

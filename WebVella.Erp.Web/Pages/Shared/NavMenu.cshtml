@@ -19,17 +19,10 @@
 		</div>
 		@if (menu.Nodes.Count > 0)
 		{
-			<div class="dropdown-menu  @(menu.isDropdownRight ? "dropdown-menu-right" : "")">
+			<div class="dropdown-menu level-0  @(menu.isDropdownRight ? "dropdown-menu-right" : "")">
 				@foreach (var childMenu in menu.Nodes)
 				{
-					@if (childMenu.IsHtml)
-					{
-						@Html.Raw(childMenu.Content)
-					}
-					else
-					{
-						@childMenu.Content
-					}
+					<partial name="NavItem" for="@childMenu"/>
 				}
 			</div>
 		}
@@ -47,13 +40,6 @@ else
 	}
 	@foreach (var childMenu in menu.Nodes)
 	{
-		@if (childMenu.IsHtml)
-		{
-			@Html.Raw(childMenu.Content)
-		}
-		else
-		{
-			@childMenu.Content
-		}
+		<partial name="NavItem" for="@childMenu"/>
 	}
 }

@@ -862,10 +862,15 @@ namespace WebVella.Erp
 						}
 						#endregion
 					}
-                    if (currentVersion < 2) {
-                        systemSettings.Version = 2;
-                        UpdatePageNodeTable();
-                    }
+               if (currentVersion < 2) {
+                  systemSettings.Version = 2;
+                  UpdateSitemapNodeTable1();
+               }
+
+               if (currentVersion < 3) {
+                  systemSettings.Version = 3;
+						UpdateSitemapNodeTable2();                  
+               }
 
 					new DbSystemSettingsRepository().Save(new DbSystemSettings { Id = systemSettings.Id, Version = systemSettings.Version });
 
@@ -1416,18 +1421,33 @@ CREATE INDEX fki_app_page_data_fkc_page_id ON public.app_page_data_source
 			}
 		}
 
-        private void UpdatePageNodeTable() {
-            using (var connection = DbContext.Current.CreateConnection())
-            {
-                const string updateTable = @"ALTER TABLE public.app_sitemap_area_node 
-                    ADD COLUMN entity_list_pages uuid[] NOT NULL DEFAULT array[]::uuid[],
-                    ADD COLUMN entity_create_pages uuid[] NOT NULL DEFAULT array[]::uuid[],
-                    ADD COLUMN entity_details_pages uuid[] NOT NULL DEFAULT array[]::uuid[],
-                    ADD COLUMN entity_manage_pages uuid[] NOT NULL DEFAULT array[]::uuid[];";
+      private void UpdateSitemapNodeTable1() {
+         using (var connection = DbContext.Current.CreateConnection())
+         {
+               const string updateTable = @"ALTER TABLE public.app_sitemap_area_node 
+                  ADD COLUMN entity_list_pages uuid[] NOT NULL DEFAULT array[]::uuid[],
+                  ADD COLUMN entity_create_pages uuid[] NOT NULL DEFAULT array[]::uuid[],
+                  ADD COLUMN entity_details_pages uuid[] NOT NULL DEFAULT array[]::uuid[],
+                  ADD COLUMN entity_manage_pages uuid[] NOT NULL DEFAULT array[]::uuid[];";
 
-                var command = connection.CreateCommand(updateTable);
-                command.ExecuteNonQuery();
-            }
-        }
+               var command = connection.CreateCommand(updateTable);
+               command.ExecuteNonQuery();
+         }
+      }
+
+      private void UpdateSitemapNodeTable2() {
+         using (var connection = DbContext.Current.CreateConnection())
+         {
+               const string updateTable = @"ALTER TABLE public.app_sitemap_area_node 
+                  ADD COLUMN parent_id uuid DEFAULT NULL;
+
+						ALTER TABLE ONLY public.app_sitemap_area_node
+						ADD CONSTRAINT fkey_app_sitemap_area_node_parent_id
+						FOREIGN KEY (parent_id) REFERENCES app_sitemap_area_node(id);";
+
+               var command = connection.CreateCommand(updateTable);
+               command.ExecuteNonQuery();
+         }
+      }
 	}
 }

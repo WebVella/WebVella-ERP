@@ -5,7 +5,7 @@
 		"Lang": "en",
 		"Locale": "en-US",
 		"TimeZoneName": "FLE Standard Time",
-		"CacheKey": "123",
+		"CacheKey": "", //if empty current date will be used 
 		"DevelopmentMode": "true",
 		"EnableBackgroungJobs": "true",
 		"EnableFileSystemStorage": "false",
