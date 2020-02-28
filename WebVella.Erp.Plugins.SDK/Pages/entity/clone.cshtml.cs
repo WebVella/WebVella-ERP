@@ -131,7 +131,6 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 			foreach (var role in roles)
 			{
-				RoleOptions.Add(new SelectOption(role.Id.ToString(), role.Name));
 				var keyValuesObj = new KeyStringList()
 				{
 					Key = role.Id.ToString(),
