@@ -179,6 +179,18 @@ namespace WebVella.Erp.Web.Components
 					{
 						dataSourceOptions = (List<SelectOption>)optionsResult;
 					}
+					if (optionsResult is List<WvSelectOption>)
+					{
+						foreach (var option in (List<WvSelectOption>)optionsResult)
+						{
+						dataSourceOptions.Add(new SelectOption{
+							Color = option.Color,
+							IconClass = option.IconClass,
+							Label = option.Label,
+							Value = option.Value
+						});
+						}
+					}
 					else if (optionsResult is string)
 					{
 						var stringProcessed = false;

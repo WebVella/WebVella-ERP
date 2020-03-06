@@ -2814,6 +2814,7 @@ body.sidebar-lg #sidebar .nav-item .dropdown-item {
 			#nav .dropdown-item.dropdown a,
 			.dropdown-menu-sm .dropdown-item.dropdown a {
 				padding: 0.25rem 0.75rem 0.25rem 0;
+				padding-left: 0.25rem;
 				display: block;
 				color: #212529;
 				position: relative;
@@ -4050,6 +4051,10 @@ border-bottom-style:dashed;
 				content: "";
 				display: inline-block;
 			}
+
+.pc-page-header .page-search .form-group {
+	margin-bottom:0;
+}
 
 .pc-page-header .page-search .erp-text {
 	width: 240px;

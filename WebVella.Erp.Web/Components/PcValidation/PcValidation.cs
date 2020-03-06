@@ -25,7 +25,7 @@ namespace WebVella.Erp.Web.Components
 			public string IsVisible { get; set; } = "";
 
 			[JsonProperty(PropertyName = "validation")]
-			public string Validation { get; set; } = "";
+			public string Validation { get; set; } = "{\"type\":\"0\",\"string\":\"Validation\",\"default\":\"\"}";
 		}
 
 		public async Task<IViewComponentResult> InvokeAsync(PageComponentContext context)
@@ -62,9 +62,9 @@ namespace WebVella.Erp.Web.Components
 				var componentMeta = new PageComponentLibraryService().GetComponentMeta(context.Node.ComponentName);
                 #endregion
 
-                if (String.IsNullOrWhiteSpace(options.Validation)) {
-                    options.Validation = "Validation";
-                }
+            if (String.IsNullOrWhiteSpace(options.Validation)) {
+               options.Validation = "{\"type\":\"0\",\"string\":\"Validation\",\"default\":\"\"}";
+            }
 
 
 				ViewBag.Options = options;

@@ -9,6 +9,7 @@
 @using System.Threading.Tasks;
 @using Microsoft.AspNetCore.Components.Authorization;
 @using WebVella.Erp.Api.Models;
+@*@using BlazorComponentUtilities; // nice new CssBuilder lib*@ 
 
 @inject IJSRuntime JSRuntime;
 
@@ -16,7 +17,8 @@
 {
 	<div class="go-red">Loading</div>
 }
-else if(User == null){
+else if (User == null)
+{
 	<div class="go-orange">Not logged</div>
 }
 else
@@ -26,22 +28,37 @@ else
 	<button @onclick="AddDate">Add Date</button>
 	@foreach (var date in Dates)
 	{
-		<div>@date</div>
+		@date
 	}
 }
 
 
 @code {
+	[Parameter(CaptureUnmatchedValues = true)]
+	public Dictionary<string, object> InputAttributes { get; set; } =
+	  new Dictionary<string, object>()
+			{
+					{ "id", "DefaultId" },
+					{ "type", "text" },
+					{ "placeholder", "" },
+					{ "class", "" }
+						};
+
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+
 	[Parameter]
 	public ErpUser User { get; set; }
 
 	protected bool Rendered = false;
 
+
+
 	public List<string> Dates { get; set; } = new List<string>();
 
 	protected override async Task OnInitializedAsync()
 	{
-		for (int i = 0; i < 1150; i++)
+		for (int i = 0; i < 1; i++)
 		{
 			Dates.Add(DateTime.Now.ToString());
 		}
