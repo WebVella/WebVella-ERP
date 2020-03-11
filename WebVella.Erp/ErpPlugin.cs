@@ -57,6 +57,7 @@ namespace WebVella.Erp
 		{
 		}
 
+		[Obsolete("GetJobTypes is obsolete. No need to define list of job types, system finds it automatically. This method will be removed soon.")]
 		public virtual IEnumerable<Type> GetJobTypes()
 		{
 			return new List<Type>();

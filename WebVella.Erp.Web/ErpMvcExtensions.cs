@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -27,6 +28,8 @@ namespace WebVella.Erp.Web
 			services.AddScoped<ErpRequestContext>();
 			services.Configure<RazorViewEngineOptions>(options => { options.ViewLocationExpanders.Add(new ErpViewLocationExpander()); });
 			services.ConfigureOptions(typeof(WebConfigurationOptions));
+			services.AddSingleton<IHostedService, ErpJobScheduleService>();
+			services.AddSingleton<IHostedService, ErpJobProcessService>();
 			return services;
 		}
 
@@ -104,8 +107,9 @@ namespace WebVella.Erp.Web
 					CultureInfo.DefaultThreadCurrentUICulture = defaultThreadUICulture;
 				}
 
-				if (service != null)
-					service.StartBackgroundJobProcess();
+				//this is handled by background services now
+				//if (service != null)
+				//	service.StartBackgroundJobProcess();
 
 				return app;
 			}

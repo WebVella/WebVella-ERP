@@ -55,16 +55,19 @@ namespace WebVella.Erp.Jobs
 
 		public void RegisterJobTypes(ErpService service)
 		{
-			foreach (ErpPlugin plugin in service.Plugins)
+			var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+							.Where(a => !(a.FullName.ToLowerInvariant().StartsWith("microsoft.")
+								|| a.FullName.ToLowerInvariant().StartsWith("system.")));
+			foreach (var assembly in assemblies)
 			{
-				foreach (var jobType in plugin.GetJobTypes())
+				foreach (Type type in assembly.GetTypes())
 				{
-					if (!jobType.IsSubclassOf(typeof(ErpJob)))
-						throw new Exception($"'{jobType.FullName}' does not inherite ErpJob.");
+					if (!type.IsSubclassOf(typeof(ErpJob)))
+						continue;
 
-					var attributes = jobType.GetCustomAttributes(typeof(JobAttribute), true);
+					var attributes = type.GetCustomAttributes(typeof(JobAttribute), true);
 					if (attributes.Length != 1)
-						throw new Exception($"'{jobType.FullName}' missing or more than one ErpJobAttribute.");
+						continue;
 
 					var attribute = attributes[0] as JobAttribute;
 					JobType internalJobType = new JobType();
@@ -72,8 +75,8 @@ namespace WebVella.Erp.Jobs
 					internalJobType.Name = attribute.Name;
 					internalJobType.DefaultPriority = (JobPriority)((int)attribute.DefaultPriority);
 					internalJobType.AllowSingleInstance = attribute.AllowSingleInstance;
-					internalJobType.CompleteClassName = jobType.FullName;
-					internalJobType.ErpJobType = jobType;
+					internalJobType.CompleteClassName = type.FullName;
+					internalJobType.ErpJobType = type;
 					RegisterJobType(internalJobType);
 				}
 			}
@@ -158,6 +161,83 @@ namespace WebVella.Erp.Jobs
 			#endif
 
 			while (true)
+			{
+				try
+				{
+					//If there are free threads in the pool
+					if (JobPool.Current.HasFreeThreads)
+					{
+						//Get pending jobs (limit the count of the returned jobs to be <= to count of the free threads)
+						List<Job> pendingJobs = JobService.GetPendingJobs(JobPool.Current.FreeThreadsCount);
+
+						foreach (var job in pendingJobs)
+						{
+							try
+							{
+								if (job.Type.AllowSingleInstance && JobPool.Current.HasJobFromTypeInThePool(job.Type.Id))
+									continue;
+
+								JobPool.Current.RunJobAsync(job);
+							}
+							catch (Exception ex)
+							{
+								try
+								{
+									DbContext.CreateContext(ErpSettings.ConnectionString);
+									using (var secCtx = SecurityContext.OpenSystemScope())
+									{
+										Log log = new Log();
+										string jobId = job != null ? job.Id.ToString() : "null";
+										string jobType = job != null && job.Type != null ? job.Type.Name : "null";
+										log.Create(LogType.Error, "JobManager.Process", $"Start job with id[{jobId}] and type [{jobType}] failed! ", ex.Message);
+									}
+								}
+								finally
+								{
+									DbContext.CloseContext();
+								}
+
+							}
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					using (var secCtx = SecurityContext.OpenSystemScope())
+					{
+						try
+						{
+							DbContext.CreateContext(Erp.ErpSettings.ConnectionString);
+
+							Log log = new Log();
+							log.Create(LogType.Error, "JobManager.Process", ex);
+						}
+						finally
+						{
+							DbContext.CloseContext();
+						}
+					}
+				}
+				finally
+				{
+					Thread.Sleep(12000);
+				}
+			}
+		}
+
+		public void ProcessJobsAsync(CancellationToken stoppingToken)
+		{
+			if (!Settings.Enabled)
+				return;
+
+
+#if DEBUG
+			Thread.Sleep(10000); //Initial sleep time
+#else
+			Thread.Sleep(120000); //Initial sleep time
+#endif
+
+			while (!stoppingToken.IsCancellationRequested)
 			{
 				try
 				{
