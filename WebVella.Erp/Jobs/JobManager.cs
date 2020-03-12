@@ -225,16 +225,16 @@ namespace WebVella.Erp.Jobs
 			}
 		}
 
-		public void ProcessJobsAsync(CancellationToken stoppingToken)
+		public async void ProcessJobsAsync(CancellationToken stoppingToken)
 		{
 			if (!Settings.Enabled)
 				return;
 
 
 #if DEBUG
-			Thread.Sleep(10000); //Initial sleep time
+			await Task.Delay(10000, stoppingToken);//10ms
 #else
-			Thread.Sleep(120000); //Initial sleep time
+			await Task.Delay(120000, stoppingToken);//10ms
 #endif
 
 			while (!stoppingToken.IsCancellationRequested)
@@ -297,7 +297,7 @@ namespace WebVella.Erp.Jobs
 				}
 				finally
 				{
-					Thread.Sleep(12000);
+					await Task.Delay(10000, stoppingToken);//10ms
 				}
 			}
 		}

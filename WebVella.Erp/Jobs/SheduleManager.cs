@@ -227,7 +227,11 @@ namespace WebVella.Erp.Jobs
 			if (!Settings.Enabled)
 				return;
 
-			//Thread.Sleep(120000); //Initial sleep time
+#if DEBUG
+			await Task.Delay(10000, stoppingToken);//10ms
+#else
+			await Task.Delay(120000, stoppingToken);//10ms
+#endif
 
 			while (!stoppingToken.IsCancellationRequested)
 			{
@@ -363,7 +367,7 @@ namespace WebVella.Erp.Jobs
 				}
 				finally
 				{
-					await Task.Delay(1000, stoppingToken);//10ms
+					await Task.Delay(1000, stoppingToken);//1s
 				}
 			}
 		}

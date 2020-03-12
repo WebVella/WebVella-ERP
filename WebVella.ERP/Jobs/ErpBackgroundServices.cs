@@ -8,8 +8,6 @@ namespace WebVella.Erp.Jobs
     {
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            //10 sec to start
-            Thread.Sleep(10000);
             ScheduleManager.Current.ProcessSchedulesAsync(stoppingToken);
             await Task.FromResult(0);
         }
@@ -24,8 +22,6 @@ namespace WebVella.Erp.Jobs
     {
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            //10 sec to start
-            Thread.Sleep(10000);
             JobManager.Current.ProcessJobsAsync(stoppingToken);
             await Task.FromResult(0);
         }
