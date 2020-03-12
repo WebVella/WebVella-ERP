@@ -227,10 +227,9 @@ namespace WebVella.Erp.Jobs
 			if (!Settings.Enabled)
 				return;
 
-#if DEBUG
-			await Task.Delay(10000, stoppingToken);//10ms
-#else
-			await Task.Delay(120000, stoppingToken);//10ms
+
+#if !DEBUG
+			try { await Task.Delay(120000, stoppingToken); } catch (TaskCanceledException) { };
 #endif
 
 			while (!stoppingToken.IsCancellationRequested)
@@ -367,7 +366,7 @@ namespace WebVella.Erp.Jobs
 				}
 				finally
 				{
-					await Task.Delay(1000, stoppingToken);//1s
+					try { await Task.Delay(10000, stoppingToken); } catch (TaskCanceledException) { };
 				}
 			}
 		}

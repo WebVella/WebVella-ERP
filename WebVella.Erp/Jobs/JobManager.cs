@@ -136,11 +136,11 @@ namespace WebVella.Erp.Jobs
 			return JobService.GetJob(jobId);
 		}
 
-		public List<Job> GetJobs( out int totalCount, DateTime? startFromDate = null, DateTime? startToDate = null, DateTime? finishedFromDate = null, DateTime? finishedToDate = null,
+		public List<Job> GetJobs(out int totalCount, DateTime? startFromDate = null, DateTime? startToDate = null, DateTime? finishedFromDate = null, DateTime? finishedToDate = null,
 			string typeName = null, int? status = null, int? priority = null, Guid? schedulePlanId = null, int? page = null, int? pageSize = null)
 		{
-			totalCount = (int)JobService.GetJobsTotalCount(startFromDate, startToDate, finishedFromDate, finishedToDate,	typeName, status, priority, schedulePlanId);
-			return JobService.GetJobs(startFromDate, startToDate, finishedFromDate, finishedToDate,	typeName, status, priority, schedulePlanId, page, pageSize);
+			totalCount = (int)JobService.GetJobsTotalCount(startFromDate, startToDate, finishedFromDate, finishedToDate, typeName, status, priority, schedulePlanId);
+			return JobService.GetJobs(startFromDate, startToDate, finishedFromDate, finishedToDate, typeName, status, priority, schedulePlanId, page, pageSize);
 		}
 
 		public void ProcessJobsAsync()
@@ -153,12 +153,12 @@ namespace WebVella.Erp.Jobs
 			if (!Settings.Enabled)
 				return;
 
-			
-			#if DEBUG
+
+#if DEBUG
 			Thread.Sleep(10000); //Initial sleep time
-			#else
+#else
 			Thread.Sleep(120000); //Initial sleep time
-			#endif
+#endif
 
 			while (true)
 			{
@@ -231,10 +231,8 @@ namespace WebVella.Erp.Jobs
 				return;
 
 
-#if DEBUG
-			await Task.Delay(10000, stoppingToken);//10ms
-#else
-			await Task.Delay(120000, stoppingToken);//10ms
+#if !DEBUG
+			try { await Task.Delay(120000, stoppingToken); } catch (TaskCanceledException) { };
 #endif
 
 			while (!stoppingToken.IsCancellationRequested)
@@ -297,7 +295,7 @@ namespace WebVella.Erp.Jobs
 				}
 				finally
 				{
-					await Task.Delay(10000, stoppingToken);//10ms
+					try { await Task.Delay(10000, stoppingToken); } catch (TaskCanceledException) { };
 				}
 			}
 		}
