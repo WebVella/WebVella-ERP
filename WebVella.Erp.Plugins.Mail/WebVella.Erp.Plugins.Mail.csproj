@@ -3,7 +3,7 @@
   <PropertyGroup>
      <TargetFramework>netcoreapp3.1</TargetFramework>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-		<Version>1.0.92</Version>
+		<Version>1.0.93</Version>
 		<Authors>WebVella</Authors>
 		<Description>The Mail Plugin for the open-source and free platform WebVella ERP. It provides API, services and management for sending emails through SMTP services.</Description>
 		<Copyright>Copyright 2019</Copyright>
