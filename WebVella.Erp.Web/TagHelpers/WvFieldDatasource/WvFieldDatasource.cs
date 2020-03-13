@@ -693,7 +693,7 @@ public class SampleCodeVariable : ICodeVariable
 						libCssEl.Attributes.Add("type", "text/css");
 						libCssEl.Attributes.Add("rel", "stylesheet");
 						output.PostContent.AppendHtml(libCssEl);
-						output.PostContent.AppendHtml("\r\n\t");
+						output.PostContent.AppendHtml(Environment.NewLine + "\t");
 					}
 					{
 						var libCssEl = new TagBuilder("link");
@@ -701,14 +701,14 @@ public class SampleCodeVariable : ICodeVariable
 						libCssEl.Attributes.Add("type", "text/css");
 						libCssEl.Attributes.Add("rel", "stylesheet");
 						output.PostContent.AppendHtml(libCssEl);
-						output.PostContent.AppendHtml("\r\n\t");
+						output.PostContent.AppendHtml(Environment.NewLine + "\t");
 					}
 
 					var libJsEl = new TagBuilder("script");
 					libJsEl.Attributes.Add("type", "text/javascript");
 					libJsEl.Attributes.Add("src", "/_content/WebVella.TagHelpers/lib/select2/js/select2.min.js");
 					output.PostContent.AppendHtml(libJsEl);
-					output.PostContent.AppendHtml("\r\n\t");
+					output.PostContent.AppendHtml(Environment.NewLine+"\t");
 
 					ViewContext.HttpContext.Items[libraryItemsKey] = new WvTagHelperContext()
 					{

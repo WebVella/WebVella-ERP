@@ -1,4 +1,5 @@
 ﻿using Irony.Parsing;
+using System;
 
 namespace WebVella.Erp.Eql
 {
@@ -9,7 +10,7 @@ namespace WebVella.Erp.Eql
 		{
 			//terminals
 			NonGrammarTerminals.Add(new CommentTerminal("COMMENT", "/*", "*/"));
-			NonGrammarTerminals.Add(new CommentTerminal("LINE_COMMENT", "--", "\n", "\r\n"));
+			NonGrammarTerminals.Add(new CommentTerminal("LINE_COMMENT", "--", Environment.NewLine, Environment.NewLine));
 			var NUMBER = new NumberLiteral("NUMBER");
 			var STRING = new StringLiteral("STRING", "'", StringOptions.AllowsDoubledQuote);
 			var ARGUMENT = new IdentifierTerminal("ARGUMENT");

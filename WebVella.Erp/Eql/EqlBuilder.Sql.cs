@@ -306,7 +306,7 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 			if (rootInfo.Children.Count == 0)
 			{
 				trimed = true;
-				sb.Remove(sb.Length - 3, 3); //remove newline and comma;
+				sb.Remove(sb.Length - (Environment.NewLine.Length + 1), Environment.NewLine.Length + 1); //remove newline and comma;
 			}
 
 			foreach (var info in rootInfo.Children)
@@ -315,7 +315,7 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 				if (fieldsMeta != null)
 					childFieldsMeta = new List<EqlFieldMeta>();
 
-				var fieldsSql = "\r\n" + BuildFieldsSql(info, depth + 1, childFieldsMeta);
+				var fieldsSql = Environment.NewLine + BuildFieldsSql(info, depth + 1, childFieldsMeta);
 
 				AppendToStringBuilder(sb, depth, true, $"------->: ${info.Relation.Name}");
 
@@ -493,11 +493,11 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 				if (info == rootInfo.Children.Last())
 				{
 					if (!trimed)
-						sb.Remove(sb.Length - 3, 3);
+						sb.Remove(sb.Length - (Environment.NewLine.Length + 1), Environment.NewLine.Length + 1); //remove newline and comma;
 				}
 
 
-				if(!sb.ToString().EndsWith("\r\n"))
+				if(!sb.ToString().EndsWith(Environment.NewLine))
 					AppendToStringBuilder(sb, depth, true, "");
 
 				AppendToStringBuilder(sb, depth, true, $"-------< ${info.Relation.Name}");
@@ -916,7 +916,7 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 								 targetJoinAlias, /*.*/ "target_id", /* =  */
 								 targetJoinTable, /*.*/ relation.TargetFieldName);
 
-						relationJoinSql += "\r\n" + string.Format(FILTER_JOIN,
+						relationJoinSql += Environment.NewLine + string.Format(FILTER_JOIN,
 								/*LEFT OUTER JOIN*/ originJoinTable, /* */ originJoinAlias /*ON*/,
 								targetJoinAlias, /*.*/ "origin_id", /* =  */
 								originJoinAlias, /*.*/ relation.OriginFieldName);
@@ -931,7 +931,7 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 								originJoinAlias, /*.*/ "origin_id", /* =  */
 								originJoinTable, /*.*/ relation.OriginFieldName);
 
-						relationJoinSql += "\r\n" + string.Format(FILTER_JOIN,
+						relationJoinSql += Environment.NewLine + string.Format(FILTER_JOIN,
 								  /*LEFT OUTER JOIN*/ targetJoinTable, /* */ targetJoinAlias /*ON*/,
 								originJoinAlias, /*.*/ "target_id", /* =  */
 								targetJoinAlias, /*.*/ relation.TargetFieldName);

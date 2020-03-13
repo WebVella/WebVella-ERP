@@ -649,10 +649,10 @@ namespace WebVella.Erp.Plugins.Mail.Services
 					{
 						case "p":
 							// treat paragraphs as crlf
-							outText.Write("\r\n");
+							outText.Write(Environment.NewLine);
 							break;
 						case "br":
-							outText.Write("\r\n");
+							outText.Write(Environment.NewLine);
 							break;
 						case "a":
 							HtmlAttribute att = node.Attributes["href"];

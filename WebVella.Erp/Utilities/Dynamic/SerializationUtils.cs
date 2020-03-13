@@ -141,7 +141,7 @@ namespace WebVella.Erp.Utilities.Dynamic
             }
             catch (Exception ex)
             {
-                Debug.Write("SerializeObject failed with : " + ex.GetBaseException().Message + "\r\n" + (ex.InnerException != null ? ex.InnerException.Message : ""), "West Wind");
+                Debug.Write("SerializeObject failed with : " + ex.GetBaseException().Message + Environment.NewLine + (ex.InnerException != null ? ex.InnerException.Message : ""), "West Wind");
 
                 if (throwExceptions)
                     throw;

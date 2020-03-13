@@ -77,7 +77,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 			foreach (var par in DataSourceObject.Parameters)
 			{
 				if (ParamDefaults != string.Empty)
-					ParamDefaults += "\r\n";
+					ParamDefaults += Environment.NewLine;
 
 				ParamDefaults += $"{par.Name},{par.Type},{par.Value}";
 			}

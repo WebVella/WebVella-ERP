@@ -1274,7 +1274,7 @@ namespace WebVella.Erp.Database
                                      targetJoinAlias, /*.*/ "target_id", /* =  */
                                      targetJoinTable, /*.*/ relationFieldMeta.TargetField.Name);
 
-                            relationJoinSql = relationJoinSql + "\r\n" + string.Format(FILTER_JOIN,
+                            relationJoinSql = relationJoinSql + Environment.NewLine + string.Format(FILTER_JOIN,
                                     /*LEFT OUTER JOIN*/ originJoinTable, /* */ originJoinAlias /*ON*/,
                                     targetJoinAlias, /*.*/ "origin_id", /* =  */
 									originJoinAlias, /*.*/ relationFieldMeta.OriginField.Name);
@@ -1288,7 +1288,7 @@ namespace WebVella.Erp.Database
                                     originJoinAlias, /*.*/ "origin_id", /* =  */
                                     originJoinTable, /*.*/ relationFieldMeta.OriginField.Name);
 
-                            relationJoinSql = relationJoinSql + "\r\n" + string.Format(FILTER_JOIN,
+                            relationJoinSql = relationJoinSql + Environment.NewLine + string.Format(FILTER_JOIN,
                                       /*LEFT OUTER JOIN*/ targetJoinTable, /* */ targetJoinAlias /*ON*/,
                                     originJoinAlias, /*.*/ "target_id", /* =  */
                                     targetJoinAlias, /*.*/ relationFieldMeta.TargetField.Name);
@@ -1299,7 +1299,7 @@ namespace WebVella.Erp.Database
 
 
                     if (!joinSql.Contains(relationJoinSql))
-                        joinSql = joinSql + "\r\n" + relationJoinSql;
+                        joinSql = joinSql + Environment.NewLine + relationJoinSql;
 
 
 
