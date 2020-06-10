@@ -115,7 +115,7 @@ namespace WebVella.Erp.Site.Mail
 			app.UseAuthorization();
 
 			app
-			.UseErpPlugin<NextPlugin>()
+			//.UseErpPlugin<NextPlugin>()
 			.UseErpPlugin<SdkPlugin>()
 			.UseErpPlugin<MailPlugin>()
 			.UseErp()
