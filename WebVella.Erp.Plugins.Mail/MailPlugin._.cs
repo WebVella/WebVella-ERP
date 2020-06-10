@@ -191,6 +191,28 @@ namespace WebVella.Erp.Plugins.Mail
 							}
 						}
 
+						{
+							var patchVersion = 20200611;
+							if (currentPluginSettings.Version < patchVersion)
+							{
+								try
+								{
+									currentPluginSettings.Version = patchVersion;
+									Patch20200611(entMan, relMan, recMan);
+								}
+								catch (ValidationException ex)
+								{
+									var exception = ex;
+									throw ex;
+								}
+								catch (Exception ex)
+								{
+									var exception = ex;
+									throw ex;
+								}
+							}
+						}
+
 						#endregion
 
 

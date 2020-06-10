@@ -106,23 +106,6 @@ namespace WebVella.Erp.Plugins.Mail
 			}
 			#endregion
 
-			#region << ***Update app*** App name: sdk >>
-			{
-				var id = new Guid("56a8548a-19d0-497f-8e5b-242abfdc4082");
-				var name = "sdk";
-				var label = "Software Development Kit";
-				var description = "SDK & Development Tools";
-				var iconClass = "fa fa-cogs";
-				var author = "WebVella";
-				var color = "#dc3545";
-				var weight = 1000;
-				var access = new List<Guid>();
-				access.Add(new Guid("bdc56420-caf0-4030-8a0e-d264938e0cda"));
-
-				new WebVella.Erp.Web.Services.AppService().UpdateApplication(id, name, label, description, iconClass, author, color, weight, access, WebVella.Erp.Database.DbContext.Current.Transaction);
-			}
-			#endregion
-
 			#region << ***Update app*** App name: mail >>
 			{
 				var id = new Guid("9d3b5497-e136-43b7-ad87-857e615a54c9");
