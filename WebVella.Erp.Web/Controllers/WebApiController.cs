@@ -3278,8 +3278,8 @@ namespace WebVella.Erp.Web.Controllers
 					}
 				}
 			}
-
-			HttpContext.Response.Headers.Add("last-modified", file.LastModificationDate.ToString());
+			var cultureInfo = new CultureInfo("en-US");
+			HttpContext.Response.Headers.Add("last-modified", file.LastModificationDate.ToString(cultureInfo));
 			const int durationInSeconds = 60 * 60 * 24 * 30; //30 days caching of these resources
 			HttpContext.Response.Headers[HeaderNames.CacheControl] = "public,max-age=" + durationInSeconds;
 
