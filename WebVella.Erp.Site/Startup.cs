@@ -2,13 +2,16 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.IO.Compression;
 using WebVella.Erp.Plugins.SDK;
 using WebVella.Erp.Web;
@@ -18,9 +21,24 @@ namespace WebVella.Erp.Site
 {
 	public class Startup
 	{
+		public IConfigurationRoot Configuration { get; private set; } = null;
+
+		private readonly IWebHostEnvironment environment;
+
+		public Startup(IWebHostEnvironment environment)
+		{
+			this.environment = environment;
+		}
+
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			string configPath = "config.json";
+			Configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(configPath).Build();
+
+			services.AddLocalization(options => options.ResourcesPath = "Resources");
+			services.Configure<RequestLocalizationOptions>(options => { options.DefaultRequestCulture = new RequestCulture(Configuration["Settings:Locale"]); });
+
 			services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
 			services.AddResponseCompression(options => { options.Providers.Add<GzipCompressionProvider>(); });
 			services.AddRouting(options => { options.LowercaseUrls = true; });
@@ -73,9 +91,15 @@ namespace WebVella.Erp.Site
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
+			var supportedCultures = new[] { new CultureInfo(Configuration["Settings:Locale"]) };
+
 			app.UseRequestLocalization(new RequestLocalizationOptions
 			{
-				DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(CultureInfo.GetCultureInfo("en-US"))
+				DefaultRequestCulture = new RequestCulture(supportedCultures[0]),
+				// Formatting numbers, dates, etc.
+				SupportedCultures = supportedCultures,
+				// UI strings that we have localized.
+				SupportedUICultures = supportedCultures
 			});
 
 			//env.EnvironmentName = EnvironmentName.Production;

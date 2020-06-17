@@ -9,7 +9,7 @@ namespace WebVella.Erp.Plugins.SDK
 {
 	public partial class SdkPlugin : ErpPlugin
 	{
-		private static void Patch20191205(EntityManager entMan, EntityRelationManager relMan, RecordManager recMan)
+		private static void Patch20200610(EntityManager entMan, EntityRelationManager relMan, RecordManager recMan)
 		{
 		#region << ***Update app*** App name: sdk >>
 		{

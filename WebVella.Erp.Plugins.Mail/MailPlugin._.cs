@@ -169,29 +169,49 @@ namespace WebVella.Erp.Plugins.Mail
 						}
 
 						
+						{
+							var patchVersion = 20200610;
+							if (currentPluginSettings.Version < patchVersion)
+							{
+								try
+								{
+									currentPluginSettings.Version = patchVersion;
+									Patch20200610(entMan, relMan, recMan);
+								}
+								catch (ValidationException ex)
+								{
+									var exception = ex;
+									throw ex;
+								}
+								catch (Exception ex)
+								{
+									var exception = ex;
+									throw ex;
+								}
+							}
+						}
 
-						//Patch 20190123
-						//{
-						//	var patchVersion = 20190123;
-						//	if (currentPluginSettings.Version < patchVersion)
-						//	{
-						//		try
-						//		{
-						//			currentPluginSettings.Version = patchVersion;
-						//			Patch20190123(entMan, relMan, recMan);
-						//		}
-						//		catch (ValidationException ex)
-						//		{
-						//			var exception = ex;
-						//			throw ex;
-						//		}
-						//		catch (Exception ex)
-						//		{
-						//			var exception = ex;
-						//			throw ex;
-						//		}
-						//	}
-						//}
+						{
+							var patchVersion = 20200611;
+							if (currentPluginSettings.Version < patchVersion)
+							{
+								try
+								{
+									currentPluginSettings.Version = patchVersion;
+									Patch20200611(entMan, relMan, recMan);
+								}
+								catch (ValidationException ex)
+								{
+									var exception = ex;
+									throw ex;
+								}
+								catch (Exception ex)
+								{
+									var exception = ex;
+									throw ex;
+								}
+							}
+						}
 
 						#endregion
 
