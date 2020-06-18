@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +13,7 @@ using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models.AutoMapper;
 using WebVella.Erp.Database;
 using WebVella.Erp.Jobs;
+using WebVella.Erp.Web.Middleware;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Models.AutoMapper;
 using WebVella.Erp.Web.Services;
@@ -30,6 +32,7 @@ namespace WebVella.Erp.Web
 			services.ConfigureOptions(typeof(WebConfigurationOptions));
 			services.AddSingleton<IHostedService, ErpJobScheduleService>();
 			services.AddSingleton<IHostedService, ErpJobProcessService>();
+			services.AddScoped<CircuitHandler, SecuritityCircuitHandler>();
 			return services;
 		}
 
