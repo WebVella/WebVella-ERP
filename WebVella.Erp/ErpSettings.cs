@@ -35,11 +35,14 @@ namespace WebVella.Erp
         public static bool ShowAccounting { get; set; }
 		public static bool DevelopmentMode { get; private set; }
 
-		//API URLs
-		public static string ApiUrlTemplateFieldInlineEdit { get; private set; }
+        public static IConfiguration Configuration { get; private set; }
+
+        //API URLs
+        public static string ApiUrlTemplateFieldInlineEdit { get; private set; }
 
 		public static void Initialize(IConfiguration configuration)
 		{
+            Configuration = configuration;
 			EncriptionKey = configuration["Settings:EncriptionKey"];
 			ConnectionString = configuration["Settings:ConnectionString"];
 			Lang = string.IsNullOrWhiteSpace(configuration["Settings:Lang"]) ? @"en" : configuration["Settings:Lang"];
