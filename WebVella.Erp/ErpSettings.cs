@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
+using System.Net.Security;
 
 namespace WebVella.Erp
 {
 	public static class ErpSettings
 	{
-		public static string EncriptionKey { get; private set; }
+		public static string EncryptionKey { get; private set; }
 		public static string ConnectionString { get; private set; }
 		public static string Lang { get; private set; }
         public static string Locale { get; private set; }
@@ -43,7 +44,11 @@ namespace WebVella.Erp
 		public static void Initialize(IConfiguration configuration)
 		{
             Configuration = configuration;
-			EncriptionKey = configuration["Settings:EncriptionKey"];
+			EncryptionKey = configuration["Settings:EncryptionKey"];
+            // 628426@gmail.com 27 Jul 2020 backwards compatibility for projects which still have mispelled EncryiptionKey in config
+            if (string.IsNullOrWhiteSpace(EncryptionKey)) {
+                EncryptionKey = configuration["Settings:EncriptionKey"];
+            }
 			ConnectionString = configuration["Settings:ConnectionString"];
 			Lang = string.IsNullOrWhiteSpace(configuration["Settings:Lang"]) ? @"en" : configuration["Settings:Lang"];
             // 125	FLE Standard Time	(GMT+02:00) Helsinki, Kiev, Riga, Sofia, Tallinn, Vilnius
