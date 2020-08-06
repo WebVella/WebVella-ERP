@@ -34,7 +34,6 @@ namespace WebVella.Erp.Web
 
 		public WebSettings CoreSettings { get; private set; }
 
-		public IConfigurationRoot Configuration { get; private set; } = null;
 
 		public List<ScriptTagInclude> ScriptIncludes { get; private set; } = new List<ScriptTagInclude>();
 
@@ -50,10 +49,6 @@ namespace WebVella.Erp.Web
 
 		private ErpAppContext(IServiceProvider serviceProvider)
 		{
-			IWebHostEnvironment env = serviceProvider.GetService<IWebHostEnvironment>();
-			string configPath = "config.json";
-			Configuration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile(configPath).Build();
-
 			ServiceProvider = serviceProvider;
 			InitCoreSettings();
 			InitTheme();

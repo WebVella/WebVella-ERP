@@ -38,6 +38,8 @@ namespace WebVella.Erp
 
         public static IConfiguration Configuration { get; private set; }
 
+        public static bool IsInitialized { get; private set; }
+
         //API URLs
         public static string ApiUrlTemplateFieldInlineEdit { get; private set; }
 
@@ -90,6 +92,8 @@ namespace WebVella.Erp
 			
 
 			ApiUrlTemplateFieldInlineEdit = string.IsNullOrWhiteSpace(configuration[$"ApiUrlTemplates:FieldInlineEdit"]) ? "/api/v3/en_US/record/{entityName}/{recordId}" : configuration[$"ApiUrlTemplates:FieldInlineEdit"];
+
+            IsInitialized = true;
 		}
 	}
 }
