@@ -43,12 +43,14 @@ namespace WebVella.Erp.Web
 				IConfiguration configuration = app.ApplicationServices.GetService<IConfiguration>();
 				IWebHostEnvironment env = app.ApplicationServices.GetService<IWebHostEnvironment>();
 
-				string configPath = "config.json";
-				if (!string.IsNullOrWhiteSpace(configFolder))
-					configPath = System.IO.Path.Combine(configFolder, configPath);
+				if (!ErpSettings.IsInitialized) {
+					string configPath = "config.json";
+					if (!string.IsNullOrWhiteSpace(configFolder))
+						configPath = System.IO.Path.Combine(configFolder, configPath);
 
-				var configurationBuilder = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile(configPath);
-				ErpSettings.Initialize(configurationBuilder.Build());
+					var configurationBuilder = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile(configPath);
+					ErpSettings.Initialize(configurationBuilder.Build());
+				}
 
 				var defaultThreadCulture = CultureInfo.DefaultThreadCurrentCulture;
 				var defaultThreadUICulture = CultureInfo.DefaultThreadCurrentUICulture;

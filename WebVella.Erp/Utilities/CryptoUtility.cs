@@ -27,10 +27,13 @@ namespace WebVella.Erp.Utilities
             {
                 if (string.IsNullOrEmpty(cryptKey))
                 {
-                    if (string.IsNullOrWhiteSpace(ErpSettings.EncriptionKey))
+                    if (string.IsNullOrWhiteSpace(ErpSettings.EncryptionKey)) {
                         cryptKey = defaultCryptKey;
+                    }
+                    else {
 
-                    cryptKey = ErpSettings.EncriptionKey;
+                        cryptKey = ErpSettings.EncryptionKey;
+                    }
                 }
                 return cryptKey;
             }
