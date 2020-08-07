@@ -15,6 +15,13 @@ namespace WebVella.Erp.Jobs
 	}
 
 	[Serializable]
+	internal class JobResultWrapper
+	{
+		[JsonProperty(PropertyName = "result")]
+		public dynamic Result { get; set; } = null;
+	}
+
+	[Serializable]
 	public class Job
     {
 		[JsonProperty(PropertyName = "id")]

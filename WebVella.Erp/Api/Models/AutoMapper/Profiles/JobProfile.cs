@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Data;
 using System.Dynamic;
@@ -37,8 +38,25 @@ namespace WebVella.Erp.Api.Models.AutoMapper.Profiles
 
 			if (!string.IsNullOrWhiteSpace(src["result"].ToString()))
 			{
-				JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
-				job.Result = JsonConvert.DeserializeObject<ExpandoObject>((string)src["result"], settings);
+				try
+				{
+					try
+					{
+						//we need to keep backword compadability - so we attempt to deserialize to Expando
+						JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+						job.Result = JsonConvert.DeserializeObject<ExpandoObject>((string)src["result"], settings);
+					}
+					catch
+					{
+						//if we fail with Expando, try to deserialize to new JobResultWrapper
+						JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+						job.Result = JsonConvert.DeserializeObject<JobResultWrapper>((string)src["result"], settings).Result;
+					}
+				}
+				catch
+				{
+					job.Result = "ERROR WHILE DESERIALIZE: " + (string)src["result"];
+				}
 			}
 
 			job.Status = (JobStatus)(int)src["status"];
@@ -61,7 +79,7 @@ namespace WebVella.Erp.Api.Models.AutoMapper.Profiles
 				job.StartedOn = (DateTime?)DateTime.SpecifyKind(job.StartedOn.Value, DateTimeKind.Utc);
 			if (job.FinishedOn.HasValue && job.FinishedOn.Value.Kind == DateTimeKind.Unspecified)
 				job.FinishedOn = (DateTime?)DateTime.SpecifyKind(job.FinishedOn.Value, DateTimeKind.Utc);
-			if ( job.CreatedOn.Kind == DateTimeKind.Unspecified)
+			if (job.CreatedOn.Kind == DateTimeKind.Unspecified)
 				job.CreatedOn = DateTime.SpecifyKind(job.CreatedOn, DateTimeKind.Utc);
 
 			return job;
@@ -93,7 +111,7 @@ namespace WebVella.Erp.Api.Models.AutoMapper.Profiles
 			if (src["last_trigger_time"] != DBNull.Value)
 				schedulePlan.LastTriggerTime = DateTime.SpecifyKind((DateTime)src["last_trigger_time"], DateTimeKind.Utc);
 			if (src["next_trigger_time"] != DBNull.Value)
-				schedulePlan.NextTriggerTime = DateTime.SpecifyKind((DateTime)src["next_trigger_time"],DateTimeKind.Utc);
+				schedulePlan.NextTriggerTime = DateTime.SpecifyKind((DateTime)src["next_trigger_time"], DateTimeKind.Utc);
 			schedulePlan.JobTypeId = (Guid)src["job_type_id"];
 			if (JobManager.JobTypes.Any(t => t.Id == schedulePlan.JobTypeId))
 				schedulePlan.JobType = JobManager.JobTypes.FirstOrDefault(t => t.Id == schedulePlan.JobTypeId);
@@ -107,7 +125,7 @@ namespace WebVella.Erp.Api.Models.AutoMapper.Profiles
 			schedulePlan.CreatedOn = DateTime.SpecifyKind((DateTime)src["created_on"], DateTimeKind.Utc);
 			if (src["last_modified_by"] != DBNull.Value)
 				schedulePlan.LastModifiedBy = (Guid)src["last_modified_by"];
-			schedulePlan.LastModifiedOn = DateTime.SpecifyKind((DateTime)src["last_modified_on"],DateTimeKind.Utc);
+			schedulePlan.LastModifiedOn = DateTime.SpecifyKind((DateTime)src["last_modified_on"], DateTimeKind.Utc);
 
 			return schedulePlan;
 		}

@@ -92,8 +92,9 @@ namespace WebVella.Erp.Jobs
 
 			if (job.Result != null)
 			{
+				JobResultWrapper jrWrap = new JobResultWrapper { Result = job.Result };
 				JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
-				string result = JsonConvert.SerializeObject(job.Result, settings);
+				string result = JsonConvert.SerializeObject(jrWrap, settings);
 				parameters.Add(new NpgsqlParameter("result", result) { NpgsqlDbType = NpgsqlDbType.Text });
 			}
 
