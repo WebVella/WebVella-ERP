@@ -3317,7 +3317,7 @@ namespace WebVella.Erp.Web.Controllers
 					{
 						case "image/gif":
 						case "image/png":
-							image.Mutate(x => x.BackgroundColor(Rgba32.White));
+							image.Mutate(x => x.BackgroundColor(SixLabors.ImageSharp.Color.White));
 							break;
 						default:
 							break;
@@ -3328,7 +3328,7 @@ namespace WebVella.Erp.Web.Controllers
 						default:
 						case "resize":
 							{
-								Size size = ParseSize(queryCollection);
+								var size = ParseSize(queryCollection);
 								MemoryStream outStream = new MemoryStream();
 
 								ResizeMode mode;
@@ -3357,9 +3357,9 @@ namespace WebVella.Erp.Web.Controllers
 								var resizeOptions = new ResizeOptions
 								{
 									Mode = mode,
-									Size = new SixLabors.Primitives.Size(size.Width, size.Height)
+									Size = new SixLabors.ImageSharp.Size(size.Width, size.Height)
 								};
-								image.Mutate(x => x.Resize(resizeOptions).BackgroundColor(Rgba32.White));
+								image.Mutate(x => x.Resize(resizeOptions).BackgroundColor(SixLabors.ImageSharp.Color.White));
 								image.SaveAsJpeg(outStream);
 								outStream.Seek(0, SeekOrigin.Begin);
 								return File(outStream, mimeType);
@@ -3376,24 +3376,24 @@ namespace WebVella.Erp.Web.Controllers
 		/// </summary>
 		/// <param name="queryCollection"></param>
 		/// <returns></returns>
-		private Size ParseSize(IDictionary<string, StringValues> queryCollection)
+		private SixLabors.ImageSharp.Size ParseSize(IDictionary<string, StringValues> queryCollection)
 		{
 			string width = queryCollection.Keys.Any(x => x == "width") ? (string)queryCollection["width"] : "";
 			string height = queryCollection.Keys.Any(x => x == "height") ? (string)queryCollection["height"] : "";
-			Size size = new Size();
+			var size = new SixLabors.ImageSharp.Size();
 
 			// First cater for single dimensions.
 			if (width != "" && height == "")
 			{
 
 				width = width.Replace("px", string.Empty);
-				size = new Size(Int32.Parse(width), 0);
+				size = new SixLabors.ImageSharp.Size(Int32.Parse(width), 0);
 			}
 
 			if (width == "" && height != "")
 			{
 				height = height.Replace("px", string.Empty);
-				size = new Size(0, Int32.Parse(height));
+				size = new SixLabors.ImageSharp.Size(0, Int32.Parse(height));
 			}
 
 			// Both supplied
@@ -3401,7 +3401,7 @@ namespace WebVella.Erp.Web.Controllers
 			{
 				width = width.Replace("px", string.Empty);
 				height = height.Replace("px", string.Empty);
-				size = new Size(Int32.Parse(width), Int32.Parse(height));
+				size = new SixLabors.ImageSharp.Size(Int32.Parse(width), Int32.Parse(height));
 			}
 
 			return size;
