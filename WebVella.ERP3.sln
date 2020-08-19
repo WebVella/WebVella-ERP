@@ -51,6 +51,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Site.Sdk", "We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Site.Next", "WebVella.Erp.Site.Next\WebVella.Erp.Site.Next.csproj", "{179C1926-325B-4AEC-9AD8-90A0D62FF8E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebVella.Erp.ConsoleApp", "WebVella.Erp.ConsoleApp\WebVella.Erp.ConsoleApp.csproj", "{830641F9-8887-4F71-BD20-73BC3492450F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +111,10 @@ Global
 		{179C1926-325B-4AEC-9AD8-90A0D62FF8E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{179C1926-325B-4AEC-9AD8-90A0D62FF8E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{179C1926-325B-4AEC-9AD8-90A0D62FF8E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{830641F9-8887-4F71-BD20-73BC3492450F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{830641F9-8887-4F71-BD20-73BC3492450F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{830641F9-8887-4F71-BD20-73BC3492450F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{830641F9-8887-4F71-BD20-73BC3492450F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
