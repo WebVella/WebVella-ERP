@@ -25,7 +25,7 @@ namespace WebVella.Erp.Web.Middleware
 		{
 			IDisposable dbCtx = DbContext.CreateContext(ErpSettings.ConnectionString);
 			ErpUser user = AuthService.GetUser(authStateProvider.GetAuthenticationStateAsync().Result.User);
-			IDisposable secCtx = user != null ? WebVella.Erp.Api.SecurityContext.OpenScope(user) : WebVella.Erp.Api.SecurityContext.OpenSystemScope();
+			IDisposable secCtx = user != null ? WebVella.Erp.Api.SecurityContext.OpenScope(user) : null;
 			contexts.Add(circuit, new Tuple<IDisposable, IDisposable>(dbCtx, secCtx));
 			return Task.CompletedTask;
 		}
