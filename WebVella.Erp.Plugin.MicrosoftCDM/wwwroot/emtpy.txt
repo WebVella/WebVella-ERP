@@ -1,1 +1,0 @@
-﻿Intentionally left empty to show the wwwroot in solution
