@@ -1341,6 +1341,9 @@ namespace WebVella.Erp.Api
 								//locate the field
 								var field = entity.Fields.SingleOrDefault(x => x.Name == pair.Key);
 
+								if(field == null)
+									continue;
+
 								if (field is PasswordField && pair.Value == null)
 									continue;
 

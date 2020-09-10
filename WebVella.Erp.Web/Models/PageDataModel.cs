@@ -514,7 +514,7 @@ namespace WebVella.Erp.Web.Models
 				throw new ArgumentException(nameof(propName));
 
 			//replace keyword $index with 0
-			var name = propName.Replace("$index", "0");
+			var name = propName.Trim().Replace("$index", "0");
 			string[] tmpPropChain = name.Split(".", StringSplitOptions.RemoveEmptyEntries);
 
 			List<string> completePropChain = new List<string>();
@@ -539,7 +539,7 @@ namespace WebVella.Erp.Web.Models
 			foreach (var ppName in completePropChain)
 			{
 
-				var pName = ppName;
+				var pName = ppName.Trim();
 				if (string.IsNullOrWhiteSpace(currentPropertyNamePath))
 					currentPropertyNamePath = pName;
 				else
@@ -548,7 +548,7 @@ namespace WebVella.Erp.Web.Models
 				//try to get property with full key (after http post object are entered with no . split
 				if (parentPropName == "Record")
 				{
-					var testName = propName.Substring(7); //cut the Record. in front
+					var testName = propName.Trim().Substring(7); //cut the Record. in front
 					if (pName != testName && currentPropDict.ContainsKey(testName))
 						return currentPropDict[testName].Value;
 				}
@@ -556,7 +556,7 @@ namespace WebVella.Erp.Web.Models
 				//try to get property with full key (after http post object are entered with no . split
 				if (parentPropName == "RelatedRecord")
 				{
-					var testName = propName.Substring(14); //cut the RelatedRecord. in front
+					var testName = propName.Trim().Substring(14); //cut the RelatedRecord. in front
 					if (pName != testName && currentPropDict.ContainsKey(testName))
 						return currentPropDict[testName].Value;
 				}
@@ -821,7 +821,7 @@ namespace WebVella.Erp.Web.Models
 					{
 						foreach (var propName in record.Properties.Keys)
 						{
-							var propValue = record[propName];
+							var propValue = record[propName.Trim()];
 							//the case when set record from page post
 							if (propName.StartsWith("$") && propName.Contains(".") && propValue is List<Guid>)
 							{
