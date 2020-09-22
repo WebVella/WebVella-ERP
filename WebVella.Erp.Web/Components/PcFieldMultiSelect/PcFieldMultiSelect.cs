@@ -128,13 +128,6 @@ namespace WebVella.Erp.Web.Components
 				#endregion
 
 
-				ViewBag.Options = options;
-				ViewBag.Model = model;
-				ViewBag.Node = context.Node;
-				ViewBag.ComponentMeta = componentMeta;
-				ViewBag.RequestContext = ErpRequestContext;
-				ViewBag.AppContext = ErpAppContext.Current;
-
 				if (context.Mode != ComponentMode.Options && context.Mode != ComponentMode.Help)
 				{
 					var isVisible = true;
@@ -186,10 +179,14 @@ namespace WebVella.Erp.Web.Components
 								return await Task.FromResult<IViewComponentResult>(View("Error"));
 							}
 						}
-						if (!stringProcessed && ((string)valueResult).Contains(",") && !((string)valueResult).Contains("{") && !((string)valueResult).Contains("["))
+						if (!stringProcessed && !((string)valueResult).Contains("{") && !((string)valueResult).Contains("["))
 						{
-							var valueArray = ((string)valueResult).Split(',');
+							var valueArray = ((string)valueResult).Split(',',StringSplitOptions.RemoveEmptyEntries);
 							model.Value = new List<string>(valueArray);
+							stringProcessed = true;
+						}
+						if(!stringProcessed && ((string)valueResult).StartsWith("[") && ((string)valueResult).EndsWith("]")){
+							model.Value = JsonConvert.DeserializeObject<List<string>>((string)valueResult);
 						}
 					}
 					else if (valueResult is List<Guid>)
@@ -200,7 +197,15 @@ namespace WebVella.Erp.Web.Components
 					{
 						model.Value = new List<string>(valueResult.ToString());
 					}
-
+					else if (valueResult is List<EntityRecord>)
+					{
+						if (((List<EntityRecord>)valueResult).Count > 0)
+						{
+							if(!((List<EntityRecord>)valueResult)[0].Properties.ContainsKey("id"))
+								throw new Exception("The provided list of entity records does not contain an 'id' property");
+						}
+						model.Value = ((List<EntityRecord>)valueResult).Select(x => ((Guid)x["id"]).ToString()).ToList();
+					}
 
 					var dataSourceOptions = new List<SelectOption>();
 					dynamic optionsResult = context.DataModel.GetPropertyValueByDataSource(options.Options);
@@ -261,11 +266,17 @@ namespace WebVella.Erp.Web.Components
 					{
 						model.Options = dataSourceOptions;
 					}
-
 					#endregion
 				}
 
 				ViewBag.SelectMatchOptions = WebVella.TagHelpers.Utilities.ModelExtensions.GetEnumAsSelectOptions<WvSelectMatchType>();
+
+				ViewBag.Options = options;
+				ViewBag.Model = model;
+				ViewBag.Node = context.Node;
+				ViewBag.ComponentMeta = componentMeta;
+				ViewBag.RequestContext = ErpRequestContext;
+				ViewBag.AppContext = ErpAppContext.Current;
 
 				switch (context.Mode)
 				{

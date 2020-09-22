@@ -1520,12 +1520,20 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 			code += $"\tupdateObject.IconName = \"{currentEntity.IconName}\";\n";
 
 			//Color
-			if (currentEntity.Color != oldEntity.Color)
+			var currentColor = "";
+			var oldColor = "";
+			if(!String.IsNullOrWhiteSpace(currentEntity.Color)){
+				currentColor = currentEntity.Color;
+			}
+			if(!String.IsNullOrWhiteSpace(oldEntity.Color)){
+				oldColor = oldEntity.Color;
+			}
+			if (currentColor != oldColor)
 			{
 				hasUpdate = true;
-				response.ChangeList.Add($"<span class='go-green label-block'>Color</span>  from <span class='go-red'>{oldEntity.Color}</span> to <span class='go-red'>{currentEntity.Color}</span>");
+				response.ChangeList.Add($"<span class='go-green label-block'>Color</span>  from <span class='go-red'>{oldColor}</span> to <span class='go-red'>{currentColor}</span>");
 			}
-			code += $"\tupdateObject.Color = \"{currentEntity.Color}\";\n";
+			code += $"\tupdateObject.Color = \"{currentColor}\";\n";
 
 			//RecordScreenIdField
 			if (currentEntity.RecordScreenIdField != oldEntity.RecordScreenIdField)

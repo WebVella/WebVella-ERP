@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+	  <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RazorLangVersion>3.0</RazorLangVersion>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="3.1.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.8" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\WebVella.Erp.Web\WebVella.Erp.Web.csproj" />
+    <ProjectReference Include="..\WebVella.ERP\WebVella.Erp.csproj" />
+  </ItemGroup>
+
+</Project>
