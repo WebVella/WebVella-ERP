@@ -54,7 +54,7 @@
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 		<PackageReference Include="morelinq" Version="3.3.2" />
 		<PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
-		<PackageReference Include="Wangkanai.Detection.Device" Version="2.0.0" />
+		<PackageReference Include="Wangkanai.Detection.Device" Version="2.0.1" />
 	</ItemGroup>
 
 
