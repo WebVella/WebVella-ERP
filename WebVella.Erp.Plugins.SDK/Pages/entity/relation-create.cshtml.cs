@@ -143,8 +143,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 				EntityRelation newRelation = new EntityRelation
 				{
 					Id = relationId,
-					Name = Name,
-					Label = Name, //Label, Boz: removed for convinience
+					Name = Name?.Trim(),
+					Label = Name?.Trim(), //Label, Boz: removed for convinience
 					Description = "", //Description, Boz: removed for convinience
 					System = IsSystem,
 					OriginEntityId = originEntityId,
