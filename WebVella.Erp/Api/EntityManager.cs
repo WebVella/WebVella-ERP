@@ -52,7 +52,7 @@ namespace WebVella.Erp.Api
 			if (!string.IsNullOrWhiteSpace(entity.Name))
 			{
 				//Postgres column name width limit
-				if(entity.Name.Length > 63)
+				if (entity.Name.Length > 63)
 					errorList.Add(new ErrorModel("name", entity.Name, "Entity name length exceeded. Should be up to 63 chars!"));
 
 				Entity verifiedEntity = ReadEntity(entity.Name).Object;
@@ -110,7 +110,7 @@ namespace WebVella.Erp.Api
 				}
 
 				//Postgres column name width limit
-				if(field.Name.Length > 63)
+				if (field.Name.Length > 63)
 					errorList.Add(new ErrorModel("name", field.Name, "Field name length exceeded. Should be up to 63 chars!"));
 			}
 
@@ -229,7 +229,7 @@ namespace WebVella.Erp.Api
 			else if (field is InputGuidField)
 			{
 				if ((((InputGuidField)field).Unique.HasValue && ((InputGuidField)field).Unique.Value) &&
-				   (!((InputGuidField)field).GenerateNewId.HasValue || !((InputGuidField)field).GenerateNewId.Value))
+					(!((InputGuidField)field).GenerateNewId.HasValue || !((InputGuidField)field).GenerateNewId.Value))
 					errorList.Add(new ErrorModel("defaultValue", null, "Generate New Id is required when the field is marked as unique!"));
 
 				if ((((InputGuidField)field).Required.HasValue && ((InputGuidField)field).Required.Value) &&
@@ -271,6 +271,19 @@ namespace WebVella.Erp.Api
 				{
 					if (((InputMultiSelectField)field).Options.Count == 0)
 						errorList.Add(new ErrorModel("options", null, "Options must contains at least one item!"));
+
+					//Check if all values are unique
+					var fieldValueHS = new HashSet<string>();
+					foreach (var option in ((InputMultiSelectField)field).Options)
+					{
+						if (fieldValueHS.Contains(option.Value))
+						{
+							errorList.Add(new ErrorModel("options", null, "There are duplicated option values!"));
+							break;
+						}
+						else
+							fieldValueHS.Add(option.Value);
+					}
 				}
 				else
 					errorList.Add(new ErrorModel("options", null, "Options is required!"));
@@ -347,6 +360,19 @@ namespace WebVella.Erp.Api
 				{
 					if (((InputSelectField)field).Options.Count == 0)
 						errorList.Add(new ErrorModel("options", null, "Options must contains at least one item!"));
+
+					//Check if all values are unique
+					var fieldValueHS = new HashSet<string>();
+					foreach (var option in ((InputSelectField)field).Options)
+					{
+						if (fieldValueHS.Contains(option.Value))
+						{
+							errorList.Add(new ErrorModel("options", null, "There are duplicated option values!"));
+							break;
+						}
+						else
+							fieldValueHS.Add(option.Value);
+					}
 				}
 				else
 					errorList.Add(new ErrorModel("options", null, "Options is required!"));
@@ -776,7 +802,7 @@ namespace WebVella.Erp.Api
 			return response;
 		}
 
-		public EntityResponse CloneEntity(Guid entityToCloneId, InputEntity inputEntity )
+		public EntityResponse CloneEntity(Guid entityToCloneId, InputEntity inputEntity)
 		{
 			Guid entityId = Guid.NewGuid();
 			if (inputEntity.Id == null || inputEntity.Id == Guid.Empty)
@@ -799,7 +825,7 @@ namespace WebVella.Erp.Api
 
 					var entity = createResponse.Object;
 
-					foreach(var field in entityToClone.Fields)
+					foreach (var field in entityToClone.Fields)
 					{
 						if (field.Name == "id")
 							continue;
@@ -821,7 +847,7 @@ namespace WebVella.Erp.Api
 
 					connection.CommitTransaction();
 				}
-				catch(ValidationException valEx)
+				catch (ValidationException valEx)
 				{
 					connection.RollbackTransaction();
 

@@ -870,7 +870,7 @@ namespace WebVella.Erp.Plugins.SDK.Services
 					//compare only if relation exists in both databases
 					Guid relationId = new Guid(id);
 					var relation = new EntityRelationManager().Read(relationId).Object;
-					if(relation == null)
+					if (relation == null)
 						throw new Exception("Relation not found");
 
 					List<DatabaseNNRelationRecord> recordsToCreate = new List<DatabaseNNRelationRecord>();
@@ -882,7 +882,8 @@ namespace WebVella.Erp.Plugins.SDK.Services
 					//Create all records = existing in current but not in old
 					foreach (var relRecord in currentRelationRecords)
 					{
-						if(!oldRelationRecords.Any(x=> x.OriginId == relRecord.OriginId && x.TargetId == relRecord.TargetId)){
+						if (!oldRelationRecords.Any(x => x.OriginId == relRecord.OriginId && x.TargetId == relRecord.TargetId))
+						{
 							recordsToCreate.Add(relRecord);
 						}
 					}
@@ -890,7 +891,8 @@ namespace WebVella.Erp.Plugins.SDK.Services
 					//Delete all records = existing in old but not in current
 					foreach (var relRecord in oldRelationRecords)
 					{
-						if(!currentRelationRecords.Any(x=> x.OriginId == relRecord.OriginId && x.TargetId == relRecord.TargetId)){
+						if (!currentRelationRecords.Any(x => x.OriginId == relRecord.OriginId && x.TargetId == relRecord.TargetId))
+						{
 							recordsToDelete.Add(relRecord);
 						}
 					}
@@ -902,7 +904,7 @@ namespace WebVella.Erp.Plugins.SDK.Services
 						changeRow.Element = "relation record";
 						changeRow.Type = "created";
 						changeRow.Name = $"{relation.Name}";
-						changeRow.ChangeList = new List<string>{$"{rec.OriginId} <> {rec.TargetId}"};
+						changeRow.ChangeList = new List<string> { $"{rec.OriginId} <> {rec.TargetId}" };
 						response.Changes.Add(changeRow);
 						response.Code += CreateNNRelationRecordCode(relation, rec.OriginId, rec.TargetId);
 					}
@@ -913,7 +915,7 @@ namespace WebVella.Erp.Plugins.SDK.Services
 						changeRow.Element = "relation record";
 						changeRow.Type = "deleted";
 						changeRow.Name = $"{relation.Name}";
-						changeRow.ChangeList = new List<string>{$"{rec.OriginId} <> {rec.TargetId}"};
+						changeRow.ChangeList = new List<string> { $"{rec.OriginId} <> {rec.TargetId}" };
 						response.Changes.Add(changeRow);
 						response.Code += DeleteNNRelationRecordCode(relation, rec.OriginId, rec.TargetId);
 					}
@@ -1522,10 +1524,12 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 			//Color
 			var currentColor = "";
 			var oldColor = "";
-			if(!String.IsNullOrWhiteSpace(currentEntity.Color)){
+			if (!String.IsNullOrWhiteSpace(currentEntity.Color))
+			{
 				currentColor = currentEntity.Color;
 			}
-			if(!String.IsNullOrWhiteSpace(oldEntity.Color)){
+			if (!String.IsNullOrWhiteSpace(oldEntity.Color))
+			{
 				oldColor = oldEntity.Color;
 			}
 			if (currentColor != oldColor)
@@ -6554,12 +6558,19 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
 			{
 				foreach (var option in oldField.Options.ToList())
 				{
-					var currentFieldOption = currentField.Options.SingleOrDefault(x => x.Value == option.Value);
-					if (currentFieldOption == null || currentFieldOption.Label != option.Label ||
-						currentFieldOption.Color != option.Color || currentFieldOption.IconClass != option.IconClass)
+					try
 					{
-						hasUpdate = true;
-						break;
+						var currentFieldOption = currentField.Options.SingleOrDefault(x => x.Value == option.Value);
+						if (currentFieldOption == null || currentFieldOption.Label != option.Label ||
+							currentFieldOption.Color != option.Color || currentFieldOption.IconClass != option.IconClass)
+						{
+							hasUpdate = true;
+							break;
+						}
+					}
+					catch (Exception ex)
+					{
+						throw new Exception($"Entity: {entityName} Field: {currentField.Name} Options processing error: {ex.Message}");
 					}
 				}
 
@@ -7831,7 +7842,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 			var response = $"#region << ***Create sitemap node*** Sitemap node name: {node.Name} >>\n" +
 			"{\n" +
 				$"\tvar id = new Guid(\"{node.Id.ToString()}\");\n" +
-				(node.ParentId.HasValue ? $"\tvar parentId = new Guid(\"{node.ParentId.ToString()}\");\n" : $"\tGuid? parentId = null;\n")	 +
+				(node.ParentId.HasValue ? $"\tvar parentId = new Guid(\"{node.ParentId.ToString()}\");\n" : $"\tGuid? parentId = null;\n") +
 				$"\tvar areaId = new Guid(\"{areaId.ToString()}\");\n" +
 				(node.EntityId.HasValue ? $"\tGuid? entityId = new Guid(\"{node.EntityId}\");\n" : $"\tGuid? entityId = null;\n") +
 				$"\tvar name = \"{node.Name}\";\n" +
@@ -8082,7 +8093,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 				response.Code += $"#region << ***Update sitemap node*** Sitemap node name: {currentNode.Name} >>\n" +
 			"{\n" +
 				$"\tvar id = new Guid(\"{currentNode.Id.ToString()}\");\n" +
-				(currentNode.ParentId.HasValue ? $"\tvar parentId = new Guid(\"{currentNode.ParentId.ToString()}\");\n" : $"\tGuid? parentId = null;\n")	 +
+				(currentNode.ParentId.HasValue ? $"\tvar parentId = new Guid(\"{currentNode.ParentId.ToString()}\");\n" : $"\tGuid? parentId = null;\n") +
 				$"\tvar areaId = new Guid(\"{areaId.ToString()}\");\n" +
 				(currentNode.EntityId.HasValue ? $"\tGuid? entityId = new Guid(\"{currentNode.EntityId}\");\n" : $"\tGuid? entityId = null;\n") +
 				$"\tvar name = \"{currentNode.Name}\";\n" +
