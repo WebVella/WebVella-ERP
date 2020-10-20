@@ -8863,7 +8863,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 			"{\n" +
 				$"\tvar id = new Guid(\"{rec["id"]}\");\n" +
 				$"\tvar result = recMan.DeleteRecord(\"{currentEntity.Name}\", id);\n" +
-				$"\tif( !result ) throw new Exception(\"Failed delete record {rec["id"]}\");\n" +
+				$"\tif( !result.Success ) throw new Exception(\"Failed delete record {rec["id"]}\");\n" +
 			"}\n" +
 			"#endregion\n\n";
 
