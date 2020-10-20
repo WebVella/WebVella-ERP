@@ -117,8 +117,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Job
 			if (Plan.ScheduledDays.ScheduledOnFriday) ScheduledDays.Add(DayOfWeek.Friday.ToString());
 			if (Plan.ScheduledDays.ScheduledOnSaturday) ScheduledDays.Add(DayOfWeek.Saturday.ToString());
 
-			if (Plan.StartTimespan != null) StartTimespan = new DateTime(2000, 1, 1).AddMinutes(Plan.StartTimespan.Value);
-			if (Plan.EndTimespan != null) EndTimespan = new DateTime(2000, 1, 1).AddMinutes(Plan.EndTimespan.Value);
+			if (Plan.StartTimespan != null) StartTimespan = new DateTime(2000, 1, 1, 0,0,0,DateTimeKind.Local).AddMinutes(Plan.StartTimespan.Value);
+			if (Plan.EndTimespan != null) EndTimespan = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Local).AddMinutes(Plan.EndTimespan.Value);
 
 			BeforeRender();
 			return Page();
@@ -154,7 +154,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Job
 
 				if (StartTimespan.HasValue)
 				{
-					StartTimespan = StartTimespan.ConvertAppDateToUtc();
+					StartTimespan = StartTimespan.ConvertToAppDate();
 					Plan.StartTimespan = StartTimespan.Value.Hour * 60 + StartTimespan.Value.Minute;
 				}
 				else
@@ -162,7 +162,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Job
 
 				if (EndTimespan.HasValue)
 				{
-					EndTimespan = EndTimespan.ConvertAppDateToUtc();
+					EndTimespan = EndTimespan.ConvertToAppDate();
 
 					Plan.EndTimespan = EndTimespan.Value.Hour * 60 + EndTimespan.Value.Minute;
 					if (Plan.EndTimespan == 0)
