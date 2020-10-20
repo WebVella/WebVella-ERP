@@ -316,189 +316,6 @@ namespace WebVella.Erp.Plugins.SDK.Services
 
 				#endregion
 
-				#region <-- generate delete code -->
-
-				//delete page data sources
-				foreach (var oldDS in oldPageDataSources)
-				{
-					if (!currentPageDataSources.Any(x => x.Id == oldDS.Id))
-					{
-						//// DELETED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "page data source";
-						changeRow.Type = "deleted";
-						changeRow.Name = oldDS.Name;
-						response.Changes.Add(changeRow);
-						response.Code += DeletePageDataSourceCode(oldDS);
-					}
-				}
-
-				//delete data sources
-				foreach (var oldDS in oldDataSources)
-				{
-					if (!currentDataSources.Any(x => x.Id == oldDS.Id))
-					{
-						//// DELETED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "data source";
-						changeRow.Type = "deleted";
-						changeRow.Name = oldDS.Name;
-						response.Changes.Add(changeRow);
-						response.Code += DeleteDatabaseDataSourceCode(oldDS);
-					}
-				}
-
-				//delete page body nodes
-				{
-					Stack<PageBodyNode> deleteStack = new Stack<PageBodyNode>();
-					Queue<PageBodyNode> processQueue = new Queue<PageBodyNode>();
-
-					foreach (var node in oldBodyNodes.Where(x => x.ParentId == null))
-						processQueue.Enqueue(node);
-
-					while (processQueue.Count > 0)
-					{
-						PageBodyNode node = processQueue.Dequeue();
-						deleteStack.Push(node);
-
-						foreach (var childNode in oldBodyNodes.Where(x => x.ParentId == node.Id))
-						{
-							//if deleteStack already contains this nodeId, that mean a cyclic structure exists
-							if (deleteStack.Any(x => x.Id == childNode.Id))
-								throw new Exception($"Cyclic body node structure found between: '{node.Id}' and '{childNode.Id}' .");
-
-							processQueue.Enqueue(childNode);
-						}
-					}
-
-					//delete page body nodes
-					while (deleteStack.Count > 0)
-					{
-						var oldBodyNode = deleteStack.Pop();
-						if (!currentBodyNodes.Any(x => x.Id == oldBodyNode.Id))
-						{
-							var page = oldPages.Single(x => x.Id == oldBodyNode.PageId);
-							//// DELETED
-							/////////////////////////////////////////////////////
-							changeRow = new MetaChangeModel();
-							changeRow.Element = "page body node";
-							changeRow.Type = "deleted";
-							changeRow.Name = oldBodyNode.Id.ToString();
-							response.Changes.Add(changeRow);
-							response.Code += DeletePageBodyNodeCode(oldBodyNode, page.Name);
-						}
-					}
-
-					//we load page body nodes again because delete is recursive
-					//and deleting one node may delete other node which are moved 
-					//to another branch of the nodes tree, such nodes will be
-					//created in code for create and update
-					oldBodyNodes = ReadOldPageBodyNodes();
-					currentBodyNodes = ReadCurrentPageBodyNodes();
-				}
-
-				//delete pages
-				foreach (var oldPage in oldPages)
-				{
-					if (!currentPages.Any(x => x.Id == oldPage.Id))
-					{
-						//// DELETED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "page";
-						changeRow.Type = "deleted";
-						changeRow.Name = $"{oldPage.Name}({oldPage.Label})";
-						response.Changes.Add(changeRow);
-						response.Code += DeleteErpPageCode(oldPage);
-					}
-				}
-
-				//delete sitemap area nodes
-				foreach (var oldNode in oldSitemapNodes)
-				{
-					if (!currentSitemapNodes.Any(x => x.Id == oldNode.Id))
-					{
-						//// DELETED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "sitemap node";
-						changeRow.Type = "deleted";
-						changeRow.Name = oldNode.Name;
-						response.Changes.Add(changeRow);
-						response.Code += DeleteSitemapNodeCode(oldNode);
-					}
-				}
-
-				//delete sitemap area groups
-				foreach (var oldGroup in oldSitemapGroups)
-				{
-					if (!currentSitemapGroups.Any(x => x.Id == oldGroup.Id))
-					{
-						//// DELETED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "sitemap group";
-						changeRow.Type = "deleted";
-						changeRow.Name = oldGroup.Name;
-						response.Changes.Add(changeRow);
-						response.Code += DeleteSitemapGroupCode(oldGroup);
-					}
-				}
-
-				//delete sitemap area
-				foreach (var oldArea in oldSitemapAreas)
-				{
-					if (!currentSitemapAreas.Any(x => x.Id == oldArea.Id))
-					{
-						//// DELETED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "sitemap area";
-						changeRow.Type = "deleted";
-						changeRow.Name = oldArea.Name;
-						response.Changes.Add(changeRow);
-						response.Code += DeleteSitemapAreaCode(oldArea);
-					}
-				}
-
-				//delete sitemap group
-				foreach (var oldGroup in oldSitemapGroups)
-				{
-					if (!currentSitemapGroups.Any(x => x.Id == oldGroup.Id))
-					{
-						//// DELETED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "sitemap group";
-						changeRow.Type = "deleted";
-						changeRow.Name = oldGroup.Name;
-						response.Changes.Add(changeRow);
-						response.Code += DeleteSitemapGroupCode(oldGroup);
-					}
-				}
-
-				//delete apps
-				foreach (var oldApp in oldApps)
-				{
-					if (!currentApps.Any(x => x.Id == oldApp.Id))
-					{
-						//// DELETED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "app";
-						changeRow.Type = "deleted";
-						changeRow.Name = oldApp.Name;
-						response.Changes.Add(changeRow);
-						response.Code += DeleteAppCode(oldApp);
-					}
-				}
-
-
-
-				#endregion
-
 				#region <-- generate create/update code -->
 
 				//create and update apps
@@ -788,6 +605,191 @@ namespace WebVella.Erp.Plugins.SDK.Services
 				}
 
 				#endregion
+
+
+				#region <-- generate delete code -->
+
+				//delete page data sources
+				foreach (var oldDS in oldPageDataSources)
+				{
+					if (!currentPageDataSources.Any(x => x.Id == oldDS.Id))
+					{
+						//// DELETED
+						/////////////////////////////////////////////////////
+						changeRow = new MetaChangeModel();
+						changeRow.Element = "page data source";
+						changeRow.Type = "deleted";
+						changeRow.Name = oldDS.Name;
+						response.Changes.Add(changeRow);
+						response.Code += DeletePageDataSourceCode(oldDS);
+					}
+				}
+
+				//delete data sources
+				foreach (var oldDS in oldDataSources)
+				{
+					if (!currentDataSources.Any(x => x.Id == oldDS.Id))
+					{
+						//// DELETED
+						/////////////////////////////////////////////////////
+						changeRow = new MetaChangeModel();
+						changeRow.Element = "data source";
+						changeRow.Type = "deleted";
+						changeRow.Name = oldDS.Name;
+						response.Changes.Add(changeRow);
+						response.Code += DeleteDatabaseDataSourceCode(oldDS);
+					}
+				}
+
+				//delete page body nodes
+				{
+					Stack<PageBodyNode> deleteStack = new Stack<PageBodyNode>();
+					Queue<PageBodyNode> processQueue = new Queue<PageBodyNode>();
+
+					foreach (var node in oldBodyNodes.Where(x => x.ParentId == null))
+						processQueue.Enqueue(node);
+
+					while (processQueue.Count > 0)
+					{
+						PageBodyNode node = processQueue.Dequeue();
+						deleteStack.Push(node);
+
+						foreach (var childNode in oldBodyNodes.Where(x => x.ParentId == node.Id))
+						{
+							//if deleteStack already contains this nodeId, that mean a cyclic structure exists
+							if (deleteStack.Any(x => x.Id == childNode.Id))
+								throw new Exception($"Cyclic body node structure found between: '{node.Id}' and '{childNode.Id}' .");
+
+							processQueue.Enqueue(childNode);
+						}
+					}
+
+					//delete page body nodes
+					while (deleteStack.Count > 0)
+					{
+						var oldBodyNode = deleteStack.Pop();
+						if (!currentBodyNodes.Any(x => x.Id == oldBodyNode.Id))
+						{
+							var page = oldPages.Single(x => x.Id == oldBodyNode.PageId);
+							//// DELETED
+							/////////////////////////////////////////////////////
+							changeRow = new MetaChangeModel();
+							changeRow.Element = "page body node";
+							changeRow.Type = "deleted";
+							changeRow.Name = oldBodyNode.Id.ToString();
+							response.Changes.Add(changeRow);
+							response.Code += DeletePageBodyNodeCode(oldBodyNode, page.Name);
+						}
+					}
+
+					//we load page body nodes again because delete is recursive
+					//and deleting one node may delete other node which are moved 
+					//to another branch of the nodes tree, such nodes will be
+					//created in code for create and update
+					oldBodyNodes = ReadOldPageBodyNodes();
+					currentBodyNodes = ReadCurrentPageBodyNodes();
+				}
+
+				//delete pages
+				foreach (var oldPage in oldPages)
+				{
+					if (!currentPages.Any(x => x.Id == oldPage.Id))
+					{
+						//// DELETED
+						/////////////////////////////////////////////////////
+						changeRow = new MetaChangeModel();
+						changeRow.Element = "page";
+						changeRow.Type = "deleted";
+						changeRow.Name = $"{oldPage.Name}({oldPage.Label})";
+						response.Changes.Add(changeRow);
+						response.Code += DeleteErpPageCode(oldPage);
+					}
+				}
+
+				//delete sitemap area nodes
+				foreach (var oldNode in oldSitemapNodes)
+				{
+					if (!currentSitemapNodes.Any(x => x.Id == oldNode.Id))
+					{
+						//// DELETED
+						/////////////////////////////////////////////////////
+						changeRow = new MetaChangeModel();
+						changeRow.Element = "sitemap node";
+						changeRow.Type = "deleted";
+						changeRow.Name = oldNode.Name;
+						response.Changes.Add(changeRow);
+						response.Code += DeleteSitemapNodeCode(oldNode);
+					}
+				}
+
+				//delete sitemap area groups
+				foreach (var oldGroup in oldSitemapGroups)
+				{
+					if (!currentSitemapGroups.Any(x => x.Id == oldGroup.Id))
+					{
+						//// DELETED
+						/////////////////////////////////////////////////////
+						changeRow = new MetaChangeModel();
+						changeRow.Element = "sitemap group";
+						changeRow.Type = "deleted";
+						changeRow.Name = oldGroup.Name;
+						response.Changes.Add(changeRow);
+						response.Code += DeleteSitemapGroupCode(oldGroup);
+					}
+				}
+
+				//delete sitemap area
+				foreach (var oldArea in oldSitemapAreas)
+				{
+					if (!currentSitemapAreas.Any(x => x.Id == oldArea.Id))
+					{
+						//// DELETED
+						/////////////////////////////////////////////////////
+						changeRow = new MetaChangeModel();
+						changeRow.Element = "sitemap area";
+						changeRow.Type = "deleted";
+						changeRow.Name = oldArea.Name;
+						response.Changes.Add(changeRow);
+						response.Code += DeleteSitemapAreaCode(oldArea);
+					}
+				}
+
+				//delete sitemap group
+				foreach (var oldGroup in oldSitemapGroups)
+				{
+					if (!currentSitemapGroups.Any(x => x.Id == oldGroup.Id))
+					{
+						//// DELETED
+						/////////////////////////////////////////////////////
+						changeRow = new MetaChangeModel();
+						changeRow.Element = "sitemap group";
+						changeRow.Type = "deleted";
+						changeRow.Name = oldGroup.Name;
+						response.Changes.Add(changeRow);
+						response.Code += DeleteSitemapGroupCode(oldGroup);
+					}
+				}
+
+				//delete apps
+				foreach (var oldApp in oldApps)
+				{
+					if (!currentApps.Any(x => x.Id == oldApp.Id))
+					{
+						//// DELETED
+						/////////////////////////////////////////////////////
+						changeRow = new MetaChangeModel();
+						changeRow.Element = "app";
+						changeRow.Type = "deleted";
+						changeRow.Name = oldApp.Name;
+						response.Changes.Add(changeRow);
+						response.Code += DeleteAppCode(oldApp);
+					}
+				}
+
+
+
+				#endregion
+
 			}
 
 			if (entityRecordsToCompare != null && entityRecordsToCompare.Count > 0)
