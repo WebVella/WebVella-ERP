@@ -137,9 +137,15 @@ namespace WebVella.Erp.Web.Components
 					}
 					ViewBag.IsVisible = isVisible;
 
-					var valueString = context.DataModel.GetPropertyValueByDataSource(options.Value) as string;
-					if(DateTime.TryParse(valueString,out DateTime outDateTime))
-						model.Value = outDateTime.ConvertToAppDate();
+					var valueObj = context.DataModel.GetPropertyValueByDataSource(options.Value);
+					if(valueObj is DateTime)
+						model.Value = valueObj as DateTime?;
+					else if(valueObj is string)
+					{
+						if(DateTime.TryParse(valueObj as string,out DateTime outDateTime))
+							model.Value = outDateTime.ConvertToAppDate();					
+					}
+
 				}
 
 				switch (context.Mode)
