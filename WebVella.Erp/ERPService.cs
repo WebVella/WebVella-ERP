@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api;
 using System.Linq;
-using WebVella.Erp.Database;
-using WebVella.Erp.Jobs;
-using WebVella.Erp.Hooks;
+using WebVella.Erp.Api;
+using WebVella.Erp.Api.Models;
 using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Database;
+using WebVella.Erp.Hooks;
+using WebVella.Erp.Jobs;
 
 namespace WebVella.Erp
 {
@@ -20,7 +20,7 @@ namespace WebVella.Erp
 			FieldResponse fieldResponse = null;
 			EntityManager entMan = new EntityManager();
 			EntityRelationManager rm = new EntityRelationManager();
-			RecordManager recMan = new RecordManager(true);
+			RecordManager recMan = new RecordManager(null, true);
 
 			using (var connection = DbContext.Current.CreateConnection())
 			{

@@ -1,15 +1,14 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using WebVella.Erp.Api.Models;
-using WebVella.Erp.Utilities;
-using Newtonsoft.Json.Linq;
-using System.Net;
-using WebVella.Erp.Database;
-using WebVella.Erp.Utilities.Dynamic;
 using System.Dynamic;
-using WebVella.Erp.Hooks;
+using System.Linq;
+using System.Net;
+using WebVella.Erp.Api.Models;
+using WebVella.Erp.Database;
 using WebVella.Erp.Exceptions;
+using WebVella.Erp.Hooks;
+using WebVella.Erp.Utilities;
 
 namespace WebVella.Erp.Api
 {
@@ -26,16 +25,27 @@ namespace WebVella.Erp.Api
 		private bool ignoreSecurity = false;
 		private bool executeHooks = true;
 
-		public RecordManager() : this(false, true)
+		private DbContext suppliedContext = null;
+		private DbContext CurrentContext
 		{
+			get
+			{
+				if (suppliedContext != null)
+					return suppliedContext;
+				else
+					return DbContext.Current;
+			}
 		}
 
-		public RecordManager(bool ignoreSecurity = false, bool executeHooks = true)
+
+		public RecordManager(DbContext currentContext = null, bool ignoreSecurity = false, bool executeHooks = true)
 		{
+			if (currentContext != null)
+				suppliedContext = currentContext;
 			entityCache = new List<Entity>();
-			entityManager = new EntityManager();
-			entityRelationManager = new EntityRelationManager();
-			relationRepository = DbContext.Current.RelationRepository;
+			entityManager = new EntityManager(CurrentContext);
+			entityRelationManager = new EntityRelationManager(CurrentContext);
+			relationRepository = CurrentContext.RelationRepository;
 			this.ignoreSecurity = ignoreSecurity;
 			this.executeHooks = executeHooks;
 		}

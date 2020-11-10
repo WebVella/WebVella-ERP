@@ -81,7 +81,7 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			EntityRecord smtpServiceRec = null;
 			if (name != null)
 			{
-				var result = new EqlCommand("SELECT * FROM smtp_service WHERE name = @name", new EqlParameter("name", name)).Execute();
+				var result = new EqlCommand("SELECT * FROM smtp_service WHERE name = @name", null, new EqlParameter("name", name)).Execute();
 				if (result.Count == 0)
 					throw new Exception($"SmtpService with name '{name}' not found.");
 
@@ -89,7 +89,7 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			}
 			else
 			{
-				var result = new EqlCommand("SELECT * FROM smtp_service WHERE is_default = @is_default", new EqlParameter("is_default", true)).Execute();
+				var result = new EqlCommand("SELECT * FROM smtp_service WHERE is_default = @is_default", null, new EqlParameter("is_default", true)).Execute();
 				if (result.Count == 0)
 					throw new Exception($"Default SmtpService not found.");
 				else if (result.Count > 1)
@@ -102,7 +102,7 @@ namespace WebVella.Erp.Plugins.Mail.Api
 
 		internal SmtpService GetSmtpServiceInternal(Guid id)
 		{
-			var result = new EqlCommand("SELECT * FROM smtp_service WHERE id = @id", new EqlParameter("id", id)).Execute();
+			var result = new EqlCommand("SELECT * FROM smtp_service WHERE id = @id", null, new EqlParameter("id", id)).Execute();
 			if (result.Count == 0)
 				throw new Exception($"SmtpService with id = '{id}' not found.");
 

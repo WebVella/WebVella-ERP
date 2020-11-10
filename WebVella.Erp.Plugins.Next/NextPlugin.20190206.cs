@@ -1304,7 +1304,7 @@ namespace WebVella.Erp.Plugins.Next
 			//If existing accounts change to new default
 			{
 				var eqlCommand = "SELECT * FROM account WHERE salutation_id = @salutationNull";
-				var eqlResult = new EqlCommand(eqlCommand, new EqlParameter("salutationNull", null)).Execute();
+				var eqlResult = new EqlCommand(eqlCommand, null, new EqlParameter("salutationNull", null)).Execute();
 				foreach (var record in eqlResult)
 				{
 					var patchRecord = new EntityRecord();
@@ -1319,7 +1319,7 @@ namespace WebVella.Erp.Plugins.Next
 
 			{
 				var eqlCommand = "SELECT * FROM contact WHERE salutation_id = @salutationNull";
-				var eqlResult = new EqlCommand(eqlCommand, new EqlParameter("salutationNull", null)).Execute();
+				var eqlResult = new EqlCommand(eqlCommand, null, new EqlParameter("salutationNull", null)).Execute();
 				foreach (var record in eqlResult)
 				{
 					var patchRecord = new EntityRecord();

@@ -17,8 +17,22 @@ namespace WebVella.Erp.Api
 	{
 		internal static object lockObj = new object();
 
-		public EntityManager()
+		private DbContext suppliedContext = null;
+		private DbContext CurrentContext
 		{
+			get
+			{
+				if (suppliedContext != null)
+					return suppliedContext;
+				else
+					return DbContext.Current;
+			}
+		}
+
+		public EntityManager(DbContext currentContext = null)
+		{
+			if (currentContext != null)
+				suppliedContext = currentContext;
 		}
 
 		#region << Validation methods >>

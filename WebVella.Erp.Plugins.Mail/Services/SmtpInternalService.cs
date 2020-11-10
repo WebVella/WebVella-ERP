@@ -38,7 +38,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 				{
 					case "name":
 						{
-							var result = new EqlCommand("SELECT * FROM smtp_service WHERE name = @name", new EqlParameter("name", rec["name"])).Execute();
+							var result = new EqlCommand("SELECT * FROM smtp_service WHERE name = @name", null, new EqlParameter("name", rec["name"])).Execute();
 							if (result.Count > 0)
 							{
 								errors.Add(new ErrorModel
@@ -195,7 +195,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 				{
 					case "name":
 						{
-							var result = new EqlCommand("SELECT * FROM smtp_service WHERE name = @name", new EqlParameter("name", rec["name"])).Execute();
+							var result = new EqlCommand("SELECT * FROM smtp_service WHERE name = @name", null, new EqlParameter("name", rec["name"])).Execute();
 							if (result.Count > 1)
 							{
 								errors.Add(new ErrorModel
@@ -371,7 +371,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 			}
 			else if (rec.Properties.ContainsKey("is_default") && (bool)rec["is_default"] == false)
 			{
-				var currentRecord = new EqlCommand("SELECT * FROM smtp_service WHERE id = @id", new EqlParameter("id", rec["id"])).Execute();
+				var currentRecord = new EqlCommand("SELECT * FROM smtp_service WHERE id = @id", null, new EqlParameter("id", rec["id"])).Execute();
 				if (currentRecord.Count > 0 && (bool)currentRecord[0]["is_default"])
 				{
 					errors.Add(new ErrorModel
@@ -446,7 +446,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 				var ids = pageModel.HttpContext.Request.Form["attachments"].ToString().Split(",", StringSplitOptions.RemoveEmptyEntries).Select(x => new Guid(x));
 				foreach(var id in ids )
 				{
-					var fileRecord = new EqlCommand("SELECT name,path FROM user_file WHERE id = @id", new EqlParameter("id", id)).Execute().FirstOrDefault();
+					var fileRecord = new EqlCommand("SELECT name,path FROM user_file WHERE id = @id", null, new EqlParameter("id", id)).Execute().FirstOrDefault();
 					if (fileRecord != null)
 						attachments.Add((string)fileRecord["path"]);
 				}
@@ -673,7 +673,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 
 		internal Email GetEmail(Guid id)
 		{
-			var result = new EqlCommand("SELECT * FROM email WHERE id = @id", new EqlParameter("id", id)).Execute();
+			var result = new EqlCommand("SELECT * FROM email WHERE id = @id", null, new EqlParameter("id", id)).Execute();
 			if (result.Count == 1)
 				return result[0].MapTo<Email>();
 
@@ -824,7 +824,8 @@ namespace WebVella.Erp.Plugins.Mail.Services
 
 					pendingEmails = new EqlCommand("SELECT * FROM email WHERE status = @status AND scheduled_on <> NULL" +
 													" AND scheduled_on < @scheduled_on  ORDER BY priority DESC, scheduled_on ASC PAGE 1 PAGESIZE 10",
-								new EqlParameter("status", ((int)EmailStatus.Pending).ToString()),
+								null,
+                                new EqlParameter("status", ((int)EmailStatus.Pending).ToString()),
 								new EqlParameter("scheduled_on", DateTime.UtcNow)).Execute().MapTo<Email>();
 
 					foreach (var email in pendingEmails)

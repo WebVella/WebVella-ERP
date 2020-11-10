@@ -14,8 +14,21 @@ namespace WebVella.Erp.Api
 {
 	public class SecurityManager
 	{
-		public SecurityManager()
+		private DbContext suppliedContext = null;
+		private DbContext CurrentContext
 		{
+			get
+			{
+				if (suppliedContext != null)
+					return suppliedContext;
+				else
+					return DbContext.Current;
+			}
+		}
+		public SecurityManager(DbContext currentContext = null)
+		{
+			if (currentContext != null)
+				suppliedContext = currentContext;
 		}
 
 		public ErpUser GetUser(Guid userId)
