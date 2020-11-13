@@ -1848,6 +1848,7 @@ namespace WebVella.Erp.Web.Services
 					mappedRecord[key] = resultRecord[key];
 					break;
 				case FieldType.MultiLineTextField:
+				case FieldType.GeographyField:
 					mappedRecord[key] = resultRecord[key];
 					break;
 				case FieldType.MultiSelectField:

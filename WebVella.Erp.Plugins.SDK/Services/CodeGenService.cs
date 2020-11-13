@@ -1691,7 +1691,10 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 				case FieldType.MultiLineTextField:
 					response += CreateMultiLineTextFieldCode(field as DbMultiLineTextField, entityId, entityName);
 					break;
-				case FieldType.MultiSelectField:
+                case FieldType.GeographyField:
+                    response += CreateGeographyFieldCode(field as DbGeographyField, entityId, entityName);
+                    break;
+                case FieldType.MultiSelectField:
 					response += CreateMultiSelectFieldCode(field as DbMultiSelectField, entityId, entityName);
 					break;
 				case FieldType.NumberField:
@@ -2471,8 +2474,112 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 		"#endregion\n\n";
 			return response;
 		}
+        private string CreateGeographyFieldCode(DbGeographyField field, Guid entityId, string entityName)
+        {
+            var response = "";
+            response =
+$"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >>\n" +
+"{\n" +
+    $"\tInputGeographyField geometryField = new InputGeographyField();\n" +
+    $"\tgeometryField.Id = new Guid(\"{field.Id}\");\n" +
+    $"\tgeometryField.Name = \"{field.Name}\";\n" +
+    $"\tgeometryField.Label = \"{field.Label}\";\n";
+            if (field.PlaceholderText == null)
+            {
+                response += $"\tgeometryField.PlaceholderText = null;\n";
+            }
+            else
+            {
+                response += $"\tgeometryField.PlaceholderText = \"{field.PlaceholderText}\";\n";
+            }
+            if (field.Description == null)
+            {
+                response += $"\tgeometryField.Description = null;\n";
+            }
+            else
+            {
+                response += $"\tgeometryField.Description = \"{field.Description}\";\n";
+            }
+            if (field.HelpText == null)
+            {
+                response += $"\tgeometryField.HelpText = null;\n";
+            }
+            else
+            {
+                response += $"\tgeometryField.HelpText = \"{field.HelpText}\";\n";
+            }
 
-		private string CreateMultiLineTextFieldCode(DbMultiLineTextField field, Guid entityId, string entityName)
+            response +=
+            $"\tgeometryField.Required = {(field.Required).ToString().ToLowerInvariant()};\n" +
+            $"\tgeometryField.Unique = {(field.Unique).ToString().ToLowerInvariant()};\n" +
+            $"\tgeometryField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
+            $"\tgeometryField.Auditable = {(field.Auditable).ToString().ToLowerInvariant()};\n" +
+            $"\tgeometryField.System = {(field.System).ToString().ToLowerInvariant()};\n";
+
+            if (field.Format.HasValue)
+            {
+                response +=
+                    $"\tgeometryField.Format = WebVella.Erp.Api.Models.GeographyFieldFormat.{field.Format.Value};\n";
+            }
+            else
+            {
+                response +=
+                    $"\tgeometryField.Format = WebVella.Erp.Api.Models.GeographyFieldFormat.GeoJSON;\n";
+            }
+            response +=
+                $"\tgeometryField.SRID = {field.SRID};\n";
+
+            if (field.DefaultValue == null)
+            {
+                response += $"\tgeometryField.DefaultValue = null;\n";
+            }
+            else
+            {
+                response += $"\tgeometryField.DefaultValue = \"{field.DefaultValue}\";\n";
+            }
+            if (field.MaxLength == null)
+            {
+                response += $"\tgeometryField.MaxLength = null;\n";
+            }
+            else
+            {
+                response += $"\tgeometryField.MaxLength = Int32.Parse(\"{field.MaxLength}\");\n";
+            }
+            if (field.VisibleLineNumber == null)
+            {
+                response += $"\tgeometryField.VisibleLineNumber = null;\n";
+            }
+            else
+            {
+                response += $"\tgeometryField.VisibleLineNumber = Int32.Parse(\"{field.VisibleLineNumber}\");\n";
+            }
+            response +=
+            $"\tgeometryField.EnableSecurity = {(field.EnableSecurity).ToString().ToLowerInvariant()};\n" +
+            $"\tgeometryField.Permissions = new FieldPermissions();\n" +
+            $"\tgeometryField.Permissions.CanRead = new List<Guid>();\n" +
+            $"\tgeometryField.Permissions.CanUpdate = new List<Guid>();\n" +
+            "\t//READ\n";
+            foreach (var permId in field.Permissions.CanRead)
+            {
+                response += $"\tgeometryField.Permissions.CanRead.Add(new Guid(\"{permId}\"));\n";
+            }
+            response += "\t//UPDATE\n";
+            foreach (var permId in field.Permissions.CanUpdate)
+            {
+                response += $"\tgeometryField.Permissions.CanUpdate.Add(new Guid(\"{permId}\"));\n";
+            }
+            response +=
+            "\t{\n" +
+                $"\t\tvar response = entMan.CreateField(new Guid(\"{entityId}\"), geometryField, false);\n" +
+                "\t\tif (!response.Success)\n" +
+                    $"\t\t\tthrow new Exception(\"System error 10060. Entity: {entityName} Field: {field.Name} Message:\" + response.Message);\n" +
+            "\t}\n" +
+        "}\n" +
+        "#endregion\n\n";
+
+            return response;
+        }
+        private string CreateMultiLineTextFieldCode(DbMultiLineTextField field, Guid entityId, string entityName)
 		{
 			var response = "";
 			response =
@@ -3614,7 +3721,18 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 						}
 					}
 					break;
-				case FieldType.MultiSelectField:
+                case FieldType.GeographyField:
+                    {
+                        var responseCode = UpdateGeographyFieldCode(currentField as DbGeographyField, oldField as DbGeographyField, currentEntity.Id, currentEntity.Name);
+
+                        if (responseCode != string.Empty)
+                        {
+                            code = responseCode;
+                            hasUpdate = true;
+                        }
+                    }
+                    break;
+                case FieldType.MultiSelectField:
 					{
 						var responseCode = UpdateMultiSelectFieldCode(currentField as DbMultiSelectField, oldField as DbMultiSelectField, currentEntity.Id, currentEntity.Name);
 						if (responseCode != string.Empty)
@@ -5327,8 +5445,195 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 
 			return response;
 		}
+        private string UpdateGeographyFieldCode(DbGeographyField currentField, DbGeographyField oldField, Guid entityId, string entityName)
+        {
+            var response = "";
+            var hasUpdate = false;
 
-		private string UpdateMultiSelectFieldCode(DbMultiSelectField currentField, DbMultiSelectField oldField, Guid entityId, string entityName)
+            #region << Code >>
+            response =
+            $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.Name} >>\n" +
+            "{\n" +
+                $"\tvar currentEntity = entMan.ReadEntity(new Guid(\"{entityId}\")).Object;\n" +
+                $"\tInputGeographyField geometryField = new InputGeographyField();\n" +
+                $"\tgeometryField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == \"{currentField.Name}\").Id;\n" +
+                $"\tgeometryField.Name = \"{currentField.Name}\";\n" +
+                $"\tgeometryField.Label = \"{currentField.Label}\";\n";
+            if (currentField.PlaceholderText == null)
+            {
+                response += $"\tgeometryField.PlaceholderText = null;\n";
+            }
+            else
+            {
+                response += $"\tgeometryField.PlaceholderText = \"{currentField.PlaceholderText}\";\n";
+            }
+            if (currentField.Description == null)
+            {
+                response += $"\tgeometryField.Description = null;\n";
+            }
+            else
+            {
+                response += $"\tgeometryField.Description = \"{currentField.Description}\";\n";
+            }
+            if (currentField.HelpText == null)
+            {
+                response += $"\tgeometryField.HelpText = null;\n";
+            }
+            else
+            {
+                response += $"\tgeometryField.HelpText = \"{currentField.HelpText}\";\n";
+            }
+
+            response +=
+            $"\tgeometryField.Required = {(currentField.Required).ToString().ToLowerInvariant()};\n" +
+            $"\tgeometryField.Unique = {(currentField.Unique).ToString().ToLowerInvariant()};\n" +
+            $"\tgeometryField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
+            $"\tgeometryField.Auditable = {(currentField.Auditable).ToString().ToLowerInvariant()};\n" +
+            $"\tgeometryField.System = {(currentField.System).ToString().ToLowerInvariant()};\n";
+
+            if (currentField.Format.HasValue)
+            {
+                response +=
+                    $"\tgeometryField.Format = WebVella.Erp.Api.Models.GeographyFieldFormat.{currentField.Format.Value};\n";
+            }
+            else
+            {
+                response +=
+                    $"\tgeometryField.Format = WebVella.Erp.Api.Models.GeographyFieldFormat.GeoJSON;\n";
+            }
+            response +=
+                $"\tgeometryField.SRID = {currentField.SRID};\n";
+            if (currentField.DefaultValue == null)
+            {
+                response += $"\tgeometryField.DefaultValue = null;\n";
+            }
+            else
+            {
+                response += $"\tgeometryField.DefaultValue = \"{currentField.DefaultValue}\";\n";
+            }
+            if (currentField.MaxLength == null)
+            {
+                response += $"\tgeometryField.MaxLength = null;\n";
+            }
+            else
+            {
+                response += $"\tgeometryField.MaxLength = Int32.Parse(\"{currentField.MaxLength}\");\n";
+            }
+            if (currentField.VisibleLineNumber == null)
+            {
+                response += $"\tgeometryField.VisibleLineNumber = null;\n";
+            }
+            else
+            {
+                response += $"\tgeometryField.VisibleLineNumber = Int32.Parse(\"{currentField.VisibleLineNumber}\");\n";
+            }
+
+            response +=
+            $"\tgeometryField.EnableSecurity = {(currentField.EnableSecurity).ToString().ToLowerInvariant()};\n" +
+            $"\tgeometryField.Permissions = new FieldPermissions();\n" +
+            $"\tgeometryField.Permissions.CanRead = new List<Guid>();\n" +
+            $"\tgeometryField.Permissions.CanUpdate = new List<Guid>();\n" +
+            "\t//READ\n";
+            foreach (var permId in currentField.Permissions.CanRead)
+            {
+                response += $"\tgeometryField.Permissions.CanRead.Add(new Guid(\"{permId}\"));\n";
+            }
+            response += "\t//UPDATE\n";
+            foreach (var permId in currentField.Permissions.CanUpdate)
+            {
+                response += $"\tgeometryField.Permissions.CanUpdate.Add(new Guid(\"{permId}\"));\n";
+            }
+            response +=
+            "\t{\n" +
+                $"\t\tvar response = entMan.UpdateField(new Guid(\"{entityId}\"), geometryField);\n" +
+                "\t\tif (!response.Success)\n" +
+                    $"\t\t\tthrow new Exception(\"System error 10060. Entity: {entityName} Field: {currentField.Name} Message:\" + response.Message);\n" +
+            "\t}\n" +
+        "}\n" +
+        "#endregion\n\n";
+
+            #endregion
+
+            #region << Update check >>
+            if (oldField == null) //oldField is null where its field type is different from currentField
+            {
+                hasUpdate = true;
+            }
+            else if (currentField.Name != oldField.Name)
+            {
+                hasUpdate = true;
+            }
+            else if (currentField.Label != oldField.Label)
+            {
+                hasUpdate = true;
+            }
+            else if (currentField.PlaceholderText != oldField.PlaceholderText)
+            {
+                hasUpdate = true;
+            }
+            else if (currentField.Description != oldField.Description)
+            {
+                hasUpdate = true;
+            }
+            else if (currentField.HelpText != oldField.HelpText)
+            {
+                hasUpdate = true;
+            }
+            else if (currentField.Required != oldField.Required)
+            {
+                hasUpdate = true;
+            }
+            else if (currentField.Unique != oldField.Unique)
+            {
+                hasUpdate = true;
+            }
+            else if (currentField.Searchable != oldField.Searchable)
+            {
+                hasUpdate = true;
+            }
+            else if (currentField.Auditable != oldField.Auditable)
+            {
+                hasUpdate = true;
+            }
+            else if (currentField.System != oldField.System)
+            {
+                hasUpdate = true;
+            }
+            else if (currentField.DefaultValue != oldField.DefaultValue)
+            {
+                hasUpdate = true;
+            }
+            else if (currentField.MaxLength != oldField.MaxLength)
+            {
+                hasUpdate = true;
+            }
+            else if (currentField.VisibleLineNumber != oldField.VisibleLineNumber)
+            {
+                hasUpdate = true;
+            }
+            else if (currentField.EnableSecurity != oldField.EnableSecurity)
+            {
+                hasUpdate = true;
+            }
+            else
+            {
+                // Permissions change check
+                if (CheckFieldPermissionsHasUpdate(oldField.Permissions, currentField.Permissions))
+                {
+                    hasUpdate = true;
+                }
+            }
+            #endregion
+
+            if (!hasUpdate)
+            {
+                return string.Empty;
+            }
+
+            return response;
+        }
+
+        private string UpdateMultiSelectFieldCode(DbMultiSelectField currentField, DbMultiSelectField oldField, Guid entityId, string entityName)
 		{
 			var response = "";
 			var hasUpdate = false;

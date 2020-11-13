@@ -123,7 +123,15 @@ namespace WebVella.Erp.Plugins.SDK.Utils
 				card["type"] = "7";
 				FieldCards.Add(card);
 			}
-			{
+            {
+                var card = new EntityRecord();
+                card["label"] = "Geography";
+                card["class"] = "fas fa-map-marked-alt";
+                card["description"] = "Geography field (requires Postgis).  Your GeoJson or Text will be stored in the database as geography.";
+                card["type"] = "21";
+                FieldCards.Add(card);
+            }
+            {
 				var card = new EntityRecord();
 				card["label"] = "HTML";
 				card["class"] = "fas fa-code";

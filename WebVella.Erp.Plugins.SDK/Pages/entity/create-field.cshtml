@@ -77,248 +77,258 @@
 		</wv-row>
 	</wv-section>
 
-	<wv-section title="Type specific" class="mt-3">
-		@switch (Model.Type)
-		{
-			case FieldType.AutoNumberField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-number name="DefaultValue" value="Model.DefaultValue" label-text="Default value" required="true" placeholder="e.g. 1"></wv-field-number>
-					</wv-column>
-					<wv-column span="6">
-						<wv-field-number name="StartingNumber" value="Model.StartingNumber" label-text="Starting number" placeholder="increment starting point"></wv-field-number>
-					</wv-column>
-				</wv-row>
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-text name="DisplayFormat" value="Model.DisplayFormat" label-text="Display Format" placeholder="e.g. Order-{0}"></wv-field-text>
-					</wv-column>
-					<wv-column span="6">
-					</wv-column>
-				</wv-row>
-				break;
-			case FieldType.CheckboxField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-checkbox name="DefaultValue" value="Model.DefaultValue" label-text="Default value" required="true" text-true="checked by default" text-false="unchecked by default"></wv-field-checkbox>
-					</wv-column>
-				</wv-row>
-				break;
-			case FieldType.CurrencyField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-number name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" description="@("use 'null' to make nullable")"></wv-field-number>
-					</wv-column>
-				</wv-row>
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-number name="MinValue" value="Model.MinValue" label-text="Minimum Value"></wv-field-number>
-					</wv-column>
-					<wv-column span="6">
-						<wv-field-number name="MaxValue" value="Model.MaxValue" label-text="Maximum Value"></wv-field-number>
-					</wv-column>
-				</wv-row>
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-select options="Model.CurrencyOptions.ToWvSelectOption()" name="CurrencyCode" value="Model.CurrencyCode" label-text="Currency" required="true"></wv-field-select>
-					</wv-column>
-				</wv-row>
-				break;
-			case FieldType.DateField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-date name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="e.g. 2014-11-01"></wv-field-date>
-					</wv-column>
-					<wv-column span="6">
-						<wv-field-text name="Format" value="Model.Format" label-text="Presentation format" placeholder="e.g. yyyy-MMM-dd"></wv-field-text>
-					</wv-column>
-				</wv-row>
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-checkbox name="UseCurrentTimeAsDefaultValue" value="Model.UseCurrentTimeAsDefaultValue" label-text="Use generation date as default" text-true="use record date as default" text-false="do not use record date as default"></wv-field-checkbox>
-					</wv-column>
-				</wv-row>
-				break;
-			case FieldType.DateTimeField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-datetime name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="e.g. 2014-11-01 23:01"></wv-field-datetime>
-					</wv-column>
-					<wv-column span="6">
-						<wv-field-text name="Format" value="Model.Format" label-text="Presentation format" placeholder="e.g. yyyy-MMM-dd HH:mm"></wv-field-text>
-					</wv-column>
-				</wv-row>
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-checkbox name="UseCurrentTimeAsDefaultValue" value="Model.UseCurrentTimeAsDefaultValue" label-text="Use generation date as default" text-true="use record date as default" text-false="do not use record date as default"></wv-field-checkbox>
-					</wv-column>
-				</wv-row>
-				break;
-			case FieldType.EmailField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-text name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="e.g. email@domain.com" description="@("use 'null' to make nullable")"></wv-field-text>
-					</wv-column>
-					<wv-column span="6">
-						<wv-field-number name="MaxLength" value="Model.MaxLength" label-text="Maximum Length"></wv-field-number>
-					</wv-column>
-				</wv-row>
-				break;
-			case FieldType.FileField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-text name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="e.g. http://mydomain.com/file.pdf or /assets/file.pdf" description="@("use 'null' to make nullable")"></wv-field-text>
-					</wv-column>
-				</wv-row>
-				break;
-			case FieldType.HtmlField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-textarea name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="e.g. some html code" description="@("use 'null' to make nullable")"></wv-field-textarea>
-					</wv-column>
-				</wv-row>
-				break;
-			case FieldType.ImageField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-text name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="e.g. /assets/image.png" description="@("use 'null' to make nullable")"></wv-field-text>
-					</wv-column>
-				</wv-row>
-				break;
-			case FieldType.MultiLineTextField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-textarea name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="e.g. some text" description="@("use 'null' to make nullable")"></wv-field-textarea>
-					</wv-column>
-				</wv-row>
-				break;
-			case FieldType.MultiSelectField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-textarea height="100px" name="SelectOptions" value="Model.SelectOptions" label-text="Options" description="(value) or (value,label) or (value,label,icon class) or (value,label,icon class,color) separated by new line"></wv-field-textarea>
-					</wv-column>
-					<wv-column span="6">
-						<wv-field-textarea height="100px" name="DefaultValue" value="Model.DefaultValue" label-text="Default Values" description="values separated by new line"></wv-field-textarea>
-					</wv-column>
-				</wv-row>
-				break;
-			case FieldType.NumberField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-number name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" description="@("use 'null' to make nullable")"></wv-field-number>
-					</wv-column>
-					<wv-column span="6">
-						<wv-field-number name="DecimalPlaces" value="Model.DecimalPlaces" label-text="Decimal Places"></wv-field-number>
-					</wv-column>
-				</wv-row>
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-number name="MinValue" value="Model.MinValue" label-text="Minimum Value"></wv-field-number>
-					</wv-column>
-					<wv-column span="6">
-						<wv-field-number name="MaxValue" value="Model.MaxValue" label-text="Maximum Value"></wv-field-number>
-					</wv-column>
-				</wv-row>
-				break;
-			case FieldType.PasswordField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-number name="MaxLength" value="Model.MaxLength" label-text="Maximum Length"></wv-field-number>
-					</wv-column>
-					<wv-column span="6">
-						<wv-field-checkbox name="Encrypted" value="Model.Encrypted" label-text="Encryption" text-true="encrypted in database" text-false="plain text in database"></wv-field-checkbox>
-					</wv-column>
-				</wv-row>
-				break;
-			case FieldType.PercentField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-number name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" description="@("use 'null' to make nullable")"></wv-field-number>
-					</wv-column>
-					<wv-column span="6">
-						<wv-field-number name="DecimalPlaces" value="Model.DecimalPlaces" label-text="Decimal Places"></wv-field-number>
-					</wv-column>
-				</wv-row>
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-number name="MinValue" value="Model.MinValue" label-text="Minimum Value"></wv-field-number>
-					</wv-column>
-					<wv-column span="6">
-						<wv-field-number name="MaxValue" value="Model.MaxValue" label-text="Maximum Value"></wv-field-number>
-					</wv-column>
-				</wv-row>
-				break;
-			case FieldType.PhoneField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-text name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" description="@("use 'null' to make nullable")"></wv-field-text>
-					</wv-column>
-					<wv-column span="6">
-						<wv-field-number name="MaxLength" value="Model.MaxLength" label-text="Maximum Length"></wv-field-number>
-					</wv-column>
-				</wv-row>
-				break;
-			case FieldType.GuidField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-text name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" description="@Html.Raw("fill with <a class='WvGuidPrefillEmpty' href='#'>empty guid</a>")"></wv-field-text>
-						<script>
-							$(function () {
-								$('.WvGuidPrefillEmpty').click(
-									function (event) {
-										event.preventDefault();
-										event.stopPropagation()
-										$(this).closest('.form-group').find('.form-control').val('00000000-0000-0000-0000-000000000000');
-									}
-								);
-							});
-						</script>
-					</wv-column>
-					<wv-column span="6">
-						<wv-field-checkbox name="GenerateNewId" value="Model.GenerateNewId" label-text="Guid Generation" text-true="generate GUID as default" text-false="use default value"></wv-field-checkbox>
-					</wv-column>
-				</wv-row>
-				break;
-			case FieldType.SelectField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-textarea height="100px" name="SelectOptions" value="Model.SelectOptions" label-text="Options" description="(value) or (value,label) or (value,label,icon class) or (value,label,icon class,color) separated by new line"></wv-field-textarea>
-					</wv-column>
-					<wv-column span="6">
-						<wv-field-text name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="" description="@("use 'null' to make nullable")"></wv-field-text>
-					</wv-column>
-				</wv-row>
+    <wv-section title="Type specific" class="mt-3">
+        @switch (Model.Type)
+        {
+            case FieldType.AutoNumberField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-number name="DefaultValue" value="Model.DefaultValue" label-text="Default value" required="true" placeholder="e.g. 1"></wv-field-number>
+                    </wv-column>
+                    <wv-column span="6">
+                        <wv-field-number name="StartingNumber" value="Model.StartingNumber" label-text="Starting number" placeholder="increment starting point"></wv-field-number>
+                    </wv-column>
+                </wv-row>
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-text name="DisplayFormat" value="Model.DisplayFormat" label-text="Display Format" placeholder="e.g. Order-{0}"></wv-field-text>
+                    </wv-column>
+                    <wv-column span="6">
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.CheckboxField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-checkbox name="DefaultValue" value="Model.DefaultValue" label-text="Default value" required="true" text-true="checked by default" text-false="unchecked by default"></wv-field-checkbox>
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.CurrencyField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-number name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" description="@("use 'null' to make nullable")"></wv-field-number>
+                    </wv-column>
+                </wv-row>
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-number name="MinValue" value="Model.MinValue" label-text="Minimum Value"></wv-field-number>
+                    </wv-column>
+                    <wv-column span="6">
+                        <wv-field-number name="MaxValue" value="Model.MaxValue" label-text="Maximum Value"></wv-field-number>
+                    </wv-column>
+                </wv-row>
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-select options="Model.CurrencyOptions.ToWvSelectOption()" name="CurrencyCode" value="Model.CurrencyCode" label-text="Currency" required="true"></wv-field-select>
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.DateField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-date name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="e.g. 2014-11-01"></wv-field-date>
+                    </wv-column>
+                    <wv-column span="6">
+                        <wv-field-text name="Format" value="Model.Format" label-text="Presentation format" placeholder="e.g. yyyy-MMM-dd"></wv-field-text>
+                    </wv-column>
+                </wv-row>
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-checkbox name="UseCurrentTimeAsDefaultValue" value="Model.UseCurrentTimeAsDefaultValue" label-text="Use generation date as default" text-true="use record date as default" text-false="do not use record date as default"></wv-field-checkbox>
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.DateTimeField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-datetime name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="e.g. 2014-11-01 23:01"></wv-field-datetime>
+                    </wv-column>
+                    <wv-column span="6">
+                        <wv-field-text name="Format" value="Model.Format" label-text="Presentation format" placeholder="e.g. yyyy-MMM-dd HH:mm"></wv-field-text>
+                    </wv-column>
+                </wv-row>
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-checkbox name="UseCurrentTimeAsDefaultValue" value="Model.UseCurrentTimeAsDefaultValue" label-text="Use generation date as default" text-true="use record date as default" text-false="do not use record date as default"></wv-field-checkbox>
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.EmailField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-text name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="e.g. email@domain.com" description="@("use 'null' to make nullable")"></wv-field-text>
+                    </wv-column>
+                    <wv-column span="6">
+                        <wv-field-number name="MaxLength" value="Model.MaxLength" label-text="Maximum Length"></wv-field-number>
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.FileField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-text name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="e.g. http://mydomain.com/file.pdf or /assets/file.pdf" description="@("use 'null' to make nullable")"></wv-field-text>
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.GeographyField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-select options="Model.GeographyFormats.ToWvSelectOption()" name="GeographyFormat" value="Model.GeographyFormat" label-text="Geography format" required="true"></wv-field-select>
+                    </wv-column>
+                    <wv-column span="6">
+                        <wv-field-number name="SRID" value="Model.SRID" label-text="SRID"></wv-field-number>
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.HtmlField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-textarea name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="e.g. some html code" description="@("use 'null' to make nullable")"></wv-field-textarea>
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.ImageField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-text name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="e.g. /assets/image.png" description="@("use 'null' to make nullable")"></wv-field-text>
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.MultiLineTextField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-textarea name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="e.g. some text" description="@("use 'null' to make nullable")"></wv-field-textarea>
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.MultiSelectField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-textarea height="100px" name="SelectOptions" value="Model.SelectOptions" label-text="Options" description="(value) or (value,label) or (value,label,icon class) or (value,label,icon class,color) separated by new line"></wv-field-textarea>
+                    </wv-column>
+                    <wv-column span="6">
+                        <wv-field-textarea height="100px" name="DefaultValue" value="Model.DefaultValue" label-text="Default Values" description="values separated by new line"></wv-field-textarea>
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.NumberField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-number name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" description="@("use 'null' to make nullable")"></wv-field-number>
+                    </wv-column>
+                    <wv-column span="6">
+                        <wv-field-number name="DecimalPlaces" value="Model.DecimalPlaces" label-text="Decimal Places"></wv-field-number>
+                    </wv-column>
+                </wv-row>
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-number name="MinValue" value="Model.MinValue" label-text="Minimum Value"></wv-field-number>
+                    </wv-column>
+                    <wv-column span="6">
+                        <wv-field-number name="MaxValue" value="Model.MaxValue" label-text="Maximum Value"></wv-field-number>
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.PasswordField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-number name="MaxLength" value="Model.MaxLength" label-text="Maximum Length"></wv-field-number>
+                    </wv-column>
+                    <wv-column span="6">
+                        <wv-field-checkbox name="Encrypted" value="Model.Encrypted" label-text="Encryption" text-true="encrypted in database" text-false="plain text in database"></wv-field-checkbox>
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.PercentField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-number name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" description="@("use 'null' to make nullable")"></wv-field-number>
+                    </wv-column>
+                    <wv-column span="6">
+                        <wv-field-number name="DecimalPlaces" value="Model.DecimalPlaces" label-text="Decimal Places"></wv-field-number>
+                    </wv-column>
+                </wv-row>
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-number name="MinValue" value="Model.MinValue" label-text="Minimum Value"></wv-field-number>
+                    </wv-column>
+                    <wv-column span="6">
+                        <wv-field-number name="MaxValue" value="Model.MaxValue" label-text="Maximum Value"></wv-field-number>
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.PhoneField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-text name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" description="@("use 'null' to make nullable")"></wv-field-text>
+                    </wv-column>
+                    <wv-column span="6">
+                        <wv-field-number name="MaxLength" value="Model.MaxLength" label-text="Maximum Length"></wv-field-number>
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.GuidField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-text name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" description="@Html.Raw("fill with <a class='WvGuidPrefillEmpty' href='#'>empty guid</a>")"></wv-field-text>
+                        <script>
+                            $(function () {
+                                $('.WvGuidPrefillEmpty').click(
+                                    function (event) {
+                                        event.preventDefault();
+                                        event.stopPropagation()
+                                        $(this).closest('.form-group').find('.form-control').val('00000000-0000-0000-0000-000000000000');
+                                    }
+                                );
+                            });
+                        </script>
+                    </wv-column>
+                    <wv-column span="6">
+                        <wv-field-checkbox name="GenerateNewId" value="Model.GenerateNewId" label-text="Guid Generation" text-true="generate GUID as default" text-false="use default value"></wv-field-checkbox>
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.SelectField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-textarea height="100px" name="SelectOptions" value="Model.SelectOptions" label-text="Options" description="(value) or (value,label) or (value,label,icon class) or (value,label,icon class,color) separated by new line"></wv-field-textarea>
+                    </wv-column>
+                    <wv-column span="6">
+                        <wv-field-text name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="" description="@("use 'null' to make nullable")"></wv-field-text>
+                    </wv-column>
+                </wv-row>
 
-				break;
-			case FieldType.TextField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-text name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="" description="@("use 'null' to make nullable")"></wv-field-text>
-					</wv-column>
-					<wv-column span="6">
-						<wv-field-number name="MaxLength" value="Model.MaxLength" label-text="Maximum Length"></wv-field-number>
-					</wv-column>
-				</wv-row>
-				break;
-			case FieldType.UrlField:
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-text name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="" description="@("use 'null' to make nullable")"></wv-field-text>
-					</wv-column>
-					<wv-column span="6">
-						<wv-field-number name="MaxLength" value="Model.MaxLength" label-text="Maximum Length"></wv-field-number>
-					</wv-column>
-				</wv-row>
-				<wv-row>
-					<wv-column span="6">
-						<wv-field-checkbox name="OpenTargetInNewWindow" value="Model.OpenTargetInNewWindow" label-text="Link target" text-true="open in new tab" text-false="open in same tab"></wv-field-checkbox>
-					</wv-column>
-				</wv-row>
-				break;
-			default:
-				break;
-		}
-	</wv-section>
+                break;
+            case FieldType.TextField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-text name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="" description="@("use 'null' to make nullable")"></wv-field-text>
+                    </wv-column>
+                    <wv-column span="6">
+                        <wv-field-number name="MaxLength" value="Model.MaxLength" label-text="Maximum Length"></wv-field-number>
+                    </wv-column>
+                </wv-row>
+                break;
+            case FieldType.UrlField:
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-text name="DefaultValue" value="Model.DefaultValue" label-text="Default Value" placeholder="" description="@("use 'null' to make nullable")"></wv-field-text>
+                    </wv-column>
+                    <wv-column span="6">
+                        <wv-field-number name="MaxLength" value="Model.MaxLength" label-text="Maximum Length"></wv-field-number>
+                    </wv-column>
+                </wv-row>
+                <wv-row>
+                    <wv-column span="6">
+                        <wv-field-checkbox name="OpenTargetInNewWindow" value="Model.OpenTargetInNewWindow" label-text="Link target" text-true="open in new tab" text-false="open in same tab"></wv-field-checkbox>
+                    </wv-column>
+                </wv-row>
+                break;
+            default:
+                break;
+        }
+    </wv-section>
 
 	<wv-section title="API Security" class="mt-3">
 		<wv-row>

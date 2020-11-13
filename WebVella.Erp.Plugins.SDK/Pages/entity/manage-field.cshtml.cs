@@ -68,9 +68,17 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 		[BindProperty]
 		public string CurrencyCode { get; set; } = "USD";
 
-		public List<SelectOption> CurrencyOptions { get; set; } = new List<SelectOption>();
+        [BindProperty]
+        public string GeographyFormat { get; set; } = "1";
 
-		[BindProperty]
+        [BindProperty]
+        public string SRID { get; set; }
+
+        public List<SelectOption> CurrencyOptions { get; set; } = new List<SelectOption>();
+
+        public List<SelectOption> GeographyFormats { get; set; } = new List<SelectOption>();
+
+        [BindProperty]
 		public decimal? MinValue { get; set; } = null;
 
 		[BindProperty]
@@ -308,7 +316,26 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 							MaxLength = typedInput.MaxLength;
 						}
 						break;
-					case FieldType.MultiSelectField:
+                    case FieldType.GeographyField:
+                        {
+                            var typedInput = (GeographyField)Field;
+                            SRID = typedInput.SRID.ToString();
+                            GeographyFormat = typedInput.Format.ToString();
+                            Name = typedInput.Name;
+                            Label = typedInput.Label;
+                            Required = typedInput.Required;
+                            Description = typedInput.Description;
+                            Unique = typedInput.Unique;
+                            HelpText = typedInput.HelpText;
+                            System = typedInput.System;
+                            PlaceholderText = typedInput.PlaceholderText;
+                            Searchable = typedInput.Searchable;
+                            DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "NULL");
+                            EnableSecurity = typedInput.EnableSecurity;
+                            MaxLength = typedInput.MaxLength;
+                        }
+                        break;
+                    case FieldType.MultiSelectField:
 						{
 							var typedInput = (MultiSelectField)Field;
 							Name = typedInput.Name;
@@ -531,7 +558,16 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 				case FieldType.DateTimeField:
 					Format = "yyyy-MMM-dd HH:mm";
 					break;
-				default:
+                case FieldType.GeographyField:
+                    foreach (int format in Enum.GetValues(typeof(GeographyFieldFormat)))
+                    {
+                        string value = format.ToString();
+                        string name = ((GeographyFieldFormat)format).ToString();
+                        GeographyFormats.Add(new SelectOption(value, name));
+                    }
+
+                    break;
+                default:
 					break;
 			}
 
@@ -894,7 +930,33 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 							};
 						}
 						break;
-					case FieldType.MultiSelectField:
+                    case FieldType.GeographyField:
+                        {
+                            string defaultValue = null;
+                            if (DefaultValue.ToLowerInvariant() != "null")
+                            {
+                                defaultValue = DefaultValue;
+                            }
+
+                            input = new InputGeographyField()
+                            {
+                                Id = fieldId,
+                                Name = Name,
+                                Label = Label,
+                                Required = Required,
+                                Description = Description,
+                                Unique = Unique,
+                                HelpText = HelpText,
+                                System = System,
+                                PlaceholderText = PlaceholderText,
+                                Searchable = Searchable,
+                                DefaultValue = defaultValue,
+                                EnableSecurity = EnableSecurity,
+                                MaxLength = MaxLength
+                            };
+                        }
+                        break;
+                    case FieldType.MultiSelectField:
 						{
 							var selectOptions = SelectOptions.Split(Environment.NewLine);
 							var defaultOptions = DefaultValue.Split(Environment.NewLine);

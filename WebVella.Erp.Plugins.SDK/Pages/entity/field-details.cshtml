@@ -77,336 +77,350 @@
 		</wv-row>
 	</wv-section>
 
-	<wv-section title="Type specific" class="mt-3">
-		@switch (Model.Field.GetFieldType())
-		{
-			case FieldType.AutoNumberField:
-				{
-					var fieldCasted = (AutoNumberField)Model.Field;
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.DefaultValue" label-text="Default value"></wv-field-number>
-						</wv-column>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.StartingNumber" label-text="Starting number"></wv-field-number>
-						</wv-column>
-					</wv-row>
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-text value="fieldCasted.DisplayFormat" label-text="Display Format"></wv-field-text>
-						</wv-column>
-						<wv-column span="6">
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.CheckboxField:
-				{
-					var fieldCasted = (CheckboxField)Model.Field;
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-checkbox value="fieldCasted.DefaultValue" label-text="Default value" text-true="checked by default" text-false="unchecked by default"></wv-field-checkbox>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.CurrencyField:
-				{
-					var fieldCasted = (CurrencyField)Model.Field;
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-number>
-						</wv-column>
-					</wv-row>
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.MinValue" label-text="Minimum Value"></wv-field-number>
-						</wv-column>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.MaxValue" label-text="Maximum Value"></wv-field-number>
-						</wv-column>
-					</wv-row>
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-text value="fieldCasted.Currency.Code" label-text="Currency"></wv-field-text>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.DateField:
-				{
-					var fieldCasted = (DateField)Model.Field;
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-date value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-date>
-						</wv-column>
-						<wv-column span="6">
-							<wv-field-text value="fieldCasted.Format" label-text="Presentation format"></wv-field-text>
-						</wv-column>
-					</wv-row>
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-checkbox value="fieldCasted.UseCurrentTimeAsDefaultValue" label-text="Use generation date as default" text-true="use record date as default" text-false="do not use record date as default"></wv-field-checkbox>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.DateTimeField:
-				{
-					var fieldCasted = (DateTimeField)Model.Field;
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-datetime value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-datetime>
-						</wv-column>
-						<wv-column span="6">
-							<wv-field-text value="fieldCasted.Format" label-text="Presentation format"></wv-field-text>
-						</wv-column>
-					</wv-row>
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-checkbox value="fieldCasted.UseCurrentTimeAsDefaultValue" label-text="Use generation date as default" text-true="use record date as default" text-false="do not use record date as default"></wv-field-checkbox>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.EmailField:
-				{
-					var fieldCasted = (EmailField)Model.Field;
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-text value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-text>
-						</wv-column>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.MaxLength" label-text="Maximum Length"></wv-field-number>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.FileField:
-				{
-					var fieldCasted = (FileField)Model.Field;
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-text value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-text>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.HtmlField:
-				{
-					var fieldCasted = (HtmlField)Model.Field;
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-textarea value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-textarea>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.ImageField:
-				{
-					var fieldCasted = (ImageField)Model.Field;
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-text value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-text>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.MultiLineTextField:
-				{
-					var fieldCasted = (MultiLineTextField)Model.Field;
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-textarea value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-textarea>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.MultiSelectField:
-				{
-					var fieldCasted = (MultiSelectField)Model.Field;
-					var selectOptionsText = "";
-					var defaultValuesText = "";
-					foreach (var option in fieldCasted.Options)
-					{
-						if (String.IsNullOrWhiteSpace(option.IconClass))
-						{
-							selectOptionsText += $"{option.Value},{option.Label}" + Environment.NewLine;
-						}
-						else
-						{
-							if (String.IsNullOrWhiteSpace(option.Color))
-							{
-								selectOptionsText += $"{option.Value},{option.Label},{option.IconClass}" + Environment.NewLine;
-							}
-							else
-							{
-								selectOptionsText += $"{option.Value},{option.Label},{option.IconClass},{option.Color}" + Environment.NewLine;
-							}
-						}
-					}
-					foreach (var option in fieldCasted.DefaultValue)
-					{
-						defaultValuesText += $"{option}" + Environment.NewLine;
-					}
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-textarea height="100px" value="@selectOptionsText" label-text="Options"></wv-field-textarea>
-						</wv-column>
-						<wv-column span="6">
-							<wv-field-textarea height="100px" value="@defaultValuesText" label-text="Default Values"></wv-field-textarea>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.NumberField:
-				{
-					var fieldCasted = (NumberField)Model.Field;
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-number>
-						</wv-column>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.DecimalPlaces" label-text="Decimal Places"></wv-field-number>
-						</wv-column>
-					</wv-row>
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.MinValue" label-text="Minimum Value"></wv-field-number>
-						</wv-column>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.MaxValue" label-text="Maximum Value"></wv-field-number>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.PasswordField:
-				{
-					var fieldCasted = (PasswordField)Model.Field;
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.MaxLength" label-text="Maximum Length"></wv-field-number>
-						</wv-column>
-						<wv-column span="6">
-							<wv-field-checkbox value="fieldCasted.Encrypted" label-text="Encryption" text-true="encrypted in database" text-false="plain text in database"></wv-field-checkbox>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.PercentField:
-				{
-					var fieldCasted = (PercentField)Model.Field;
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-number>
-						</wv-column>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.DecimalPlaces" label-text="Decimal Places"></wv-field-number>
-						</wv-column>
-					</wv-row>
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.MinValue" label-text="Minimum Value"></wv-field-number>
-						</wv-column>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.MaxValue" label-text="Maximum Value"></wv-field-number>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.PhoneField:
-				{
-					var fieldCasted = (PhoneField)Model.Field;
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-text value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-text>
-						</wv-column>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.MaxLength" label-text="Maximum Length"></wv-field-number>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.GuidField:
-				{
-					var fieldCasted = (GuidField)Model.Field;
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-text value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-text>
-						</wv-column>
-						<wv-column span="6">
-							<wv-field-checkbox value="fieldCasted.GenerateNewId" label-text="Guid Generation" text-true="generate GUID as default" text-false="use default value"></wv-field-checkbox>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.SelectField:
-				{
-					var fieldCasted = (SelectField)Model.Field;
-					var selectOptionsText = "";
-					foreach (var option in fieldCasted.Options)
-					{
-						if (String.IsNullOrWhiteSpace(option.IconClass))
-						{
-							selectOptionsText += $"{option.Value},{option.Label}" + Environment.NewLine;
-						}
-						else
-						{
-							if (String.IsNullOrWhiteSpace(option.Color))
-							{
-								selectOptionsText += $"{option.Value},{option.Label},{option.IconClass}" + Environment.NewLine;
-							}
-							else
-							{
-								selectOptionsText += $"{option.Value},{option.Label},{option.IconClass},{option.Color}" + Environment.NewLine;
-							}
-						}
-					}
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-textarea height="100px" value="@selectOptionsText" label-text="Options"></wv-field-textarea>
-						</wv-column>
-						<wv-column span="6">
-							<wv-field-text value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-text>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.TextField:
-				{
-					var fieldCasted = (TextField)Model.Field;
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-text value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-text>
-						</wv-column>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.MaxLength" label-text="Maximum Length"></wv-field-number>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			case FieldType.UrlField:
-				{
-					var fieldCasted = (UrlField)Model.Field;
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-text value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-text>
-						</wv-column>
-						<wv-column span="6">
-							<wv-field-number value="fieldCasted.MaxLength" label-text="Maximum Length"></wv-field-number>
-						</wv-column>
-					</wv-row>
-					<wv-row>
-						<wv-column span="6">
-							<wv-field-checkbox value="fieldCasted.OpenTargetInNewWindow" label-text="Link target" text-true="open in new tab" text-false="open in same tab"></wv-field-checkbox>
-						</wv-column>
-					</wv-row>
-				}
-				break;
-			default:
-				break;
-		}
-	</wv-section>
+    <wv-section title="Type specific" class="mt-3">
+        @switch (Model.Field.GetFieldType())
+        {
+            case FieldType.AutoNumberField:
+                {
+                    var fieldCasted = (AutoNumberField)Model.Field;
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.DefaultValue" label-text="Default value"></wv-field-number>
+                        </wv-column>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.StartingNumber" label-text="Starting number"></wv-field-number>
+                        </wv-column>
+                    </wv-row>
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-text value="fieldCasted.DisplayFormat" label-text="Display Format"></wv-field-text>
+                        </wv-column>
+                        <wv-column span="6">
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.CheckboxField:
+                {
+                    var fieldCasted = (CheckboxField)Model.Field;
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-checkbox value="fieldCasted.DefaultValue" label-text="Default value" text-true="checked by default" text-false="unchecked by default"></wv-field-checkbox>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.CurrencyField:
+                {
+                    var fieldCasted = (CurrencyField)Model.Field;
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-number>
+                        </wv-column>
+                    </wv-row>
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.MinValue" label-text="Minimum Value"></wv-field-number>
+                        </wv-column>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.MaxValue" label-text="Maximum Value"></wv-field-number>
+                        </wv-column>
+                    </wv-row>
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-text value="fieldCasted.Currency.Code" label-text="Currency"></wv-field-text>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.DateField:
+                {
+                    var fieldCasted = (DateField)Model.Field;
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-date value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-date>
+                        </wv-column>
+                        <wv-column span="6">
+                            <wv-field-text value="fieldCasted.Format" label-text="Presentation format"></wv-field-text>
+                        </wv-column>
+                    </wv-row>
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-checkbox value="fieldCasted.UseCurrentTimeAsDefaultValue" label-text="Use generation date as default" text-true="use record date as default" text-false="do not use record date as default"></wv-field-checkbox>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.DateTimeField:
+                {
+                    var fieldCasted = (DateTimeField)Model.Field;
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-datetime value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-datetime>
+                        </wv-column>
+                        <wv-column span="6">
+                            <wv-field-text value="fieldCasted.Format" label-text="Presentation format"></wv-field-text>
+                        </wv-column>
+                    </wv-row>
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-checkbox value="fieldCasted.UseCurrentTimeAsDefaultValue" label-text="Use generation date as default" text-true="use record date as default" text-false="do not use record date as default"></wv-field-checkbox>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.EmailField:
+                {
+                    var fieldCasted = (EmailField)Model.Field;
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-text value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-text>
+                        </wv-column>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.MaxLength" label-text="Maximum Length"></wv-field-number>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.FileField:
+                {
+                    var fieldCasted = (FileField)Model.Field;
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-text value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-text>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.HtmlField:
+                {
+                    var fieldCasted = (HtmlField)Model.Field;
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-textarea value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-textarea>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.ImageField:
+                {
+                    var fieldCasted = (ImageField)Model.Field;
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-text value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-text>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.MultiLineTextField:
+                {
+                    var fieldCasted = (MultiLineTextField)Model.Field;
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-textarea value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-textarea>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.GeographyField:
+                {
+                    var fieldCasted = (GeographyField)Model.Field;
+                    // TODO: 628426@gmail.com 9 Aug 2020 add format and srid
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-textarea value="fieldCasted.Format" label-text="Geography format" required="true"></wv-field-textarea>
+                        </wv-column>
+                        <wv-column span="6">
+                            <wv-field-number name="MaxLength" value="fieldCasted.SRID" label-text="SRID"></wv-field-number>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.MultiSelectField:
+                {
+                    var fieldCasted = (MultiSelectField)Model.Field;
+                    var selectOptionsText = "";
+                    var defaultValuesText = "";
+                    foreach (var option in fieldCasted.Options)
+                    {
+                        if (String.IsNullOrWhiteSpace(option.IconClass))
+                        {
+                            selectOptionsText += $"{option.Value},{option.Label}" + Environment.NewLine;
+                        }
+                        else
+                        {
+                            if (String.IsNullOrWhiteSpace(option.Color))
+                            {
+                                selectOptionsText += $"{option.Value},{option.Label},{option.IconClass}" + Environment.NewLine;
+                            }
+                            else
+                            {
+                                selectOptionsText += $"{option.Value},{option.Label},{option.IconClass},{option.Color}" + Environment.NewLine;
+                            }
+                        }
+                    }
+                    foreach (var option in fieldCasted.DefaultValue)
+                    {
+                        defaultValuesText += $"{option}" + Environment.NewLine;
+                    }
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-textarea height="100px" value="@selectOptionsText" label-text="Options"></wv-field-textarea>
+                        </wv-column>
+                        <wv-column span="6">
+                            <wv-field-textarea height="100px" value="@defaultValuesText" label-text="Default Values"></wv-field-textarea>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.NumberField:
+                {
+                    var fieldCasted = (NumberField)Model.Field;
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-number>
+                        </wv-column>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.DecimalPlaces" label-text="Decimal Places"></wv-field-number>
+                        </wv-column>
+                    </wv-row>
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.MinValue" label-text="Minimum Value"></wv-field-number>
+                        </wv-column>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.MaxValue" label-text="Maximum Value"></wv-field-number>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.PasswordField:
+                {
+                    var fieldCasted = (PasswordField)Model.Field;
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.MaxLength" label-text="Maximum Length"></wv-field-number>
+                        </wv-column>
+                        <wv-column span="6">
+                            <wv-field-checkbox value="fieldCasted.Encrypted" label-text="Encryption" text-true="encrypted in database" text-false="plain text in database"></wv-field-checkbox>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.PercentField:
+                {
+                    var fieldCasted = (PercentField)Model.Field;
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-number>
+                        </wv-column>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.DecimalPlaces" label-text="Decimal Places"></wv-field-number>
+                        </wv-column>
+                    </wv-row>
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.MinValue" label-text="Minimum Value"></wv-field-number>
+                        </wv-column>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.MaxValue" label-text="Maximum Value"></wv-field-number>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.PhoneField:
+                {
+                    var fieldCasted = (PhoneField)Model.Field;
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-text value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-text>
+                        </wv-column>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.MaxLength" label-text="Maximum Length"></wv-field-number>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.GuidField:
+                {
+                    var fieldCasted = (GuidField)Model.Field;
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-text value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-text>
+                        </wv-column>
+                        <wv-column span="6">
+                            <wv-field-checkbox value="fieldCasted.GenerateNewId" label-text="Guid Generation" text-true="generate GUID as default" text-false="use default value"></wv-field-checkbox>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.SelectField:
+                {
+                    var fieldCasted = (SelectField)Model.Field;
+                    var selectOptionsText = "";
+                    foreach (var option in fieldCasted.Options)
+                    {
+                        if (String.IsNullOrWhiteSpace(option.IconClass))
+                        {
+                            selectOptionsText += $"{option.Value},{option.Label}" + Environment.NewLine;
+                        }
+                        else
+                        {
+                            if (String.IsNullOrWhiteSpace(option.Color))
+                            {
+                                selectOptionsText += $"{option.Value},{option.Label},{option.IconClass}" + Environment.NewLine;
+                            }
+                            else
+                            {
+                                selectOptionsText += $"{option.Value},{option.Label},{option.IconClass},{option.Color}" + Environment.NewLine;
+                            }
+                        }
+                    }
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-textarea height="100px" value="@selectOptionsText" label-text="Options"></wv-field-textarea>
+                        </wv-column>
+                        <wv-column span="6">
+                            <wv-field-text value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-text>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.TextField:
+                {
+                    var fieldCasted = (TextField)Model.Field;
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-text value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-text>
+                        </wv-column>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.MaxLength" label-text="Maximum Length"></wv-field-number>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            case FieldType.UrlField:
+                {
+                    var fieldCasted = (UrlField)Model.Field;
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-text value="fieldCasted.DefaultValue" label-text="Default Value"></wv-field-text>
+                        </wv-column>
+                        <wv-column span="6">
+                            <wv-field-number value="fieldCasted.MaxLength" label-text="Maximum Length"></wv-field-number>
+                        </wv-column>
+                    </wv-row>
+                    <wv-row>
+                        <wv-column span="6">
+                            <wv-field-checkbox value="fieldCasted.OpenTargetInNewWindow" label-text="Link target" text-true="open in new tab" text-false="open in same tab"></wv-field-checkbox>
+                        </wv-column>
+                    </wv-row>
+                }
+                break;
+            default:
+                break;
+        }
+    </wv-section>
 
 	<wv-section title="API Security" class="mt-3">
 		<wv-row>

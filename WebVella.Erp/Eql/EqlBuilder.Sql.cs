@@ -21,6 +21,7 @@ namespace WebVella.Erp.Eql
 		const string BEGIN_OUTER_SELECT = @"SELECT row_to_json( X ) FROM (";
 		const string BEGIN_SELECT = @"SELECT ";
 		const string REGULAR_FIELD_SELECT = @" {1}.""{0}"" AS ""{0}"",";
+		const string GEOGRAPHY_FIELD_SELECT = @" ST_As{2}({1}.""{0}"") AS ""{0}"",";
 		const string END_SELECT = @"";
 		const string BEGIN_SELECT_DISTINCT = @"SELECT DISTINCT ";
 		const string END_OUTER_SELECT = @") X";
@@ -294,6 +295,15 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 					fieldsMeta.Add(new EqlFieldMeta { Name = field.Name, Field = field });
 				if (rootInfo.Relation != null)
 					AppendToStringBuilder(sb, depth, true, string.Format(REGULAR_FIELD_SELECT, field.Name, rootInfo.Relation.Name));
+				else if (field.GetFieldType() == FieldType.GeographyField)
+				{
+					// 628426 6 Sep 2020, Geography Support
+					// returns either GeoJSON or Text
+					// intended to generate ST_AsGeoJson(...) or ST_AsText(...)
+					string format = (field as GeographyField).Format.ToString();
+
+					AppendToStringBuilder(sb, depth, true, string.Format(GEOGRAPHY_FIELD_SELECT, field.Name, $"{RECORD_COLLECTION_PREFIX}{rootInfo.Entity.Name}", format));
+				}
 				else
 					AppendToStringBuilder(sb, depth, true, string.Format(REGULAR_FIELD_SELECT, field.Name, $"{RECORD_COLLECTION_PREFIX}{rootInfo.Entity.Name}"));
 			}

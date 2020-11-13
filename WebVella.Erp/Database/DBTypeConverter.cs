@@ -45,6 +45,9 @@ namespace WebVella.Erp.Database
 				case FieldType.MultiLineTextField:
 					pgType = "text";
 					break;
+				case FieldType.GeographyField:
+					pgType = "geography";
+					break;
 				case FieldType.MultiSelectField:
 					pgType = "text[]";
 					break;
@@ -114,6 +117,9 @@ namespace WebVella.Erp.Database
 					break;
 				case FieldType.MultiLineTextField:
 					pgType = NpgsqlDbType.Text;
+					break;
+				case FieldType.GeographyField:
+					pgType = NpgsqlDbType.Geography;
 					break;
 				case FieldType.MultiSelectField:
 					pgType = NpgsqlDbType.Array | NpgsqlDbType.Text;

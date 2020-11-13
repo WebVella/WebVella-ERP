@@ -43,6 +43,8 @@ namespace WebVella.Erp.Api.Models
 		[SelectOption(Label = "url")]
 		UrlField = 19,
 		[SelectOption(Label = "relation")]
-		RelationField = 20
+		RelationField = 20,
+		[SelectOption(Label = "geography")]
+		GeographyField = 21
 	}
 }

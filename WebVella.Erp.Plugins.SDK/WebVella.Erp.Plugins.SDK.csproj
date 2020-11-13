@@ -44,4 +44,8 @@
 	<Folder Include="Hooks\" />
 	<Folder Include="Snippets\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WebVella.TagHelpers" Version="1.1.21" />
+  </ItemGroup>
 </Project>

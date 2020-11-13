@@ -12,6 +12,7 @@ using WebVella.Erp.Utilities;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Utils;
+using WebVella.TagHelpers.Models;
 
 namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 {
@@ -41,6 +42,21 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 		[BindProperty]
 		public bool Unique { get; set; } = false;
+
+        public WvFieldRenderMode UniqueRenderMode
+		{
+			get
+			{
+				if (Type == FieldType.GeographyField)
+				{
+					return WvFieldRenderMode.Display; // can't make unique indexes on geography type
+				}
+				else
+				{
+					return WvFieldRenderMode.Undefined;
+				}
+			}
+		}
 
 		[BindProperty]
 		public string HelpText { get; set; } = "";
@@ -72,9 +88,17 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 		[BindProperty]
 		public string CurrencyCode { get; set; } = "USD";
 
-		public List<SelectOption> CurrencyOptions { get; set; } = new List<SelectOption>();
+        [BindProperty]
+        public string GeographyFormat { get; set; } = "1"; // matches .GeoJSON
 
-		[BindProperty]
+        public List<SelectOption> CurrencyOptions { get; set; } = new List<SelectOption>();
+
+        public List<SelectOption> GeographyFormats { get; set; } = new List<SelectOption>();
+
+        [BindProperty]
+        public int SRID { get; set; } = ErpSettings.DefaultSRID;
+
+        [BindProperty]
 		public decimal? MinValue { get; set; } = null;
 
 		[BindProperty]
@@ -130,10 +154,12 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 			var allCards = AdminPageUtils.GetFieldCards();
 
-			if (FieldTypeId > 19 || FieldTypeId < 1)
-				throw new Exception("unsupported field type");
+            // 628426@gmail.com 8 August 20, relation is FieldTypeId 20, Geography is now 21.  
+            // TODO: find a better way to do this
+            //if (FieldTypeId > 19 || FieldTypeId < 1)
+            //	throw new Exception("unsupported field type");
 
-			FieldCard = allCards.First(x => (string)x["type"] == FieldTypeId.ToString());
+            FieldCard = allCards.First(x => (string)x["type"] == FieldTypeId.ToString());
 
 			if (Enum.TryParse<FieldType>(FieldTypeId.ToString(), out FieldType result))
 			{
@@ -153,7 +179,16 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 					case FieldType.DateTimeField:
 						Format = "yyyy-MMM-dd HH:mm";
 						break;
-					default:
+                    case FieldType.GeographyField:
+                        foreach (int format in Enum.GetValues(typeof(GeographyFieldFormat)))
+                        {
+                            string value = format.ToString();
+                            string name = ((GeographyFieldFormat)format).ToString();
+                            GeographyFormats.Add(new SelectOption(value, name));
+                        }
+
+                        break;
+                    default:
 						break;
 				}
 
@@ -512,7 +547,35 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 							};
 						}
 						break;
-					case FieldType.MultiSelectField:
+                    case FieldType.GeographyField:
+                        {
+                            string defaultValue = null;
+                            if (DefaultValue.ToLowerInvariant() != "null")
+                            {
+                                defaultValue = DefaultValue;
+                            }
+                            GeographyFieldFormat format = (GeographyFieldFormat)int.Parse(GeographyFormat);
+                            input = new InputGeographyField()
+                            {
+                                Id = newFieldId,
+                                Name = Name,
+                                Label = Label,
+                                Required = Required,
+                                Description = Description,
+                                Unique = Unique,
+                                HelpText = HelpText,
+                                System = System,
+                                PlaceholderText = PlaceholderText,
+                                Searchable = Searchable,
+                                DefaultValue = defaultValue,
+                                EnableSecurity = EnableSecurity,
+                                MaxLength = MaxLength,
+                                SRID = SRID,
+                                Format = format
+                            };
+                        }
+                        break;
+                    case FieldType.MultiSelectField:
 						{
 							var selectOptions = (SelectOptions??string.Empty).Split(Environment.NewLine);
 							var defaultOptions = (DefaultValue??string.Empty).Split(Environment.NewLine);

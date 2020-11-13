@@ -1827,6 +1827,21 @@ namespace WebVella.Erp.Web.Controllers
 									((InputMultiLineTextField)field).VisibleLineNumber = ((InputMultiLineTextField)inputField).VisibleLineNumber;
 							}
 							break;
+						case FieldType.GeographyField:
+							{
+								field = new InputGeographyField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputGeographyField)field).DefaultValue = ((InputGeographyField)inputField).DefaultValue;
+								if (prop.Name.ToLower() == "maxlength")
+									((InputGeographyField)field).MaxLength = ((InputGeographyField)inputField).MaxLength;
+								if (prop.Name.ToLower() == "visiblelinenumber")
+									((InputGeographyField)field).VisibleLineNumber = ((InputGeographyField)inputField).VisibleLineNumber;
+								if (prop.Name.ToLower() == "format")
+									((InputGeographyField)field).Format = ((InputGeographyField)inputField).Format;
+								if (prop.Name.ToLower() == "srid")
+									((InputGeographyField)field).SRID = ((InputGeographyField)inputField).SRID;
+							}
+							break;
 						case FieldType.MultiSelectField:
 							{
 								field = new InputMultiSelectField();

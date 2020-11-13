@@ -1953,6 +1953,8 @@ namespace WebVella.Erp.Api
 					return pair.Value as string;
 				else if (field is MultiLineTextField)
 					return pair.Value as string;
+				else if (field is GeographyField)
+					return pair.Value as string;
 				else if (field is MultiSelectField)
 				{
 					if (pair.Value == null)

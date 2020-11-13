@@ -13,5 +13,6 @@ namespace WebVella.Erp.Database.Models
 		public object Value { get; set; }
 
 		public NpgsqlDbType Type { get; set; }
+		public string ValueOverride { get; set; }
 	}
 }
