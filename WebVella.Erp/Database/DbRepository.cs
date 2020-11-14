@@ -2,6 +2,7 @@
 using NpgsqlTypes;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Database.Models;
 
@@ -29,7 +30,30 @@ namespace WebVella.Erp.Database
 				string sql = $"CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";";
 				NpgsqlCommand command = connection.CreateCommand(sql);
 				command.ExecuteNonQuery();
+
+				try
+				{
+					//will try to create this extension if not exists - will fail if postgis not installed
+					sql = $"CREATE EXTENSION IF NOT EXISTS \"postgis\";";
+					command = connection.CreateCommand(sql);
+					command.ExecuteNonQuery();
+				}
+				catch { 
+					//ignore
+				}
 			}
+		}
+
+		public static bool IsPostgisInstalled()
+		{
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				DataTable dt = new DataTable();
+				NpgsqlCommand command = connection.CreateCommand("SELECT* FROM pg_extension WHERE extname = 'postgis'");
+				new NpgsqlDataAdapter(command).Fill(dt);
+				return dt.Rows.Count > 0;
+			}
+			
 		}
 
 		public static void CreateTable(string name)

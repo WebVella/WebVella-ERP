@@ -53,15 +53,11 @@ namespace WebVella.Erp.Eql
 			}
 		}
 
-
 		/// <summary>
 		/// Creates command
 		/// </summary>
-		public EqlCommand(string text, DbContext currentContext = null, params EqlParameter[] parameters)
+		public EqlCommand(string text, params EqlParameter[] parameters)
 		{
-			if (currentContext != null)
-				suppliedContext = currentContext;
-
 			Text = text;
 
 			if (string.IsNullOrWhiteSpace(text))
@@ -73,6 +69,15 @@ namespace WebVella.Erp.Eql
 
 			if (parameters != null && parameters.Length > 0)
 				Parameters.AddRange(parameters);
+		}
+
+		/// <summary>
+		/// Creates command
+		/// </summary>
+		public EqlCommand(string text, DbContext currentContext, params EqlParameter[] parameters) : this(text, parameters)
+		{
+			if (currentContext != null)
+				suppliedContext = currentContext;
 		}
 
 		/// <summary>
