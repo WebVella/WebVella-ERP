@@ -395,7 +395,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 
 		public void PostPreUpdateApiHookLogic(string entityName, EntityRecord record, List<ErrorModel> errors)
 		{
-			var eqlResult = new EqlCommand("SELECT id,number, $project_nn_task.id, $project_nn_task.abbr, $user_nn_task_watchers.id FROM task WHERE id = @taskId", null, new EqlParameter("taskId", (Guid)record["id"])).Execute();
+			var eqlResult = new EqlCommand("SELECT id,number, $project_nn_task.id, $project_nn_task.abbr, $user_nn_task_watchers.id FROM task WHERE id = @taskId", new EqlParameter("taskId", (Guid)record["id"])).Execute();
 			if (eqlResult.Count > 0)
 			{
 				var oldRecord = eqlResult[0];
@@ -458,9 +458,7 @@ namespace WebVella.Erp.Plugins.Project.Services
 					//change key
 					record["key"] = projectAbbr + "-" + ((decimal)oldRecord["number"]).ToString("N0");
 
-					var projectEqlResult = new EqlCommand("SELECT id,owner_id FROM project WHERE id = @projectId",
-                                                    null,
-													new EqlParameter("projectId", newProjectId)).Execute();
+					var projectEqlResult = new EqlCommand("SELECT id,owner_id FROM project WHERE id = @projectId",new EqlParameter("projectId", newProjectId)).Execute();
 					Guid? projectOwnerId = null;
 					if (projectEqlResult != null && ((List<EntityRecord>)projectEqlResult).Any())
 					{
