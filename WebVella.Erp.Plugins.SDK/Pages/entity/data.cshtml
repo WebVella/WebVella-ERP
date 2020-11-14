@@ -3,9 +3,10 @@
 @model WebVella.Erp.Plugins.SDK.Pages.ErpEntity.EntityDataModel
 @using WebVella.Erp.Web.Utils;
 @{
-	Layout = "~/Pages/_AppMaster.cshtml";
-	ViewData["Title"] = "Entity data";
-	var titleAction = "<a href=\"javascript:void(0)\" class=\"clear-filter-all\">clear all</a>";
+    Layout = "~/Pages/_AppMaster.cshtml";
+    ViewData["Title"] = "Entity data";
+    var titleAction = "<a href=\"javascript:void(0)\" class=\"clear-filter-all\">clear all</a>";
+    var geoFieldRendered = false;
 }
 <wv-page-header color="@Model.ErpEntity.Color" area-label="Entities" title="@Model.ErpEntity.Name" subtitle="Data"
 				icon-class="@Model.ErpEntity.IconName" return-url="@Model.ReturnUrl">
@@ -56,295 +57,350 @@
 				var wrap = fieldType == FieldType.TextField || fieldType == FieldType.HtmlField || fieldType == FieldType.MultiSelectField ||
 							fieldType == FieldType.MultiLineTextField || fieldType == FieldType.UrlField;
 
-				<wv-grid-column text-nowrap="@(!wrap)">
-					@switch (fieldType)
-					{
-						case FieldType.AutoNumberField:
-							{
-								<wv-field-autonumber value="@value"
-													 mode="Simple"
-													 name="@field.Name"
-													 label-text="@field.Label"
-													 label-help-text="@field.HelpText"
-													 description="@field.Description"
-													 placeholder="@field.PlaceholderText"
-													 required="@field.Required"
-													 access="@(Model.GetFieldAccess(field))"
-													 template="@(((AutoNumberField)field).DisplayFormat)"></wv-field-autonumber>
-							}
-							break;
+        <wv-grid-column text-nowrap="@(!wrap)">
+            @switch (fieldType)
+            {
+                case FieldType.AutoNumberField:
+                    {
+                        <wv-field-autonumber value="@value"
+                                             mode="Simple"
+                                             name="@field.Name"
+                                             label-text="@field.Label"
+                                             label-help-text="@field.HelpText"
+                                             description="@field.Description"
+                                             placeholder="@field.PlaceholderText"
+                                             required="@field.Required"
+                                             access="@(Model.GetFieldAccess(field))"
+                                             template="@(((AutoNumberField)field).DisplayFormat)"></wv-field-autonumber>
+                    }
+                    break;
 
-						case FieldType.TextField:
-							{
-								<wv-field-text label-text="@field.Label"
-											   name="@field.Name"
-											   value="@value"
-											   mode="Simple"
-											   access="@(Model.GetFieldAccess(field))"
-											   label-help-text="@field.HelpText"
-											   description="@field.Description"
-											   placeholder="@field.PlaceholderText"
-											   required="@field.Required"
-											   maxlength="@(((TextField)field).MaxLength)"></wv-field-text>
-							}
-							break;
+                case FieldType.TextField:
+                    {
+                        <wv-field-text label-text="@field.Label"
+                                       name="@field.Name"
+                                       value="@value"
+                                       mode="Simple"
+                                       access="@(Model.GetFieldAccess(field))"
+                                       label-help-text="@field.HelpText"
+                                       description="@field.Description"
+                                       placeholder="@field.PlaceholderText"
+                                       required="@field.Required"
+                                       maxlength="@(((TextField)field).MaxLength)"></wv-field-text>
+                    }
+                    break;
 
-						case FieldType.MultiLineTextField:
-							{
-								<wv-field-textarea label-text="@field.Label"
-												   name="@field.Name"
-												   value="@value"
-												   mode="Simple"
-												   access="@(Model.GetFieldAccess(field))"
-												   label-help-text="@field.HelpText"
-												   description="@field.Description"
-												   placeholder="@field.PlaceholderText"
-												   required="@field.Required"></wv-field-textarea>
-							}
-							break;
+                case FieldType.MultiLineTextField:
+                    {
+                        <wv-field-textarea label-text="@field.Label"
+                                           name="@field.Name"
+                                           value="@value"
+                                           mode="Simple"
+                                           access="@(Model.GetFieldAccess(field))"
+                                           label-help-text="@field.HelpText"
+                                           description="@field.Description"
+                                           placeholder="@field.PlaceholderText"
+                                           required="@field.Required"></wv-field-textarea>
+                    }
+                    break;
+                case FieldType.GeographyField:
+                    {
+                        var id = record["id"];
+                        var geojson = "";
+                        var text = "";
+                        GeographyField geo = (GeographyField)field;
+                        if (geo.Format == GeographyFieldFormat.GeoJSON && record[field.Name] != null)
+                        {
+                            geojson = record[field.Name].ToString();
+                        }
+                        else if (geo.Format == GeographyFieldFormat.Text && record[field.Name] != null)
+                        {
+                            text = record[field.Name].ToString();
+                        }
+                        var mapid = $"map_{record["id"].ToString().Replace("-", "")}";
 
-						case FieldType.GuidField:
-							{
-								<wv-field-guid label-text="@field.Label"
-											   name="@field.Name"
-											   value="@value"
-											   mode="Simple"
-											   access="@(Model.GetFieldAccess(field))"
-											   label-help-text="@field.HelpText"
-											   description="@field.Description"
-											   placeholder="@field.PlaceholderText"
-											   required="@field.Required"></wv-field-guid>
-							}
-							break;
+                        if (!geoFieldRendered)
+                        {
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.6.0/leaflet.css" />
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+                            <script>
+                                function showMap(mid) {
+                                    var m = $('#' + mid);
+                                    var geojson = m.data('geojson');
+                                    var text = m.data('text');
 
-						case FieldType.EmailField:
-							{
-								<wv-field-email label-text="@field.Label"
-												name="@field.Name"
-												value="@value"
-												mode="Simple"
-												access="@(Model.GetFieldAccess(field))"
-												label-help-text="@field.HelpText"
-												description="@field.Description"
-												placeholder="@field.PlaceholderText"
-												required="@field.Required"
-												maxlength="@(((EmailField)field).MaxLength)"></wv-field-email>
-							}
-							break;
+                                    if (geojson || text) {
 
-						case FieldType.UrlField:
-							{
-								<wv-field-url label-text="@field.Label"
-											  name="@field.Name"
-											  value="@value"
-											  mode="Simple"
-											  access="@(Model.GetFieldAccess(field))"
-											  label-help-text="@field.HelpText"
-											  description="@field.Description"
-											  placeholder="@field.PlaceholderText"
-											  required="@field.Required"></wv-field-url>
-							}
-							break;
+                                        var map = L.map(mid);
+                                        L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                            attribution: '&copy; <a href="http://openstreetmap.org">OSM</a>',
+                                            maxZoom: 18,
+                                        }).addTo(map);
+                                        var geojson = m.data('geojson');
+                                        var text = m.data('text');
 
-						case FieldType.NumberField:
-							{
-								<wv-field-number label-text="@field.Label"
-												 name="@field.Name"
-												 value="@value"
-												 mode="Simple"
-												 access="@(Model.GetFieldAccess(field))"
-												 label-help-text="@field.HelpText"
-												 description="@field.Description"
-												 placeholder="@field.PlaceholderText"
-												 required="@field.Required"
-												 min="@(((NumberField)field).MinValue)"
-												 max="@(((NumberField)field).MaxValue)"
-												 decimal-digits="@((int?)((NumberField)field).DecimalPlaces ?? 0)"></wv-field-number>
-							}
-							break;
+                                        var layer = L.geoJson(geojson).addTo(map);
+                                        map.fitBounds(layer, { padding: [-5, -5] });
+                                    }
+                                }
+                            </script>
+                        }
+                        if (!geoFieldRendered)
+                        {
+                            geoFieldRendered = true;
+                        }
+                        if (!string.IsNullOrEmpty(geojson) || !string.IsNullOrEmpty(text))
+                        {
+                            <div id="@mapid" style="height:200px;width:200px" data-geojson="@geojson" data-text="@text"></div>
+                            <script>
+                            showMap('@mapid');
+                            </script>
+                        }
+                    }
+                    break;
 
-						case FieldType.CheckboxField:
-							{
-								<wv-field-checkbox name="@field.Name"
-												   value="@value"
-												   mode="Simple"
-												   access="@(Model.GetFieldAccess(field))"
-												   label-help-text="@field.HelpText"
-												   description="@field.Description"
-												   placeholder="@field.PlaceholderText"
-												   required="@field.Required"></wv-field-checkbox>
-							}
-							break;
+                case FieldType.GuidField:
+                    {
+                        <wv-field-guid label-text="@field.Label"
+                                       name="@field.Name"
+                                       value="@value"
+                                       mode="Simple"
+                                       access="@(Model.GetFieldAccess(field))"
+                                       label-help-text="@field.HelpText"
+                                       description="@field.Description"
+                                       placeholder="@field.PlaceholderText"
+                                       required="@field.Required"></wv-field-guid>
+                    }
+                    break;
 
-						case FieldType.CurrencyField:
-							{
-								<wv-field-currency label-text="@field.Label"
-												   name="@field.Name"
-												   value="@value"
-												   mode="Simple"
-												   access="@(Model.GetFieldAccess(field))"
-												   label-help-text="@field.HelpText"
-												   description="@field.Description"
-												   placeholder="@field.PlaceholderText"
-												   required="@field.Required"
-												   currency-code="@(((CurrencyField)field).Currency.Code)"
-												   min="@(((CurrencyField)field).MinValue)"
-												   max="@(((CurrencyField)field).MaxValue)"></wv-field-currency>
-							}
-							break;
+                case FieldType.EmailField:
+                    {
+                        <wv-field-email label-text="@field.Label"
+                                        name="@field.Name"
+                                        value="@value"
+                                        mode="Simple"
+                                        access="@(Model.GetFieldAccess(field))"
+                                        label-help-text="@field.HelpText"
+                                        description="@field.Description"
+                                        placeholder="@field.PlaceholderText"
+                                        required="@field.Required"
+                                        maxlength="@(((EmailField)field).MaxLength)"></wv-field-email>
+                    }
+                    break;
 
-						case FieldType.DateField:
-							{
-								<wv-field-date label-text="@field.Label"
-											   name="@field.Name"
-											   value="@value"
-											   mode="Simple"
-											   access="@(Model.GetFieldAccess(field))"
-											   label-help-text="@field.HelpText"
-											   description="@field.Description"
-											   placeholder="@field.PlaceholderText"
-											   required="@field.Required"></wv-field-date>
-							}
-							break;
+                case FieldType.UrlField:
+                    {
+                        <wv-field-url label-text="@field.Label"
+                                      name="@field.Name"
+                                      value="@value"
+                                      mode="Simple"
+                                      access="@(Model.GetFieldAccess(field))"
+                                      label-help-text="@field.HelpText"
+                                      description="@field.Description"
+                                      placeholder="@field.PlaceholderText"
+                                      required="@field.Required"></wv-field-url>
+                    }
+                    break;
 
-						case FieldType.DateTimeField:
-							{
-								<wv-field-datetime label-text="@field.Label"
-												   name="@field.Name"
-												   value="@value"
-												   mode="Simple"
-												   access="@(Model.GetFieldAccess(field))"
-												   label-help-text="@field.HelpText"
-												   description="@field.Description"
-												   placeholder="@field.PlaceholderText"
-												   required="@field.Required"></wv-field-datetime>
-							}
-							break;
+                case FieldType.NumberField:
+                    {
+                        <wv-field-number label-text="@field.Label"
+                                         name="@field.Name"
+                                         value="@value"
+                                         mode="Simple"
+                                         access="@(Model.GetFieldAccess(field))"
+                                         label-help-text="@field.HelpText"
+                                         description="@field.Description"
+                                         placeholder="@field.PlaceholderText"
+                                         required="@field.Required"
+                                         min="@(((NumberField)field).MinValue)"
+                                         max="@(((NumberField)field).MaxValue)"
+                                         decimal-digits="@((int?)((NumberField)field).DecimalPlaces ?? 0)"></wv-field-number>
+                    }
+                    break;
 
-						case FieldType.FileField:
-							{
-								<wv-field-file label-text="@field.Label"
-											   name="@field.Name"
-											   value="@value"
-											   mode="Simple"
-											   access="@(Model.GetFieldAccess(field))"
-											   label-help-text="@field.HelpText"
-											   description="@field.Description"
-											   placeholder="@field.PlaceholderText"
-											   required="@field.Required"></wv-field-file>
-							}
-							break;
+                case FieldType.CheckboxField:
+                    {
+                        <wv-field-checkbox name="@field.Name"
+                                           value="@value"
+                                           mode="Simple"
+                                           access="@(Model.GetFieldAccess(field))"
+                                           label-help-text="@field.HelpText"
+                                           description="@field.Description"
+                                           placeholder="@field.PlaceholderText"
+                                           required="@field.Required"></wv-field-checkbox>
+                    }
+                    break;
 
-						case FieldType.ImageField:
-							{
-								<wv-field-image label-text="@field.Label"
-												name="@field.Name"
-												value="@value"
-												mode="Simple"
-												access="@(Model.GetFieldAccess(field))"
-												label-help-text="@field.HelpText"
-												description="@field.Description"
-												placeholder="@field.PlaceholderText"
-												required="@field.Required"></wv-field-image>
-							}
-							break;
+                case FieldType.CurrencyField:
+                    {
+                        <wv-field-currency label-text="@field.Label"
+                                           name="@field.Name"
+                                           value="@value"
+                                           mode="Simple"
+                                           access="@(Model.GetFieldAccess(field))"
+                                           label-help-text="@field.HelpText"
+                                           description="@field.Description"
+                                           placeholder="@field.PlaceholderText"
+                                           required="@field.Required"
+                                           currency-code="@(((CurrencyField)field).Currency.Code)"
+                                           min="@(((CurrencyField)field).MinValue)"
+                                           max="@(((CurrencyField)field).MaxValue)"></wv-field-currency>
+                    }
+                    break;
 
-						case FieldType.HtmlField:
-							{
-								<wv-field-html label-text="@field.Label"
-											   name="@field.Name"
-											   value="@value"
-											   mode="Simple"
-											   access="@(Model.GetFieldAccess(field))"
-											   label-help-text="@field.HelpText"
-											   description="@field.Description"
-											   placeholder="@field.PlaceholderText"
-											   required="@field.Required"></wv-field-html>
-							}
-							break;
+                case FieldType.DateField:
+                    {
+                        <wv-field-date label-text="@field.Label"
+                                       name="@field.Name"
+                                       value="@value"
+                                       mode="Simple"
+                                       access="@(Model.GetFieldAccess(field))"
+                                       label-help-text="@field.HelpText"
+                                       description="@field.Description"
+                                       placeholder="@field.PlaceholderText"
+                                       required="@field.Required"></wv-field-date>
+                    }
+                    break;
 
-						case FieldType.PasswordField:
-							{
-								<wv-field-password label-text="@field.Label"
-												   name="@field.Name"
-												   value="@value"
-												   mode="Simple"
-												   access="@(Model.GetFieldAccess(field))"
-												   label-help-text="@field.HelpText"
-												   description="@field.Description"
-												   placeholder="@field.PlaceholderText"
-												   required="@field.Required"
-												   min="@(((PasswordField)field).MinLength)"
-												   max="@(((PasswordField)field).MaxLength)"></wv-field-password>
-							}
-							break;
+                case FieldType.DateTimeField:
+                    {
+                        <wv-field-datetime label-text="@field.Label"
+                                           name="@field.Name"
+                                           value="@value"
+                                           mode="Simple"
+                                           access="@(Model.GetFieldAccess(field))"
+                                           label-help-text="@field.HelpText"
+                                           description="@field.Description"
+                                           placeholder="@field.PlaceholderText"
+                                           required="@field.Required"></wv-field-datetime>
+                    }
+                    break;
 
-						case FieldType.PercentField:
-							{
-								<wv-field-percent label-text="@field.Label"
-												  name="@field.Name"
-												  value="@value"
-												  mode="Simple"
-												  access="@(Model.GetFieldAccess(field))"
-												  label-help-text="@field.HelpText"
-												  description="@field.Description"
-												  placeholder="@field.PlaceholderText"
-												  required="@field.Required"
-												  min="@(((PercentField)field).MinValue)"
-												  max="@(((PercentField)field).MaxValue)"
-												  decimal-digits="@((int?)((PercentField)field).DecimalPlaces ?? 0)"></wv-field-percent>
-							}
-							break;
+                case FieldType.FileField:
+                    {
+                        <wv-field-file label-text="@field.Label"
+                                       name="@field.Name"
+                                       value="@value"
+                                       mode="Simple"
+                                       access="@(Model.GetFieldAccess(field))"
+                                       label-help-text="@field.HelpText"
+                                       description="@field.Description"
+                                       placeholder="@field.PlaceholderText"
+                                       required="@field.Required"></wv-field-file>
+                    }
+                    break;
 
-						case FieldType.PhoneField:
-							{
-								<wv-field-phone label-text="@field.Label"
-												name="@field.Name"
-												value="@value"
-												mode="Simple"
-												access="@(Model.GetFieldAccess(field))"
-												label-help-text="@field.HelpText"
-												description="@field.Description"
-												placeholder="@field.PlaceholderText"
-												required="@field.Required"
-												maxlength="@(((PhoneField)field).MaxLength)"></wv-field-phone>
-							}
-							break;
+                case FieldType.ImageField:
+                    {
+                        <wv-field-image label-text="@field.Label"
+                                        name="@field.Name"
+                                        value="@value"
+                                        mode="Simple"
+                                        access="@(Model.GetFieldAccess(field))"
+                                        label-help-text="@field.HelpText"
+                                        description="@field.Description"
+                                        placeholder="@field.PlaceholderText"
+                                        required="@field.Required"></wv-field-image>
+                    }
+                    break;
 
-						case FieldType.SelectField:
-							{
-								<wv-field-select label-text="@field.Label"
-												 name="@field.Name"
-												 value="@value"
-												 mode="Simple"
-												 access="@(Model.GetFieldAccess(field))"
-												 label-help-text="@field.HelpText"
-												 description="@field.Description"
-												 placeholder="@field.PlaceholderText"
-												 required="@field.Required"
-												 default-value="@(((SelectField)field).DefaultValue)"
-												 options="@(((SelectField)field).Options).ToWvSelectOption()"></wv-field-select>
-							}
-							break;
+                case FieldType.HtmlField:
+                    {
+                        <wv-field-html label-text="@field.Label"
+                                       name="@field.Name"
+                                       value="@value"
+                                       mode="Simple"
+                                       access="@(Model.GetFieldAccess(field))"
+                                       label-help-text="@field.HelpText"
+                                       description="@field.Description"
+                                       placeholder="@field.PlaceholderText"
+                                       required="@field.Required"></wv-field-html>
+                    }
+                    break;
 
-						case FieldType.MultiSelectField:
-							{
-								<wv-field-multiselect label-text="@field.Label"
-													  name="@field.Name"
-													  value="@value"
-													  mode="Simple"
-													  access="@(Model.GetFieldAccess(field))"
-													  label-help-text="@field.HelpText"
-													  description="@field.Description"
-													  placeholder="@field.PlaceholderText"
-													  required="@field.Required"
-													  default-value="@(((MultiSelectField)field).DefaultValue)"
-													  options="@(((MultiSelectField)field).Options).ToWvSelectOption()"></wv-field-multiselect>
-							}
-							break;
+                case FieldType.PasswordField:
+                    {
+                        <wv-field-password label-text="@field.Label"
+                                           name="@field.Name"
+                                           value="@value"
+                                           mode="Simple"
+                                           access="@(Model.GetFieldAccess(field))"
+                                           label-help-text="@field.HelpText"
+                                           description="@field.Description"
+                                           placeholder="@field.PlaceholderText"
+                                           required="@field.Required"
+                                           min="@(((PasswordField)field).MinLength)"
+                                           max="@(((PasswordField)field).MaxLength)"></wv-field-password>
+                    }
+                    break;
 
-					}
-				</wv-grid-column>
+                case FieldType.PercentField:
+                    {
+                        <wv-field-percent label-text="@field.Label"
+                                          name="@field.Name"
+                                          value="@value"
+                                          mode="Simple"
+                                          access="@(Model.GetFieldAccess(field))"
+                                          label-help-text="@field.HelpText"
+                                          description="@field.Description"
+                                          placeholder="@field.PlaceholderText"
+                                          required="@field.Required"
+                                          min="@(((PercentField)field).MinValue)"
+                                          max="@(((PercentField)field).MaxValue)"
+                                          decimal-digits="@((int?)((PercentField)field).DecimalPlaces ?? 0)"></wv-field-percent>
+                    }
+                    break;
+
+                case FieldType.PhoneField:
+                    {
+                        <wv-field-phone label-text="@field.Label"
+                                        name="@field.Name"
+                                        value="@value"
+                                        mode="Simple"
+                                        access="@(Model.GetFieldAccess(field))"
+                                        label-help-text="@field.HelpText"
+                                        description="@field.Description"
+                                        placeholder="@field.PlaceholderText"
+                                        required="@field.Required"
+                                        maxlength="@(((PhoneField)field).MaxLength)"></wv-field-phone>
+                    }
+                    break;
+
+                case FieldType.SelectField:
+                    {
+                        <wv-field-select label-text="@field.Label"
+                                         name="@field.Name"
+                                         value="@value"
+                                         mode="Simple"
+                                         access="@(Model.GetFieldAccess(field))"
+                                         label-help-text="@field.HelpText"
+                                         description="@field.Description"
+                                         placeholder="@field.PlaceholderText"
+                                         required="@field.Required"
+                                         default-value="@(((SelectField)field).DefaultValue)"
+                                         options="@(((SelectField)field).Options).ToWvSelectOption()"></wv-field-select>
+                    }
+                    break;
+
+                case FieldType.MultiSelectField:
+                    {
+                        <wv-field-multiselect label-text="@field.Label"
+                                              name="@field.Name"
+                                              value="@value"
+                                              mode="Simple"
+                                              access="@(Model.GetFieldAccess(field))"
+                                              label-help-text="@field.HelpText"
+                                              description="@field.Description"
+                                              placeholder="@field.PlaceholderText"
+                                              required="@field.Required"
+                                              default-value="@(((MultiSelectField)field).DefaultValue)"
+                                              options="@(((MultiSelectField)field).Options).ToWvSelectOption()"></wv-field-multiselect>
+                    }
+                    break;
+
+            }
+        </wv-grid-column>
 			}
 		</wv-grid-row>
 	}

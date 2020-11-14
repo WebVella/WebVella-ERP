@@ -59,11 +59,12 @@
 											   required="@field.Required"
 											   access="@(Model.GetFieldAccess(field))"
 											   maxlength="@(((TextField)field).MaxLength)"></wv-field-text>
-							}
-							break;
+                            }
+                            break;
 
-						case FieldType.MultiLineTextField:
-							{
+                        case FieldType.MultiLineTextField:
+                        case FieldType.GeographyField:
+                            {
 								<wv-field-textarea mode="Form"
 												   name="@field.Name"
 												   label-text="@field.Label"

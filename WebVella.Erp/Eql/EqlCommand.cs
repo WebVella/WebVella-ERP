@@ -37,11 +37,31 @@ namespace WebVella.Erp.Eql
 		/// </summary>
 		public List<EqlParameter> Parameters { get; private set; } = new List<EqlParameter>();
 
+		private DbContext suppliedContext = null;
+		public DbContext CurrentContext
+		{
+			get
+			{
+				if (suppliedContext != null)
+					return suppliedContext;
+				else
+					return DbContext.Current;
+			}
+			set
+			{
+				suppliedContext = value;
+			}
+		}
+
+
 		/// <summary>
 		/// Creates command
 		/// </summary>
-		public EqlCommand(string text, params EqlParameter[] parameters)
+		public EqlCommand(string text, DbContext currentContext = null, params EqlParameter[] parameters)
 		{
+			if (currentContext != null)
+				suppliedContext = currentContext;
+
 			Text = text;
 
 			if (string.IsNullOrWhiteSpace(text))
@@ -58,8 +78,10 @@ namespace WebVella.Erp.Eql
 		/// <summary>
 		/// Creates command
 		/// </summary>
-		public EqlCommand(string text, List<EqlParameter> parameters = null)
+		public EqlCommand(string text, List<EqlParameter> parameters = null, DbContext currentContext = null)
 		{
+			if (currentContext != null)
+				suppliedContext = currentContext;
 			Text = text;
 
 			if (string.IsNullOrWhiteSpace(text))
@@ -78,8 +100,10 @@ namespace WebVella.Erp.Eql
 		/// </summary>
 		/// <param name="text"></param>
 		/// <param name="parameters"></param>
-		public EqlCommand(string text, DbConnection connection, List<EqlParameter> parameters = null)
+		public EqlCommand(string text, DbConnection connection, List<EqlParameter> parameters = null, DbContext currentContext = null)
 		{
+			if (currentContext != null)
+				suppliedContext = currentContext;
 			Text = text;
 
 			if (string.IsNullOrWhiteSpace(text))
@@ -101,8 +125,11 @@ namespace WebVella.Erp.Eql
 		/// </summary>
 		/// <param name="text"></param>
 		/// <param name="parameters"></param>
-		public EqlCommand(string text, NpgsqlConnection connection, NpgsqlTransaction transaction = null, List<EqlParameter> parameters = null)
+		public EqlCommand(string text, NpgsqlConnection connection, NpgsqlTransaction transaction = null, List<EqlParameter> parameters = null, DbContext currentContext = null)
 		{
+			if (currentContext != null)
+				suppliedContext = currentContext;
+
 			Text = text;
 
 			if (string.IsNullOrWhiteSpace(text))

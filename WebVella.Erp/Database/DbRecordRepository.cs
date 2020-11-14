@@ -62,58 +62,114 @@ namespace WebVella.Erp.Database
 
 
 		public void Create(string entityName, IEnumerable<KeyValuePair<string, object>> recordData)
-        {
-            Entity entity = entMan.ReadEntity(entityName).Object;
+		{
+			Entity entity = entMan.ReadEntity(entityName).Object;
 
-            List<DbParameter> parameters = new List<DbParameter>();
+			List<DbParameter> parameters = new List<DbParameter>();
 
-            foreach (var record in recordData)
-            {
-                Field field = entity.Fields.FirstOrDefault(f => f.Name.ToLowerInvariant() == record.Key.ToLowerInvariant());
+			foreach (var record in recordData)
+			{
+				Field field = entity.Fields.FirstOrDefault(f => f.Name.ToLowerInvariant() == record.Key.ToLowerInvariant());
 
-                DbParameter param = new DbParameter();
-                param.Name = field.Name;
-                param.Value = record.Value ?? DBNull.Value;
-                param.Type = DbTypeConverter.ConvertToDatabaseType(field.GetFieldType());
-                parameters.Add(param);
-            }
+				DbParameter param = new DbParameter();
+				param.Name = field.Name;
+				param.Value = record.Value ?? DBNull.Value;
+				if (field.GetFieldType() == FieldType.GeographyField)
+				{
+					// this is set as text because later
+					// the generated SQL will be something like
 
-            string tableName = RECORD_COLLECTION_PREFIX + entityName;
-            DbRepository.InsertRecord(tableName, parameters);
-        }
+					// INSERT INTO places 
+					//  (id, 
+					//  border) 
+					// VALUES 
+					//  (@id, 
+					//  ST_Transform(ST_GeomFromGeoJSON(@border),4326)::geography)
+					// 
+					param.Type = NpgsqlDbType.Text;
+					GeographyField geo = (field as GeographyField);
 
-        public void Update(string entityName, IEnumerable<KeyValuePair<string, object>> recordData)
-        {
-            Entity entity = entMan.ReadEntity(entityName).Object;
+					if (param.Value == null || (string)param.Value == "")
+					{
+						if (geo.Format == GeographyFieldFormat.GeoJSON)
+						{
+							param.Value = "{\"type\":\"GeometryCollection\",\"geometries\":[]}";
+						}
+						else if (geo.Format == GeographyFieldFormat.Text)
+						{
+							param.Value = "GEOMETRYCOLLECTION EMPTY";
+						}
 
-            List<DbParameter> parameters = new List<DbParameter>();
-            Guid? id = null;
+					}
 
-            foreach (var record in recordData)
-            {
-                Field field = entity.Fields.FirstOrDefault(f => f.Name.ToLowerInvariant() == record.Key.ToLowerInvariant());
+					param.ValueOverride = $"ST_Transform(ST_GeomFrom{geo.Format.Value.ToString()}(@{param.Name}{(geo.Format.Value == GeographyFieldFormat.Text ? ", " + geo.SRID : "")}),{geo.SRID})::geography";
 
-                if (field.Name == "id")
-                    id = (Guid)record.Value;
+				}
+				else
+				{
+					param.Type = DbTypeConverter.ConvertToDatabaseType(field.GetFieldType());
+				}
+				parameters.Add(param);
+			}
 
-                DbParameter param = new DbParameter();
-                param.Name = field.Name;
-                param.Value = record.Value ?? DBNull.Value;
-                param.Type = DbTypeConverter.ConvertToDatabaseType(field.GetFieldType());
-                parameters.Add(param);
-            }
+			string tableName = RECORD_COLLECTION_PREFIX + entityName;
+			DbRepository.InsertRecord(tableName, parameters);
+		}
+		public void Update(string entityName, IEnumerable<KeyValuePair<string, object>> recordData)
+		{
+			Entity entity = entMan.ReadEntity(entityName).Object;
 
-            if (!id.HasValue)
-                throw new StorageException("ID is missing. Cannot update records without ID specified.");
+			List<DbParameter> parameters = new List<DbParameter>();
+			Guid? id = null;
 
-            string tableName = RECORD_COLLECTION_PREFIX + entityName;
+			foreach (var record in recordData)
+			{
+				Field field = entity.Fields.FirstOrDefault(f => f.Name.ToLowerInvariant() == record.Key.ToLowerInvariant());
 
-            var updateSuccess = DbRepository.UpdateRecord(tableName, parameters);
-            if (!updateSuccess)
-                throw new StorageException("Failed to update record.");
-        }
+				if (field.Name == "id")
+					id = (Guid)record.Value;
 
-        public void Delete(string entityName, Guid id)
+				DbParameter param = new DbParameter();
+				param.Name = field.Name;
+				if (field.GetFieldType() == FieldType.GeographyField)
+				{
+					// this is set as text because later
+					// the generated SQL will be something like
+
+					// INSERT INTO places 
+					//  (id, 
+					//  border) 
+					// VALUES 
+					//  (@id, 
+					//  ST_Transform(ST_GeomFromGeoJSON(@border),4326)::geography)
+					// 
+					param.Type = NpgsqlDbType.Text;
+					GeographyField geo = (field as GeographyField);
+					param.Value = record.Value;
+
+					param.ValueOverride = $"ST_Transform(ST_GeomFrom{geo.Format.Value.ToString()}(@{param.Name}{(geo.Format.Value == GeographyFieldFormat.Text ? ", " + geo.SRID : "")}),{geo.SRID})::geography";
+
+				}
+				else
+				{
+					param.Value = record.Value ?? DBNull.Value;
+					param.Type = DbTypeConverter.ConvertToDatabaseType(field.GetFieldType());
+				}
+				parameters.Add(param);
+
+			}
+
+			if (!id.HasValue)
+				throw new StorageException("ID is missing. Cannot update records without ID specified.");
+
+			string tableName = RECORD_COLLECTION_PREFIX + entityName;
+
+			var updateSuccess = DbRepository.UpdateRecord(tableName, parameters);
+			if (!updateSuccess)
+				throw new StorageException("Failed to update record.");
+		}
+
+		public void Delete(string entityName, Guid id)
         {
             string tableName = RECORD_COLLECTION_PREFIX + entityName;
 
@@ -305,39 +361,40 @@ namespace WebVella.Erp.Database
 				//is saved in JToken value, it get converted to DateTime. It may happen with other specific texts also.
 				if( field is EmailField || field is FileField || field is ImageField ||
 					field is HtmlField || field is MultiLineTextField || field is PasswordField ||
-					field is PhoneField || field is SelectField || field is TextField || field is UrlField )
+					field is PhoneField || field is SelectField || field is TextField || field is UrlField ||
+					field is GeographyField)
 					value = ((JToken)value).ToObject<string>();
 				else
 					value = ((JToken)value).ToObject<object>();
 			}
 
-            if (field is AutoNumberField)
-            {
-                if (value == null)
-                    return null;
-                if (value is string)
-                    return decimal.Parse(value as string);
+			if (field is AutoNumberField)
+			{
+				if (value == null)
+					return null;
+				if (value is string)
+					return decimal.Parse(value as string);
 
-                return Convert.ToDecimal(value);
-            }
-            else if (field is CheckboxField)
-                return value as bool?;
-            else if (field is CurrencyField)
-            {
-                if (value == null)
-                    return null;
-                if (value is string)
-                {
-                    if (string.IsNullOrWhiteSpace(value as string))
-                        return null;
-                    if ((value as string).StartsWith("$"))
-                        value = (value as string).Substring(1);
-                    return decimal.Parse(value as string);
-                }
+				return Convert.ToDecimal(value);
+			}
+			else if (field is CheckboxField)
+				return value as bool?;
+			else if (field is CurrencyField)
+			{
+				if (value == null)
+					return null;
+				if (value is string)
+				{
+					if (string.IsNullOrWhiteSpace(value as string))
+						return null;
+					if ((value as string).StartsWith("$"))
+						value = (value as string).Substring(1);
+					return decimal.Parse(value as string);
+				}
 
-                return Convert.ToDecimal(value);
-            }
-			else if (field is DateField) 
+				return Convert.ToDecimal(value);
+			}
+			else if (field is DateField)
 			{
 				if (value == null)
 					return null;
@@ -430,88 +487,90 @@ namespace WebVella.Erp.Database
 			}
 
 			else if (field is EmailField)
-                return value as string;
-            else if (field is FileField)
-                //TODO convert file path to url path
-                return value as string;
-            else if (field is ImageField)
-                //TODO convert image path to url path
-                return value as string;
-            else if (field is HtmlField)
-                return value as string;
-            else if (field is MultiLineTextField)
-                return value as string;
-            else if (field is MultiSelectField)
-            {
-                if (value == null)
-                    return null;
-                else if (value is JArray)
-                    return ((JArray)value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
-                else if (value is List<object>)
-                    return ((List<object>)value).Select(x => ((object)x).ToString()).ToList<string>();
-                else if (value is string[])
-                    return new List<string>(value as string[]);
-                else
-                    return value as IEnumerable<string>;
-            }
-            else if (field is NumberField)
-            {
-                if (value == null)
-                    return null;
-                if (value is string)
-                    return decimal.Parse(value as string);
+				return value as string;
+			else if (field is FileField)
+				//TODO convert file path to url path
+				return value as string;
+			else if (field is ImageField)
+				//TODO convert image path to url path
+				return value as string;
+			else if (field is HtmlField)
+				return value as string;
+			else if (field is MultiLineTextField)
+				return value as string;
+			else if (field is GeographyField)
+				return value as string;
+			else if (field is MultiSelectField)
+			{
+				if (value == null)
+					return null;
+				else if (value is JArray)
+					return ((JArray)value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
+				else if (value is List<object>)
+					return ((List<object>)value).Select(x => ((object)x).ToString()).ToList<string>();
+				else if (value is string[])
+					return new List<string>(value as string[]);
+				else
+					return value as IEnumerable<string>;
+			}
+			else if (field is NumberField)
+			{
+				if (value == null)
+					return null;
+				if (value is string)
+					return decimal.Parse(value as string);
 
-                return Convert.ToDecimal(value);
-            }
-            else if (field is PasswordField)
-            {
-                if (encryptPasswordFields)
-                {
-                    if (((PasswordField)field).Encrypted == true)
-                    {
-                        if (string.IsNullOrWhiteSpace(value as string))
-                            return null;
+				return Convert.ToDecimal(value);
+			}
+			else if (field is PasswordField)
+			{
+				if (encryptPasswordFields)
+				{
+					if (((PasswordField)field).Encrypted == true)
+					{
+						if (string.IsNullOrWhiteSpace(value as string))
+							return null;
 
-                        return PasswordUtil.GetMd5Hash(value as string);
-                    }
-                }
-                return value;
-            }
-            else if (field is PercentField)
-            {
-                if (value == null)
-                    return null;
-                if (value is string)
-                    return decimal.Parse(value as string);
+						return PasswordUtil.GetMd5Hash(value as string);
+					}
+				}
+				return value;
+			}
+			else if (field is PercentField)
+			{
+				if (value == null)
+					return null;
+				if (value is string)
+					return decimal.Parse(value as string);
 
-                return Convert.ToDecimal(value);
-            }
-            else if (field is PhoneField)
-                return value as string;
-            else if (field is GuidField)
-            {
-                if (value is string)
-                {
-                    if (string.IsNullOrWhiteSpace(value as string))
-                        return null;
+				return Convert.ToDecimal(value);
+			}
+			else if (field is PhoneField)
+				return value as string;
+			else if (field is GuidField)
+			{
+				if (value is string)
+				{
+					if (string.IsNullOrWhiteSpace(value as string))
+						return null;
 
-                    return new Guid(value as string);
-                }
+					return new Guid(value as string);
+				}
 
-                if (value is Guid)
-                    return (Guid?)value;
+				if (value is Guid)
+					return (Guid?)value;
 
-                if (value == null)
-                    return (Guid?)null;
+				if (value == null)
+					return (Guid?)null;
 
-                throw new Exception("Invalid Guid field value.");
-            }
-            else if (field is SelectField)
-                return value as string;
-            else if (field is TextField)
-                return value as string;
-            else if (field is UrlField)
-                return value as string;
+				throw new Exception("Invalid Guid field value.");
+			}
+			else if (field is SelectField)
+				return value as string;
+			else if (field is TextField)
+				return value as string;
+			else if (field is UrlField)
+				return value as string;
 
             throw new Exception("System Error. A field type is not supported in field value extraction process.");
         }
@@ -579,7 +638,8 @@ namespace WebVella.Erp.Database
                 #region no relations 
 
                 var tableName = GetTableNameForEntity(entity);
-                string columnNames = String.Join(",", fields.Select(x => tableName + ".\"" + x.Name + "\""));
+				string columnNames = String.Join(",", fields.Select(x => x.GetFieldType() == FieldType.GeographyField ? "ST_As" + (x as GeographyField).Format + "(" + tableName + ".\"" + x.Name + "\") AS \"" + x.Name + "\"" : tableName + ".\"" + x.Name + "\""));
+								
                 if(!containsRelationalQuery)
                     sql.AppendLine("SELECT " + columnNames + " FROM " + tableName);
                 else
@@ -1740,7 +1800,9 @@ namespace WebVella.Erp.Database
                 return value as string;
             else if (field is MultiLineTextField)
                 return value as string;
-            else if (field is MultiSelectField)
+			else if (field is GeographyField)
+				return value as string;
+			else if (field is MultiSelectField)
             {
 				if (value == null)
 					return null;

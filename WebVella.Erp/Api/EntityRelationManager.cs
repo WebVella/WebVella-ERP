@@ -1,20 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Storage;
 using WebVella.Erp.Api.Models.AutoMapper;
 using WebVella.Erp.Database;
-using System.Net;
 
 namespace WebVella.Erp.Api
 {
-    public class EntityRelationManager
+	public class EntityRelationManager
     {
+		private DbContext suppliedContext = null;
+		private DbContext CurrentContext
+		{
+			get
+			{
+				if (suppliedContext != null)
+					return suppliedContext;
+				else
+					return DbContext.Current;
+			}
+		}
 
-        #region << Validation >>  
+		public EntityRelationManager(DbContext currentContext = null)
+		{
+			if (currentContext != null)
+				suppliedContext = currentContext;
+		}
 
-        private enum ValidationType
+		#region << Validation >>  
+
+		private enum ValidationType
         {
             Create, //indicates the relation will be created
             Update, //indicated the existing relation will be updated

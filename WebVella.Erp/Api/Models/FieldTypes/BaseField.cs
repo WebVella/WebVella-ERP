@@ -112,7 +112,10 @@ namespace WebVella.Erp
                 case FieldType.MultiLineTextField:
                     field = inputField.ToObject<InputMultiLineTextField>();
                     break;
-                case FieldType.MultiSelectField:
+				case FieldType.GeographyField:
+					field = inputField.ToObject<InputGeographyField>();
+					break;
+				case FieldType.MultiSelectField:
                     field = inputField.ToObject<InputMultiSelectField>();
                     break;
                 case FieldType.NumberField:
@@ -182,7 +185,10 @@ namespace WebVella.Erp
                 case FieldType.MultiLineTextField:
                     type = typeof(InputMultiLineTextField);
                     break;
-                case FieldType.MultiSelectField:
+				case FieldType.GeographyField:
+					type = typeof(GeographyField);
+					break;
+				case FieldType.MultiSelectField:
                     type = typeof(InputMultiSelectField);
                     break;
                 case FieldType.NumberField:
@@ -322,7 +328,9 @@ namespace WebVella.Erp
             else if (this is ImageField)
                 //TODO convert file path to url path
                 return ((ImageField)this).DefaultValue;
-            else if (this is HtmlField)
+			else if (this is GeographyField)
+				return ((GeographyField)this).DefaultValue;
+			else if (this is HtmlField)
                 return ((HtmlField)this).DefaultValue;
             else if (this is MultiLineTextField)
                 return ((MultiLineTextField)this).DefaultValue;
@@ -379,7 +387,9 @@ namespace WebVella.Erp
                 return FieldType.HtmlField;
             else if (this is MultiLineTextField)
                 return FieldType.MultiLineTextField;
-            else if (this is MultiSelectField)
+			else if (this is GeographyField)
+				return FieldType.GeographyField;
+			else if (this is MultiSelectField)
                 return FieldType.MultiSelectField;
             else if (this is NumberField)
                 return FieldType.NumberField;

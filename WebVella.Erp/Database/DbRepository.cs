@@ -97,6 +97,13 @@ namespace WebVella.Erp.Database
 					{
 						sql += @" DEFAULT  uuid_generate_v1() ";
 					}
+					else if (type == FieldType.GeographyField)
+					{
+						if (!isNullable)
+						{
+							sql += " DEFAULT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY')";
+						}
+					}
 					else
 					{
 						var defVal = ConvertDefaultValue(type, defaultValue);
@@ -405,7 +412,14 @@ namespace WebVella.Erp.Database
 					parameter.NpgsqlDbType = param.Type;
 					command.Parameters.Add(parameter);
 
-					values += $"\"{param.Name}\"=@{param.Name}, ";
+					if (!string.IsNullOrWhiteSpace(param.ValueOverride))
+					{
+						values += $"\"{param.Name}\"={param.ValueOverride}, ";
+					}
+					else
+					{
+						values += $"\"{param.Name}\"=@{param.Name}, ";
+					}
 				}
 
 				values = values.Remove(values.Length - 2, 2);
@@ -466,6 +480,7 @@ namespace WebVella.Erp.Database
 				case FieldType.HtmlField:
 				case FieldType.ImageField:
 				case FieldType.MultiLineTextField:
+				case FieldType.GeographyField:
 				case FieldType.PhoneField:
 				case FieldType.SelectField:
 				case FieldType.TextField:

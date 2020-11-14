@@ -2,6 +2,7 @@
 using System;
 using WebVella.Erp.Api.Models;
 
+
 namespace WebVella.Erp.Database
 {
 	public abstract class DbBaseField
@@ -132,6 +133,8 @@ namespace WebVella.Erp.Database
 				return FieldType.HtmlField;
 			else if (this is DbMultiLineTextField)
 				return FieldType.MultiLineTextField;
+			else if (this is DbGeographyField)
+				return FieldType.GeographyField;
 			else if (this is DbMultiSelectField)
 				return FieldType.MultiSelectField;
 			else if (this is DbNumberField)

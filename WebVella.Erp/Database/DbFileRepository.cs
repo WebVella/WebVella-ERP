@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Npgsql;
+using System;
 using System.Collections.Generic;
-using Npgsql;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -12,6 +12,23 @@ namespace WebVella.Erp.Database
 		public const string FOLDER_SEPARATOR = "/";
 		public const string TMP_FOLDER_NAME = "tmp";
 
+		private DbContext suppliedContext = null;
+		private DbContext CurrentContext
+		{
+			get
+			{
+				if (suppliedContext != null)
+					return suppliedContext;
+				else
+					return DbContext.Current;
+			}
+		}
+
+		public DbFileRepository(DbContext currentContext = null)
+		{
+			if (currentContext != null)
+				suppliedContext = currentContext;
+		}
 		public DbFile Find(string filepath)
 		{
 			if (string.IsNullOrWhiteSpace(filepath))

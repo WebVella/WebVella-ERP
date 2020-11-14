@@ -17,8 +17,22 @@ namespace WebVella.Erp.Api
 	{
 		internal static object lockObj = new object();
 
-		public EntityManager()
+		private DbContext suppliedContext = null;
+		private DbContext CurrentContext
 		{
+			get
+			{
+				if (suppliedContext != null)
+					return suppliedContext;
+				else
+					return DbContext.Current;
+			}
+		}
+
+		public EntityManager(DbContext currentContext = null)
+		{
+			if (currentContext != null)
+				suppliedContext = currentContext;
 		}
 
 		#region << Validation methods >>
@@ -226,6 +240,12 @@ namespace WebVella.Erp.Api
 			//    if (!((FormulaField)field).DecimalPlaces.HasValue)
 			//        errorList.Add(new ErrorModel("fields.decimalPlaces", null, "Decimal Places is required!"));
 			//}
+			else if (field is InputGeographyField)
+			{
+				if (field.Required.HasValue && field.Required.Value && ((InputGeographyField)field).DefaultValue == null)
+					errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
+
+			}
 			else if (field is InputGuidField)
 			{
 				if ((((InputGuidField)field).Unique.HasValue && ((InputGuidField)field).Unique.Value) &&
@@ -1107,6 +1127,19 @@ namespace WebVella.Erp.Api
 						((MultiLineTextField)field).MaxLength = (int?)data["maxLength"];
 					if (HasKey(data, "visibleLineNumber") && data["visibleLineNumber"] != null)
 						((MultiLineTextField)field).VisibleLineNumber = (int?)data["visibleLineNumber"];
+					break;
+				case FieldType.GeographyField:
+					field = new GeographyField();
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
+						((GeographyField)field).DefaultValue = (string)data["defaultValue"];
+					if (HasKey(data, "maxLength") && data["maxLength"] != null)
+						((GeographyField)field).MaxLength = (int?)data["maxLength"];
+					if (HasKey(data, "visibleLineNumber") && data["visibleLineNumber"] != null)
+						((GeographyField)field).VisibleLineNumber = (int?)data["visibleLineNumber"];
+					if (HasKey(data, "format") && data["format"] != null)
+						((GeographyField)field).Format = (GeographyFieldFormat)data["format"];
+					if (HasKey(data, "srid") && data["srid"] != null)
+						((GeographyField)field).SRID = (int)data["srid"];
 					break;
 				case FieldType.MultiSelectField:
 					field = new MultiSelectField();

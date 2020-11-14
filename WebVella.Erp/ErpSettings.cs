@@ -35,8 +35,9 @@ namespace WebVella.Erp
 
         public static bool ShowAccounting { get; set; }
 		public static bool DevelopmentMode { get; private set; }
+		public static int DefaultSRID { get; private set; } = 4326;
 
-        public static IConfiguration Configuration { get; private set; }
+		public static IConfiguration Configuration { get; private set; }
 
         public static bool IsInitialized { get; private set; }
 
