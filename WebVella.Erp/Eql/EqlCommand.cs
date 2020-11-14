@@ -58,8 +58,6 @@ namespace WebVella.Erp.Eql
 		/// </summary>
 		public EqlCommand(string text, params EqlParameter[] parameters)
 		{
-			suppliedContext = null;
-
 			Text = text;
 
 			if (string.IsNullOrWhiteSpace(text))
