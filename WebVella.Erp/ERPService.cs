@@ -907,7 +907,7 @@ namespace WebVella.Erp
 		{
 			JobManagerSettings settings = new JobManagerSettings();
 			settings.DbConnectionString = ErpSettings.ConnectionString;
-			settings.Enabled = ErpSettings.EnableBackgroungJobs;
+			settings.Enabled = ErpSettings.EnableBackgroundJobs;
 
 			JobManager.Initialize(settings, additionalJobTypes);
 			ScheduleManager.Initialize(settings);

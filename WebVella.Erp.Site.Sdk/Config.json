@@ -9,6 +9,8 @@
 		"EnableBackgroungJobs": "true",
 		"EnableFileSystemStorage": "false",
 		"FileSystemStorageFolder": "\\\\192.168.0.2\\Share\\erp3-files",
+		"EnableCloudBlobStorage": "false",
+		"CloudBlobStorageConnectionString": "disk://path=c:\\temp\\WebVella_files", // see https://github.com/aloneguid/storage/blob/develop/doc/blobs.md
 		"EmailEnabled": false,
 		"EmailSMTPServerName": "",
 		"EmailSMTPPort": "25",

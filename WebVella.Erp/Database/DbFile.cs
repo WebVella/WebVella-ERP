@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using Storage.Net.Blobs;
 using System;
 using System.Data;
 using System.IO;
@@ -34,7 +35,15 @@ namespace WebVella.Erp.Database
 
 		private Stream GetContentStream(DbConnection connection, FileAccess fileAccess = FileAccess.ReadWrite, FileShare fileShare = FileShare.ReadWrite )
 		{
-			if (ErpSettings.EnableFileSystemStorage && ObjectId == 0)
+			if (ErpSettings.EnableCloudBlobStorage && this.ObjectId == 0)
+			{
+				var path = DbFileRepository.GetBlobPath(this);
+				using (IBlobStorage storage = DbFileRepository.GetBlobStorage())
+				{
+					return storage.OpenReadAsync(path).Result;
+				}
+			}
+			else if (ErpSettings.EnableFileSystemStorage && ObjectId == 0)
 			{
 				var path = DbFileRepository.GetFileSystemPath(this);
 				if (File.Exists(path))
