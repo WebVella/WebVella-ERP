@@ -25,6 +25,15 @@
 	</wv-page-header-toolbar>
 </wv-page-header>
 
+@if( Model.Type == FieldType.GeographyField && !Model.IsPostgisInstalled)
+{
+<div class="alert alert-danger">
+    A field from this type cannot be created because it requires PostGIS extension installed in database. For PG 13 and later you can use stack build to install it, for older versions check 
+    <a href="https://postgis.net/install/" target="_blank">postgis.net</a> .
+</div>
+}
+
+
 <wv-row class="mt-4">
 	<wv-column span="12">
 		<wv-icon-card title="@Model.FieldCard["label"]" class="mb-4" description="@Model.FieldCard["description"]" icon-class="@Model.FieldCard["class"]"></wv-icon-card>
