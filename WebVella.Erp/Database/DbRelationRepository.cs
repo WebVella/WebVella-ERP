@@ -69,9 +69,9 @@ namespace WebVella.Erp.Database
 
 							DbRepository.CreateRelation(relation.Name, originTableName, originField.Name, targetTableName, targetField.Name);
 							if (originField.Name != "id")
-								DbRepository.CreateIndex($"idx_r_{relation.Name}_{originField.Name}", originTableName, originField.Name);
+								DbRepository.CreateIndex($"idx_r_{relation.Name}_{originField.Name}", originTableName, originField.Name, null);
 							if (targetField.Name != "id")
-								DbRepository.CreateIndex($"idx_r_{relation.Name}_{targetField.Name}", targetTableName, targetField.Name);
+								DbRepository.CreateIndex($"idx_r_{relation.Name}_{targetField.Name}", targetTableName, targetField.Name, null);
 						}
 
 						con.CommitTransaction();

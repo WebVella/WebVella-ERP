@@ -1037,7 +1037,7 @@ WITH(oids = false); ";
 					command = connection.CreateCommand(filesTableSql);
 					command.ExecuteNonQuery();
 
-					DbRepository.CreateIndex("idx_filepath", "files", "filepath", true);
+					DbRepository.CreateIndex("idx_filepath", "files", "filepath", null, true);
 				}
 
 				//drop unique constraint for object id - to support FS storage (object id is 0 for all files stored on file system)

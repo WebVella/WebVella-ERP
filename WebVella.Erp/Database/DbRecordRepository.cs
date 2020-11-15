@@ -286,7 +286,7 @@ namespace WebVella.Erp.Database
             if (field.Unique)
                 DbRepository.CreateUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName, new List<string> { field.Name });
             if (field.Searchable)
-                DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name);
+                DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name, field);
         }
 
         public void UpdateRecordField(string entityName, Field field)
@@ -309,7 +309,7 @@ namespace WebVella.Erp.Database
 
 
             if (field.Searchable)
-                DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name);
+                DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name, field);
             else
                 DbRepository.DropIndex("idx_s_" + entityName + "_" + field.Name);
         }
@@ -322,7 +322,7 @@ namespace WebVella.Erp.Database
             if (field.Unique)
                 DbRepository.DropUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName);
             if (field.Searchable)
-                DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name);
+                DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name, field);
 
             DbRepository.DeleteColumn(tableName, field.Name);
         }

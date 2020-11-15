@@ -76,7 +76,7 @@ namespace WebVella.Erp
 
 			EnableBackgroundJobs = string.IsNullOrWhiteSpace(configuration["Settings:EnableBackgroundJobs"]) ? true : bool.Parse(configuration["Settings:EnableBackgroundJobs"]);
 			// 628426@gmail.com 15 Nov 2020 backwards compatibility for projects which still have mispelled EnableBackgroungJobs in config
-			if (string.IsNullOrWhiteSpace(configuration["Settings:EnableBackgroungJobs"]))
+			if (string.IsNullOrWhiteSpace(configuration["Settings:EnableBackgroundJobs"]))
 			{
 				EnableBackgroundJobs = string.IsNullOrWhiteSpace(configuration["Settings:EnableBackgroungJobs"]) ? true : bool.Parse(configuration["Settings:EnableBackgroungJobs"]);
 			}
