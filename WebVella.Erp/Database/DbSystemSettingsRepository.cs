@@ -10,11 +10,31 @@ namespace WebVella.Erp.Database
 {
 	public class DbSystemSettingsRepository
 	{
+		private DbContext suppliedContext = null;
+		public DbContext CurrentContext
+		{
+			get
+			{
+				if (suppliedContext != null)
+					return suppliedContext;
+				else
+					return DbContext.Current;
+			}
+			set
+			{
+				suppliedContext = value;
+			}
+		}
+		public DbSystemSettingsRepository(DbContext currentContext)
+		{
+			if (currentContext != null)
+				suppliedContext = currentContext;
+		}
 		public DbSystemSettings Read()
 		{
 			DbSystemSettings setting = null;
 
-			using (DbConnection con = DbContext.Current.CreateConnection())
+			using (DbConnection con = CurrentContext.CreateConnection())
 			{
 				try
 				{
@@ -50,7 +70,7 @@ namespace WebVella.Erp.Database
 			if (systemSettings == null)
 				throw new ArgumentNullException("systemSettings");
 
-			using (DbConnection con = DbContext.Current.CreateConnection())
+			using (DbConnection con = CurrentContext.CreateConnection())
 			{
 				bool recordExists = false;
 				NpgsqlCommand command = con.CreateCommand("SELECT COUNT(*) FROM system_settings WHERE id=@id;");

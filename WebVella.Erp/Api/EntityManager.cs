@@ -469,7 +469,7 @@ namespace WebVella.Erp.Api
 
 
 				DbEntity storageEntity = entity.MapTo<DbEntity>();
-				bool result = DbContext.Current.EntityRepository.Create(storageEntity, sysIdDictionary, createOnlyIdField);
+				bool result = CurrentContext.EntityRepository.Create(storageEntity, sysIdDictionary, createOnlyIdField);
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -566,7 +566,7 @@ namespace WebVella.Erp.Api
 				storageEntity.RecordPermissions.CanUpdate = entity.RecordPermissions.CanUpdate;
 				storageEntity.RecordPermissions.CanDelete = entity.RecordPermissions.CanDelete;
 
-				bool result = DbContext.Current.EntityRepository.Update(storageEntity.MapTo<DbEntity>());
+				bool result = CurrentContext.EntityRepository.Update(storageEntity.MapTo<DbEntity>());
 
 				if (!result)
 				{
@@ -641,7 +641,7 @@ namespace WebVella.Erp.Api
 				}
 
 				//entity, entity records and relations are deleted in storage repository 
-				DbContext.Current.EntityRepository.Delete(id);
+				CurrentContext.EntityRepository.Delete(id);
 			}
 			catch (Exception e)
 			{
@@ -685,10 +685,10 @@ namespace WebVella.Erp.Api
 			{
 				lock (lockObj)
 				{
-					List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
+					List<DbEntity> storageEntityList = CurrentContext.EntityRepository.Read();
 					entities = storageEntityList.MapTo<Entity>();
 
-					List<EntityRelation> relationList = new EntityRelationManager().Read(storageEntityList).Object;
+					List<EntityRelation> relationList = new EntityRelationManager(CurrentContext).Read(storageEntityList).Object;
 
 
 					//EntityRelationManager relationManager = new EntityRelationManager(Storage);
@@ -829,7 +829,7 @@ namespace WebVella.Erp.Api
 				inputEntity.Id = entityId;
 
 			EntityResponse response = new EntityResponse { Success = true, Message = "The entity was successfully cloned!", };
-			using (DbConnection connection = DbContext.Current.CreateConnection())
+			using (DbConnection connection = CurrentContext.CreateConnection())
 			{
 				try
 				{
@@ -966,13 +966,13 @@ namespace WebVella.Erp.Api
 
 				DbEntity editedEntity = entity.MapTo<DbEntity>();
 
-				using (DbConnection con = DbContext.Current.CreateConnection())
+				using (DbConnection con = CurrentContext.CreateConnection())
 				{
 					con.BeginTransaction();
 
 					try
 					{
-						bool result = DbContext.Current.EntityRepository.Update(editedEntity);
+						bool result = CurrentContext.EntityRepository.Update(editedEntity);
 						if (!result)
 						{
 							response.Timestamp = DateTime.UtcNow;
@@ -981,7 +981,7 @@ namespace WebVella.Erp.Api
 							return response;
 						}
 
-						DbContext.Current.RecordRepository.CreateRecordField(entity.Name, field);
+						CurrentContext.RecordRepository.CreateRecordField(entity.Name, field);
 
 						con.CommitTransaction();
 					}
@@ -1313,10 +1313,10 @@ namespace WebVella.Erp.Api
 
 				entity.Fields.Add(field);
 
-				DbContext.Current.RecordRepository.UpdateRecordField(entity.Name, field);
+				CurrentContext.RecordRepository.UpdateRecordField(entity.Name, field);
 
 				DbEntity updatedEntity = entity.MapTo<DbEntity>();
-				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
+				bool result = CurrentContext.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
 					Cache.Clear();
@@ -1406,7 +1406,7 @@ namespace WebVella.Erp.Api
 				var validationErrors = new List<ErrorModel>();
 
 				//Check relations
-				var relations = new EntityRelationManager().Read().Object;
+				var relations = new EntityRelationManager(CurrentContext).Read().Object;
 
 				foreach (var relation in relations)
 				{
@@ -1440,15 +1440,15 @@ namespace WebVella.Erp.Api
 
 				entity.Fields.Remove(field);
 
-				using (DbConnection con = DbContext.Current.CreateConnection())
+				using (DbConnection con = CurrentContext.CreateConnection())
 				{
 					con.BeginTransaction();
 					try
 					{
-						DbContext.Current.RecordRepository.RemoveRecordField(entity.Name, field);
+						CurrentContext.RecordRepository.RemoveRecordField(entity.Name, field);
 
 						DbEntity updatedEntity = entity.MapTo<DbEntity>();
-						bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
+						bool result = CurrentContext.EntityRepository.Update(updatedEntity);
 						if (!result)
 						{
 							response.Timestamp = DateTime.UtcNow;

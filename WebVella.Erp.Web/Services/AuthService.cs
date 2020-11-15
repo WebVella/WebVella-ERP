@@ -55,7 +55,7 @@ namespace WebVella.Erp.Web.Services
 
 		public static ErpUser GetUser(ClaimsPrincipal principal)
 		{
-			if (principal == null)
+			if (principal == null || principal.Claims == null || principal.Claims.Count() <= 0)
 				return null;
 
 			try

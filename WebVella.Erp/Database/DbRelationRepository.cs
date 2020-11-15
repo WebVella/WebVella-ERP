@@ -12,6 +12,29 @@ namespace WebVella.Erp.Database
 {
 	public class DbRelationRepository
 	{
+		private DbContext suppliedContext = null;
+		public DbContext CurrentContext
+		{
+			get
+			{
+				if (suppliedContext != null)
+					return suppliedContext;
+				else
+					return DbContext.Current;
+			}
+			set
+			{
+				suppliedContext = value;
+			}
+		}
+
+		public DbRelationRepository(DbContext currentContext)
+		{
+			if (currentContext != null)
+				suppliedContext = currentContext;
+		}
+
+
 		public bool Create(DbEntityRelation relation)
 		{
 			try
@@ -35,7 +58,7 @@ namespace WebVella.Erp.Database
 				parameterJson.Type = NpgsqlDbType.Json;
 				parameters.Add(parameterJson);
 
-                List<DbEntity> entities = DbContext.Current.EntityRepository.Read();
+                List<DbEntity> entities = CurrentContext.EntityRepository.Read();
 
                 DbEntity originEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
                 DbEntity targetEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
@@ -69,9 +92,9 @@ namespace WebVella.Erp.Database
 
 							DbRepository.CreateRelation(relation.Name, originTableName, originField.Name, targetTableName, targetField.Name);
 							if (originField.Name != "id")
-								DbRepository.CreateIndex($"idx_r_{relation.Name}_{originField.Name}", originTableName, originField.Name);
+								DbRepository.CreateIndex($"idx_r_{relation.Name}_{originField.Name}", originTableName, originField.Name, null);
 							if (targetField.Name != "id")
-								DbRepository.CreateIndex($"idx_r_{relation.Name}_{targetField.Name}", targetTableName, targetField.Name);
+								DbRepository.CreateIndex($"idx_r_{relation.Name}_{targetField.Name}", targetTableName, targetField.Name, null);
 						}
 
 						con.CommitTransaction();
@@ -141,7 +164,7 @@ namespace WebVella.Erp.Database
 
 		public List<DbEntityRelation> Read()
 		{
-			using (DbConnection con = DbContext.Current.CreateConnection())
+			using (DbConnection con = CurrentContext.CreateConnection())
 			{
 				NpgsqlCommand command = con.CreateCommand("SELECT json FROM entity_relations;");
 
@@ -170,7 +193,7 @@ namespace WebVella.Erp.Database
 				throw new StorageException("There is no record with specified relation id.");
 			}
 
-            List<DbEntity> entities = DbContext.Current.EntityRepository.Read();
+            List<DbEntity> entities = CurrentContext.EntityRepository.Read();
 
             DbEntity originEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
             DbEntity targetEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);

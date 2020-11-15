@@ -1,4 +1,6 @@
 ﻿using Npgsql;
+using Storage.Net;
+using Storage.Net.Blobs;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -39,7 +41,7 @@ namespace WebVella.Erp.Database
 			if (!filepath.StartsWith(FOLDER_SEPARATOR))
 				filepath = FOLDER_SEPARATOR + filepath;
 
-			using (var connection = DbContext.Current.CreateConnection())
+			using (var connection = CurrentContext.CreateConnection())
 			{
 				var command = connection.CreateCommand("SELECT * FROM files WHERE filepath = @filepath ");
 				command.Parameters.Add(new NpgsqlParameter("@filepath", filepath));
@@ -78,7 +80,7 @@ namespace WebVella.Erp.Database
 			}
 
 			DataTable table = new DataTable();
-			using (var connection = DbContext.Current.CreateConnection())
+			using (var connection = CurrentContext.CreateConnection())
 			{
 				var command = connection.CreateCommand(string.Empty);
 				if (!includeTempFiles && !string.IsNullOrWhiteSpace(startsWithPath))
@@ -127,7 +129,7 @@ namespace WebVella.Erp.Database
 			if (Find(filepath) != null)
 				throw new ArgumentException(filepath + ": file already exists");
 
-			using (var connection = DbContext.Current.CreateConnection())
+			using (var connection = CurrentContext.CreateConnection())
 			{
 				try
 				{
@@ -163,7 +165,16 @@ namespace WebVella.Erp.Database
 
 					var result = Find(filepath);
 
-					if (ErpSettings.EnableFileSystemStorage)
+					if(ErpSettings.EnableCloudBlobStorage)
+					{
+						var path = GetBlobPath(result);
+						using (IBlobStorage storage = GetBlobStorage())
+						{
+							storage.WriteAsync(path,
+								buffer).Wait();
+						}
+					}
+					else if (ErpSettings.EnableFileSystemStorage)
 					{
 						var path = GetFileSystemPath(result);
 						var folderPath = Path.GetDirectoryName(path);
@@ -198,7 +209,7 @@ namespace WebVella.Erp.Database
 			if (!filepath.StartsWith(FOLDER_SEPARATOR))
 				filepath = FOLDER_SEPARATOR + filepath;
 
-			using (var connection = DbContext.Current.CreateConnection())
+			using (var connection = CurrentContext.CreateConnection())
 			{
 				var file = Find(filepath);
 				if (file == null)
@@ -246,7 +257,7 @@ namespace WebVella.Erp.Database
 			if (destFile != null && overwrite == false)
 				throw new Exception("Destination file already exists and no overwrite specified.");
 
-			using (var connection = DbContext.Current.CreateConnection())
+			using (var connection = CurrentContext.CreateConnection())
 			{
 				try
 				{
@@ -302,7 +313,7 @@ namespace WebVella.Erp.Database
 			if (destFile != null && overwrite == false)
 				throw new Exception("Destination file already exists and no overwrite specified.");
 
-			using (var connection = DbContext.Current.CreateConnection())
+			using (var connection = CurrentContext.CreateConnection())
 			{
 				try
 				{
@@ -315,8 +326,24 @@ namespace WebVella.Erp.Database
 					command.Parameters.Add(new NpgsqlParameter("@id", srcFile.Id));
 					command.Parameters.Add(new NpgsqlParameter("@filepath", destinationFilepath));
 					command.ExecuteNonQuery();
+					if(ErpSettings.EnableCloudBlobStorage)
+					{
+						var srcPath = StoragePath.Combine(StoragePath.RootFolderPath, sourceFilepath);
+						var destinationPath = StoragePath.Combine(StoragePath.RootFolderPath, destinationFilepath);
+						using (IBlobStorage storage = GetBlobStorage())
+						{
+							using (Stream original = storage.OpenReadAsync(srcPath).Result)
+							{
+								if (original != null)
+								{
+									storage.WriteAsync(destinationPath, original).Wait();
+									storage.DeleteAsync(sourceFilepath).Wait();
+								}
+							}
 
-					if (ErpSettings.EnableFileSystemStorage)
+						}
+					} 
+					else if (ErpSettings.EnableFileSystemStorage)
 					{
 						var srcFileName = Path.GetFileName(sourceFilepath);
 						var destFileName = Path.GetFileName(destinationFilepath);
@@ -360,13 +387,22 @@ namespace WebVella.Erp.Database
 			if (file == null)
 				return;
 
-			using (var connection = DbContext.Current.CreateConnection())
+			using (var connection = CurrentContext.CreateConnection())
 			{
 				try
 				{
 					connection.BeginTransaction();
-
-					if (ErpSettings.EnableFileSystemStorage && file.ObjectId == 0)
+					if(ErpSettings.EnableCloudBlobStorage && file.ObjectId == 0)
+					{
+						var path = GetBlobPath(file);
+						using (IBlobStorage storage = GetBlobStorage())
+						{
+							if (storage.ExistsAsync(path).Result)
+							{
+								storage.DeleteAsync(path).Wait();
+							}
+						}
+					} else if (ErpSettings.EnableFileSystemStorage && file.ObjectId == 0)
 					{
 						var path = GetFileSystemPath(file);
 						if( File.Exists(path))
@@ -420,7 +456,7 @@ namespace WebVella.Erp.Database
 		{
 
 			DataTable table = new DataTable();
-			using (var connection = DbContext.Current.CreateConnection())
+			using (var connection = CurrentContext.CreateConnection())
 			{
 				var command = connection.CreateCommand(string.Empty);
 				command.CommandText = "SELECT filepath FROM files WHERE filepath ILIKE @tmp_path";
@@ -432,17 +468,44 @@ namespace WebVella.Erp.Database
 				Delete((string)row["filepath"]);
 		}
 
+		internal static IBlobStorage GetBlobStorage(string overrideConnectionString = null)
+		{
+			return StorageFactory.Blobs.FromConnectionString(string.IsNullOrWhiteSpace(overrideConnectionString) ? ErpSettings.CloudBlobStorageConnectionString : overrideConnectionString);
+		} 
+
 		internal static string GetFileSystemPath(DbFile file)
 		{
 			var guidIinitialPart = file.Id.ToString().Split(new[] { '-' })[0];
 			var fileName = file.FilePath.Split(new[] { '/' }).Last();
 			var depth1Folder = guidIinitialPart.Substring(0, 2);
 			var depth2Folder = guidIinitialPart.Substring(2, 2);
+			// BUG: https://docs.microsoft.com/en-us/dotnet/api/system.io.path.getextension?view=net-5.0
+			// Path.GetExtension includes the "." which means further on we are adding double "."
+			// Would probably ruin too many databases to just fix here though
 			string filenameExt = Path.GetExtension(fileName);
+
 			if (!string.IsNullOrWhiteSpace(filenameExt))
 				return Path.Combine(ErpSettings.FileSystemStorageFolder, depth1Folder, depth2Folder, file.Id + "." + filenameExt);
+
 			else
 				return Path.Combine(ErpSettings.FileSystemStorageFolder, depth1Folder, depth2Folder, file.Id.ToString());
+		}
+
+
+		internal static string GetBlobPath(DbFile file)
+		{
+			var guidIinitialPart = file.Id.ToString().Split(new[] { '-' })[0];
+			var fileName = file.FilePath.Split(new[] { '/' }).Last();
+			var depth1Folder = guidIinitialPart.Substring(0, 2);
+			var depth2Folder = guidIinitialPart.Substring(2, 2);
+			string filenameExt = Path.GetExtension(fileName);
+
+			
+			if (!string.IsNullOrWhiteSpace(filenameExt))
+				return StoragePath.Combine(depth1Folder, depth2Folder, file.Id + filenameExt);
+			else
+				return StoragePath.Combine(depth1Folder, depth2Folder, file.Id.ToString());
+
 		}
 
 	}

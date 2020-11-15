@@ -11,9 +11,14 @@ namespace WebVella.Erp
 		public static string Lang { get; private set; }
         public static string Locale { get; private set; }
         public static string CacheKey { get; private set; }
-        public static bool EnableBackgroungJobs { get; private set; }
+        public static bool EnableBackgroundJobs { get; private set; }
 		public static bool EnableFileSystemStorage { get; private set; }
 		public static string FileSystemStorageFolder { get; set; }
+		public static bool EnableCloudBlobStorage { get; set; }
+		/// <summary>
+		/// See https://github.com/aloneguid/storage/blob/develop/doc/blobs.md for details
+		/// </summary>
+		public static string CloudBlobStorageConnectionString { get; set; }
         public static string DevelopmentTestEntityName { get; set; }
         public static Guid DevelopmentTestRecordId { get; set; }
         public static string DevelopmentTestRecordViewName { get; set; }
@@ -56,6 +61,7 @@ namespace WebVella.Erp
 			Lang = string.IsNullOrWhiteSpace(configuration["Settings:Lang"]) ? @"en" : configuration["Settings:Lang"];
             // 125	FLE Standard Time	(GMT+02:00) Helsinki, Kiev, Riga, Sofia, Tallinn, Vilnius
 			//TODO - disq about using as default hosting server timezone when not specified in configuration
+			// 628426 - I think its better to use the current threads timezone as the default if you don't have one set?
             TimeZoneName = string.IsNullOrWhiteSpace(configuration["Settings:TimeZoneName"]) ? @"FLE Standard Time" : configuration["Settings:TimeZoneName"];
 			JsonDateTimeFormat = string.IsNullOrWhiteSpace(configuration["Settings:JsonDateTimeFormat"]) ? "yyyy-MM-ddTHH:mm:ss.fff" : configuration["Settings:JsonDateTimeFormat"];
 
@@ -64,8 +70,17 @@ namespace WebVella.Erp
 
             EnableFileSystemStorage = string.IsNullOrWhiteSpace(configuration["Settings:EnableFileSystemStorage"]) ? false : bool.Parse(configuration["Settings:EnableFileSystemStorage"]);
 			FileSystemStorageFolder = string.IsNullOrWhiteSpace(configuration["Settings:FileSystemStorageFolder"]) ? @"c:\erp-files" : configuration["Settings:FileSystemStorageFolder"];
-			EnableBackgroungJobs = string.IsNullOrWhiteSpace(configuration["Settings:EnableBackgroungJobs"]) ? true : bool.Parse(configuration["Settings:EnableBackgroungJobs"]);
+			
+			EnableCloudBlobStorage = string.IsNullOrWhiteSpace(configuration["Settings:EnableCloudBlobStorage"]) ? false : bool.Parse(configuration["Settings:EnableCloudBlobStorage"]);
+			CloudBlobStorageConnectionString = string.IsNullOrWhiteSpace(configuration["Settings:CloudBlobStorageConnectionString"]) ? "disk://path=c:\\erp-files" : configuration["Settings:CloudBlobStorageConnectionString"];
 
+			EnableBackgroundJobs = string.IsNullOrWhiteSpace(configuration["Settings:EnableBackgroundJobs"]) ? true : bool.Parse(configuration["Settings:EnableBackgroundJobs"]);
+			// 628426@gmail.com 15 Nov 2020 backwards compatibility for projects which still have mispelled EnableBackgroungJobs in config
+			if (string.IsNullOrWhiteSpace(configuration["Settings:EnableBackgroundJobs"]))
+			{
+				EnableBackgroundJobs = string.IsNullOrWhiteSpace(configuration["Settings:EnableBackgroungJobs"]) ? true : bool.Parse(configuration["Settings:EnableBackgroungJobs"]);
+			}
+			
             DevelopmentTestEntityName = string.IsNullOrWhiteSpace(configuration["Development:TestEntityName"]) ? @"test" : configuration["Development:TestEntityName"];
             DevelopmentTestRecordId = new Guid("001ea36f-fd2e-4d1b-b8ee-25d32d4e396c");
             DevelopmentTestRecordViewName = "test";

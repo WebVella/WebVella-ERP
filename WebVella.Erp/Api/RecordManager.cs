@@ -75,7 +75,7 @@ namespace WebVella.Erp.Api
 				bool hooksExists = RecordHookManager.ContainsAnyHooksForRelation(relation.Name);
 				if( hooksExists )
 				{
-					using (var connection = DbContext.Current.CreateConnection())
+					using (var connection = CurrentContext.CreateConnection())
 					{
 						try
 						{
@@ -153,7 +153,7 @@ namespace WebVella.Erp.Api
 				bool hooksExists = RecordHookManager.ContainsAnyHooksForRelation(relation.Name);
 				if (hooksExists)
 				{
-					using (var connection = DbContext.Current.CreateConnection())
+					using (var connection = CurrentContext.CreateConnection())
 					{
 						try
 						{
@@ -260,9 +260,9 @@ namespace WebVella.Erp.Api
 			response.Object = null;
 			response.Success = true;
 			response.Timestamp = DateTime.UtcNow;
-			var recRepo = DbContext.Current.RecordRepository;
+			var recRepo = CurrentContext.RecordRepository;
 
-			using (DbConnection connection = DbContext.Current.CreateConnection())
+			using (DbConnection connection = CurrentContext.CreateConnection())
 			{
 				bool isTransactionActive = false;
 				try
@@ -950,7 +950,7 @@ namespace WebVella.Erp.Api
 			response.Success = true;
 			response.Timestamp = DateTime.UtcNow;
 
-			using (DbConnection connection = DbContext.Current.CreateConnection())
+			using (DbConnection connection = CurrentContext.CreateConnection())
 			{
 				bool isTransactionActive = false;
 
@@ -1379,7 +1379,7 @@ namespace WebVella.Erp.Api
 						}
 					}
 
-					var recRepo = DbContext.Current.RecordRepository;
+					var recRepo = CurrentContext.RecordRepository;
 
 
 				
@@ -1672,7 +1672,7 @@ namespace WebVella.Erp.Api
 						}
 					}
 
-					DbContext.Current.RecordRepository.Delete(entity.Name, id);
+					CurrentContext.RecordRepository.Delete(entity.Name, id);
 
 					if (hooksExists && executeHooks)
 						RecordHookManager.ExecutePostDeleteRecordHooks(entity.Name, response.Object.Data[0]);
@@ -1754,8 +1754,8 @@ namespace WebVella.Erp.Api
 				//	return response;
 				//}
 
-				var fields = DbContext.Current.RecordRepository.ExtractQueryFieldsMeta(query);
-				var data = DbContext.Current.RecordRepository.Find(query);
+				var fields = CurrentContext.RecordRepository.ExtractQueryFieldsMeta(query);
+				var data = CurrentContext.RecordRepository.Find(query);
 				response.Object = new QueryResult { FieldsMeta = fields, Data = data };
 			}
 			catch (Exception ex)
@@ -1808,8 +1808,8 @@ namespace WebVella.Erp.Api
 				//	return response;
 				//}
 
-				List<Field> fields = DbContext.Current.RecordRepository.ExtractQueryFieldsMeta(query);
-				response.Object = DbContext.Current.RecordRepository.Count(query);
+				List<Field> fields = CurrentContext.RecordRepository.ExtractQueryFieldsMeta(query);
+				response.Object = CurrentContext.RecordRepository.Count(query);
 			}
 			catch (Exception ex)
 			{

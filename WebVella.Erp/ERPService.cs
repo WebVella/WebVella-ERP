@@ -874,7 +874,7 @@ namespace WebVella.Erp
 						UpdateSitemapNodeTable2();
 					}
 
-					new DbSystemSettingsRepository().Save(new DbSystemSettings { Id = systemSettings.Id, Version = systemSettings.Version });
+					new DbSystemSettingsRepository(DbContext.Current).Save(new DbSystemSettings { Id = systemSettings.Id, Version = systemSettings.Version });
 
 					connection.CommitTransaction();
 				}
@@ -907,7 +907,7 @@ namespace WebVella.Erp
 		{
 			JobManagerSettings settings = new JobManagerSettings();
 			settings.DbConnectionString = ErpSettings.ConnectionString;
-			settings.Enabled = ErpSettings.EnableBackgroungJobs;
+			settings.Enabled = ErpSettings.EnableBackgroundJobs;
 
 			JobManager.Initialize(settings, additionalJobTypes);
 			ScheduleManager.Initialize(settings);
@@ -1037,7 +1037,7 @@ WITH(oids = false); ";
 					command = connection.CreateCommand(filesTableSql);
 					command.ExecuteNonQuery();
 
-					DbRepository.CreateIndex("idx_filepath", "files", "filepath", true);
+					DbRepository.CreateIndex("idx_filepath", "files", "filepath", null, true);
 				}
 
 				//drop unique constraint for object id - to support FS storage (object id is 0 for all files stored on file system)

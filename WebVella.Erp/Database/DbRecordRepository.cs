@@ -56,9 +56,32 @@ namespace WebVella.Erp.Database
 
         #endregion
 
-        EntityManager entMan = new EntityManager();
-        EntityRelationManager relMan = new EntityRelationManager();
+        EntityManager entMan;
+        EntityRelationManager relMan;
 		FtsAnalyzer ftsAnalyzer = new FtsAnalyzer();
+		private DbContext suppliedContext = null;
+		public DbContext CurrentContext
+		{
+			get
+			{
+				if (suppliedContext != null)
+					return suppliedContext;
+				else
+					return DbContext.Current;
+			}
+			set
+			{
+				suppliedContext = value;
+			}
+		}
+		public DbRecordRepository(DbContext currentContext)
+		{
+			if (currentContext != null)
+				suppliedContext = currentContext;
+
+			entMan = new EntityManager(CurrentContext);
+			relMan = new EntityRelationManager(CurrentContext);
+		}
 
 
 		public void Create(string entityName, IEnumerable<KeyValuePair<string, object>> recordData)
@@ -286,7 +309,7 @@ namespace WebVella.Erp.Database
             if (field.Unique)
                 DbRepository.CreateUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName, new List<string> { field.Name });
             if (field.Searchable)
-                DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name);
+                DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name, field);
         }
 
         public void UpdateRecordField(string entityName, Field field)
@@ -309,7 +332,7 @@ namespace WebVella.Erp.Database
 
 
             if (field.Searchable)
-                DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name);
+                DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name, field);
             else
                 DbRepository.DropIndex("idx_s_" + entityName + "_" + field.Name);
         }
@@ -322,7 +345,7 @@ namespace WebVella.Erp.Database
             if (field.Unique)
                 DbRepository.DropUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName);
             if (field.Searchable)
-                DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name);
+                DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name, field);
 
             DbRepository.DeleteColumn(tableName, field.Name);
         }

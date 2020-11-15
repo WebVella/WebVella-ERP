@@ -296,18 +296,18 @@ namespace WebVella.Erp.Database
 			CreateRelation($"{relName}_origin", originTableName, originFieldName, relTableName, "origin_id");
 			CreateRelation($"{relName}_target", targetTableName, targetFieldName, relTableName, "target_id");
 
-			CreateIndex("idx_" + relName + "_origin_id", relTableName, "origin_id");
-			CreateIndex("idx_" + relName + "_target_id", relTableName, "target_id");
+			CreateIndex("idx_" + relName + "_origin_id", relTableName, "origin_id", null);
+			CreateIndex("idx_" + relName + "_target_id", relTableName, "target_id", null);
 
 			if (originFieldName != "id")
 			{
 				DropIndex($"idx_r_{relName}_{originFieldName}");
-				CreateIndex($"idx_r_{relName}_{originFieldName}", originTableName, originFieldName);
+				CreateIndex($"idx_r_{relName}_{originFieldName}", originTableName, originFieldName, null);
 			}
 			if (targetFieldName != "id")
 			{
 				DropIndex($"idx_r_{relName}_{targetFieldName}");
-				CreateIndex($"idx_r_{relName}_{targetFieldName}", targetTableName, targetFieldName);
+				CreateIndex($"idx_r_{relName}_{targetFieldName}", targetTableName, targetFieldName, null);
 			}
 		}
 
@@ -335,7 +335,7 @@ namespace WebVella.Erp.Database
 			DeleteTable(relTableName, false);
 		}
 
-		public static void CreateIndex(string indexName, string tableName, string columnName, bool unique = false, bool ascending = true, bool nullable = false)
+		public static void CreateIndex(string indexName, string tableName, string columnName, Field field, bool unique = false, bool ascending = true, bool nullable = false)
 		{
 			if (!TableExists(tableName))
 				return;
@@ -345,7 +345,8 @@ namespace WebVella.Erp.Database
 				string sql = $"CREATE INDEX IF NOT EXISTS \"{indexName}\" ON \"{tableName}\" (\"{columnName}\"";
 				if (unique)
 					sql = $"CREATE UNIQUE INDEX IF NOT EXISTS \"{indexName}\" ON \"{tableName}\" (\"{columnName}\"";
-
+				if (field != null && field is GeographyField)
+					sql = $"CREATE INDEX IF NOT EXISTS \"{indexName}\" ON \"{tableName}\" USING GIST(\"{columnName}\"";
 				if (!ascending)
 					sql = sql + " DESC";
 
@@ -408,7 +409,15 @@ namespace WebVella.Erp.Database
 					command.Parameters.Add(parameter);
 
 					columns += $"\"{param.Name}\", ";
-					values += $"@{param.Name}, ";
+					if (!string.IsNullOrWhiteSpace(param.ValueOverride))
+					{
+						values += param.ValueOverride + ", ";
+					}
+					else
+					{
+
+						values += $"@{param.Name}, ";
+					}
 				}
 
 				columns = columns.Remove(columns.Length - 2, 2);

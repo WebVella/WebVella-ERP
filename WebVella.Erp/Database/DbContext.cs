@@ -31,10 +31,10 @@ namespace WebVella.Erp.Database
 		private DbContext()
 		{
 			connectionStack = new Stack<DbConnection>();
-			RecordRepository = new DbRecordRepository();
-			EntityRepository = new DbEntityRepository();
-			RelationRepository = new DbRelationRepository();
-			SettingsRepository = new DbSystemSettingsRepository();
+			RecordRepository = new DbRecordRepository(this);
+			EntityRepository = new DbEntityRepository(this);
+			RelationRepository = new DbRelationRepository(this);
+			SettingsRepository = new DbSystemSettingsRepository(this);
 		}
 
 		/// <summary>
@@ -45,9 +45,9 @@ namespace WebVella.Erp.Database
 		{
 			DbConnection con = null;
 			if (transaction != null)
-				con = new DbConnection(transaction);
+				con = new DbConnection(transaction, this);
 			else
-				con = new DbConnection(connectionString);
+				con = new DbConnection(connectionString, this);
 
 			connectionStack.Push(con);
 

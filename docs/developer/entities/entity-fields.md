@@ -365,6 +365,38 @@ File upload field. Files will be stored within the system. Specific properties:
 |                               | GET only property. Returns the field's type
 +-------------------------------+-----------------------------------+
 
+## Geography
+
+Stores geography information in either Well Known Text (WKT) or GeoJSON.  Requires postgis to be installed.
+
++-------------------------------+-----------------------------------+
+| name                          | description                       |
++===============================+===================================+
+| `Format`                      | *object type*: `GeographyFormat`                         
+|                               |         
+|                               | *default value*: `GeoJSON`
+|                               |
+|                               | *is required*: `true`                      
+|                               |                                   
+|                               | The underlying data will be stored as either GeoJSON or WKT
++-------------------------------+-----------------------------------+
+| `SRID`                        |*object type*: `integer`    
+|                               |         
+|                               | *default value*: `4236`
+|                               |
+|                               | *is required*: `true`                      
+|                               |                                   
+|                               | The spatial reference that will be used for the field
++-------------------------------+-----------------------------------+
+| `FieldType`                   | *object type*: `FieldType`                         
+|                               |         
+|                               | *default value*: `FieldType.Geography`
+|                               |
+|                               | *is required*: `TRUE`                      
+|                               |                                   
+|                               | GET only property. Returns the field's type
++-------------------------------+-----------------------------------+
+
 ## Guid
 
 Very important field for any entity to entity relation and required by it. Specific properties:

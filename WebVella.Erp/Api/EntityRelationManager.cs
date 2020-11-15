@@ -347,11 +347,11 @@ namespace WebVella.Erp.Api
 					return response;
 				}
 
-				relations = DbContext.Current.RelationRepository.Read().Select(x => x.MapTo<EntityRelation>()).ToList();
+				relations = CurrentContext.RelationRepository.Read().Select(x => x.MapTo<EntityRelation>()).ToList();
 
 				List<DbEntity> dbEntities = storageEntityList;
 				if(dbEntities == null) {
-					dbEntities = new DbEntityRepository().Read();
+					dbEntities = new DbEntityRepository(CurrentContext).Read();
 				}
 				foreach( EntityRelation relation in relations )
 				{
@@ -418,7 +418,7 @@ namespace WebVella.Erp.Api
 				if (storageRelation.Id == Guid.Empty)
                     storageRelation.Id = Guid.NewGuid();
 
-                var success = DbContext.Current.RelationRepository.Create(storageRelation);
+                var success = CurrentContext.RelationRepository.Create(storageRelation);
 				Cache.Clear();
                 if (success)
                 {
@@ -478,7 +478,7 @@ namespace WebVella.Erp.Api
             {
                 var storageRelation = relation.MapTo<DbEntityRelation>();
 				storageRelation.Name = storageRelation.Name.Trim();
-				var success = DbContext.Current.RelationRepository.Update(storageRelation);
+				var success = CurrentContext.RelationRepository.Update(storageRelation);
 				Cache.Clear();
                 if (success)
                 {
@@ -530,11 +530,11 @@ namespace WebVella.Erp.Api
 			try
 			{
 
-                var storageRelation = DbContext.Current.RelationRepository.Read(relationId);
+                var storageRelation = CurrentContext.RelationRepository.Read(relationId);
 				Cache.Clear();
                 if (storageRelation != null)
                 {
-					DbContext.Current.RelationRepository.Delete(relationId);
+					CurrentContext.RelationRepository.Delete(relationId);
                     response.Object = storageRelation.MapTo<EntityRelation>();
                     response.Success = true;
                     response.Message = "The entity relation was deleted!";
