@@ -56,9 +56,32 @@ namespace WebVella.Erp.Database
 
         #endregion
 
-        EntityManager entMan = new EntityManager();
-        EntityRelationManager relMan = new EntityRelationManager();
+        EntityManager entMan;
+        EntityRelationManager relMan;
 		FtsAnalyzer ftsAnalyzer = new FtsAnalyzer();
+		private DbContext suppliedContext = null;
+		public DbContext CurrentContext
+		{
+			get
+			{
+				if (suppliedContext != null)
+					return suppliedContext;
+				else
+					return DbContext.Current;
+			}
+			set
+			{
+				suppliedContext = value;
+			}
+		}
+		public DbRecordRepository(DbContext currentContext)
+		{
+			if (currentContext != null)
+				suppliedContext = currentContext;
+
+			entMan = new EntityManager(CurrentContext);
+			relMan = new EntityRelationManager(CurrentContext);
+		}
 
 
 		public void Create(string entityName, IEnumerable<KeyValuePair<string, object>> recordData)

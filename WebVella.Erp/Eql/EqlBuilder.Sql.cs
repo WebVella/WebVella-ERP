@@ -11,8 +11,8 @@ namespace WebVella.Erp.Eql
 {
 	public partial class EqlBuilder
 	{
-		private EntityManager entMan = new EntityManager();
-		private EntityRelationManager relMan = new EntityRelationManager();
+		private EntityManager entMan;
+		private EntityRelationManager relMan ;
 
 		private Entity fromEntity = null;
 

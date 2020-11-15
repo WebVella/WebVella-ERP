@@ -109,7 +109,7 @@ namespace WebVella.Erp.Api
 				throw new ArgumentNullException(nameof(user));
 
 			RecordManager recMan = new RecordManager();
-			EntityRelationManager relMan = new EntityRelationManager();
+			EntityRelationManager relMan = new EntityRelationManager(CurrentContext);
 			EntityRecord record = new EntityRecord();
 
 			ErpUser existingUser = GetUser(user.Id);
@@ -266,7 +266,7 @@ namespace WebVella.Erp.Api
 			List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 			storageRecordData.Add(new KeyValuePair<string, object>("id", userId));
 			storageRecordData.Add(new KeyValuePair<string, object>("last_logged_in", DateTime.UtcNow));
-			DbContext.Current.RecordRepository.Update("user", storageRecordData);
+			CurrentContext.RecordRepository.Update("user", storageRecordData);
 		}
 
 		private bool IsValidEmail(string email)

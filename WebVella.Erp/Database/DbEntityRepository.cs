@@ -15,6 +15,25 @@ namespace WebVella.Erp.Database
 	public class DbEntityRepository
 	{
 		internal const string RECORD_COLLECTION_PREFIX = "rec_";
+		private DbContext suppliedContext = null;
+		public DbContext CurrentContext
+		{
+			get
+			{
+				if (suppliedContext != null)
+					return suppliedContext;
+				else
+					return DbContext.Current;
+			}
+			set
+			{
+				suppliedContext = value;
+			}
+		}
+		public DbEntityRepository(DbContext currentContext)
+		{
+			suppliedContext = currentContext;
+		}
 
 		public bool Create(DbEntity entity, Dictionary<string, Guid> sysldDictionary = null, bool createOnlyIdField = true)
 		{
@@ -61,7 +80,7 @@ namespace WebVella.Erp.Database
 						{
 							DbEntity userEntity = Read(SystemIds.UserEntityId);
 
-							DbRelationRepository relRep = new DbRelationRepository();
+							DbRelationRepository relRep = new DbRelationRepository(CurrentContext);
 
 							string createdByRelationName = $"user_{entity.Name}_created_by";
 							string modifiedByRelationName = $"user_{entity.Name}_modified_by";
@@ -181,7 +200,7 @@ namespace WebVella.Erp.Database
 
 		public List<DbEntity> Read()
 		{
-			using (DbConnection con = DbContext.Current.CreateConnection())
+			using (DbConnection con = CurrentContext.CreateConnection())
 			{
 				NpgsqlCommand command = con.CreateCommand("SELECT json FROM entities;");
 
@@ -238,7 +257,7 @@ namespace WebVella.Erp.Database
 		{
 			try
 			{
-				var relRepository = new DbRelationRepository();
+				var relRepository = new DbRelationRepository(CurrentContext);
 				var relations = relRepository.Read();
 				var entityRelations = relations.Where(x => x.TargetEntityId == entityId || x.OriginEntityId == entityId);
 

@@ -158,13 +158,13 @@ namespace WebVella.Erp.Eql
 		/// <returns></returns>
 		public EntityRecordList Execute()
 		{
-			EqlBuilder eqlBuilder = new EqlBuilder(Text);
+			EqlBuilder eqlBuilder = new EqlBuilder(Text, CurrentContext);
 			var eqlBuildResult = eqlBuilder.Build(Parameters);
 
 			if (eqlBuildResult.Errors.Count > 0)
 				throw new EqlException(eqlBuildResult.Errors);
 
-			if (DbContext.Current == null)
+			if (CurrentContext == null)
 				throw new EqlException("DbContext need to be created.");
 
 			EntityRecordList result = new EntityRecordList();
@@ -185,10 +185,10 @@ namespace WebVella.Erp.Eql
 			}
 			else
 			{
-				if (DbContext.Current == null)
+				if (CurrentContext == null)
 					throw new EqlException("DbContext needs to be initialized before using EqlCommand without supplying connection.");
 
-				using (var connection = DbContext.Current.CreateConnection())
+				using (var connection = CurrentContext.CreateConnection())
 				{
 					command = connection.CreateCommand(eqlBuildResult.Sql, parameters: npgsParameters);
 					command.CommandTimeout = 600;
@@ -225,7 +225,7 @@ namespace WebVella.Erp.Eql
 		/// <returns></returns>
 		public List<EqlFieldMeta> GetMeta()
 		{
-			EqlBuilder eqlBuilder = new EqlBuilder(Text);
+			EqlBuilder eqlBuilder = new EqlBuilder(Text, CurrentContext);
 			var eqlBuildResult = eqlBuilder.Build(Parameters);
 
 			if (eqlBuildResult.Errors.Count > 0)
@@ -240,7 +240,7 @@ namespace WebVella.Erp.Eql
 		/// <returns></returns>
 		public string GetSql()
 		{
-			EqlBuilder eqlBuilder = new EqlBuilder(Text);
+			EqlBuilder eqlBuilder = new EqlBuilder(Text, CurrentContext);
 			var eqlBuildResult = eqlBuilder.Build(Parameters);
 
 			if (eqlBuildResult.Errors.Count > 0)

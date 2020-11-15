@@ -41,7 +41,7 @@ namespace WebVella.Erp.Database
 			if (!filepath.StartsWith(FOLDER_SEPARATOR))
 				filepath = FOLDER_SEPARATOR + filepath;
 
-			using (var connection = DbContext.Current.CreateConnection())
+			using (var connection = CurrentContext.CreateConnection())
 			{
 				var command = connection.CreateCommand("SELECT * FROM files WHERE filepath = @filepath ");
 				command.Parameters.Add(new NpgsqlParameter("@filepath", filepath));
@@ -80,7 +80,7 @@ namespace WebVella.Erp.Database
 			}
 
 			DataTable table = new DataTable();
-			using (var connection = DbContext.Current.CreateConnection())
+			using (var connection = CurrentContext.CreateConnection())
 			{
 				var command = connection.CreateCommand(string.Empty);
 				if (!includeTempFiles && !string.IsNullOrWhiteSpace(startsWithPath))
@@ -129,7 +129,7 @@ namespace WebVella.Erp.Database
 			if (Find(filepath) != null)
 				throw new ArgumentException(filepath + ": file already exists");
 
-			using (var connection = DbContext.Current.CreateConnection())
+			using (var connection = CurrentContext.CreateConnection())
 			{
 				try
 				{
@@ -209,7 +209,7 @@ namespace WebVella.Erp.Database
 			if (!filepath.StartsWith(FOLDER_SEPARATOR))
 				filepath = FOLDER_SEPARATOR + filepath;
 
-			using (var connection = DbContext.Current.CreateConnection())
+			using (var connection = CurrentContext.CreateConnection())
 			{
 				var file = Find(filepath);
 				if (file == null)
@@ -257,7 +257,7 @@ namespace WebVella.Erp.Database
 			if (destFile != null && overwrite == false)
 				throw new Exception("Destination file already exists and no overwrite specified.");
 
-			using (var connection = DbContext.Current.CreateConnection())
+			using (var connection = CurrentContext.CreateConnection())
 			{
 				try
 				{
@@ -313,7 +313,7 @@ namespace WebVella.Erp.Database
 			if (destFile != null && overwrite == false)
 				throw new Exception("Destination file already exists and no overwrite specified.");
 
-			using (var connection = DbContext.Current.CreateConnection())
+			using (var connection = CurrentContext.CreateConnection())
 			{
 				try
 				{
@@ -387,7 +387,7 @@ namespace WebVella.Erp.Database
 			if (file == null)
 				return;
 
-			using (var connection = DbContext.Current.CreateConnection())
+			using (var connection = CurrentContext.CreateConnection())
 			{
 				try
 				{
@@ -456,7 +456,7 @@ namespace WebVella.Erp.Database
 		{
 
 			DataTable table = new DataTable();
-			using (var connection = DbContext.Current.CreateConnection())
+			using (var connection = CurrentContext.CreateConnection())
 			{
 				var command = connection.CreateCommand(string.Empty);
 				command.CommandText = "SELECT filepath FROM files WHERE filepath ILIKE @tmp_path";

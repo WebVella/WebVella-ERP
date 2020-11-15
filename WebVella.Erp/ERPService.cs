@@ -874,7 +874,7 @@ namespace WebVella.Erp
 						UpdateSitemapNodeTable2();
 					}
 
-					new DbSystemSettingsRepository().Save(new DbSystemSettings { Id = systemSettings.Id, Version = systemSettings.Version });
+					new DbSystemSettingsRepository(DbContext.Current).Save(new DbSystemSettings { Id = systemSettings.Id, Version = systemSettings.Version });
 
 					connection.CommitTransaction();
 				}
