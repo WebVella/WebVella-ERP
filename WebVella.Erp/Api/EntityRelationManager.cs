@@ -387,7 +387,12 @@ namespace WebVella.Erp.Api
 
         public EntityRelationResponse Create(EntityRelation relation)
         {
-            EntityRelationResponse response = new EntityRelationResponse();
+			if (!string.IsNullOrWhiteSpace(relation.Name))
+			{
+				relation.Name = relation.Name.Trim();
+			}
+
+			EntityRelationResponse response = new EntityRelationResponse();
             response.Timestamp = DateTime.UtcNow;
             response.Object = relation;
 
