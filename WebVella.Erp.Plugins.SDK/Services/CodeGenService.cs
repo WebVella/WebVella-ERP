@@ -21,10 +21,20 @@ namespace WebVella.Erp.Plugins.SDK.Services
 		private EntityManager entMan = new EntityManager();
 		private RecordManager recMan = new RecordManager();
 		private string OldDbConnectionString;
+        private string defaultCulture = "en-US";
 
+        public CodeGenService() : this("en-US")
+        {
+        }
+
+        public CodeGenService( string defaultCulture )
+        {
+            this.defaultCulture = defaultCulture;
+        }
 
 		public MetaChangeResponseModel EvaluateMetaChanges(string connectionString, List<string> entityRecordsToCompare,
-					bool includeEntityMeta, bool includeEntityRelations, bool includeRoles, bool includeApplications, List<string> NNRelationsRecordsToCompare)
+					bool includeEntityMeta, bool includeEntityRelations, bool includeRoles, bool includeApplications, 
+                    List<string> NNRelationsRecordsToCompare  )
 		{
 			ValidationException valEx = new ValidationException();
 
@@ -2031,8 +2041,9 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 			}
 			else
 			{
-				response += $"\tdateField.DefaultValue = DateTime.Parse(\"{field.DefaultValue}\");\n";
-			}
+                response += ($"\ttry{{ dateField.DefaultValue = DateTime.Parse(\"{field.DefaultValue}\"); }}" +
+                    $"catch{{ dateField.DefaultValue = DateTime.Parse(\"{field.DefaultValue}\", new CultureInfo(\"{defaultCulture}\") ); }}\n");
+            }
 			if (field.Format == null)
 			{
 				response += $"\tdateField.Format = null;\n";
@@ -2120,8 +2131,10 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 			else
 			{
-				response += $"\tdatetimeField.DefaultValue = DateTime.Parse(\"{field.DefaultValue}\");\n";
-			}
+                
+				response += ($"\ttry{{ datetimeField.DefaultValue = DateTime.Parse(\"{field.DefaultValue}\"); }}" +
+                    $"catch{{ datetimeField.DefaultValue = DateTime.Parse(\"{field.DefaultValue}\", new CultureInfo(\"{defaultCulture}\") ); }}\n");
+            }
 			if (field.Format == null)
 			{
 				response += $"\tdatetimeField.Format = null;\n";
@@ -4374,8 +4387,9 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 			else
 			{
-				response += $"\tdateField.DefaultValue = DateTime.Parse(\"{currentField.DefaultValue}\");\n";
-			}
+                response += ($"\ttry{{ dateField.DefaultValue = DateTime.Parse(\"{currentField.DefaultValue}\"); }}" +
+                    $"catch{{ dateField.DefaultValue = DateTime.Parse(\"{currentField.DefaultValue}\", new CultureInfo(\"{defaultCulture}\") ); }}\n");
+            }
 			if (currentField.Format == null)
 			{
 				response += $"\tdateField.Format = null;\n";
@@ -4543,8 +4557,9 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			}
 			else
 			{
-				response += $"\tdatetimeField.DefaultValue = DateTime.Parse(\"{currentField.DefaultValue}\");\n";
-			}
+                response += ($"\ttry{{ datetimeField.DefaultValue = DateTime.Parse(\"{currentField.DefaultValue}\"); }}" +
+                    $"catch{{ datetimeField.DefaultValue = DateTime.Parse(\"{currentField.DefaultValue}\", new CultureInfo(\"{defaultCulture}\") ); }}\n");
+            }
 			if (currentField.Format == null)
 			{
 				response += $"\tdatetimeField.Format = null;\n";

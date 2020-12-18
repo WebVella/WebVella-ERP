@@ -428,6 +428,11 @@ namespace WebVella.Erp.Api
 
 		public EntityResponse CreateEntity(InputEntity inputEntity, Dictionary<string, Guid> sysIdDictionary = null, bool createOnlyIdField = true)
 		{
+			if (!string.IsNullOrWhiteSpace(inputEntity.Name))
+			{
+				inputEntity.Name = inputEntity.Name.Trim();
+			}
+
 			EntityResponse response = new EntityResponse
 			{
 				Success = true,
@@ -908,6 +913,10 @@ namespace WebVella.Erp.Api
 
 		public FieldResponse CreateField(Guid entityId, InputField inputField, bool transactional = true)
 		{
+			if (!string.IsNullOrWhiteSpace(inputField.Name))
+			{
+				inputField.Name = inputField.Name.Trim();
+			}
 			FieldResponse response = new FieldResponse
 			{
 				Success = true,
@@ -1029,6 +1038,11 @@ namespace WebVella.Erp.Api
 
 			if (data == null)
 				data = new Expando();
+
+			if (!string.IsNullOrWhiteSpace(name))
+			{
+				name = name.Trim();
+			}
 
 			switch (type)
 			{
