@@ -16,6 +16,8 @@
 		<RepositoryUrl>https://github.com/WebVella/WebVella-ERP.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+		<!-- Remove the language litter of code analysis on publish https://github.com/dotnet/roslyn/issues/39458-->
+		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -121,9 +123,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="CS-Script.Core" Version="1.4.0" />
-		<PackageReference Include="HtmlAgilityPack" Version="1.11.28" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.0" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.29" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
@@ -131,8 +133,8 @@
 		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0007" />
 		<PackageReference Include="Wangkanai.Detection.Device" Version="2.0.1" />
 		<PackageReference Include="WebVella.TagHelpers" Version="1.1.22" />
-		<PackageReference Include="YUICompressor.NET" Version="3.0.0" />
-		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="5.0.0" />
+		<PackageReference Include="YUICompressor.NET" Version="3.1.0" />
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="5.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
