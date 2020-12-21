@@ -210,7 +210,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 							System = typedInput.System;
 							PlaceholderText = typedInput.PlaceholderText;
 							Searchable = typedInput.Searchable;
-							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "");
+                            DefaultValue = typedInput.UseCurrentTimeAsDefaultValue.HasValue && typedInput.UseCurrentTimeAsDefaultValue.Value ? null : (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "");
 							EnableSecurity = typedInput.EnableSecurity;
 							Format = typedInput.Format;
 							UseCurrentTimeAsDefaultValue = typedInput.UseCurrentTimeAsDefaultValue ?? false;
@@ -228,7 +228,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 							System = typedInput.System;
 							PlaceholderText = typedInput.PlaceholderText;
 							Searchable = typedInput.Searchable;
-							DefaultValue = (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "");
+							DefaultValue = typedInput.UseCurrentTimeAsDefaultValue.HasValue && typedInput.UseCurrentTimeAsDefaultValue.Value ? null : (typedInput.DefaultValue != null ? typedInput.DefaultValue.ToString() : "");
 							EnableSecurity = typedInput.EnableSecurity;
 							Format = typedInput.Format;
 							UseCurrentTimeAsDefaultValue = typedInput.UseCurrentTimeAsDefaultValue ?? false;

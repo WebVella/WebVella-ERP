@@ -121,6 +121,10 @@ namespace WebVella.Erp.Database
 					{
 						sql += @" DEFAULT  uuid_generate_v1() ";
 					}
+					else if (type == FieldType.DateField || type == FieldType.DateTimeField)
+					{
+						sql += @" DEFAULT now() ";
+					}
 					else if (type == FieldType.GeographyField)
 					{
 						if (!isNullable)
@@ -254,17 +258,26 @@ namespace WebVella.Erp.Database
 		{
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				var defVal = ConvertDefaultValue(type, value);
-				if (value != null && overrideNulls)
+				if ((type == FieldType.DateField || type == FieldType.DateTimeField) && value == null)
 				{
-					string updateNullRecordsSql = $"UPDATE \"{tableName}\" SET \"{columnName}\" = {defVal} WHERE \"{columnName}\" IS NULL";
-					var updateCommand = connection.CreateCommand(updateNullRecordsSql);
-					updateCommand.ExecuteNonQuery();
+					string sql = $"ALTER TABLE ONLY \"{tableName}\" ALTER COLUMN \"{columnName}\" SET DEFAULT now()";
+					var command = connection.CreateCommand(sql);
+					command.ExecuteNonQuery();
 				}
+				else
+				{
+					var defVal = ConvertDefaultValue(type, value);
+					if (value != null && overrideNulls)
+					{
+						string updateNullRecordsSql = $"UPDATE \"{tableName}\" SET \"{columnName}\" = {defVal} WHERE \"{columnName}\" IS NULL";
+						var updateCommand = connection.CreateCommand(updateNullRecordsSql);
+						updateCommand.ExecuteNonQuery();
+					}
 
-				string sql = $"ALTER TABLE ONLY \"{tableName}\" ALTER COLUMN \"{columnName}\" SET DEFAULT {defVal}";
-				var command = connection.CreateCommand(sql);
-				command.ExecuteNonQuery();
+					string sql = $"ALTER TABLE ONLY \"{tableName}\" ALTER COLUMN \"{columnName}\" SET DEFAULT {defVal}";
+					var command = connection.CreateCommand(sql);
+					command.ExecuteNonQuery();
+				}
 			}
 		}
 

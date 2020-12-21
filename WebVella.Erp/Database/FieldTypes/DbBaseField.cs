@@ -57,14 +57,14 @@ namespace WebVella.Erp.Database
 			else if (this is DbDateField)
 			{
 				if (((DbDateField)this).UseCurrentTimeAsDefaultValue)
-					return DateTime.UtcNow.Date;
+					return null;
 				else
 					return ((DbDateField)this).DefaultValue;
 			}
 			else if (this is DbDateTimeField)
 			{
 				if (((DbDateTimeField)this).UseCurrentTimeAsDefaultValue)
-					return DateTime.UtcNow;
+					return null;
 				else
 					return ((DbDateTimeField)this).DefaultValue;
 			}

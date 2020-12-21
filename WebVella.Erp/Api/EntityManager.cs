@@ -1312,6 +1312,19 @@ namespace WebVella.Erp.Api
 
 				field = inputField.MapTo<Field>();
 
+				if( field.GetFieldType() == FieldType.DateTimeField  )
+				{
+					var dateTimeField = (DateTimeField)field;
+					if (dateTimeField.UseCurrentTimeAsDefaultValue.HasValue && dateTimeField.UseCurrentTimeAsDefaultValue.Value)
+						dateTimeField.DefaultValue = null;
+				}
+				if (field.GetFieldType() == FieldType.DateField)
+				{
+					var dateField = (DateField)field;
+					if (dateField.UseCurrentTimeAsDefaultValue.HasValue && dateField.UseCurrentTimeAsDefaultValue.Value)
+						dateField.DefaultValue = null;
+				}
+
 				if (response.Errors.Count > 0)
 				{
 					response.Object = field;

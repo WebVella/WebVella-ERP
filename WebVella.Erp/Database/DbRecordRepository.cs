@@ -305,7 +305,7 @@ namespace WebVella.Erp.Database
         {
             string tableName = RECORD_COLLECTION_PREFIX + entityName;
 
-            DbRepository.CreateColumn(tableName, field.Name, field.GetFieldType(), false, field.GetDefaultValue(), !field.Required, field.Unique);
+            DbRepository.CreateColumn(tableName, field.Name, field.GetFieldType(), false, field.GetFieldDefaultValue(), !field.Required, field.Unique);
             if (field.Unique)
                 DbRepository.CreateUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName, new List<string> { field.Name });
             if (field.Searchable)
@@ -320,15 +320,12 @@ namespace WebVella.Erp.Database
 
             string tableName = RECORD_COLLECTION_PREFIX + entityName;
 
-			bool overrideNulls = field.Required && field.GetDefaultValue() != null;
-			DbRepository.SetColumnDefaultValue(RECORD_COLLECTION_PREFIX + entityName, field.Name, field.GetFieldType(), field.GetDefaultValue(), overrideNulls );
+			bool overrideNulls = field.Required && field.GetFieldDefaultValue() != null;
+			DbRepository.SetColumnDefaultValue(RECORD_COLLECTION_PREFIX + entityName, field.Name, field.GetFieldType(), field.GetFieldDefaultValue(), overrideNulls );
 
 			DbRepository.SetColumnNullable(RECORD_COLLECTION_PREFIX + entityName, field.Name, !field.Required);
 			
-			if (field.Unique)
-                DbRepository.CreateUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName, new List<string> { field.Name });
-            else
-                DbRepository.DropUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName);
+           
 
 
             if (field.Searchable)
@@ -376,7 +373,7 @@ namespace WebVella.Erp.Database
         public static object ExtractFieldValue(object value, Field field, bool encryptPasswordFields = false)
         {
             if (value == null)
-                return field.GetDefaultValue();
+                return field.GetFieldDefaultValue();
 
 			if (value is JToken)
 			{

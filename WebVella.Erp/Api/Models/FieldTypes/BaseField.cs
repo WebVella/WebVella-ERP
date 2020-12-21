@@ -298,7 +298,7 @@ namespace WebVella.Erp
             EntityName = field.EntityName;
         }
 
-        public object GetDefaultValue()
+        public object GetFieldDefaultValue()
         {
             if (this is AutoNumberField)
                 return ((AutoNumberField)this).DefaultValue;

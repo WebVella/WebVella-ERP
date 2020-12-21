@@ -693,7 +693,7 @@ namespace WebVella.Erp.Api
 								else
 								{
 									if (field.Required && pair.Value == null)
-										storageRecordData.Add(new KeyValuePair<string, object>(field.Name, field.GetDefaultValue()));
+										storageRecordData.Add(new KeyValuePair<string, object>(field.Name, field.GetFieldDefaultValue()));
 									else
 										storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
 								}
@@ -723,7 +723,7 @@ namespace WebVella.Erp.Api
 						DbFileRepository fsRepository = new DbFileRepository();
 
 						if (field.Required && string.IsNullOrWhiteSpace(path))
-							storageRecordData.Add(new KeyValuePair<string, object>(field.Name, field.GetDefaultValue()));
+							storageRecordData.Add(new KeyValuePair<string, object>(field.Name, field.GetFieldDefaultValue()));
 						else
 						{
 							if (!string.IsNullOrWhiteSpace(path) && path.StartsWith(DbFileRepository.FOLDER_SEPARATOR + DbFileRepository.TMP_FOLDER_NAME))
@@ -1399,7 +1399,7 @@ namespace WebVella.Erp.Api
 							if (!string.IsNullOrWhiteSpace(path))
 								fsRepository.Delete(pathToDelete);
 
-							storageRecordData.Add(new KeyValuePair<string, object>(field.Name, field.GetDefaultValue()));
+							storageRecordData.Add(new KeyValuePair<string, object>(field.Name, field.GetFieldDefaultValue()));
 						}
 						else
 						{   //update file
@@ -2027,7 +2027,7 @@ namespace WebVella.Erp.Api
 			}
 			else
 			{
-				return field.GetDefaultValue();
+				return field.GetFieldDefaultValue();
 			}
 
 			throw new Exception("System Error. A field type is not supported in field value extraction process.");
@@ -2087,7 +2087,7 @@ namespace WebVella.Erp.Api
 					&& field.GetFieldType() != FieldType.FileField
 					&& field.GetFieldType() != FieldType.ImageField)
 				{
-					var defaultValue = field.GetDefaultValue();
+					var defaultValue = field.GetFieldDefaultValue();
 
 					recordData.Add(new KeyValuePair<string, object>(field.Name, defaultValue));
 				}
