@@ -4551,15 +4551,24 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 				$"\tdatetimeField.Searchable = {(currentField.Searchable).ToString().ToLowerInvariant()};\n" +
 				$"\tdatetimeField.Auditable = {(currentField.Auditable).ToString().ToLowerInvariant()};\n" +
 				$"\tdatetimeField.System = {(currentField.System).ToString().ToLowerInvariant()};\n";
-			if (currentField.DefaultValue == null)
-			{
-				response += $"\tdatetimeField.DefaultValue = null;\n";
-			}
-			else
-			{
-                response += ($"\ttry{{ datetimeField.DefaultValue = DateTime.Parse(\"{currentField.DefaultValue}\"); }}" +
-                    $"catch{{ datetimeField.DefaultValue = DateTime.Parse(\"{currentField.DefaultValue}\", new CultureInfo(\"{defaultCulture}\") ); }}\n");
+
+            if (!currentField.UseCurrentTimeAsDefaultValue)
+            {
+                if (currentField.DefaultValue == null)
+                {
+                    response += $"\tdatetimeField.DefaultValue = null;\n";
+                }
+                else
+                {
+                    response += ($"\ttry{{ datetimeField.DefaultValue = DateTime.Parse(\"{currentField.DefaultValue}\"); }}" +
+                        $"catch{{ datetimeField.DefaultValue = DateTime.Parse(\"{currentField.DefaultValue}\", new CultureInfo(\"{defaultCulture}\") ); }}\n");
+                }
             }
+            else
+            {
+                response += $"\tdatetimeField.DefaultValue = null;\n";
+            }
+
 			if (currentField.Format == null)
 			{
 				response += $"\tdatetimeField.Format = null;\n";
@@ -4654,7 +4663,11 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			{
 				hasUpdate = true;
 			}
-			else if (currentField.EnableSecurity != oldField.EnableSecurity)
+            else if (currentField.UseCurrentTimeAsDefaultValue && oldField.DefaultValue.HasValue )
+            {
+                hasUpdate = true;
+            }
+            else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
 				hasUpdate = true;
 			}
