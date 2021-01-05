@@ -105,39 +105,6 @@ namespace WebVella.Erp.Plugins.SDK
             }
             #endregion
 
-            #region << ***Update field***  Entity: case Field Name: created_on >>
-            {
-                var currentEntity = entMan.ReadEntity(new Guid("0ebb3981-7443-45c8-ab38-db0709daf58c")).Object;
-                InputDateTimeField datetimeField = new InputDateTimeField();
-                datetimeField.Id = currentEntity.Fields.SingleOrDefault(x => x.Name == "created_on").Id;
-                datetimeField.Name = "created_on";
-                datetimeField.Label = "Created on";
-                datetimeField.PlaceholderText = null;
-                datetimeField.Description = null;
-                datetimeField.HelpText = null;
-                datetimeField.Required = true;
-                datetimeField.Unique = false;
-                datetimeField.Searchable = false;
-                datetimeField.Auditable = false;
-                datetimeField.System = true;
-                try { datetimeField.DefaultValue = DateTime.Parse("12/31/1999 10:00:00 PM"); } catch { datetimeField.DefaultValue = DateTime.Parse("12/31/1999 10:00:00 PM", new CultureInfo("en-US")); }
-                datetimeField.Format = "yyyy-MMM-dd HH:mm";
-                datetimeField.UseCurrentTimeAsDefaultValue = true;
-                datetimeField.EnableSecurity = false;
-                datetimeField.Permissions = new FieldPermissions();
-                datetimeField.Permissions.CanRead = new List<Guid>();
-                datetimeField.Permissions.CanUpdate = new List<Guid>();
-                //READ
-                //UPDATE
-                {
-                    var response = entMan.UpdateField(new Guid("0ebb3981-7443-45c8-ab38-db0709daf58c"), datetimeField);
-                    if (!response.Success)
-                        throw new Exception("System error 10060. Entity: case Field: created_on Message:" + response.Message);
-                }
-            }
-            #endregion
-
-
         }
     }
 }
