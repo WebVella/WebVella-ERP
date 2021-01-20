@@ -37,6 +37,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 		public string PageDescription { get; set; } = "";
 
+        public string SearchString {get;set;} = "";
+
 		public List<string> HeaderActions { get; private set; } = new List<string>();
 
 		public IActionResult OnGet()
@@ -82,6 +84,12 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 			ReturnUrlEncoded = HttpUtility.UrlEncode(PageUtils.GetCurrentUrl(PageContext.HttpContext));
 
 			PageDescription = PageUtils.GenerateListPageDescription(PageContext.HttpContext, "", TotalCount);
+
+            var searchKey = "q_name_v";
+			if (HttpContext.Request.Query.ContainsKey(searchKey) && !String.IsNullOrWhiteSpace(HttpContext.Request.Query[searchKey]))
+			{
+				SearchString = (string)HttpContext.Request.Query[searchKey];
+			}
 			#endregion
 
 
@@ -150,8 +158,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 			#region << Actions >>
 			HeaderActions.AddRange(new List<string>() {
-				$"<a href='/sdk/objects/entity/c?returnUrl={ReturnUrlEncoded}' class='btn btn-white btn-sm'><span class='fa fa-plus go-green'></span> Create Entity</a>",
-				$"<button type='button' onclick='ErpEvent.DISPATCH(\"WebVella.Erp.Web.Components.PcDrawer\",\"open\")' class='btn btn-white btn-sm'><span class='fa fa-search'></span> Search</a>"
+				$"<a href='/sdk/objects/entity/c?returnUrl={ReturnUrlEncoded}' class='btn btn-white btn-sm'><span class='fa fa-plus go-green'></span> Create Entity</a>"
 			});
 
 			#endregion

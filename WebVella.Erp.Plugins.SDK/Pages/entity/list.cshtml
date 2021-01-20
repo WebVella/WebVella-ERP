@@ -15,7 +15,12 @@
 			@Html.Raw(action)
 		}
 	</wv-page-header-actions>
-
+	<wv-page-header-actions-aux>
+		<form id="wv-17726e93-fd63-4af2-8754-59bc2f1582c4" class="search-form" name="form" method="get" novalidate="novalidate" autocomplete="on">
+			<input class="form-control form-control-sm" id="input-0d0c248a-9027-4b0c-8fa7-bfb411dc4041" name="q_name_v" placeholder="Search in name" type="text" value="@Model.SearchString">
+			<input type="hidden" name="q_name_t" value="CONTAINS">
+		</form>
+	</wv-page-header-actions-aux>
 </wv-page-header>
 
 <wv-grid bordered="true" hover="true" columns="Model.Columns" page="Model.Pager" total-count="Model.TotalCount" page-size="Model.PagerSize">
@@ -45,11 +50,9 @@
 		</tbody>
 	}
 </wv-grid>
-
-<wv-drawer width="550px" title="Search Entities" title-action-html="@titleAction">
-	<form method="get" name="SearchEntities">
-		<wv-filter-text name="name" label="Name" query-type="CONTAINS"></wv-filter-text>
-		<hr class="divider" />
-		<button type="submit" class="btn btn-sm btn-white">Search Entities</button>
-	</form>
-</wv-drawer>
+<script>
+	window.onload = function(){
+		var searchinput = document.getElementById("input-0d0c248a-9027-4b0c-8fa7-bfb411dc4041");
+		searchinput.focus();
+	}
+</script>
