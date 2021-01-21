@@ -715,9 +715,9 @@ namespace WebVella.Erp.Plugins.Mail.Services
 					if (recipient.Address.StartsWith("cc:"))
 					{
 						if (!string.IsNullOrWhiteSpace(recipient.Name))
-							message.To.Add(new MailboxAddress(recipient.Name, recipient.Address.Substring(3)));
+							message.Cc.Add(new MailboxAddress(recipient.Name, recipient.Address.Substring(3)));
 						else
-							message.To.Add(new MailboxAddress(recipient.Address.Substring(3)));
+							message.Cc.Add(new MailboxAddress(recipient.Address.Substring(3)));
 					}
 					else
 					{
