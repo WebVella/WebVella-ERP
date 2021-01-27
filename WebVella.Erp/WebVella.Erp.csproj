@@ -8,7 +8,7 @@
 		<TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<Description>The core library of the open-source and free platform WebVella ERP. It allows a quick and painless creation of business web applications.	</Description>
-		<Version>1.1.12</Version>
+		<Version>1.1.13</Version>
 		<Authors>WebVella</Authors>
 		<Company>WebVella</Company>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -54,9 +54,9 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.8.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.8.0" />
-		<PackageReference Include="MimeMapping" Version="1.0.1.35" />
+		<PackageReference Include="MimeMapping" Version="1.0.1.37" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-		<PackageReference Include="Npgsql" Version="5.0.2" />
+		<PackageReference Include="Npgsql" Version="5.0.3" />
 		<PackageReference Include="Storage.Net" Version="9.2.7" />
 		<PackageReference Include="System.Drawing.Common" Version="5.0.0" />
 	</ItemGroup>

@@ -5,7 +5,7 @@
 		<RootNamespace>WebVella.Erp.Web</RootNamespace>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-		<Version>1.1.26</Version>
+		<Version>1.1.27</Version>
 		<Authors>WebVella</Authors>
 		<Product>WebVella.Erp.Web</Product>
 		<Description>The web components library for the open-source and free platform WebVella ERP. It allows a quick and painless creation of business web applications.</Description>
@@ -123,7 +123,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="CS-Script.Core" Version="1.4.0" />
-		<PackageReference Include="HtmlAgilityPack" Version="1.11.29" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.30" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
@@ -132,7 +132,7 @@
 		<PackageReference Include="SixLabors.ImageSharp" Version="1.0.2" />
 		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0007" />
 		<PackageReference Include="Wangkanai.Detection.Device" Version="2.0.1" />
-		<PackageReference Include="WebVella.TagHelpers" Version="1.1.24" />
+		<PackageReference Include="WebVella.TagHelpers" Version="1.1.25" />
 		<PackageReference Include="YUICompressor.NET" Version="3.1.0" />
 		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="5.0.2" />
 	</ItemGroup>

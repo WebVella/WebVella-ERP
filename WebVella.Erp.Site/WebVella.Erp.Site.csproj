@@ -50,7 +50,7 @@
 		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0007" />
 		<PackageReference Include="System.Linq" Version="4.3.0" />
 		<PackageReference Include="System.Threading" Version="4.3.0" />
-		<PackageReference Include="MimeMapping" Version="1.0.1.35" />
+		<PackageReference Include="MimeMapping" Version="1.0.1.37" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 		<PackageReference Include="morelinq" Version="3.3.2" />
 		<PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />

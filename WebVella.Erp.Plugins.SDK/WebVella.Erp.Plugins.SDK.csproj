@@ -48,6 +48,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="WebVella.TagHelpers" Version="1.1.24" />
+        <PackageReference Include="WebVella.TagHelpers" Version="1.1.25" />
     </ItemGroup>
 </Project>
