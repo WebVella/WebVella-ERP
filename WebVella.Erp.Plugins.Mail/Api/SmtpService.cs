@@ -620,9 +620,13 @@ namespace WebVella.Erp.Plugins.Mail.Api
 				ex.AddError("recipientEmail", "Recipient is not specified.");
 			else
 			{
-				if (string.IsNullOrEmpty(recipient.Address))
+				var address = recipient.Address;
+				if (address.StartsWith("cc:"))
+					address = address.Substring(3);
+
+				if (string.IsNullOrEmpty(address))
 					ex.AddError("recipientEmail", "Recipient email is not specified.");
-				else if (!recipient.Address.IsEmail())
+				else if (!address.IsEmail())
 					ex.AddError("recipientEmail", "Recipient email is not valid email address.");
 			}
 
@@ -691,9 +695,13 @@ namespace WebVella.Erp.Plugins.Mail.Api
 						ex.AddError("recipientEmail", "Recipient is not specified.");
 					else
 					{
-						if (string.IsNullOrEmpty(recipient.Address))
+						var address = recipient.Address;
+						if (address.StartsWith("cc:"))
+							address = address.Substring(3);
+
+						if (string.IsNullOrEmpty(address))
 							ex.AddError("recipientEmail", "Recipient email is not specified.");
-						else if (!recipient.Address.IsEmail())
+						else if (!address.IsEmail())
 							ex.AddError("recipientEmail", "Recipient email is not valid email address.");
 					}
 				}
@@ -756,9 +764,13 @@ namespace WebVella.Erp.Plugins.Mail.Api
 				ex.AddError("recipientEmail", "Recipient is not specified.");
 			else
 			{
-				if (string.IsNullOrEmpty(recipient.Address))
+				var address = recipient.Address;
+				if (address.StartsWith("cc:"))
+					address = address.Substring(3);
+
+				if (string.IsNullOrEmpty(address))
 					ex.AddError("recipientEmail", "Recipient email is not specified.");
-				else if (!recipient.Address.IsEmail())
+				else if (!address.IsEmail())
 					ex.AddError("recipientEmail", "Recipient email is not valid email address.");
 			}
 
@@ -827,9 +839,13 @@ namespace WebVella.Erp.Plugins.Mail.Api
 						ex.AddError("recipientEmail", "Recipient is not specified.");
 					else
 					{
-						if (string.IsNullOrEmpty(recipient.Address))
+						var address = recipient.Address;
+						if (address.StartsWith("cc:"))
+							address = address.Substring(3);
+
+						if (string.IsNullOrEmpty(address))
 							ex.AddError("recipientEmail", "Recipient email is not specified.");
-						else if (!recipient.Address.IsEmail())
+						else if (!address.IsEmail())
 							ex.AddError("recipientEmail", "Recipient email is not valid email address.");
 					}
 				}

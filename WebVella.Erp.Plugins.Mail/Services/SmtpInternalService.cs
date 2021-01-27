@@ -712,10 +712,20 @@ namespace WebVella.Erp.Plugins.Mail.Services
 
 				foreach (var recipient in email.Recipients)
 				{
-					if (!string.IsNullOrWhiteSpace(recipient.Name))
-						message.To.Add(new MailboxAddress(recipient.Name, recipient.Address));
+					if (recipient.Address.StartsWith("cc:"))
+					{
+						if (!string.IsNullOrWhiteSpace(recipient.Name))
+							message.Cc.Add(new MailboxAddress(recipient.Name, recipient.Address.Substring(3)));
+						else
+							message.Cc.Add(new MailboxAddress(recipient.Address.Substring(3)));
+					}
 					else
-						message.To.Add(new MailboxAddress(recipient.Address));
+					{
+						if (!string.IsNullOrWhiteSpace(recipient.Name))
+							message.To.Add(new MailboxAddress(recipient.Name, recipient.Address));
+						else
+							message.To.Add(new MailboxAddress(recipient.Address));
+					}
 				}
 
 				if (!string.IsNullOrWhiteSpace(email.ReplyToEmail))
