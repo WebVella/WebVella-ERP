@@ -28,6 +28,10 @@ namespace System
 			if (datetime == null)
 				return null;
 
+			//If unspecified assume it is already in app TZ
+			if(datetime.Value.Kind == DateTimeKind.Unspecified)
+				return datetime;
+
 			TimeZoneInfo appTimeZone = TimeZoneInfo.FindSystemTimeZoneById(ErpSettings.TimeZoneName);
 			return TimeZoneInfo.ConvertTimeBySystemTimeZoneId(datetime.Value, appTimeZone.Id);
 		}
