@@ -1,20 +1,16 @@
-﻿using Newtonsoft.Json.Linq;
-using Npgsql;
-using System;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using WebVella.Erp.Api.Models;
+using Npgsql;
 
 namespace WebVella.Erp.Database
 {
 	public class DbContext : IDisposable
 	{
 		private static AsyncLocal<string> currendDbContextId = new AsyncLocal<string>();
-		private static Dictionary<string, DbContext> dbContextDict = new Dictionary<string, DbContext>();
+		private static ConcurrentDictionary<string, DbContext> dbContextDict = new ConcurrentDictionary<string, DbContext>();
 		private readonly object lockObj = new object();
 		public static DbContext Current
 		{
@@ -22,7 +18,10 @@ namespace WebVella.Erp.Database
 			{
 				if (currendDbContextId == null || String.IsNullOrWhiteSpace(currendDbContextId.Value))
 					return null;
-				return dbContextDict.ContainsKey(currendDbContextId.Value) ? dbContextDict[currendDbContextId.Value] : null;
+
+				DbContext context = null;
+				dbContextDict.TryGetValue(currendDbContextId.Value, out context);
+				return context;
 			}
 		}
 		//private static AsyncLocal<DbContext> current = new AsyncLocal<DbContext>();
@@ -114,11 +113,16 @@ namespace WebVella.Erp.Database
 			connectionString = connString;
 
 			currendDbContextId.Value = Guid.NewGuid().ToString();
-			dbContextDict[currendDbContextId.Value] = new DbContext();
+			if (!dbContextDict.TryAdd(currendDbContextId.Value, new DbContext()))
+				throw new Exception("Cannot create new context and store it into context dictionary");
 
 			Debug.WriteLine($"ERP CreateContext: {currendDbContextId.Value} | dbContextDict count: {dbContextDict.Keys.Count}");
 
-			return dbContextDict[currendDbContextId.Value];
+			DbContext context;
+			if (!dbContextDict.TryGetValue(currendDbContextId.Value, out context))
+				throw new Exception("Cannot create new context and read it into context dictionary");
+
+			return context;
 		}
 
 
@@ -141,7 +145,11 @@ namespace WebVella.Erp.Database
 			Debug.WriteLine($"ERP CloseContext BEFORE: {currendDbContextId.Value} | dbContextDict count: {dbContextDict.Keys.Count}");
 			if (currendDbContextId != null && dbContextDict.ContainsKey(currendDbContextId.Value))
 			{
-				dbContextDict.Remove(currendDbContextId.Value);
+				DbContext context;
+				dbContextDict.TryRemove(currendDbContextId.Value, out context);
+				if (context != null)
+					context.Dispose();
+
 				currendDbContextId.Value = null;
 			}
 			Debug.WriteLine($"ERP CloseContext AFTER: dbContextDict count: {dbContextDict.Keys.Count}");
