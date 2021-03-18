@@ -719,6 +719,13 @@ namespace WebVella.Erp.Plugins.Mail.Services
 						else
 							message.Cc.Add(new MailboxAddress(recipient.Address.Substring(3)));
 					}
+					else if (recipient.Address.StartsWith("bcc:"))
+					{
+						if (!string.IsNullOrWhiteSpace(recipient.Name))
+							message.Bcc.Add(new MailboxAddress(recipient.Name, recipient.Address.Substring(4)));
+						else
+							message.Bcc.Add(new MailboxAddress(recipient.Address.Substring(4)));
+					}
 					else
 					{
 						if (!string.IsNullOrWhiteSpace(recipient.Name))

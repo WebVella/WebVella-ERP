@@ -624,6 +624,9 @@ namespace WebVella.Erp.Plugins.Mail.Api
 				if (address.StartsWith("cc:"))
 					address = address.Substring(3);
 
+				if (address.StartsWith("bcc:"))
+					address = address.Substring(4);
+
 				if (string.IsNullOrEmpty(address))
 					ex.AddError("recipientEmail", "Recipient email is not specified.");
 				else if (!address.IsEmail())
@@ -699,6 +702,9 @@ namespace WebVella.Erp.Plugins.Mail.Api
 						if (address.StartsWith("cc:"))
 							address = address.Substring(3);
 
+						if (address.StartsWith("bcc:"))
+							address = address.Substring(4);
+
 						if (string.IsNullOrEmpty(address))
 							ex.AddError("recipientEmail", "Recipient email is not specified.");
 						else if (!address.IsEmail())
@@ -767,7 +773,8 @@ namespace WebVella.Erp.Plugins.Mail.Api
 				var address = recipient.Address;
 				if (address.StartsWith("cc:"))
 					address = address.Substring(3);
-
+				if (address.StartsWith("bcc:"))
+					address = address.Substring(4);
 				if (string.IsNullOrEmpty(address))
 					ex.AddError("recipientEmail", "Recipient email is not specified.");
 				else if (!address.IsEmail())
@@ -842,7 +849,8 @@ namespace WebVella.Erp.Plugins.Mail.Api
 						var address = recipient.Address;
 						if (address.StartsWith("cc:"))
 							address = address.Substring(3);
-
+						if (address.StartsWith("bcc:"))
+							address = address.Substring(4);
 						if (string.IsNullOrEmpty(address))
 							ex.AddError("recipientEmail", "Recipient email is not specified.");
 						else if (!address.IsEmail())
