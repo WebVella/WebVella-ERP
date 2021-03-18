@@ -143,7 +143,7 @@ namespace WebVella.Erp.Database
 			}
 
 			Debug.WriteLine($"ERP CloseContext BEFORE: {currendDbContextId.Value} | dbContextDict count: {dbContextDict.Keys.Count}");
-			if (currendDbContextId != null && dbContextDict.ContainsKey(currendDbContextId.Value))
+			if (currendDbContextId != null)
 			{
 				DbContext context;
 				dbContextDict.TryRemove(currendDbContextId.Value, out context);
