@@ -9,18 +9,18 @@ namespace WebVella.Erp.Database
 {
 	public class DbContext : IDisposable
 	{
-		private static AsyncLocal<string> currendDbContextId = new AsyncLocal<string>();
+		private static AsyncLocal<string> currentDbContextId = new AsyncLocal<string>();
 		private static ConcurrentDictionary<string, DbContext> dbContextDict = new ConcurrentDictionary<string, DbContext>();
 		private readonly object lockObj = new object();
 		public static DbContext Current
 		{
 			get
 			{
-				if (currendDbContextId == null || String.IsNullOrWhiteSpace(currendDbContextId.Value))
+				if (currentDbContextId == null || String.IsNullOrWhiteSpace(currentDbContextId.Value))
 					return null;
 
 				DbContext context = null;
-				dbContextDict.TryGetValue(currendDbContextId.Value, out context);
+				dbContextDict.TryGetValue(currentDbContextId.Value, out context);
 				return context;
 			}
 		}
@@ -61,7 +61,7 @@ namespace WebVella.Erp.Database
 
 			connectionStack.Push(con);
 
-			Debug.WriteLine($"ERP CreateConnection: {currendDbContextId.Value} | Stack count: {connectionStack.Count} | Hash: {con.GetHashCode()}");
+			Debug.WriteLine($"ERP CreateConnection: {currentDbContextId.Value} | Stack count: {connectionStack.Count} | Hash: {con.GetHashCode()}");
 			StackTrace t = new StackTrace();
 			Debug.WriteLine($"========== ERP CreateConnection Stack =====");
 			Debug.WriteLine($"{t.ToString()}");
@@ -82,7 +82,7 @@ namespace WebVella.Erp.Database
 
 				connectionStack.Pop();
 
-				Debug.WriteLine($"ERP CloseConnection: {currendDbContextId.Value} | Stack count: {connectionStack.Count} | Hash: {conn.GetHashCode()}");
+				Debug.WriteLine($"ERP CloseConnection: {currentDbContextId.Value} | Stack count: {connectionStack.Count} | Hash: {conn.GetHashCode()}");
 				return connectionStack.Count == 0;
 			}
 		}
@@ -112,14 +112,14 @@ namespace WebVella.Erp.Database
 		{
 			connectionString = connString;
 
-			currendDbContextId.Value = Guid.NewGuid().ToString();
-			if (!dbContextDict.TryAdd(currendDbContextId.Value, new DbContext()))
+			currentDbContextId.Value = Guid.NewGuid().ToString();
+			if (!dbContextDict.TryAdd(currentDbContextId.Value, new DbContext()))
 				throw new Exception("Cannot create new context and store it into context dictionary");
 
-			Debug.WriteLine($"ERP CreateContext: {currendDbContextId.Value} | dbContextDict count: {dbContextDict.Keys.Count}");
+			Debug.WriteLine($"ERP CreateContext: {currentDbContextId.Value} | dbContextDict count: {dbContextDict.Keys.Count}");
 
 			DbContext context;
-			if (!dbContextDict.TryGetValue(currendDbContextId.Value, out context))
+			if (!dbContextDict.TryGetValue(currentDbContextId.Value, out context))
 				throw new Exception("Cannot create new context and read it into context dictionary");
 
 			return context;
@@ -142,15 +142,19 @@ namespace WebVella.Erp.Database
 				//}
 			}
 
-			Debug.WriteLine($"ERP CloseContext BEFORE: {currendDbContextId.Value} | dbContextDict count: {dbContextDict.Keys.Count}");
-			if (currendDbContextId != null)
+			Debug.WriteLine($"ERP CloseContext BEFORE: {currentDbContextId.Value} | dbContextDict count: {dbContextDict.Keys.Count}");
+			string idValue = null;
+			if (currentDbContextId != null && !string.IsNullOrWhiteSpace(currentDbContextId.Value))
+				idValue = currentDbContextId.Value;
+
+			if (!string.IsNullOrWhiteSpace(idValue))
 			{
 				DbContext context;
-				dbContextDict.TryRemove(currendDbContextId.Value, out context);
+				dbContextDict.TryRemove(idValue, out context);
 				if (context != null)
 					context.Dispose();
 
-				currendDbContextId.Value = null;
+				currentDbContextId.Value = null;
 			}
 			Debug.WriteLine($"ERP CloseContext AFTER: dbContextDict count: {dbContextDict.Keys.Count}");
 
