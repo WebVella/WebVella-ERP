@@ -21,7 +21,10 @@ namespace WebVella.Erp.Web.Services
 				{
 					var resources = assembly.GetManifestResourceNames().Where(x => x.Contains(".Snippets.")).ToList();
 					foreach (var resource in resources)
-						Snippets.Add(resource, new Snippet { Name = resource, Assembly = assembly });
+					{
+						if(!Snippets.ContainsKey(resource))
+							Snippets.Add(resource, new Snippet { Name = resource, Assembly = assembly });
+					}
 				}
 				catch (NotSupportedException)
 				{
