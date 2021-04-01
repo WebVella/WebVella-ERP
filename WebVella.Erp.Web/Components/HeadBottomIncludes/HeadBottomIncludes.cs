@@ -36,8 +36,8 @@ namespace WebVella.Erp.Web.Components
 						{
 							Href = "/api/v3.0/p/core/styles.css?cb=" + cacheKey,
 							CacheBreaker = pageModel.ErpAppContext.StylesHash,
-							CrossOrigin = CrossOriginType.Anonymous,
-							Integrity = $"sha256-{pageModel.ErpAppContext.StylesHash}"
+							//CrossOrigin = CrossOriginType.Anonymous,
+							//Integrity = $"sha256-{pageModel.ErpAppContext.StylesHash}"
 						});
 					}
 					else{
