@@ -38,6 +38,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\TagHelpers\WebVella.TagHelpers\WebVella.TagHelpers.csproj" />
         <ProjectReference Include="..\WebVella.Erp.Web\WebVella.Erp.Web.csproj" />
         <ProjectReference Include="..\WebVella.ERP\WebVella.Erp.csproj" />
     </ItemGroup>
@@ -45,9 +46,5 @@
     <ItemGroup>
         <Folder Include="Hooks\" />
         <Folder Include="Snippets\" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="WebVella.TagHelpers" Version="1.1.28" />
     </ItemGroup>
 </Project>
