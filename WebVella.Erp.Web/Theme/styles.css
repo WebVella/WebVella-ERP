@@ -5116,3 +5116,14 @@ wv-pb-manager .wv-pb-node > div > .row {
 
 /*#endregion*/
 
+
+/* To enable new line incase of multi value select*/
+.select2-results__options  {
+    white-space: pre-line;
+}
+.select2-results__options li {
+    white-space: pre-line;
+}
+.form-control-plaintext {
+    white-space: pre-line;
+}

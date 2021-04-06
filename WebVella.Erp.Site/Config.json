@@ -1,11 +1,11 @@
 ﻿{
 	"Settings": {
-		"ConnectionString": "Server=192.168.0.2;Port=5433;User Id=test;Password=test;Database=erp3_base;Pooling=true;MinPoolSize=1;MaxPoolSize=100;CommandTimeout=120;",
+		"ConnectionString": "Server=localhost;Port=5432;User Id=postgres;Password=amar2012;Database=erp3_base;Pooling=true;MinPoolSize=1;MaxPoolSize=100;CommandTimeout=120;",
 		"EncryptionKey": "BC93B776A42877CFEE808823BA8B37C83B6B0AD23198AC3AF2B5A54DCB647658",
 		"Lang": "en",
 		"Locale": "en-US",
 		"TimeZoneName": "FLE Standard Time",
-		"CacheKey": "", //if empty current date will be used 
+		"CacheKey": "123", //if empty current date will be used 
 		"DevelopmentMode": "true",
 		"EnableBackgroundJobs": "true",
 		"EnableFileSystemStorage": "false",

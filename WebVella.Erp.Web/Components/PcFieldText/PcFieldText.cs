@@ -28,6 +28,20 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "placeholder")]
 			public string Placeholder { get; set; } = "";
 
+			/*
+			* Datasource for the link
+			* Feature: Linkable Text Field
+			*Author: Amarjeet-L
+			*/
+			[JsonProperty(PropertyName = "link")]
+			public string Link { get; set; } = "";
+			/*
+			* Evaluated value for the link
+			* Feature: Linkable Text Field
+			*Author: Amarjeet-L
+			*/
+			[JsonProperty(PropertyName = "href")]
+			public string Href { get; set; } = "";
 			public static PcFieldTextOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldTextOptions {
@@ -76,6 +90,17 @@ namespace WebVella.Erp.Web.Components
 					{
 						if (options.MaxLength == null)
 							options.MaxLength = baseOptions.MaxLength;
+					}
+					/*
+					* If link is present, evaluate the datasource and find the final link and assign to href
+					* Feature: Linkable Text Field
+					*Author: Amarjeet-L
+					*/
+					string link = options.Link;
+					if (link != "")
+					{
+						link = context.DataModel.GetPropertyValueByDataSource(options.Link).ToString();
+						options.Href = link;
 					}
 				}
 				var modelFieldLabel = "";
