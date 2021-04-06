@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <Version>1.1.12</Version>
+        <Version>1.1.13</Version>
         <PackageId>WebVella.Erp.Plugins.SDK</PackageId>
         <Authors>WebVella</Authors>
         <Product />
@@ -38,7 +38,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\TagHelpers\WebVella.TagHelpers\WebVella.TagHelpers.csproj" />
         <ProjectReference Include="..\WebVella.Erp.Web\WebVella.Erp.Web.csproj" />
         <ProjectReference Include="..\WebVella.ERP\WebVella.Erp.csproj" />
     </ItemGroup>
@@ -47,4 +46,9 @@
         <Folder Include="Hooks\" />
         <Folder Include="Snippets\" />
     </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="WebVella.TagHelpers" Version="1.1.29" />
+    </ItemGroup>
+
 </Project>
