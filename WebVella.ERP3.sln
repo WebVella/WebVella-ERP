@@ -57,8 +57,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Site.Microsoft
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Plugins.MicrosoftCDM", "WebVella.Erp.Plugins.MicrosoftCDM\WebVella.Erp.Plugins.MicrosoftCDM.csproj", "{A7212EDA-DEEE-464D-9C38-D6E09B0B8516}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.TagHelpers", "TagHelpers\WebVella.TagHelpers\WebVella.TagHelpers.csproj", "{C2BAFBD4-C6C8-4E08-A522-9673E64676C2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,10 +127,6 @@ Global
 		{A7212EDA-DEEE-464D-9C38-D6E09B0B8516}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7212EDA-DEEE-464D-9C38-D6E09B0B8516}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7212EDA-DEEE-464D-9C38-D6E09B0B8516}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C2BAFBD4-C6C8-4E08-A522-9673E64676C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2BAFBD4-C6C8-4E08-A522-9673E64676C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2BAFBD4-C6C8-4E08-A522-9673E64676C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C2BAFBD4-C6C8-4E08-A522-9673E64676C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
