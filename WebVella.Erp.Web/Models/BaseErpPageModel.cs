@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using WebVella.Erp.Api.Models;
@@ -227,10 +228,12 @@ namespace WebVella.Erp.Web.Models
 						foreach (var node in area.Nodes)
 						{
 							var nodeLink = "";
-							if(!String.IsNullOrWhiteSpace(node.Url)){
+							if (!String.IsNullOrWhiteSpace(node.Url))
+							{
 								nodeLink = $"<a class=\"dropdown-item\" href=\"{node.Url}\" title=\"{node.Label}\"><span class=\"{node.IconClass} icon fa-fw\"></span>{node.Label}</a>";
 							}
-							else{
+							else
+							{
 								nodeLink = $"<a class=\"dropdown-item\" href=\"#\" onclick=\"return false\" title=\"{node.Label}\"><span class=\"{node.IconClass} icon fa-fw\"></span>{node.Label}</a>";
 							}
 							areaMenuItem.Nodes.Add(new MenuItem()
@@ -257,7 +260,10 @@ namespace WebVella.Erp.Web.Models
 					}
 
 					if (ErpRequestContext.SitemapArea == null && ErpRequestContext.Page != null && ErpRequestContext.Page.Type != PageType.Application)
+					{
+						Debug.WriteLine("<><><><> ERP results in page not found");
 						return new NotFoundResult();
+					}
 
 					if (ErpRequestContext.SitemapArea != null && area.Id == ErpRequestContext.SitemapArea.Id)
 						areaMenuItem.Class = "current";

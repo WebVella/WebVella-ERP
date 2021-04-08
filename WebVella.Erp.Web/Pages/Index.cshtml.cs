@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Diagnostics;
 using WebVella.Erp.Diagnostics;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Hooks;
@@ -10,14 +11,21 @@ namespace WebVella.Erp.Web.Pages
 {
 	public class HomePageModel : BaseErpPageModel
 	{
-		public HomePageModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
+		public HomePageModel([FromServices] ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
 
 		public IActionResult OnGet()
 		{
 			try
 			{
+				Debug.WriteLine("<><><><> ERP Index Start");
 				var initResult = Init();
-				if (initResult != null) return initResult;
+				Debug.WriteLine("<><><><> ERP Index Inited");
+				if (initResult != null)
+				{
+					Debug.WriteLine("<><><><> ERP Index Inited With Result NULL - NOT FOUND");
+					return initResult;
+				}
+
 				if (ErpRequestContext.Page == null) return NotFound();
 
 				var globalHookInstances = HookManager.GetHookedInstances<IPageHook>(HookKey);
