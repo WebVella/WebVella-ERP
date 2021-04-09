@@ -762,7 +762,17 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			new SmtpInternalService().SaveEmail(email);
 		}
 
-		public void QueueEmail(EmailAddress recipient, EmailAddress sender, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal, List<string> attachments = null )
+		public void QueueEmail(EmailAddress recipient, EmailAddress sender, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal, List<string> attachments = null)
+		{
+			QueueEmail(recipient, sender, null, subject, textBody, htmlBody, priority, attachments);
+		}
+
+		public void QueueEmail(List<EmailAddress> recipients, EmailAddress sender, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal, List<string> attachments = null)
+		{
+			QueueEmail(recipients, sender, null, subject, textBody, htmlBody, priority, attachments);
+		}
+
+		public void QueueEmail(EmailAddress recipient, EmailAddress sender, string replyTo, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal, List<string> attachments = null )
 		{
 			ValidationException ex = new ValidationException();
 
@@ -781,6 +791,14 @@ namespace WebVella.Erp.Plugins.Mail.Api
 					ex.AddError("recipientEmail", "Recipient email is not valid email address.");
 			}
 
+			if (!string.IsNullOrWhiteSpace(replyTo))
+			{
+				if (!replyTo.IsEmail())
+				{
+					ex.AddError("recipientEmail", "Reply To email is not valid email address.");
+				}
+			}
+
 			if (string.IsNullOrEmpty(subject))
 				ex.AddError("subject", "Subject is required.");
 
@@ -789,7 +807,10 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			Email email = new Email();
 			email.Id = Guid.NewGuid();
 			email.Sender = sender ?? new EmailAddress { Address = DefaultSenderEmail, Name = DefaultSenderName };
-			email.ReplyToEmail = DefaultReplyToEmail;
+			if (string.IsNullOrWhiteSpace(replyTo))
+				email.ReplyToEmail = DefaultReplyToEmail;
+			else
+				email.ReplyToEmail = replyTo;
 			email.Recipients = new List<EmailAddress> { recipient };
 			email.Subject = subject;
 			email.ContentHtml = htmlBody;
@@ -830,7 +851,7 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			new SmtpInternalService().SaveEmail(email);
 		}
 
-		public void QueueEmail(List<EmailAddress> recipients, EmailAddress sender, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal, List<string> attachments = null)
+		public void QueueEmail(List<EmailAddress> recipients, EmailAddress sender, string replyTo, string subject, string textBody, string htmlBody, EmailPriority priority = EmailPriority.Normal, List<string> attachments = null)
 		{
 			ValidationException ex = new ValidationException();
 
@@ -859,6 +880,14 @@ namespace WebVella.Erp.Plugins.Mail.Api
 				}
 			}
 
+			if (!string.IsNullOrWhiteSpace(replyTo))
+			{
+				if(!replyTo.IsEmail())
+				{
+					ex.AddError("recipientEmail", "Reply To email is not valid email address.");
+				}
+			}
+				
 			if (string.IsNullOrEmpty(subject))
 				ex.AddError("subject", "Subject is required.");
 
@@ -867,7 +896,10 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			Email email = new Email();
 			email.Id = Guid.NewGuid();
 			email.Sender = sender ?? new EmailAddress { Address = DefaultSenderEmail, Name = DefaultSenderName };
-			email.ReplyToEmail = DefaultReplyToEmail;
+			if (string.IsNullOrWhiteSpace(replyTo))
+				email.ReplyToEmail = DefaultReplyToEmail;
+			else
+				email.ReplyToEmail = replyTo;
 			email.Recipients = recipients;
 			email.Subject = subject;
 			email.ContentHtml = htmlBody;
