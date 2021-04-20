@@ -735,7 +735,7 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 						if (param == null) throw new EqlException($"WHERE: Parameter '{paramName}' not found.");
 						//param.Value = param.Value + "%";
 
-						return $" ( {firstOperandString}  ILIKE CONCAT ( '%' , {secondOperandString}  ) ) ";
+						return $" ( {firstOperandString}  ILIKE CONCAT ( {secondOperandString},'%'  ) ) ";
 					}
 					else
 						throw new EqlException($"WHERE: STARTSWITH first operand should be a field name.");
