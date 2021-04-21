@@ -5118,7 +5118,8 @@ wv-pb-manager .wv-pb-node > div > .row {
 
 
 /* To enable new line incase of multi value select*/
-.select2-results__options  {
+/*This code breaks a bunch of stuff so use it with specific classes and in taghelpers*/
+/*.select2-results__options  {
     white-space: pre-line;
 }
 .select2-results__options li {
@@ -5127,3 +5128,4 @@ wv-pb-manager .wv-pb-node > div > .row {
 .form-control-plaintext {
     white-space: pre-line;
 }
+*/
