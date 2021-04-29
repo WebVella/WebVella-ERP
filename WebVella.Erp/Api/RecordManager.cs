@@ -17,7 +17,6 @@ namespace WebVella.Erp.Api
 		private const char RELATION_SEPARATOR = '.';
 		private const char RELATION_NAME_RESULT_SEPARATOR = '$';
 
-		private List<Entity> entityCache;
 		private EntityManager entityManager;
 		private EntityRelationManager entityRelationManager;
 		private DbRelationRepository relationRepository;
@@ -42,7 +41,6 @@ namespace WebVella.Erp.Api
 		{
 			if (currentContext != null)
 				suppliedContext = currentContext;
-			entityCache = new List<Entity>();
 			entityManager = new EntityManager(CurrentContext);
 			entityRelationManager = new EntityRelationManager(CurrentContext);
 			relationRepository = CurrentContext.RelationRepository;
@@ -73,7 +71,7 @@ namespace WebVella.Erp.Api
 				}
 
 				bool hooksExists = RecordHookManager.ContainsAnyHooksForRelation(relation.Name);
-				if( hooksExists )
+				if (hooksExists)
 				{
 					using (var connection = CurrentContext.CreateConnection())
 					{
@@ -708,7 +706,7 @@ namespace WebVella.Erp.Api
 
 					SetRecordRequiredFieldsDefaultData(entity, storageRecordData);
 
-					
+
 
 					foreach (var item in fileFields)
 					{
@@ -868,7 +866,7 @@ namespace WebVella.Erp.Api
 
 					return response;
 				}
-				catch(ValidationException)
+				catch (ValidationException)
 				{
 					if (isTransactionActive)
 						connection.RollbackTransaction();
@@ -1351,7 +1349,7 @@ namespace WebVella.Erp.Api
 								//locate the field
 								var field = entity.Fields.SingleOrDefault(x => x.Name == pair.Key);
 
-								if(field == null)
+								if (field == null)
 									continue;
 
 								if (field is PasswordField && pair.Value == null)
@@ -1382,7 +1380,7 @@ namespace WebVella.Erp.Api
 					var recRepo = CurrentContext.RecordRepository;
 
 
-				
+
 					DbFileRepository fsRepository = new DbFileRepository();
 					foreach (var item in fileFields)
 					{
@@ -2035,30 +2033,12 @@ namespace WebVella.Erp.Api
 
 		private Entity GetEntity(string entityName)
 		{
-			var entity = entityCache.SingleOrDefault(x => x.Name == entityName);
-			if (entity == null)
-			{
-				entity = entityManager.ReadEntity(entityName).Object;
-
-				if (entity != null)
-					entityCache.Add(entity);
-			}
-
-			return entity;
+			return entityManager.ReadEntity(entityName).Object;
 		}
 
 		private Entity GetEntity(Guid entityId)
 		{
-			var entity = entityCache.SingleOrDefault(x => x.Id == entityId);
-			if (entity == null)
-			{
-				entity = entityManager.ReadEntity(entityId).Object;
-
-				if (entity != null)
-					entityCache.Add(entity);
-			}
-
-			return entity;
+			return entityManager.ReadEntity(entityId).Object;
 		}
 
 		private List<EntityRelation> GetRelations()
@@ -2071,7 +2051,7 @@ namespace WebVella.Erp.Api
 
 			return relations;
 		}
-		
+
 		private void SetRecordRequiredFieldsDefaultData(Entity entity, List<KeyValuePair<string, object>> recordData)
 		{
 			if (recordData == null)
