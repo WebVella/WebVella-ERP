@@ -92,6 +92,25 @@ namespace WebVella.Erp.Plugins.SDK.Services
 			}
 			#endregion
 
+			if (includeEntityRelations)
+			{
+                //Relations should be deleted before entities
+				foreach (var relation in oldRelationsList)
+				{
+					if (!currentRelationsList.Any(x => x.Id == relation.Id))
+					{
+						//// DELETED
+						/////////////////////////////////////////////////////
+						changeRow = new MetaChangeModel();
+						changeRow.Element = "relation";
+						changeRow.Type = "deleted";
+						changeRow.Name = relation.Name;
+						response.Changes.Add(changeRow);
+						response.Code += DeleteRelationCode(relation);
+					}
+				}
+            }
+
 			if (includeEntityMeta)
 			{
 				#region << Process entity >>
@@ -159,22 +178,6 @@ namespace WebVella.Erp.Plugins.SDK.Services
 			if (includeEntityRelations)
 			{
 				#region << Process relations >>
-
-
-				foreach (var relation in oldRelationsList)
-				{
-					if (!currentRelationsList.Any(x => x.Id == relation.Id))
-					{
-						//// DELETED
-						/////////////////////////////////////////////////////
-						changeRow = new MetaChangeModel();
-						changeRow.Element = "relation";
-						changeRow.Type = "deleted";
-						changeRow.Name = relation.Name;
-						response.Changes.Add(changeRow);
-						response.Code += DeleteRelationCode(relation);
-					}
-				}
 
 
 				foreach (var relation in currentRelationsList)
