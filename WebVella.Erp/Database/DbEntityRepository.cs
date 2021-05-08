@@ -68,7 +68,7 @@ namespace WebVella.Erp.Database
 						{
 							bool isPrimaryKey = field.Name.ToLowerInvariant() == "id";
 							FieldType fieldType = field.GetFieldType();
-							DbRepository.CreateColumn(tableName, field.Name, fieldType, isPrimaryKey, field.GetDefaultValue(), !field.Required);
+							DbRepository.CreateColumn(tableName, field);
 						}
 
 						bool result = DbRepository.InsertRecord("entities", parameters);

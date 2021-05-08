@@ -202,6 +202,11 @@ namespace WebVella.Erp.Api
 
 				if (!((InputDateField)field).UseCurrentTimeAsDefaultValue.HasValue)
 					((InputDateField)field).UseCurrentTimeAsDefaultValue = false;
+
+				if ((((InputDateField)field).Required.HasValue && ((InputDateField)field).Required.Value) &&
+				(!((InputDateField)field).UseCurrentTimeAsDefaultValue.HasValue || !((InputDateField)field).UseCurrentTimeAsDefaultValue.Value) &&
+				((InputDateField)field).DefaultValue == null)
+					errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required when the field is marked as required and generate new id option is not selected!"));
 				//errorList.Add(new ErrorModel("useCurrentTimeAsDefaultValue", null, "Use current Time is required!"));
 			}
 			else if (field is InputDateTimeField)
@@ -213,6 +218,11 @@ namespace WebVella.Erp.Api
 
 				if (!((InputDateTimeField)field).UseCurrentTimeAsDefaultValue.HasValue)
 					((InputDateTimeField)field).UseCurrentTimeAsDefaultValue = false;
+
+				if ((((InputDateTimeField)field).Required.HasValue && ((InputDateTimeField)field).Required.Value) &&
+				(!((InputDateTimeField)field).UseCurrentTimeAsDefaultValue.HasValue || !((InputDateTimeField)field).UseCurrentTimeAsDefaultValue.Value) &&
+				((InputDateTimeField)field).DefaultValue == null)
+					errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required when the field is marked as required and generate new id option is not selected!"));
 				//errorList.Add(new ErrorModel("useCurrentTimeAsDefaultValue", null, "Use current Time is required!"));
 			}
 			else if (field is InputEmailField)

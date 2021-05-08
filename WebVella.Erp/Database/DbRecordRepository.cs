@@ -305,7 +305,7 @@ namespace WebVella.Erp.Database
         {
             string tableName = RECORD_COLLECTION_PREFIX + entityName;
 
-            DbRepository.CreateColumn(tableName, field.Name, field.GetFieldType(), false, field.GetFieldDefaultValue(), !field.Required, field.Unique);
+            DbRepository.CreateColumn(tableName, field);
             if (field.Unique)
                 DbRepository.CreateUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName, new List<string> { field.Name });
             if (field.Searchable)
@@ -321,7 +321,7 @@ namespace WebVella.Erp.Database
             string tableName = RECORD_COLLECTION_PREFIX + entityName;
 
 			bool overrideNulls = field.Required && field.GetFieldDefaultValue() != null;
-			DbRepository.SetColumnDefaultValue(RECORD_COLLECTION_PREFIX + entityName, field.Name, field.GetFieldType(), field.GetFieldDefaultValue(), overrideNulls );
+			DbRepository.SetColumnDefaultValue(RECORD_COLLECTION_PREFIX + entityName, field, overrideNulls);
 
 			DbRepository.SetColumnNullable(RECORD_COLLECTION_PREFIX + entityName, field.Name, !field.Required);
 			
