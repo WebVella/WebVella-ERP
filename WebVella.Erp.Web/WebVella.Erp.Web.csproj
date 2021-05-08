@@ -123,7 +123,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="CS-Script.Core" Version="2.0.0" />
-		<PackageReference Include="HtmlAgilityPack" Version="1.11.32" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.33" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.5" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.5" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
