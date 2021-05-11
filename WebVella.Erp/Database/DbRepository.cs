@@ -159,7 +159,6 @@ namespace WebVella.Erp.Database
 			object defaultValue = field.GetFieldDefaultValue();
 			bool isNullable = !field.Required;
 			bool isUnique = field.Unique;
-			bool overrideNulls = field.Required && field.GetFieldDefaultValue() != null;
 
 			bool useCurrentTimeAsDefaultValue = false;
 			bool generateNewId = false;
@@ -176,7 +175,7 @@ namespace WebVella.Erp.Database
 				generateNewId = true;
 			}
 
-			CreateColumn(tableName, name, type, isPrimaryKey, defaultValue, isNullable, isUnique, overrideNulls, useCurrentTimeAsDefaultValue, generateNewId);
+			CreateColumn(tableName, name, type, isPrimaryKey, defaultValue, isNullable, isUnique, useCurrentTimeAsDefaultValue, generateNewId);
 		}
 
 		public static void CreateColumn(string tableName, DbBaseField field)
@@ -187,7 +186,6 @@ namespace WebVella.Erp.Database
 			object defaultValue = field.GetDefaultValue();
 			bool isNullable = !field.Required;
 			bool isUnique = field.Unique;
-			bool overrideNulls = field.Required && field.GetDefaultValue() != null;
 
 			bool useCurrentTimeAsDefaultValue = false;
 			bool generateNewId = false;
@@ -204,12 +202,12 @@ namespace WebVella.Erp.Database
 				generateNewId = true;
 			}
 
-			CreateColumn(tableName, name, type, isPrimaryKey, defaultValue, isNullable, isUnique, overrideNulls, useCurrentTimeAsDefaultValue, generateNewId);
+			CreateColumn(tableName, name, type, isPrimaryKey, defaultValue, isNullable, isUnique, useCurrentTimeAsDefaultValue, generateNewId);
 		}
 
 
 		public static void CreateColumn(string tableName, string name, FieldType type, bool isPrimaryKey, object defaultValue, bool isNullable, bool isUnique,
-			bool overrideNulls = false, bool useCurrentTimeAsDefaultValue = false, bool generateNewId = false)
+			bool useCurrentTimeAsDefaultValue = false, bool generateNewId = false)
 		{
 			string pgType = DbTypeConverter.ConvertToDatabaseSqlType(type);
 
@@ -237,14 +235,6 @@ namespace WebVella.Erp.Database
 				else
 				{
 					var defVal = ConvertDefaultValue(type, defaultValue);
-
-					if (defaultValue != null && overrideNulls)
-					{
-						string updateNullRecordsSql = $"UPDATE \"{tableName}\" SET \"{name}\" = {defVal} WHERE \"{name}\" IS NULL";
-						var updateCommand = connection.CreateCommand(updateNullRecordsSql);
-						updateCommand.ExecuteNonQuery();
-					}
-
 					sql += $" DEFAULT {defVal}";
 				}
 
@@ -421,8 +411,8 @@ namespace WebVella.Erp.Database
 		{
 			string relTableName = $"rel_{relName}";
 			CreateTable(relTableName);
-			CreateColumn(relTableName, "origin_id", FieldType.GuidField, false, null, false, false, false, false, false);
-			CreateColumn(relTableName, "target_id", FieldType.GuidField, false, null, false, false, false, false, false);
+			CreateColumn(relTableName, "origin_id", FieldType.GuidField, false, null, false, false, false, false);
+			CreateColumn(relTableName, "target_id", FieldType.GuidField, false, null, false, false, false, false);
 
 			SetPrimaryKey(relTableName, new List<string> { "origin_id", "target_id" });
 
