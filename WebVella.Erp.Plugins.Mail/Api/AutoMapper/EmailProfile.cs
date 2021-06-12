@@ -57,6 +57,7 @@ namespace WebVella.Erp.Web.Models.AutoMapper.Profiles
 			rec["sender"] = JsonConvert.SerializeObject(model.Sender ?? new EmailAddress());
 			rec["recipients"] = JsonConvert.SerializeObject(model.Recipients ?? new List<EmailAddress>());
 			rec["subject"] = model.Subject;
+			rec["reply_to_email"] = model.ReplyToEmail;
 			rec["content_text"] = model.ContentText;
 			rec["content_html"] = model.ContentHtml;
 			rec["created_on"] = model.CreatedOn;
