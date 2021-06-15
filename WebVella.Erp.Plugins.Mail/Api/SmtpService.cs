@@ -793,9 +793,11 @@ namespace WebVella.Erp.Plugins.Mail.Api
 
 			if (!string.IsNullOrWhiteSpace(replyTo))
 			{
-				if (!replyTo.IsEmail())
+				string[] replyToEmails = replyTo.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+				foreach (var replyEmail in replyToEmails)
 				{
-					ex.AddError("recipientEmail", "Reply To email is not valid email address.");
+					if (!replyEmail.IsEmail())
+						ex.AddError("recipientEmail", "Reply To email is not valid email address.");
 				}
 			}
 
@@ -882,12 +884,14 @@ namespace WebVella.Erp.Plugins.Mail.Api
 
 			if (!string.IsNullOrWhiteSpace(replyTo))
 			{
-				if(!replyTo.IsEmail())
+				string[] replyToEmails = replyTo.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+				foreach (var replyEmail in replyToEmails)
 				{
-					ex.AddError("recipientEmail", "Reply To email is not valid email address.");
+					if (!replyEmail.IsEmail())
+						ex.AddError("recipientEmail", "Reply To email is not valid email address.");
 				}
 			}
-				
+
 			if (string.IsNullOrEmpty(subject))
 				ex.AddError("subject", "Subject is required.");
 
