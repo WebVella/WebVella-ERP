@@ -78,6 +78,12 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "decimal_digits")]
 			public int DecimalDigits { get; set; } = 2;
 
+			[JsonProperty(PropertyName = "label_help_text")]
+			public string LabelHelpText { get; set; } = "";
+
+			[JsonProperty(PropertyName = "description")]
+			public string Description { get; set; } = "";
+
 		}
 
 		public class PcFieldBaseModel
@@ -412,6 +418,8 @@ namespace WebVella.Erp.Web.Components
 
 				if (entityField != null)
 				{
+					options.LabelHelpText = entityField.HelpText;
+					options.Description = entityField.Description;
 					switch (entityField.GetFieldType())
 					{
 						case FieldType.AutoNumberField:

@@ -15,12 +15,12 @@
 		fieldModel.ApiUrl = $"/api/v3/en_US/record/{fieldModel.EntityName}/{fieldModel.RecordId}";
 }
 <wv-field-datetime label-mode="@labelMode" label-text="@options.LabelText" label-warning-text="@fieldModel.LabelWarningText"
-				   label-error-text="@fieldModel.LabelErrorText" label-help-text="@fieldModel.LabelHelpText" field-id="@fieldModel.FieldId"
+				   label-error-text="@fieldModel.LabelErrorText" label-help-text="@options.LabelHelpText" field-id="@fieldModel.FieldId"
 				   name="@options.Name" class="@options.Class" value="@fieldModel.Value" mode="@mode" access="@fieldModel.Access"
 				   init-errors="@fieldModel.InitErrors" validation-errors="@fieldModel.ValidationErrors.ToKeyValuePair()" 
 				   api-url="@fieldModel.ApiUrl" access-denied-message="@fieldModel.AccessDeniedMessage"
 				   empty-value-message="@fieldModel.EmptyValueMessage" required="@fieldModel.Required" placeholder="@fieldModel.Placeholder"
-				   description="@fieldModel.Description" locale="@fieldModel.Locale" is-visible="(bool)ViewBag.IsVisible">
+				   description="@options.Description" locale="@fieldModel.Locale" is-visible="(bool)ViewBag.IsVisible">
 	@if (options.ShowIcon)
 	{
 		<wv-field-prepend><span class='input-group-text'><i class='fa fa-fw fa-calendar-alt'></i></span></wv-field-prepend>

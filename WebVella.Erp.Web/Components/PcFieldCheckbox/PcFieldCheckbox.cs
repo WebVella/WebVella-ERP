@@ -37,7 +37,9 @@ namespace WebVella.Erp.Web.Components
 					Mode = input.Mode,
 					Name = input.Name,
 					TextTrue = "",
-					TextFalse = ""
+					TextFalse = "",
+					Description = input.Description,
+					LabelHelpText = input.LabelHelpText
 				};
 			}
 		}
@@ -72,6 +74,16 @@ namespace WebVella.Erp.Web.Components
 				if (context.Options != null)
 				{
 					options = JsonConvert.DeserializeObject<PcFieldCheckboxOptions>(context.Options.ToString());
+					if (context.Mode != ComponentMode.Options)
+					{
+						if (String.IsNullOrWhiteSpace(options.LabelHelpText))
+							options.LabelHelpText = baseOptions.LabelHelpText;
+
+						if (String.IsNullOrWhiteSpace(options.Description))
+							options.Description = baseOptions.Description;
+
+					}
+
 					////Check for connection to entity field
 					//if (instanceOptions.TryConnectToEntity)
 					//{

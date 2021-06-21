@@ -51,7 +51,9 @@ namespace WebVella.Erp.Web.Components
 					Name = input.Name,
 					Options = "",
 					AjaxDatasource = null,
-					SelectMatchingType = WvSelectMatchType.Contains
+					SelectMatchingType = WvSelectMatchType.Contains,
+					Description = input.Description,
+					LabelHelpText = input.LabelHelpText
 				};
 			}
 		}
@@ -86,6 +88,15 @@ namespace WebVella.Erp.Web.Components
 				if (context.Options != null)
 				{
 					options = JsonConvert.DeserializeObject<PcFieldMultiSelectOptions>(context.Options.ToString());
+					if (context.Mode != ComponentMode.Options)
+					{
+						if (String.IsNullOrWhiteSpace(options.LabelHelpText))
+							options.LabelHelpText = baseOptions.LabelHelpText;
+
+						if (String.IsNullOrWhiteSpace(options.Description))
+							options.Description = baseOptions.Description;
+
+					}
 				}
 				var modelFieldLabel = "";
 				var model = (PcFieldMultiSelectModel)InitPcFieldBaseModel(context, options, label: out modelFieldLabel, targetModel: "PcFieldMultiSelectModel");

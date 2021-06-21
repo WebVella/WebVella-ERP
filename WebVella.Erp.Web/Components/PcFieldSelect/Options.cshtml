@@ -87,6 +87,14 @@
 		</wv-column>	
 	</wv-row>
 	<wv-row>
+		<wv-column span="4">
+			<wv-field-text name="description" value="@options.Description" label-text="Description" description="loads from field meta by default"></wv-field-text>
+		</wv-column>		
+		<wv-column span="4">
+			<wv-field-text name="label_help_text" value="@options.LabelHelpText" label-text="Label Help" description="loads from field meta by default"></wv-field-text>
+		</wv-column>
+	</wv-row>
+	<wv-row>
 		<wv-column span="12">
 			<div class="go-bkg-gray-light border p-2">
 				<span class="go-blue"><i class="fa fa-info-circle"></i> Note: </span>The platform will try getting the advanced field properties by mapping the field name to the selected entity field name. If "<strong>label</strong>" or "<strong>options</strong>" are specified above, they will be applied with priority. If no entity is selected, the system will use the page's entity, if any is found!

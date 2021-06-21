@@ -38,7 +38,9 @@ namespace WebVella.Erp.Web.Components
 					LabelText = input.LabelText,
 					Mode = input.Mode,
 					Name = input.Name,
-					Template = input.Template
+					Template = input.Template,
+					Description = input.Description,
+					LabelHelpText = input.LabelHelpText
 				};
 			}
 		}
@@ -78,6 +80,12 @@ namespace WebVella.Erp.Web.Components
 					{
 						if (String.IsNullOrWhiteSpace(options.Template))
 							options.Template = baseOptions.Template;
+
+						if (String.IsNullOrWhiteSpace(options.LabelHelpText))
+							options.LabelHelpText = baseOptions.LabelHelpText;
+
+						if (String.IsNullOrWhiteSpace(options.Description))
+							options.Description = baseOptions.Description;
 					}
 					
 				}

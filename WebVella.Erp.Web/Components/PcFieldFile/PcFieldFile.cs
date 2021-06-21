@@ -36,7 +36,9 @@ namespace WebVella.Erp.Web.Components
 					LabelText = input.LabelText,
 					Mode = input.Mode,
 					Name = input.Name,
-					Accept = ""
+					Accept = "",
+					Description = input.Description,
+					LabelHelpText = input.LabelHelpText
 				};
 			}
 		}
@@ -71,6 +73,15 @@ namespace WebVella.Erp.Web.Components
 				if (context.Options != null)
 				{
 					options = JsonConvert.DeserializeObject<PcFieldFileOptions>(context.Options.ToString());
+					if (context.Mode != ComponentMode.Options)
+					{
+						if (String.IsNullOrWhiteSpace(options.LabelHelpText))
+							options.LabelHelpText = baseOptions.LabelHelpText;
+
+						if (String.IsNullOrWhiteSpace(options.Description))
+							options.Description = baseOptions.Description;
+
+					}
 				}
 				var modelFieldLabel = "";
 				var model = (PcFieldBaseModel)InitPcFieldBaseModel(context, options, label: out modelFieldLabel);

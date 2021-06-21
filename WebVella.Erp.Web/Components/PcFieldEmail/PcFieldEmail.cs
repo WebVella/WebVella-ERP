@@ -40,7 +40,9 @@ namespace WebVella.Erp.Web.Components
 					LabelText = input.LabelText,
 					Mode = input.Mode,
 					Name = input.Name,
-					MaxLength = input.MaxLength
+					MaxLength = input.MaxLength,
+					Description = input.Description,
+					LabelHelpText = input.LabelHelpText
 				};
 			}
 		}
@@ -80,6 +82,12 @@ namespace WebVella.Erp.Web.Components
 					{
 						if (options.MaxLength == null)
 							options.MaxLength = baseOptions.MaxLength;
+
+						if (String.IsNullOrWhiteSpace(options.LabelHelpText))
+							options.LabelHelpText = baseOptions.LabelHelpText;
+
+						if (String.IsNullOrWhiteSpace(options.Description))
+							options.Description = baseOptions.Description;
 					}
 
 				}

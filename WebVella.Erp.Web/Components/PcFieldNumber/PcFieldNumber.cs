@@ -49,7 +49,9 @@ namespace WebVella.Erp.Web.Components
 					Min = input.Min,
 					Max = input.Max,
 					Step = null,
-					DecimalDigits = input.DecimalDigits
+					DecimalDigits = input.DecimalDigits,
+					Description = input.Description,
+					LabelHelpText = input.LabelHelpText
 				};
 			}
 		}
@@ -95,6 +97,13 @@ namespace WebVella.Erp.Web.Components
 
 						if (options.DecimalDigits == null)
 							options.DecimalDigits = baseOptions.DecimalDigits;
+
+
+						if (String.IsNullOrWhiteSpace(options.LabelHelpText))
+							options.LabelHelpText = baseOptions.LabelHelpText;
+
+						if (String.IsNullOrWhiteSpace(options.Description))
+							options.Description = baseOptions.Description;
 					}
 
 				}

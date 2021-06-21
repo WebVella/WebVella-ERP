@@ -44,7 +44,9 @@ namespace WebVella.Erp.Web.Components
 					Mode = input.Mode,
 					Name = input.Name,
 					Min = (int?)input.Min,
-					Max = (int?)input.Max
+					Max = (int?)input.Max,
+					Description = input.Description,
+					LabelHelpText = input.LabelHelpText
 				};
 			}
 		}
@@ -86,6 +88,12 @@ namespace WebVella.Erp.Web.Components
 
 						if (options.Max == null)
 							options.Max = (int?)baseOptions.Max;
+
+						if (String.IsNullOrWhiteSpace(options.LabelHelpText))
+							options.LabelHelpText = baseOptions.LabelHelpText;
+
+						if (String.IsNullOrWhiteSpace(options.Description))
+							options.Description = baseOptions.Description;
 					}
 
 				}

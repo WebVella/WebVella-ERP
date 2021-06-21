@@ -16,13 +16,13 @@
 }
 <div class="p-1">
 	<wv-field-image label-mode="@labelMode" label-text="@options.LabelText" label-warning-text="@fieldModel.LabelWarningText"
-				   label-error-text="@fieldModel.LabelErrorText" label-help-text="@fieldModel.LabelHelpText" field-id="@fieldModel.FieldId"
+				   label-error-text="@fieldModel.LabelErrorText" label-help-text="@options.LabelHelpText" field-id="@fieldModel.FieldId"
 				   name="@options.Name" class="@options.Class" value="@fieldModel.Value" mode="@mode" access="@fieldModel.Access"
 				   init-errors="@fieldModel.InitErrors" validation-errors="@fieldModel.ValidationErrors.ToKeyValuePair()" 
 				   api-url="@fieldModel.ApiUrl" access-denied-message="@fieldModel.AccessDeniedMessage"
 				   file-upload-api="/fs/upload" src-prefix="/fs"
 				   empty-value-message="@fieldModel.EmptyValueMessage" required="@fieldModel.Required" placeholder="@fieldModel.Placeholder"
-				   description="@fieldModel.Description" locale="@fieldModel.Locale" accept="@options.Accept"
+				   description="@options.Description" locale="@fieldModel.Locale" accept="@options.Accept"
 				text-remove="@options.TextRemove" text-select="@options.TextSelect" width="@options.Width"
 				height="@options.Height" resize-action="@options.ResizeAction"></wv-field-image>
 </div>

@@ -3,7 +3,7 @@
   <PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-		<Version>1.1.2</Version>
+		<Version>1.1.4</Version>
 		<Authors>WebVella</Authors>
 		<Description>The Mail Plugin for the open-source and free platform WebVella ERP. It provides API, services and management for sending emails through SMTP services.</Description>
 		<Copyright>Copyright 2019</Copyright>
@@ -20,7 +20,7 @@
 	</ItemGroup>
 	
   <ItemGroup>
-    <PackageReference Include="MailKit" Version="2.12.0" />
+    <PackageReference Include="MailKit" Version="2.13.0" />
   </ItemGroup>
 
   <ItemGroup>

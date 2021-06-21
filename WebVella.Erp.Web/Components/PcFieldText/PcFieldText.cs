@@ -50,9 +50,12 @@ namespace WebVella.Erp.Web.Components
 					LabelText = input.LabelText,
 					Mode = input.Mode,
 					Name = input.Name,
-					MaxLength = input.MaxLength
+					MaxLength = input.MaxLength,
+					Description = input.Description,
+					LabelHelpText = input.LabelHelpText
 				};
 			}
+
 		}
 
 		public async Task<IViewComponentResult> InvokeAsync(PageComponentContext context)
@@ -90,6 +93,13 @@ namespace WebVella.Erp.Web.Components
 					{
 						if (options.MaxLength == null)
 							options.MaxLength = baseOptions.MaxLength;
+
+						if(String.IsNullOrWhiteSpace(options.LabelHelpText))
+							options.LabelHelpText = baseOptions.LabelHelpText;
+
+						if (String.IsNullOrWhiteSpace(options.Description))
+							options.Description = baseOptions.Description;
+
 					}
 					/*
 					* If link is present, evaluate the datasource and find the final link and assign to href

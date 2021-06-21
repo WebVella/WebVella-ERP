@@ -52,7 +52,9 @@ namespace WebVella.Erp.Web.Components
 					Min = input.Min,
 					Max = input.Max,
 					Step = null,
-					CurrencyCode = input.CurrencyCode
+					CurrencyCode = input.CurrencyCode,
+					Description = input.Description,
+					LabelHelpText = input.LabelHelpText
 				};
 			}
 		}
@@ -97,6 +99,12 @@ namespace WebVella.Erp.Web.Components
 
 						if (String.IsNullOrWhiteSpace(options.CurrencyCode))
 							options.CurrencyCode = baseOptions.CurrencyCode;
+
+						if (String.IsNullOrWhiteSpace(options.LabelHelpText))
+							options.LabelHelpText = baseOptions.LabelHelpText;
+
+						if (String.IsNullOrWhiteSpace(options.Description))
+							options.Description = baseOptions.Description;
 					}
 				}
 				var modelFieldLabel = "";
