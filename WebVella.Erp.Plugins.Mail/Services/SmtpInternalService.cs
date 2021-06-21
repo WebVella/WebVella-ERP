@@ -736,7 +736,11 @@ namespace WebVella.Erp.Plugins.Mail.Services
 				}
 
 				if (!string.IsNullOrWhiteSpace(email.ReplyToEmail))
-					message.ReplyTo.Add(new MailboxAddress(email.ReplyToEmail));
+				{
+					string[] replyToEmails = email.ReplyToEmail.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+					foreach(var replyEmail in replyToEmails)
+						message.ReplyTo.Add(new MailboxAddress(replyEmail));
+				}
 				else
 					message.ReplyTo.Add(new MailboxAddress(email.Sender?.Address));
 
