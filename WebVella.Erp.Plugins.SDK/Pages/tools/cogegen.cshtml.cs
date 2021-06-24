@@ -34,16 +34,16 @@ namespace WebVella.Erp.Plugins.SDK.Pages.Tools
 		public string ConnectionString { get; set; }
 
 		[BindProperty]
-		public bool IncludeEntityMeta { get; set; } = false;
+		public bool IncludeEntityMeta { get; set; } = true;
 
 		[BindProperty]
-		public bool IncludeEntityRelations { get; set; } = false;
+		public bool IncludeEntityRelations { get; set; } = true;
 
 		[BindProperty]
-		public bool IncludeUserRoles { get; set; } = false;
+		public bool IncludeUserRoles { get; set; } = true;
 
 		[BindProperty]
-		public bool IncludeApplications { get; set; } = false;
+		public bool IncludeApplications { get; set; } = true;
 
 		[BindProperty]
 		public List<string> IncludeRecordsEntityIdList { get; set; } = new List<string>();
