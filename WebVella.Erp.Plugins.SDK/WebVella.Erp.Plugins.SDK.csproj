@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <Version>1.1.17</Version>
+        <Version>1.1.20</Version>
         <PackageId>WebVella.Erp.Plugins.SDK</PackageId>
         <Authors>WebVella</Authors>
         <Product />
@@ -48,7 +48,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="WebVella.TagHelpers" Version="1.1.32" />
+        <PackageReference Include="WebVella.TagHelpers" Version="1.1.35" />
     </ItemGroup>
 
 </Project>
