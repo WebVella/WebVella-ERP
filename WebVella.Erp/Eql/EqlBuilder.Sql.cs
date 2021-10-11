@@ -60,7 +60,7 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 			public SelectInfoWrapper Parent { get; set; } = null;
 		}
 
-		private string BuildSql(EqlAbstractTree tree, List<EqlError> errors, List<EqlFieldMeta> fieldsMeta, out Entity fromEntity)
+		private string BuildSql(EqlAbstractTree tree, List<EqlError> errors, List<EqlFieldMeta> fieldsMeta, EqlSettings settings, out Entity fromEntity )
 		{
 			if (errors == null)
 				errors = new List<EqlError>();
@@ -78,7 +78,8 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 			SelectInfoWrapper rootInfo = ProcessEntity(fromEntity, selectNode.Fields);
 			StringBuilder sql = new StringBuilder();
 			sql.AppendLine(BEGIN_OUTER_SELECT);
-			//sql.AppendLine(BEGIN_SELECT_DISTINCT);
+			if(settings.Distinct )
+				sql.AppendLine(BEGIN_SELECT_DISTINCT);
 			sql.AppendLine(BEGIN_SELECT);
 			var fieldsSql = BuildFieldsSql(rootInfo, 1, fieldsMeta);
 			sql.Append(fieldsSql);
@@ -310,7 +311,10 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 
 			//append total count column
 			if (depth == 1)
-				AppendToStringBuilder(sb, depth, true, " COUNT(*) OVER() AS ___total_count___,");
+			{
+				if(Settings.IncludeTotal)
+					AppendToStringBuilder(sb, depth, true, " COUNT(*) OVER() AS ___total_count___,");
+			}
 
 			bool trimed = false;
 			if (rootInfo.Children.Count == 0)

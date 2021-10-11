@@ -24,6 +24,8 @@ namespace WebVella.Erp.Eql
 		/// </summary>
 		public List<string> ExpectedParameters { get; private set; } = new List<string>();
 
+		public EqlSettings Settings { get; private set; } = new EqlSettings();
+
 		private DbContext suppliedContext = null;
 		public DbContext CurrentContext
 		{
@@ -44,13 +46,15 @@ namespace WebVella.Erp.Eql
 		/// Creates EqlBuilder object
 		/// </summary>
 		/// <param name="text"></param>
-		public EqlBuilder(string text, DbContext currentContext = null)
+		public EqlBuilder(string text, DbContext currentContext = null, EqlSettings settings = null )
 		{
 			if (currentContext != null)
 				suppliedContext = currentContext;
 			Text = text;
 			entMan = new Api.EntityManager(CurrentContext);
 			relMan = new Api.EntityRelationManager(CurrentContext);
+			if (settings != null)
+				Settings = settings;
 		}
 
 		/// <summary>
@@ -80,7 +84,7 @@ namespace WebVella.Erp.Eql
 				if (errors.Count == 0)
 				{
 					Entity fromEntity = null;
-					result.Sql = BuildSql(result.Tree, errors, result.Meta, out fromEntity);
+					result.Sql = BuildSql(result.Tree, errors, result.Meta, Settings, out fromEntity);
 					result.FromEntity = fromEntity;
 				}
 
