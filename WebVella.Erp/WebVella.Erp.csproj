@@ -8,7 +8,7 @@
 		<TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<Description>The core library of the open-source and free platform WebVella ERP. It allows a quick and painless creation of business web applications.	</Description>
-		<Version>1.1.42</Version>
+		<Version>1.1.43</Version>
 		<Authors>WebVella</Authors>
 		<Company>WebVella</Company>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>

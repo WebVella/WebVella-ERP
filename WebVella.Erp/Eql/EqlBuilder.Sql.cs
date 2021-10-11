@@ -80,7 +80,8 @@ LEFT OUTER JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
 			sql.AppendLine(BEGIN_OUTER_SELECT);
 			if(settings.Distinct )
 				sql.AppendLine(BEGIN_SELECT_DISTINCT);
-			sql.AppendLine(BEGIN_SELECT);
+			else
+				sql.AppendLine(BEGIN_SELECT);
 			var fieldsSql = BuildFieldsSql(rootInfo, 1, fieldsMeta);
 			sql.Append(fieldsSql);
 			sql.AppendLine(END_SELECT);
