@@ -81,7 +81,7 @@ namespace WebVella.Erp.Eql
 		/// </summary>
 		public EqlCommand(string text, EqlSettings settings, params EqlParameter[] parameters) : this(text, parameters)
 		{
-			if(settings != null)
+			if (settings != null)
 				Settings = settings;
 		}
 
@@ -121,6 +121,13 @@ namespace WebVella.Erp.Eql
 
 			if (parameters != null)
 				Parameters.AddRange(parameters);
+		}
+
+		public EqlCommand(string text, EqlSettings settings, List<EqlParameter> parameters = null, DbContext currentContext = null)
+		: this(text, parameters, currentContext)
+		{
+			if (settings != null)
+				Settings = settings;
 		}
 
 		/// <summary>
@@ -181,7 +188,7 @@ namespace WebVella.Erp.Eql
 		/// <returns></returns>
 		public EntityRecordList Execute()
 		{
-			EqlBuilder eqlBuilder = new EqlBuilder(Text, CurrentContext,Settings);
+			EqlBuilder eqlBuilder = new EqlBuilder(Text, CurrentContext, Settings);
 			var eqlBuildResult = eqlBuilder.Build(Parameters);
 
 			if (eqlBuildResult.Errors.Count > 0)
