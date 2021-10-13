@@ -129,7 +129,7 @@
 		logStartFormInputEl.val(moment(logstartDate).format("DD MMM YYYY HH:mm"));
 		logStartFormInputEl.prop('disabled', true);
 		//set logstart date
-		ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcModal',{htmlId:modalId,action:'open',payload:null});
+		$("#" + modalId).modal("show");
 	});
 	$(".manual-log").click(function(){
         var clickedBtn = $(this);
@@ -148,7 +148,7 @@
 		billableStatusFakeCheckboxEl.prop('checked', defaultBillableStatus).trigger("change");
 		//set taskId
 		taskIdFormInputEl.val(inputTaskId.val());
-		ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcModal',{htmlId:formId,action:'open',payload:null});		
+		$("#" + formId).modal("show");
 	});
 
 	$(".set-completed").click(function(){
