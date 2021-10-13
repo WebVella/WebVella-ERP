@@ -30,12 +30,17 @@ namespace WebVella.Erp.Eql
 		/// <summary>
 		/// NpgsqlConnection object
 		/// </summary>
-		public NpgsqlTransaction NpgTransaction{ get; private set; }
+		public NpgsqlTransaction NpgTransaction { get; private set; }
 
 		/// <summary>
 		/// List of EqlParameters
 		/// </summary>
 		public List<EqlParameter> Parameters { get; private set; } = new List<EqlParameter>();
+
+		/// <summary>
+		/// EqlSettings object
+		/// </summary>
+		public EqlSettings Settings { get; private set; } = new EqlSettings();
 
 		private DbContext suppliedContext = null;
 		public DbContext CurrentContext
@@ -74,10 +79,28 @@ namespace WebVella.Erp.Eql
 		/// <summary>
 		/// Creates command
 		/// </summary>
+		public EqlCommand(string text, EqlSettings settings, params EqlParameter[] parameters) : this(text, parameters)
+		{
+			if (settings != null)
+				Settings = settings;
+		}
+
+		/// <summary>
+		/// Creates command
+		/// </summary>
 		public EqlCommand(string text, DbContext currentContext, params EqlParameter[] parameters) : this(text, parameters)
 		{
 			if (currentContext != null)
 				suppliedContext = currentContext;
+		}
+
+		/// <summary>
+		/// Creates command
+		/// </summary>
+		public EqlCommand(string text, DbContext currentContext, EqlSettings settings, params EqlParameter[] parameters) : this(text, currentContext, parameters)
+		{
+			if (settings != null)
+				Settings = settings;
 		}
 
 		/// <summary>
@@ -98,6 +121,13 @@ namespace WebVella.Erp.Eql
 
 			if (parameters != null)
 				Parameters.AddRange(parameters);
+		}
+
+		public EqlCommand(string text, EqlSettings settings, List<EqlParameter> parameters = null, DbContext currentContext = null)
+		: this(text, parameters, currentContext)
+		{
+			if (settings != null)
+				Settings = settings;
 		}
 
 		/// <summary>
@@ -158,7 +188,7 @@ namespace WebVella.Erp.Eql
 		/// <returns></returns>
 		public EntityRecordList Execute()
 		{
-			EqlBuilder eqlBuilder = new EqlBuilder(Text, CurrentContext);
+			EqlBuilder eqlBuilder = new EqlBuilder(Text, CurrentContext, Settings);
 			var eqlBuildResult = eqlBuilder.Build(Parameters);
 
 			if (eqlBuildResult.Errors.Count > 0)
@@ -168,7 +198,7 @@ namespace WebVella.Erp.Eql
 				throw new EqlException("DbContext need to be created.");
 
 			EntityRecordList result = new EntityRecordList();
-			
+
 			DataTable dt = new DataTable();
 			var npgsParameters = eqlBuildResult.Parameters.Select(x => x.ToNpgsqlParameter()).ToList();
 			NpgsqlCommand command = null;
@@ -177,7 +207,7 @@ namespace WebVella.Erp.Eql
 				command = Connection.CreateCommand(eqlBuildResult.Sql, parameters: npgsParameters);
 			else if (NpgConnection != null)
 			{
-				if(NpgTransaction!= null)
+				if (NpgTransaction != null)
 					command = new NpgsqlCommand(eqlBuildResult.Sql, NpgConnection, NpgTransaction);
 				else
 					command = new NpgsqlCommand(eqlBuildResult.Sql, NpgConnection);
@@ -225,7 +255,7 @@ namespace WebVella.Erp.Eql
 		/// <returns></returns>
 		public List<EqlFieldMeta> GetMeta()
 		{
-			EqlBuilder eqlBuilder = new EqlBuilder(Text, CurrentContext);
+			EqlBuilder eqlBuilder = new EqlBuilder(Text, CurrentContext, Settings);
 			var eqlBuildResult = eqlBuilder.Build(Parameters);
 
 			if (eqlBuildResult.Errors.Count > 0)
@@ -240,7 +270,7 @@ namespace WebVella.Erp.Eql
 		/// <returns></returns>
 		public string GetSql()
 		{
-			EqlBuilder eqlBuilder = new EqlBuilder(Text, CurrentContext);
+			EqlBuilder eqlBuilder = new EqlBuilder(Text, CurrentContext, Settings);
 			var eqlBuildResult = eqlBuilder.Build(Parameters);
 
 			if (eqlBuildResult.Errors.Count > 0)
