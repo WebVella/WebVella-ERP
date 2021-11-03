@@ -1,58 +1,59 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <PropertyGroup>
+	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
-	 <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-  </PropertyGroup>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
-	
-  <ItemGroup>
-    <None Remove="Components\PcTaskRepeatRecurrenceSet\service.js" />
-    <None Remove="Components\PcFeedList\service.js" />
-    <None Remove="Components\PcPostList\service.js" />
-    <None Remove="Components\PcProjectWidgetBudgetChart\service.js" />
-    <None Remove="Components\PcProjectWidgetTasksQueue\service.js" />
-    <None Remove="Components\PcProjectWidgetTaskDistribution\service.js" />
-    <None Remove="Components\PcProjectWidgetTasksPriorityChart\service.js" />
-    <None Remove="Components\PcProjectWidgetTasksChart\service.js" />
-    <None Remove="Components\PcProjectWidgetTimesheet\service.js" />
-    <None Remove="Components\PcReportAccountMonthlyTimelogs\service.js" />
-    <None Remove="Components\PcTimelogList\service.js" />
-    <None Remove="Files\task-details.js" />
-    <None Remove="Files\timetrack.js" />
-    <None Remove="Theme\styles.css" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Components\PcTaskRepeatRecurrenceSet\service.js" />
-    <EmbeddedResource Include="Components\PcFeedList\service.js" />
-    <EmbeddedResource Include="Components\PcPostList\service.js" />
-    <EmbeddedResource Include="Components\PcProjectWidgetBudgetChart\service.js" />
-    <EmbeddedResource Include="Components\PcProjectWidgetTasksQueue\service.js" />
-    <EmbeddedResource Include="Components\PcProjectWidgetTaskDistribution\service.js" />
-    <EmbeddedResource Include="Components\PcProjectWidgetTasksPriorityChart\service.js" />
-    <EmbeddedResource Include="Components\PcProjectWidgetTasksChart\service.js" />
-    <EmbeddedResource Include="Components\PcProjectWidgetTimesheet\service.js" />
-    <EmbeddedResource Include="Components\PcReportAccountMonthlyTimelogs\service.js" />
-    <EmbeddedResource Include="Components\PcTimelogList\service.js" />
-    <EmbeddedResource Include="Files\task-details.js">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Files\timetrack.js">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Theme\styles.css" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Components\PcTaskRepeatRecurrenceSet\service.js" />
+		<None Remove="Components\PcFeedList\service.js" />
+		<None Remove="Components\PcPostList\service.js" />
+		<None Remove="Components\PcProjectWidgetBudgetChart\service.js" />
+		<None Remove="Components\PcProjectWidgetTasksQueue\service.js" />
+		<None Remove="Components\PcProjectWidgetTaskDistribution\service.js" />
+		<None Remove="Components\PcProjectWidgetTasksPriorityChart\service.js" />
+		<None Remove="Components\PcProjectWidgetTasksChart\service.js" />
+		<None Remove="Components\PcProjectWidgetTimesheet\service.js" />
+		<None Remove="Components\PcReportAccountMonthlyTimelogs\service.js" />
+		<None Remove="Components\PcTimelogList\service.js" />
+		<None Remove="Files\task-details.js" />
+		<None Remove="Files\timetrack.js" />
+		<None Remove="Theme\styles.css" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.10" />
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Components\PcTaskRepeatRecurrenceSet\service.js" />
+		<EmbeddedResource Include="Components\PcFeedList\service.js" />
+		<EmbeddedResource Include="Components\PcPostList\service.js" />
+		<EmbeddedResource Include="Components\PcProjectWidgetBudgetChart\service.js" />
+		<EmbeddedResource Include="Components\PcProjectWidgetTasksQueue\service.js" />
+		<EmbeddedResource Include="Components\PcProjectWidgetTaskDistribution\service.js" />
+		<EmbeddedResource Include="Components\PcProjectWidgetTasksPriorityChart\service.js" />
+		<EmbeddedResource Include="Components\PcProjectWidgetTasksChart\service.js" />
+		<EmbeddedResource Include="Components\PcProjectWidgetTimesheet\service.js" />
+		<EmbeddedResource Include="Components\PcReportAccountMonthlyTimelogs\service.js" />
+		<EmbeddedResource Include="Components\PcTimelogList\service.js" />
+		<EmbeddedResource Include="Files\task-details.js">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Files\timetrack.js">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Theme\styles.css" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\WebVella.Erp.Web\WebVella.Erp.Web.csproj" />
-    <ProjectReference Include="..\WebVella.ERP\WebVella.Erp.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.11" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\WebVella.Erp.Web\WebVella.Erp.Web.csproj" />
+		<ProjectReference Include="..\WebVella.ERP\WebVella.Erp.csproj" />
+	</ItemGroup>
 </Project>

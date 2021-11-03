@@ -22,9 +22,9 @@
 				<dependency id="HtmlAgilityPack" version="1.11.12"  exclude="Build,Analyzers" />
 				<dependency id="Microsoft.AspNetCore.Mvc.ViewFeatures" version="2.2.0"  exclude="Build,Analyzers" />
 				<dependency id="Microsoft.AspNetCore.StaticFiles" version="2.2.0"  exclude="Build,Analyzers" />
-				<dependency id="Microsoft.CodeAnalysis.Common" version="3.3.0"  exclude="Build,Analyzers" />
+				<!--<dependency id="Microsoft.CodeAnalysis.Common" version="3.3.0"  exclude="Build,Analyzers" />
 				<dependency id="Microsoft.CodeAnalysis.CSharp" version="3.3.0"  exclude="Build,Analyzers" />
-				<dependency id="Microsoft.CodeAnalysis.CSharp.Workspaces" version="3.3.0"  exclude="Build,Analyzers" />
+				<dependency id="Microsoft.CodeAnalysis.CSharp.Workspaces" version="3.3.0"  exclude="Build,Analyzers" />-->
 				<dependency id="SixLabors.ImageSharp" version="1.0.0-beta0007"  exclude="Build,Analyzers" />
 				<dependency id="SixLabors.ImageSharp.Drawing" version="1.0.0-beta0007"  exclude="Build,Analyzers" />
 				<dependency id="Wangkanai.Detection.Device" version="2.0.0-beta8"  exclude="Build,Analyzers" />

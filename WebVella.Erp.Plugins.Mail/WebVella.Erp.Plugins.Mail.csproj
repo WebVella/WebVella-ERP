@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <PropertyGroup>
+	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-		<Version>1.1.6</Version>
+		<Version>1.1.8</Version>
 		<Authors>WebVella</Authors>
 		<Description>The Mail Plugin for the open-source and free platform WebVella ERP. It provides API, services and management for sending emails through SMTP services.</Description>
 		<Copyright>Copyright 2019</Copyright>
@@ -13,18 +13,19 @@
 		<RepositoryUrl>https://github.com/WebVella/WebVella-ERP.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-  </PropertyGroup>
+		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
-	
-  <ItemGroup>
-    <PackageReference Include="MailKit" Version="2.15.0" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\WebVella.Erp.Web\WebVella.Erp.Web.csproj" />
-    <ProjectReference Include="..\WebVella.ERP\WebVella.Erp.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MailKit" Version="2.15.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\WebVella.Erp.Web\WebVella.Erp.Web.csproj" />
+		<ProjectReference Include="..\WebVella.ERP\WebVella.Erp.csproj" />
+	</ItemGroup>
 </Project>
