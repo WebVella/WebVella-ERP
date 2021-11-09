@@ -5,7 +5,7 @@
 		<RootNamespace>WebVella.Erp.Web</RootNamespace>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-		<Version>1.1.55</Version>
+		<Version>1.1.56</Version>
 		<Authors>WebVella</Authors>
 		<Product>WebVella.Erp.Web</Product>
 		<Description>The web components library for the open-source and free platform WebVella ERP. It allows a quick and painless creation of business web applications.</Description>
@@ -122,7 +122,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CS-Script.Core" Version="2.0.0" />
+		<PackageReference Include="CS-Script" Version="4.1.0" />
 		<PackageReference Include="HtmlAgilityPack" Version="1.11.37" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.0" />
