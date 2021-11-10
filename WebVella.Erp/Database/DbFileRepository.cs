@@ -189,10 +189,10 @@ namespace WebVella.Erp.Database
 
 					connection.CommitTransaction();
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
 					connection.RollbackTransaction();
-					throw ex;
+					throw;
 				}
 			}
 

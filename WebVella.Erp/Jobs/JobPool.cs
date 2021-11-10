@@ -109,9 +109,9 @@ namespace WebVella.Erp.Jobs
 				{
 					throw ex.InnerException;
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
-					throw ex;
+					throw;
 				}
 				finally
 				{
