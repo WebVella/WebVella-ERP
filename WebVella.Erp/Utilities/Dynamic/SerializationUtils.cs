@@ -55,61 +55,61 @@ namespace WebVella.Erp.Utilities.Dynamic
         /// <param name="fileName"></param>
         /// <param name="binarySerialization">determines whether XML serialization or binary serialization is used</param>
         /// <returns></returns>
-        public static bool SerializeObject(object instance, string fileName, bool binarySerialization)
-        {
-            bool retVal = true;
+        //public static bool SerializeObject(object instance, string fileName, bool binarySerialization)
+        //{
+        //    bool retVal = true;
 
-            if (!binarySerialization)
-            {
-                XmlTextWriter writer = null;
-                try
-                {
-                    XmlSerializer serializer =
-                        new XmlSerializer(instance.GetType());
+        //    if (!binarySerialization)
+        //    {
+        //        XmlTextWriter writer = null;
+        //        try
+        //        {
+        //            XmlSerializer serializer =
+        //                new XmlSerializer(instance.GetType());
 
-                    // Create an XmlTextWriter using a FileStream.
-                    Stream fs = new FileStream(fileName, FileMode.Create);
-                    writer = new XmlTextWriter(fs, new UTF8Encoding());
-                    writer.Formatting = Formatting.Indented;
-                    writer.IndentChar = ' ';
-                    writer.Indentation = 3;
+        //            // Create an XmlTextWriter using a FileStream.
+        //            Stream fs = new FileStream(fileName, FileMode.Create);
+        //            writer = new XmlTextWriter(fs, new UTF8Encoding());
+        //            writer.Formatting = Formatting.Indented;
+        //            writer.IndentChar = ' ';
+        //            writer.Indentation = 3;
 
-                    // Serialize using the XmlTextWriter.
-                    serializer.Serialize(writer, instance);
-                }
-                catch (Exception ex)
-                {
-                    Debug.Write("SerializeObject failed with : " + ex.Message, "West Wind");
-                    retVal = false;
-                }
-                finally
-                {
-                    if (writer != null)
-                        writer.Close();
-                }
-            }
-            else
-            {
-                Stream fs = null;
-                try
-                {
-                    BinaryFormatter serializer = new BinaryFormatter();
-                    fs = new FileStream(fileName, FileMode.Create);
-                    serializer.Serialize(fs, instance);
-                }
-                catch
-                {
-                    retVal = false;
-                }
-                finally
-                {
-                    if (fs != null)
-                        fs.Close();
-                }
-            }
+        //            // Serialize using the XmlTextWriter.
+        //            serializer.Serialize(writer, instance);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Debug.Write("SerializeObject failed with : " + ex.Message, "West Wind");
+        //            retVal = false;
+        //        }
+        //        finally
+        //        {
+        //            if (writer != null)
+        //                writer.Close();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Stream fs = null;
+        //        try
+        //        {
+        //            BinaryFormatter serializer = new BinaryFormatter();
+        //            fs = new FileStream(fileName, FileMode.Create);
+        //            serializer.Serialize(fs, instance);
+        //        }
+        //        catch
+        //        {
+        //            retVal = false;
+        //        }
+        //        finally
+        //        {
+        //            if (fs != null)
+        //                fs.Close();
+        //        }
+        //    }
 
-            return retVal;
-        }
+        //    return retVal;
+        //}
 
         /// <summary>
         /// Overload that supports passing in an XML TextWriter. 
@@ -200,35 +200,35 @@ namespace WebVella.Erp.Utilities.Dynamic
         /// <param name="Filename"></param>
         /// <param name="BinarySerialization">determines whether XML serialization or binary serialization is used</param>
         /// <returns></returns>
-        public static bool SerializeObject(object instance, out byte[] resultBuffer, bool throwExceptions = false)
-        {
-            bool retVal = true;
+        //public static bool SerializeObject(object instance, out byte[] resultBuffer, bool throwExceptions = false)
+        //{
+        //    bool retVal = true;
 
-            MemoryStream ms = null;
-            try
-            {
-                BinaryFormatter serializer = new BinaryFormatter();
-                ms = new MemoryStream();
-                serializer.Serialize(ms, instance);
-            }
-            catch (Exception ex)
-            {
-                Debug.Write("SerializeObject failed with : " + ex.GetBaseException().Message, "West Wind");
-                retVal = false;
+        //    MemoryStream ms = null;
+        //    try
+        //    {
+        //        BinaryFormatter serializer = new BinaryFormatter();
+        //        ms = new MemoryStream();
+        //        serializer.Serialize(ms, instance);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.Write("SerializeObject failed with : " + ex.GetBaseException().Message, "West Wind");
+        //        retVal = false;
 
-                if (throwExceptions)
-                    throw;
-            }
-            finally
-            {
-                if (ms != null)
-                    ms.Close();
-            }
+        //        if (throwExceptions)
+        //            throw;
+        //    }
+        //    finally
+        //    {
+        //        if (ms != null)
+        //            ms.Close();
+        //    }
 
-            resultBuffer = ms.ToArray();
+        //    resultBuffer = ms.ToArray();
 
-            return retVal;
-        }
+        //    return retVal;
+        //}
 
         /// <summary>
         /// Serializes an object to an XML string. Unlike the other SerializeObject overloads
@@ -253,15 +253,15 @@ namespace WebVella.Erp.Utilities.Dynamic
             return xmlResultString;
         }
 
-        public static byte[] SerializeObjectToByteArray(object instance, bool throwExceptions = false)
-        {
-            byte[] byteResult = null;
+        //public static byte[] SerializeObjectToByteArray(object instance, bool throwExceptions = false)
+        //{
+        //    byte[] byteResult = null;
 
-            if (!SerializeObject(instance, out byteResult))
-                return null;
+        //    if (!SerializeObject(instance, out byteResult))
+        //        return null;
 
-            return byteResult;
-        }
+        //    return byteResult;
+        //}
 
 
 
@@ -272,10 +272,10 @@ namespace WebVella.Erp.Utilities.Dynamic
         /// <param name="objectType">The Type of the object. Use typeof(yourobject class)</param>
         /// <param name="binarySerialization">determines whether we use Xml or Binary serialization</param>
         /// <returns>Instance of the deserialized object or null. Must be cast to your object type</returns>
-        public static object DeSerializeObject(string fileName, Type objectType, bool binarySerialization)
-        {
-            return DeSerializeObject(fileName, objectType, binarySerialization, false);
-        }
+        //public static object DeSerializeObject(string fileName, Type objectType, bool binarySerialization)
+        //{
+        //    return DeSerializeObject(fileName, objectType, binarySerialization, false);
+        //}
 
         /// <summary>
         /// Deserializes an object from file and returns a reference.
@@ -285,70 +285,70 @@ namespace WebVella.Erp.Utilities.Dynamic
         /// <param name="binarySerialization">determines whether we use Xml or Binary serialization</param>
         /// <param name="throwExceptions">determines whether failure will throw rather than return null on failure</param>
         /// <returns>Instance of the deserialized object or null. Must be cast to your object type</returns>
-        public static object DeSerializeObject(string fileName, Type objectType, bool binarySerialization, bool throwExceptions)
-        {
-            object instance = null;
+        //public static object DeSerializeObject(string fileName, Type objectType, bool binarySerialization, bool throwExceptions)
+        //{
+        //    object instance = null;
 
-            if (!binarySerialization)
-            {
+        //    if (!binarySerialization)
+        //    {
 
-                XmlReader reader = null;
-                XmlSerializer serializer = null;
-                FileStream fs = null;
-                try
-                {
-                    // Create an instance of the XmlSerializer specifying type and namespace.
-                    serializer = new XmlSerializer(objectType);
+        //        XmlReader reader = null;
+        //        XmlSerializer serializer = null;
+        //        FileStream fs = null;
+        //        try
+        //        {
+        //            // Create an instance of the XmlSerializer specifying type and namespace.
+        //            serializer = new XmlSerializer(objectType);
 
-                    // A FileStream is needed to read the XML document.
-                    fs = new FileStream(fileName, FileMode.Open);
-                    reader = new XmlTextReader(fs);
+        //            // A FileStream is needed to read the XML document.
+        //            fs = new FileStream(fileName, FileMode.Open);
+        //            reader = new XmlTextReader(fs);
 
-                    instance = serializer.Deserialize(reader);
-                }
-                catch (Exception ex)
-                {
-                    if (throwExceptions)
-                        throw;
+        //            instance = serializer.Deserialize(reader);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            if (throwExceptions)
+        //                throw;
 
-                    string message = ex.Message;
-                    return null;
-                }
-                finally
-                {
-                    if (fs != null)
-                        fs.Close();
+        //            string message = ex.Message;
+        //            return null;
+        //        }
+        //        finally
+        //        {
+        //            if (fs != null)
+        //                fs.Close();
 
-                    if (reader != null)
-                        reader.Close();
-                }
-            }
-            else
-            {
+        //            if (reader != null)
+        //                reader.Close();
+        //        }
+        //    }
+        //    else
+        //    {
 
-                BinaryFormatter serializer = null;
-                FileStream fs = null;
+        //        BinaryFormatter serializer = null;
+        //        FileStream fs = null;
 
-                try
-                {
-                    serializer = new BinaryFormatter();
-                    fs = new FileStream(fileName, FileMode.Open);
-                    instance = serializer.Deserialize(fs);
+        //        try
+        //        {
+        //            serializer = new BinaryFormatter();
+        //            fs = new FileStream(fileName, FileMode.Open);
+        //            instance = serializer.Deserialize(fs);
 
-                }
-                catch
-                {
-                    return null;
-                }
-                finally
-                {
-                    if (fs != null)
-                        fs.Close();
-                }
-            }
+        //        }
+        //        catch
+        //        {
+        //            return null;
+        //        }
+        //        finally
+        //        {
+        //            if (fs != null)
+        //                fs.Close();
+        //        }
+        //    }
 
-            return instance;
-        }
+        //    return instance;
+        //}
 
         /// <summary>
         /// Deserialize an object from an XmlReader object.
@@ -378,34 +378,34 @@ namespace WebVella.Erp.Utilities.Dynamic
         /// <param name="objectType"></param>
         /// <param name="throwExceptions"></param>
         /// <returns></returns>
-        public static object DeSerializeObject(byte[] buffer, Type objectType, bool throwExceptions = false)
-        {
-            BinaryFormatter serializer = null;
-            MemoryStream ms = null;
-            object Instance = null;
+        //public static object DeSerializeObject(byte[] buffer, Type objectType, bool throwExceptions = false)
+        //{
+        //    BinaryFormatter serializer = null;
+        //    MemoryStream ms = null;
+        //    object Instance = null;
 
-            try
-            {
-                serializer = new BinaryFormatter();
-                ms = new MemoryStream(buffer);
-                Instance = serializer.Deserialize(ms);
+        //    try
+        //    {
+        //        serializer = new BinaryFormatter();
+        //        ms = new MemoryStream(buffer);
+        //        Instance = serializer.Deserialize(ms);
 
-            }
-            catch
-            {
-                if (throwExceptions)
-                    throw;
+        //    }
+        //    catch
+        //    {
+        //        if (throwExceptions)
+        //            throw;
 
-                return null;
-            }
-            finally
-            {
-                if (ms != null)
-                    ms.Close();
-            }
+        //        return null;
+        //    }
+        //    finally
+        //    {
+        //        if (ms != null)
+        //            ms.Close();
+        //    }
 
-            return Instance;
-        }
+        //    return Instance;
+        //}
 
 
         /// <summary>

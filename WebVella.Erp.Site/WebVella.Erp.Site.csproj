@@ -64,9 +64,9 @@
 	</ItemGroup>
 
 
-	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+	<!--<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="XCOPY &quot;$(ProjectDir)\..\ExternalLibraries&quot; &quot;$(TargetDir)&quot; /E /I /F /Y" />
-	</Target>
+	</Target>-->
 
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
