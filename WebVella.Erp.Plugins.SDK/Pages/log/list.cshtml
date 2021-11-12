@@ -3,89 +3,94 @@
 
 @model WebVella.Erp.Plugins.SDK.Pages.Log.ListModel
 @{
-	Layout = "~/Pages/_AppMaster.cshtml";
-	ViewData["Title"] = "Logs";
+    Layout = "~/Pages/_AppMaster.cshtml";
+    ViewData["Title"] = "Logs";
 }
 <wv-page-header color="#dc3545" area-label="Logs" title="Log list"
-				icon-class="far fa-sticky-note icon" return-url="@Model.ReturnUrl">
-	<wv-page-header-actions>
-		<wv-button type="Button" onclick="ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcDrawer','open')" color="White" icon-class="fa fa-search" text="Search logs" size="Small"></wv-button>
-	</wv-page-header-actions>
+                icon-class="far fa-sticky-note icon" return-url="@Model.ReturnUrl">
+    <wv-page-header-actions>
+        <div class="d-flex">
+            <wv-form id="ClearLogs" name="ClearLogs" method="post" autocomplete="false" style="margin-right:0.5rem;">
+                <wv-button type="Submit" onclick="return confirm('Are you sure ?')" color="White" icon-class="fa fa-trash" text="Clear logs" size="Small"></wv-button>
+            </wv-form>
+            <wv-button type="Button" onclick="ErpEvent.DISPATCH('WebVella.Erp.Web.Components.PcDrawer','open')" color="White" icon-class="fa fa-search" text="Search logs" size="Small"></wv-button>
+        </div>
+    </wv-page-header-actions>
 </wv-page-header>
 
 <wv-grid bordered="true" hover="true" columns="Model.Columns" page="Model.Pager" total-count="Model.TotalCount" page-size="Model.PagerSize" vertical-align="Middle">
-	@foreach (var record in Model.Records)
-	{
-		<wv-grid-row>
-			<wv-grid-column>
-				<wv-button type="Button" onclick="$('#wv-@(record["id"])').modal('show')" color="Secondary" is-outline="true" size="Small" icon-class="fa fa-eye fa-fw"></wv-button>
-				<wv-modal size="ExtraLarge" title="System Log Details" id="wv-@(record["id"])">
-					<wv-modal-body>
-						<wv-field-code height="300px" label-mode="Hidden" name="json" value="@(JsonConvert.SerializeObject(record, Formatting.Indented))" language="json"></wv-field-code>
-					</wv-modal-body>
-					<wv-modal-footer>
-						<wv-button type="Button" onclick="$('#wv-@(record["id"])').modal('hide')" color="White" size="Small" text="Close"></wv-button>
-					</wv-modal-footer>
-				</wv-modal>
-			</wv-grid-column>
-			<wv-grid-column>
-				<wv-field-datetime label-mode="Hidden" mode="Simple" value="@((DateTime)record["created_on"])"></wv-field-datetime>
-			</wv-grid-column>
-			<wv-grid-column horizontal-align="Center">
-				@if (record["type"].ToString() == "1")
-				{
-					<i class="fas fa-exclamation-circle go-red" title="error"></i>
-				}
-				else
-				{
-					<i class="fas fa-info-circle go-blue" title="information"></i>
-				}
-			</wv-grid-column>
-			<wv-grid-column>
-				@record["source"]
-			</wv-grid-column>
-			<wv-grid-column>
-				@record["message"]
-			</wv-grid-column>
-			<wv-grid-column horizontal-align="Center">
-				@switch (record["notification_status"].ToString())
-				{
-					case "1":
-						<span title="do not notify"><i class="far fa-fw fa-envelope"></i> <i class="fas fa-fw fa-ban go-red"></i></span>
-						break;
-					case "2":
-						<span title="not notified yet"><i class="far fa-fw fa-envelope"></i> <i class="fas fa-fw fa-hourglass-half go-teal"></i></span>
-						break;
-					case "3":
-						<span title="notified"><i class="far fa-fw fa-envelope"></i> <i class="fas fa-fw fa-check go-green"></i></span>
-						break;
-					case "4":
-						<span title="notification failed"><i class="far fa-fw fa-envelope"></i> <i class="fas fa-fw fa-exclamation-circle go-red"></i></span>
-						break;
-					default:
-						break;
-				}
-			</wv-grid-column>
-		</wv-grid-row>
-	}
-	@if (Model.Records.Count == 0)
-	{
-		<tbody>
-			<tr>
-				<td colspan="@Model.Columns.Count"><div class="alert alert-info">No logs found</div></td>
-			</tr>
-		</tbody>
-	}
+    @foreach (var record in Model.Records)
+    {
+        <wv-grid-row>
+            <wv-grid-column>
+                <wv-button type="Button" onclick="$('#wv-@(record["id"])').modal('show')" color="Secondary" is-outline="true" size="Small" icon-class="fa fa-eye fa-fw"></wv-button>
+                <wv-modal size="ExtraLarge" title="System Log Details" id="wv-@(record["id"])">
+                    <wv-modal-body>
+                        <wv-field-code height="300px" label-mode="Hidden" name="json" value="@(JsonConvert.SerializeObject(record, Formatting.Indented))" language="json"></wv-field-code>
+                    </wv-modal-body>
+                    <wv-modal-footer>
+                        <wv-button type="Button" onclick="$('#wv-@(record["id"])').modal('hide')" color="White" size="Small" text="Close"></wv-button>
+                    </wv-modal-footer>
+                </wv-modal>
+            </wv-grid-column>
+            <wv-grid-column>
+                <wv-field-datetime label-mode="Hidden" mode="Simple" value="@((DateTime)record["created_on"])"></wv-field-datetime>
+            </wv-grid-column>
+            <wv-grid-column horizontal-align="Center">
+                @if (record["type"].ToString() == "1")
+                {
+                    <i class="fas fa-exclamation-circle go-red" title="error"></i>
+                }
+                else
+                {
+                    <i class="fas fa-info-circle go-blue" title="information"></i>
+                }
+            </wv-grid-column>
+            <wv-grid-column>
+                @record["source"]
+            </wv-grid-column>
+            <wv-grid-column>
+                @record["message"]
+            </wv-grid-column>
+            <wv-grid-column horizontal-align="Center">
+                @switch (record["notification_status"].ToString())
+                {
+                    case "1":
+                        <span title="do not notify"><i class="far fa-fw fa-envelope"></i> <i class="fas fa-fw fa-ban go-red"></i></span>
+                        break;
+                    case "2":
+                        <span title="not notified yet"><i class="far fa-fw fa-envelope"></i> <i class="fas fa-fw fa-hourglass-half go-teal"></i></span>
+                        break;
+                    case "3":
+                        <span title="notified"><i class="far fa-fw fa-envelope"></i> <i class="fas fa-fw fa-check go-green"></i></span>
+                        break;
+                    case "4":
+                        <span title="notification failed"><i class="far fa-fw fa-envelope"></i> <i class="fas fa-fw fa-exclamation-circle go-red"></i></span>
+                        break;
+                    default:
+                        break;
+                }
+            </wv-grid-column>
+        </wv-grid-row>
+    }
+    @if (Model.Records.Count == 0)
+    {
+        <tbody>
+            <tr>
+                <td colspan="@Model.Columns.Count"><div class="alert alert-info">No logs found</div></td>
+            </tr>
+        </tbody>
+    }
 </wv-grid>
 
-@{ 
-var titleAction = "<a href=\"javascript:void(0)\" class=\"clear-filter-all\">clear all</a>";
+@{
+    var titleAction = "<a href=\"javascript:void(0)\" class=\"clear-filter-all\">clear all</a>";
 }
 <wv-drawer id="logSearchDrawler" width="400px" title="Search logs" title-action-html="@titleAction">
-	<form method="get" name="Search">
-		<wv-filter-text label="Source" name="source" query-type="CONTAINS" query-options="@(new List<FilterType> { FilterType.CONTAINS })"></wv-filter-text>
-		<wv-filter-text label="Message" name="message" query-type="CONTAINS" query-options="@(new List<FilterType> { FilterType.CONTAINS })"></wv-filter-text>
-		<hr class="divider" />
-		<wv-button type="Submit" color="White" text="Search logs" size="Small"></wv-button>
-	</form>
+    <form method="get" name="Search">
+        <wv-filter-text label="Source" name="source" query-type="CONTAINS" query-options="@(new List<FilterType> { FilterType.CONTAINS })"></wv-filter-text>
+        <wv-filter-text label="Message" name="message" query-type="CONTAINS" query-options="@(new List<FilterType> { FilterType.CONTAINS })"></wv-filter-text>
+        <hr class="divider" />
+        <wv-button type="Submit" color="White" text="Search logs" size="Small"></wv-button>
+    </form>
 </wv-drawer>

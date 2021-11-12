@@ -33,6 +33,9 @@ namespace WebVella.Erp.Site
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			//legacy until we fix system tables
+			AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 			string configPath = "config.json";
 			Configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(configPath).Build();
 
