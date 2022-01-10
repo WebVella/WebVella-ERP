@@ -28,7 +28,6 @@ namespace WebVella.Erp.Site.Next
 		{
 			//legacy until we fix system tables
 			AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-
 			services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
 			services.AddResponseCompression(options => { options.Providers.Add<GzipCompressionProvider>(); });
 			services.AddRouting(options => { options.LowercaseUrls = true; });
