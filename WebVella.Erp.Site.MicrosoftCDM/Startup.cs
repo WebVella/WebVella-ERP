@@ -25,6 +25,9 @@ namespace WebVella.Erp.Site.MicrosoftCDM
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			//legacy until we fix system tables
+			AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 			services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
 			services.AddResponseCompression(options => { options.Providers.Add<GzipCompressionProvider>(); });
 			services.AddRouting(options => { options.LowercaseUrls = true; });
