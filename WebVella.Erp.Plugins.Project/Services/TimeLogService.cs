@@ -53,9 +53,9 @@ namespace WebVella.Erp.Plugins.Project.Services
 					throw new ValidationException(response.Message);
 				}
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				throw ex;
+				throw;
 			}
 		}
 
@@ -166,10 +166,10 @@ namespace WebVella.Erp.Plugins.Project.Services
 						connection.CommitTransaction();
 						return new RedirectResult("/projects/track-time/track-time/a/track-time");
 					}
-					catch (Exception ex)
+					catch (Exception)
 					{
 						connection.RollbackTransaction();
-						throw ex;
+						throw;
 					}
 				}
 
@@ -214,9 +214,9 @@ namespace WebVella.Erp.Plugins.Project.Services
 						taskEqlCommand += String.Join(" OR ", filterStringList);
 						relatedTaskRecords = new EqlCommand(taskEqlCommand, taskEqlParams).Execute();
 					}
-					catch(Exception ex)
+					catch(Exception)
 					{
-						throw ex;
+						throw;
 					}
 				}
 

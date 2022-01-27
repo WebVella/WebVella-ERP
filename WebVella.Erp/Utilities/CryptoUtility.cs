@@ -15,7 +15,6 @@ namespace WebVella.Erp.Utilities
 
         private const string defaultCryptKey = "BC93B776A42877CFEE808823BA8B37C83B6B0AD23198AC3AF2B5A54DCB647658";
         private static string cryptKey;
-        private static readonly SymmetricAlgorithm cookieEncryptProvider = new DESCryptoServiceProvider();
 
         #endregion
 
@@ -150,44 +149,6 @@ namespace WebVella.Erp.Utilities
         }
 
         /// <summary>
-        /// 	Decrypts the DES.
-        /// </summary>
-        /// <param name="encryptedValue"> The encrypted value. </param>
-        /// <returns> </returns>
-        public static string DecryptDES(string encryptedValue)
-        {
-            try
-            {
-                return encryptedValue;
-                //there is a bug in Core 2 library for DES now
-                //return DecryptText(encryptedValue, cookieEncryptProvider);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// 	Encrypts the DES.
-        /// </summary>
-        /// <param name="value"> The value. </param>
-        /// <returns> </returns>
-        public static string EncryptDES(string value)
-        {
-            try
-            {
-                return value;
-                //there is a bug in Core 2 library for DES now
-                //return EncryptText(value, cookieEncryptProvider);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// 	Computes MD5 hash value for specified input string
         /// </summary>
         /// <param name="inputString"> The input string. </param>
@@ -195,7 +156,7 @@ namespace WebVella.Erp.Utilities
         public static string ComputeMD5Hash(string inputString)
         {
             byte[] bytes = (new UnicodeEncoding()).GetBytes(inputString);
-            byte[] hashValue = (new MD5CryptoServiceProvider()).ComputeHash(bytes);
+            byte[] hashValue = (MD5.Create()).ComputeHash(bytes);
             return BitConverter.ToString(hashValue);
         }
 
@@ -207,7 +168,7 @@ namespace WebVella.Erp.Utilities
         public static byte[] ComputeMD5HashBytes(string inputString)
         {
             byte[] bytes = (new UnicodeEncoding()).GetBytes(inputString);
-            return (new MD5CryptoServiceProvider()).ComputeHash(bytes);
+            return (MD5.Create()).ComputeHash(bytes);
         }
 
         /// <summary>
@@ -234,8 +195,7 @@ namespace WebVella.Erp.Utilities
         {
             byte[] textBytes = Encoding.Default.GetBytes(text);
 
-            MD5CryptoServiceProvider cryptHandler;
-            cryptHandler = new MD5CryptoServiceProvider();
+            var cryptHandler = MD5.Create();
             byte[] hash = cryptHandler.ComputeHash(textBytes);
             string ret = "";
             foreach (byte a in hash)

@@ -97,9 +97,9 @@ namespace WebVella.Erp.Plugins.Project.Controllers
 			{
 				new CommentService().Create(recordId, currentUserId, DateTime.Now, body, parentId, scope, relatedRecords);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				throw ex;
+				throw;
 			}
 
 			response.Success = true;
@@ -147,9 +147,9 @@ namespace WebVella.Erp.Plugins.Project.Controllers
 			{
 				new CommentService().Delete(recordId);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				throw ex;
+				throw;
 			}
 			response.Success = true;
 			response.Message = "Comment successfully deleted";
@@ -215,9 +215,9 @@ namespace WebVella.Erp.Plugins.Project.Controllers
 			{
 				new TimeLogService().Create(recordId, currentUserId, DateTime.Now, loggedOn, minutes, isBillable, body, scope, relatedRecords);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				throw ex;
+				throw;
 			}
 
 			response.Success = true;
@@ -264,9 +264,9 @@ namespace WebVella.Erp.Plugins.Project.Controllers
 			{
 				new TimeLogService().Delete(recordId);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				throw ex;
+				throw;
 			}
 			response.Success = true;
 			response.Message = "Comment successfully deleted";
@@ -459,7 +459,7 @@ namespace WebVella.Erp.Plugins.Project.Controllers
 			catch (Exception ex)
 			{
 				new Log().Create(LogType.Error, file + " API File get Method Error", ex);
-				throw ex;
+				throw;
 			}
 		}
 

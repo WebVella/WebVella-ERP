@@ -708,7 +708,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 				if (!string.IsNullOrWhiteSpace(email.Sender?.Name))
 					message.From.Add(new MailboxAddress(email.Sender?.Name, email.Sender?.Address));
 				else
-					message.From.Add(new MailboxAddress(email.Sender?.Address));
+					message.From.Add(new MailboxAddress(email.Sender?.Address, email.Sender?.Address));
 
 				foreach (var recipient in email.Recipients)
 				{
@@ -717,21 +717,21 @@ namespace WebVella.Erp.Plugins.Mail.Services
 						if (!string.IsNullOrWhiteSpace(recipient.Name))
 							message.Cc.Add(new MailboxAddress(recipient.Name, recipient.Address.Substring(3)));
 						else
-							message.Cc.Add(new MailboxAddress(recipient.Address.Substring(3)));
+							message.Cc.Add(new MailboxAddress(recipient.Address.Substring(3), recipient.Address.Substring(3)));
 					}
 					else if (recipient.Address.StartsWith("bcc:"))
 					{
 						if (!string.IsNullOrWhiteSpace(recipient.Name))
 							message.Bcc.Add(new MailboxAddress(recipient.Name, recipient.Address.Substring(4)));
 						else
-							message.Bcc.Add(new MailboxAddress(recipient.Address.Substring(4)));
+							message.Bcc.Add(new MailboxAddress(recipient.Address.Substring(4), recipient.Address.Substring(4)));
 					}
 					else
 					{
 						if (!string.IsNullOrWhiteSpace(recipient.Name))
 							message.To.Add(new MailboxAddress(recipient.Name, recipient.Address));
 						else
-							message.To.Add(new MailboxAddress(recipient.Address));
+							message.To.Add(new MailboxAddress(recipient.Address, recipient.Address));
 					}
 				}
 
@@ -739,10 +739,10 @@ namespace WebVella.Erp.Plugins.Mail.Services
 				{
 					string[] replyToEmails = email.ReplyToEmail.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 					foreach(var replyEmail in replyToEmails)
-						message.ReplyTo.Add(new MailboxAddress(replyEmail));
+						message.ReplyTo.Add(new MailboxAddress(replyEmail, replyEmail));
 				}
 				else
-					message.ReplyTo.Add(new MailboxAddress(email.Sender?.Address));
+					message.ReplyTo.Add(new MailboxAddress(email.Sender?.Address, email.Sender?.Address));
 
 				message.Subject = email.Subject;
 

@@ -44,9 +44,9 @@ namespace WebVella.Erp.Plugins.Project.Services
 					throw new ValidationException(response.Message);
 				}
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				throw ex;
+				throw;
 			}
 		}
 
@@ -132,9 +132,9 @@ namespace WebVella.Erp.Plugins.Project.Services
 						taskEqlCommand += String.Join(" OR ", filterStringList);
 						relatedTaskRecords = new EqlCommand(taskEqlCommand, taskEqlParams).Execute();
 					}
-					catch (Exception ex)
+					catch (Exception)
 					{
-						throw ex;
+						throw;
 					}
 				}
 				if (!relatedTaskRecords.Any())

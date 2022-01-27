@@ -34,7 +34,7 @@ namespace WebVella.Erp.Web.Service
 			if (scriptObjects.ContainsKey(md5Key))
 				return scriptObjects[md5Key] as ICodeVariable;
 
-			CSScript.EvaluatorConfig.RefernceDomainAsemblies = true;
+			CSScript.EvaluatorConfig.ReferenceDomainAssemblies = true;
 			ICodeVariable scriptObject = CSScript.Evaluator.LoadCode<ICodeVariable>(sourceCode);
 			scriptObjects[md5Key] = scriptObject;
 			return scriptObject;

@@ -54,7 +54,7 @@ else
 						 name="EntityId" required="true" mode="@mode" class="@entitySelectClass"></wv-field-select>
 	</wv-column>
 </wv-row>
-@if (erpPage.Id != null && erpPage.Id != Guid.Empty)
+@if (erpPage.Id != Guid.Empty)
 {
 	<input type="hidden" value="@erpPage.AreaId" name="AreaId" id="area-hidden-input" />
 	<input type="hidden" value="@erpPage.NodeId" name="NodeId" id="node-hidden-input" />

@@ -108,10 +108,10 @@ namespace WebVella.Erp.Web.Services
 					userFileRecord = response.Object.Data.First();
 					con.CommitTransaction();
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
 					con.RollbackTransaction();
-					throw ex;
+					throw;
 				}
 			}
 			return userFileRecord.MapTo<UserFile>();

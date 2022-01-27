@@ -25,11 +25,6 @@ namespace WebVella.Erp.Web.Components
 
 		public class PcFieldPasswordOptions : PcFieldBaseOptions
 		{
-			[JsonProperty(PropertyName = "min")]
-			public int? Min { get; set; } = null;
-
-			[JsonProperty(PropertyName = "max")]
-			public int? Max { get; set; } = null;
 
 			[JsonProperty(PropertyName = "show_icon")]
 			public bool ShowIcon { get; set; } = false;

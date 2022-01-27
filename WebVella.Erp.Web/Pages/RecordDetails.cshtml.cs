@@ -65,7 +65,7 @@ namespace WebVella.Erp.Web.Pages.Application
 				}
 
 				/// Standard Page Delete behavior
-				if (HookKey == "delete" && ErpRequestContext.Entity != null && ErpRequestContext.Entity.Id != null && ErpRequestContext.RecordId != null)
+				if (HookKey == "delete" && ErpRequestContext.Entity != null && ErpRequestContext.RecordId != null)
 				{
 					var deleteRecordResponse = new RecordManager().DeleteRecord(ErpRequestContext.Entity, (ErpRequestContext.RecordId ?? Guid.Empty));
 					if (deleteRecordResponse.Success)

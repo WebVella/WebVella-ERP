@@ -45,9 +45,9 @@ namespace WebVella.Erp.Plugins.Project.Services
 				if (!createFeedResponse.Success)
 					throw new Exception(createFeedResponse.Message);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				throw ex;
+				throw;
 			}
 		}
 

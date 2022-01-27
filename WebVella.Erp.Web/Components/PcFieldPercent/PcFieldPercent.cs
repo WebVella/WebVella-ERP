@@ -26,19 +26,6 @@ namespace WebVella.Erp.Web.Components
 		public class PcFieldPercentOptions : PcFieldBaseOptions
 		{
 
-			[JsonProperty(PropertyName = "min")]
-			public decimal? Min { get; set; } = null;
-
-			[JsonProperty(PropertyName = "max")]
-			public decimal? Max { get; set; } = null;
-
-			[JsonProperty(PropertyName = "step")]
-			public decimal? Step { get; set; } = null;
-
-			[JsonProperty(PropertyName = "decimal_digits")]
-			public int DecimalDigits { get; set; } = 2;
-
-
 			[JsonProperty(PropertyName = "show_icon")]
 			public bool ShowIcon { get; set; } = false;
 
@@ -99,8 +86,8 @@ namespace WebVella.Erp.Web.Components
 						if (options.Max == null)
 							options.Max = baseOptions.Max;
 
-						if (options.DecimalDigits == null)
-							options.DecimalDigits = baseOptions.DecimalDigits;
+						//if (options.DecimalDigits == null)
+						//	options.DecimalDigits = baseOptions.DecimalDigits;
 
 						if (String.IsNullOrWhiteSpace(options.LabelHelpText))
 							options.LabelHelpText = baseOptions.LabelHelpText;

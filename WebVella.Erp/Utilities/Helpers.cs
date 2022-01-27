@@ -2629,10 +2629,12 @@ namespace WebVella.Erp.Utilities
 		public static EntityRecord GetImageDimension(byte[] imageContent)
 		{
 			Stream stream = new MemoryStream(imageContent);
+#pragma warning disable CA1416 // Validate platform compatibility
 			System.Drawing.Image image = System.Drawing.Image.FromStream(stream);
 			var response = new EntityRecord();
 			response["height"] = (decimal)image.Height;
 			response["width"] = (decimal)image.Width;
+#pragma warning restore CA1416 // Validate platform compatibility
 			return response;
 		}
 

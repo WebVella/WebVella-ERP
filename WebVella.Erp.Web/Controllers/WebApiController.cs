@@ -17,6 +17,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
@@ -58,7 +59,7 @@ namespace WebVella.Erp.Web.Controllers
 
 		[Route("api/v3/en_US/eql")]
 		[HttpPost]
-		public ActionResult EqlQueryAction([FromBody]EqlQuery model)
+		public ActionResult EqlQueryAction([FromBody] EqlQuery model)
 		{
 			ResponseModel response = new ResponseModel();
 			response.Success = true;
@@ -92,7 +93,7 @@ namespace WebVella.Erp.Web.Controllers
 
 		[Route("api/v3/en_US/eql-ds")]
 		[HttpPost]
-		public ActionResult DataSourceQueryAction([FromBody]JObject submitObj)
+		public ActionResult DataSourceQueryAction([FromBody] JObject submitObj)
 		{
 			ResponseModel response = new ResponseModel();
 			response.Success = true;
@@ -185,7 +186,7 @@ namespace WebVella.Erp.Web.Controllers
 
 		[Route("api/v3/en_US/eql-ds-select2")]
 		[HttpPost]
-		public ActionResult DataSourceQueryActionForSelect2([FromBody]JObject submitObj)
+		public ActionResult DataSourceQueryActionForSelect2([FromBody] JObject submitObj)
 		{
 			if (submitObj == null)
 				return NotFound();
@@ -291,22 +292,28 @@ namespace WebVella.Erp.Web.Controllers
 			foreach (var record in records)
 			{
 				var procRec = new EntityRecord();
-				if(record.Properties.ContainsKey("id")){
+				if (record.Properties.ContainsKey("id"))
+				{
 					procRec["id"] = record["id"].ToString();
 				}
-				else{
+				else
+				{
 					procRec["id"] = "no-id-" + Guid.NewGuid();
 				}
-				if(record.Properties.ContainsKey("text")){
+				if (record.Properties.ContainsKey("text"))
+				{
 					procRec["text"] = record["text"].ToString();
 				}
-				else if(record.Properties.ContainsKey("label")){
+				else if (record.Properties.ContainsKey("label"))
+				{
 					procRec["text"] = record["label"].ToString();
 				}
-				else if(record.Properties.ContainsKey("name")){
+				else if (record.Properties.ContainsKey("name"))
+				{
 					procRec["text"] = record["name"].ToString();
 				}
-				else{
+				else
+				{
 					procRec["text"] = procRec["id"].ToString();
 				}
 				processedRecords.Add(procRec);
@@ -500,7 +507,7 @@ namespace WebVella.Erp.Web.Controllers
 
 		[Route("api/v3.0/datasource/test")]
 		[HttpPost]
-		public ActionResult DataSourceAction([FromBody]DataSourceTestModel model)
+		public ActionResult DataSourceAction([FromBody] DataSourceTestModel model)
 		{
 			if (model == null)
 				return NotFound();
@@ -531,7 +538,7 @@ namespace WebVella.Erp.Web.Controllers
 
 		[Route("api/v3.0/datasource/{dataSourceId}/test")]
 		[HttpPost]
-		public ActionResult DataSourceAction(Guid dataSourceId, [FromBody]DataSourceTestModel model)
+		public ActionResult DataSourceAction(Guid dataSourceId, [FromBody] DataSourceTestModel model)
 		{
 
 			if (model == null)
@@ -592,7 +599,7 @@ namespace WebVella.Erp.Web.Controllers
 		//[AllowAnonymous] //Needed only when webcomponent development
 		[Route("api/v3.0/page/{pageId}/node/create")]
 		[HttpPost]
-		public ActionResult CreatePageBodyNode(Guid pageId, [FromBody]PageBodyNode newNode)
+		public ActionResult CreatePageBodyNode(Guid pageId, [FromBody] PageBodyNode newNode)
 		{
 			try
 			{
@@ -640,7 +647,7 @@ namespace WebVella.Erp.Web.Controllers
 		//[AllowAnonymous] //Needed only when webcomponent development
 		[Route("api/v3.0/page/{pageId}/node/{nodeId}/update")]
 		[HttpPost]
-		public ActionResult UpdatePageBodyNode(Guid pageId, Guid nodeId, [FromBody]PageBodyNode node)
+		public ActionResult UpdatePageBodyNode(Guid pageId, Guid nodeId, [FromBody] PageBodyNode node)
 		{
 			try
 			{
@@ -685,7 +692,7 @@ namespace WebVella.Erp.Web.Controllers
 		//[AllowAnonymous] //Needed only when webcomponent development
 		[Route("api/v3.0/page/{pageId}/node/{nodeId}/move")]
 		[HttpPost]
-		public ActionResult MovePageBodyNode(Guid pageId, Guid nodeId, [FromBody]MovedNodeInfo moveInfo)
+		public ActionResult MovePageBodyNode(Guid pageId, Guid nodeId, [FromBody] MovedNodeInfo moveInfo)
 		{
 			try
 			{
@@ -777,7 +784,7 @@ namespace WebVella.Erp.Web.Controllers
 		//[AllowAnonymous] //Needed only when webcomponent development
 		[Route("api/v3.0/page/{pageId}/node/{nodeId}/options/update")]
 		[HttpPost]
-		public ActionResult UpdatePageBodyNodeOptions(Guid pageId, Guid nodeId, [FromBody]JObject options)
+		public ActionResult UpdatePageBodyNodeOptions(Guid pageId, Guid nodeId, [FromBody] JObject options)
 		{
 			try
 			{
@@ -812,7 +819,7 @@ namespace WebVella.Erp.Web.Controllers
 		//[AllowAnonymous] //Needed only when webcomponent development
 		[Route("api/v3.0/pc/{fullComponentName}/view/{renderMode}")]
 		[HttpPost]
-		public ActionResult PageComponentRenderViews(string fullComponentName, string renderMode, [FromBody]JObject options,
+		public ActionResult PageComponentRenderViews(string fullComponentName, string renderMode, [FromBody] JObject options,
 			[FromQuery] Guid? nid = null, [FromQuery] Guid? pid = null, [FromQuery] Guid? entityId = null, [FromQuery] Guid? recordId = null)
 		{
 			try
@@ -1046,7 +1053,7 @@ namespace WebVella.Erp.Web.Controllers
 			catch (Exception ex)
 			{
 				new Log().Create(LogType.Error, "StylesCss API Method Error", ex);
-				throw ex;
+				throw;
 			}
 		}
 
@@ -1199,7 +1206,7 @@ namespace WebVella.Erp.Web.Controllers
 			catch (Exception ex)
 			{
 				new Log().Create(LogType.Error, "RelatedFieldMultiSelect API Method Error", ex);
-				throw ex;
+				throw;
 			}
 		}
 
@@ -1207,7 +1214,7 @@ namespace WebVella.Erp.Web.Controllers
 		[Route("api/v3.0/p/core/select-field-add-option")]
 		[AcceptVerbs("PUT")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult SelectFieldAddOption([FromBody]JObject submitObj)
+		public IActionResult SelectFieldAddOption([FromBody] JObject submitObj)
 		{
 			var response = new ResponseModel();
 			var recMan = new RecordManager();
@@ -1329,7 +1336,7 @@ namespace WebVella.Erp.Web.Controllers
 		[Route("api/v3.0/{lang}/p/core/ui/field-table-data/generate/preview")]
 		[AcceptVerbs("POST")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult FieldTableDataPreview([FromRoute] string lang, [FromBody]JObject submitObj)
+		public IActionResult FieldTableDataPreview([FromRoute] string lang, [FromBody] JObject submitObj)
 		{
 			var hasHeader = true;
 			var hasHeaderColumn = false;
@@ -1463,7 +1470,7 @@ namespace WebVella.Erp.Web.Controllers
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v3/en_US/meta/entity")]
 		[ResponseCache(NoStore = true, Duration = 0)]
 		[Authorize(Roles = "administrator")]
-		public IActionResult CreateEntity([FromBody]InputEntity submitObj)
+		public IActionResult CreateEntity([FromBody] InputEntity submitObj)
 		{
 			var entity = new InputEntity
 			{
@@ -1484,7 +1491,7 @@ namespace WebVella.Erp.Web.Controllers
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v3/en_US/meta/entity/{StringId}")]
 		[ResponseCache(NoStore = true, Duration = 0)]
 		[Authorize(Roles = "administrator")]
-		public IActionResult PatchEntity(string StringId, [FromBody]JObject submitObj)
+		public IActionResult PatchEntity(string StringId, [FromBody] JObject submitObj)
 		{
 			FieldResponse response = new FieldResponse();
 			InputEntity entity = new InputEntity();
@@ -1582,7 +1589,7 @@ namespace WebVella.Erp.Web.Controllers
 		[Authorize(Roles = "administrator")]
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v3/en_US/meta/entity/{Id}/field")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult CreateField(string Id, [FromBody]JObject submitObj)
+		public IActionResult CreateField(string Id, [FromBody] JObject submitObj)
 		{
 			FieldResponse response = new FieldResponse();
 
@@ -1609,7 +1616,7 @@ namespace WebVella.Erp.Web.Controllers
 		[Authorize(Roles = "administrator")]
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v3/en_US/meta/entity/{Id}/field/{FieldId}")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult UpdateField(string Id, string FieldId, [FromBody]JObject submitObj)
+		public IActionResult UpdateField(string Id, string FieldId, [FromBody] JObject submitObj)
 		{
 			FieldResponse response = new FieldResponse();
 
@@ -1665,7 +1672,7 @@ namespace WebVella.Erp.Web.Controllers
 		[Authorize(Roles = "administrator")]
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v3/en_US/meta/entity/{Id}/field/{FieldId}")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult PatchField(string Id, string FieldId, [FromBody]JObject submitObj)
+		public IActionResult PatchField(string Id, string FieldId, [FromBody] JObject submitObj)
 		{
 			FieldResponse response = new FieldResponse();
 			Entity entity = new Entity();
@@ -2025,7 +2032,7 @@ namespace WebVella.Erp.Web.Controllers
 		[Authorize(Roles = "administrator")]
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v3/en_US/meta/relation")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult CreateEntityRelation([FromBody]JObject submitObj)
+		public IActionResult CreateEntityRelation([FromBody] JObject submitObj)
 		{
 			try
 			{
@@ -2046,7 +2053,7 @@ namespace WebVella.Erp.Web.Controllers
 		[Authorize(Roles = "administrator")]
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v3/en_US/meta/relation/{RelationIdString}")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult UpdateEntityRelation(string RelationIdString, [FromBody]JObject submitObj)
+		public IActionResult UpdateEntityRelation(string RelationIdString, [FromBody] JObject submitObj)
 		{
 			FieldResponse response = new FieldResponse();
 
@@ -2095,7 +2102,7 @@ namespace WebVella.Erp.Web.Controllers
 		// POST: api/v3/en_US/record/relation
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v3/en_US/record/relation")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult UpdateEntityRelationRecord([FromBody]InputEntityRelationRecordUpdateModel model)
+		public IActionResult UpdateEntityRelationRecord([FromBody] InputEntityRelationRecordUpdateModel model)
 		{
 
 			var recMan = new RecordManager();
@@ -2294,7 +2301,7 @@ namespace WebVella.Erp.Web.Controllers
 		// POST: api/v3/en_US/record/relation/reverse
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v3/en_US/record/relation/reverse")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult UpdateEntityRelationRecordReverse([FromBody]InputEntityRelationRecordReverseUpdateModel model)
+		public IActionResult UpdateEntityRelationRecordReverse([FromBody] InputEntityRelationRecordReverseUpdateModel model)
 		{
 
 			var recMan = new RecordManager();
@@ -2544,7 +2551,7 @@ namespace WebVella.Erp.Web.Controllers
 		// GET: api/v3/en_US/record/{entityName}/regex
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v3/en_US/record/{entityName}/regex/{fieldName}")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult GetRecordsByFieldAndRegex(string fieldName, string entityName, [FromBody]EntityRecord patternObj)
+		public IActionResult GetRecordsByFieldAndRegex(string fieldName, string entityName, [FromBody] EntityRecord patternObj)
 		{
 
 			QueryObject filterObj = EntityQuery.QueryRegex(fieldName, patternObj["pattern"]);
@@ -2562,7 +2569,7 @@ namespace WebVella.Erp.Web.Controllers
 		// POST: api/v3/en_US/record/{entityName}
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v3/en_US/record/{entityName}")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult CreateEntityRecord(string entityName, [FromBody]EntityRecord postObj)
+		public IActionResult CreateEntityRecord(string entityName, [FromBody] EntityRecord postObj)
 		{
 			//Find and change properties starting with _$ to $$ - angular does not post $$ propery names
 			postObj = Helpers.FixDoubleDollarSignProblem(postObj);
@@ -2603,7 +2610,7 @@ namespace WebVella.Erp.Web.Controllers
 
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v3/en_US/record/{entityName}/with-relation/{relationName}/{relatedRecordId}")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult CreateEntityRecordWithRelation(string entityName, string relationName, Guid relatedRecordId, [FromBody]EntityRecord postObj)
+		public IActionResult CreateEntityRecordWithRelation(string entityName, string relationName, Guid relatedRecordId, [FromBody] EntityRecord postObj)
 		{
 			var validationErrors = new List<ErrorModel>();
 
@@ -2777,7 +2784,7 @@ namespace WebVella.Erp.Web.Controllers
 		// PUT: api/v3/en_US/record/{entityName}/{recordId}
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v3/en_US/record/{entityName}/{recordId}")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult UpdateEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
+		public IActionResult UpdateEntityRecord(string entityName, Guid recordId, [FromBody] EntityRecord postObj)
 		{
 			//Find and change properties starting with _$ to $$ - angular does not post $$ propery names
 			postObj = Helpers.FixDoubleDollarSignProblem(postObj);
@@ -2826,7 +2833,7 @@ namespace WebVella.Erp.Web.Controllers
 		// PATCH: api/v3/en_US/record/{entityName}/{recordId}
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v3/en_US/record/{entityName}/{recordId}")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult PatchEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
+		public IActionResult PatchEntityRecord(string entityName, Guid recordId, [FromBody] EntityRecord postObj)
 		{
 			//clear authentication cache
 			if (entityName == "user")
@@ -2978,7 +2985,7 @@ namespace WebVella.Erp.Web.Controllers
 		// POST: api/v3/en_US/record/{entityName}/list/{listName}/import
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v3/en_US/record/{entityName}/import")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult ImportEntityRecordsFromCsv(string entityName, [FromBody]JObject postObject)
+		public IActionResult ImportEntityRecordsFromCsv(string entityName, [FromBody] JObject postObject)
 		{
 			string fileTempPath = "";
 
@@ -2999,7 +3006,7 @@ namespace WebVella.Erp.Web.Controllers
 		// POST: api/v3/en_US/record/{entityName}/list/{listName}/import
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v3/en_US/record/{entityName}/import-evaluate")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult EvaluateImportEntityRecordsFromCsv(string entityName, [FromBody]JObject postObject)
+		public IActionResult EvaluateImportEntityRecordsFromCsv(string entityName, [FromBody] JObject postObject)
 		{
 			ImportExportManager ieManager = new ImportExportManager();
 			ResponseModel response = ieManager.EvaluateImportEntityRecordsFromCsv(entityName, postObject, controller: this);
@@ -3268,17 +3275,7 @@ namespace WebVella.Erp.Web.Controllers
 
 			if (file == null)
 			{
-
-				if (ErpSettings.DevelopmentMode)
-				{
-					//Hardcoded image for development
-					WebClient wc = new WebClient();
-					byte[] bytes = wc.DownloadData($"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/_content/WebVella.Erp.Web/assets/missing-image.png");
-
-					return File(bytes, "image/png");
-				}
-				else
-					return DoPageNotFoundResponse();
+				return DoPageNotFoundResponse();
 			}
 			//check for modification
 			string headerModifiedSince = Request.Headers["If-Modified-Since"];
@@ -3444,7 +3441,7 @@ namespace WebVella.Erp.Web.Controllers
 
 		[AcceptVerbs(new[] { "POST" }, Route = "/fs/move/")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult MoveFile([FromBody]JObject submitObj)
+		public IActionResult MoveFile([FromBody] JObject submitObj)
 		{
 			string source = submitObj["source"].Value<string>();
 			string target = submitObj["target"].Value<string>();
@@ -3546,7 +3543,7 @@ namespace WebVella.Erp.Web.Controllers
 
 		[Authorize(Roles = "administrator")]
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v3/en_US/scheduleplan/{planId}")]
-		public IActionResult UpdateSchedulePlan(Guid planId, [FromBody]JObject postObject)
+		public IActionResult UpdateSchedulePlan(Guid planId, [FromBody] JObject postObject)
 		{
 			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 
@@ -4003,7 +4000,7 @@ namespace WebVella.Erp.Web.Controllers
 
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v3/en_US/user_file")]
 		[ResponseCache(NoStore = true, Duration = 0)]
-		public IActionResult UploadUserFile([FromBody]JObject submitObj)
+		public IActionResult UploadUserFile([FromBody] JObject submitObj)
 		{
 			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 			var filePath = "";
@@ -4341,7 +4338,7 @@ namespace WebVella.Erp.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v3/en_US/snippet")]
-		public IActionResult GetSnippetText([FromQuery]string name)
+		public IActionResult GetSnippetText([FromQuery] string name)
 		{
 			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 

@@ -91,10 +91,10 @@ namespace WebVella.Erp.Plugins.Crm
 						connection.RollbackTransaction();
 						throw ex;
 					}
-					catch (Exception ex)
+					catch (Exception)
 					{
 						connection.RollbackTransaction();
-						throw ex;
+						throw;
 					}
 				}
 			}

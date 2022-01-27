@@ -1,5 +1,6 @@
 ﻿#region <--- DIRECTIVES --->
 
+using AutoMapper;
 using AutoMapper.Configuration;
 using System;
 using WebVella.Erp.Api.Models.AutoMapper.Profiles;

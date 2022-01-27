@@ -83,10 +83,9 @@ namespace WebVella.Erp.Plugins.SDK
 								currentPluginSettings.Version = 20181215;
 								Patch20181215(entMan, relMan, recMan);
 							}
-							catch (Exception ex)
+							catch (Exception)
 							{
-								var exception = ex;
-								throw ex;
+								throw;
 							}
 						}
 
@@ -99,10 +98,9 @@ namespace WebVella.Erp.Plugins.SDK
 								currentPluginSettings.Version = 20190227;
 								Patch20190227(entMan, relMan, recMan);
 							}
-							catch (Exception ex)
+							catch (Exception)
 							{
-								var exception = ex;
-								throw ex;
+								throw;
 							}
 						}
 
@@ -113,10 +111,9 @@ namespace WebVella.Erp.Plugins.SDK
 								currentPluginSettings.Version = 20200610;
 								Patch20200610(entMan, relMan, recMan);
 							}
-							catch (Exception ex)
+							catch (Exception)
 							{
-								var exception = ex;
-								throw ex;
+								throw;
 							}
 						}
 
@@ -128,10 +125,9 @@ namespace WebVella.Erp.Plugins.SDK
                                 currentPluginSettings.Version = 20201221;
                                 Patch20201221(entMan, relMan, recMan);
                             }
-                            catch (Exception ex)
+                            catch (Exception)
                             {
-                                var exception = ex;
-                                throw ex;
+                                throw;
                             }
                         }
 
@@ -142,10 +138,9 @@ namespace WebVella.Erp.Plugins.SDK
                                 currentPluginSettings.Version = 20210429;
                                 Patch20210429(entMan, relMan, recMan);
                             }
-                            catch (Exception ex)
+                            catch (Exception)
                             {
-                                var exception = ex;
-                                throw ex;
+                                throw;
                             }
                         }
 
@@ -158,10 +153,10 @@ namespace WebVella.Erp.Plugins.SDK
 						connection.CommitTransaction();
 						//connection.RollbackTransaction();
 					}
-					catch (Exception ex)
+					catch (Exception)
 					{
 						connection.RollbackTransaction();
-						throw ex;
+						throw;
 					}
 				}
 			}

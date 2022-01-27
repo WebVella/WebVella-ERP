@@ -122,7 +122,7 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 				return Json(response);
 			}
 
-			if (area.Id == null || area.Id == Guid.Empty)
+			if (area.Id == Guid.Empty)
 			{
 				response.Message = "Area Id needs to be submitted";
 				response.Success = false;
@@ -161,7 +161,7 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 			response.Message = "Success";
 			response.Success = true;
 
-			if (areaId == null || areaId == Guid.Empty)
+			if (areaId == Guid.Empty)
 			{
 				response.Message = "Area Id needs to be submitted";
 				response.Success = false;
@@ -299,7 +299,7 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 				return Json(response);
 			}
 
-			if (node.Id == null || node.Id == Guid.Empty)
+			if (node.Id == Guid.Empty)
 			{
 				response.Message = "Node Id needs to be submitted";
 				response.Success = false;
@@ -383,7 +383,7 @@ namespace WebVella.Erp.Plugins.SDK.Controllers
 			response.Message = "Success";
 			response.Success = true;
 
-			if (nodeId == null || nodeId == Guid.Empty)
+			if (nodeId == Guid.Empty)
 			{
 				response.Message = "Node Id needs to be submitted";
 				response.Success = false;

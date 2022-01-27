@@ -70,10 +70,9 @@ namespace WebVella.Erp.Plugins.Project
 									var exception = ex;
 									throw ex;
 								}
-								catch (Exception ex)
+								catch (Exception)
 								{
-									var exception = ex;
-									throw ex;
+									throw;
 								}
 							}
 						}
@@ -93,10 +92,9 @@ namespace WebVella.Erp.Plugins.Project
 									var exception = ex;
 									throw ex;
 								}
-								catch (Exception ex)
+								catch (Exception)
 								{
-									var exception = ex;
-									throw ex;
+									throw;
 								}
 							}
 						}
@@ -116,10 +114,9 @@ namespace WebVella.Erp.Plugins.Project
 									var exception = ex;
 									throw ex;
 								}
-								catch (Exception ex)
+								catch (Exception)
 								{
-									var exception = ex;
-									throw ex;
+									throw;
 								}
 							}
 						}
@@ -139,10 +136,9 @@ namespace WebVella.Erp.Plugins.Project
 									var exception = ex;
 									throw ex;
 								}
-								catch (Exception ex)
+								catch (Exception)
 								{
-									var exception = ex;
-									throw ex;
+									throw;
 								}
 							}
 						}
@@ -162,10 +158,9 @@ namespace WebVella.Erp.Plugins.Project
 									var exception = ex;
 									throw ex;
 								}
-								catch (Exception ex)
+								catch (Exception)
 								{
-									var exception = ex;
-									throw ex;
+									throw;
 								}
 							}
 						}
@@ -185,10 +180,9 @@ namespace WebVella.Erp.Plugins.Project
 									var exception = ex;
 									throw ex;
 								}
-								catch (Exception ex)
+								catch (Exception)
 								{
-									var exception = ex;
-									throw ex;
+									throw;
 								}
 							}
 						}
@@ -207,10 +201,9 @@ namespace WebVella.Erp.Plugins.Project
 									var exception = ex;
 									throw ex;
 								}
-								catch (Exception ex)
+								catch (Exception)
 								{
-									var exception = ex;
-									throw ex;
+									throw;
 								}
 							}
 						}
@@ -229,10 +222,9 @@ namespace WebVella.Erp.Plugins.Project
 									var exception = ex;
 									throw ex;
 								}
-								catch (Exception ex)
+								catch (Exception)
 								{
-									var exception = ex;
-									throw ex;
+									throw;
 								}
 							}
 						}
@@ -249,10 +241,10 @@ namespace WebVella.Erp.Plugins.Project
 						connection.RollbackTransaction();
 						throw ex;
 					}
-					catch (Exception ex)
+					catch (Exception)
 					{
 						connection.RollbackTransaction();
-						throw ex;
+						throw;
 					}
 				}
 			}

@@ -189,11 +189,11 @@ namespace WebVella.Erp.Web.Services
 
 						trans.Commit();
 					}
-					catch (Exception ex)
+					catch (Exception)
 					{
 						if (trans != null)
 							trans.Rollback();
-						throw ex;
+						throw;
 					}
 					finally
 					{
@@ -355,11 +355,11 @@ namespace WebVella.Erp.Web.Services
 
 						trans.Commit();
 					}
-					catch (Exception ex)
+					catch (Exception)
 					{
 						if (trans != null)
 							trans.Rollback();
-						throw ex;
+						throw;
 					}
 					finally
 					{

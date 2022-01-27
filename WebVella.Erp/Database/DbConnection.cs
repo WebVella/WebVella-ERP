@@ -93,7 +93,7 @@ namespace WebVella.Erp.Database
 				//Unicode Encode Covering all characterset
 				byte[] byteContents = Encoding.Unicode.GetBytes(key);
 				System.Security.Cryptography.SHA256 hash =
-				new System.Security.Cryptography.SHA256CryptoServiceProvider();
+				System.Security.Cryptography.SHA256.Create();
 				byte[] hashText = hash.ComputeHash(byteContents);
 				//32Byte hashText separate
 				//hashCodeStart = 0~7  8Byte

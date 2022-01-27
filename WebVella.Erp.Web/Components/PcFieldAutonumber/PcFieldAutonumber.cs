@@ -26,9 +26,6 @@ namespace WebVella.Erp.Web.Components
 		public class PcFieldAutonumberOptions : PcFieldBaseOptions
 		{
 
-			[JsonProperty(PropertyName = "template")]
-			public string Template { get; set; } = "";
-
 			public static PcFieldAutonumberOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldAutonumberOptions

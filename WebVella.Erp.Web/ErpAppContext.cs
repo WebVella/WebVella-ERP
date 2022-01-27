@@ -67,7 +67,7 @@ namespace WebVella.Erp.Web
 			var themeService = new ThemeService();
 			Theme = themeService.Get();
 			StylesContent = themeService.GenerateStylesContent();
-			StylesHash = GetStringHash(StylesContent, new SHA256CryptoServiceProvider());
+			StylesHash = GetStringHash(StylesContent, SHA256.Create());
 			//StyleFrameworkContent = themeService.GenerateStyleFrameworkContent();
 			//StyleFrameworkHash = GetStringHash(StyleFrameworkContent, new SHA256CryptoServiceProvider());
 		}
@@ -89,7 +89,7 @@ namespace WebVella.Erp.Web
 		public static void UpdateStylesFileContent(string content)
 		{
 			Current.StylesContent = content;
-			Current.StylesHash = GetStringHash(content, new SHA256CryptoServiceProvider());
+			Current.StylesHash = GetStringHash(content, SHA256.Create());
 		}
 
 

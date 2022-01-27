@@ -18,10 +18,10 @@ namespace WebVella.Erp.Plugins.Next
 			}
 		}
 
-		public override IEnumerable<Type> GetJobTypes()
-		{
-			List<Type> jobTypes = new List<Type>();
-			return jobTypes;
-		}
+		//public override IEnumerable<Type> GetJobTypes()
+		//{
+		//	List<Type> jobTypes = new List<Type>();
+		//	return jobTypes;
+		//}
 	}
 }

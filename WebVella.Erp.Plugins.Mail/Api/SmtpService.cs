@@ -87,15 +87,15 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			if (!string.IsNullOrWhiteSpace(DefaultSenderName))
 				message.From.Add(new MailboxAddress(DefaultSenderName, DefaultSenderEmail));
 			else
-				message.From.Add(new MailboxAddress(DefaultSenderEmail));
+				message.From.Add(new MailboxAddress(DefaultSenderEmail,DefaultSenderEmail));
 
 			if (!string.IsNullOrWhiteSpace(recipient.Name))
 				message.To.Add(new MailboxAddress(recipient.Name, recipient.Address));
 			else
-				message.To.Add(new MailboxAddress(recipient.Address));
+				message.To.Add(new MailboxAddress(recipient.Address,recipient.Address));
 
 			if (!string.IsNullOrWhiteSpace(DefaultReplyToEmail))
-				message.ReplyTo.Add(new MailboxAddress(DefaultReplyToEmail));
+				message.ReplyTo.Add(new MailboxAddress(DefaultReplyToEmail,DefaultReplyToEmail));
 
 			message.Subject = subject;
 
@@ -227,18 +227,18 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			if (!string.IsNullOrWhiteSpace(DefaultSenderName))
 				message.From.Add(new MailboxAddress(DefaultSenderName, DefaultSenderEmail));
 			else
-				message.From.Add(new MailboxAddress(DefaultSenderEmail));
+				message.From.Add(new MailboxAddress(DefaultSenderEmail,DefaultSenderEmail));
 
 			foreach (var recipient in recipients)
 			{
 				if (!string.IsNullOrWhiteSpace(recipient.Name))
 					message.To.Add(new MailboxAddress(recipient.Name, recipient.Address));
 				else
-					message.To.Add(new MailboxAddress(recipient.Address));
+					message.To.Add(new MailboxAddress(recipient.Address,recipient.Address));
 			}
 
 			if (!string.IsNullOrWhiteSpace(DefaultReplyToEmail))
-				message.ReplyTo.Add(new MailboxAddress(DefaultReplyToEmail));
+				message.ReplyTo.Add(new MailboxAddress(DefaultReplyToEmail,DefaultReplyToEmail));
 
 			message.Subject = subject;
 
@@ -360,15 +360,15 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			if (!string.IsNullOrWhiteSpace(sender.Name))
 				message.From.Add(new MailboxAddress(sender.Name, sender.Address));
 			else
-				message.From.Add(new MailboxAddress(sender.Address));
+				message.From.Add(new MailboxAddress(sender.Address, sender.Address));
 
 			if (!string.IsNullOrWhiteSpace(recipient.Name))
 				message.To.Add(new MailboxAddress(recipient.Name, recipient.Address));
 			else
-				message.To.Add(new MailboxAddress(recipient.Address));
+				message.To.Add(new MailboxAddress(recipient.Address, recipient.Address));
 
 			if (!string.IsNullOrWhiteSpace(DefaultReplyToEmail))
-				message.ReplyTo.Add(new MailboxAddress(DefaultReplyToEmail));
+				message.ReplyTo.Add(new MailboxAddress(DefaultReplyToEmail, DefaultReplyToEmail));
 
 			message.Subject = subject;
 
@@ -499,18 +499,18 @@ namespace WebVella.Erp.Plugins.Mail.Api
 			if (!string.IsNullOrWhiteSpace(sender.Name))
 				message.From.Add(new MailboxAddress(sender.Name, sender.Address));
 			else
-				message.From.Add(new MailboxAddress(sender.Address));
+				message.From.Add(new MailboxAddress(sender.Address, sender.Address));
 
 			foreach (var recipient in recipients)
 			{
 				if (!string.IsNullOrWhiteSpace(recipient.Name))
 					message.To.Add(new MailboxAddress(recipient.Name, recipient.Address));
 				else
-					message.To.Add(new MailboxAddress(recipient.Address));
+					message.To.Add(new MailboxAddress(recipient.Address, recipient.Address));
 			}
 
 			if (!string.IsNullOrWhiteSpace(DefaultReplyToEmail))
-				message.ReplyTo.Add(new MailboxAddress(DefaultReplyToEmail));
+				message.ReplyTo.Add(new MailboxAddress(DefaultReplyToEmail, DefaultReplyToEmail));
 
 			message.Subject = subject;
 

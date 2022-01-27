@@ -25,17 +25,6 @@ namespace WebVella.Erp.Web.Components
 
 		public class PcFieldCurrencyOptions : PcFieldBaseOptions
 		{
-			[JsonProperty(PropertyName = "currency_code")]
-			public string CurrencyCode { get; set; } = "USD";
-
-			[JsonProperty(PropertyName = "min")]
-			public decimal? Min { get; set; } = null;
-
-			[JsonProperty(PropertyName = "max")]
-			public decimal? Max { get; set; } = null;
-
-			[JsonProperty(PropertyName = "step")]
-			public decimal? Step { get; set; } = null;
 
 			[JsonProperty(PropertyName = "show_code")]
 			public bool ShowCode { get; set; } = false;

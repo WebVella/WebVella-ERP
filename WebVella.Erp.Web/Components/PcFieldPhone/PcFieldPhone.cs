@@ -25,9 +25,6 @@ namespace WebVella.Erp.Web.Components
 
 		public class PcFieldPhoneOptions : PcFieldBaseOptions
 		{
-			[JsonProperty(PropertyName = "maxlength")]
-			public int? MaxLength { get; set; } = null;
-
 			[JsonProperty(PropertyName = "show_icon")]
 			public bool ShowIcon { get; set; } = false;
 

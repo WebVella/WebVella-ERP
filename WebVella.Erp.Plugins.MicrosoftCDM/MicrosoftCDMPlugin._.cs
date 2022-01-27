@@ -93,10 +93,10 @@ namespace WebVella.Erp.Plugins.MicrosoftCDM
 						connection.RollbackTransaction();
 						throw ex;
 					}
-					catch (Exception ex)
+					catch (Exception)
 					{
 						connection.RollbackTransaction();
-						throw ex;
+						throw;
 					}
 				}
 			}

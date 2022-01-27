@@ -22,10 +22,9 @@ namespace WebVella.Erp.Web.Middleware
 				//var httpFeature = context.GetFeature<IHttpConnectionFeature>();
 				await next(context);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				var exception = ex;
-				throw ex;
+				throw;
 			}
 		}
 	}

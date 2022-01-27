@@ -25,18 +25,6 @@ namespace WebVella.Erp.Web.Components
 
 		public class PcFieldNumberOptions : PcFieldBaseOptions
 		{
-			[JsonProperty(PropertyName = "min")]
-			public decimal? Min { get; set; } = null;
-
-			[JsonProperty(PropertyName = "max")]
-			public decimal? Max { get; set; } = null;
-
-			[JsonProperty(PropertyName = "step")]
-			public decimal? Step { get; set; } = null;
-
-			[JsonProperty(PropertyName = "decimal_digits")]
-			public int? DecimalDigits { get; set; } = null;
-
 			public static PcFieldNumberOptions CopyFromBaseOptions(PcFieldBaseOptions input)
 			{
 				return new PcFieldNumberOptions
@@ -95,8 +83,8 @@ namespace WebVella.Erp.Web.Components
 						if (options.Max == null)
 							options.Max = baseOptions.Max;
 
-						if (options.DecimalDigits == null)
-							options.DecimalDigits = baseOptions.DecimalDigits;
+						//if (options.DecimalDigits == null)
+						//	options.DecimalDigits = baseOptions.DecimalDigits;
 
 
 						if (String.IsNullOrWhiteSpace(options.LabelHelpText))

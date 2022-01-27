@@ -21,13 +21,13 @@ namespace WebVella.Erp.Plugins.SDK
 			}
 		}
 
-		public override IEnumerable<Type> GetJobTypes()
-		{
-			List<Type> jobTypes = new List<Type>();
-			jobTypes.Add(typeof(SampleJob));
-			jobTypes.Add(typeof(ClearJobAndErrorLogsJob));
-			return jobTypes;
-		}
+		//public override IEnumerable<Type> GetJobTypes()
+		//{
+		//	List<Type> jobTypes = new List<Type>();
+		//	jobTypes.Add(typeof(SampleJob));
+		//	jobTypes.Add(typeof(ClearJobAndErrorLogsJob));
+		//	return jobTypes;
+		//}
 
 		public void SetSchedulePlans() {
 			DateTime utcNow = DateTime.UtcNow;

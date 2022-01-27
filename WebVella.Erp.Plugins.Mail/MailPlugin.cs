@@ -1,4 +1,5 @@
-﻿using AutoMapper.Configuration;
+﻿using AutoMapper;
+using AutoMapper.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -24,12 +25,12 @@ namespace WebVella.Erp.Plugins.Mail
 			}
 		}
 
-		public override IEnumerable<Type> GetJobTypes()
-		{
-			var list = new List<Type>();
-			list.Add( typeof(ProcessSmtpQueueJob) );
-			return list;
-		}
+		//public override IEnumerable<Type> GetJobTypes()
+		//{
+		//	var list = new List<Type>();
+		//	list.Add( typeof(ProcessSmtpQueueJob) );
+		//	return list;
+		//}
 
 		public override void SetAutoMapperConfiguration(MapperConfigurationExpression cfg)
 		{

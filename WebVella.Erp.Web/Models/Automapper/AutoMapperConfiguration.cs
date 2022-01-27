@@ -2,6 +2,7 @@
 
 using WebVella.Erp.Web.Models.AutoMapper.Profiles;
 using AutoMapper.Configuration;
+using AutoMapper;
 
 #endregion
 
