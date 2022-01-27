@@ -11,6 +11,11 @@
 	</tbody>
 </table>
 
+@{
+	decimal billableMinutes = 0;
+	decimal notBillableMinutes = 0;
+
+}
 @foreach (var project in ViewBag.projects)
 {
 	<div class="mt-5">
@@ -27,6 +32,8 @@
 			<tbody>
 				@foreach (var task in ViewBag.tasks)
 				{
+					billableMinutes += (decimal)@task["billable_minutes"];
+					notBillableMinutes += (decimal)@task["non_billable_minutes"];
 					if ((Guid)task["project_id"] != (Guid)project["id"])
 					{
 						continue;
@@ -40,6 +47,12 @@
 						<td>@(((decimal)@task["non_billable_minutes"]/60).ToString("n2"))</td>
 					</tr>
 				}
+				<tr>
+					<td></td>
+					<td></td>
+					<td>@((billableMinutes/60).ToString("n2"))</td>
+					<td>@((notBillableMinutes/60).ToString("n2"))</td>
+				</tr>
 			</tbody>
 		</table>
 	</div>
