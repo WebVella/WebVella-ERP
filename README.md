@@ -1,6 +1,6 @@
 WebVella ERP 
 ======
-**WebVella ERP** is a free and open-source web software, that targets extreme customization and plugability in service of any business data management needs. It is build upon our experience, best practices and the newest available technologies. Currently it targets ASP.NET Core 3.1. Our database of choice is PostgreSQL 11. Targets Linux or Windows as host OS. Currently tested only on Windows.
+**WebVella ERP** is a free and open-source web software, that targets extreme customization and plugability in service of any business data management needs. It is build upon our experience, best practices and the newest available technologies. Currently it targets ASP.NET Core 6. Our database of choice is PostgreSQL 11. Targets Linux or Windows as host OS. Currently tested only on Windows.
 
 If you want this project to continue or just like it, we will greatly appreciate your support of the project by: 
 * giving it a "star" 
