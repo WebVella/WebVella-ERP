@@ -9135,7 +9135,10 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 
 
 			var oldRecordsDict = oldRecordLists.AsRecordDictionary();
-			var currentRecordsDict = recMan.Find(new EntityQuery(currentEntity.Name)).Object.Data.AsRecordDictionary();
+            var entityResult = recMan.Find(new EntityQuery(currentEntity.Name));
+            if (!entityResult.Success)
+                throw new Exception(entityResult.Message);
+			var currentRecordsDict = entityResult.Object.Data.AsRecordDictionary();
 
 			foreach (var key in currentRecordsDict.Keys)
 			{
