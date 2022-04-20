@@ -3323,7 +3323,7 @@ namespace WebVella.Erp.Web.Controllers
 					action = "resize";
 
 				var fileContent = file.GetBytes();
-				using (Image<Rgba32> image = SixLabors.ImageSharp.Image.Load(fileContent))
+				using (var image = SixLabors.ImageSharp.Image.Load(fileContent))
 				{
 					switch (mimeType.ToLowerInvariant())
 					{
