@@ -126,14 +126,14 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.1.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.1.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.1.0" />
-		<PackageReference Include="CS-Script" Version="4.4.2" />
-		<PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
+		<PackageReference Include="CS-Script" Version="4.4.5" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.43" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.4" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.4" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-		<PackageReference Include="SixLabors.ImageSharp" Version="2.1.0" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="2.1.2" />
 		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0007" />
 		<PackageReference Include="Wangkanai.Detection.Device" Version="2.0.1" />
 		<PackageReference Include="WebVella.TagHelpers" Version="1.1.43" />
