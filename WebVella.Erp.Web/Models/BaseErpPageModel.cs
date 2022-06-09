@@ -148,10 +148,30 @@ namespace WebVella.Erp.Web.Models
 			ErpRequestContext.SetCurrentApp(appName, areaName, nodeName);
 			ErpRequestContext.SetCurrentPage(PageContext, pageName, appName, areaName, nodeName, recordId, relationId, parentRecordId);
 
+			List<Guid> currentUserRoles = new List<Guid>();
+			if (CurrentUser != null)
+				currentUserRoles.AddRange(CurrentUser.Roles.Select(x => x.Id));
+
+			if (ErpRequestContext.App != null)
+			{
+				if (ErpRequestContext.App.Access == null || ErpRequestContext.App.Access.Count == 0)
+					return new LocalRedirectResult("/error?401");
+
+				IEnumerable<Guid> rolesWithAccess = ErpRequestContext.App.Access.Intersect(currentUserRoles);
+				if (!rolesWithAccess.Any())
+					return new LocalRedirectResult("/error?401");
+			}
+			else if (!currentUserRoles.Contains(WebVella.Erp.Api.SystemIds.AdministratorRoleId) && urlInfo.PageType != PageType.Home && urlInfo.PageType != PageType.Site)
+			{
+				return new LocalRedirectResult("/error?401");
+			}
+
 			ErpRequestContext.RecordId = recordId;
 			ErpRequestContext.RelationId = relationId;
 			ErpRequestContext.ParentRecordId = parentRecordId;
 			ErpRequestContext.PageContext = PageContext;
+
+
 
 			if (PageContext.HttpContext.Request.Query.ContainsKey("returnUrl"))
 			{
@@ -286,8 +306,6 @@ namespace WebVella.Erp.Web.Models
 
 					ApplicationMenu.Add(areaMenuItem);
 				}
-
-
 			}
 
 			//Site menu
@@ -309,20 +327,6 @@ namespace WebVella.Erp.Web.Models
 
 
 			DataModel = new PageDataModel(this);
-
-			List<Guid> currentUserRoles = new List<Guid>();
-			if (CurrentUser != null)
-				currentUserRoles.AddRange(CurrentUser.Roles.Select(x => x.Id));
-
-			if (ErpRequestContext.App != null)
-			{
-				if (ErpRequestContext.App.Access == null || ErpRequestContext.App.Access.Count == 0)
-					new LocalRedirectResult("/error?401");
-
-				IEnumerable<Guid> rolesWithAccess = ErpRequestContext.App.Access.Intersect(currentUserRoles);
-				if (!rolesWithAccess.Any())
-					new LocalRedirectResult("/error?401");
-			}
 
 			//Debug.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>> Base page init: " + sw.ElapsedMilliseconds);
 			return null;
