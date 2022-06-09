@@ -12,145 +12,164 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.IO.Compression;
 using WebVella.Erp.Plugins.SDK;
 using WebVella.Erp.Web;
 using WebVella.Erp.Web.Middleware;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 namespace WebVella.Erp.Site
 {
-	public class Startup
-	{
-		public IConfigurationRoot Configuration { get; private set; } = null;
+    public class Startup
+    {
+        public IConfigurationRoot Configuration { get; private set; } = null;
 
-		private readonly IWebHostEnvironment environment;
+        private readonly IWebHostEnvironment environment;
 
-		public Startup(IWebHostEnvironment environment)
-		{
-			this.environment = environment;
-		}
+        public Startup(IWebHostEnvironment environment)
+        {
+            this.environment = environment;
+        }
 
-		// This method gets called by the runtime. Use this method to add services to the container.
-		public void ConfigureServices(IServiceCollection services)
-		{
-			//legacy until we fix system tables
-			AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            //legacy until we fix system tables
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-			string configPath = "config.json";
-			Configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(configPath).Build();
+            string configPath = "config.json";
+            Configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(configPath).Build();
 
-			services.AddLocalization(options => options.ResourcesPath = "Resources");
-			services.Configure<RequestLocalizationOptions>(options => { options.DefaultRequestCulture = new RequestCulture(Configuration["Settings:Locale"]); });
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            services.Configure<RequestLocalizationOptions>(options => { options.DefaultRequestCulture = new RequestCulture(Configuration["Settings:Locale"]); });
 
-			services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
-			services.AddResponseCompression(options => { options.Providers.Add<GzipCompressionProvider>(); });
-			services.AddRouting(options => { options.LowercaseUrls = true; });
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+            services.AddResponseCompression(options => { options.Providers.Add<GzipCompressionProvider>(); });
+            services.AddRouting(options => { options.LowercaseUrls = true; });
 
-			//CORS policy declaration
-			services.AddCors(options =>
-			{
-				options.AddPolicy("AllowNodeJsLocalhost",
-					builder => builder.WithOrigins("http://localhost:3333", "http://localhost:3000", "http://localhost").AllowAnyMethod().AllowCredentials());
-			});
+            //CORS policy declaration
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowNodeJsLocalhost",
+                    builder => builder.WithOrigins("http://localhost:3333", "http://localhost:3000", "http://localhost").AllowAnyMethod().AllowCredentials());
+            });
 
-			services.AddDetectionCore().AddDevice();
+            services.AddDetectionCore().AddDevice();
 
-			services.AddMvc()
+            services.AddMvc()
 
-				.AddRazorPagesOptions(options =>
-				{
-					options.Conventions.AuthorizeFolder("/");
-					options.Conventions.AllowAnonymousToPage("/login");
-				})
-				.AddNewtonsoftJson(options =>
-			   {
-				   options.SerializerSettings.Converters.Add(new ErpDateTimeJsonConverter());
-			   });
+                .AddRazorPagesOptions(options =>
+                {
+                    options.Conventions.AuthorizeFolder("/");
+                    options.Conventions.AllowAnonymousToPage("/login");
+                })
+                .AddNewtonsoftJson(options =>
+               {
+                   options.SerializerSettings.Converters.Add(new ErpDateTimeJsonConverter());
+               });
 
-			services.AddControllersWithViews();
-			services.AddRazorPages().AddRazorRuntimeCompilation();
+            services.AddControllersWithViews();
+            services.AddRazorPages().AddRazorRuntimeCompilation();
 
-			//adds global datetime converter for json.net
-			JsonConvert.DefaultSettings = () => new JsonSerializerSettings
-			{
-				Converters = new List<JsonConverter> { new ErpDateTimeJsonConverter() }
-			};
+            //adds global datetime converter for json.net
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                Converters = new List<JsonConverter> { new ErpDateTimeJsonConverter() }
+            };
 
 
-			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-					.AddCookie(options =>
-					{
-						options.Cookie.HttpOnly = true;
-						options.Cookie.Name = "erp_auth_base";
-						options.LoginPath = new PathString("/login");
-						options.LogoutPath = new PathString("/logout");
-						options.AccessDeniedPath = new PathString("/error?access_denied");
-						options.ReturnUrlParameter = "returnUrl";
-					});
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie(options =>
+                    {
+                        options.Cookie.HttpOnly = true;
+                        options.Cookie.Name = "erp_auth_base";
+                        options.LoginPath = new PathString("/login");
+                        options.LogoutPath = new PathString("/logout");
+                        options.AccessDeniedPath = new PathString("/error?access_denied");
+                        options.ReturnUrlParameter = "returnUrl";
+                    });
 
-			services.AddErp();
-		}
+            services.AddAuthentication(auth => { auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; })
+             .AddJwtBearer(options =>
+             {
+                 options.TokenValidationParameters = new TokenValidationParameters
+                 {
+                     ValidateIssuer = true,
+                     ValidateAudience = true,
+                     ValidateLifetime = true,
+                     ValidateIssuerSigningKey = true,
+                     ValidIssuer = Configuration["Settings:Jwt:Issuer"],
+                     ValidAudience = Configuration["Settings:Jwt:Audience"],
+                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Settings:Jwt:Key"]))
+                 };
+             });
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-		{
-			var supportedCultures = new[] { new CultureInfo(Configuration["Settings:Locale"]) };
+            services.AddErp();
+        }
 
-			app.UseRequestLocalization(new RequestLocalizationOptions
-			{
-				DefaultRequestCulture = new RequestCulture(supportedCultures[0]),
-				// Formatting numbers, dates, etc.
-				SupportedCultures = supportedCultures,
-				// UI strings that we have localized.
-				SupportedUICultures = supportedCultures
-			});
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            var supportedCultures = new[] { new CultureInfo(Configuration["Settings:Locale"]) };
 
-			//env.EnvironmentName = EnvironmentName.Production;
-			// Add the following to the request pipeline only in development environment.
-			if (string.Equals(env.EnvironmentName, "Development", StringComparison.OrdinalIgnoreCase))
-			{
-				app.UseDeveloperExceptionPage();
-			}
-			else
-			{
-				// Add Error handling middleware which catches all application specific errors and
-				// send the request to the following path or controller action.
-				app.UseErrorHandlingMiddleware();
-				app.UseExceptionHandler("/error");
-				app.UseStatusCodePagesWithReExecute("/error");
-			}
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(supportedCultures[0]),
+                // Formatting numbers, dates, etc.
+                SupportedCultures = supportedCultures,
+                // UI strings that we have localized.
+                SupportedUICultures = supportedCultures
+            });
 
-			//Should be before Static files
-			app.UseResponseCompression();
+            //env.EnvironmentName = EnvironmentName.Production;
+            // Add the following to the request pipeline only in development environment.
+            if (string.Equals(env.EnvironmentName, "Development", StringComparison.OrdinalIgnoreCase))
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                // Add Error handling middleware which catches all application specific errors and
+                // send the request to the following path or controller action.
+                app.UseErrorHandlingMiddleware();
+                app.UseExceptionHandler("/error");
+                app.UseStatusCodePagesWithReExecute("/error");
+            }
 
-			app.UseCors("AllowNodeJsLocalhost"); //Enable CORS -> should be before static files to enable for it too
+            //Should be before Static files
+            app.UseResponseCompression();
 
-			app.UseStaticFiles(new StaticFileOptions
-			{
-				ServeUnknownFileTypes = false,
-				OnPrepareResponse = ctx =>
-				{
-					const int durationInSeconds = 60 * 60 * 24 * 30 * 12;
-					ctx.Context.Response.Headers[HeaderNames.CacheControl] = "public,max-age=" + durationInSeconds;
-					ctx.Context.Response.Headers[HeaderNames.Expires] = new[] { DateTime.UtcNow.AddYears(1).ToString("R") }; // Format RFC1123
-					}
-			});
-			app.UseStaticFiles(); //Workaround for blazor to work - https://github.com/dotnet/aspnetcore/issues/9588
-			app.UseRouting();
-			app.UseAuthentication();
-			app.UseAuthorization();
+            app.UseCors("AllowNodeJsLocalhost"); //Enable CORS -> should be before static files to enable for it too
 
-			app
-			.UseErpPlugin<SdkPlugin>()
-			.UseErp()
-			.UseErpMiddleware();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                ServeUnknownFileTypes = false,
+                OnPrepareResponse = ctx =>
+                {
+                    const int durationInSeconds = 60 * 60 * 24 * 30 * 12;
+                    ctx.Context.Response.Headers[HeaderNames.CacheControl] = "public,max-age=" + durationInSeconds;
+                    ctx.Context.Response.Headers[HeaderNames.Expires] = new[] { DateTime.UtcNow.AddYears(1).ToString("R") }; // Format RFC1123
+                }
+            });
+            app.UseStaticFiles(); //Workaround for blazor to work - https://github.com/dotnet/aspnetcore/issues/9588
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-			app.UseEndpoints(endpoints =>
-			{
-				endpoints.MapRazorPages();
-				endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
-			});
-		}
-	}
+            app
+            .UseErpPlugin<SdkPlugin>()
+            .UseErp()
+            .UseErpMiddleware()
+            .UseJwtMiddleware();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+            });
+        }
+    }
 }
 

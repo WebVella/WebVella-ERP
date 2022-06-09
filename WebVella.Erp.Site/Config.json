@@ -19,7 +19,12 @@
 		"EmailTo": "",
 		"AppName": "WebVella Next",
 		"NavLogoUrl": "",
-		"SystemMasterBackgroundImageUrl": ""
+		"SystemMasterBackgroundImageUrl": "",
+		"Jwt": {
+			"Key": "ThisIsMySecretKey",
+			"Issuer": "webvella-erp",
+			"Audience": "webvella-erp"
+		}
 	},
 	"Development": {
 		"TestEntityName": "test",

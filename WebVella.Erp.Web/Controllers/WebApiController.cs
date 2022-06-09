@@ -19,6 +19,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Api.Models.AutoMapper;
@@ -4357,6 +4358,49 @@ namespace WebVella.Erp.Web.Controllers
 				response.Message = e.Message + e.StackTrace;
 			}
 
+			return DoResponse(response);
+		}
+
+		#endregion
+
+		#region <=== JWT Token Auth ===>
+
+
+		[AllowAnonymous]
+		[Route("api/v3/en_US/auth/jwt/token")]
+		[HttpPost]
+		public async Task<IActionResult> GetJwtToken([FromBody] JwtTokenLoginModel model)
+		{
+			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+			try
+			{
+				response.Object = await AuthService.GetTokenAsync(model.Email, model.Password);
+			}
+			catch (Exception e)
+			{
+				new LogService().Create(Diagnostics.LogType.Error, "GetJwtToken", e);
+				response.Success = false;
+				response.Message = e.Message + e.StackTrace;
+			}
+			return DoResponse(response);
+		}
+
+		[AllowAnonymous]
+		[Route("api/v3/en_US/auth/jwt/token/refresh")]
+		[HttpPost]
+		public async Task<IActionResult> GetNewJwtToken([FromBody] JwtTokenModel model)
+		{
+			ResponseModel response = new ResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+			try
+			{
+				response.Object = await AuthService.GetNewTokenAsync(model.Token);
+			}
+			catch (Exception e)
+			{
+				new LogService().Create(Diagnostics.LogType.Error, "GetNewJwtToken", e);
+				response.Success = false;
+				response.Message = e.Message + e.StackTrace;
+			}
 			return DoResponse(response);
 		}
 
