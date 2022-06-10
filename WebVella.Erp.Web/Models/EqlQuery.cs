@@ -11,7 +11,7 @@ namespace WebVella.Erp.Web.Models
 		public string Eql { get; set; }
 
 		[JsonProperty(PropertyName = "parameters")]
-		public List<EqlParameter> Parameters { get; set; }
+		public List<EqlParameter> Parameters { get; set; } = new();
 	}
 
 	public class EqlDataSourceQuery
@@ -20,6 +20,6 @@ namespace WebVella.Erp.Web.Models
 		public string Name { get; set; }
 
 		[JsonProperty(PropertyName = "parameters")]
-		public List<EqlParameter> Parameters { get; set; }
+		public List<EqlParameter> Parameters { get; set; } = new();
 	}
 }
