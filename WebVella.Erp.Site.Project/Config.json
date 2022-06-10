@@ -15,7 +15,12 @@
 		"EmailSMTPUsername": "",
 		"EmailSMTPPassword": "",
 		"EmailFrom": "",
-		"EmailTo": ""
+		"EmailTo": "",
+		"Jwt": {
+			"Key": "ThisIsMySecretKey",
+			"Issuer": "webvella-erp",
+			"Audience": "webvella-erp"
+		}
 	},
 	"Development": {
 		"TestEntityName": "test",
@@ -24,4 +29,5 @@
 	"ApiUrlTemplates": {
 		"FieldInlineEdit": "/api/v3/en_US/record/{entityName}/{recordId}"
 	}
+
 }

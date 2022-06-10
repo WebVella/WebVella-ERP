@@ -1,15 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.IO.Compression;
+using System.Text;
 using WebVella.Erp.Plugins.Next;
 using WebVella.Erp.Plugins.Project;
 using WebVella.Erp.Plugins.SDK;
@@ -18,13 +23,20 @@ using WebVella.Erp.Web.Middleware;
 
 namespace WebVella.Erp.Site.Project
 {
+
 	public class Startup
 	{
+		public IConfigurationRoot Configuration { get; private set; } = null;
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
 			//legacy until we fix system tables
 			AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+			string configPath = "config.json";
+			Configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(configPath).Build();
+
+
 			services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
 			services.AddResponseCompression(options => { options.Providers.Add<GzipCompressionProvider>(); });
 			services.AddRouting(options => { options.LowercaseUrls = true; });
@@ -69,6 +81,26 @@ namespace WebVella.Erp.Site.Project
 						options.AccessDeniedPath = new PathString("/error?access_denied");
 						options.ReturnUrlParameter = "returnUrl";
 					});
+
+			var iss = Configuration["Settings:Jwt:Issuer"];
+
+			var aud = Configuration["Settings:Jwt:Audience"];
+			var key = Configuration["Settings:Jwt:Key"];
+
+			services.AddAuthentication(auth => { auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; })
+				.AddJwtBearer(options =>
+				{
+					options.TokenValidationParameters = new TokenValidationParameters
+					{
+						ValidateIssuer = true,
+						ValidateAudience = true,
+						ValidateLifetime = true,
+						ValidateIssuerSigningKey = true,
+						ValidIssuer = Configuration["Settings:Jwt:Issuer"],
+						ValidAudience = Configuration["Settings:Jwt:Audience"],
+						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Settings:Jwt:Key"]))
+					};
+				});
 
 			services.AddErp();
 		}
@@ -115,7 +147,7 @@ namespace WebVella.Erp.Site.Project
 			app.UseRouting();
 			app.UseAuthentication();
 			app.UseAuthorization();
-
+			app.UseJwtMiddleware();
 			app
 			.UseErpPlugin<NextPlugin>()
 			.UseErpPlugin<SdkPlugin>()
