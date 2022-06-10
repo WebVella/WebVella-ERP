@@ -71,36 +71,44 @@ namespace WebVella.Erp.Site.Project
 				Converters = new List<JsonConverter> { new ErpDateTimeJsonConverter() }
 			};
 
-			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-					.AddCookie(options =>
-					{
-						options.Cookie.HttpOnly = true;
-						options.Cookie.Name = "erp_auth_project";
-						options.LoginPath = new PathString("/login");
-						options.LogoutPath = new PathString("/logout");
-						options.AccessDeniedPath = new PathString("/error?access_denied");
-						options.ReturnUrlParameter = "returnUrl";
-					});
+			services.AddAuthentication(options =>
+			{
+				options.DefaultScheme = "JWT_OR_COOKIE";
+				options.DefaultChallengeScheme = "JWT_OR_COOKIE";
+			})
+			.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+            {
+				options.Cookie.HttpOnly = true;
+				options.Cookie.Name = "erp_auth_project";
+				options.LoginPath = new PathString("/login");
+				options.LogoutPath = new PathString("/logout");
+				options.AccessDeniedPath = new PathString("/error?access_denied");
+				options.ReturnUrlParameter = "returnUrl";
+			})
+			 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+			 {
+				 options.TokenValidationParameters = new TokenValidationParameters
+				 {
+					 ValidateIssuer = true,
+					 ValidateAudience = true,
+					 ValidateLifetime = true,
+					 ValidateIssuerSigningKey = true,
+					 ValidIssuer = Configuration["Settings:Jwt:Issuer"],
+					 ValidAudience = Configuration["Settings:Jwt:Audience"],
+					 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Settings:Jwt:Key"]))
+				 };
+			 })
+			  .AddPolicyScheme("JWT_OR_COOKIE", "JWT_OR_COOKIE", options =>
+			  {
+				  options.ForwardDefaultSelector = context => 
+				  {
+					  string authorization = context.Request.Headers[HeaderNames.Authorization];
+					  if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
+						  return JwtBearerDefaults.AuthenticationScheme;
 
-			var iss = Configuration["Settings:Jwt:Issuer"];
-
-			var aud = Configuration["Settings:Jwt:Audience"];
-			var key = Configuration["Settings:Jwt:Key"];
-
-			services.AddAuthentication(auth => { auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; })
-				.AddJwtBearer(options =>
-				{
-					options.TokenValidationParameters = new TokenValidationParameters
-					{
-						ValidateIssuer = true,
-						ValidateAudience = true,
-						ValidateLifetime = true,
-						ValidateIssuerSigningKey = true,
-						ValidIssuer = Configuration["Settings:Jwt:Issuer"],
-						ValidAudience = Configuration["Settings:Jwt:Audience"],
-						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Settings:Jwt:Key"]))
-					};
-				});
+					  return CookieAuthenticationDefaults.AuthenticationScheme;
+				  };
+			  });
 
 			services.AddErp();
 		}
@@ -147,13 +155,14 @@ namespace WebVella.Erp.Site.Project
 			app.UseRouting();
 			app.UseAuthentication();
 			app.UseAuthorization();
-			app.UseJwtMiddleware();
+
 			app
 			.UseErpPlugin<NextPlugin>()
 			.UseErpPlugin<SdkPlugin>()
 			.UseErpPlugin<ProjectPlugin>()
 			.UseErp()
-			.UseErpMiddleware();
+			.UseErpMiddleware()
+			.UseJwtMiddleware();
 
 			app.UseEndpoints(endpoints =>
 			{
