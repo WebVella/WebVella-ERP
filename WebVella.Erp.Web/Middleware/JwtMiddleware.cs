@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using System.Linq;
 using System.Security.Claims;
 using WebVella.Erp.Api;
+using Microsoft.Net.Http.Headers;
 
 namespace WebVella.Erp.Web.Middleware
 {
@@ -22,7 +23,7 @@ namespace WebVella.Erp.Web.Middleware
 			var token = await context.GetTokenAsync("access_token");
 			if (string.IsNullOrWhiteSpace(token))
 			{
-				token = context.Request.Headers["Authorization"];
+				token = context.Request.Headers[HeaderNames.Authorization];
 				if (!string.IsNullOrWhiteSpace(token))
 				{
 					if (token.Length <= 7)
