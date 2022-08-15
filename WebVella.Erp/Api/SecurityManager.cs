@@ -217,7 +217,8 @@ namespace WebVella.Erp.Api
 			var allRoles = GetAllRoles();
 			ErpRole existingRole = allRoles.SingleOrDefault(x => x.Id == role.Id);
 			ValidationException valEx = new ValidationException();
-			
+			if(role.Description is null)
+				role.Description = String.Empty;
 			if (existingRole != null)
 			{
 				record["id"] = role.Id;
