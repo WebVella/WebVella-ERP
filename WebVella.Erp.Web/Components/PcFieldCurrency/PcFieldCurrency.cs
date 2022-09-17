@@ -40,7 +40,7 @@ namespace WebVella.Erp.Web.Components
 					Name = input.Name,
 					Min = input.Min,
 					Max = input.Max,
-					Step = null,
+					Step = 1,
 					CurrencyCode = input.CurrencyCode,
 					Description = input.Description,
 					LabelHelpText = input.LabelHelpText
