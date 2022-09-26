@@ -480,6 +480,16 @@ namespace WebVella.Erp.Api
 
 			if (ds is DatabaseDataSource)
 				return new EqlCommand(((DatabaseDataSource)ds).EqlText, parameters).Execute();
+			else if (ds is CodeDataSource)
+			{
+				var args = new Dictionary<string, object>();
+				foreach (var param in parameters)
+				{
+					args[param.ParameterName] = param.Value;
+				}
+				var codeDs = (CodeDataSource)ds;
+				return (EntityRecordList)codeDs.Execute(args);
+			}
 			else
 				throw new NotImplementedException();
 		}
