@@ -2038,7 +2038,7 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
 			$"\tdateField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
 			$"\tdateField.Auditable = {(field.Auditable).ToString().ToLowerInvariant()};\n" +
 			$"\tdateField.System = {(field.System).ToString().ToLowerInvariant()};\n";
-			if (field.DefaultValue == null)
+			if (field.UseCurrentTimeAsDefaultValue || field.DefaultValue == null)
 			{
 				response += $"\tdateField.DefaultValue = null;\n";
 			}
@@ -2128,7 +2128,7 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			$"\tdatetimeField.Searchable = {(field.Searchable).ToString().ToLowerInvariant()};\n" +
 			$"\tdatetimeField.Auditable = {(field.Auditable).ToString().ToLowerInvariant()};\n" +
 			$"\tdatetimeField.System = {(field.System).ToString().ToLowerInvariant()};\n";
-			if (field.DefaultValue == null)
+			if (field.UseCurrentTimeAsDefaultValue || field.DefaultValue == null)
 			{
 				response += $"\tdatetimeField.DefaultValue = null;\n";
 			}
@@ -4344,6 +4344,12 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			var response = string.Empty;
 			var hasUpdate = false;
 
+            if(entityName == "vi_customer" && currentField.Name == "contract_expiration_date")
+            { 
+                var boz = 0;
+                }
+
+
 			#region << Code >>
 			response =
 			$"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.Name} >>\n" +
@@ -4474,19 +4480,19 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 			{
 				hasUpdate = true;
 			}
-			else if (currentField.DefaultValue != oldField.DefaultValue)
-			{
-				hasUpdate = true;
-			}
 			else if (currentField.Format != oldField.Format)
 			{
 				hasUpdate = true;
 			}
-			else if (currentField.UseCurrentTimeAsDefaultValue != oldField.UseCurrentTimeAsDefaultValue)
-			{
-				hasUpdate = true;
-			}
-			else if (currentField.EnableSecurity != oldField.EnableSecurity)
+            else if (currentField.UseCurrentTimeAsDefaultValue != oldField.UseCurrentTimeAsDefaultValue)
+            {
+                hasUpdate = true;
+            }
+            else if (currentField.UseCurrentTimeAsDefaultValue && oldField.DefaultValue.HasValue)
+            {
+                hasUpdate = true;
+            }
+            else if (currentField.EnableSecurity != oldField.EnableSecurity)
 			{
 				hasUpdate = true;
 			}
@@ -4651,10 +4657,6 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
 				hasUpdate = true;
 			}
 			else if (currentField.System != oldField.System)
-			{
-				hasUpdate = true;
-			}
-			else if (currentField.DefaultValue != oldField.DefaultValue)
 			{
 				hasUpdate = true;
 			}

@@ -7,7 +7,7 @@
 		"TimeZoneName": "FLE Standard Time",
 		"CacheKey": "", //if empty current date will be used 
 		"DevelopmentMode": "true",
-		"EnableBackgroundJobs": "true",
+		"EnableBackgroundJobs": "false",
 		"EnableFileSystemStorage": "false",
 		"FileSystemStorageFolder": "\\\\192.168.0.2\\Share\\erp3-files",
 		"EmailEnabled": false,
