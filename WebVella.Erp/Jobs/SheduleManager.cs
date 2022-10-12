@@ -93,6 +93,9 @@ namespace WebVella.Erp.Jobs
 					//foreach schedule if it's time create a job and save it to db
 					foreach (var schedulePlan in schedulePlans)
 					{
+						if (schedulePlan is null || schedulePlan.JobType is null)
+							continue;
+
 						//run new job if last one is finished or canceled
 						bool startNewJob = true;
 						if (schedulePlan.LastStartedJobId.HasValue)
