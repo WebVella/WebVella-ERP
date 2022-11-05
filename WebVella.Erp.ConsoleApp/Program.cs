@@ -10,7 +10,7 @@ using WebVella.Erp.Hooks;
 
 namespace WebVella.Erp.ConsoleApp
 {
-	class Program
+	static class Program
 	{
 		static void Main()
 		{
