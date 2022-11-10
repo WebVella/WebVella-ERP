@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<AssemblyName>WebVella.Erp</AssemblyName>
 		<OutputType>Library</OutputType>
 		<PackageId>WebVella.Erp</PackageId>
 		<TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<Description>The core library of the open-source and free platform WebVella ERP. It allows a quick and painless creation of business web applications.	</Description>
-		<Version>1.1.55</Version>
+		<Version>1.2.00</Version>
 		<Authors>WebVella</Authors>
 		<Company>WebVella</Company>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -38,23 +38,23 @@
 	</ItemGroup>-->
 
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="11.0.1" />
+		<PackageReference Include="AutoMapper" Version="12.0.0" />
 		<PackageReference Include="CsvHelper" Version="[18.0.0]" />
 		<PackageReference Include="Ical.Net" Version="4.2.0" />
 		<PackageReference Include="Irony.NetCore" Version="1.1.11" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 		<PackageReference Include="MimeMapping" Version="1.0.1.37" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-		<PackageReference Include="Npgsql" Version="6.0.7" />
+		<PackageReference Include="Npgsql" Version="7.0.0" />
 		<PackageReference Include="Storage.Net" Version="9.3.0" />
-		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">

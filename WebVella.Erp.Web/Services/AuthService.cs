@@ -136,7 +136,7 @@ namespace WebVella.Erp.Web.Services
 				}, out SecurityToken validatedToken);
 				return validatedToken as JwtSecurityToken;
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				return null;
 			}
