@@ -1285,6 +1285,23 @@ namespace WebVella.Erp.Plugins.SDK.Services
                 try
                 {
                     con.Open();
+                    //As relation tables are created after the first relation creation, we need first to check
+                    //if the table exists
+
+                    var teCommand = new NpgsqlCommand($"SELECT EXISTS(SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'rel_{relation.Name}');", con);
+                    DataTable dt1 = new DataTable();
+                    new NpgsqlDataAdapter(teCommand).Fill(dt1);
+                    bool isTableExists = false;
+                    if (dt1.Rows.Count > 0)
+                    {
+                        isTableExists = dt1.Rows[0].ItemArray[0].MapTo<bool>();
+                    }
+
+                    if (!isTableExists)
+                        return new List<DatabaseNNRelationRecord>();
+
+                    teCommand.Cancel();
+
                     var command = new NpgsqlCommand($"SELECT * FROM public.rel_{relation.Name}", con);
                     DataTable dt = new DataTable();
                     new NpgsqlDataAdapter(command).Fill(dt);
