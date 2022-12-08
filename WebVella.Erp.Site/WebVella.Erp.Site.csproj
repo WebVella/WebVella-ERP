@@ -52,7 +52,7 @@
 		<PackageReference Include="System.Linq" Version="4.3.0" />
 		<PackageReference Include="System.Threading" Version="4.3.0" />
 		<PackageReference Include="MimeMapping" Version="1.0.1.37" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Include="morelinq" Version="3.3.2" />
 		<PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
 		<PackageReference Include="Wangkanai.Detection.Device" Version="2.0.1" />
