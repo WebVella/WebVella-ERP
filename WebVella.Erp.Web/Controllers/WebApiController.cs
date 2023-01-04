@@ -32,6 +32,7 @@ using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Service;
 using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
+using Wangkanai.Detection.Services;
 
 namespace WebVella.Erp.Web.Controllers
 {
@@ -46,9 +47,12 @@ namespace WebVella.Erp.Web.Controllers
 		EntityRelationManager relMan;
 		SecurityManager secMan;
 		IErpService erpService;
+		IDetectionService _detection;
 		ErpRequestContext erpRequestContext;
 
-		public WebApiController([FromServices] IErpService erpService, [FromServices] ErpRequestContext requestContext)
+		public WebApiController([FromServices] IErpService erpService,
+			[FromServices] ErpRequestContext requestContext,
+			[FromServices] IDetectionService detection)
 		{
 			recMan = new RecordManager();
 			secMan = new SecurityManager();
@@ -56,6 +60,7 @@ namespace WebVella.Erp.Web.Controllers
 			relMan = new EntityRelationManager();
 			this.erpService = erpService;
 			this.erpRequestContext = requestContext;
+			this._detection = detection;
 		}
 
 		[Route("api/v3/en_US/eql")]

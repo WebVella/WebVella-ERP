@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Linq;
-using Wangkanai.Detection;
+using Wangkanai.Detection.Services;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Api.Models.AutoMapper;
-using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 
@@ -16,11 +15,11 @@ namespace WebVella.Erp.Web
 	public class ErpRequestContext
 	{
 		public IServiceProvider ServiceProvider { get; private set; }
-		
-		public IDeviceResolver Detection { get { return ServiceProvider.GetService<IDeviceResolver>(); } }
+
+		public IDetectionService Detection { get { return ServiceProvider.GetService<IDetectionService>(); } }
 
 		public PageContext PageContext { get; set; }
-		
+
 		public App App { get; internal set; } = null;
 
 		public SitemapArea SitemapArea { get; internal set; } = null;
@@ -41,7 +40,7 @@ namespace WebVella.Erp.Web
 
 		public Guid? ParentRecordId { get; internal set; } = null;
 
-		public ErpRequestContext([FromServices]IServiceProvider serviceProvider)
+		public ErpRequestContext([FromServices] IServiceProvider serviceProvider)
 		{
 			ServiceProvider = serviceProvider;
 		}
@@ -85,15 +84,17 @@ namespace WebVella.Erp.Web
 			}
 		}
 
-		public void SetCurrentPage(PageContext pageContext,string pageName, string appName, string areaName, string nodeName, Guid? recordId = null, Guid? relationId = null, Guid? parentRecordId = null)
+		public void SetCurrentPage(PageContext pageContext, string pageName, string appName, string areaName, string nodeName, Guid? recordId = null, Guid? relationId = null, Guid? parentRecordId = null)
 		{
 			ErpPage parentPage = null;
-			Page = new PageService().GetCurrentPage(pageContext, pageName, appName, areaName, nodeName, out parentPage, recordId: recordId, relationId: relationId, parentRecordId:parentRecordId );
+			Page = new PageService().GetCurrentPage(pageContext, pageName, appName, areaName, nodeName, out parentPage, recordId: recordId, relationId: relationId, parentRecordId: parentRecordId);
 			if (Page != null && Page.EntityId != null && (Page.Type == PageType.RecordList || Page.Type == PageType.RecordDetails
-							|| Page.Type == PageType.RecordCreate || Page.Type == PageType.RecordManage)) {
+							|| Page.Type == PageType.RecordCreate || Page.Type == PageType.RecordManage))
+			{
 				Entity = new EntityManager().ReadEntity(Page.EntityId ?? Guid.Empty).Object.MapTo<Entity>();
 			}
-			if (parentPage != null) {
+			if (parentPage != null)
+			{
 				ParentPage = parentPage;
 				ParentEntity = new EntityManager().ReadEntity(parentPage.EntityId ?? Guid.Empty).Object.MapTo<Entity>();
 			}
@@ -159,9 +160,11 @@ namespace WebVella.Erp.Web
 			if (currentEntity != null)
 			{
 				var identityFieldName = "id";
-				if (currentEntity.RecordScreenIdField != null) {
+				if (currentEntity.RecordScreenIdField != null)
+				{
 					var screenField = currentEntity.Fields.FirstOrDefault(x => x.Id == currentEntity.RecordScreenIdField);
-					if (screenField != null) {
+					if (screenField != null)
+					{
 						identityFieldName = screenField.Name;
 					}
 				}
@@ -185,8 +188,9 @@ namespace WebVella.Erp.Web
 			return "";// "(!) " + recordId.ToString();
 		}
 
-		public void SetSimulatedRouteData(Guid? entityId = null, Guid? parentEntityId = null, Guid? pageId = null, Guid? parentPageId = null, Guid? recordId = null, Guid? relationId = null, Guid? parentRecordId = null) {
-			
+		public void SetSimulatedRouteData(Guid? entityId = null, Guid? parentEntityId = null, Guid? pageId = null, Guid? parentPageId = null, Guid? recordId = null, Guid? relationId = null, Guid? parentRecordId = null)
+		{
+
 			if (entityId != null)
 				Entity = new EntityManager().ReadEntity(entityId ?? Guid.Empty).Object;
 
@@ -205,7 +209,7 @@ namespace WebVella.Erp.Web
 			if (relationId != null)
 				RelationId = relationId;
 
-			if(parentRecordId != null)
+			if (parentRecordId != null)
 				ParentRecordId = parentRecordId;
 		}
 	}

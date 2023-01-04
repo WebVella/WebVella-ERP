@@ -55,8 +55,7 @@ namespace WebVella.Erp.Site
                 options.AddPolicy("AllowNodeJsLocalhost",
                     builder => builder.WithOrigins("http://localhost:3333", "http://localhost:3000", "http://localhost").AllowAnyMethod().AllowCredentials());
             });
-
-            services.AddDetectionCore().AddDevice();
+			services.AddDetection();
 
             services.AddMvc()
 

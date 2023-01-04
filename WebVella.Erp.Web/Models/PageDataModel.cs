@@ -229,7 +229,7 @@ namespace WebVella.Erp.Web.Models
 						var deviceMPW = new MPW(MPT.Object, reqCtx.Detection.Device);
 						if (reqCtx.Detection.Device != null)
 						{
-							deviceMPW.Properties.Add("Crawler", new MPW(MPT.Object, reqCtx.Detection.Device.Crawler));
+							deviceMPW.Properties.Add("Crawler", new MPW(MPT.Object, reqCtx.Detection.Crawler.IsCrawler));
 							deviceMPW.Properties.Add("Type", new MPW(MPT.Object, reqCtx.Detection.Device.Type));
 						}
 						detectionMPW.Properties.Add("Device", deviceMPW);
