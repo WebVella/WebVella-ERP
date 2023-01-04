@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -7,6 +8,7 @@ using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Database;
 
@@ -99,10 +101,14 @@ namespace WebVella.Erp.Api
                 //fileStream.Write(fileBytes, 0, fileBytes.Length);
                 //fileStream.Flush();
                 TextReader reader = new StreamReader(fileStream);
+				var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+				{
+					Encoding = Encoding.UTF8,
+					HasHeaderRecord = true,
+					//IsHeaderCaseSensitive = false;
+				};
 
-                CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
-                csvReader.Configuration.HasHeaderRecord = true;
-                //csvReader.Configuration.IsHeaderCaseSensitive = false;
+				CsvReader csvReader = new CsvReader(reader, config);
 
                 csvReader.Read();
 
@@ -359,9 +365,14 @@ namespace WebVella.Erp.Api
                 return response;
             }
 
-            CsvReader csvReader = null;
+			var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+			{
+				Encoding = Encoding.UTF8,
+				HasHeaderRecord = true,
+				//IsHeaderCaseSensitive = false
+			};
+			CsvReader csvReader = null;
             string csvContent = "";
-            bool usingClipboard = false;
             //CASE: 1 If fileTempPath != "" -> get the csv from the file
             if (fileTempPath != "")
             {
@@ -388,22 +399,16 @@ namespace WebVella.Erp.Api
                 byte[] fileBytes = file.GetBytes();
                 MemoryStream fileStream = new MemoryStream(fileBytes);
                 TextReader reader = new StreamReader(fileStream);
-                csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
+                csvReader = new CsvReader(reader, config);
             }
             //CASE: 2 If fileTempPath == "" -> get the csv from the clipboard
             else
             {
                 csvContent = clipboard;
-                usingClipboard = true;
-                csvReader = new CsvReader(new StringReader(csvContent), CultureInfo.InvariantCulture);
+				config.Delimiter = "\t";
+				csvReader = new CsvReader(new StringReader(csvContent), config);
             }
 
-            csvReader.Configuration.HasHeaderRecord = true;
-            //csvReader.Configuration.IsHeaderCaseSensitive = false;
-            if (usingClipboard)
-            {
-                csvReader.Configuration.Delimiter = "\t";
-            }
             //The evaluation object has two properties - errors and warnings. Both are objects
             //The error validation object should return arrays by field name ex. {field_name:[null,null,"error message"]}
             //The warning validation object should return arrays by field name ex. {field_name:[null,null,"warning message"]}

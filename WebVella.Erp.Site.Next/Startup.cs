@@ -39,7 +39,7 @@ namespace WebVella.Erp.Site.Next
 					builder => builder.WithOrigins("http://localhost:3000", "http://localhost").AllowAnyMethod().AllowCredentials());
 			});
 
-			services.AddDetectionCore().AddDevice();
+			services.AddDetection();
 
 			services.AddMvc()
 
