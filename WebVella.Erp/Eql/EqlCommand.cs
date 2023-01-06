@@ -281,11 +281,20 @@ namespace WebVella.Erp.Eql
 
 		private EntityRecord ConvertJObjectToEntityRecord(JObject jObj, List<EqlFieldMeta> fieldMeta)
 		{
+			EntityManager entMan = new EntityManager();
 			EntityRecord record = new EntityRecord();
 			foreach (EqlFieldMeta meta in fieldMeta)
 			{
 				if (meta.Field != null)
 				{
+					var entity = entMan.ReadEntity(meta.Field.EntityName).Object;
+					if(entity == null)
+						throw new Exception($"Entity '{meta.Field.Name}' not found");
+
+					bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Read, entity);
+					if (!hasPermisstion)
+						throw new Exception($"No access to entity '{meta.Field.EntityName}'");
+
 					record[meta.Field.Name] = DbRecordRepository.ExtractFieldValue(jObj[meta.Field.Name], meta.Field);
 				}
 				else if (meta.Relation != null)
