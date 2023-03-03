@@ -24,7 +24,7 @@
 
 
 	<ItemGroup>
-		<None Include="README.md" Pack="true" PackagePath="\"/>
+		<None Include="README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -44,7 +44,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="12.0.0" />
+		<PackageReference Include="AutoMapper" Version="12.0.1" />
 		<PackageReference Include="CsvHelper" Version="30.0.1" />
 		<PackageReference Include="Ical.Net" Version="4.2.0" />
 		<PackageReference Include="Irony.NetCore" Version="1.1.11" />
@@ -58,7 +58,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 		<PackageReference Include="MimeMapping" Version="1.0.1.50" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-		<PackageReference Include="Npgsql" Version="7.0.1" />
+		<PackageReference Include="Npgsql" Version="7.0.2" />
 		<PackageReference Include="Storage.Net" Version="9.3.0" />
 		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
 	</ItemGroup>

@@ -18,14 +18,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="README.md" Pack="true" PackagePath="\"/>
+		<None Include="README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MailKit" Version="3.4.3" />
+		<PackageReference Include="MailKit" Version="3.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>
