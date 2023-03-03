@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
+using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using WebVella.Erp.Api.Models;
@@ -33,32 +35,43 @@ namespace WebVella.Erp.Api
 
 		public ErpUser GetUser(Guid userId)
 		{
-			var result = new EqlCommand("SELECT *, $user_role.* FROM user WHERE id = @id",
+			using (var ctx = SecurityContext.OpenSystemScope())
+			{
+				var result = new EqlCommand("SELECT *, $user_role.* FROM user WHERE id = @id",
 				new List<EqlParameter> { new EqlParameter("id", userId) }).Execute();
-			if (result.Count != 1)
-				return null;
+				if (result.Count != 1)
+					return null;
 
-			return result[0].MapTo<ErpUser>();
+				return result[0].MapTo<ErpUser>();
+			}
 		}
 
 		public ErpUser GetUser(string email)
 		{
-			var result = new EqlCommand("SELECT *, $user_role.* FROM user WHERE email = @email",
-				 new List<EqlParameter> { new EqlParameter("email", email) }).Execute();
-			if (result.Count != 1)
-				return null;
+			using (var ctx = SecurityContext.OpenSystemScope())
+			{
 
-			return result[0].MapTo<ErpUser>();
+				var result = new EqlCommand("SELECT *, $user_role.* FROM user WHERE email = @email",
+				 new List<EqlParameter> { new EqlParameter("email", email) }).Execute();
+				if (result.Count != 1)
+					return null;
+
+				return result[0].MapTo<ErpUser>();
+			}
 		}
 
 		public ErpUser GetUserByUsername(string username)
 		{
-			var result = new EqlCommand("SELECT *, $user_role.* FROM user WHERE username = @username",
-				 new List<EqlParameter> { new EqlParameter("username", username) }).Execute();
-			if (result.Count != 1)
-				return null;
+			using (var ctx = SecurityContext.OpenSystemScope())
+			{
 
-			return result[0].MapTo<ErpUser>();
+				var result = new EqlCommand("SELECT *, $user_role.* FROM user WHERE username = @username",
+				 new List<EqlParameter> { new EqlParameter("username", username) }).Execute();
+				if (result.Count != 1)
+					return null;
+
+				return result[0].MapTo<ErpUser>();
+			}
 		}
 
 		public ErpUser GetUser(string email, string password)
@@ -66,17 +79,89 @@ namespace WebVella.Erp.Api
 			if (string.IsNullOrWhiteSpace(email))
 				return null; 
 
-			var encryptedPassword = PasswordUtil.GetMd5Hash(password);
-			var result = new EqlCommand("SELECT *, $user_role.* FROM user WHERE email ~* @email AND password = @password",
-					 new List<EqlParameter> { new EqlParameter("email", email), new EqlParameter("password", encryptedPassword) }).Execute();
-
-			foreach(var rec in result)
+			using (var ctx = SecurityContext.OpenSystemScope())
 			{
-				if (((string)rec["email"]).ToLowerInvariant() == email.ToLowerInvariant())
-					return rec.MapTo<ErpUser>();
-			}
-			
+				var encryptedPassword = PasswordUtil.GetMd5Hash(password);
+				var result = new EqlCommand("SELECT *, $user_role.* FROM user WHERE email ~* @email AND password = @password",
+						 new List<EqlParameter> { new EqlParameter("email", email), new EqlParameter("password", encryptedPassword) }).Execute();
+
+				foreach (var rec in result)
+				{
+					if (((string)rec["email"]).ToLowerInvariant() == email.ToLowerInvariant())
+						return rec.MapTo<ErpUser>();
+				}
+
 				return null;
+			}
+		}
+
+		private ErpUser GetSystemUserWithNoSecurityCheck()
+		{
+			using (NpgsqlConnection connection = new NpgsqlConnection(ErpSettings.ConnectionString))
+			{
+				try
+				{
+					connection.Open();
+
+					NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM rec_user WHERE id = @id ", connection);
+					cmd.Parameters.Add(new NpgsqlParameter("id", SystemIds.SystemUserId ));
+
+					NpgsqlDataAdapter dataAdapter = new NpgsqlDataAdapter(cmd);
+					DataTable dt = new DataTable();
+					dataAdapter.Fill(dt);
+
+					if (dt.Rows.Count > 0)
+					{
+						DataRow src = dt.Rows[0];
+
+						ErpUser dest = new ErpUser();
+						dest.Id = (Guid)src["id"];
+						dest.Username = (string)src["username"];
+						dest.Email = (string)src["email"];
+
+						try
+						{
+							dest.Password = (string)src["password"];
+						}
+						catch (KeyNotFoundException)
+						{
+							//set password to null if it is not selected from DB
+							dest.Password = null;
+						}
+
+						dest.FirstName = (string)src["first_name"];
+						dest.LastName = (string)src["last_name"];
+						dest.Image = (string)src["image"];
+						dest.CreatedOn = (DateTime)src["created_on"];
+						dest.LastLoggedIn = (DateTime?)src["last_logged_in"];
+						dest.Enabled = (bool)src["enabled"];
+						dest.Verified = (bool)src["verified"];
+
+						cmd = new NpgsqlCommand(@"SELECT r.* FROM rec_role r
+								LEFT OUTER JOIN rel_user_role ur ON ur.origin_id = r.id
+								WHERE ur.target_id = @user_id ", connection);
+						cmd.Parameters.Add(new NpgsqlParameter("user_id", dest.Id));
+						dataAdapter = new NpgsqlDataAdapter(cmd);
+						dt = new DataTable();
+						dataAdapter.Fill(dt);
+
+						foreach (DataRow dr in dt.Rows)
+							dest.Roles.Add(new ErpRole { Id = (Guid)dr["id"], Name = (string)dr["name"], Description = (string)dr["description"] });
+
+						return dest;
+					}
+					else
+					{
+						return null;
+					}
+
+				}
+				finally
+				{
+					connection.Close();
+				}
+
+			}
 		}
 
 		public List<ErpUser> GetUsers(params Guid[] roleIds)
