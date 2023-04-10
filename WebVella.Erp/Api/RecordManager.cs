@@ -690,6 +690,9 @@ namespace WebVella.Erp.Api
 								}
 								else
 								{
+									if(field == null)
+										throw new Exception("Error during processing value for field: '" + pair.Key + "'. Field not found.");
+
 									if (field.Required && pair.Value == null)
 										storageRecordData.Add(new KeyValuePair<string, object>(field.Name, field.GetFieldDefaultValue()));
 									else
@@ -700,7 +703,13 @@ namespace WebVella.Erp.Api
 						catch (Exception ex)
 						{
 							if (pair.Key != null)
-								throw new Exception("Error during processing value for field: '" + pair.Key + "'. Invalid value: '" + pair.Value + "'", ex);
+							{
+								var field = entity.Fields.SingleOrDefault(x => x.Name == pair.Key);
+								if( field == null )
+									throw new Exception("Error during processing value for field: '" + pair.Key + "'. Field not found.");
+								else
+									throw new Exception("Error during processing value for field: '" + pair.Key + "'. Invalid value: '" + pair.Value + "'", ex);
+							}
 						}
 					}
 
