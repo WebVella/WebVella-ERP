@@ -33,6 +33,9 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "ajax_datasource")]
 			public SelectOptionsAjaxDatasource AjaxDatasource { get; set; } = null;
 
+			[JsonProperty(PropertyName = "ajax_datasource_api")]
+			public string AjaxDatasourceApi { get; set; } = null;
+
 			[JsonProperty(PropertyName = "select_match_type")]
 			public WvSelectMatchType SelectMatchingType { get; set; } = WvSelectMatchType.Contains;
 

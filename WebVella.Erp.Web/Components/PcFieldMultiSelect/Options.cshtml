@@ -80,9 +80,9 @@
 		<wv-column span="4">
 			<wv-field-datasource name="ajax_api_url_ds" value="@options.AjaxApiUrlDs" label-text="Override the ajax API URL inline edit" page-id="erpRequest.Page.Id" description="should be a string. Formatted with {0} - entityName, {1} - recordId "></wv-field-datasource>
 		</wv-column>	
-		<wv-column span="4">
-			<wv-field-select name="select_match_type" value="@options.SelectMatchingType" label-text="Options match type" options="@matchTypeOptions"></wv-field-select>
-		</wv-column>			
+        <wv-column span="4">
+            <wv-field-text name="ajax_datasource_api" value="@options.AjaxDatasourceApi" label-text="Options Ajax Api" description="loads the options with ajax from this api"></wv-field-text>
+        </wv-column>		
 	</wv-row>
 	<wv-row>
 		<wv-column span="4">
@@ -91,7 +91,10 @@
 		<wv-column span="4">
 			<wv-field-text name="label_help_text" value="@options.LabelHelpText" label-text="Label Help" description="loads from field meta by default"></wv-field-text>
 		</wv-column>
-	</wv-row>
+        <wv-column span="4">
+            <wv-field-select name="select_match_type" value="@options.SelectMatchingType" label-text="Options match type" options="@matchTypeOptions"></wv-field-select>
+        </wv-column>
+    </wv-row>
 	<wv-row>
 		<wv-column span="12">
 			<div class="go-bkg-gray-light border p-2">
