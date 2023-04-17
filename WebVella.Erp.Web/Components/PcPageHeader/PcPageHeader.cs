@@ -128,18 +128,17 @@ namespace WebVella.Erp.Web.Components
                     ViewBag.ProccessedIconColor = context.DataModel.GetPropertyValueByDataSource(instanceOptions.IconColor);
                     ViewBag.ProccessedIconClass = context.DataModel.GetPropertyValueByDataSource(instanceOptions.IconClass);
 
-                    if (!String.IsNullOrWhiteSpace(instanceOptions.ReturnUrl))
-                    {
-                        ViewBag.ProccessedReturnUrl = context.DataModel.GetPropertyValueByDataSource(instanceOptions.ReturnUrl);
-                    }
-
-                    else if (ErpRequestContext != null && ErpRequestContext.PageContext != null && ErpRequestContext.PageContext.HttpContext.Request.Query.ContainsKey("returnUrl")
+                    if (ErpRequestContext != null && ErpRequestContext.PageContext != null && ErpRequestContext.PageContext.HttpContext.Request.Query.ContainsKey("returnUrl")
                         && !String.IsNullOrWhiteSpace(ErpRequestContext.PageContext.HttpContext.Request.Query["returnUrl"]))
                     {
                         ViewBag.ProccessedReturnUrl = ErpRequestContext.PageContext.HttpContext.Request.Query["returnUrl"].ToString();
                     }
+					else if (!String.IsNullOrWhiteSpace(instanceOptions.ReturnUrl))
+					{
+						ViewBag.ProccessedReturnUrl = context.DataModel.GetPropertyValueByDataSource(instanceOptions.ReturnUrl);
+					}
 
-                    var switchItemPages = new List<ErpPage>();
+					var switchItemPages = new List<ErpPage>();
                     var currentSitemapArea = ErpRequestContext.SitemapArea;
                     var currentSitemapNode = ErpRequestContext.SitemapNode;
                     var currentApp = ErpRequestContext.App;
