@@ -12,3 +12,4 @@ The purpose of the plugin is to provide:
 - extend the web api with its own controllers
 - code based datasources 
 - register background jobs to be run by the system
+- register to your page
