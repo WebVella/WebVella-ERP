@@ -14,16 +14,19 @@ namespace WebVella.Erp.ConsoleApp
 	{
 		static void Main()
 		{
-			//call this method once to initialize erp engine
-			InitErpEngine();
+			using (var secCtx = SecurityContext.OpenSystemScope())
+			{
+				//call this method once to initialize erp engine
+				InitErpEngine();
 
-			var usersRecordList = SampleGetAllErpUsers();
+				var usersRecordList = SampleGetAllErpUsers();
 
-			Console.WriteLine($"=== existing users ===");
-			foreach (var rec in usersRecordList)
-				Console.WriteLine($"username:{rec["username"]} \t\t email:{ rec["email"]}");
+				Console.WriteLine($"=== existing users ===");
+				foreach (var rec in usersRecordList)
+					Console.WriteLine($"username:{rec["username"]} \t\t email:{rec["email"]}");
 
-			RecordHookSample();
+				RecordHookSample();
+			}
 		}
 
 		private static void InitErpEngine()
@@ -37,10 +40,13 @@ namespace WebVella.Erp.ConsoleApp
 			ErpSettings.Initialize(configurationBuilder.Build());
 			DbContext.CreateContext(ErpSettings.ConnectionString);
 			ErpService service = new ErpService();
-			service.InitializeSystemEntities();
+            
 			ErpAutoMapperConfiguration.Configure(ErpAutoMapperConfiguration.MappingExpressions);
-			//here put additional automapper configuration if needed
-			ErpAutoMapper.Initialize(ErpAutoMapperConfiguration.MappingExpressions);
+            //here put additional automapper configuration if needed
+            ErpAutoMapper.Initialize(ErpAutoMapperConfiguration.MappingExpressions);
+
+            service.InitializeSystemEntities();
+			
 
 			//register hooks
 			HookManager.RegisterHooks(service);
