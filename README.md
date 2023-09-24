@@ -5,7 +5,7 @@ WebVella ERP
 If you want this project to continue or just like it, we will greatly appreciate your support of the project by: 
 * giving it a "star" 
 * contributing to the source
-* Donate: While we are looking for a new donation partner, just buy yourself a beer from us. It is a donation enough.
+* Become a Sponsor: Click on the Sponsor button and Thank you in advance
 
 Related repositories
 
