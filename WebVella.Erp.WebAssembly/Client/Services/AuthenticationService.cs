@@ -43,9 +43,10 @@ public class AuthenticationService : IAuthenticationService
 	public async ValueTask<bool> LoginAsync(LoginModel model)
 	{
 		AuthResponse authData = await _httpClient.PostAndReadAsJsonAsync<LoginModel, AuthResponse>($"{apiAuthRoot}token", model);
-		if (string.IsNullOrWhiteSpace(authData.Token))
+		string token = authData.Object?.ToString();
+		if (string.IsNullOrWhiteSpace(token))
 			return false;
-		await _localStorageService.SetItemAsync("token", authData.Token);
+		await _localStorageService.SetItemAsync("token", token);
 		(_customAuthenticationProvider as CustomAuthenticationProvider).Notify();
 		return true;
 	}

@@ -80,13 +80,14 @@ public class TokenManagerService : ITokenManagerService
             return string.Empty;
 
         AuthResponse authResponse = await _httpClient.PostAndReadAsJsonAsync<JwtToken, AuthResponse>("api/v3/en_US/auth/jwt/token/refresh", tokenModel);
-        if (string.IsNullOrWhiteSpace(authResponse.Token))
+        var token = authResponse.Object?.ToString();
+        if (string.IsNullOrWhiteSpace(token))
         {
             await _localStorageService.RemoveItemAsync("token");
             return string.Empty;
         }
-        await _localStorageService.SetItemAsync("token", authResponse.Token);
-        return authResponse.Token;
+        await _localStorageService.SetItemAsync("token", token);
+        return token;
     }
 
     public async Task<string> GetTokenAsync()

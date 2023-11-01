@@ -2,5 +2,5 @@
 
 public class AuthResponse
 {
-    public string Token { get; set; }
+    public object Object{ get; set; }
 }
