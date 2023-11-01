@@ -50,12 +50,19 @@ namespace WebVella.Erp.Site
             services.AddRouting(options => { options.LowercaseUrls = true; });
 
             //CORS policy declaration
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowNodeJsLocalhost",
+            //        builder => builder.WithOrigins("http://localhost:3333", "http://localhost:3000", "http://localhost").AllowAnyMethod().AllowCredentials());
+            //});
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowNodeJsLocalhost",
-                    builder => builder.WithOrigins("http://localhost:3333", "http://localhost:3000", "http://localhost").AllowAnyMethod().AllowCredentials());
+                options.AddDefaultPolicy(policy =>
+                    policy.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
             });
-			services.AddDetection();
+            services.AddDetection();
 
             services.AddMvc()
 
@@ -153,7 +160,8 @@ namespace WebVella.Erp.Site
             //Should be before Static files
             app.UseResponseCompression();
 
-            app.UseCors("AllowNodeJsLocalhost"); //Enable CORS -> should be before static files to enable for it too
+            //app.UseCors("AllowNodeJsLocalhost"); //Enable CORS -> should be before static files to enable for it too
+            app.UseCors(); //Enable CORS -> should be before static files to enable for it too
 
             app.UseStaticFiles(new StaticFileOptions
             {

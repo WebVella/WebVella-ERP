@@ -12,7 +12,7 @@ public interface IAuthenticationService
 
 public class AuthenticationService : IAuthenticationService
 {
-	private const string apiAuthRoot = "api/v3/en_US/auth/jwt/";
+	private const string apiAuthRoot = "v3/en_US/auth/jwt/";
 
 	private readonly HttpClient _httpClient;
 	private readonly ITokenManagerService _tokenManagerService;
