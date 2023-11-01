@@ -4,11 +4,8 @@ namespace WebVella.Erp.WebAssembly.Pages;
 
 public partial class Index : ComponentBase
 {
-	private IAuthenticationService _authService;
-	public Index(IAuthenticationService authService)
-	{
-		_authService = authService;
-	}
+
+	[Inject] private IAuthenticationService _authService{ get; set; }
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
