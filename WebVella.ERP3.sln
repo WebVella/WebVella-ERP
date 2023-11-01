@@ -52,7 +52,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Site.Microsoft
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Plugins.MicrosoftCDM", "WebVella.Erp.Plugins.MicrosoftCDM\WebVella.Erp.Plugins.MicrosoftCDM.csproj", "{A7212EDA-DEEE-464D-9C38-D6E09B0B8516}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebVella.Erp.WebAssembly", "WebVella.Erp.WebAssembly\Client\WebVella.Erp.WebAssembly.csproj", "{A59872C0-8CE4-4705-9981-CF4087840830}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.WebAssembly", "WebVella.Erp.WebAssembly\Client\WebVella.Erp.WebAssembly.csproj", "{A59872C0-8CE4-4705-9981-CF4087840830}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
