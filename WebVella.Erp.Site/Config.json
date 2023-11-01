@@ -21,7 +21,7 @@
 		"NavLogoUrl": "",
 		"SystemMasterBackgroundImageUrl": "",
 		"Jwt": {
-			"Key": "ThisIsMySecretKey",
+			"Key": "ThisIsMySecretKeyThisIsMySecretKeyThisIsMySecretKey",
 			"Issuer": "webvella-erp",
 			"Audience": "webvella-erp"
 		}
