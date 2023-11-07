@@ -58,7 +58,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 		<PackageReference Include="MimeMapping" Version="2.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Npgsql" Version="7.0.4" />
+		<PackageReference Include="Npgsql" Version="7.0.6" />
 		<PackageReference Include="Storage.Net" Version="9.3.0" />
 		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
 	</ItemGroup>
