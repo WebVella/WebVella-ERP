@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Database;
@@ -35,8 +36,24 @@ namespace WebVella.Erp.Plugins.Project.Controllers
 			this.erpService = erpService;
 		}
 
-		#region << Components >>
-		[Route("api/v3.0/p/project/pc-post-list/create")]
+        public Guid? CurrentUserId
+        {
+            get
+            {
+                if (HttpContext != null && HttpContext.User != null && HttpContext.User.Claims != null)
+                {
+                    var nameIdentifier = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+                    if (nameIdentifier is null)
+                        return null;
+
+                    return new Guid(nameIdentifier.Value);
+                }
+                return null;
+            }
+        }
+
+        #region << Components >>
+        [Route("api/v3.0/p/project/pc-post-list/create")]
 		[HttpPost]
 		public ActionResult CreateNewPcPostListItem([FromBody]EntityRecord record)
 		{
@@ -464,9 +481,33 @@ namespace WebVella.Erp.Plugins.Project.Controllers
 		}
 
 
-		#endregion
+        [AllowAnonymous]
+        [Route("api/v3.0/p/project/user/get-current")]
+        [HttpGet]
+        public ActionResult GetCurrentUser()
+        {
+            var response = new ResponseModel();
 
-	}
+            try
+            {
+				var boz = CurrentUserId;
+
+                var user = SecurityContext.CurrentUser;
+                response.Success = true;
+                response.Message = "Tested";
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+                return Json(response);
+            }
+        }
+
+        #endregion
+
+    }
 
 
 }

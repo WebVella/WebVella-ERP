@@ -1,0 +1,14 @@
+﻿@inherits WvBaseComponent
+@namespace WebVella.Erp.WebAssembly.Components
+
+@if (!String.IsNullOrWhiteSpace(_error))
+{
+    <div style="color:red">@_error</div>
+}
+<div>
+    <input type="text" @bind-value=_form.Email />
+</div>
+<div>
+    <input type="password" @bind-value=_form.Password />
+</div>
+<button @onclick=_loginBtnClick>Login</button>

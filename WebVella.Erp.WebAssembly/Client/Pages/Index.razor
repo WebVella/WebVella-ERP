@@ -1,3 +1,15 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+@if (_isAuthenticated)
+{
+    <h1>Hello, Authenticated!</h1>
+    <div>
+        <button @onclick=_logout>Logout</button>
+    </div>
+}
+else{
+    <h1>Hello, Not Authenticated!</h1>
+    <div>
+        <button @onclick=_login>Login</button>
+    </div>
+}

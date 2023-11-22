@@ -2,6 +2,7 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using WebVella.Erp.WebAssembly;
+using WebVella.Erp.WebAssembly.ApiService;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -23,5 +24,6 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddSingleton<IConfigurationService, ConfigurationService>();
 builder.Services.AddScoped<ITokenManagerService, TokenManagerService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IApiService, ApiService>();
 
 await builder.Build().RunAsync();

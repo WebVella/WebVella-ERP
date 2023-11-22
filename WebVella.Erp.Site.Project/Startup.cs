@@ -42,13 +42,19 @@ namespace WebVella.Erp.Site.Project
 			services.AddRouting(options => { options.LowercaseUrls = true; });
 
 			//CORS policy declaration
-			services.AddCors(options =>
-			{
-				options.AddPolicy("AllowNodeJsLocalhost",
-					builder => builder.WithOrigins("http://localhost:3333", "http://localhost:3000", "http://localhost", "http://localhost:2202").AllowAnyMethod().AllowCredentials());
-			});
-
-			services.AddDetection();
+			//services.AddCors(options =>
+			//{
+			//	options.AddPolicy("AllowNodeJsLocalhost",
+			//		builder => builder.WithOrigins("http://localhost:3333", "http://localhost:3000", "http://localhost", "http://localhost:2202").AllowAnyMethod().AllowCredentials());
+			//});
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                    policy.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
+            services.AddDetection();
 
 			services.AddMvc()
 
@@ -139,9 +145,10 @@ namespace WebVella.Erp.Site.Project
 			//Should be before Static files
 			app.UseResponseCompression();
 
-			app.UseCors("AllowNodeJsLocalhost"); //Enable CORS -> should be before static files to enable for it too
+            //app.UseCors("AllowNodeJsLocalhost"); //Enable CORS -> should be before static files to enable for it too
+            app.UseCors(); //Enable CORS -> should be before static files to enable for it too
 
-			app.UseStaticFiles(new StaticFileOptions
+            app.UseStaticFiles(new StaticFileOptions
 			{
 				ServeUnknownFileTypes = false,
 				OnPrepareResponse = ctx =>

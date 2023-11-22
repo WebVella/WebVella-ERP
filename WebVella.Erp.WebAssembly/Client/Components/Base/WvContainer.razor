@@ -1,0 +1,66 @@
+﻿@namespace WebVella.Erp.WebAssembly.Components
+
+@if (IsWrappInErrorBoundry)
+{
+    <WvContainerStates State="@State">
+        <LoadingFragment>
+            @if (WvLoading == null)
+            {
+                @* <Skeleton Active="true" Loading=true/> *@
+            }
+            else
+            {
+                @WvLoading
+            }
+        </LoadingFragment>
+        <ContentFragment>
+            <ErrorBoundary>
+                <ChildContent>@WvContent</ChildContent>
+                <ErrorContent>
+                    @*				@if (context is ApiConnectionException)
+                {
+                <Alert Type="@AlertType.Error" Message="Грешка" Description="@context.Message" />
+                }
+                else if (context is ApiTokenException)
+                {
+                Navigator.NavigateTo($"/?{Constants.ReturnUrlQuery}={NavigatorExt.ProcessQueryValueForUrl(new Uri(Navigator.Uri).LocalPath)}", true);
+                }
+                else if (context is ValidationException)
+                {
+                <Alert Type="@AlertType.Error" MessageTemplate="@ViewTools.GenerateRenderFragmentFromExpection(context)" />
+                }
+                else
+                {
+                <div>@(context.GetType().ToString())</div>
+                <Alert Type="@AlertType.Error" Message="@context.Message" Description="@context.StackTrace" />
+                }*@
+                </ErrorContent>
+            </ErrorBoundary>
+        </ContentFragment>
+        <ErrorFragment>
+            @* <Alert Message="Грешка" Description="@ErrorMessage" Type="@AlertType.Error" ShowIcon="true" /> *@
+        </ErrorFragment>
+    </WvContainerStates>
+}
+else
+{
+
+    <WvContainerStates State="@State">
+        <LoadingFragment>
+            @if (WvLoading == null)
+            {
+                @* <Skeleton Active="true" Loading=true /> *@
+            }
+            else
+            {
+                @WvLoading
+            }
+        </LoadingFragment>
+        <ContentFragment>
+            @WvContent
+        </ContentFragment>
+        <ErrorFragment>
+            @* <Alert Message="Грешка" Description="@ErrorMessage" Type="@AlertType.Error" ShowIcon="true" /> *@
+        </ErrorFragment>
+    </WvContainerStates>
+}

@@ -1,0 +1,19 @@
+﻿@namespace WebVella.Erp.WebAssembly.Components
+@inherits ComponentBase
+
+
+@if (!String.IsNullOrWhiteSpace(_errorMessage))
+{
+    <div class="alert alert-danger p-2">@_errorMessage</div>
+}
+else if (_shouldRender)
+{
+    <CascadingValue Value="@this" Name="AppState" TValue="AppState" IsFixed="true">
+            @ChildContent
+    </CascadingValue>
+}
+else
+{
+    <div>Loading...</div>
+@*     <Skeleton Active="true"></Skeleton> *@
+}
