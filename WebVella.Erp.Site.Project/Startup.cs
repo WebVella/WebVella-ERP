@@ -160,8 +160,7 @@ namespace WebVella.Erp.Site.Project
 			});
 			app.UseStaticFiles(); //Workaround for blazor to work - https://github.com/dotnet/aspnetcore/issues/9588
 			app.UseRouting();
-			app.UseAuthentication();
-			app.UseAuthorization();
+		
 
 			app
 			.UseErpPlugin<NextPlugin>()
@@ -170,6 +169,9 @@ namespace WebVella.Erp.Site.Project
 			.UseErp()
 			.UseErpMiddleware()
 			.UseJwtMiddleware();
+
+			app.UseAuthentication();
+			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>
 			{

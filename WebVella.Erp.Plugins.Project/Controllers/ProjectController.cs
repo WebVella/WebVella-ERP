@@ -480,34 +480,39 @@ namespace WebVella.Erp.Plugins.Project.Controllers
 			}
 		}
 
-
-        [AllowAnonymous]
+		
         [Route("api/v3.0/p/project/user/get-current")]
         [HttpGet]
         public ActionResult GetCurrentUser()
         {
-            var response = new ResponseModel();
+			//        var response = new ResponseModel();
 
-            try
-            {
-				var boz = CurrentUserId;
+			//        try
+			//        {
+			//var boz = CurrentUserId;
 
-                var user = SecurityContext.CurrentUser;
-                response.Success = true;
-                response.Message = "Tested";
-                return Json(response);
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = ex.Message;
-                return Json(response);
-            }
+			//            var user = SecurityContext.CurrentUser;
+			//            response.Success = true;
+			//            response.Message = "Tested";
+			//            return Json(response);
+			//        }
+			//        catch (Exception ex)
+			//        {
+			//            response.Success = false;
+			//            response.Message = ex.Message;
+			//            return Json(response);
+			//        }
+			return Json( new WvUser { Email = "email", Id = CurrentUserId.Value });
         }
 
         #endregion
 
     }
 
+	public class WvUser
+	{
+		public Guid Id { get; set; }
+		public string Email { get; set; }
+	}
 
 }

@@ -47,6 +47,9 @@ namespace WebVella.Erp.Web.Middleware
 						{
 							var user = new SecurityManager().GetUser(new Guid(nameIdentifier));
 							context.Items["User"] = user;
+
+						   var identity = new ClaimsIdentity(jwtToken.Claims, "jwt");
+						   context.User = new ClaimsPrincipal(identity);
 						}
 					}
 				}

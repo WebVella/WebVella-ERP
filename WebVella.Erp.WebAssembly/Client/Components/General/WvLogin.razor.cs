@@ -41,7 +41,7 @@ public partial class WvLogin : WvBaseComponent
             if (!result)
                 throw new ValidationException("Грешно потребителско име или парола");
 
-            var user = await ApiService.GetCurrentUserAsync();
+           // var user = await ApiService.GetCurrentUserAsync();
 
             if (!String.IsNullOrWhiteSpace(_returnUrl))
                 Navigator.NavigateTo(_returnUrl);
