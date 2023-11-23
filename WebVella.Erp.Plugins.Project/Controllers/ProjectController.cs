@@ -479,40 +479,21 @@ namespace WebVella.Erp.Plugins.Project.Controllers
 				throw;
 			}
 		}
+        #endregion
 
-		
+        #region << WebAssembly>>
+
         [Route("api/v3.0/p/project/user/get-current")]
         [HttpGet]
         public ActionResult GetCurrentUser()
         {
-			//        var response = new ResponseModel();
-
-			//        try
-			//        {
-			//var boz = CurrentUserId;
-
-			//            var user = SecurityContext.CurrentUser;
-			//            response.Success = true;
-			//            response.Message = "Tested";
-			//            return Json(response);
-			//        }
-			//        catch (Exception ex)
-			//        {
-			//            response.Success = false;
-			//            response.Message = ex.Message;
-			//            return Json(response);
-			//        }
-			return Json( new WvUser { Email = "email", Id = CurrentUserId.Value });
+			var request = recMan.Find(new EntityQuery("user","*", EntityQuery.QueryEQ("id", CurrentUserId.Value))).Object.Data;
+            return Json(request[0]);
         }
 
         #endregion
 
     }
 
-	public class WvUser
-	{
-		public Guid Id { get; set; }
-		public string Email { get; set; }
-	}
 
 }

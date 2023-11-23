@@ -2,7 +2,7 @@
 
 @if (_isAuthenticated)
 {
-    <h1>Hello, Authenticated!</h1>
+    <h1>Hello, @_user.Email!</h1>
     <div>
         <button @onclick=_logout>Logout</button>
     </div>
