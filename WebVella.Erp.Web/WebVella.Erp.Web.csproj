@@ -5,7 +5,7 @@
 		<RootNamespace>WebVella.Erp.Web</RootNamespace>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-		<Version>1.5.1</Version>
+		<Version>1.5.2</Version>
 		<Authors>WebVella</Authors>
 		<Product>WebVella.Erp.Web</Product>
 		<Description>The web components library for the open-source and free platform WebVella ERP. It allows a quick and painless creation of business web applications.</Description>
@@ -125,10 +125,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.8.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.8.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.8.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.9.2" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.9.2" />
 		<PackageReference Include="CS-Script" Version="4.8.14" />
 		<PackageReference Include="HtmlAgilityPack" Version="1.11.59" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.2" />
@@ -136,7 +136,7 @@
 		<!--<PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />-->
 		<!--<PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />-->
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.2" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.3" />
 		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.1" />
 		<PackageReference Include="Wangkanai.Detection" Version="8.11.0" />
 		<PackageReference Include="WebVella.TagHelpers" Version="1.5.0" />
