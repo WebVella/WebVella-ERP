@@ -9,6 +9,7 @@ namespace WebVella.Erp.Web.Service
 {
 	public static class CodeEvalService
 	{
+		private static object lockObj = new object();
 		private static readonly Dictionary<string, object> scriptObjects = new Dictionary<string, object>();
 
 		//private static string CalculateMD5Hash(string input)
@@ -28,16 +29,23 @@ namespace WebVella.Erp.Web.Service
 			if (string.IsNullOrWhiteSpace(sourceCode))
 				throw new ArgumentException("SourceCode is empty");
 
-			//dublication of MD5 hash, so we stopped using it
-			//string md5Key = CalculateMD5Hash(sourceCode);
 			string md5Key = sourceCode;
 			if (scriptObjects.ContainsKey(md5Key))
 				return scriptObjects[md5Key] as ICodeVariable;
 
-			CSScript.EvaluatorConfig.ReferenceDomainAssemblies = true;
-			ICodeVariable scriptObject = CSScript.Evaluator.LoadCode<ICodeVariable>(sourceCode);
-			scriptObjects[md5Key] = scriptObject;
-			return scriptObject;
+			lock (lockObj)
+			{
+
+				//dublication of MD5 hash, so we stopped using it
+				//string md5Key = CalculateMD5Hash(sourceCode);
+				if (scriptObjects.ContainsKey(md5Key))
+					return scriptObjects[md5Key] as ICodeVariable;
+
+				CSScript.EvaluatorConfig.ReferenceDomainAssemblies = true;
+				ICodeVariable scriptObject = CSScript.Evaluator.LoadCode<ICodeVariable>(sourceCode);
+				scriptObjects[md5Key] = scriptObject;
+				return scriptObject;
+			}
 		}
 
 		public static object Evaluate(string sourceCode, BaseErpPageModel pageModel)
@@ -46,7 +54,7 @@ namespace WebVella.Erp.Web.Service
 			return script.Evaluate(pageModel);
 		}
 
-		public static void Compile(string sourceCode)
+		internal static void Compile(string sourceCode)
 		{
 			ICodeVariable script = GetScriptObject(sourceCode);
 		}

@@ -5,7 +5,7 @@
 		<RootNamespace>WebVella.Erp.Web</RootNamespace>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-		<Version>1.5.5</Version>
+		<Version>1.5.6</Version>
 		<Authors>WebVella</Authors>
 		<Product>WebVella.Erp.Web</Product>
 		<Description>The web components library for the open-source and free platform WebVella ERP. It allows a quick and painless creation of business web applications.</Description>
@@ -129,10 +129,10 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.9.2" />
-		<PackageReference Include="CS-Script" Version="4.8.14" />
+		<PackageReference Include="CS-Script" Version="4.8.16" />
 		<PackageReference Include="HtmlAgilityPack" Version="1.11.61" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.5" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.6" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.6" />
 		<!--<PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />-->
 		<!--<PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />-->
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -141,8 +141,8 @@
 		<PackageReference Include="Wangkanai.Detection" Version="8.14.0" />
 		<PackageReference Include="WebVella.TagHelpers" Version="1.5.1" />
 		<PackageReference Include="YUICompressor.NET" Version="3.1.0" />
-		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.5" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.2" />
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.6" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.0" />
 	</ItemGroup>
 
 	<ItemGroup>
