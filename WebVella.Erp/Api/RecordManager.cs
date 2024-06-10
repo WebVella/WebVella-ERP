@@ -1657,7 +1657,6 @@ namespace WebVella.Erp.Api
 
 				List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 
-			
 				var query = EntityQuery.QueryEQ("id", id);
 				var entityQuery = new EntityQuery(entity.Name, "*", query);
 
@@ -1679,28 +1678,6 @@ namespace WebVella.Erp.Api
 							return response;
 						}
 					}
-
-					#region <--- check if entity has any file fields and delete files related to this record --->
-
-					var entityObj = entityManager.ReadEntities().Object.Single(x => x.Name == entity.Name);
-					var fileFields = entityObj.Fields.Where(x => x.GetFieldType() == FieldType.FileField).ToList();
-					var record = response.Object.Data[0];
-
-					var filesToDelete = new List<string>();
-					foreach (var fileField in fileFields)
-					{
-						if (!string.IsNullOrWhiteSpace((string)record[fileField.Name]))
-							filesToDelete.Add((string)record[fileField.Name]);
-					}
-
-					if (filesToDelete.Any())
-					{
-						var dbFileRep = new DbFileRepository();
-						foreach (var filepath in filesToDelete)
-							dbFileRep.Delete(filepath);
-					} 
-
-					#endregion
 
 					CurrentContext.RecordRepository.Delete(entity.Name, id);
 
