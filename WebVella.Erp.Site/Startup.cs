@@ -175,17 +175,17 @@ namespace WebVella.Erp.Site
             });
             app.UseStaticFiles(); //Workaround for blazor to work - https://github.com/dotnet/aspnetcore/issues/9588
             app.UseRouting();
-   
-
-            app
-            .UseErpPlugin<SdkPlugin>()
-            .UseErp()
-            .UseErpMiddleware()
-            .UseJwtMiddleware();
 
 			app.UseAuthentication();
 			app.UseAuthorization();
 
+			app
+			.UseErpPlugin<SdkPlugin>()
+            .UseErp()
+            .UseErpMiddleware()
+            .UseJwtMiddleware();
+
+			
 			app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
