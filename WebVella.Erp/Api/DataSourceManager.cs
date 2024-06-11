@@ -124,7 +124,7 @@ namespace WebVella.Erp.Api
 			return dr.MapTo<DatabaseDataSource>();
 		}
 
-		public DatabaseDataSource Create(string name, string description, int weight, string eql, string parameters)
+		public DatabaseDataSource Create(string name, string description, int weight, string eql, string parameters, bool returnTotal = true)
 		{
 			ValidationException validation = new ValidationException();
 
@@ -187,7 +187,7 @@ namespace WebVella.Erp.Api
 			return rep.Get(ds.Id).MapTo<DatabaseDataSource>();
 		}
 
-		public DatabaseDataSource Update(Guid id, string name, string description, int weight, string eql, string parameters)
+		public DatabaseDataSource Update(Guid id, string name, string description, int weight, string eql, string parameters, bool returnTotal = true)
 		{
 			ValidationException validation = new ValidationException();
 
