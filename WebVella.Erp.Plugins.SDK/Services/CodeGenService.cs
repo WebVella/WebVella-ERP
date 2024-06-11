@@ -8939,8 +8939,9 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
                 $"\tvar parametersJson = @\"{parametersJson}\";\n" +
                 $"\tvar fieldsJson = @\"{fieldsJson}\";\n" +
                 $"\tvar weight = {ds.Weight};\n" +
+                $"\tvar returnTotal = {(ds.ReturnTotal ? "true" : "false")};\n" +
                 $"\tvar entityName =  @\"{ds.EntityName}\";\n" +
-                "\n\tnew WebVella.Erp.Database.DbDataSourceRepository().Create(id,name,description,weight,eqlText,sqlText,parametersJson,fieldsJson,entityName);\n" +
+                "\n\tnew WebVella.Erp.Database.DbDataSourceRepository().Create(id,name,description,weight,eqlText,sqlText,parametersJson,fieldsJson,entityName, returnTotal);\n" +
             "}\n" +
             "#endregion\n\n";
 
@@ -8989,6 +8990,12 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
                 response.ChangeList.Add($"<span class='go-green label-block'>data source entityName</span>  from <span class='go-red'>{oldDS.EntityName}</span> to <span class='go-red'>{currentDS.EntityName}</span>");
             }
 
+            if (currentDS.ReturnTotal != oldDS.ReturnTotal)
+            {
+                response.HasUpdate = true;
+                response.ChangeList.Add($"<span class='go-green label-block'>data source Return Total</span>  from <span class='go-red'>{oldDS.ReturnTotal}</span> to <span class='go-red'>{currentDS.ReturnTotal}</span>");
+            }
+
             var currentParametersJson = JsonConvert.SerializeObject(currentDS.Parameters ?? new List<DataSourceParameter>()).EscapeMultiline();
             var currentFieldsJson = JsonConvert.SerializeObject(currentDS.Fields ?? new List<DataSourceModelFieldMeta>()).EscapeMultiline();
             var oldParametersJson = JsonConvert.SerializeObject(oldDS.Parameters ?? new List<DataSourceParameter>()).EscapeMultiline();
@@ -9021,8 +9028,9 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
                     $"\tvar parametersJson = @\"{currentParametersJson}\";\n" +
                     $"\tvar fieldsJson = @\"{currentFieldsJson}\";\n" +
                     $"\tvar weight = {currentDS.Weight};\n" +
+                    $"\tvar returnTotal = {(currentDS.ReturnTotal ? "true" : "false")};\n" +
                     $"\tvar entityName =  @\"{currentDS.EntityName}\";\n" +
-                    "\n\tnew WebVella.Erp.Database.DbDataSourceRepository().Update(id,name,description,weight,eqlText,sqlText,parametersJson,fieldsJson,entityName);\n" +
+                    "\n\tnew WebVella.Erp.Database.DbDataSourceRepository().Update(id,name,description,weight,eqlText,sqlText,parametersJson,fieldsJson,entityName,returnTotal);\n" +
                 "}\n" +
                 "#endregion\n\n";
             }

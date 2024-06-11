@@ -83,14 +83,10 @@
 		</wv-row>
 		<wv-row>
 			<wv-column span="6">
-				<wv-field-checkbox label-text="Return Total" value="@Model.DataSourceObject.ReturnTotal"></wv-field-checkbox>
-			</wv-column>
-			<wv-column span="6">
-			</wv-column>
-		</wv-row>
-		<wv-row>
-			<wv-column span="6">
 				<wv-field-text label-text="Entity" value="@Model.DataSourceObject.EntityName"></wv-field-text>
+			</wv-column>
+			<wv-column span="6">
+				<wv-field-checkbox label-text="Return Total" value="@Model.DataSourceObject.ReturnTotal"></wv-field-checkbox>
 			</wv-column>
 		</wv-row>
 		@if (dataSourceType == DataSourceType.DATABASE)

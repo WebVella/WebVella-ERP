@@ -51,6 +51,11 @@
 			</wv-column>
 		</wv-row>
 		<wv-row>
+			<wv-column span="6">
+				<wv-field-checkbox name="return_total" label-text="Return Total" value="@Model.ReturnTotal" required="true"></wv-field-checkbox>
+			</wv-column>
+		</wv-row>
+		<wv-row>
 			<wv-column span="12">
 				@{
 					var aceLabelText = "EQL Input (templates: <a href='javascript:void(0)' class='ml-1' id='record-details'>record details</a>, <a href='javascript:void(0)' class='ml-1' id='record-list'>record list</a>)";
