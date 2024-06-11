@@ -24,7 +24,7 @@
 		 name="@options.Name" culture="@options.Culture" class="@options.Class" query-string-sortby="@options.QueryStringSortBy"
 		 query-string-sort-order="@options.QueryStringSortOrder" query-string-page="@options.QueryStringPage" columns="columns"
 		  page="@pager" total-count="@totalCount" page-size="@pageSize" has-thead="@options.HasThead" has-tfoot="@options.HasTfoot"
-		is-visible="(bool)ViewBag.IsVisible">
+		is-visible="(bool)ViewBag.IsVisible" no-total="@options.NoTotal">
 	@foreach (var record in records)
 	{
 		<wv-grid-row>

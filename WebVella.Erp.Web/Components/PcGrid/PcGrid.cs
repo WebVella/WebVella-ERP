@@ -95,6 +95,9 @@ namespace WebVella.Erp.Web.Components
 			[JsonProperty(PropertyName = "has_tfoot")]
 			public bool HasTfoot { get; set; } = true;
 
+			[JsonProperty(PropertyName = "no_total")]
+			public bool NoTotal { get; set; } = false;
+
 			[JsonProperty(PropertyName = "empty_text")]
 			public string EmptyText { get; set; } = "No records";
 

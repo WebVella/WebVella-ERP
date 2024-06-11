@@ -181,7 +181,7 @@ namespace WebVella.Erp.Api
 			validation.CheckAndThrow();
 
 			rep.Create(ds.Id, ds.Name, ds.Description, ds.Weight, ds.EqlText, ds.SqlText,
-				JsonConvert.SerializeObject(ds.Parameters), JsonConvert.SerializeObject(ds.Fields), ds.EntityName);
+				JsonConvert.SerializeObject(ds.Parameters), JsonConvert.SerializeObject(ds.Fields), ds.EntityName, ds.ReturnTotal);
 			
 			RemoveFromCache();
 

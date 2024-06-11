@@ -77,6 +77,11 @@
 		<wv-field-checkbox name="has_tfoot" value="@options.HasTfoot" label-text="Footer" text-true="show footer"></wv-field-checkbox>
 	</wv-column>
 </wv-row>
+<wv-row>
+	<wv-column span="4">
+		<wv-field-checkbox name="no_total" value="@options.NoTotal" label-text="Total Count" text-true="not available"></wv-field-checkbox>
+	</wv-column>
+</wv-row>
 
 <div class="alert alert-info p-2">
     In nested components, use <code>RowRecord</code> datasource as a reference to the record renedered in the current row

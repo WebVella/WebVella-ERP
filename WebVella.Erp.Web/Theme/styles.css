@@ -4408,7 +4408,7 @@ wv-pb-node-container {
 			}
 
 		wv-pb-node-container > .wv-container-inner:not(.empty) {
-			padding-bottom: 10px;
+			padding-bottom: 20px;
 		}
 
 		wv-pb-node-container > .wv-container-inner.first.empty:after {
