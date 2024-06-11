@@ -49,6 +49,11 @@
 			</wv-column>
 		</wv-row>
 		<wv-row>
+			<wv-column span="6">
+				<wv-field-checkbox name="return_total" label-text="Return Total" value="@Model.ReturnTotal" required="true"></wv-field-checkbox>
+			</wv-column>
+		</wv-row>
+		<wv-row>
 			<wv-column span="12">
 				<wv-field-code field-id="@eqlFieldId" name="eql_input" label-text="EQL Input" language="pgsql" value="@Model.EqlInput" height="300px" required="true"></wv-field-code>
 			</wv-column>

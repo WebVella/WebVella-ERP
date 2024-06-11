@@ -21,6 +21,9 @@ namespace WebVella.Erp.Api.Models
 		[JsonProperty(PropertyName = "weight")]
 		public virtual int Weight { get; set; } = 10;
 
+		[JsonProperty(PropertyName = "return_total")]
+		public virtual bool ReturnTotal { get; set; } = true;
+
 		[JsonProperty(PropertyName = "entity_name")]
 		public virtual string EntityName { get; set; } = string.Empty;
 

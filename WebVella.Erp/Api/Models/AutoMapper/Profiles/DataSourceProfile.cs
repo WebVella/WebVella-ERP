@@ -24,6 +24,7 @@ namespace WebVella.Erp.Api.Models.AutoMapper.Profiles
 			outputObj.Name = (string)inputObj["name"];
 			outputObj.Description = (string)inputObj["description"];
 			outputObj.Weight = (int)inputObj["weight"];
+			outputObj.ReturnTotal = (bool)inputObj["return_total"];
 			outputObj.EqlText = (string)inputObj["eql_text"];
 			outputObj.SqlText = (string)inputObj["sql_text"];
 			outputObj.Parameters.AddRange( JsonConvert.DeserializeObject<List<DataSourceParameter>>((string)inputObj["parameters_json"]).ToArray() );

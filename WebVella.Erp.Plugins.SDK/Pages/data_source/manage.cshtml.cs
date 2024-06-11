@@ -31,7 +31,10 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 		[BindProperty(Name = "weight")]
 		public int Weight { get; set; }
 
-		[BindProperty(Name = "param_defaults")]
+        [BindProperty(Name = "return_total")]
+        public bool ReturnTotal { get; set; } = true;
+
+        [BindProperty(Name = "param_defaults")]
 		public string ParamDefaults { get; set; }
 		
 		[BindProperty(Name = "model")]
@@ -106,7 +109,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 			{
 				try
 				{
-					dsMan.Update(DataSourceObject.Id, Name, Description, Weight, EqlInput, ParamDefaults);
+					dsMan.Update(DataSourceObject.Id, Name, Description, Weight, EqlInput, ParamDefaults, ReturnTotal);
 				}
 				catch (EqlException eqlEx)
 				{
