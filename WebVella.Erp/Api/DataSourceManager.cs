@@ -163,6 +163,7 @@ namespace WebVella.Erp.Api
 			ds.EqlText = eql;
 			ds.SqlText = result.Sql;
 			ds.EntityName = result.FromEntity.Name;
+			ds.ReturnTotal = returnTotal;
 			ds.Parameters.AddRange(dsParams);
 			ds.Fields.AddRange(ProcessFieldsMeta(result.Meta));
 
@@ -203,7 +204,7 @@ namespace WebVella.Erp.Api
 					eqlParams.Add(ConvertDataSourceParameterToEqlParameter(dsPar));
 			}
 
-			EqlBuilder builder = new EqlBuilder(eql);
+			EqlBuilder builder = new EqlBuilder(eql, settings: new EqlSettings() { IncludeTotal = returnTotal });
 			var result = builder.Build(eqlParams);
 			if (result.Errors.Count > 0)
 			{
@@ -233,6 +234,7 @@ namespace WebVella.Erp.Api
 			ds.EqlText = eql;
 			ds.SqlText = result.Sql;
 			ds.EntityName = result.FromEntity.Name;
+			ds.ReturnTotal = returnTotal;
 			ds.Parameters.AddRange(dsParams);
 			ds.Fields.AddRange(ProcessFieldsMeta(result.Meta));
 
@@ -254,8 +256,8 @@ namespace WebVella.Erp.Api
 
 			validation.CheckAndThrow();
 
-			rep.Update(ds.Id, ds.Name, ds.Description, ds.Weight, ds.EqlText, ds.SqlText,
-				JsonConvert.SerializeObject(ds.Parameters), JsonConvert.SerializeObject(ds.Fields), ds.EntityName);
+			rep.Update(ds.Id, ds.Name, ds.Description, ds.Weight, ds.EqlText, ds.SqlText, JsonConvert.SerializeObject(ds.Parameters), 
+				JsonConvert.SerializeObject(ds.Fields), ds.EntityName, ds.ReturnTotal );
 
 			RemoveFromCache();
 
@@ -479,7 +481,7 @@ namespace WebVella.Erp.Api
 					parameters.Add(new EqlParameter(par.Name, par.Value));
 
 			if (ds is DatabaseDataSource)
-				return new EqlCommand(((DatabaseDataSource)ds).EqlText, parameters).Execute();
+				return new EqlCommand(((DatabaseDataSource)ds).EqlText, new EqlSettings { IncludeTotal = ds.ReturnTotal }, parameters ).Execute();
 			else if (ds is CodeDataSource)
 			{
 				var args = new Dictionary<string, object>();
@@ -494,7 +496,7 @@ namespace WebVella.Erp.Api
 				throw new NotImplementedException();
 		}
 
-		public EntityRecordList Execute(string eql, string parameters = null)
+		public EntityRecordList Execute(string eql, string parameters = null, bool returnTotal = true)
 		{
 			if (string.IsNullOrWhiteSpace(eql))
 				throw new ArgumentException(nameof(eql));
@@ -506,10 +508,10 @@ namespace WebVella.Erp.Api
 				foreach (var dsPar in dsParams)
 					eqlParams.Add(ConvertDataSourceParameterToEqlParameter(dsPar));
 			}
-			return new EqlCommand(eql, eqlParams).Execute();
+			return new EqlCommand(eql, new EqlSettings { IncludeTotal = returnTotal }, eqlParams).Execute();
 		}
 
-		public string GenerateSql(string eql, string parameters)
+		public string GenerateSql(string eql, string parameters, bool returnTotal = true )
 		{
 			ValidationException validation = new ValidationException();
 			List<DataSourceParameter> dsParams = ProcessParametersText(parameters);
@@ -517,7 +519,7 @@ namespace WebVella.Erp.Api
 			foreach (var dsPar in dsParams)
 				eqlParams.Add(ConvertDataSourceParameterToEqlParameter(dsPar));
 
-			EqlBuilder builder = new EqlBuilder(eql);
+			EqlBuilder builder = new EqlBuilder(eql, settings: new EqlSettings { IncludeTotal = returnTotal });
 			var result = builder.Build(eqlParams);
 			if (result.Errors.Count > 0)
 			{

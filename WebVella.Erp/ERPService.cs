@@ -1420,6 +1420,21 @@ CREATE INDEX fki_app_page_data_fkc_page_id ON public.app_page_data_source
 					command = connection.CreateCommand(sql);
 					command.ExecuteNonQuery();
 				}
+
+				bool datasourceReturnTotalColumnExists = false;
+				command = connection.CreateCommand("SELECT EXISTS ( SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'data_source' AND column_name = 'return_total' )");
+				using (var reader = command.ExecuteReader())
+				{
+					reader.Read();
+					datasourceReturnTotalColumnExists = reader.GetBoolean(0);
+					reader.Close();
+				}
+
+				if (!datasourceReturnTotalColumnExists)
+				{
+					command = connection.CreateCommand(@"ALTER TABLE data_source ADD COLUMN return_total boolean NOT NULL DEFAULT true;");
+					command.ExecuteNonQuery();
+				}
 			}
 		}
 

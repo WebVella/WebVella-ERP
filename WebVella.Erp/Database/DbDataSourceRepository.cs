@@ -77,12 +77,13 @@ namespace WebVella.Erp.Database
 		/// <param name="entityName"></param>
 		/// <returns></returns>
 		public bool Create(Guid id, string name, string description, int weight, string eqlTest,
-							string sqlText, string parametersJson, string fieldsJson, string entityName)
+							string sqlText, string parametersJson, string fieldsJson,
+							string entityName, bool returnTotal = true)
 		{
 			using (DbConnection con = DbContext.Current.CreateConnection())
 			{
-				const string sql = @"INSERT INTO public.data_source(id, name, description, weight, eql_text, sql_text, parameters_json, fields_json, entity_name)
-							VALUES (@id, @name, @description, @weight, @eql_text, @sql_text, @parameters_json, @fields_json, @entity_name)";
+				const string sql = @"INSERT INTO public.data_source(id, name, description, weight, eql_text, sql_text, parameters_json, fields_json, entity_name, return_total)
+							VALUES (@id, @name, @description, @weight, @eql_text, @sql_text, @parameters_json, @fields_json, @entity_name, @return_total)";
 
 				var command = con.CreateCommand(sql);
 				command.Parameters.Add(new NpgsqlParameter("@id", id));
@@ -94,6 +95,7 @@ namespace WebVella.Erp.Database
 				command.Parameters.Add(new NpgsqlParameter("@parameters_json", parametersJson));
 				command.Parameters.Add(new NpgsqlParameter("@fields_json", fieldsJson));
 				command.Parameters.Add(new NpgsqlParameter("@entity_name", entityName));
+				command.Parameters.Add(new NpgsqlParameter("@return_total", returnTotal));
 				return command.ExecuteNonQuery() > 0;
 			}
 		}
@@ -112,13 +114,15 @@ namespace WebVella.Erp.Database
 		/// <param name="entityName"></param>
 		/// <returns></returns>
 		public bool Update(Guid id, string name, string description, int weight, string eqlTest,
-							string sqlText, string parametersJson, string fieldsJson, string entityName)
+							string sqlText, string parametersJson, string fieldsJson, 
+							string entityName, bool returnTotal = true )
 		{
 			using (DbConnection con = DbContext.Current.CreateConnection())
 			{
 				const string sql = @"UPDATE public.data_source SET
 							name = @name, description = @description, weight= @weight, eql_text = @eql_text, 
-							sql_text = @sql_text, parameters_json= @parameters_json, fields_json= @fields_json, entity_name=@entity_name
+							sql_text = @sql_text, parameters_json= @parameters_json, fields_json= @fields_json,
+							entity_name=@entity_name, return_total = @return_total
 							WHERE id = @id";
 
 				var command = con.CreateCommand(sql);
@@ -131,6 +135,7 @@ namespace WebVella.Erp.Database
 				command.Parameters.Add(new NpgsqlParameter("@parameters_json", parametersJson));
 				command.Parameters.Add(new NpgsqlParameter("@fields_json", fieldsJson));
 				command.Parameters.Add(new NpgsqlParameter("@entity_name", entityName));
+				command.Parameters.Add(new NpgsqlParameter("@return_total", returnTotal));
 				return command.ExecuteNonQuery() > 0;
 			}
 		}

@@ -525,9 +525,9 @@ namespace WebVella.Erp.Web.Controllers
 			{
 				DataSourceManager dataSourceManager = new DataSourceManager();
 				if (model.Action == "sql")
-					sql = dataSourceManager.GenerateSql(model.Eql, model.Parameters);
+					sql = dataSourceManager.GenerateSql(model.Eql, model.Parameters, model.ReturnTotal );
 				if (model.Action == "data")
-					data = JsonConvert.SerializeObject(dataSourceManager.Execute(model.Eql, model.Parameters), Formatting.Indented);
+					data = JsonConvert.SerializeObject(dataSourceManager.Execute(model.Eql, model.Parameters, model.ReturnTotal), Formatting.Indented);
 			}
 			catch (EqlException eqlEx)
 			{
@@ -585,9 +585,9 @@ namespace WebVella.Erp.Web.Controllers
 				var paramText = dataSourceManager.ConvertParamsToText(compoundParams);
 
 				if (model.Action == "sql")
-					sql = dataSourceManager.GenerateSql(dataSourceEql, paramText);
+					sql = dataSourceManager.GenerateSql(dataSourceEql, paramText, dataSource.ReturnTotal);
 				if (model.Action == "data")
-					data = JsonConvert.SerializeObject(dataSourceManager.Execute(dataSourceEql, paramText), Formatting.Indented);
+					data = JsonConvert.SerializeObject(dataSourceManager.Execute(dataSourceEql, paramText, dataSource.ReturnTotal), Formatting.Indented);
 			}
 			catch (EqlException eqlEx)
 			{

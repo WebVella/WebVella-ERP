@@ -16,5 +16,8 @@ namespace WebVella.Erp.Web.Models
 
 		[JsonProperty(PropertyName = "param_list")]
 		public List<DataSourceParameter> ParamList { get; set; }
+
+		[JsonProperty(PropertyName = "return_total")]
+		public bool ReturnTotal { get; set; } = true;
 	}
 }

@@ -76,6 +76,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 			EqlInput = DataSourceObject.EqlText;
 			Weight = DataSourceObject.Weight;
 			ResultModel = DataSourceObject.ResultModel;
+            ReturnTotal = DataSourceObject.ReturnTotal;
 			ParamDefaults = string.Empty;
 			foreach (var par in DataSourceObject.Parameters)
 			{
