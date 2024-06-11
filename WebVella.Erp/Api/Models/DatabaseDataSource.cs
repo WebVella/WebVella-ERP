@@ -15,5 +15,8 @@ namespace WebVella.Erp.Api.Models
 
 		[JsonProperty(PropertyName = "result_model")]
 		public override string ResultModel { get; set; } = "EntityRecordList";
+
+		[JsonProperty(PropertyName = "qet_total")]
+		public bool GetTotal { get; set; } = true;
 	}
 }
