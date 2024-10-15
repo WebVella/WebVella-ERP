@@ -5,7 +5,7 @@
 		<RootNamespace>WebVella.Erp.Web</RootNamespace>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-		<Version>1.5.10</Version>
+		<Version>1.6.0</Version>
 		<Authors>WebVella</Authors>
 		<Product>WebVella.Erp.Web</Product>
 		<Description>The web components library for the open-source and free platform WebVella ERP. It allows a quick and painless creation of business web applications.</Description>
@@ -130,9 +130,9 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.11.0" />
 		<PackageReference Include="CS-Script" Version="4.8.17" />
-		<PackageReference Include="HtmlAgilityPack" Version="1.11.65" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.8" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.8" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.67" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.10" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.10" />
 		<!--<PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />-->
 		<!--<PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />-->
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -141,8 +141,8 @@
 		<PackageReference Include="Wangkanai.Detection" Version="8.14.0" />
 		<PackageReference Include="WebVella.TagHelpers" Version="1.5.4" />
 		<PackageReference Include="YUICompressor.NET" Version="3.1.0" />
-		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.8" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2" />
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.10" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.2" />
 	</ItemGroup>
 
 	<ItemGroup>
