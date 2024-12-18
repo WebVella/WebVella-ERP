@@ -21,7 +21,8 @@ namespace WebVella.Erp.ConsoleApp
 
 				var usersRecordList = SampleGetAllErpUsers();
 
-				Console.WriteLine($"=== existing users ===");
+				Console.WriteLine($"=== existing users ( filtered by pre search hook by current user id ) ===");
+				Console.WriteLine($"=== should return only current user ===");
 				foreach (var rec in usersRecordList)
 					Console.WriteLine($"username:{rec["username"]} \t\t email:{rec["email"]}");
 

@@ -1,6 +1,6 @@
 ﻿namespace WebVella.Erp.Eql
 {
-	internal enum EqlNodeType
+	public enum EqlNodeType
 	{
 		Keyword,
 		NumberValue,

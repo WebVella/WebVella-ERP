@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using WebVella.Erp.Api.Models;
+using WebVella.Erp.Eql;
 
 namespace WebVella.Erp.Hooks
 {
@@ -9,6 +10,8 @@ namespace WebVella.Erp.Hooks
 		public static bool ContainsAnyHooksForEntity(string entityName)
 		{
 			return
+				HookManager.GetHookedInstances<IErpPostSearchRecordHook>(entityName).Count > 0 ||
+				HookManager.GetHookedInstances<IErpPreSearchRecordHook>(entityName).Count > 0 ||
 				HookManager.GetHookedInstances<IErpPreCreateRecordHook>(entityName).Count > 0 ||
 				HookManager.GetHookedInstances<IErpPreUpdateRecordHook>(entityName).Count > 0 ||
 				HookManager.GetHookedInstances<IErpPreDeleteRecordHook>(entityName).Count > 0 ||
@@ -139,6 +142,26 @@ namespace WebVella.Erp.Hooks
 			List<IErpPostDeleteManyToManyRelationHook> hookedInstances = HookManager.GetHookedInstances<IErpPostDeleteManyToManyRelationHook>(relationName);
 			foreach (var inst in hookedInstances)
 				inst.OnPostDelete(relationName, originId, targetId);
+		}
+
+		internal static void ExecutePreSearchRecordHooks(string entityName, EqlSelectNode tree, List<EqlError> error)
+		{
+			if (string.IsNullOrWhiteSpace(entityName))
+				throw new ArgumentException("entityName");
+
+			List<IErpPreSearchRecordHook> hookedInstances = HookManager.GetHookedInstances<IErpPreSearchRecordHook>(entityName);
+			foreach (var inst in hookedInstances)
+				inst.OnPreSearchRecord(entityName, tree, error);
+		}
+
+		internal static void ExecutePostSearchRecordHooks(string entityName, List<EntityRecord> record)
+		{
+			if (string.IsNullOrWhiteSpace(entityName))
+				throw new ArgumentException("entityName");
+
+			List<IErpPostSearchRecordHook> hookedInstances = HookManager.GetHookedInstances<IErpPostSearchRecordHook>(entityName);
+			foreach (var inst in hookedInstances)
+				inst.OnPostSearchRecord(entityName, record);
 		}
 	}
 }
