@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Database;
+using WebVella.Erp.Hooks;
 
 namespace WebVella.Erp.Eql
 {
@@ -80,6 +81,14 @@ namespace WebVella.Erp.Eql
 			{
 				if (errors.Count == 0)
 					result.Tree = BuildAbstractTree(parseTree);
+
+				var selectNode = (EqlSelectNode)result.Tree.RootNode;
+				bool hooksExists = RecordHookManager.ContainsAnyHooksForEntity(selectNode.From.EntityName);
+
+				if (hooksExists)
+				{
+					RecordHookManager.ExecutePreSearchRecordHooks(selectNode.From.EntityName, selectNode, errors);
+				}
 
 				if (errors.Count == 0)
 				{

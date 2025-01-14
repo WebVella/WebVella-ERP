@@ -7,6 +7,7 @@ using System.Linq;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Database;
+using WebVella.Erp.Hooks;
 
 namespace WebVella.Erp.Eql
 {
@@ -203,6 +204,8 @@ namespace WebVella.Erp.Eql
 			var npgsParameters = eqlBuildResult.Parameters.Select(x => x.ToNpgsqlParameter()).ToList();
 			NpgsqlCommand command = null;
 
+			bool hooksExists = RecordHookManager.ContainsAnyHooksForEntity(eqlBuildResult.FromEntity.Name);
+
 			if (Connection != null)
 				command = Connection.CreateCommand(eqlBuildResult.Sql, parameters: npgsParameters);
 			else if (NpgConnection != null)
@@ -230,6 +233,11 @@ namespace WebVella.Erp.Eql
 						if (result.TotalCount == 0 && jObj.ContainsKey("___total_count___"))
 							result.TotalCount = int.Parse(((JValue)jObj["___total_count___"]).ToString());
 						result.Add(ConvertJObjectToEntityRecord(jObj, eqlBuildResult.Meta));
+					}
+
+					if (hooksExists)
+					{
+						RecordHookManager.ExecutePostSearchRecordHooks(eqlBuildResult.FromEntity.Name, result);
 					}
 
 					return result;

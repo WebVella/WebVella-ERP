@@ -1,6 +1,6 @@
 ﻿namespace WebVella.Erp.Eql
 {
-	internal enum EqlRelationDirectionType
+	public enum EqlRelationDirectionType
 	{
 		TargetOrigin,
 		OriginTarget
