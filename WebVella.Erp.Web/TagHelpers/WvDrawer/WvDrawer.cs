@@ -10,7 +10,6 @@ using WebVella.Erp.Utilities;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 using WebVella.TagHelpers.Models;
-using Yahoo.Yui.Compressor;
 
 namespace WebVella.Erp.Web.TagHelpers
 {
@@ -114,7 +113,6 @@ namespace WebVella.Erp.Web.TagHelpers
 			}
 			#endregion
 
-			var jsCompressor = new JavaScriptCompressor();
 
 			#region << Init Scripts >>
 			var tagHelperInitialized = false;
@@ -149,7 +147,7 @@ namespace WebVella.Erp.Web.TagHelpers
 							WebVellaErpWebComponentsPcDrawer_Init(""{{ElementId}}"");
 						});";
 			scriptTemplate = scriptTemplate.Replace("{{ElementId}}", Id);
-			initScript.InnerHtml.AppendHtml(jsCompressor.Compress(scriptTemplate));
+			initScript.InnerHtml.AppendHtml(scriptTemplate);
 
 			output.PostContent.AppendHtml(initScript);
 			#endregion

@@ -10,7 +10,6 @@ using WebVella.Erp.Plugins.SDK.Model;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
-using Yahoo.Yui.Compressor;
 using WebVella.TagHelpers.Models;
 namespace WebVella.Erp.Plugins.SDK.Components
 {
@@ -161,8 +160,6 @@ namespace WebVella.Erp.Plugins.SDK.Components
 			#region << Generate js script >>
 			if (mode == WvFieldRenderMode.Form)
 			{
-				var jsCompressor = new JavaScriptCompressor();
-
 				#region << Init Scripts >>
 
 				var fileName = "form.js";
@@ -175,7 +172,7 @@ namespace WebVella.Erp.Plugins.SDK.Components
 				scriptTemplate = scriptTemplate.Replace("{{areaOptionsFieldId}}", areaOptionsFieldId.ToString());
 				scriptTemplate = scriptTemplate.Replace("{{nodeOptionsFieldId}}", nodeOptionsFieldId.ToString());
 				scriptTemplate = scriptTemplate.Replace("{{entityOptionsFieldId}}", entityOptionsFieldId.ToString());
-				scriptEl += jsCompressor.Compress(scriptTemplate);
+				scriptEl += scriptTemplate;
 				//scriptEl += scriptTemplate;
 				scriptEl += "</script>";
 

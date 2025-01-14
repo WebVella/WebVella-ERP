@@ -7,9 +7,6 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -3323,107 +3320,9 @@ namespace WebVella.Erp.Web.Controllers
 				heightInt = outHeightInt;
 			}
 
-			if (isImage && (widthInt > 0 || heightInt > 0))
-			{
-				if (string.IsNullOrWhiteSpace(action))
-					action = "resize";
-
-				var fileContent = file.GetBytes();
-				using (var image = SixLabors.ImageSharp.Image.Load(fileContent))
-				{
-					switch (mimeType.ToLowerInvariant())
-					{
-						case "image/gif":
-						case "image/png":
-							image.Mutate(x => x.BackgroundColor(SixLabors.ImageSharp.Color.White));
-							break;
-						default:
-							break;
-					}
-
-					switch (action)
-					{
-						default:
-						case "resize":
-							{
-								var size = ParseSize(queryCollection);
-								MemoryStream outStream = new MemoryStream();
-
-								ResizeMode mode;
-								switch (requestedMode)
-								{
-									case "boxpad":
-										mode = ResizeMode.BoxPad;
-										break;
-									case "crop":
-										mode = ResizeMode.Crop;
-										break;
-									case "min":
-										mode = ResizeMode.Min;
-										break;
-									case "max":
-										mode = ResizeMode.Max;
-										break;
-									case "stretch":
-										mode = ResizeMode.Stretch;
-										break;
-									default:
-										mode = ResizeMode.Pad;
-										break;
-								}
-
-								var resizeOptions = new ResizeOptions
-								{
-									Mode = mode,
-									Size = new SixLabors.ImageSharp.Size(size.Width, size.Height)
-								};
-								image.Mutate(x => x.Resize(resizeOptions).BackgroundColor(SixLabors.ImageSharp.Color.White));
-								image.SaveAsJpeg(outStream);
-								outStream.Seek(0, SeekOrigin.Begin);
-								return File(outStream, mimeType);
-							}
-					}
-				}
-			}
-
 			return File(file.GetBytes(), mimeType);
 		}
 
-		/// <summary>
-		/// Parse width and height parameters from query string
-		/// </summary>
-		/// <param name="queryCollection"></param>
-		/// <returns></returns>
-		private SixLabors.ImageSharp.Size ParseSize(IDictionary<string, StringValues> queryCollection)
-		{
-			string width = queryCollection.Keys.Any(x => x == "width") ? (string)queryCollection["width"] : "";
-			string height = queryCollection.Keys.Any(x => x == "height") ? (string)queryCollection["height"] : "";
-			var size = new SixLabors.ImageSharp.Size();
-
-			// First cater for single dimensions.
-			if (width != "" && height == "")
-			{
-
-				width = width.Replace("px", string.Empty);
-				size = new SixLabors.ImageSharp.Size(Int32.Parse(width), 0);
-			}
-
-			if (width == "" && height != "")
-			{
-				height = height.Replace("px", string.Empty);
-				size = new SixLabors.ImageSharp.Size(0, Int32.Parse(height));
-			}
-
-			// Both supplied
-			if (width != "" && height != "")
-			{
-				width = width.Replace("px", string.Empty);
-				height = height.Replace("px", string.Empty);
-				size = new SixLabors.ImageSharp.Size(Int32.Parse(width), Int32.Parse(height));
-			}
-
-			return size;
-		}
 
 		[AcceptVerbs(new[] { "POST" }, Route = "/fs/upload/")]
 		[ResponseCache(NoStore = true, Duration = 0)]

@@ -523,8 +523,9 @@ namespace WebVella.Erp.Web.Components
 			//Check for RecordId override
 			if(!String.IsNullOrWhiteSpace(options.ConnectedRecordIdDs)){
 				var dsRecordId = context.DataModel.GetPropertyValueByDataSource(options.ConnectedRecordIdDs) as Guid?;
-				if(dsRecordId == null && Guid.TryParse(options.ConnectedRecordIdDs, out Guid outGuid)){
-					model.RecordId = outGuid;
+				if(dsRecordId == null){
+					if(Guid.TryParse(options.ConnectedRecordIdDs, out Guid outGuid))
+						model.RecordId = outGuid;
 				}
 				else{
 					model.RecordId = dsRecordId.Value;

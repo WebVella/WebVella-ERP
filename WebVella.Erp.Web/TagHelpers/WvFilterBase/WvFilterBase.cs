@@ -9,7 +9,6 @@ using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
 using WebVella.TagHelpers.Models;
-using Yahoo.Yui.Compressor;
 
 namespace WebVella.Erp.Web.TagHelpers
 {
@@ -370,8 +369,6 @@ namespace WebVella.Erp.Web.TagHelpers
 			}
 			#endregion
 
-			var jsCompressor = new JavaScriptCompressor();
-
 			#region << Init Scripts >>
 			var tagHelperInitialized = false;
 			if (ViewContext.HttpContext.Items.ContainsKey(typeof(WvFilterBase) + "-base"))
@@ -384,7 +381,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				var scriptContent = FileService.GetEmbeddedTextResource("base.js", "WebVella.Erp.Web.TagHelpers.WvFilterBase");
 				var scriptEl = new TagBuilder("script");
 				scriptEl.Attributes.Add("type", "text/javascript");
-				scriptEl.InnerHtml.AppendHtml(jsCompressor.Compress(scriptContent));
+				scriptEl.InnerHtml.AppendHtml(scriptContent);
 				output.PostContent.AppendHtml(scriptEl);
 
 				ViewContext.HttpContext.Items[typeof(WvFilterBase) + "-base"] = new WvTagHelperContext()
@@ -404,7 +401,7 @@ namespace WebVella.Erp.Web.TagHelpers
 						});";
 			scriptTemplate = scriptTemplate.Replace("{{FilterId}}", FilterId.ToString());
 			scriptTemplate = scriptTemplate.Replace("{{Value2InputName}}", UrlQueryOfValue2.ToString());
-			initScript.InnerHtml.AppendHtml(jsCompressor.Compress(scriptTemplate));
+			initScript.InnerHtml.AppendHtml(scriptTemplate);
 
 			output.PostContent.AppendHtml(initScript);
 			#endregion

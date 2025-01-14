@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
-using Yahoo.Yui.Compressor;
 
 namespace WebVella.Erp.Web.Components
 {
@@ -71,14 +70,13 @@ namespace WebVella.Erp.Web.Components
 
 			ViewBag.EmbedJs = "";
 			#region << Generate js script >>
-				var jsCompressor = new JavaScriptCompressor();
 				#region << Init Scripts >>
 
 				var fileName = "script.js";
 				var scriptEl = "<script type=\"text/javascript\">";
 				var scriptTemplate = FileService.GetEmbeddedTextResource(fileName, "WebVella.Erp.Web.Components.Nav");
 
-				scriptEl += jsCompressor.Compress(scriptTemplate);
+				scriptEl += scriptTemplate;
 
 				scriptEl += "</script>";
 

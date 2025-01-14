@@ -9,7 +9,6 @@ using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
 using WebVella.TagHelpers.Models;
 using WebVella.TagHelpers.TagHelpers;
-using Yahoo.Yui.Compressor;
 
 namespace WebVella.Erp.Web.TagHelpers
 {
@@ -673,7 +672,6 @@ public class SampleCodeVariable : ICodeVariable
 			}
 			#endregion
 
-			var jsCompressor = new JavaScriptCompressor();
 
 			#region << Init Select2 >>
 			{
@@ -806,7 +804,7 @@ public class SampleCodeVariable : ICodeVariable
 				scriptTemplate = scriptTemplate.Replace("{{FieldId}}", (FieldId ?? null).ToString());
 				scriptTemplate = scriptTemplate.Replace("{{PropertyNameCsv}}", JsonConvert.SerializeObject(PropertyNameLibrary));
 
-				initScript.InnerHtml.AppendHtml(jsCompressor.Compress(scriptTemplate));
+				initScript.InnerHtml.AppendHtml(scriptTemplate);
 
 				output.Content.AppendHtml(initScript);
 			}

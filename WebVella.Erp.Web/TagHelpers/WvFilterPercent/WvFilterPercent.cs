@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 using WebVella.TagHelpers.Models;
-using Yahoo.Yui.Compressor;
 
 namespace WebVella.Erp.Web.TagHelpers
 {
@@ -95,8 +94,6 @@ namespace WebVella.Erp.Web.TagHelpers
 
 			output.Content.AppendHtml(inputGroupEl);
 
-			var jsCompressor = new JavaScriptCompressor();
-
 			#region << Init Scripts >>
 			var tagHelperInitialized = false;
 			if (ViewContext.HttpContext.Items.ContainsKey(typeof(WvFilterPercent) + "-percent"))
@@ -109,7 +106,7 @@ namespace WebVella.Erp.Web.TagHelpers
 				var scriptContent = FileService.GetEmbeddedTextResource("percent.js", "WebVella.Erp.Web.TagHelpers.WvFilterPercent");
 				var scriptEl = new TagBuilder("script");
 				scriptEl.Attributes.Add("type", "text/javascript");
-				scriptEl.InnerHtml.AppendHtml(jsCompressor.Compress(scriptContent));
+				scriptEl.InnerHtml.AppendHtml(scriptContent);
 				output.PostContent.AppendHtml(scriptEl);
 
 				ViewContext.HttpContext.Items[typeof(WvFilterPercent) + "-percent"] = new WvTagHelperContext()
@@ -129,7 +126,7 @@ namespace WebVella.Erp.Web.TagHelpers
 						});";
 			scriptTemplate = scriptTemplate.Replace("{{FilterId}}", FilterId.ToString());
 
-			initScript.InnerHtml.AppendHtml(jsCompressor.Compress(scriptTemplate));
+			initScript.InnerHtml.AppendHtml(scriptTemplate);
 
 			output.PostContent.AppendHtml(initScript);
 			#endregion

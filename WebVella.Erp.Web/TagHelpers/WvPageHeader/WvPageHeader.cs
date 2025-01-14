@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
-using Yahoo.Yui.Compressor;
 using WebVella.Erp.Web.Utils;
 using WebVella.Erp.Api.Models;
 using System.Linq;
@@ -337,7 +336,6 @@ namespace WebVella.Erp.Web.TagHelpers
 
 				if (FixOnScroll)
 				{
-					var jsCompressor = new JavaScriptCompressor();
 
 					#region << Init Scripts >>
 					var tagHelperInitialized = false;
@@ -353,7 +351,7 @@ namespace WebVella.Erp.Web.TagHelpers
 						var scriptContent = FileService.GetEmbeddedTextResource("script.js", "WebVella.Erp.Web.TagHelpers.WvPageHeader");
 						var scriptEl = new TagBuilder("script");
 						scriptEl.Attributes.Add("type", "text/javascript");
-						scriptEl.InnerHtml.AppendHtml(jsCompressor.Compress(scriptContent));
+						scriptEl.InnerHtml.AppendHtml(scriptContent);
 						//scriptEl.InnerHtml.AppendHtml(scriptContent);
 						output.PostContent.AppendHtml(scriptEl);
 
@@ -374,7 +372,7 @@ namespace WebVella.Erp.Web.TagHelpers
 							WebVellaErpWebComponentsPcPageHeader_Init(""{{ElementId}}"");
 						});";
 					scriptTemplate = scriptTemplate.Replace("{{ElementId}}", elementId.ToString());
-					initScript.InnerHtml.AppendHtml(jsCompressor.Compress(scriptTemplate));
+					initScript.InnerHtml.AppendHtml(scriptTemplate);
 
 					output.PostContent.AppendHtml(initScript);
 					#endregion
