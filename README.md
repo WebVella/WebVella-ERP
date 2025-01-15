@@ -22,9 +22,6 @@ Related repositories
 ## License 
 * see [LICENSE](https://github.com/WebVella/WebVella-ERP/blob/master/LICENSE.txt) file
 
-## Version 
-* Soon to be in beta
-
 ## Contact
 #### Developer/Company
 * Homepage: [webvella.com](http://webvella.com)
