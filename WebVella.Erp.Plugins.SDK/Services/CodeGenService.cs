@@ -1803,7 +1803,7 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
             }
             else
             {
-                response += $"\tautonumberField.DefaultValue = Decimal.Parse(\"{field.DefaultValue}\");\n";
+                response += $"\tautonumberField.DefaultValue = Decimal.Parse(\"{(field.DefaultValue.Value == 0 ? "0" : field.DefaultValue.ToString() )}\");\n";
             }
             if (field.DisplayFormat == null)
             {
@@ -1965,7 +1965,7 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
             }
             else
             {
-                response += $"\tcurrencyField.DefaultValue = Decimal.Parse(\"{field.DefaultValue}\");\n";
+                response += $"\tcurrencyField.DefaultValue = Decimal.Parse(\"{(field.DefaultValue.Value == 0 ? "0" : field.DefaultValue.ToString() )}\");\n";
             }
             if (field.MinValue == null)
             {
@@ -2859,7 +2859,7 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
             }
             else
             {
-                response += $"\tnumberField.DefaultValue = Decimal.Parse(\"{field.DefaultValue}\");\n";
+                response += $"\tnumberField.DefaultValue = Decimal.Parse(\"{(field.DefaultValue.Value == 0 ? "0" : field.DefaultValue.ToString() )}\");\n";
             }
             if (field.MinValue == null)
             {
@@ -3038,7 +3038,7 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
             }
             else
             {
-                response += $"\tpercentField.DefaultValue = Decimal.Parse(\"{field.DefaultValue}\");\n";
+                response += $"\tpercentField.DefaultValue = Decimal.Parse(\"{(field.DefaultValue.Value == 0 ? "0" : field.DefaultValue.ToString() )}\");\n";
             }
             if (field.MinValue == null)
             {
@@ -3913,7 +3913,7 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
             }
             else
             {
-                response += $"\tautonumberField.DefaultValue = Decimal.Parse(\"{currentField.DefaultValue}\");\n";
+                response += $"\tautonumberField.DefaultValue = Decimal.Parse(\"{(currentField.DefaultValue.Value == 0 ? "0" : currentField.DefaultValue.ToString() )}\");\n";
             }
             if (currentField.DisplayFormat == null)
             {
@@ -4226,7 +4226,7 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
             }
             else
             {
-                response += $"\tcurrencyField.DefaultValue = Decimal.Parse(\"{currentField.DefaultValue}\");\n";
+                response += $"\tcurrencyField.DefaultValue = Decimal.Parse(\"{(currentField.DefaultValue.Value == 0 ? "0" : currentField.DefaultValue.ToString() )}\");\n";
             }
             if (currentField.MinValue == null)
             {
@@ -5944,7 +5944,7 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
             }
             else
             {
-                response += $"\tnumberField.DefaultValue = Decimal.Parse(\"{currentField.DefaultValue}\");\n";
+                response += $"\tnumberField.DefaultValue = Decimal.Parse(\"{(currentField.DefaultValue.Value == 0 ? "0" : currentField.DefaultValue.ToString() )}\");\n";
             }
             if (currentField.MinValue == null)
             {
@@ -6291,7 +6291,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
             }
             else
             {
-                response += $"\tpercentField.DefaultValue = Decimal.Parse(\"{currentField.DefaultValue}\");\n";
+                response += $"\tpercentField.DefaultValue = Decimal.Parse(\"{(currentField.DefaultValue.Value == 0 ? "0" : currentField.DefaultValue.ToString() )}\");\n";
             }
             if (currentField.MinValue == null)
             {
