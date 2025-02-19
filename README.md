@@ -7,6 +7,8 @@ If you want this project to continue or just like it, we will greatly appreciate
 * contributing to the source
 * Become a Sponsor: Click on the Sponsor button and Thank you in advance
 
+[NEW PROJECT ALERT] Check out our new project for [Document template generation](https://github.com/WebVella/WebVella.DocumentTemplates).
+
 Related repositories
 
 [WebVella-ERP-StencilJs](https://github.com/WebVella/WebVella-ERP-StencilJs)
