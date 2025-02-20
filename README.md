@@ -5,6 +5,7 @@
 [![Nuget download](https://img.shields.io/nuget/dt/WebVella.ERP?style=for-the-badge)](https://www.nuget.org/packages/WebVella.ERP)
 [![WebVella Document Templates License](https://img.shields.io/badge/MIT-green?style=for-the-badge)](https://github.com/WebVella/WebVella-ERP/blob/master/LICENSE.txt)
 
+[NEW PROJECT ALERT] Check out our new project for [Document template generation](https://github.com/WebVella/WebVella.DocumentTemplates).
 ---
 
 WebVella ERP 
@@ -15,8 +16,6 @@ If you want this project to continue or just like it, we will greatly appreciate
 * giving it a "star" 
 * contributing to the source
 * Become a Sponsor: Click on the Sponsor button and Thank you in advance
-
-[NEW PROJECT ALERT] Check out our new project for [Document template generation](https://github.com/WebVella/WebVella.DocumentTemplates).
 
 Related repositories
 
