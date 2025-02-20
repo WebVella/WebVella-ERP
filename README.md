@@ -1,8 +1,8 @@
 [![Project Homepage](https://img.shields.io/badge/Homepage-blue?style=for-the-badge)](https://webvella.com)
 [![Dotnet](https://img.shields.io/badge/platform-.NET-blue?style=for-the-badge)](https://www.nuget.org/packages/WebVella.ERP)
-[![GitHub Repo stars](https://img.shields.io/github/stars/WebVella/WebVella.DocumentTemplates?style=for-the-badge)](https://github.com/WebVella/WebVella-ERP/stargazers)
-[![Nuget version](https://img.shields.io/nuget/v/WebVella.DocumentTemplates?style=for-the-badge)](https://www.nuget.org/packages/WebVella.ERP)
-[![Nuget download](https://img.shields.io/nuget/dt/WebVella.DocumentTemplates?style=for-the-badge)](https://www.nuget.org/packages/WebVella.ERP)
+[![GitHub Repo stars](https://img.shields.io/github/stars/WebVella/WebVella-ERP?style=for-the-badge)](https://github.com/WebVella/WebVella-ERP/stargazers)
+[![Nuget version](https://img.shields.io/nuget/v/WebVella.ERP?style=for-the-badge)](https://www.nuget.org/packages/WebVella.ERP)
+[![Nuget download](https://img.shields.io/nuget/dt/WebVella.ERP?style=for-the-badge)](https://www.nuget.org/packages/WebVella.ERP)
 [![WebVella Document Templates License](https://img.shields.io/badge/MIT-green?style=for-the-badge)](https://github.com/WebVella/WebVella-ERP/blob/master/LICENSE.txt)
 
 ---
