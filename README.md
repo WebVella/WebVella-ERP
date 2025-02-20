@@ -1,3 +1,12 @@
+[![Project Homepage](https://img.shields.io/badge/Homepage-blue?style=for-the-badge)](https://webvella.com)
+[![Dotnet](https://img.shields.io/badge/platform-.NET-blue?style=for-the-badge)](https://www.nuget.org/packages/WebVella.ERP)
+[![GitHub Repo stars](https://img.shields.io/github/stars/WebVella/WebVella.DocumentTemplates?style=for-the-badge)](https://github.com/WebVella/WebVella-ERP/stargazers)
+[![Nuget version](https://img.shields.io/nuget/v/WebVella.DocumentTemplates?style=for-the-badge)](https://www.nuget.org/packages/WebVella.ERP)
+[![Nuget download](https://img.shields.io/nuget/dt/WebVella.DocumentTemplates?style=for-the-badge)](https://www.nuget.org/packages/WebVella.ERP)
+[![WebVella Document Templates License](https://img.shields.io/badge/MIT-green?style=for-the-badge)](https://github.com/WebVella/WebVella-ERP/blob/master/LICENSE.txt)
+
+---
+
 WebVella ERP 
 ======
 **WebVella ERP** is a free and open-source web software, that targets extreme customization and plugability in service of any business data management needs. It is build upon our experience, best practices and the newest available technologies. Currently it targets ASP.NET Core 7. Our database of choice is PostgreSQL 11. Targets Linux or Windows as host OS. Currently tested only on Windows.
