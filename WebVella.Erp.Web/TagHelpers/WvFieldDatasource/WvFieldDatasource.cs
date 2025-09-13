@@ -598,7 +598,7 @@ public class SampleCodeVariable : ICodeVariable
 						DataSourceVariable.Type == DataSourceVariableType.SNIPPET && !String.IsNullOrWhiteSpace(DataSourceVariable.String))
 					{
 						var snippet = SnippetService.GetSnippet(DataSourceVariable.String);
-						inputEl.Attributes.Add("value", snippet.GetText());
+						inputEl.Attributes.Add("value", snippet?.GetText());
 					}
 					fieldGroupEl.InnerHtml.AppendHtml(inputEl);
 					snippetWrapEl.InnerHtml.AppendHtml(fieldGroupEl);

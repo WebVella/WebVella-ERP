@@ -40,7 +40,7 @@ namespace WebVella.Erp.Web.Components
 
 				#region << viewport >>
 				{
-					var tagName = "viewpost";
+					var tagName = "viewport";
 					if (!includedMetaTags.Any(x => x.Name == tagName))
 					{
 						metaTagsToInclude.Add(new MetaTagInclude()
