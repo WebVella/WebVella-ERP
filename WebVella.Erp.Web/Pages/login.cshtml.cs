@@ -26,9 +26,9 @@ namespace WebVella.Erp.Web.Pages
 
 		public string BrandLogo { get; set; }
 
-		public LoginModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
+		public LoginModel([FromServices] ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
 
-		public IActionResult OnGet([FromServices]AuthService authService)
+		public IActionResult OnGet([FromServices] AuthService authService)
 		{
 			var initResult = Init();
 			if (initResult != null) return initResult;
@@ -59,7 +59,7 @@ namespace WebVella.Erp.Web.Pages
 			return Page();
 		}
 
-		public IActionResult OnPost([FromServices]AuthService authService)
+		public IActionResult OnPost([FromServices] AuthService authService)
 		{
 			if (!ModelState.IsValid) throw new Exception("Antiforgery check failed.");
 
@@ -74,10 +74,19 @@ namespace WebVella.Erp.Web.Pages
 			}
 
 			var hookInstances = HookManager.GetHookedInstances<ILoginPageHook>(HookKey);
-			foreach (ILoginPageHook inst in hookInstances)
+			try
 			{
-				var result = inst.OnPostPreLogin(this);
-				if (result != null) return result;
+				foreach (ILoginPageHook inst in hookInstances)
+				{
+					var result = inst.OnPostPreLogin(this);
+					if (result != null) return result;
+				}
+			}
+			catch (Exception ex)
+			{
+				Error = ex.Message;
+				BeforeRender();
+				return Page();
 			}
 
 			ErpUser user = authService.Authenticate(Username, Password);
