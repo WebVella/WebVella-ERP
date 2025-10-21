@@ -7,8 +7,8 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.4" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.10" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.10" />
 	</ItemGroup>
 
 
