@@ -4,7 +4,7 @@ public partial class WvLogin : WvBaseComponent
 {
     public LoginModel _form = new();
     private string _error = "";
-    private Dictionary<string, List<string>> _errorDictionary = null;
+    //private Dictionary<string, List<string>> _errorDictionary = null;
     private string _returnUrl = "";
 
     protected override void OnInitialized()
@@ -34,7 +34,7 @@ public partial class WvLogin : WvBaseComponent
         try
         {
             _error = "";
-            _errorDictionary = null;
+            //_errorDictionary = null;
 
             var result = await ApiService.LoginAsync(new LoginModel { Email = _form.Email, Password = _form.Password });
 
