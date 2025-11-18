@@ -1,9 +1,10 @@
-﻿using Ical.Net;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Ical.Net;
 using Ical.Net.CalendarComponents;
 using Ical.Net.DataTypes;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 
 namespace WebVella.Erp.Recurrence
 {
@@ -55,8 +56,8 @@ namespace WebVella.Erp.Recurrence
 
 		public List<Occurrence> CalculateOccurrences(DateTime startTime, DateTime endTime)
 		{
-			DateTime calculationStartTime = DateTime.Today;
-			DateTime calculationEndTime = DateTime.Today;
+			CalDateTime calculationStartTime = new CalDateTime(DateTime.Today);
+			CalDateTime calculationEndTime = new CalDateTime(DateTime.Today);
 
 
 			switch (EndType)
@@ -65,25 +66,25 @@ namespace WebVella.Erp.Recurrence
 					{
 						//initialiy we set end date CALCULATION_EXTEND_YEARS years in the future
 						//at later stage there will be background task which will extend these occurences
-						calculationStartTime = startTime;
-						calculationEndTime = startTime.AddYears(CALCULATION_EXTEND_YEARS);
+						calculationStartTime = new CalDateTime(startTime);
+						calculationEndTime = new CalDateTime(startTime.AddYears(CALCULATION_EXTEND_YEARS));
 					}
 					break;
 				case RecurrenceEndType.Date:
 					{
-						calculationStartTime = startTime;
+						calculationStartTime = new CalDateTime(startTime);
 						if (EndDate == null)
 							throw new Exception("When EndType is date, EndDate is required");
 
-						calculationEndTime = EndDate.Value;
+						calculationEndTime = new CalDateTime(EndDate.Value);
 					}
 					break;
 				case RecurrenceEndType.Occurrences:
 					{
 						//initialiy we set end date CALCULATION_EXTEND_YEARS years in the future, but later if occurences count is less than requestes, 
 						//we will increase it by CALCULATION_EXTEND_YEARS years step
-						calculationStartTime = startTime;
-						calculationEndTime = startTime.AddYears(CALCULATION_EXTEND_YEARS);
+						calculationStartTime = new(startTime);
+						calculationEndTime = new CalDateTime(startTime.AddYears(CALCULATION_EXTEND_YEARS));
 					}
 					break;
 			}
@@ -98,11 +99,7 @@ namespace WebVella.Erp.Recurrence
 			{
 				case RecurrenceType.DoesNotRepeat:
 					{
-						recurrenceRule = new RecurrencePattern(FrequencyType.None, interval: 1)
-						{
-							Until = endTime,
-							RestrictionType = RecurrenceRestrictionType.NoRestriction
-						};
+						//we create no recurrence rule
 					}
 					break;
 				case RecurrenceType.Daily:
@@ -110,7 +107,6 @@ namespace WebVella.Erp.Recurrence
 						recurrenceRule = new RecurrencePattern(FrequencyType.Daily, interval: 1)
 						{
 							Until = calculationEndTime,
-							RestrictionType = RecurrenceRestrictionType.NoRestriction
 						};
 					}
 					break;
@@ -119,7 +115,6 @@ namespace WebVella.Erp.Recurrence
 						recurrenceRule = new RecurrencePattern(FrequencyType.Weekly, interval: 1)
 						{
 							Until = calculationEndTime,
-							RestrictionType = RecurrenceRestrictionType.NoRestriction
 						};
 					}
 					break;
@@ -129,7 +124,6 @@ namespace WebVella.Erp.Recurrence
 						{
 							ByMonthDay = new List<int> { startTime.Day },
 							Until = calculationEndTime,
-							RestrictionType = RecurrenceRestrictionType.NoRestriction
 						};
 					}
 					break;
@@ -139,7 +133,6 @@ namespace WebVella.Erp.Recurrence
 						{
 							ByDay = new List<WeekDay> { new WeekDay { DayOfWeek = startTime.DayOfWeek, Offset = GetWeekOfMonth(startTime) } },
 							Until = calculationEndTime,
-							RestrictionType = RecurrenceRestrictionType.NoRestriction
 						};
 					}
 					break;
@@ -148,7 +141,6 @@ namespace WebVella.Erp.Recurrence
 						recurrenceRule = new RecurrencePattern(FrequencyType.Yearly, interval: 1)
 						{
 							Until = calculationEndTime,
-							RestrictionType = RecurrenceRestrictionType.NoRestriction
 						};
 					}
 					break;
@@ -164,7 +156,6 @@ namespace WebVella.Erp.Recurrence
 						{
 							ByDay = weekDays,
 							Until = calculationEndTime,
-							RestrictionType = RecurrenceRestrictionType.NoRestriction
 						};
 					}
 					break;
@@ -177,7 +168,6 @@ namespace WebVella.Erp.Recurrence
 									recurrenceRule = new RecurrencePattern(FrequencyType.Secondly, interval: Interval)
 									{
 										Until = calculationEndTime,
-										RestrictionType = RecurrenceRestrictionType.NoRestriction
 									};
 								}
 								break;
@@ -186,7 +176,6 @@ namespace WebVella.Erp.Recurrence
 									recurrenceRule = new RecurrencePattern(FrequencyType.Minutely, interval: Interval)
 									{
 										Until = calculationEndTime,
-										RestrictionType = RecurrenceRestrictionType.NoRestriction
 									};
 								}
 								break;
@@ -195,7 +184,6 @@ namespace WebVella.Erp.Recurrence
 									recurrenceRule = new RecurrencePattern(FrequencyType.Hourly, interval: Interval)
 									{
 										Until = calculationEndTime,
-										RestrictionType = RecurrenceRestrictionType.NoRestriction
 									};
 								}
 								break;
@@ -204,7 +192,6 @@ namespace WebVella.Erp.Recurrence
 									recurrenceRule = new RecurrencePattern(FrequencyType.Daily, interval: Interval)
 									{
 										Until = calculationEndTime,
-										RestrictionType = RecurrenceRestrictionType.NoRestriction
 									};
 								}
 								break;
@@ -223,7 +210,6 @@ namespace WebVella.Erp.Recurrence
 									{
 										ByDay = weekDays,
 										Until = calculationEndTime,
-										RestrictionType = RecurrenceRestrictionType.NoRestriction
 									};
 								}
 								break;
@@ -235,7 +221,6 @@ namespace WebVella.Erp.Recurrence
 										{
 											ByMonthDay = new List<int> { startTime.Day },
 											Until = calculationEndTime,
-											RestrictionType = RecurrenceRestrictionType.NoRestriction
 										};
 									}
 									else if (RepeatMonthType == RecurrenceRepeatMonthType.ByWeekDay)
@@ -244,7 +229,6 @@ namespace WebVella.Erp.Recurrence
 										{
 											ByDay = new List<WeekDay> { new WeekDay { DayOfWeek = startTime.DayOfWeek, Offset = GetWeekOfMonth(startTime) } },
 											Until = calculationEndTime,
-											RestrictionType = RecurrenceRestrictionType.NoRestriction
 										};
 									}
 									else
@@ -255,7 +239,6 @@ namespace WebVella.Erp.Recurrence
 								recurrenceRule = new RecurrencePattern(FrequencyType.Yearly, interval: Interval)
 								{
 									Until = calculationEndTime,
-									RestrictionType = RecurrenceRestrictionType.NoRestriction
 
 								};
 								break;
@@ -265,25 +248,38 @@ namespace WebVella.Erp.Recurrence
 					break;
 			}
 
-			vEvent.RecurrenceRules = new List<RecurrencePattern> { recurrenceRule };
+			if ((recurrenceRule is not null))
+				vEvent.RecurrenceRules = new List<RecurrencePattern> { recurrenceRule };
+			else
+				vEvent.RecurrenceRules = null;
+
 			var calendar = new Calendar();
 			calendar.Events.Add(vEvent);
 
-			foreach (var occurrence in calendar.GetOccurrences(calculationStartTime, calculationEndTime)) { result.Add(occurrence); }
+			result = calendar.Events
+				.SelectMany(e => e.GetOccurrences(calculationStartTime))
+				.Where(o => o.Period.StartTime <= calculationEndTime)
+				.ToList();
 
-			if(EndType == RecurrenceEndType.Occurrences && result.Count < OccurrencesCount )
+
+			if (EndType == RecurrenceEndType.Occurrences && result.Count < OccurrencesCount)
 			{
-				while(true)
+				while (true)
 				{
 					calculationEndTime = calculationEndTime.AddYears(CALCULATION_EXTEND_YEARS);
 					recurrenceRule.Until = calculationEndTime;
-					HashSet<Occurrence> occurences = calendar.GetOccurrences(calculationStartTime, calculationEndTime);
+
+					HashSet<Occurrence> occurences = calendar.Events
+							.SelectMany(e => e.GetOccurrences(calculationStartTime))
+							.Where(o => o.Period.StartTime <= calculationEndTime)
+							.ToHashSet();
+
 					if (occurences.Count < OccurrencesCount)
 						continue;
 
 					result = new List<Occurrence>();
 					int count = 0;
-					foreach (var occurrence in occurences ) 
+					foreach (var occurrence in occurences)
 					{
 						count++;
 						result.Add(occurrence);

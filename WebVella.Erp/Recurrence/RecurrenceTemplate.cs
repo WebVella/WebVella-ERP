@@ -1,9 +1,10 @@
-﻿using Ical.Net;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Ical.Net;
 using Ical.Net.CalendarComponents;
 using Ical.Net.DataTypes;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 
 namespace WebVella.Erp.Recurrence
 {
@@ -53,6 +54,9 @@ namespace WebVella.Erp.Recurrence
 
 		public List<Occurrence> CalculateOccurrences(DateTime startDate, DateTime endDate, DateTime searchStartDate, DateTime searchEndDate)
 		{
+			CalDateTime calSearchStartDate = new CalDateTime(searchStartDate);
+			CalDateTime calSearchEndDate = new CalDateTime(searchEndDate);
+
 			List<Occurrence> result = new List<Occurrence>();
 
 			var vEvent = new CalendarEvent { Start = new CalDateTime(startDate), End = new CalDateTime(endDate) };
@@ -62,19 +66,13 @@ namespace WebVella.Erp.Recurrence
 			{
 				case RecurrenceType.DoesNotRepeat:
 					{
-						recurrenceRule = new RecurrencePattern(FrequencyType.None, interval: 1)
-						{
-							Until = endDate,
-							RestrictionType = RecurrenceRestrictionType.NoRestriction
-						};
 					}
 					break;
 				case RecurrenceType.Daily:
 					{
 						recurrenceRule = new RecurrencePattern(FrequencyType.Daily, interval: 1)
 						{
-							Until = searchEndDate,
-							RestrictionType = RecurrenceRestrictionType.NoRestriction
+							Until = calSearchEndDate,
 						};
 					}
 					break;
@@ -82,8 +80,7 @@ namespace WebVella.Erp.Recurrence
 					{
 						recurrenceRule = new RecurrencePattern(FrequencyType.Weekly, interval: 1)
 						{
-							Until = searchEndDate,
-							RestrictionType = RecurrenceRestrictionType.NoRestriction
+							Until = calSearchEndDate,
 						};
 					}
 					break;
@@ -92,8 +89,7 @@ namespace WebVella.Erp.Recurrence
 						recurrenceRule = new RecurrencePattern(FrequencyType.Monthly, interval: 1)
 						{
 							ByMonthDay = new List<int> { startDate.Day },
-							Until = searchEndDate,
-							RestrictionType = RecurrenceRestrictionType.NoRestriction
+							Until = calSearchEndDate,
 						};
 					}
 					break;
@@ -102,8 +98,7 @@ namespace WebVella.Erp.Recurrence
 						recurrenceRule = new RecurrencePattern(FrequencyType.Monthly, interval: 1)
 						{
 							ByDay = new List<WeekDay> { new WeekDay { DayOfWeek = startDate.DayOfWeek, Offset = GetWeekOfMonth(startDate) } },
-							Until = searchEndDate,
-							RestrictionType = RecurrenceRestrictionType.NoRestriction
+							Until = calSearchEndDate,
 						};
 					}
 					break;
@@ -111,8 +106,7 @@ namespace WebVella.Erp.Recurrence
 					{
 						recurrenceRule = new RecurrencePattern(FrequencyType.Yearly, interval: 1)
 						{
-							Until = searchEndDate,
-							RestrictionType = RecurrenceRestrictionType.NoRestriction
+							Until = calSearchEndDate,
 						};
 					}
 					break;
@@ -121,8 +115,7 @@ namespace WebVella.Erp.Recurrence
 						recurrenceRule = new RecurrencePattern(FrequencyType.Weekly, interval: 1)
 						{
 							ByDay = new List<WeekDay> { new WeekDay { DayOfWeek = startDate.DayOfWeek } },
-							Until = searchEndDate,
-							RestrictionType = RecurrenceRestrictionType.NoRestriction
+							Until = calSearchEndDate,
 						};
 					}
 					break;
@@ -134,8 +127,7 @@ namespace WebVella.Erp.Recurrence
 								{
 									recurrenceRule = new RecurrencePattern(FrequencyType.Secondly, interval: Interval)
 									{
-										Until = searchEndDate,
-										RestrictionType = RecurrenceRestrictionType.NoRestriction
+										Until = calSearchEndDate,
 									};
 								}
 								break;
@@ -143,8 +135,7 @@ namespace WebVella.Erp.Recurrence
 								{
 									recurrenceRule = new RecurrencePattern(FrequencyType.Minutely, interval: Interval)
 									{
-										Until = searchEndDate,
-										RestrictionType = RecurrenceRestrictionType.NoRestriction
+										Until = calSearchEndDate,
 									};
 								}
 								break;
@@ -152,8 +143,7 @@ namespace WebVella.Erp.Recurrence
 								{
 									recurrenceRule = new RecurrencePattern(FrequencyType.Hourly, interval: Interval)
 									{
-										Until = searchEndDate,
-										RestrictionType = RecurrenceRestrictionType.NoRestriction
+										Until = calSearchEndDate,
 									};
 								}
 								break;
@@ -161,8 +151,7 @@ namespace WebVella.Erp.Recurrence
 								{
 									recurrenceRule = new RecurrencePattern(FrequencyType.Daily, interval: Interval)
 									{
-										Until = searchEndDate,
-										RestrictionType = RecurrenceRestrictionType.NoRestriction
+										Until = calSearchEndDate,
 									};
 								}
 								break;
@@ -180,8 +169,7 @@ namespace WebVella.Erp.Recurrence
 									recurrenceRule = new RecurrencePattern(FrequencyType.Daily, interval: Interval)
 									{
 										ByDay = weekDays,
-										Until = searchEndDate,
-										RestrictionType = RecurrenceRestrictionType.NoRestriction
+										Until = calSearchEndDate,
 									};
 								}
 								break;
@@ -192,8 +180,7 @@ namespace WebVella.Erp.Recurrence
 										recurrenceRule = new RecurrencePattern(FrequencyType.Monthly, interval: Interval)
 										{
 											ByMonthDay = new List<int> { startDate.Day },
-											Until = searchEndDate,
-											RestrictionType = RecurrenceRestrictionType.NoRestriction
+											Until = calSearchEndDate,
 										};
 									}
 									else if (RepeatMonthByDate == 1) //by week day
@@ -201,8 +188,7 @@ namespace WebVella.Erp.Recurrence
 										recurrenceRule = new RecurrencePattern(FrequencyType.Monthly, interval: Interval)
 										{
 											ByDay = new List<WeekDay> { new WeekDay { DayOfWeek = startDate.DayOfWeek, Offset = GetWeekOfMonth(startDate) } },
-											Until = searchEndDate,
-											RestrictionType = RecurrenceRestrictionType.NoRestriction
+											Until = calSearchEndDate,
 										};
 									}
 									else
@@ -212,8 +198,7 @@ namespace WebVella.Erp.Recurrence
 							case RecurrencePeriodType.Year:
 								recurrenceRule = new RecurrencePattern(FrequencyType.Yearly, interval: Interval)
 								{
-									Until = searchEndDate,
-									RestrictionType = RecurrenceRestrictionType.NoRestriction
+									Until = calSearchEndDate,
 
 								};
 								break;
@@ -223,12 +208,18 @@ namespace WebVella.Erp.Recurrence
 					break;
 			}
 
-			vEvent.RecurrenceRules = new List<RecurrencePattern> { recurrenceRule };
+			if (recurrenceRule != null)
+				vEvent.RecurrenceRules = new List<RecurrencePattern> { recurrenceRule };
+			else
+				vEvent.RecurrenceRules = null;
+
 			var calendar = new Calendar();
 			calendar.Events.Add(vEvent);
 
-			foreach (var occurrence in calendar.GetOccurrences(searchStartDate, searchEndDate)) { result.Add(occurrence); }
-			return result;
+			return calendar.Events
+					.SelectMany(e => e.GetOccurrences(calSearchStartDate))
+					.Where(o => o.Period.StartTime <= calSearchStartDate)
+					.ToList();
 		}
 
 		private static int GetWeekOfMonth(DateTime date, DayOfWeek firstDayOfWeek = DayOfWeek.Monday)
