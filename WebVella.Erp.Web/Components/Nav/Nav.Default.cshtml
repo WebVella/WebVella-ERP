@@ -2,11 +2,16 @@
 @using Newtonsoft.Json;
 @addTagHelper *, WebVella.Erp.Web
 @{
-	var theme = (Theme)ViewBag.Theme;
-	var currentApp = (App)ViewBag.CurrentApp;
-	var pageModel = (BaseErpPageModel)ViewBag.PageModel;
+    var theme = (Theme)ViewBag.Theme;
+    var currentApp = (App)ViewBag.CurrentApp;
+    var pageModel = (BaseErpPageModel)ViewBag.PageModel;
+    var devMode = (bool)ViewBag.DevMode;
 }
 <!--c:Nav_Default-->
+@if (devMode)
+{
+    <div style="text-align:center; color:white; background:red;">DEV MODE</div>
+}
 <div id="nav" class="pl-2 pr-2">
 	<div class="menu-nav-wrapper home">
 		<div class="menu-nav">

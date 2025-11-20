@@ -32,6 +32,7 @@ namespace WebVella.Erp.Web.Components
             if (!String.IsNullOrWhiteSpace(ErpSettings.NavLogoUrl)) {
                 ViewBag.BrandLogo = ErpSettings.NavLogoUrl;
             }
+			ViewBag.DevMode = ErpSettings.DevelopmentMode;
 
 			ViewBag.AppShortName = "";
 			ViewBag.AppDefaultLink = "/";
