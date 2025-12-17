@@ -46,7 +46,7 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.1" />
 		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="3.0.71" />
 		<!--<PackageReference Include="System.Linq" Version="4.3.0" />
 		<PackageReference Include="System.Threading" Version="4.3.0" />-->
@@ -54,7 +54,7 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 		<PackageReference Include="morelinq" Version="4.4.0" />
 		<!--<PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />-->
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.1" />
 	</ItemGroup>
 
 
