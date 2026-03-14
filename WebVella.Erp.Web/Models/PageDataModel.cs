@@ -375,6 +375,8 @@ namespace WebVella.Erp.Web.Models
 
 		public void SetQueryRecord(EntityRecord queryRecord)
 		{
+			if(Properties.ContainsKey("RequestQuery"))
+				Properties.Remove("RequestQuery");
 			Properties.Add("RequestQuery", new MPW(MPT.EntityRecord, queryRecord));
 		}
 
