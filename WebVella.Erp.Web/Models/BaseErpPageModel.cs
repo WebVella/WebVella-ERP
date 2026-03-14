@@ -402,7 +402,8 @@ namespace WebVella.Erp.Web.Models
 
 		public static BaseErpPageModel CreatePageModelSimulation(
 			ErpRequestContext erpRequestContext,
-			ErpUser currentUser
+			ErpUser currentUser,
+			EntityRecord record = null
 		)
 		{
 			var pageModel = new BaseErpPageModel();
@@ -414,6 +415,8 @@ namespace WebVella.Erp.Web.Models
 			pageModel.PageName = erpRequestContext.Page != null ? erpRequestContext.Page.Name : "";
 			pageModel.RecordId = erpRequestContext.RecordId;
 			pageModel.DataModel = new PageDataModel(pageModel);
+			if (record is not null)
+				pageModel.DataModel.SetRecord(record);
 			return pageModel;
 		}
 

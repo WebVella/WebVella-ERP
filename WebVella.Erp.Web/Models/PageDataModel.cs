@@ -373,6 +373,11 @@ namespace WebVella.Erp.Web.Models
 			Properties["Record"] = new MPW(MPT.EntityRecord, record);
 		}
 
+		public void SetQueryRecord(EntityRecord queryRecord)
+		{
+			Properties.Add("RequestQuery", new MPW(MPT.EntityRecord, queryRecord));
+		}
+
 		private void InitDataSources(ErpPage page)
 		{
 			var pageDataSources = new PageService().GetPageDataSources(page.Id);
