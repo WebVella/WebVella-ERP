@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace WebVella.Erp.Hooks
@@ -26,7 +27,7 @@ namespace WebVella.Erp.Hooks
 					{
 						foreach (var typeInterface in type.GetInterfaces())
 						{
-							var	hookAttributes = typeInterface.GetCustomAttributes(typeof(HookAttribute), true);
+							var hookAttributes = typeInterface.GetCustomAttributes(typeof(HookAttribute), true);
 							HookAttribute hookAttribute = null;
 							if (hookAttributes.Length == 1 && type.IsClass)
 								hookAttribute = (HookAttribute)hookAttributes[0];
@@ -57,8 +58,15 @@ namespace WebVella.Erp.Hooks
 				List<HookInfo> hookObjs;
 				if (hooksDict.TryGetValue(typeof(T), out hookObjs))
 				{
-					foreach (var obj in hookObjs.Where(x => x.AttachAttribute.Key == key).OrderByDescending(x => x.AttachAttribute.Priority))
+					//1. First add all without hook keys
+					foreach (var obj in hookObjs.Where(x => String.IsNullOrWhiteSpace(x.AttachAttribute.Key)).OrderByDescending(x => x.AttachAttribute.Priority))
 						result.Add((T)obj.Instance);
+					//2. Add all with matching keys
+					if (!String.IsNullOrWhiteSpace(key))
+					{
+						foreach (var obj in hookObjs.Where(x => x.AttachAttribute.Key == key).OrderByDescending(x => x.AttachAttribute.Priority))
+							result.Add((T)obj.Instance);
+					}
 				}
 			}
 

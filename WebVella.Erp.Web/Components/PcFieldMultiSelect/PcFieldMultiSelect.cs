@@ -170,6 +170,10 @@ namespace WebVella.Erp.Web.Components
 					{
 						model.Value = (List<string>)valueResult;
 					}
+					else if (valueResult is string[])
+					{
+						model.Value = ((string[])valueResult).ToList();
+					}
 					else if (valueResult is string)
 					{
 						var stringProcessed = false;
