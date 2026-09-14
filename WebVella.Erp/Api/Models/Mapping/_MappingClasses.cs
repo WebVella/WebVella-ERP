@@ -205,6 +205,16 @@ public static class StrategyRegistry
 
 	private static object FindStrategy(Type source, Type target)
 	{
+		if (source == target)
+		{
+			var strategyType = typeof(PropertyCopyStrategy<>).MakeGenericType(source);
+			var instanceField = strategyType.GetField(nameof(PropertyCopyStrategy<object>.Instance), BindingFlags.Public | BindingFlags.Static);
+			var strategy = instanceField.GetValue(null);
+
+			_strategies.TryAdd((source, target), strategy);
+			return strategy;
+		}
+
 		var sourceType = source;
 		while (sourceType != null && sourceType != typeof(object))
 		{
