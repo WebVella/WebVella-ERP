@@ -1804,7 +1804,7 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
             }
             else
             {
-                response += $"\tautonumberField.DefaultValue = Decimal.Parse(\"{(field.DefaultValue.Value == 0 ? "0" : field.DefaultValue.ToString() )}\");\n";
+                response += $"\tautonumberField.DefaultValue = Decimal.Parse(\"{(field.DefaultValue.Value == 0 ? "0" : field.DefaultValue.ToString())}\");\n";
             }
             if (field.DisplayFormat == null)
             {
@@ -1966,7 +1966,7 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
             }
             else
             {
-                response += $"\tcurrencyField.DefaultValue = Decimal.Parse(\"{(field.DefaultValue.Value == 0 ? "0" : field.DefaultValue.ToString() )}\");\n";
+                response += $"\tcurrencyField.DefaultValue = Decimal.Parse(\"{(field.DefaultValue.Value == 0 ? "0" : field.DefaultValue.ToString())}\");\n";
             }
             if (field.MinValue == null)
             {
@@ -2860,7 +2860,7 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
             }
             else
             {
-                response += $"\tnumberField.DefaultValue = Decimal.Parse(\"{(field.DefaultValue.Value == 0 ? "0" : field.DefaultValue.ToString() )}\");\n";
+                response += $"\tnumberField.DefaultValue = Decimal.Parse(\"{(field.DefaultValue.Value == 0 ? "0" : field.DefaultValue.ToString())}\");\n";
             }
             if (field.MinValue == null)
             {
@@ -3039,7 +3039,7 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
             }
             else
             {
-                response += $"\tpercentField.DefaultValue = Decimal.Parse(\"{(field.DefaultValue.Value == 0 ? "0" : field.DefaultValue.ToString() )}\");\n";
+                response += $"\tpercentField.DefaultValue = Decimal.Parse(\"{(field.DefaultValue.Value == 0 ? "0" : field.DefaultValue.ToString())}\");\n";
             }
             if (field.MinValue == null)
             {
@@ -3914,7 +3914,7 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
             }
             else
             {
-                response += $"\tautonumberField.DefaultValue = Decimal.Parse(\"{(currentField.DefaultValue.Value == 0 ? "0" : currentField.DefaultValue.ToString() )}\");\n";
+                response += $"\tautonumberField.DefaultValue = Decimal.Parse(\"{(currentField.DefaultValue.Value == 0 ? "0" : currentField.DefaultValue.ToString())}\");\n";
             }
             if (currentField.DisplayFormat == null)
             {
@@ -4227,7 +4227,7 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
             }
             else
             {
-                response += $"\tcurrencyField.DefaultValue = Decimal.Parse(\"{(currentField.DefaultValue.Value == 0 ? "0" : currentField.DefaultValue.ToString() )}\");\n";
+                response += $"\tcurrencyField.DefaultValue = Decimal.Parse(\"{(currentField.DefaultValue.Value == 0 ? "0" : currentField.DefaultValue.ToString())}\");\n";
             }
             if (currentField.MinValue == null)
             {
@@ -5945,7 +5945,7 @@ $"#region << ***Create field***  Entity: {entityName} Field Name: {field.Name} >
             }
             else
             {
-                response += $"\tnumberField.DefaultValue = Decimal.Parse(\"{(currentField.DefaultValue.Value == 0 ? "0" : currentField.DefaultValue.ToString() )}\");\n";
+                response += $"\tnumberField.DefaultValue = Decimal.Parse(\"{(currentField.DefaultValue.Value == 0 ? "0" : currentField.DefaultValue.ToString())}\");\n";
             }
             if (currentField.MinValue == null)
             {
@@ -6292,7 +6292,7 @@ $"#region << ***Update field***  Entity: {entityName} Field Name: {currentField.
             }
             else
             {
-                response += $"\tpercentField.DefaultValue = Decimal.Parse(\"{(currentField.DefaultValue.Value == 0 ? "0" : currentField.DefaultValue.ToString() )}\");\n";
+                response += $"\tpercentField.DefaultValue = Decimal.Parse(\"{(currentField.DefaultValue.Value == 0 ? "0" : currentField.DefaultValue.ToString())}\");\n";
             }
             if (currentField.MinValue == null)
             {
@@ -8878,8 +8878,10 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
                 response.HasUpdate = true;
                 response.ChangeList.Add($"<span class='go-green label-block'>page node ComponentName</span>  from <span class='go-red'>{oldNode.ComponentName}</span> to <span class='go-red'>{currentNode.ComponentName}</span>");
             }
-
-            if (currentNode.Options.EscapeMultiline() != oldNode.Options.EscapeMultiline())
+            // if(currentNode.Id == new Guid("")){
+            //     var boz = 1;
+            // }
+            if (currentNode.Options.ProcessJsonForComparison() != oldNode.Options.ProcessJsonForComparison())
             {
                 response.HasUpdate = true;
                 response.ChangeList.Add($"<span class='go-green label-block'>page node Options</span>  from <span class='go-red'>{oldNode.Options}</span> to <span class='go-red'>{currentNode.Options}</span>");
@@ -9281,6 +9283,20 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 
             return str.Replace("\"", "\"\"").Replace(Environment.NewLine, "\n");
         }
+
+        public static string ProcessJsonForComparison(this string str)
+        {
+            if (string.IsNullOrEmpty(str))
+                return string.Empty;
+
+            // Normalize all types of line endings to \n for cross-platform comparison
+            str = str.Replace("\r\n", "\n").Replace("\r", "\n");
+            // Remove all spaces
+            str = System.Text.RegularExpressions.Regex.Replace(str, " ", "");
+            
+            return str.Replace("\"", "\"\"");
+        }
+
     }
 
     class JsonUtility

@@ -13,6 +13,7 @@ namespace WebVella.Erp.Site
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseStaticWebAssets()
                 .UseStartup<Startup>()
                 .Build();
     }

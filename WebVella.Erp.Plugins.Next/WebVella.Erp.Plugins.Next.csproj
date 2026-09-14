@@ -12,6 +12,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\WebVella.Erp.Web\WebVella.Erp.Web.csproj" />
-        <ProjectReference Include="..\WebVella.ERP\WebVella.Erp.csproj" />
+        <ProjectReference Include="..\WebVella.Erp\WebVella.Erp.csproj" />
     </ItemGroup>
 </Project>

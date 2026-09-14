@@ -1,0 +1,23 @@
+[
+  {
+    "label": "Debug Site",
+    "adapter": "netcoredbg",
+    "request": "launch",
+    "type": "coreclr",
+    "program": "$ZED_WORKTREE_ROOT/WebVella.Erp.Site/bin/Debug/net10.0/WebVella.Erp.Site.dll",
+    "cwd": "$ZED_WORKTREE_ROOT/WebVella.Erp.Site",
+    "env": {
+      "ASPNETCORE_ENVIRONMENT": "Development",
+      "ASPNETCORE_URLS": "http://localhost:5000"
+    },
+    "build": {
+      "command": "dotnet",
+      "args": [
+        "build",
+        "-p:Configuration=Debug",
+        "-p:NoWarn",
+        "-p:WarningLevel=0",
+      ]
+    }
+  }
+]

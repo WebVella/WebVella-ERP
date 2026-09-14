@@ -2,8 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using WebVella.Erp.Api;
+using WebVella.Erp.Api.Models;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 using WebVella.Erp.Web.Utils;
@@ -17,7 +20,8 @@ namespace WebVella.Erp.Web.Pages
 
 		public DebugModel([FromServices]ErpRequestContext reqCtx) { ErpRequestContext = reqCtx; }
 
-
+		public const string ACCOUNT_FIELDS = @"id,
+		        email, password";
 		public IActionResult OnGet()
         {
 			//var list = new PageComponentLibraryService().GetPageComponentsList();
@@ -25,15 +29,13 @@ namespace WebVella.Erp.Web.Pages
 			//ViewBag.LibraryJson = JsonConvert.SerializeObject(new PageComponentLibraryService().GetPageComponentsList());
 			//ViewBag.PageNodeListJson = JsonConvert.SerializeObject(new PageService().GetPageNodes(new System.Guid("129937b1-7cbe-42a0-b699-e61bebd28619")));
 			var initResult = Init();
-			if (initResult != null)
-				return initResult;
-
+            if (initResult != null)
+                return initResult;
+            var recMan = new RecordManager();
+                var query = EntityQuery.QueryEQ("id", Guid.Empty);
+                var queryResult = recMan.Find(new EntityQuery("user", ACCOUNT_FIELDS, query));
+            ViewData["Result"] = "test";
 			return Page();
 		}
     }
 }
-
-/*
- * system actions: none
- * custom actions: none
- */

@@ -1,0 +1,33 @@
+[
+	{
+		"label": "Kill All .Net",
+		"command": "pkill -9 -f 'dotnet'",
+		"use_new_terminal": false,
+	},
+	{
+		"label": "Solution Build",
+		"command": "dotnet",
+		"args": ["build", "-p:WarningLevel=0", "-p:NoWarn"],
+		"cwd": "$ZED_WORKTREE_ROOT/WebVella.Erp.Site",
+	},
+	{
+		"label": "WebVella.ERP NuGet",
+		"command": "dotnet",
+		"args": ["pack", "--configuration Release"],
+		"cwd": "$ZED_WORKTREE_ROOT/WebVella.Erp",
+	},
+	//WebSite Run
+	{
+		"label": "WebSite Run",
+		"command": "dotnet",
+		"args": ["run", "--p:WarningLevel=0", "-p:NoWarn=NU1903%3BNU1701%3BNU1510"],
+		"cwd": "$ZED_WORKTREE_ROOT/WebVella.Erp.Site",
+		"env": {
+			"ASPNETCORE_ENVIRONMENT": "Development",
+			"ASPNETCORE_URLS": "http://localhost:5000",
+		},
+		"use_new_terminal": false,
+		"allow_concurrent_runs": true,
+		"hide": "on_success",
+	},
+]

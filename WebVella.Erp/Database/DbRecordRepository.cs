@@ -40,12 +40,12 @@ namespace WebVella.Erp.Database
 
         //const string GROUPBY = @"GROUP BY {0}";
 
-        const string OTM_RELATION_TEMPLATE = @"	(SELECT  COALESCE( array_to_json( array_agg( row_to_json(d) )), '[]') FROM ( 
-					SELECT {1} 
+        const string OTM_RELATION_TEMPLATE = @"	(SELECT  COALESCE( array_to_json( array_agg( row_to_json(d) )), '[]') FROM (
+					SELECT {1}
 					FROM {2} {3}
 					WHERE {3}.{4} = {5}.{6} ) d )::jsonb AS ""{0}"",";
 
-        const string MTM_RELATION_TEMPLATE = @"( SELECT  COALESCE(  array_to_json(array_agg( row_to_json(d))), '[]') FROM ( 
+        const string MTM_RELATION_TEMPLATE = @"( SELECT  COALESCE(  array_to_json(array_agg( row_to_json(d))), '[]') FROM (
 					SELECT {1}
 					FROM {2} {3}
 					LEFT JOIN  {4} {5} ON {6}.{7} = {8}.{9}
@@ -993,7 +993,7 @@ namespace WebVella.Erp.Database
                                 //sqlJoins.AppendLine(string.Format(JOIN, GetTableNameForEntity(relationField.TargetEntity), relationName,
                                 //				 originJoinAlias, "target_id", relationName, relationField.TargetField.Name));
 
-                                //		const string MTM_RELATION_TEMPLATE = @"'{0}', ( SELECT  COALESCE(  array_to_json(array_agg( row_to_json(d))), '[]') FROM ( 
+                                //		const string MTM_RELATION_TEMPLATE = @"'{0}', ( SELECT  COALESCE(  array_to_json(array_agg( row_to_json(d))), '[]') FROM (
                                 //			SELECT {1}
                                 //			FROM {2} {3}
                                 //			LEFT JOIN  {4} {5} ON {6}.{7} = {8}.{9}
@@ -1043,7 +1043,8 @@ namespace WebVella.Erp.Database
                         }
                     }
                 }
-                sql.Remove(sql.Length - 3, 3); //remove newline and comma
+                var removeCount = 1 + Environment.NewLine.Length;
+                sql.Remove(sql.Length - removeCount, removeCount); //remove newline and comma
                 sql.AppendLine(END_SELECT);
                 sql.AppendLine(string.Format(FROM, GetTableNameForEntity(entity)));
 
@@ -2095,4 +2096,3 @@ namespace WebVella.Erp.Database
         }
     }
 }
-

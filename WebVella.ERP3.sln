@@ -20,7 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp", "WebVella.ERP\WebVella.Erp.csproj", "{5DD56AA7-9479-4EDF-A10A-FDE7C2708314}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp", "WebVella.Erp\WebVella.Erp.csproj", "{5DD56AA7-9479-4EDF-A10A-FDE7C2708314}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebVella.Erp.Site", "WebVella.Erp.Site\WebVella.Erp.Site.csproj", "{499AC531-9980-44B1-A7C2-13EDC879D430}"
 EndProject
