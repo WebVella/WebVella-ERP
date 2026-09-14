@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using System;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Eql;
 
 namespace WebVella.Erp.Plugins.Mail.Api
@@ -15,7 +16,7 @@ namespace WebVella.Erp.Plugins.Mail.Api
 
 		#region <=== General Cache Methods ===>
 
-		private static IMemoryCache cache; 
+		private static IMemoryCache cache;
 
 		private static void InitCache()
 		{
@@ -49,7 +50,7 @@ namespace WebVella.Erp.Plugins.Mail.Api
 		#endregion
 
 		#region <=== SMTP Services ===>
-		
+
 		public SmtpService GetSmtpService(Guid id)
 		{
 			string cacheKey = $"SMTP-{id}";

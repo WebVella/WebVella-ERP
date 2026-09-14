@@ -7,7 +7,8 @@ using System.Linq;
 using System.Web;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Eql;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Plugins.SDK.Utils;
@@ -55,7 +56,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 				return string.Empty;
 			}
 		}
-		
+
 		public string FullClass
 		{
 			get
@@ -88,7 +89,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 					HeaderActions.Add($"<button type='submit' form='DeleteDataSourceForm' onclick='return confirm(\"Are you sure?\")' class='btn btn-white btn-sm'><i class='fa fa-trash-alt go-red'></i> Delete</button>");
 
 				HeaderActions.Add($"<a href='/sdk/objects/data_source/m/{RecordId}/manage?ReturnUrl={returnUrlEncoded}' class='btn btn-white btn-sm'><i class='fa fa-cog go-orange'></i> Manage</a>");
-				
+
 			}
 			else
 			{
@@ -141,7 +142,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpDataSource
 
 				if (!String.IsNullOrWhiteSpace(ReturnUrl))
 					return Redirect(ReturnUrl);
-				
+
 				return Redirect($"/sdk/objects/data_source/l/list");
 			}
 			catch (ValidationException ex)

@@ -6,7 +6,8 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Database;
 using WebVella.Erp.Eql;
 using WebVella.Erp.Exceptions;
@@ -77,7 +78,7 @@ namespace WebVella.Erp.Api
 		public ErpUser GetUser(string email, string password)
 		{
 			if (string.IsNullOrWhiteSpace(email))
-				return null; 
+				return null;
 
 			using (var ctx = SecurityContext.OpenSystemScope())
 			{

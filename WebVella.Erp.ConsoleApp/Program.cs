@@ -3,7 +3,8 @@ using System;
 using System.Globalization;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Database;
 using WebVella.Erp.Eql;
 using WebVella.Erp.Hooks;
@@ -41,13 +42,8 @@ namespace WebVella.Erp.ConsoleApp
 			ErpSettings.Initialize(configurationBuilder.Build());
 			DbContext.CreateContext(ErpSettings.ConnectionString);
 			ErpService service = new ErpService();
-            
-			ErpAutoMapperConfiguration.Configure(ErpAutoMapperConfiguration.MappingExpressions);
-            //here put additional automapper configuration if needed
-            ErpAutoMapper.Initialize(ErpAutoMapperConfiguration.MappingExpressions);
-
             service.InitializeSystemEntities();
-			
+
 
 			//register hooks
 			HookManager.RegisterHooks(service);
@@ -65,7 +61,7 @@ namespace WebVella.Erp.ConsoleApp
 				//create connection
 				using (var connection = dbCtx.CreateConnection())
 				{
-					//create security context - in this sample we use OpenSystemScope method, 
+					//create security context - in this sample we use OpenSystemScope method,
 					//which used system user with all privileges and rights to erp data
 					using (var scope = SecurityContext.OpenSystemScope())
 					{
@@ -97,7 +93,7 @@ namespace WebVella.Erp.ConsoleApp
 				//create connection
 				using (var connection = dbCtx.CreateConnection())
 				{
-					//create security context - in this sample we use OpenSystemScope method, 
+					//create security context - in this sample we use OpenSystemScope method,
 					//which used system user with all privileges and rights to erp data
 					using (var scope = SecurityContext.OpenSystemScope())
 					{

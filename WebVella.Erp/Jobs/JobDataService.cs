@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Database;
 
 namespace WebVella.Erp.Jobs
@@ -166,7 +167,11 @@ namespace WebVella.Erp.Jobs
 			}
 
 			DataTable dtJobs = ExecuteQuerySqlCommand(sql, parameters);
-			return dtJobs.Rows.MapTo<Job>();
+			var result = new List<Job>();
+			foreach (DataRow row in dtJobs.Rows)
+				result.Add(row.MapTo<Job>());
+			return result;
+			//return dtJobs.Rows.MapTo<Job>();
 		}
 
 		public List<Job> GetJobs(DateTime? startFromDate = null, DateTime? startToDate = null, DateTime? finishedFromDate = null,
@@ -232,7 +237,11 @@ namespace WebVella.Erp.Jobs
 			}
 
 			DataTable dtJobs = ExecuteQuerySqlCommand(sql, parameters);
-			return dtJobs.Rows.MapTo<Job>();
+			var result = new List<Job>();
+			foreach (DataRow row in dtJobs.Rows)
+				result.Add(row.MapTo<Job>());
+			return result;
+			//return dtJobs.Rows.MapTo<Job>();
 		}
 
 		internal long GetJobsTotalCount(DateTime? startFromDate = null, DateTime? startToDate = null, DateTime? finishedFromDate = null,
@@ -443,8 +452,11 @@ namespace WebVella.Erp.Jobs
 			string sql = "SELECT * FROM schedule_plan ORDER BY name";
 
 			DataTable dtSchedulePlans = ExecuteQuerySqlCommand(sql);
-
-			return dtSchedulePlans.Rows.MapTo<SchedulePlan>();
+			var result = new List<SchedulePlan>();
+			foreach (DataRow row in dtSchedulePlans.Rows)
+				result.Add(row.MapTo<SchedulePlan>());
+			return result;
+			//return dtSchedulePlans.Rows.MapTo<SchedulePlan>();
 		}
 
 		public List<SchedulePlan> GetReadyForExecutionScheduledPlans()
@@ -457,8 +469,11 @@ namespace WebVella.Erp.Jobs
 			parameters.Add(new NpgsqlParameter("utc_now", DateTime.UtcNow) { NpgsqlDbType = NpgsqlDbType.Timestamp });
 
 			DataTable dtSchedulePlans = ExecuteQuerySqlCommand(sql, parameters);
-
-			return dtSchedulePlans.Rows.MapTo<SchedulePlan>();
+			var result = new List<SchedulePlan>();
+			foreach (DataRow row in dtSchedulePlans.Rows)
+				result.Add(row.MapTo<SchedulePlan>());
+			return result;
+			//return dtSchedulePlans.Rows.MapTo<SchedulePlan>();
 		}
 
 		public List<SchedulePlan> GetScheduledPlansByType(SchedulePlanType type)
@@ -468,8 +483,11 @@ namespace WebVella.Erp.Jobs
 			parameters.Add(new NpgsqlParameter("type", (int)type) { NpgsqlDbType = NpgsqlDbType.Integer });
 
 			DataTable dtSchedulePlans = ExecuteQuerySqlCommand(sql, parameters);
-
-			return dtSchedulePlans.Rows.MapTo<SchedulePlan>();
+			var result = new List<SchedulePlan>();
+			foreach (DataRow row in dtSchedulePlans.Rows)
+				result.Add(row.MapTo<SchedulePlan>());
+			return result;
+			//return dtSchedulePlans.Rows.MapTo<SchedulePlan>();
 		}
 
 		#endregion

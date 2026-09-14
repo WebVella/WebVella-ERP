@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Database;
 using WebVella.Erp.Hooks;
 using WebVella.Erp.Jobs;
@@ -17,6 +18,7 @@ namespace WebVella.Erp
 
 		public void InitializeSystemEntities()
 		{
+			ErpMappingBootstrapper.Initialize();
 			FieldResponse fieldResponse = null;
 			EntityManager entMan = new EntityManager();
 			EntityRelationManager rm = new EntityRelationManager();
@@ -900,7 +902,8 @@ namespace WebVella.Erp
 		public void SetAutoMapperConfiguration()
 		{
 			foreach (ErpPlugin plugin in Plugins)
-				plugin.SetAutoMapperConfiguration(ErpAutoMapperConfiguration.MappingExpressions);
+				plugin.RegisterMappingStrategies();
+				//plugin.SetAutoMapperConfiguration(ErpAutoMapperConfiguration.MappingExpressions);
 		}
 
 		public void InitializeBackgroundJobs(List<JobType> additionalJobTypes = null)
@@ -993,7 +996,7 @@ namespace WebVella.Erp
   ""timestamp"" TIMESTAMP(0) WITH TIME ZONE NOT NULL,
   stem_content TEXT DEFAULT ''::text NOT NULL,
   CONSTRAINT system_search_pkey PRIMARY KEY(id)
-) 
+)
 WITH(oids = false); ";
 
 					command = connection.CreateCommand(filesTableSql);

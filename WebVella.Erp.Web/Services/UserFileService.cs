@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Database;
 using WebVella.Erp.Utilities;
 
@@ -37,7 +38,7 @@ namespace WebVella.Erp.Web.Services
 				filters.Add(EntityQuery.QueryContains("type",type));
 			}
 			var filterQuery = EntityQuery.QueryAND(filters.ToArray());
-			
+
 			EntityQuery query = new EntityQuery("user_file", UserFile.GetQueryColumns(), filterQuery, listSorts.ToArray(),skipCount,pageSize);
 			QueryResponse response = RecMan.Find(query);
 			if (!response.Success)
@@ -79,12 +80,12 @@ namespace WebVella.Erp.Web.Services
 			else if(mimeType.StartsWith("audio")) {
 				userFileRecord["type"] = "audio";
 			}
-			else if(fileExtension == ".doc" || fileExtension == ".docx"  || fileExtension == ".odt"  || fileExtension == ".rtf" 
-			 || fileExtension == ".txt"  || fileExtension == ".pdf"  || fileExtension == ".html"  || fileExtension == ".htm"  || fileExtension == ".ppt" 
+			else if(fileExtension == ".doc" || fileExtension == ".docx"  || fileExtension == ".odt"  || fileExtension == ".rtf"
+			 || fileExtension == ".txt"  || fileExtension == ".pdf"  || fileExtension == ".html"  || fileExtension == ".htm"  || fileExtension == ".ppt"
 			  || fileExtension == ".pptx"  || fileExtension == ".xls"  || fileExtension == ".xlsx"  || fileExtension == ".ods"  || fileExtension == ".odp" ) {
 				userFileRecord["type"] = "document";
 			}
-			else { 
+			else {
 				userFileRecord["type"] = "other";
 			}
 

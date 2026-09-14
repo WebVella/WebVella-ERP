@@ -8,7 +8,8 @@ using System.Data;
 using System.Linq;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Database;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Models;
@@ -511,7 +512,7 @@ namespace WebVella.Erp.Plugins.SDK.Services
                     foreach (var node in currentBodyNodes.Where(x => x.ParentId == null))
                         QueuePageBodyNode(node, currentBodyNodes, queue);
 
-                    //nodes in queue are ordered in that way from parent to child, 
+                    //nodes in queue are ordered in that way from parent to child,
                     //so referential problems during create and update should be eliminated
                     while (queue.Count > 0)
                     {
@@ -696,7 +697,7 @@ namespace WebVella.Erp.Plugins.SDK.Services
                     }
 
                     //we load page body nodes again because delete is recursive
-                    //and deleting one node may delete other node which are moved 
+                    //and deleting one node may delete other node which are moved
                     //to another branch of the nodes tree, such nodes will be
                     //created in code for create and update
                     oldBodyNodes = ReadOldPageBodyNodes();
@@ -1444,7 +1445,7 @@ $"#region << ***Create entity*** Entity name: {entity.Name} >>\n" +
                 else
                 {
                     //// POSSIBLE UPDATE
-                    /////////////////////////////////////////////////////		
+                    /////////////////////////////////////////////////////
                     var changeCheckResponse = UpdateFieldCode(field, entityOldFieldsDictionary[field.Id], currentEntity);
                     if (changeCheckResponse.HasUpdate)
                     {
@@ -7733,7 +7734,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
                 code += $"\tpatchObject[\"name\"] = \"{(string)currentRole["name"]}\";\n";
                 response.ChangeList.Add($"<span class='go-green label-block'>name</span>  from <span class='go-red'>{(string)oldRole["name"]}</span> to <span class='go-red'>{(string)currentRole["name"]}</span>");
             }
-            //label	
+            //label
             if ((string)currentRole["description"] != (string)oldRole["description"])
             {
                 hasUpdate = true;
@@ -9144,7 +9145,7 @@ $"#region << ***Update role*** Role name: {(string)currentRole["name"]} >>\n" +
 
             var oldRecordLists = ReadOldEntityRecords(oldEntity.Name);
 
-            //if any, cleanup old records from fields which don't exist in new entity meta 
+            //if any, cleanup old records from fields which don't exist in new entity meta
             if (fieldsToRemoveFromOldEntity.Any())
             {
                 foreach (var rec in oldRecordLists)

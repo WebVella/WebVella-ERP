@@ -12,7 +12,8 @@ using System.IO;
 using System.Linq;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Repositories;
@@ -100,7 +101,7 @@ namespace WebVella.Erp.Web.Services
 		}
 
 		/// <summary>
-		/// Gets all pages that can be used by an app. This includes pages with the apps ID but also pages 
+		/// Gets all pages that can be used by an app. This includes pages with the apps ID but also pages
 		/// of entities that are attached to its sitemap nodes and do not have AppId specified
 		/// </summary>
 		/// <param name="appId"></param>
@@ -390,7 +391,7 @@ namespace WebVella.Erp.Web.Services
 
 
 		/// <summary>
-		/// Deletes page and all referenced data 
+		/// Deletes page and all referenced data
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="transaction"></param>
@@ -464,7 +465,7 @@ namespace WebVella.Erp.Web.Services
 		{
 			if (ErpAppContext.Current != null)
 				ErpAppContext.Current.Cache.Remove(CACHE_KEY);
-			//we clear cache for apps also cause pages are loaded into apps 
+			//we clear cache for apps also cause pages are loaded into apps
 			new AppService(connectionString).ClearAllAppCache();
 		}
 
@@ -1467,7 +1468,7 @@ namespace WebVella.Erp.Web.Services
 			}
 
 			List<string> propertiesToRemove = new List<string>();
-			
+
 			var mappedRecord = new EntityRecord();
 			foreach (var key in resultRecord.Properties.Keys)
 			{
@@ -1477,10 +1478,10 @@ namespace WebVella.Erp.Web.Services
 					FieldType? relatedFieldType = null;
 					if (relationsFieldTypeDictionary.ContainsKey(key))
 						relatedFieldType = relationsFieldTypeDictionary[key];
-					
+
 					if (relationsFieldRelationTypeDictionary.ContainsKey(key))
 						relationType = relationsFieldRelationTypeDictionary[key];
-					
+
 
 					try
 					{
@@ -1492,12 +1493,12 @@ namespace WebVella.Erp.Web.Services
 						//this is because there are pages with forms which posts custom, non related to entity meta data
 						if (ex.Message == "1000")
 							propertiesToRemove.Add(key);
-						else 
+						else
 							throw;
 					}
 				}
 			}
-			
+
 			foreach (string key in propertiesToRemove)
 				resultRecord.Properties.Remove(key);
 
@@ -1552,7 +1553,7 @@ namespace WebVella.Erp.Web.Services
 			{
 				if (pathNodes[4].ToLowerInvariant() == "r")
 				{
-					//Record /app_name/area_name/node_name/r/record_id/pageName? 
+					//Record /app_name/area_name/node_name/r/record_id/pageName?
 					result.AppName = pathNodes[1].ToLowerInvariant();
 					result.AreaName = pathNodes[2].ToLowerInvariant();
 					result.NodeName = pathNodes[3].ToLowerInvariant();

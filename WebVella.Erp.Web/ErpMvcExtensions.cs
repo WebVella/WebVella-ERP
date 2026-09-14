@@ -10,12 +10,16 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using WebVella.Erp.Api;
-using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
+
+//using WebVella.Erp.Api.Models.AutoMapper;
 using WebVella.Erp.Database;
 using WebVella.Erp.Jobs;
 using WebVella.Erp.Web.Middleware;
 using WebVella.Erp.Web.Models;
-using WebVella.Erp.Web.Models.AutoMapper;
+using WebVella.Erp.Web.Models.Mapping;
+
+//using WebVella.Erp.Web.Models.AutoMapper;
 using WebVella.Erp.Web.Services;
 using WebVella.TagHelpers;
 
@@ -40,6 +44,9 @@ namespace WebVella.Erp.Web
 		{
 			using (var secCtx = SecurityContext.OpenSystemScope())
 			{
+
+				WebErpMappingBootstrapper.Initialize();
+
 				IConfiguration configuration = app.ApplicationServices.GetService<IConfiguration>();
 				IWebHostEnvironment env = app.ApplicationServices.GetService<IWebHostEnvironment>();
 
@@ -64,16 +71,17 @@ namespace WebVella.Erp.Web
 					DbContext.CreateContext(ErpSettings.ConnectionString);
 
 					service = app.ApplicationServices.GetService<IErpService>();
+					ErpMappingBootstrapper.Initialize();
 
-					var cfg = ErpAutoMapperConfiguration.MappingExpressions; // var cfg = new AutoMapper.Configuration.MapperConfigurationExpression();
-					ErpAutoMapperConfiguration.Configure(cfg);
-					ErpWebAutoMapperConfiguration.Configure(cfg);
+					//var cfg = ErpAutoMapperConfiguration.MappingExpressions; // var cfg = new AutoMapper.Configuration.MapperConfigurationExpression();
+					//ErpAutoMapperConfiguration.Configure(cfg);
+					//ErpWebAutoMapperConfiguration.Configure(cfg);
 
-					//this method append plugin automapper configuration
-					service.SetAutoMapperConfiguration();
+					////this method append plugin automapper configuration
+					//service.SetAutoMapperConfiguration();
 
-					//this should be called after plugin init
-					ErpAutoMapper.Initialize(cfg);
+					////this should be called after plugin init
+					//ErpAutoMapper.Initialize(cfg);
 
 					//we used en-US based culture settings for initialization and patch execution
 					{

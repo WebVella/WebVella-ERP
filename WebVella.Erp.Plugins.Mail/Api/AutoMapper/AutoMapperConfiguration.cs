@@ -1,35 +1,35 @@
-﻿#region <--- DIRECTIVES --->
+﻿//#region <--- DIRECTIVES --->
 
-using WebVella.Erp.Web.Models.AutoMapper.Profiles;
-using AutoMapper.Configuration;
-using AutoMapper;
+//using WebVella.Erp.Web.Models.AutoMapper.Profiles;
+//using AutoMapper.Configuration;
+//using AutoMapper;
 
-#endregion
+//#endregion
 
-namespace WebVella.Erp.Plugins.Mail.Api.AutoMapper
-{
-	public class MailPluginAutoMapperConfiguration
-	{
-		public static MapperConfigurationExpression MappingExpressions = new MapperConfigurationExpression();
+//namespace WebVella.Erp.Plugins.Mail.Api.AutoMapper
+//{
+//	public class MailPluginAutoMapperConfiguration
+//	{
+//		public static MapperConfigurationExpression MappingExpressions = new MapperConfigurationExpression();
 
-		private static object lockObj = new object();
-		private static bool alreadyConfigured = false;
+//		private static object lockObj = new object();
+//		private static bool alreadyConfigured = false;
 
-		public static void Configure(MapperConfigurationExpression cfg)
-		{
-			if (alreadyConfigured)
-				return;
+//		public static void Configure(MapperConfigurationExpression cfg)
+//		{
+//			if (alreadyConfigured)
+//				return;
 
-			lock (lockObj)
-			{
-				if (alreadyConfigured)
-					return;
+//			lock (lockObj)
+//			{
+//				if (alreadyConfigured)
+//					return;
 
-				alreadyConfigured = true;
+//				alreadyConfigured = true;
 
-				cfg.AddProfile(new SmtpServiceProfile());
-				cfg.AddProfile(new EmailProfile());
-			}
-		}
-	}
-}
+//				cfg.AddProfile(new SmtpServiceProfile());
+//				cfg.AddProfile(new EmailProfile());
+//			}
+//		}
+//	}
+//}

@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Data;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Database;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using Newtonsoft.Json;
 using WebVella.Erp.Eql;
 using System.Linq;
@@ -49,7 +50,7 @@ namespace WebVella.Erp.Api
 		internal static void RemoveFromCache()
 		{
 			cache.Remove(CACHE_KEY);
-		} 
+		}
 
 		#endregion
 
@@ -182,7 +183,7 @@ namespace WebVella.Erp.Api
 
 			rep.Create(ds.Id, ds.Name, ds.Description, ds.Weight, ds.EqlText, ds.SqlText,
 				JsonConvert.SerializeObject(ds.Parameters), JsonConvert.SerializeObject(ds.Fields), ds.EntityName, ds.ReturnTotal);
-			
+
 			RemoveFromCache();
 
 			return rep.Get(ds.Id).MapTo<DatabaseDataSource>();
@@ -256,7 +257,7 @@ namespace WebVella.Erp.Api
 
 			validation.CheckAndThrow();
 
-			rep.Update(ds.Id, ds.Name, ds.Description, ds.Weight, ds.EqlText, ds.SqlText, JsonConvert.SerializeObject(ds.Parameters), 
+			rep.Update(ds.Id, ds.Name, ds.Description, ds.Weight, ds.EqlText, ds.SqlText, JsonConvert.SerializeObject(ds.Parameters),
 				JsonConvert.SerializeObject(ds.Fields), ds.EntityName, ds.ReturnTotal );
 
 			RemoveFromCache();
@@ -367,7 +368,7 @@ namespace WebVella.Erp.Api
 
 						if (dsParameter.Value.ToLowerInvariant() == "guid.empty")
 							return Guid.Empty;
-						
+
 						if (Guid.TryParse(dsParameter.Value, out Guid value))
 							return value;
 

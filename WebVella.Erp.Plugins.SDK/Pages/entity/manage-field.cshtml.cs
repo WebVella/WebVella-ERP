@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Plugins.SDK.Utils;
 using WebVella.Erp.Utilities;
@@ -680,7 +681,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 							{
 								defaultDecimal = result;
 							}
-						
+
 							input = new InputAutoNumberField()
 							{
 								Id = fieldId,
@@ -1188,7 +1189,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 									{
 										value = key;
 									}
-									if (optionArray.Length > 2 && !String.IsNullOrWhiteSpace(optionArray[2])) { 
+									if (optionArray.Length > 2 && !String.IsNullOrWhiteSpace(optionArray[2])) {
 										iconClass = optionArray[2].Trim();
 									}
 									if (optionArray.Length > 3 && !String.IsNullOrWhiteSpace(optionArray[3]))

@@ -11,7 +11,8 @@ using System.Linq;
 using System.Text;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Database;
 using WebVella.Erp.Eql;
 using WebVella.Erp.Exceptions;
@@ -452,7 +453,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 				}
 			}
 
-			//we set current record to store properties which don't exist in current entity 
+			//we set current record to store properties which don't exist in current entity
 			EntityRecord currentRecord = pageModel.DataModel.GetProperty("Record") as EntityRecord;
 			currentRecord["recipient_email"] = recipientEmail;
 			currentRecord["subject"] = subject;
@@ -509,7 +510,7 @@ namespace WebVella.Erp.Plugins.Mail.Services
 
 			if (!response.Success)
 				throw new Exception(response.Message);
-			
+
 		}
 
 

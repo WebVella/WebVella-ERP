@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
+using WebVella.Erp.Web.Models.Mapping;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Repositories;
@@ -120,7 +122,7 @@ namespace WebVella.Erp.Web.Services
 		}
 
 		/// <summary>
-		/// Updates existing application 
+		/// Updates existing application
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="name"></param>
@@ -172,7 +174,7 @@ namespace WebVella.Erp.Web.Services
 			var app = repository.GetById(id, transaction);
 			if (app == null)
 				vex.AddError("id", "There is no application with specified identifier.");
-			
+
 			vex.CheckAndThrow();
 
 			if (transaction == null)
@@ -208,7 +210,7 @@ namespace WebVella.Erp.Web.Services
 		}
 
 		/// <summary>
-		/// Deletes application - wrap transactional code 
+		/// Deletes application - wrap transactional code
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="transaction"></param>
@@ -302,7 +304,7 @@ namespace WebVella.Erp.Web.Services
 		/// <param name="name"></param>
 		/// <param name="label"></param>
 		/// <param name="labelTranslations"></param>
-		/// <param name="description"></param> 
+		/// <param name="description"></param>
 		/// <param name="descriptionTranslations"></param>
 		/// <param name="iconClass"></param>
 		/// <param name="color"></param>
@@ -465,7 +467,7 @@ namespace WebVella.Erp.Web.Services
 			Guid? appId = new SitemapAreaRepository(connectionString).GetAppIdByAreaId(areaId.Value, transaction);
 
 			new SitemapAreaGroupRepository(connectionString).Delete(id, transaction);
-			
+
 			ClearAppCache(appId.Value);
 		}
 
@@ -490,7 +492,7 @@ namespace WebVella.Erp.Web.Services
 		/// <param name="transaction"></param>
 		public void CreateAreaNode(Guid id, Guid areaId, string name, string label, List<TranslationResource> labelTranslations,
 			string iconClass, string url, int type, Guid? entityId, int weight,
-			List<Guid> accessRoles, List<Guid> entityListPages = null, List<Guid> entityCreatePages = null, 
+			List<Guid> accessRoles, List<Guid> entityListPages = null, List<Guid> entityCreatePages = null,
             List<Guid> entityDetailsPages = null, List<Guid> entityManagePages = null, NpgsqlTransaction transaction = null, Guid? parentId = null)
 		{
             if (entityListPages == null)
@@ -576,7 +578,7 @@ namespace WebVella.Erp.Web.Services
 
 			new PageService(connectionString).UnbindPagesFromSitemapNode(id, transaction);
 			new SitemapAreaNodeRepository(connectionString).Delete(id, transaction);
-			
+
 			ClearAppCache(appId.Value);
 		}
 
@@ -584,7 +586,7 @@ namespace WebVella.Erp.Web.Services
 		{
 			sitemap.Areas.ForEach(x => { x.Nodes = x.Nodes.OrderBy(t => t.Weight).ThenBy(y => y.Name).ToList(); });
 			sitemap.Areas = sitemap.Areas.OrderBy(x => x.Weight).ThenBy(x=>x.Name).ToList();
-			
+
 			return sitemap;
 		}
 

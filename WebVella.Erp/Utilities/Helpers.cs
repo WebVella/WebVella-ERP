@@ -7,7 +7,8 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 
 namespace WebVella.Erp.Utilities
 {
@@ -2608,7 +2609,7 @@ namespace WebVella.Erp.Utilities
 				recordKeyList.Add(property.Key);
 			}
 
-			//in angular properties starting with $$ are not posted by the $http service, 
+			//in angular properties starting with $$ are not posted by the $http service,
 			foreach (var key in recordKeyList)
 			{
 				if (key.StartsWith("_$"))

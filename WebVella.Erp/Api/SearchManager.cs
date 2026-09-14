@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Database;
 using WebVella.Erp.Fts;
 
@@ -21,7 +22,7 @@ namespace WebVella.Erp.Api
 				throw new ArgumentNullException(nameof(query));
 
 			List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
-			
+
 			string sql = @"SELECT id,url,snippet,timestamp, COUNT(*) OVER() AS ___total_count___ FROM system_search ";
 			if( query.ResultType == SearchResultType.Full )
 				sql = @"SELECT *,  COUNT(*) OVER() AS ___total_count___ FROM system_search ";
@@ -52,7 +53,7 @@ namespace WebVella.Erp.Api
 					bool singleWord = analizedText.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Count() == 1;
 					if (singleWord)
 					{
-						//search for all lexemes starting with this word 
+						//search for all lexemes starting with this word
 						parameters.Add(new NpgsqlParameter(parameterName, analizedText + ":*" ));
 						textQuerySql = textQuerySql + " to_tsvector( 'simple', stem_content ) @@ to_tsquery( 'simple', " + parameterName + ") ";
 					}
@@ -190,7 +191,7 @@ namespace WebVella.Erp.Api
 			record.Url = url ?? string.Empty;
 			record.Snippet = snippet ?? string.Empty;
 			record.Content = (content ?? string.Empty).ToLowerInvariant(); ;
-			
+
 			record.StemContent = ftsAnalyzer.ProcessText((content ?? string.Empty).ToLowerInvariant());
 
 			record.AuxData = auxData ?? string.Empty;

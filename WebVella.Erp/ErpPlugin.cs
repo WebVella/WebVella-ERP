@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using AutoMapper.Configuration;
+﻿//using AutoMapper;
+//using AutoMapper.Configuration;
 using Newtonsoft.Json;
 using Npgsql;
 using System;
@@ -50,7 +50,12 @@ namespace WebVella.Erp
 		[JsonProperty(PropertyName = "icon_url")]
 		public virtual string IconUrl { get; protected set; }
 
-		public virtual void SetAutoMapperConfiguration(MapperConfigurationExpression cfg)
+		//[Obsolete("AutoMapper library will be removed and this method with it")]
+		//public virtual void SetAutoMapperConfiguration(MapperConfigurationExpression cfg)
+		//{
+		//}
+
+		public virtual void RegisterMappingStrategies()
 		{
 		}
 

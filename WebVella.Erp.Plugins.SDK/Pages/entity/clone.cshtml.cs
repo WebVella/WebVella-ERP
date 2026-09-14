@@ -4,7 +4,8 @@ using System;
 using System.Collections.Generic;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Plugins.SDK.Utils;
 using WebVella.Erp.Web;
@@ -111,7 +112,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 
 			EntityManager entMan = new EntityManager();
 
-			
+
 			Label = ExistingEntity.Label;
 			LabelPlural = ExistingEntity.LabelPlural;
 			Color = ExistingEntity.Color;

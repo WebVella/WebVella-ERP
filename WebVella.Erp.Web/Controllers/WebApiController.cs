@@ -19,7 +19,8 @@ using System.Text;
 using System.Threading.Tasks;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Database;
 using WebVella.Erp.Diagnostics;
 using WebVella.Erp.Eql;
@@ -871,7 +872,7 @@ namespace WebVella.Erp.Web.Controllers
 					//erpRequestContext
 					if (page != null)
 					{
-						//Override 
+						//Override
 						if (entityId != null)
 							page.EntityId = entityId;
 
@@ -2675,7 +2676,7 @@ namespace WebVella.Erp.Web.Controllers
 					else
 					{
 						relatedRecord = relatedRecordResponse.Object.Data.First();
-						//2.2. Record has value in the related field		
+						//2.2. Record has value in the related field
 						if (!relatedRecord.Properties.ContainsKey(targetFieldName) || relatedRecord[targetFieldName] == null)
 						{
 							var error = new ErrorModel
@@ -2731,7 +2732,7 @@ namespace WebVella.Erp.Web.Controllers
 						}
 						else
 						{
-							//if currentEntity is target -> get the target field and assing the correct id value of the origin 
+							//if currentEntity is target -> get the target field and assing the correct id value of the origin
 							postObj[relation.TargetFieldName] = relatedRecord[relation.OriginFieldName];
 						}
 					}
@@ -2753,7 +2754,7 @@ namespace WebVella.Erp.Web.Controllers
 						}
 						else
 						{
-							//if current is origin -> create relation	
+							//if current is origin -> create relation
 							response = recMan.CreateRelationManyToManyRecord(relation.Id, (Guid)postObj["id"], relatedRecordId);
 						}
 						if (!response.Success)

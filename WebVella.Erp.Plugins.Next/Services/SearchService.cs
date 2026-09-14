@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Eql;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Web.Services;
@@ -31,7 +32,7 @@ namespace WebVella.Erp.Plugins.Next.Services
 					var field = currentEntity.Fields.FirstOrDefault(x => x.Name == fieldName);
 					if (field == null)
 						continue; // missing fields are ignored
-					
+
 					requestColumns.Add(fieldName);
 				}
 				else {

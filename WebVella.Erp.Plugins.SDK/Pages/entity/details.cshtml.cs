@@ -6,7 +6,8 @@ using System.Linq;
 using System.Web;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Plugins.SDK.Utils;
 using WebVella.Erp.Web;
@@ -107,7 +108,7 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
 				HeaderActions.Add(PageUtils.GetActionTemplate(PageUtilsActionType.ConfirmAndSubmitForm, label: "Delete Entity", formId: "DeleteRecord", btnClass: "btn btn-white btn-sm", iconClass:"fa fa-trash-alt go-red"));
 			};
 			HeaderActions.Add($"<a href='/sdk/objects/entity/m/{(ErpEntity != null ? ErpEntity.Id : Guid.Empty)}/manage?returnUrl={HttpUtility.UrlEncode(CurrentUrl)}' class='btn btn-white btn-sm'><i class='fa fa-cog go-orange'></i> Manage</a>");
-			
+
 
 			HeaderToolbar.AddRange( AdminPageUtils.GetEntityAdminSubNav(ErpEntity, "details"));
 

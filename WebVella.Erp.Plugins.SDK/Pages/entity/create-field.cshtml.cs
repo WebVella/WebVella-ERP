@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Database;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Plugins.SDK.Utils;
@@ -958,8 +959,8 @@ namespace WebVella.Erp.Plugins.SDK.Pages.ErpEntity
                     throw exception;
                 }
 
-                // because of https://github.com/aspnet/Mvc/issues/6711, i added TempDataExtensions int 
-                // WebVella.Erp.Web.Utils and using Put and Get<> instead of 
+                // because of https://github.com/aspnet/Mvc/issues/6711, i added TempDataExtensions int
+                // WebVella.Erp.Web.Utils and using Put and Get<> instead of
                 // TempData["ScreenMessage"] = new ScreenMessage() { Message = "Field created successfully" };
                 TempData.Put("ScreenMessage", new ScreenMessage() { Message = "Field created successfully" });
                 return Redirect($"/sdk/objects/entity/r/{ErpEntity.Id}/rl/fields/l");

@@ -6,7 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Wangkanai.Detection.Services;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Web.Models;
 using WebVella.Erp.Web.Services;
 

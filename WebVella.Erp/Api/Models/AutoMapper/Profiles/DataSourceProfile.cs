@@ -1,43 +1,43 @@
-﻿using AutoMapper;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Data;
+﻿//using AutoMapper;
+//using Newtonsoft.Json;
+//using System;
+//using System.Collections.Generic;
+//using System.Data;
 
-namespace WebVella.Erp.Api.Models.AutoMapper.Profiles
-{
-	public class DataSourceProfile : Profile
-	{
-		public DataSourceProfile()
-		{
-			CreateMap<DataRow, DatabaseDataSource>().ConvertUsing(source => DataRowToModelConvert(source));
-		}
+//namespace WebVella.Erp.Api.Models.AutoMapper.Profiles
+//{
+//	public class DataSourceProfile : Profile
+//	{
+//		public DataSourceProfile()
+//		{
+//			CreateMap<DataRow, DatabaseDataSource>().ConvertUsing(source => DataRowToModelConvert(source));
+//		}
 
-		private static DatabaseDataSource DataRowToModelConvert(DataRow inputObj)
-		{
-			
-			if (inputObj == null)
-				return null;
+//		private static DatabaseDataSource DataRowToModelConvert(DataRow inputObj)
+//		{
 
-			var outputObj = new DatabaseDataSource();
-			outputObj.Id = (Guid)inputObj["id"];
-			outputObj.Name = (string)inputObj["name"];
-			outputObj.Description = (string)inputObj["description"];
-			outputObj.Weight = (int)inputObj["weight"];
-			outputObj.ReturnTotal = (bool)inputObj["return_total"];
-			outputObj.EqlText = (string)inputObj["eql_text"];
-			outputObj.SqlText = (string)inputObj["sql_text"];
-			outputObj.Parameters.AddRange( JsonConvert.DeserializeObject<List<DataSourceParameter>>((string)inputObj["parameters_json"]).ToArray() );
-			outputObj.Fields.AddRange(JsonConvert.DeserializeObject<List<DataSourceModelFieldMeta>>((string)inputObj["fields_json"]).ToArray());
-			outputObj.EntityName = (string)inputObj["entity_name"];
+//			if (inputObj == null)
+//				return null;
 
-			//clean data source parameters from leading @ character
-			foreach (var par in outputObj.Parameters)
-				if (par.Name.StartsWith("@"))
-					par.Name = par.Name.Substring(1);
+//			var outputObj = new DatabaseDataSource();
+//			outputObj.Id = (Guid)inputObj["id"];
+//			outputObj.Name = (string)inputObj["name"];
+//			outputObj.Description = (string)inputObj["description"];
+//			outputObj.Weight = (int)inputObj["weight"];
+//			outputObj.ReturnTotal = (bool)inputObj["return_total"];
+//			outputObj.EqlText = (string)inputObj["eql_text"];
+//			outputObj.SqlText = (string)inputObj["sql_text"];
+//			outputObj.Parameters.AddRange( JsonConvert.DeserializeObject<List<DataSourceParameter>>((string)inputObj["parameters_json"]).ToArray() );
+//			outputObj.Fields.AddRange(JsonConvert.DeserializeObject<List<DataSourceModelFieldMeta>>((string)inputObj["fields_json"]).ToArray());
+//			outputObj.EntityName = (string)inputObj["entity_name"];
 
-			return outputObj;
-		}
+//			//clean data source parameters from leading @ character
+//			foreach (var par in outputObj.Parameters)
+//				if (par.Name.StartsWith("@"))
+//					par.Name = par.Name.Substring(1);
 
-	}
-}
+//			return outputObj;
+//		}
+
+//	}
+//}

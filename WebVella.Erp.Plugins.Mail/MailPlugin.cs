@@ -1,11 +1,12 @@
-﻿using AutoMapper;
-using AutoMapper.Configuration;
+﻿//using AutoMapper;
+//using AutoMapper.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using WebVella.Erp.Api;
 using WebVella.Erp.Jobs;
 using WebVella.Erp.Plugins.Mail.Api;
+using WebVella.Erp.Plugins.Mail.Api.Mapping;
 using WebVella.Erp.Plugins.Mail.Jobs;
 using WebVella.Erp.Plugins.Mail.Services;
 
@@ -32,10 +33,16 @@ namespace WebVella.Erp.Plugins.Mail
 		//	return list;
 		//}
 
-		public override void SetAutoMapperConfiguration(MapperConfigurationExpression cfg)
+		//public override void SetAutoMapperConfiguration(MapperConfigurationExpression cfg)
+		//{
+		//	Api.AutoMapper.MailPluginAutoMapperConfiguration.Configure(cfg);
+		//	base.SetAutoMapperConfiguration(cfg);
+		//}
+
+		public override void RegisterMappingStrategies()
 		{
-			Api.AutoMapper.MailPluginAutoMapperConfiguration.Configure(cfg);
-			base.SetAutoMapperConfiguration(cfg);
+			MailMappingBootstrapper.Initialize();
+			base.RegisterMappingStrategies();
 		}
 
 		private void SetSchedulePlans()

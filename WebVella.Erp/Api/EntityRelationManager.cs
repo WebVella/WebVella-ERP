@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Database;
 
 namespace WebVella.Erp.Api
@@ -28,7 +29,7 @@ namespace WebVella.Erp.Api
 				suppliedContext = currentContext;
 		}
 
-		#region << Validation >>  
+		#region << Validation >>
 
 		private enum ValidationType
         {
@@ -47,7 +48,7 @@ namespace WebVella.Erp.Api
             if (validationType == ValidationType.Update)
             {
                 //we cannot update relation with missing Id (Guid.Empty means id is missing)
-                //of if there is no relation with this id already                
+                //of if there is no relation with this id already
                 if (relation.Id == Guid.Empty)
                     errors.Add(new ErrorModel("id", null, "Id is required!"));
                 else if (Read(relation.Id).Object == null)
@@ -281,7 +282,7 @@ namespace WebVella.Erp.Api
             catch (Exception e)
             {
                 response.Success = false;
-				
+
 				if (ErpSettings.DevelopmentMode)
 					response.Message = e.Message + e.StackTrace;
 
@@ -308,7 +309,7 @@ namespace WebVella.Erp.Api
 						response.Message = string.Format("The entity relation with id '{0}' does not exist!", relationId);
 					return response;
 				}
-				
+
 				relations = Read().Object;
 				response.Object = relations.SingleOrDefault( x=>x.Id == relationId);
                 if (response.Object != null)
@@ -445,7 +446,7 @@ namespace WebVella.Erp.Api
                 response.Success = false;
                 response.Object = relation;
                 response.Timestamp = DateTime.UtcNow;
-				
+
 				if (ErpSettings.DevelopmentMode)
 					response.Message = e.Message + e.StackTrace;
 				else
@@ -505,7 +506,7 @@ namespace WebVella.Erp.Api
 				response.Success = false;
                 response.Object = relation;
                 response.Timestamp = DateTime.UtcNow;
-				
+
 				if (ErpSettings.DevelopmentMode)
 					response.Message = e.Message + e.StackTrace;
 				else
@@ -554,7 +555,7 @@ namespace WebVella.Erp.Api
             catch (Exception e)
             {
 				Cache.Clear();
-				
+
 				if (ErpSettings.DevelopmentMode)
 					response.Message = string.Format("Relation ID: {0}, /r/nMessage:{1}/r/nStackTrace:{2}", relationId, e.Message, e.StackTrace);
 				else

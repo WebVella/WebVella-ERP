@@ -5,7 +5,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Database;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Utilities;
@@ -655,7 +656,7 @@ namespace WebVella.Erp.Api
 					return response;
 				}
 
-				//entity, entity records and relations are deleted in storage repository 
+				//entity, entity records and relations are deleted in storage repository
 				CurrentContext.EntityRepository.Delete(id);
 			}
 			catch (Exception e)
@@ -687,7 +688,7 @@ namespace WebVella.Erp.Api
 				Message = "The entity was successfully returned!",
 			};
 
-			//try return from cache			
+			//try return from cache
 			var entities = Cache.GetEntities();
 			if (entities != null)
 			{
@@ -712,7 +713,7 @@ namespace WebVella.Erp.Api
 					//	relationList = relationListResponse.Object;
 
 
-					//TODO RUMEN - the unique key for finding fields, lists, views should be not only fieldId for example, but the fieldId+entityId combination. 
+					//TODO RUMEN - the unique key for finding fields, lists, views should be not only fieldId for example, but the fieldId+entityId combination.
 					//The problem occurs when there are two fields in two different entities with the same id.Same applies for view and list.
 					List<Field> fields = new List<Field>();
 

@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
-using WebVella.Erp.Api.Models.AutoMapper;
+//using WebVella.Erp.Api.Models.AutoMapper;
+using WebVella.Erp.Api.Models.Mapping;
 using WebVella.Erp.Diagnostics;
 using WebVella.Erp.Exceptions;
 using WebVella.Erp.Hooks;
@@ -143,7 +144,7 @@ namespace WebVella.Erp.Web.Pages.Application
 }
 
 /*
- * system actions: 
+ * system actions:
  *	OnGet: none
  *	OnPost: PreCreate,PostCreate
  * custom actions: based on form handler
