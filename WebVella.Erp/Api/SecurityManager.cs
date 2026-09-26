@@ -96,6 +96,39 @@ namespace WebVella.Erp.Api
 			}
 		}
 
+		public bool IsFirstRunAdminAccount()
+		{
+			var user = GetUser(SystemIds.FirstUserId);
+			if (user == null)
+				return false;
+
+			return string.Equals(user.Email, "erp@webvella.com", StringComparison.OrdinalIgnoreCase)
+				&& PasswordUtil.VerifyMd5Hash("erp", user.Password);
+		}
+
+		public void SetupFirstAdminAccount(string email, string password)
+		{
+			ValidationException valEx = new ValidationException();
+			if (string.IsNullOrWhiteSpace(email))
+				valEx.AddError("email", "Email is required.");
+			else if (!IsValidEmail(email))
+				valEx.AddError("email", "Email is not valid.");
+			if (string.IsNullOrWhiteSpace(password))
+				valEx.AddError("password", "Password is required.");
+			valEx.CheckAndThrow();
+
+			using (var ctx = SecurityContext.OpenSystemScope())
+			{
+				if (!IsFirstRunAdminAccount())
+					throw new Exception("The administrator account has already been set up.");
+
+				var user = GetUser(SystemIds.FirstUserId);
+				user.Email = email.Trim();
+				user.Password = password;
+				SaveUser(user);
+			}
+		}
+
 		private ErpUser GetSystemUserWithNoSecurityCheck()
 		{
 			using (NpgsqlConnection connection = new NpgsqlConnection(ErpSettings.ConnectionString))
