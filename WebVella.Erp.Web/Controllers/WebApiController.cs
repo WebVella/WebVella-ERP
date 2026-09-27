@@ -492,6 +492,7 @@ namespace WebVella.Erp.Web.Controllers
 			}
 		}
 
+		[Authorize(Roles = "administrator")]
 		[Route("api/v3.0/datasource/code-compile")]
 		[HttpPost]
 		public ActionResult DataSourceAction([FromBody] DataSourceCodeTestModel model)
@@ -4012,7 +4013,8 @@ namespace WebVella.Erp.Web.Controllers
 		public IActionResult UploadFileManagerCKEditor(IFormFile upload)
 		{
 			byte[] fileBytes = null;
-			string CKEditorFuncNum = HttpContext.Request.Query["CKEditorFuncNum"].ToString();
+			if (!int.TryParse(HttpContext.Request.Query["CKEditorFuncNum"], out int ckEditorFuncNum))
+				return BadRequest();
 			try
 			{
 				using (var ms = new MemoryStream())
@@ -4027,14 +4029,14 @@ namespace WebVella.Erp.Web.Controllers
 
 				string url = "/fs" + newFile.Path;
 				string vMessage = "";
-				var vOutput = @"<html><body><script>window.parent.CKEDITOR.tools.callFunction(" + CKEditorFuncNum + ", \"" + url + "\", \"" + vMessage + "\");</script></body></html>";
+				var vOutput = @"<html><body><script>window.parent.CKEDITOR.tools.callFunction(" + ckEditorFuncNum + ", " + Newtonsoft.Json.JsonConvert.SerializeObject(url) + ", " + Newtonsoft.Json.JsonConvert.SerializeObject(vMessage) + ");</script></body></html>";
 
 				return Content(vOutput, "text/html");
 			}
 			catch (Exception ex)
 			{
 				new LogService().Create(Diagnostics.LogType.Error, "TErpApi:UploadFileManagerCKEditor", ex);
-				var vOutput = @"<html><body><script>window.parent.CKEDITOR.tools.callFunction(" + CKEditorFuncNum + ", \"\", \"" + ex.Message + "\");</script></body></html>";
+				var vOutput = @"<html><body><script>window.parent.CKEDITOR.tools.callFunction(" + ckEditorFuncNum + ", \"\", " + Newtonsoft.Json.JsonConvert.SerializeObject(ex.Message) + ");</script></body></html>";
 				return Content(vOutput, "text/html");
 			}
 		}
