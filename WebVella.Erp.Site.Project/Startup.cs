@@ -34,7 +34,11 @@ namespace WebVella.Erp.Site.Project
 			AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 			string configPath = "config.json";
-			Configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(configPath).Build();
+			Configuration = new ConfigurationBuilder()
+				.SetBasePath(Directory.GetCurrentDirectory())
+				.AddJsonFile(configPath)
+				.AddEnvironmentVariables()
+				.Build();
 
 
 			services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
@@ -106,7 +110,7 @@ namespace WebVella.Erp.Site.Project
 			 })
 			  .AddPolicyScheme("JWT_OR_COOKIE", "JWT_OR_COOKIE", options =>
 			  {
-				  options.ForwardDefaultSelector = context => 
+				  options.ForwardDefaultSelector = context =>
 				  {
 					  string authorization = context.Request.Headers[HeaderNames.Authorization];
 					  if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
@@ -171,7 +175,7 @@ namespace WebVella.Erp.Site.Project
 			.UseErpMiddleware()
 			.UseJwtMiddleware();
 
-		
+
 
 			app.UseEndpoints(endpoints =>
 			{

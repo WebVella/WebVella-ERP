@@ -40,7 +40,11 @@ namespace WebVella.Erp.Site
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
             string configPath = "config.json";
-            Configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(configPath).Build();
+            Configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile(configPath)
+				.AddEnvironmentVariables()
+				.Build();
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.Configure<RequestLocalizationOptions>(options => { options.DefaultRequestCulture = new RequestCulture(Configuration["Settings:Locale"]); });
@@ -185,7 +189,7 @@ namespace WebVella.Erp.Site
             .UseErpMiddleware()
             .UseJwtMiddleware();
 
-			
+
 			app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
