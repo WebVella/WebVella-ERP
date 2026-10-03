@@ -758,6 +758,7 @@ namespace WebVella.Erp.Api
 
 					// when user create record, it is get returned ignoring create permissions
 					bool oldIgnoreSecurity = ignoreSecurity;
+					ignoreSecurity = true;
 					response = Find(entityQuery);
 					ignoreSecurity = oldIgnoreSecurity;
 
@@ -1439,7 +1440,11 @@ namespace WebVella.Erp.Api
 					var query = EntityQuery.QueryEQ("id", recordId);
 					var entityQuery = new EntityQuery(entity.Name, "*", query);
 
+					// the record was just updated by this user; read it back ignoring read permissions
+					bool oldIgnoreSecurity = ignoreSecurity;
+					ignoreSecurity = true;
 					response = Find(entityQuery);
+					ignoreSecurity = oldIgnoreSecurity;
 					if (!(response.Object != null && response.Object.Data.Count > 0))
 					{
 						if (isTransactionActive)
