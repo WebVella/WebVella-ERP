@@ -11,7 +11,6 @@ license. The project itself is Apache-2.0.
 |---|---|---|
 | Npgsql | 9.0.4 | PostgreSQL data provider |
 | Newtonsoft.Json | 13.0.4 | JSON serialization |
-| AutoMapper | 14.0.0 | Object-to-object mapping |
 | CsvHelper | 33.1.0 | CSV import and export |
 | Ical.Net | 5.2.3 | Calendar / ICS handling |
 | Irony.NetCore | 1.1.11 | Parser generator (used by the EQL engine) |
