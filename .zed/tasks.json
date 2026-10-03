@@ -16,6 +16,12 @@
 		"args": ["pack", "--configuration Release"],
 		"cwd": "$ZED_WORKTREE_ROOT/WebVella.Erp",
 	},
+	{
+		"label": "WebVella.ERP.Web NuGet",
+		"command": "dotnet",
+		"args": ["pack", "--configuration Release"],
+		"cwd": "$ZED_WORKTREE_ROOT/WebVella.Erp.Web",
+	},	
 	//WebSite Run
 	{
 		"label": "WebSite Run",

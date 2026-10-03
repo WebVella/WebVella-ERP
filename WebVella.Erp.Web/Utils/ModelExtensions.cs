@@ -12,6 +12,17 @@ namespace WebVella.Erp.Web.Utils
 {
 	public static class ModelExtensions
 	{
+		public static string SanitizeHeaderValue(this string input)
+		{
+			if (string.IsNullOrEmpty(input))
+			{
+				return input;
+			}
+
+			// Keep only valid ASCII characters (<= 127) and filter out control characters
+			return new string(input.Where(c => c <= 127 && !char.IsControl(c)).ToArray());
+		}
+
 		public static string GetLabel<T>(this T e) where T : IConvertible
 		{
 			string label = "";
@@ -68,26 +79,26 @@ namespace WebVella.Erp.Web.Utils
 			}
 			return selectOptions;
 		}
-	
+
 		public static List<KeyValuePair<string, string>> ToErrorList(this ValidationException validation, List<string> includeFields = null, List<string> excludeFields = null)
 		{
-			if(validation == null)
+			if (validation == null)
 				return null;
 
 			var result = new List<KeyValuePair<string, string>>();
-			if(includeFields == null)
+			if (includeFields == null)
 				includeFields = new List<string>();
 
-			if(excludeFields == null)
+			if (excludeFields == null)
 				excludeFields = new List<string>();
 
 			foreach (var valError in validation.Errors)
 			{
 				var isIncluded = false;
-				
-				if(includeFields.Count == 0)
+
+				if (includeFields.Count == 0)
 					isIncluded = true;
-				else if(includeFields.Contains(valError.PropertyName))
+				else if (includeFields.Contains(valError.PropertyName))
 					isIncluded = true;
 				if (excludeFields.Contains(valError.PropertyName))
 					isIncluded = false;
@@ -97,29 +108,31 @@ namespace WebVella.Erp.Web.Utils
 			}
 
 			return result;
-		}		
+		}
 
 		public static List<KeyValuePair<string, string>> ToKeyValuePair(this List<ValidationError> errors)
 		{
-			if(errors == null)
+			if (errors == null)
 				return null;
 
-			return errors.Select(x=> new KeyValuePair<string, string>(x.PropertyName,x.Message)).ToList();
-		}	
+			return errors.Select(x => new KeyValuePair<string, string>(x.PropertyName, x.Message)).ToList();
+		}
 
 		public static List<WvSelectOption> ToWvSelectOption(this List<SelectOption> originOptions)
 		{
-			if(originOptions == null)
+			if (originOptions == null)
 				return null;
 
-			return originOptions.Select(x=> new WvSelectOption{Color = x.Color,IconClass = x.IconClass,Label = x.Label, Value = x.Value}).ToList();
-		}	
+			return originOptions.Select(x => new WvSelectOption { Color = x.Color, IconClass = x.IconClass, Label = x.Label, Value = x.Value }).ToList();
+		}
 
-		public static WvSelectOptionsAjaxDatasource ToWvSelectOptionsAjaxDatasource(this SelectOptionsAjaxDatasource origin){
-			if(origin == null)
+		public static WvSelectOptionsAjaxDatasource ToWvSelectOptionsAjaxDatasource(this SelectOptionsAjaxDatasource origin)
+		{
+			if (origin == null)
 				return null;
 
-			var result = new WvSelectOptionsAjaxDatasource{
+			var result = new WvSelectOptionsAjaxDatasource
+			{
 				DatasourceName = origin.DatasourceName,
 				InitOptions = origin.InitOptions.ToWvSelectOption(),
 				UseSelectApi = origin.UseSelectApi,
