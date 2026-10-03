@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using WebVella.Erp.Api;
 using WebVella.Erp.Api.Models;
 using WebVella.Erp.Hooks;
 using WebVella.Erp.Web.Hooks;
@@ -23,6 +24,17 @@ namespace WebVella.Erp.Web.Pages
 
 		[BindProperty]
 		public string Error { get; set; }
+
+		[BindProperty]
+		public string SetupEmail { get; set; }
+
+		[BindProperty]
+		public string SetupPassword { get; set; }
+
+		[BindProperty]
+		public string SetupConfirmPassword { get; set; }
+
+		public bool IsFirstRun { get; set; }
 
 		public string BrandLogo { get; set; }
 
@@ -55,6 +67,7 @@ namespace WebVella.Erp.Web.Pages
 			{
 				BrandLogo = ErpSettings.NavLogoUrl;
 			}
+			IsFirstRun = new SecurityManager().IsFirstRunAdminAccount();
 			BeforeRender();
 			return Page();
 		}
@@ -71,6 +84,26 @@ namespace WebVella.Erp.Web.Pages
 			{
 				var result = inst.OnPost(this);
 				if (result != null) return result;
+			}
+
+			if (new SecurityManager().IsFirstRunAdminAccount())
+			{
+				try
+				{
+					if (!String.Equals(SetupPassword, SetupConfirmPassword))
+						throw new Exception("Password and confirm password do not match.");
+					new SecurityManager().SetupFirstAdminAccount(SetupEmail, SetupPassword);
+					Username = SetupEmail?.Trim();
+					Password = SetupPassword;
+				}
+				catch (Exception ex)
+				{
+					Error = ex.Message;
+					IsFirstRun = true;
+					BeforeRender();
+					return Page();
+				}
+				IsFirstRun = false;
 			}
 
 			var hookInstances = HookManager.GetHookedInstances<ILoginPageHook>(HookKey);

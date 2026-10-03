@@ -12,6 +12,28 @@
 		{
 		<div class="alert alert-danger">@Model.Error</div>
 		}
+		@if (Model.IsFirstRun)
+		{
+		<div class="alert alert-info">Welcome! Set the email and password of your administrator account.</div>
+		<form method="post" name="form">
+			@Html.AntiForgeryToken()
+			<div class="form-group">
+				<label for="setupEmail">Email</label>
+				<input type="email" class="form-control form-control-sm" id="setupEmail" placeholder="" name="SetupEmail" value="">
+			</div>
+			<div class="form-group">
+				<label for="setupPassword">Password</label>
+				<input type="password" class="form-control form-control-sm" id="setupPassword" placeholder="" name="SetupPassword" value="">
+			</div>
+			<div class="form-group">
+				<label for="setupConfirmPassword">Confirm password</label>
+				<input type="password" class="form-control form-control-sm" id="setupConfirmPassword" placeholder="" name="SetupConfirmPassword" value="">
+			</div>
+			<button class="btn btn-primary btn-block mt-4 btn-sm" type="submit">Set up account</button>
+		</form>
+		}
+		else
+		{
 		<form method="post" name="form">
 			@Html.AntiForgeryToken()
 			<div class="form-group">
@@ -24,5 +46,6 @@
 			</div>
 			<button class="btn btn-primary btn-block mt-4 btn-sm" type="submit">Login</button>
 		</form>
+		}
 	</div>
 </div>
