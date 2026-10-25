@@ -12,6 +12,6 @@ namespace WebVella.Erp
 		void InitializeBackgroundJobs(List<JobType> additionalJobTypes = null);
 		void StartBackgroundJobProcess();
 		void InitializePlugins(IServiceProvider app);
-		void SetAutoMapperConfiguration();
+		//void SetAutoMapperConfiguration();
 	}
 }

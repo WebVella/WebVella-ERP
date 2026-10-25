@@ -893,18 +893,21 @@ namespace WebVella.Erp
 		public void InitializePlugins(IServiceProvider serviceProvider)
 		{
 			foreach (ErpPlugin plugin in Plugins)
+			{
+				plugin.RegisterMappingStrategies();
 				plugin.Initialize(serviceProvider);
+			}
 
 			JobManager.Current.RegisterJobTypes(this);
 			HookManager.RegisterHooks(this);
 		}
 
-		public void SetAutoMapperConfiguration()
-		{
-			foreach (ErpPlugin plugin in Plugins)
-				plugin.RegisterMappingStrategies();
-				//plugin.SetAutoMapperConfiguration(ErpAutoMapperConfiguration.MappingExpressions);
-		}
+		//public void SetAutoMapperConfiguration()
+		//{
+		//	foreach (ErpPlugin plugin in Plugins)
+		//		plugin.RegisterMappingStrategies();
+		//		//plugin.SetAutoMapperConfiguration(ErpAutoMapperConfiguration.MappingExpressions);
+		//}
 
 		public void InitializeBackgroundJobs(List<JobType> additionalJobTypes = null)
 		{
